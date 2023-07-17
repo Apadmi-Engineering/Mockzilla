@@ -1,0 +1,19 @@
+name: Deploy all
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '11'
+      - run: fastlane publish_to_maven
+        env:
+          MAVEN_WRITE_URL: ${{ secrets.MAVEN_WRITE_URL }}
+      - run: fastlane ios publish_spm_package
+        env:
+          IOS_DEPLOY_URL: ${{ secrets.IOS_DEPLOY_URL }}

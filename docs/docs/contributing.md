@@ -1,0 +1,1 @@
+{{print_source_file("CONTRIBUTING.md")}}
