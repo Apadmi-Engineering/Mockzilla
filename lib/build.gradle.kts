@@ -11,6 +11,7 @@ plugins {
 buildscript {
     dependencies {
         classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
+        classpath(":build-logic")
     }
 }
 
@@ -22,7 +23,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
     kotlin {
         target("**/*.kt")
-        targetExclude("build/**", "**/mockzilla/build/**", "fastlane/**", "fastlane-build/**")
+        targetExclude("build-logic/build/**", "build/**", "**/mockzilla/build/**", "fastlane/**", "fastlane-build/**")
 
         diktat("1.2.1").configFile("diktat-analysis.yml")
 

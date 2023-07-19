@@ -61,8 +61,9 @@ lane :publish_to_maven do
     gradle(
         tasks: [":mockzilla:publish"],
         project_dir: "./lib",
-        system_properties: {
-            "mavenWriteUrl" => ENV["MAVEN_WRITE_URL"]
+        properties: {
+            "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
+            "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
         }
     )
 end

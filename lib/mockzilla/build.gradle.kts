@@ -10,18 +10,11 @@ plugins {
     id("maven-publish")
     id("com.google.devtools.ksp")
     id("com.codingfeline.buildkonfig")
+    id("publication-convention")
 }
 
 group = "com.apadmi.mockzilla"
 version = extractVersion()
-
-publishing {
-    repositories {
-        maven {
-            setUrl(System.getProperties().getOrDefault("mavenWriteUrl", "-"))
-        }
-    }
-}
 
 kotlin {
     android {
@@ -151,7 +144,6 @@ tasks.getByPath("publishToMavenLocal").dependsOn(
 )
 
 fun extractVersion(): String {
-    println("extract version")
     return debugVersionFile
         .takeIf { it.exists() }
         ?.readText()
