@@ -21,7 +21,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 /* Mockzilla */
-                api("com.apadmi.mockzilla:mockzilla:${extractMockzillaVersion()}")
+                api("com.apadmi:mockzilla:${extractMockzillaVersion()}")
 
                 /* Json parsing */
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")

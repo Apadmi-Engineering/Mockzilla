@@ -61,8 +61,9 @@ lane :publish_to_maven do
     gradle(
         tasks: [":mockzilla:publish"],
         project_dir: "./lib",
-        system_properties: {
-            "mavenWriteUrl" => ENV["MAVEN_WRITE_URL"]
+        properties: {
+            "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
+            "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
         }
     )
 end
@@ -80,12 +81,11 @@ platform :android do
 end
  
 lane :get_version_name do
-    str = IO.read("#{lane_context[:repo_root]}/lib/mockzilla/build.gradle.kts")    
-    match = str.match(/version = "(.*)"/)
+    str = IO.read("#{lane_context[:repo_root]}/version")    
 
-    if match.nil? || match.captures.nil? || match.captures.empty?
+    if str.nil?
         raise "Failed to extract version from gradle file"
     end
 
-    match.captures[0]
+    str
 end

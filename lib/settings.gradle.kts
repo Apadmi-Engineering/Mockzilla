@@ -14,4 +14,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "lib"
+includeBuild("build-logic")
 include(":mockzilla")
