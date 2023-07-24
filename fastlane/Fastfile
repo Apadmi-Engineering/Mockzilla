@@ -10,9 +10,6 @@ before_all do |lane, options|
 end
 
 lane :combined_pull_request do
-    # Docs
-    generate_docs
-
     # Library
     Fastlane::LaneManager.cruise_lane("ios", "lib_pull_request", {})
     Fastlane::LaneManager.cruise_lane("android", "lib_pull_request", {})
