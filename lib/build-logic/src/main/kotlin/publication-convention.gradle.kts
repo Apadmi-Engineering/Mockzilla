@@ -24,7 +24,7 @@ publishing {
                 license {
                     name.set("MIT")
                     distribution.set("repo")
-                    url.set("https://github.com/Apadmi-Engineering/Mockzilla/blob/main/LICENSE")
+                    url.set("https://opensource.org/licenses/MIT")
                 }
             }
 
