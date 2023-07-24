@@ -13,7 +13,7 @@ plugins {
     id("publication-convention")
 }
 
-group = "com.apadmi.mockzilla"
+group = "com.apadmi"
 version = extractVersion()
 
 kotlin {
@@ -107,9 +107,7 @@ android {
 }
 
 buildkonfig {
-    packageName = group.toString()
-    // objectName = "YourAwesomeConfig"
-    // exposeObjectWithName = "YourAwesomePublicConfig"
+    packageName = "$group.mockzilla"
 
     defaultConfigs {
         buildConfigField(STRING, "VERSION_NAME", version.toString())
