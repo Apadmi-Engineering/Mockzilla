@@ -20,7 +20,7 @@ A solution for running and configuring a local HTTP server to mimic REST API end
     Add the gradle dependency:
     
     ```kotlin
-    implementation("com.apadmi.mockzilla:mockzilla:{{ get_version() }}")
+    implementation("com.apadmi:mockzilla:{{ get_version() }}")
     ```
 === "iOS"
     Add the SPM dependency:
