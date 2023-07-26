@@ -50,6 +50,4 @@ This section is specifically for Apadmi maintainers creating releases.
 4. Close the release branch as per GitFlow standards. Tag the merge into `main` with the version name.
 5. In the right hand panel in Github. Create a release with the newly created tag. Follow the instructions to create release notes and finalise the release.
 6. Do the same on the SPM repo: https://github.com/Apadmi-Engineering/SwiftMockzilla.
-7. Create a new PR from the development branch, this pr should
-	- Bump the Mockzilla dependency in all the demo apps to use the latest.
-	- Update the demo apps to demonstrate any new functionality where relevant.  	
+

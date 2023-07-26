@@ -1,6 +1,11 @@
 name: Deploy Documentation
 
-on: [workflow_dispatch]
+on: 
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Deploy Binaries]
+    types:
+      - completed
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
