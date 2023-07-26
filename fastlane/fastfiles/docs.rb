@@ -1,5 +1,5 @@
 lane :generate_docs do
-    output_dir = ENV["DOCS_OUTPUT_DIR"] || "#{lane_context[:repo_root]}/generated_docs"
+    output_dir = "#{lane_context[:repo_root]}/generated_docs"
 
     # Build mkdocs
     sh("cd #{lane_context[:repo_root]}/docs; mkdocs build -d #{output_dir}")

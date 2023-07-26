@@ -50,7 +50,7 @@ Simply enter the localhost IP address and everything should connect.
 Android Emulators require port forwarding to work correctly.
 
 1. Install [ADB](https://developer.android.com/studio/command-line/adb).
-2. Run this script: [https://github.com/Apadmi-Engineering/Mockzilla/blob/develop/scripts/android-emulator-connect.sh](). It will launch the web portal with the correct ip address and port.
+2. Run this [script](https://github.com/Apadmi-Engineering/Mockzilla/blob/develop/scripts/android-emulator-connect.sh); It will launch the web portal with the correct ip address and port.
 
 (This will also work with physical Android devices connected over ADB).
 
@@ -71,7 +71,9 @@ This may cause issues if for example you're parsing the request body. In this ca
 
 ```
 myEndpointConfigurationBuilder
-	.setWebApiDefaultResponse(MockzillaHttpResponse(body = "{ \"demo\": \"my demo json\" }"))
+	.setWebApiDefaultResponse(
+		MockzillaHttpResponse(body = "{ \"demo\": \"my demo json\" }")
+	)
 
 ```
 

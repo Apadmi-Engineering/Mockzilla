@@ -16,3 +16,5 @@ debug-version
 !demo-android/debug-version
 !demo-kmm/debug-version
 
+
+docs/__pycache__/

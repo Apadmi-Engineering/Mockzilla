@@ -10,6 +10,9 @@ before_all do |lane, options|
 end
 
 lane :combined_pull_request do
+    # Documentation
+    generate_docs
+    
     # Library
     Fastlane::LaneManager.cruise_lane("ios", "lib_pull_request", {})
     Fastlane::LaneManager.cruise_lane("android", "lib_pull_request", {})
@@ -24,5 +27,4 @@ lane :combined_pull_request do
     # KMM Demo
     Fastlane::LaneManager.cruise_lane("ios", "demo_kmm_pull_request", {})
     Fastlane::LaneManager.cruise_lane("android", "demo_kmm_pull_request", {})
-
 end

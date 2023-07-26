@@ -14,7 +14,6 @@ extension MockzillaConfig {
     
     static func createConfig() -> MockzillaConfig {
         MockzillaConfig.Builder()
-           .setAppName(name: "My App")
            .setFailureProbabilityPercentage(percentage: 0)
            .setIsReleaseModeEnabled(isRelease: false) // Change to true to test release mode
            .setMeanDelayMillis(delay: 100)
