@@ -153,7 +153,7 @@ The delay will be randomised and sit somewhere between $delayMean - delayVarianc
 
 ### (3) - Artificial Errors
 
-The following can be configured globally across all endpoints [here](dokka/mockzilla/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
+The following can be configured globally across all endpoints [here](../dokka/mockzilla/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
 
 Mockzilla supports artificially causing network requests to fail.
 
