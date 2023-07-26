@@ -23,17 +23,15 @@ A solution for running and configuring a local HTTP server to mimic REST API end
     implementation("com.apadmi:mockzilla:{{ get_version() }}")
     ```
 === "iOS"
-    Add the SPM dependency:
+    Add the SPM dependency in XCode:
 
-    TODO: Remove the token once open source
+    1. File > Swift Packages > Add Package Dependency
+    2. Add `https://github.com/Apadmi-Engineering/SwiftMockzilla.git`
 
     !!! note 
         Note: This is not for KMM projects (for those, the gradle dependecy should be added to `shared` source set). 
         This SPM dependency is for purely native iOS apps only.
-    ```
-    https://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@github.com/Apadmi-Engineering/apadmi-mockzilla-ios.git
-    ```
-    
+
 ## Starting The Server
 
 Mockzilla is entirely driven by a config object which is used to start the server.

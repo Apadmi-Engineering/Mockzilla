@@ -122,7 +122,7 @@ data class MockzillaHttpRequest(
 
 ### (2) - Artificial Latency
 
-The following can be configured globally across all endpoints [here](dokka/mockzilla/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
+The following can be configured globally across all endpoints [here](../dokka/mockzilla/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
 
 Network requests generally don't complete instantly. Mockzilla mimics the latency of a network and can be configured 
 either across all endpoints on the top level config, or on individual endpoints as follows:

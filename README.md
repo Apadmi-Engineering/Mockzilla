@@ -21,7 +21,7 @@ The source code is written in Kotlin but is fully compatible with a Swift enviro
 
 ## Quick Start 🚀
 
-Please see our quick start guide and full [here](TODO: Add link to docs).
+Please see our quick start guide and full [here](https://apadmi-engineering.github.io/Mockzilla/).
 
 ## Why's it useful? 🙌
 
