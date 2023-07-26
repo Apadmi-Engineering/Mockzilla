@@ -1,4 +1,4 @@
-name: Deploy all
+name: Deploy Binaries
 
 on: [workflow_dispatch]
 
