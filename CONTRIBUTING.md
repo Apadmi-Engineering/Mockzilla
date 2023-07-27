@@ -50,5 +50,5 @@ This section is specifically for Apadmi maintainers creating releases.
 4. Deploy the release to maven central from [https://s01.oss.sonatype.org/#stagingRepositories](https://s01.oss.sonatype.org/#stagingRepositories).
 5. Close the release branch as per GitFlow standards. Tag the merge into `main` with the version name.
 6. In the right hand panel in Github. Create a release with the newly created tag. Follow the instructions to create release notes and finalise the release.
-7. Do the same on the SPM repo: https://github.com/Apadmi-Engineering/SwiftMockzilla.
+
 
