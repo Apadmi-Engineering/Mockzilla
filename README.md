@@ -1,7 +1,5 @@
 # Mockzilla
 
-🏗️ This repo is still being setup, and binaries still being setup on Maven Central. Watch this space!
-
 ## What is Mockzilla?
 
 A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your iOS, Android or [KMM](https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html) application.
