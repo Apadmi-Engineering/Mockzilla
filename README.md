@@ -1,4 +1,6 @@
 # Mockzilla
+![Deployment](https://github.com/Apadmi-Engineering/Mockzilla/actions/workflows/action_deploy_binaries.yml/badge.svg)
+
 
 ## What is Mockzilla?
 
