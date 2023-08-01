@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - main
-      - feature/9-automate-releases-with-release-please-action
 
 permissions:
   contents: write
