@@ -11,7 +11,7 @@ It can be helpful to override the way Mockzilla behaves at runtime without recom
 
 To do this the Mockzilla web interface connects to the server on device and allows modifying the configuration at runtime.
 
-The web portal is here: `https://mockzilla-cloud.web.app/`.
+The web portal is here: [https://mockzilla-cloud.web.app/](https://mockzilla-cloud.web.app/).
 
 ## Important #1 - Enable insecure content
 
@@ -50,7 +50,7 @@ Simply enter the localhost IP address and everything should connect.
 Android Emulators require port forwarding to work correctly.
 
 1. Install [ADB](https://developer.android.com/studio/command-line/adb).
-2. Run this [script](https://github.com/Apadmi-Engineering/Mockzilla/blob/develop/scripts/android-emulator-connect.sh); It will launch the web portal with the correct ip address and port.
+2. Run this [script](https://github.com/Apadmi-Engineering/Mockzilla/blob/main/scripts/android-emulator-connect.sh); It will launch the web portal with the correct ip address and port.
 
 (This will also work with physical Android devices connected over ADB).
 
