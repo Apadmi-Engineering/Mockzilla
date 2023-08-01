@@ -81,7 +81,7 @@ platform :android do
 end
  
 lane :get_version_name do
-    str = IO.read("#{lane_context[:repo_root]}/version")    
+    str = IO.read("#{lane_context[:repo_root]}/version.txt")    
 
     if str.nil?
         raise "Failed to extract version from gradle file"

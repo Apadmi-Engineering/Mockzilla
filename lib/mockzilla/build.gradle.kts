@@ -130,8 +130,8 @@ dependencies {
         }
 }
 
-val debugVersionFile get() = File("${project.rootProject.projectDir.parent}/debug-version")
-val versionFile get() = File("${project.rootProject.projectDir.parent}/version")
+val debugVersionFile get() = File("${project.rootProject.projectDir.parent}/debug-version.txt")
+val versionFile get() = File("${project.rootProject.projectDir.parent}/version.txt")
 
 tasks.getByPath("publishToMavenLocal").dependsOn(
     tasks.register("updateDebugMockzillaVersion" ) {
