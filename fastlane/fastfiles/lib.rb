@@ -42,7 +42,7 @@ platform :ios do
             git add --force mockzilla.xcframework
             git commit -m "Updating Package"
             git push
-            git tag #{get_version_name}
+            git tag v#{get_version_name}
             git push --tags
         })
     end

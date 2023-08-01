@@ -1,6 +1,11 @@
 name: Deploy Binaries
 
-on: [workflow_dispatch]
+on: 
+  workflow_dispatch:
+  push:
+    tags:
+      - v**
+
 
 jobs:
   deploy:
