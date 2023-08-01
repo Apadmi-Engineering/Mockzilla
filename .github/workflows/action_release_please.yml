@@ -7,7 +7,7 @@ permissions:
   contents: write
   pull-requests: write
 
-name: release-please
+name: Release-Please
 
 jobs:
   release-please:
@@ -17,3 +17,4 @@ jobs:
         with:
           release-type: simple
           package-name: release-please-action
+          command: release-pr
