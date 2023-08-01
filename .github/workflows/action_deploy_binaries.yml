@@ -33,3 +33,8 @@ jobs:
         run: bundle exec fastlane ios publish_spm_package
         env:
           IOS_DEPLOY_URL: ${{ secrets.IOS_DEPLOY_URL }}
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: simple
+          package-name: release-please-action
+          command: github-release
