@@ -12,9 +12,8 @@ demo-android/.idea
 demo-android/build
 .idea/*
 generated_docs/*
-debug-version
-!demo-android/debug-version
-!demo-kmm/debug-version
-
+debug-version.txt
+!demo-android/debug-version.txt
+!demo-kmm/debug-version.txt
 
 docs/__pycache__/
