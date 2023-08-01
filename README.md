@@ -6,7 +6,7 @@
 
 A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your iOS, Android or [KMM](https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html) application.
 
-The source code is written in Kotlin but is fully compatible with a Swift environemnt too!
+The source code is written in Kotlin but is fully compatible with a Swift environment too!
 
 ## Advantages
 
