@@ -39,11 +39,13 @@ kotlin {
             languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
         }
 
-        val ktorVersion = "2.3.0"
+        jvmToolchain(17)
+
+        val ktorVersion = "2.3.3"
         val commonMain by getting {
             dependencies {
                 /* Kotlin */
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
 
                 /* Ktor */
                 api("io.ktor:ktor-server-core:$ktorVersion")
@@ -55,7 +57,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-rate-limit:$ktorVersion")
 
                 /* Serialization */
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
                 /* Logging */
                 implementation("co.touchlab:kermit:1.2.2")
@@ -103,6 +105,11 @@ android {
         targetSdk = 32
 
         consumerProguardFiles("mockzilla-proguard-rules.pro")
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
