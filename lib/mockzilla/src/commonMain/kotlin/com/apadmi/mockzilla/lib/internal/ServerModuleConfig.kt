@@ -15,21 +15,21 @@ import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Suppress("TOO_LONG_FUNCTION")
 internal fun Application.configureEndpoints(
-    scope: CoroutineScope,
+    superviser: CompletableJob,
     di: DependencyInjector
 ) {
     routing {
         HttpMethod.DefaultMethods.forEach { method ->
             route("/local-mock/{...}", method) {
                 handle {
-                    withContext(scope.coroutineContext) {
+                    withContext(coroutineContext + superviser) {
                         di.logger.i { "Responding to ${method.value}: ${call.request.uri}" }
                         safeResponse(di.logger) {
                             call.respondMockzilla(
