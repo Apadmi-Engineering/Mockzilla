@@ -1,11 +1,11 @@
 plugins {
     //trick: for the same plugin versions in all sub-modules
     id("com.android.library").version("7.3.1").apply(false)
-    kotlin("multiplatform").version("1.8.0").apply(false)
-    kotlin("plugin.serialization") version "1.8.0"
+    kotlin("multiplatform").version("1.8.22").apply(false)
+    kotlin("plugin.serialization").version("1.8.20")
     id("com.diffplug.spotless").version("6.11.0")
-    id("com.google.devtools.ksp").version("1.8.0-1.0.9")
-    id("org.jetbrains.dokka") version "1.8.10"
+    id("com.google.devtools.ksp").version("1.8.21-1.0.11")
+    id("org.jetbrains.dokka").version("1.8.20")
 }
 
 buildscript {

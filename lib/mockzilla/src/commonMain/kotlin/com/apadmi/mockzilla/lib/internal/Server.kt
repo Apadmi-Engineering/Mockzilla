@@ -37,9 +37,7 @@ private fun Application.setupReleaseMode(config: MockzillaConfig, tokensService:
 
 internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     stopServer()
-    val supervisor = SupervisorJob()
-    val scope = CoroutineScope(Dispatchers.Default + supervisor)
-    job = supervisor
+
     val serverEngine = embeddedServer(CIO, configure = {
         connectionIdleTimeoutSeconds = 1
         reuseAddress = true
@@ -58,7 +56,7 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
             setupReleaseMode(di.config, di.tokensService)
         }
 
-        configureEndpoints(scope, di)
+        configureEndpoints(SupervisorJob().also { job = it }, di)
     }).apply {
         server = this
         start(wait = false)

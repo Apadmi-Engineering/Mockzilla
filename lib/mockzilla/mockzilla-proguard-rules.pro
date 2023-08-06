@@ -34,3 +34,16 @@
 # However, since in this case they will not be used, we can disable these warnings
 -dontwarn kotlinx.serialization.internal.ClassValueWrapper
 -dontwarn kotlinx.serialization.internal.ParametrizedClassValueWrapper
+
+-keepclassmembers class io.ktor.** {
+    volatile <fields>;
+}
+
+-keepclassmembernames class io.ktor.** {
+    volatile <fields>;
+}
+
+-keep class io.ktor.client.engine.** implements io.ktor.client.HttpClientEngineContainer
+-dontwarn java.lang.management.ManagementFactory
+-dontwarn java.lang.management.RuntimeMXBean
+-dontwarn org.slf4j.impl.StaticLoggerBinder

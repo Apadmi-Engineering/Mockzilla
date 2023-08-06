@@ -27,8 +27,8 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
 
                 /* Networking */
-                implementation("io.ktor:ktor-client-core:2.1.3")
-                implementation("io.ktor:ktor-client-cio:2.1.3")
+                implementation("io.ktor:ktor-client-core:2.3.3")
+                implementation("io.ktor:ktor-client-cio:2.3.3")
             }
         }
         val commonTest by getting {
@@ -65,6 +65,11 @@ android {
     defaultConfig {
         minSdk = 23
         targetSdk = 33
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
