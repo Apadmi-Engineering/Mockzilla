@@ -142,7 +142,7 @@ val versionFile get() = File("${project.rootProject.projectDir.parent}/version.t
 
 tasks.getByPath("publishToMavenLocal").dependsOn(
     tasks.register("updateDebugMockzillaVersion" ) {
-        val newVersion = versionFile.readText() + "-${Date().toInstant().epochSecond}"
+        val newVersion = versionFile.readText().trim() + "-${Date().toInstant().epochSecond}"
         version = newVersion
         debugVersionFile.writeText(newVersion)
     }
@@ -152,5 +152,5 @@ fun extractVersion(): String {
     return debugVersionFile
         .takeIf { it.exists() }
         ?.readText()
-        ?.takeUnless { it.isBlank() } ?: versionFile.readText()
+        ?.trim()?.takeUnless { it.isBlank() } ?: versionFile.readText().trim()
 }

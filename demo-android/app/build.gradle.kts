@@ -90,12 +90,12 @@ dependencies {
 fun extractMockzillaVersion(): String {
     val version = providers.fileContents(
         rootProject.layout.projectDirectory.file("version.txt")
-    ).asText.get()
+    ).asText.get().trim()
 
     val debugVersionFile = rootProject.layout.projectDirectory.file("debug-version.txt")
     val debugVersion = debugVersionFile.takeIf { it.asFile.exists() }?.let {
         providers.fileContents(it).asText.orNull
-    }?.takeUnless { it.isBlank() }
+    }?.trim()?.takeUnless { it.isBlank() }
 
     return debugVersion ?: version
 }
