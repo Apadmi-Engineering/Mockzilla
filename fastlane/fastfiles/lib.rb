@@ -32,11 +32,11 @@ platform :ios do
 
         sh("rm -rf apadmi-mockzilla-ios")
 
-        sh("git clone #{ENV["IOS_DEPLOY_URL"]}")
+        sh("git clone #{ENV["IOS_DEPLOY_URL"]} apadmi-mockzilla-ios")
         sh(%{
             cd apadmi-mockzilla-ios;  
-            rm -rf *;
-            cp -r #{lane_context[:repo_root]}/lib/SwiftMockzilla/* .;
+            rm -rf ./*;
+            cp -r #{lane_context[:repo_root]}/lib/SwiftMockzilla/ .;
 
             git add .;
             git add --force mockzilla.xcframework
