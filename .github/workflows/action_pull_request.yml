@@ -16,3 +16,7 @@ jobs:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
       - run: fastlane combined_pull_request
+      - name: Validate Swagger and OpenAPI using Swagger CLI
+        uses: mbowman100/swagger-validator-action@2.0
+        with:
+          files: webapi.yaml
