@@ -1,0 +1,238 @@
+openapi: '3.0.3'
+info:
+  title: Mockzilla Management API
+  version: '0.1'
+servers:
+  - url: '{protocol}://{deviceIp}:{port}/api'
+    variables:
+      protocol:
+        enum:
+          - http
+        default: http
+      deviceIp:
+        default: 127.0.0.1
+      port:
+        default: '8080'
+paths:
+  /meta:
+    get:
+      description: Instance metadata
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MetaResponse"
+  /mock-data/:
+    get:
+      description: List of all mocked endpoints
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MockDataResponse"
+    delete:
+      description: Clears all of the caches
+      responses:
+        '204':
+          description: No content
+
+  /mock-data/{id}:
+    post:
+      description: Updates a mocked response
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Key of the mock respose to update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MockDataUpdateRequest"
+      responses:
+        '204':
+          description: Success
+  /monitor-logs:
+    get:
+      description: Gets all of the request+response logs, and clears the buffer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MonitorLogsResponse"
+  /global:
+    get:
+      description: Gets the global config overrides
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref:  "#/components/schemas/GlobalOverrides"
+    post:
+      description: Updates the global config overrides
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref:  "#/components/schemas/GlobalOverrides"
+      responses:
+        '204':
+          description: Success
+
+
+components:
+  schemas:
+    MetaResponse:
+      type: object
+      required: [appName, appPackage, operatingSystemVersion, deviceModel, appVersion, operatingSystem, mockzillaVersion]
+      properties:
+          appName: 
+            type: string
+            example: "Test App"
+          appPackage: 
+            type: string
+            example: "com.mockzilla.test.app"
+          operatingSystemVersion:
+            type: string
+            example: "16.5.1"
+          deviceModel: 
+            type: string
+            example: "iPhone8,3"
+          appVersion: 
+            type: string
+            example: "1.0.0"
+          operatingSystem: 
+            type: string
+            example: "iOS"
+          mockzillaVersion: 
+            type: string
+            example: "1.0.0-alpha"
+    MockDataResponse:
+      type: object
+      required: [name, key, failProbability, delayMean, delayVariance, contentJson, errorJson, errorStatus]
+      properties:
+        name: 
+          type: string
+          example: Test
+        key: 
+          type: string
+          example: TestEndpoint.Test
+        failProbability: 
+          type: integer
+          example: 95
+          minimum: 0
+          maximum: 100
+        delayMean: 
+          type: integer
+          example: 22
+          minimum: 0
+          maximum: 100
+        delayVariance: 
+          type: integer
+          example: 17
+          minimum: 0
+          maximum: 100
+        contentJson: 
+          type: string
+          example: "{'test' : 1 }"
+        errorJson: 
+          type: string
+          example: "{'error' : 1 }"
+          nullable: true
+        errorStatus: 
+          type: number
+          example: 418
+    MockDataUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/MockDataResponse'
+      type: object
+      required: [successStatus]
+      properties:
+        successStatus: 
+          type: number
+          example: 200
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            Content-Encoding: rot13
+            Server: Potato
+    MonitorLogsResponse:
+      type: object
+      properties:
+        appPackage:
+          type: string
+          example: com.mockzilla.test
+        logs:
+          type: array
+          items:
+            $ref: "#/components/schemas/LogEvent"
+    LogEvent:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: yyyy-MM-dd'T'HH:mm:ss
+          description: Timestamp of the log event
+        url:
+          type: string
+          description: URL of the request
+          format: uri
+        requestBody:
+          type: string
+        requestHeaders:
+          type: object
+          additionalProperties:
+            type: string
+            example:
+              user-agent: My Test App
+              accept-encoding: gzip
+        responseHeaders:
+          type: object
+          additionalProperties:
+            type: string
+            example:
+              content-type: application/json
+              content-length: 45
+        responseBody:
+          type: string
+        status:
+          type: integer
+          description: HTTP status code
+        delay:
+          type: integer
+          description: Delay added to the response
+        method:
+          type: string
+          description: HTTP method of the request
+        isIntendedFailure:
+          type: boolean
+          description: Indicates if this response was intended to fail
+      required: [timestamp,url,requestBody,requestHeaders,responseHeaders,responseBody,status,delay,method,isIntendedFailure]
+    GlobalOverrides:
+      type: object
+      properties:
+        failProbability:
+          type: integer
+          nullable: true
+        delayMean:
+          type: integer
+          nullable: true
+        delayVariance:
+          type: integer
+          nullable: true
