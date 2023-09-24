@@ -32,9 +32,7 @@ internal fun HorizontalDraggableDivider(
             .pointerHoverIcon(PointerIcon(Cursor(Cursor.W_RESIZE_CURSOR)))
             .pointerInput(Unit) {
                 detectDragGestures { a, dragAmount ->
-                    if (a.previousPosition.y > a.position.y) {
-                        onDrag(dragAmount)
-                    }
+                    onDrag(dragAmount)
                 }
             }) {
         }
@@ -43,7 +41,7 @@ internal fun HorizontalDraggableDivider(
 
 
 @Composable
-fun VerticalDraggableDivider(
+internal fun VerticalDraggableDivider(
     onDrag: (Offset) -> Unit
 ) {
     var shouldEmitDragEvents by remember { mutableStateOf(true) }

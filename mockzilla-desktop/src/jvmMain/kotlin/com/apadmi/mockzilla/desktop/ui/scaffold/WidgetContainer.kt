@@ -2,27 +2,20 @@ package com.apadmi.mockzilla.desktop.ui.scaffold
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.*
-import com.apadmi.mockzilla.desktop.ui.components.DeviceTabsWidget
-import java.awt.Cursor
-
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import com.apadmi.mockzilla.desktop.ui.utils.rotateVertically
 
 class Widget(
     val title: String,
@@ -40,6 +33,7 @@ fun WidgetScaffold(
     density: Density = LocalDensity.current
 ) = Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
     val sidePanelsCanGrow = remember { mutableStateOf(true) }
+    top()
     Row(modifier.fillMaxWidth().weight(1f)) {
         LeftPanel(left, sidePanelsCanGrow)
         Row(modifier.weight(1f).onSizeChanged {
@@ -56,10 +50,11 @@ fun WidgetScaffold(
     BottomPanel(bottom)
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun BottomPanel(
     content: List<Widget>,
-    defaultHeight: Dp = 100.dp
+    defaultHeight: Dp = 200.dp
 ) {
     val density = LocalDensity.current
     var height by remember { mutableStateOf(defaultHeight) }
@@ -67,7 +62,7 @@ private fun BottomPanel(
 
     Column(modifier = Modifier.fillMaxWidth()) {
         if (selectedWidget != null) {
-            PanelTopBar {
+            VerticalDraggableDivider {
                 with(density) {
                     height = max(0.dp, height - it.y.toDp())
                 }
@@ -88,10 +83,10 @@ private fun BottomPanel(
             content.forEachIndexed { index, widget ->
                 Row(modifier = Modifier
                     .clickable {
-                        if (selectedWidget == index) {
-                            selectedWidget = null
+                        selectedWidget = if (selectedWidget == index) {
+                            null
                         } else {
-                            selectedWidget = index
+                            index
                         }
 
                         if (height < 20.dp) {
@@ -117,7 +112,7 @@ private fun LeftPanel(
     var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
 
     Row(modifier = Modifier.fillMaxHeight()) {
-        Column() {
+        Column {
             content.forEachIndexed { index, widget ->
                 Row(modifier = Modifier
                     .clickable {
@@ -141,7 +136,7 @@ private fun LeftPanel(
         Box(
             Modifier
                 .width(if (selectedWidget == null) 0.dp else width)
-                .background(Color.DarkGray)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             selectedWidget?.let {
                 content[it].ui()
@@ -149,7 +144,7 @@ private fun LeftPanel(
         }
 
         if (selectedWidget != null) {
-            PanelLeftBar {
+            HorizontalDraggableDivider {
                 val newWidth = with(density) { max(0.dp, width + it.x.toDp()) }
                 if (newWidth < width || canGrow.value) {
                     width = newWidth
@@ -172,7 +167,7 @@ private fun RightPanel(
 
     Row(modifier = Modifier.fillMaxHeight()) {
         if (selectedWidget != null) {
-            PanelLeftBar {
+            HorizontalDraggableDivider {
                 with(density) {
                     val newWidth = max(0.dp, width - it.x.toDp())
                     if (newWidth < width || canGrow.value) {
@@ -210,79 +205,6 @@ private fun RightPanel(
                     Text(modifier = Modifier.rotateVertically(), text = widget.title + "  ${width}")
                 }
             }
-        }
-    }
-}
-
-
-fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
-    val rotate = rotate(if (clockwise) 90f else -90f)
-
-    val adjustBounds = layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints)
-        layout(placeable.height, placeable.width) {
-            placeable.place(
-                x = -(placeable.width / 2 - placeable.height / 2),
-                y = -(placeable.height / 2 - placeable.width / 2)
-            )
-        }
-    }
-    return rotate then adjustBounds
-}
-
-@Composable
-private fun PanelTopBar(
-    onDrag: (Offset) -> Unit
-) {
-    var shouldEmitDragEvents by remember { mutableStateOf(true) }
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .onGloballyPositioned {
-                shouldEmitDragEvents = it.positionInRoot().y > 40
-            }
-            .background(Color.Black)
-    ) {
-        Box(Modifier
-            .weight(1f)
-            .height(3.dp)
-            .pointerHoverIcon(PointerIcon(Cursor(Cursor.N_RESIZE_CURSOR)))
-            .pointerInput(Unit) {
-                detectDragGestures { a, dragAmount ->
-                    if (shouldEmitDragEvents || a.previousPosition.y < a.position.y) {
-                        onDrag(dragAmount)
-                    }
-                }
-            }) {
-        }
-    }
-}
-
-
-@Composable
-private fun PanelLeftBar(
-    onDrag: (Offset) -> Unit
-) {
-    var shouldEmitDragEvents by remember { mutableStateOf(true) }
-    Row(
-        Modifier
-            .fillMaxHeight()
-            .onGloballyPositioned {
-                shouldEmitDragEvents = it.positionInRoot().x > 40
-            }
-            .background(Color.Black)
-    ) {
-        Box(Modifier
-            .fillMaxHeight()
-            .width(3.dp)
-            .pointerHoverIcon(PointerIcon(Cursor(Cursor.W_RESIZE_CURSOR)))
-            .pointerInput(Unit) {
-                detectDragGestures { a, dragAmount ->
-                    if (shouldEmitDragEvents || a.previousPosition.y > a.position.y) {
-                        onDrag(dragAmount)
-                    }
-                }
-            }) {
         }
     }
 }
