@@ -1,10 +1,12 @@
 [versions]
 compose = "1.5.10-beta01"
 material-icons = "1.0.0-rc11"
+koin = "3.2.0"
 
 [libraries]
 material3 = { group = "org.jetbrains.compose.material3", name = "material3-desktop", version.ref = "compose" }
 material-icons = { group = "org.jetbrains.compose.material", name = "material-icons-extended-desktop", version.ref = "material-icons" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 
 [plugins]
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }

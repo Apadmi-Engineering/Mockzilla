@@ -17,9 +17,14 @@ kotlin {
     sourceSets {
         val jvmMain by getting {
             dependencies {
+                /* Compose */
                 implementation(compose.desktop.currentOs)
                 implementation(libs.material.icons)
                 implementation(libs.material3)
+
+                /* DI */
+                implementation(libs.koin.core)
+
             }
         }
         val jvmTest by getting

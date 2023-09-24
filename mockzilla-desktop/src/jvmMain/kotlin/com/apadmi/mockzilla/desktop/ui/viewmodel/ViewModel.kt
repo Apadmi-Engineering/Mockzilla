@@ -4,6 +4,7 @@ package com.apadmi.mockzilla.desktop.ui.viewmodel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
+import org.koin.java.KoinJavaComponent
 
 private fun createViewModelScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
 
@@ -14,3 +15,5 @@ abstract class ViewModel<StateType>(
 
     abstract val state: StateFlow<StateType>
 }
+
+inline fun <reified T: Any> getViewModel() = KoinJavaComponent.getKoin().get<T>()
