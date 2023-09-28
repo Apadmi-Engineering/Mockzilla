@@ -7,9 +7,9 @@ import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.service.toKermitLogWriter
 
 import co.touchlab.kermit.Logger
-import co.touchlab.kermit.Severity
 import co.touchlab.kermit.StaticConfig
 import co.touchlab.kermit.platformLogWriter
 
@@ -23,14 +23,13 @@ fun stopMockzilla() {
 internal fun startMockzilla(
     config: MockzillaConfig,
     metaData: MetaData,
-    fileIo: FileIo,
-    logger: Logger = Logger(
-        StaticConfig(
-            Severity.valueOf(config.logLevel.name),
-            listOf(platformLogWriter())
-        ), "Mockzilla"
-    ),
-) = startMockzilla(config, prepareMockzilla(config, metaData, fileIo, logger))
+    fileIo: FileIo
+) = startMockzilla(config, prepareMockzilla(config, metaData, fileIo, Logger(
+    StaticConfig(
+        config.logLevel.toKermitSeverity(),
+        listOf(platformLogWriter()) + config.additionalLogWriters.map { it.toKermitLogWriter() }
+    ), "Mockzilla"
+)))
 
 internal fun prepareMockzilla(
     config: MockzillaConfig,
