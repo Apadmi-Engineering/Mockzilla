@@ -1,6 +1,10 @@
 package com.apadmi.mockzilla.lib.models
 
 import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
+import com.apadmi.mockzilla.lib.service.MockzillaLogWriter
+
+import co.touchlab.kermit.Severity
+
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -11,6 +15,7 @@ import kotlin.time.Duration.Companion.seconds
  * @property isRelease
  * @property releaseModeConfig
  * @property localhostOnly
+ * @property additionalLogWriters
  */
 data class MockzillaConfig(
     val port: Int,
@@ -19,6 +24,7 @@ data class MockzillaConfig(
     val localhostOnly: Boolean,
     val logLevel: LogLevel,
     val releaseModeConfig: ReleaseModeConfig,
+    val additionalLogWriters: List<MockzillaLogWriter>
 ) {
     enum class LogLevel {
         Assert,
@@ -28,6 +34,11 @@ data class MockzillaConfig(
         Verbose,
         Warn,
         ;
+
+        internal fun toKermitSeverity() = Severity.valueOf(name)
+        companion object {
+            internal fun Severity.toLogLevel() = LogLevel.valueOf(name)
+        }
     }
 
     /**
@@ -54,6 +65,7 @@ data class MockzillaConfig(
         private var isRelease = false
         private var releaseConfig: ReleaseModeConfig = ReleaseModeConfig()
         private var localhostOnly = false
+        private var additionalLogWriters: List<MockzillaLogWriter> = mutableListOf()
 
         /**
          * Configures the level of Mockzilla's logging.
@@ -160,6 +172,18 @@ data class MockzillaConfig(
         }
 
         /**
+         * Register an additional log writer.
+         *
+         * Mockzilla logs will then log to standard output and to any additional log writers
+         *
+         * @param logWriter
+         * @return
+         */
+        fun addLogWriter(logWriter: MockzillaLogWriter) = apply {
+            additionalLogWriters += logWriter
+        }
+
+        /**
          * Completes the builder pattern, returning an immutable config.
          *
          * @return
@@ -170,7 +194,7 @@ data class MockzillaConfig(
                 delayMean = it.delayMean ?: defaultDelayMean,
                 delayVariance = it.delayVariance ?: defaultDelayVariance
             )
-        }, isRelease, localhostOnly, logLevel, releaseConfig)
+        }, isRelease, localhostOnly, logLevel, releaseConfig, additionalLogWriters)
 
         companion object {
             private const val defaultPort = 8080
