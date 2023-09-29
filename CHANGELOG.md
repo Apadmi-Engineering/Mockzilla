@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-alpha2](https://github.com/Apadmi-Engineering/Mockzilla/compare/v1.0.1-alpha2...v1.1.0-alpha2) (2023-09-29)
+
+
+### Features
+
+* Add the ability to specify custom log writers on mockzilla ([ce8108e](https://github.com/Apadmi-Engineering/Mockzilla/commit/ce8108e79fcaf2b198cf66878be167ac47fc3fd1))
+
 ## [1.0.1-alpha2](https://github.com/Apadmi-Engineering/Mockzilla/compare/1.0.0-alpha2...v1.0.1-alpha2) (2023-08-06)
 
 
