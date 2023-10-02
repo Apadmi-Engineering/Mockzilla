@@ -27,7 +27,6 @@ private fun App() = AppTheme {
     )
 }
 
-
 fun main() = application {
     val state = rememberWindowState(
         placement = WindowPlacement.Floating,

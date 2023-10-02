@@ -22,6 +22,9 @@ kotlin {
                 implementation(libs.material.icons)
                 implementation(libs.material3)
 
+                /* Coroutines */
+                implementation(libs.kotlinx.coroutines.swing)
+
                 /* DI */
                 implementation(libs.koin.core)
 
