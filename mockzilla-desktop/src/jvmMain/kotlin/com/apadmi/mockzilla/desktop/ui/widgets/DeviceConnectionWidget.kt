@@ -11,7 +11,6 @@ import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.viewmodel.getViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.DeviceConnectionViewModel.State
 
-
 @Composable
 fun DeviceConnectionWidget() {
     val viewModel = remember { getViewModel<DeviceConnectionViewModel>() }

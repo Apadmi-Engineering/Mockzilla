@@ -15,7 +15,6 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.unit.dp
 import java.awt.Cursor
 
-
 @Composable
 internal fun HorizontalDraggableDivider(
     onDrag: (Offset) -> Unit
@@ -27,18 +26,17 @@ internal fun HorizontalDraggableDivider(
     ) {
         Box(
             Modifier
-            .fillMaxHeight()
-            .width(3.dp)
-            .pointerHoverIcon(PointerIcon(Cursor(Cursor.W_RESIZE_CURSOR)))
-            .pointerInput(Unit) {
-                detectDragGestures { a, dragAmount ->
-                    onDrag(dragAmount)
-                }
-            }) {
-        }
+                .fillMaxHeight()
+                .width(3.dp)
+                .pointerHoverIcon(PointerIcon(Cursor(Cursor.W_RESIZE_CURSOR)))
+                .pointerInput(Unit) {
+                    detectDragGestures { _, dragAmount ->
+                        onDrag(dragAmount)
+                    }
+                }) {
+            }
     }
 }
-
 
 @Composable
 internal fun VerticalDraggableDivider(
@@ -58,12 +56,12 @@ internal fun VerticalDraggableDivider(
             .height(3.dp)
             .pointerHoverIcon(PointerIcon(Cursor(Cursor.N_RESIZE_CURSOR)))
             .pointerInput(Unit) {
-                detectDragGestures { a, dragAmount ->
-                    if (shouldEmitDragEvents || a.previousPosition.y < a.position.y) {
+                detectDragGestures { change, dragAmount ->
+                    if (shouldEmitDragEvents || change.previousPosition.y < change.position.y) {
                         onDrag(dragAmount)
                     }
                 }
             }) {
-        }
+            }
     }
 }

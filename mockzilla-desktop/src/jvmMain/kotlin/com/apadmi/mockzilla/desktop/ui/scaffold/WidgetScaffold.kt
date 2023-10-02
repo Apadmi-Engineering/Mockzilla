@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import com.apadmi.mockzilla.desktop.ui.utils.rotateVertically
 
+@Suppress("USE_DATA_CLASS")
 class Widget(
     val title: String,
     val ui: @Composable () -> Unit
@@ -61,7 +62,7 @@ private fun BottomPanel(
     var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        if (selectedWidget != null) {
+        selectedWidget?.let {
             VerticalDraggableDivider {
                 with(density) {
                     height = max(0.dp, height - it.y.toDp())
@@ -71,7 +72,9 @@ private fun BottomPanel(
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(if (selectedWidget == null) 0.dp else height)
+                .height(selectedWidget?.let {
+                    height
+                } ?: 0.dp)
                 .background(Color.DarkGray)
         ) {
             selectedWidget?.let {
@@ -94,7 +97,7 @@ private fun BottomPanel(
                         }
                     }
                     .padding(8.dp)) {
-                    Text(widget.title + "  ${height}")
+                    Text(widget.title + "  $height")
                 }
             }
         }
@@ -123,19 +126,19 @@ private fun LeftPanel(
                             selectedWidget = null
                         } else {
                             selectedWidget = index
-
                         }
-
                     }
                     .padding(8.dp)) {
-                    Text(modifier = Modifier.rotateVertically(), text = widget.title + "  ${width}")
+                    Text(modifier = Modifier.rotateVertically(), text = widget.title + "  $width")
                 }
             }
         }
 
         Box(
             Modifier
-                .width(if (selectedWidget == null) 0.dp else width)
+                .width(selectedWidget?.let {
+                    width
+                } ?: 0.dp)
                 .background(MaterialTheme.colorScheme.surface)
         ) {
             selectedWidget?.let {
@@ -143,7 +146,7 @@ private fun LeftPanel(
             }
         }
 
-        if (selectedWidget != null) {
+        selectedWidget?.let {
             HorizontalDraggableDivider {
                 val newWidth = with(density) { max(0.dp, width + it.x.toDp()) }
                 if (newWidth < width || canGrow.value) {
@@ -151,7 +154,6 @@ private fun LeftPanel(
                 }
             }
         }
-
     }
 }
 
@@ -166,7 +168,7 @@ private fun RightPanel(
     var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
 
     Row(modifier = Modifier.fillMaxHeight()) {
-        if (selectedWidget != null) {
+        selectedWidget?.let {
             HorizontalDraggableDivider {
                 with(density) {
                     val newWidth = max(0.dp, width - it.x.toDp())
@@ -179,7 +181,9 @@ private fun RightPanel(
 
         Box(
             Modifier
-                .width(if (selectedWidget == null) 0.dp else width)
+                .width(selectedWidget?.let {
+                    width
+                } ?: 0.dp)
                 .background(Color.DarkGray)
         ) {
             selectedWidget?.let {
@@ -202,7 +206,7 @@ private fun RightPanel(
                         }
                     }
                     .padding(8.dp)) {
-                    Text(modifier = Modifier.rotateVertically(), text = widget.title + "  ${width}")
+                    Text(modifier = Modifier.rotateVertically(), text = widget.title + "  $width")
                 }
             }
         }
