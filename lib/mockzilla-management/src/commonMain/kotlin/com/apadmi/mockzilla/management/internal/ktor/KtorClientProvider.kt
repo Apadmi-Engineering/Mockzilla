@@ -13,13 +13,13 @@ import io.ktor.serialization.kotlinx.json.json
 
 internal object KtorClientProvider {
 
-    fun createKtorClient(connectionConfig: ConnectionConfig, engine: HttpClientEngine? = null) {
-        val client = engine?.let {
+    fun createKtorClient(connectionConfig: ConnectionConfig, engine: HttpClientEngine? = null) =
+        engine?.let {
             HttpClient(engine) {
                 httpClientConfig(connectionConfig.baseUrl)
             }
         } ?: HttpClient { httpClientConfig(connectionConfig.baseUrl) }
-    }
+
 
     private fun HttpClientConfig<*>.httpClientConfig(baseUrl: String) {
         install(ContentNegotiation) {

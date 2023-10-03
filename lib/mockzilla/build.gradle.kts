@@ -1,3 +1,4 @@
+import com.apadmi.mockzilla.JavaConfig
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 
@@ -41,7 +42,7 @@ kotlin {
             languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
         }
 
-        jvmToolchain(17)
+        jvmToolchain(JavaConfig.toolchain)
 
         val commonMain by getting {
             dependencies {
@@ -77,8 +78,12 @@ kotlin {
         }
         val androidMain by getting
         val androidTest by getting
-        val jvmMain by getting
-        val jvmTest by getting
+        val jvmMain by getting {
+            dependsOn(commonMain)
+        }
+        val jvmTest by getting {
+            dependsOn(commonTest)
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -111,8 +116,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaConfig.version
+        targetCompatibility = JavaConfig.version
     }
 }
 

@@ -1,9 +1,11 @@
 package com.apadmi.mockzilla.management.internal
 
 import com.apadmi.mockzilla.management.MockzillaManagement
+import io.ktor.client.HttpClient
+
 
 internal class MockzillaManagementImpl(
-    val networkService: NetworkService
+    val client: HttpClient
 ) : MockzillaManagement {
     override suspend fun isConnected(): Boolean {
         TODO("Not yet implemented")

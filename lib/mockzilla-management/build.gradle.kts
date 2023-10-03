@@ -1,3 +1,5 @@
+import com.apadmi.mockzilla.JavaConfig
+
 plugins {
     kotlin("multiplatform")
 }
@@ -11,36 +13,21 @@ repositories {
 
 kotlin {
     jvm {
-        jvmToolchain(11)
+        jvmToolchain(JavaConfig.toolchain)
         withJava()
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
         }
     }
-    js(BOTH) {
-        browser {
-            commonWebpackConfig {
-                cssSupport {
-                    enabled.set(true)
-                }
-            }
-        }
-    }
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
-        hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
 
-    
+    val hostOs = System.getProperty("os.name")
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 /* Kotlin */
                 implementation(libs.kotlinx.coroutines.core)
+
 
                 /* Ktor */
                 api(libs.ktor.server.core)
@@ -61,13 +48,12 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+
+                /* Mockzilla */
+                implementation(project(":mockzilla"))
             }
         }
         val jvmMain by getting
         val jvmTest by getting
-        val jsMain by getting
-        val jsTest by getting
-        val nativeMain by getting
-        val nativeTest by getting
     }
 }
