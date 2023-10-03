@@ -17,7 +17,7 @@ import kotlinx.serialization.Serializable
  * @property isIntendedFailure
  */
 @Serializable
-internal data class LogEvent(
+data class LogEvent(
     val timestamp: Long,
     val url: String,
     val requestBody: String,
@@ -35,4 +35,4 @@ internal data class LogEvent(
  * @property logs
  */
 @Serializable
-internal data class MonitorLogsResponse(val appPackage: String, val logs: List<LogEvent>)
+data class MonitorLogsResponse(val appPackage: String, val logs: List<LogEvent>)

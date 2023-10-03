@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.lib.integration
 
 import com.apadmi.mockzilla.lib.internal.models.*
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
+import com.apadmi.mockzilla.lib.internal.utils.toMockDataEntry
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
@@ -16,7 +17,6 @@ import io.ktor.http.*
 
 import kotlin.math.abs
 import kotlin.test.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
