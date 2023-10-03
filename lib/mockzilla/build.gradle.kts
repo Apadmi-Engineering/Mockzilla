@@ -1,6 +1,10 @@
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.debugVersionFile
+import com.apadmi.mockzilla.extractVersion
+import com.apadmi.mockzilla.versionFile
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import com.apadmi.mockzilla.ProjectConfig
 
 import java.util.Date
 
@@ -14,7 +18,7 @@ plugins {
     id("publication-convention")
 }
 
-group = "com.apadmi"
+group = ProjectConfig.group
 version = extractVersion()
 
 kotlin {
@@ -145,9 +149,6 @@ dependencies {
         }
 }
 
-val debugVersionFile get() = File("${project.rootProject.projectDir.parent}/debug-version.txt")
-val versionFile get() = File("${project.rootProject.projectDir.parent}/version.txt")
-
 tasks.getByPath("publishToMavenLocal").dependsOn(
     tasks.register("updateDebugMockzillaVersion" ) {
         val newVersion = versionFile.readText().trim() + "-${Date().toInstant().epochSecond}"
@@ -155,10 +156,3 @@ tasks.getByPath("publishToMavenLocal").dependsOn(
         debugVersionFile.writeText(newVersion)
     }
 )
-
-fun extractVersion(): String {
-    return debugVersionFile
-        .takeIf { it.exists() }
-        ?.readText()
-        ?.trim()?.takeUnless { it.isBlank() } ?: versionFile.readText().trim()
-}

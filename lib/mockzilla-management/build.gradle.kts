@@ -1,11 +1,13 @@
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.extractVersion
+import com.apadmi.mockzilla.ProjectConfig
 
 plugins {
     kotlin("multiplatform")
 }
 
-group = "me.samdc"
-version = "1.0-SNAPSHOT"
+group = ProjectConfig.group
+version = extractVersion()
 
 repositories {
     mavenCentral()
@@ -19,8 +21,6 @@ kotlin {
             useJUnitPlatform()
         }
     }
-
-    val hostOs = System.getProperty("os.name")
 
     sourceSets {
         val commonMain by getting {
