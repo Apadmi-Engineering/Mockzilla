@@ -41,37 +41,36 @@ kotlin {
 
         jvmToolchain(17)
 
-        val ktorVersion = "2.3.3"
         val commonMain by getting {
             dependencies {
                 /* Kotlin */
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
+                implementation(libs.kotlinx.coroutines.core)
 
                 /* Ktor */
-                api("io.ktor:ktor-server-core:$ktorVersion")
-                implementation("io.ktor:ktor-server-cio:$ktorVersion")
-                implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("io.ktor:ktor-client-core:$ktorVersion")
-                implementation("io.ktor:ktor-client-cio:$ktorVersion")
-                implementation("io.ktor:ktor-server-rate-limit:$ktorVersion")
+                api(libs.ktor.server.core)
+                implementation(libs.ktor.server.cio)
+                implementation(libs.ktor.server.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.cio)
+                implementation(libs.ktor.server.rate.limit)
 
                 /* Serialization */
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+                implementation(libs.kotlinx.serialization.json)
 
                 /* Logging */
-                implementation("co.touchlab:kermit:1.2.2")
+                implementation(libs.kermit)
 
                 /* Date Time */
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                implementation(libs.kotlinx.datetime)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
 
-                implementation("io.mockative:mockative:1.2.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+                implementation(libs.mockative)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
         val androidMain by getting
