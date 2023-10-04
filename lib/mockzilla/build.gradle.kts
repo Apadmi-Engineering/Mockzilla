@@ -133,10 +133,6 @@ ksp {
     arg("mockative.stubsUnitByDefault", "true")
 }
 
-tasks.dokkaHtml {
-    outputDirectory.set(File(System.getProperty("docsOutputDirectory", "temp")))
-}
-
 dependencies {
     configurations
         .filter { it.name.startsWith("ksp") && it.name.contains("Test") }

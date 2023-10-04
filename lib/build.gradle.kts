@@ -25,11 +25,21 @@ subprojects {
     apply(plugin = "org.jetbrains.dokka")
 }
 
+tasks.dokkaHtmlMultiModule {
+    outputDirectory.set(File(System.getProperty("docsOutputDirectory", "temp")))
+}
+
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
     kotlin {
         target("mockzilla/**/*.kt", "mockzilla-management/**/*.kt")
-        targetExclude("build-logic/build/**", "build/**", "**/mockzilla/build/**", "fastlane/**", "fastlane-build/**")
+        targetExclude(
+            "build-logic/build/**",
+            "build/**",
+            "**/mockzilla/build/**",
+            "fastlane/**",
+            "fastlane-build/**"
+        )
 
         diktat("1.2.1").configFile("diktat-analysis.yml")
 

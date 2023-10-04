@@ -102,7 +102,7 @@ See [here](./endpoints/) for more information on configuring your endpoints. (In
 
 Mockzilla listens for calls to `http://localhost:8080/local-mock` (this should be your base url).
 
-To configure the port see [here](../dokka/mockzilla/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
+To configure the port see [here](../dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
 
 ## Recommendation
 

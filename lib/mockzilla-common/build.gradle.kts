@@ -22,7 +22,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "mockzilla"
+            baseName = "mockzilla-common"
             xcf.add(this)
         }
     }
@@ -104,9 +104,5 @@ android {
         sourceCompatibility = JavaConfig.version
         targetCompatibility = JavaConfig.version
     }
-}
-
-tasks.dokkaHtml {
-    outputDirectory.set(File(System.getProperty("docsOutputDirectory", "temp")))
 }
 
