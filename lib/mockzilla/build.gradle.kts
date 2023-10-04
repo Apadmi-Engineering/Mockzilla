@@ -7,11 +7,11 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import java.util.Date
 
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("com.android.library")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
     id("maven-publish")
-    id("com.google.devtools.ksp")
     id("com.codingfeline.buildkonfig")
     id("publication-convention")
 }

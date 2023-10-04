@@ -5,6 +5,7 @@ import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -44,7 +45,7 @@ internal class LocalCacheServiceImpl(
     ): MockDataEntryDto? = lock.withLock {
         fileIo.readFromCache(endpointKey.fileName)?.let {
             try {
-                Json.decodeFromString<MockDataEntryDto>(it)
+                JsonProvider.json.decodeFromString<MockDataEntryDto>(it)
             } catch (e: Exception) {
                 throw parseException(e)
             }
@@ -56,7 +57,7 @@ internal class LocalCacheServiceImpl(
     override suspend fun getGlobalOverrides() = lock.withLock {
         fileIo.readFromCache(globalOverridesFileName)?.let {
             try {
-                Json.decodeFromString<GlobalOverridesDto>(it)
+                JsonProvider.json.decodeFromString<GlobalOverridesDto>(it)
             } catch (e: Exception) {
                 throw parseException(e)
             }
@@ -72,14 +73,14 @@ internal class LocalCacheServiceImpl(
     override suspend fun updateLocalCache(entry: MockDataEntryDto) = lock.withLock {
         logger.v { "Writing to cache ${entry.key} - $entry " }
 
-        fileIo.saveToCache(entry.fileName, Json.encodeToString(entry))
+        fileIo.saveToCache(entry.fileName, JsonProvider.json.encodeToString(entry))
     }
 
     override suspend fun updateGlobalOverrides(
         globalOverrides: GlobalOverridesDto,
     ) = lock.withLock {
         logger.v { "Writing to cache $globalOverrides" }
-        fileIo.saveToCache(globalOverridesFileName, Json.encodeToString(globalOverrides))
+        fileIo.saveToCache(globalOverridesFileName, JsonProvider.json.encodeToString(globalOverrides))
     }
 
     companion object {

@@ -1,4 +1,5 @@
 [versions]
+buildKonfig = "0.13.3"
 kermit = "1.2.2"
 kotlinx-coroutines-core = "1.7.3"
 kotlinxCoroutinesTest = "1.7.2"
@@ -6,8 +7,14 @@ kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.5.1"
 ktor = "2.3.3"
 mockative = "1.2.3"
+kotlin = "1.8.22"
+agp = "7.3.1"
+spotless = "6.11.0"
+ksp = "1.8.22-1.0.11"
+dokka = "1.8.20"
 
 [libraries]
+buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
@@ -26,3 +33,9 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
 
 [plugins]
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

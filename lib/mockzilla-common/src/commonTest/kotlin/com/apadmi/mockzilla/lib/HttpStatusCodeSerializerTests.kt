@@ -15,8 +15,8 @@ class HttpStatusCodeSerializerTests {
         val dummy = DummyContainer(HttpStatusCode.BadRequest)
 
         /* Run Test */
-        val encoded = Json.encodeToString(dummy)
-        val decoded: DummyContainer = Json.decodeFromString(encoded)
+        val encoded = JsonProvider.json.encodeToString(dummy)
+        val decoded: DummyContainer = JsonProvider.json.decodeFromString(encoded)
 
         /* Verify */
         assertEquals("""{"status":400}""", encoded)

@@ -3,12 +3,11 @@ import com.apadmi.mockzilla.JavaConfig
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
-
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
     id("publication-convention")
-    id("com.android.library")
 }
 
 kotlin {

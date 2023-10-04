@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib.integration
 
 import com.apadmi.mockzilla.lib.internal.models.*
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
 import com.apadmi.mockzilla.lib.internal.utils.toMockDataEntry
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -74,7 +75,7 @@ class WebPortalApiIntegrationTests {
             response.status
         )
         assertEquals(
-            Json.encodeToString(listOf(MockDataEntryDto(
+            JsonProvider.json.encodeToString(listOf(MockDataEntryDto(
                 name = "my-id",
                 key = "my-id",
                 failProbability = 50,
@@ -127,7 +128,7 @@ class WebPortalApiIntegrationTests {
                     "${params.apiBaseUrl}/mock-data/id") {
                     contentType(ContentType.Application.Json)
                     setBody(
-                        Json.encodeToString(
+                        JsonProvider.json.encodeToString(
                             EndpointConfiguration.Builder("id").setDefaultHandler {
                                 MockzillaHttpResponse(
                                     body = "hello",
@@ -177,7 +178,7 @@ class WebPortalApiIntegrationTests {
             response.status
         )
         assertEquals(
-            Json.encodeToString(GlobalOverridesDto(11, 12, 13)),
+            JsonProvider.json.encodeToString(GlobalOverridesDto(11, 12, 13)),
             response.bodyAsText()
         )
     }
@@ -194,7 +195,7 @@ class WebPortalApiIntegrationTests {
             "${params.apiBaseUrl}/global") {
             contentType(ContentType.Application.Json)
             setBody(
-                Json.encodeToString(
+                JsonProvider.json.encodeToString(
                     GlobalOverridesDto(11, 12, 13)
                 )
             )
@@ -234,7 +235,7 @@ class WebPortalApiIntegrationTests {
 
         /* Run Test */
         val response = HttpClient(CIO).get("${params.apiBaseUrl}/monitor-logs")
-        val responseBody: MonitorLogsResponse = Json.decodeFromString(response.bodyAsText())
+        val responseBody: MonitorLogsResponse = JsonProvider.json.decodeFromString(response.bodyAsText())
 
         /* Verify */
         assertEquals(

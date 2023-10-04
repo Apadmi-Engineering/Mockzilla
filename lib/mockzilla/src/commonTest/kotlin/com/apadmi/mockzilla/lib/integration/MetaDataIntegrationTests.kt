@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.integration
 
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
@@ -45,7 +46,7 @@ class MetaDataIntegrationTests {
 
         /* Verify */
         assertEquals(
-            Json.encodeToString(metaData),
+            JsonProvider.json.encodeToString(metaData),
             response.bodyAsText()
         )
         assertEquals(
