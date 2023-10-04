@@ -19,7 +19,9 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 /* Compose */
-                implementation(compose.desktop.currentOs)
+                implementation(compose.desktop.currentOs) {
+                    exclude("org.jetbrains.compose.material")
+                }
                 implementation(libs.material.icons)
                 implementation(libs.material3)
 
@@ -28,7 +30,6 @@ kotlin {
 
                 /* DI */
                 implementation(libs.koin.core)
-
             }
         }
         val jvmTest by getting

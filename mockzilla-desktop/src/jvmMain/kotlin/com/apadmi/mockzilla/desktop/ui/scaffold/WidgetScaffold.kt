@@ -1,24 +1,21 @@
 package com.apadmi.mockzilla.desktop.ui.scaffold
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
-import com.apadmi.mockzilla.desktop.ui.utils.rotateVertically
+import androidx.compose.ui.unit.min
 
-@Suppress("USE_DATA_CLASS")
-class Widget(
+data class Widget(
     val title: String,
     val ui: @Composable () -> Unit
 )
@@ -31,115 +28,186 @@ fun WidgetScaffold(
     middle: List<Widget>,
     right: List<Widget>,
     bottom: List<Widget>,
-    density: Density = LocalDensity.current
-) = Column(modifier = modifier.background(MaterialTheme.colorScheme.background)) {
-    val sidePanelsCanGrow = remember { mutableStateOf(true) }
-    top()
-    Row(modifier.fillMaxWidth().weight(1f)) {
-        LeftPanel(left, sidePanelsCanGrow)
-        Row(modifier.weight(1f).onSizeChanged {
-            sidePanelsCanGrow.value = with(density) { it.width.toDp() } > 150.dp
-        }) {
-            middle.forEach {
-                Text(it.title)
-                it.ui()
-            }
-        }
-        RightPanel(right, sidePanelsCanGrow)
-    }
+) {
+    val density = LocalDensity.current
 
-    BottomPanel(bottom)
+    var totalWidth by remember { mutableStateOf(0.dp) }
+
+    // Each panel gets a width and a settled width so we can consume drag deltas that would reduce
+    // width/height below zero (when the user drags into the tab areas) but visually display the
+    // restricted width/height that can't drop below 0. This ensures the dragged divider stays
+    // with the cursor at all times.
+    var leftPanelWidth by remember { mutableStateOf(100.dp) }
+    var leftPanelSettledWidth by remember { mutableStateOf(100.dp) }
+    var rightPanelWidth by remember { mutableStateOf(100.dp) }
+    var rightPanelSettledWidth by remember { mutableStateOf(100.dp) }
+    var bottomPanelHeight by remember { mutableStateOf(200.dp) }
+    var bottomPanelSettledHeight by remember { mutableStateOf(200.dp) }
+
+    // Both of the horizontal panels must collectively not be so large that the center panel
+    // runs out of space. We can enforce this by hoisting the width of each panel and preventing
+    // either panel from exceeding the remaining space that the other panel's current width leaves.
+    val centerMinWidth = 300.dp
+    val leftPanelWidthRestriction = { width: Dp ->
+        if (totalWidth > 0.dp) {
+            val remaining = totalWidth - centerMinWidth - max(rightPanelSettledWidth, 0.dp)
+            min(max(0.dp, width), remaining)
+        } else {
+            max(0.dp, width)
+        }
+    }
+    val rightPanelWidthRestriction = { width: Dp ->
+        if (totalWidth > 0.dp) {
+            val remaining = totalWidth - centerMinWidth - max(leftPanelSettledWidth, 0.dp)
+            min(max(0.dp, width), remaining)
+        } else {
+            max(0.dp, width)
+        }
+    }
+    val bottomPanelHeightRestriction = { height: Dp -> max(0.dp, height) }
+
+    Surface(
+        modifier = modifier.onSizeChanged { size ->
+            totalWidth = with(density) { size.width.toDp() }
+        },
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            top()
+            Row(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                LeftPanel(
+                    content = left,
+                    width = leftPanelWidth,
+                    settledWidth = leftPanelSettledWidth,
+                    onWidthChange = {
+                        leftPanelWidth = it
+                        leftPanelSettledWidth = leftPanelWidthRestriction(it)
+                    },
+                    onDragStopped = {
+                        leftPanelWidth = leftPanelSettledWidth
+                    }
+                )
+                Column(modifier = Modifier.verticalScroll(rememberScrollState()).weight(1f)) {
+                    middle.forEach {
+                        Text(it.title)
+                        it.ui()
+                    }
+                }
+                RightPanel(
+                    content = right,
+                    width = rightPanelWidth,
+                    settledWidth = rightPanelSettledWidth,
+                    onWidthChange = {
+                        rightPanelWidth = it
+                        rightPanelSettledWidth = rightPanelWidthRestriction(it)
+                    },
+                    onDragStopped = {
+                        rightPanelWidth = rightPanelSettledWidth
+                    }
+                )
+            }
+            BottomPanel(
+                content = bottom,
+                height = bottomPanelHeight,
+                settledHeight = bottomPanelSettledHeight,
+                onHeightChange = {
+                    bottomPanelHeight = it
+                    bottomPanelSettledHeight = bottomPanelHeightRestriction(it)
+                },
+                onDragStopped = {
+                    bottomPanelHeight = bottomPanelSettledHeight
+                }
+            )
+        }
+    }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun BottomPanel(
     content: List<Widget>,
+    height: Dp,
+    settledHeight: Dp,
+    onHeightChange: (Dp) -> Unit,
+    onDragStopped: () -> Unit,
     defaultHeight: Dp = 200.dp
 ) {
     val density = LocalDensity.current
-    var height by remember { mutableStateOf(defaultHeight) }
     var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         selectedWidget?.let {
-            VerticalDraggableDivider {
-                with(density) {
-                    height = max(0.dp, height - it.y.toDp())
-                }
-            }
+            VerticalDraggableDivider(
+                onDrag = { offset ->
+                    with(density) {
+                        onHeightChange(height - offset.toDp())
+                    }
+                },
+                onDragStopped = onDragStopped
+            )
         }
-        Box(
-            Modifier
+
+        Surface(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
-                .height(selectedWidget?.let {
-                    height
-                } ?: 0.dp)
-                .background(Color.DarkGray)
+                .height(selectedWidget?.let { settledHeight } ?: 0.dp)
         ) {
             selectedWidget?.let {
                 content[it].ui()
             }
         }
 
-        Row() {
-            content.forEachIndexed { index, widget ->
-                Row(modifier = Modifier
-                    .clickable {
-                        selectedWidget = if (selectedWidget == index) {
-                            null
-                        } else {
-                            index
-                        }
-
-                        if (height < 20.dp) {
-                            height = defaultHeight
-                        }
-                    }
-                    .padding(8.dp)) {
-                    Text(widget.title + "  $height")
+        HorizontalTabList(
+            tabs = content.map { widget ->
+                HorizontalTab(
+                    title = widget.title + " $settledHeight",
+                )
+            },
+            selected = selectedWidget,
+            onSelect = { widget ->
+                selectedWidget = widget.takeUnless { widget == selectedWidget }
+                if (height < 20.dp) {
+                    onHeightChange(defaultHeight)
                 }
             }
-        }
+        )
     }
 }
 
 @Composable
 private fun LeftPanel(
     content: List<Widget>,
-    canGrow: MutableState<Boolean>,
+    width: Dp,
+    settledWidth: Dp,
+    onWidthChange: (Dp) -> Unit,
+    onDragStopped: () -> Unit,
     defaultWidth: Dp = 100.dp
 ) {
     val density = LocalDensity.current
-    var width by remember { mutableStateOf(defaultWidth) }
     var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
 
     Row(modifier = Modifier.fillMaxHeight()) {
-        Column {
-            content.forEachIndexed { index, widget ->
-                Row(modifier = Modifier
-                    .clickable {
-                        if (width < 20.dp) {
-                            width = defaultWidth
-                            selectedWidget = index
-                        } else if (selectedWidget == index) {
-                            selectedWidget = null
-                        } else {
-                            selectedWidget = index
-                        }
-                    }
-                    .padding(8.dp)) {
-                    Text(modifier = Modifier.rotateVertically(), text = widget.title + "  $width")
+        VerticalTabList(
+            tabs = content.map { widget ->
+                VerticalTab(
+                    title = widget.title + " $settledWidth",
+                )
+            },
+            clockwise = false,
+            selected = selectedWidget,
+            onSelect = { widget ->
+                selectedWidget = widget.takeUnless { widget == selectedWidget }
+                if (width < 20.dp) {
+                    onWidthChange(defaultWidth)
                 }
             }
-        }
+        )
 
-        Box(
-            Modifier
-                .width(selectedWidget?.let {
-                    width
-                } ?: 0.dp)
-                .background(MaterialTheme.colorScheme.surface)
+        Surface(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxHeight()
+                .width(selectedWidget?.let { settledWidth } ?: 0.dp)
         ) {
             selectedWidget?.let {
                 content[it].ui()
@@ -147,12 +215,14 @@ private fun LeftPanel(
         }
 
         selectedWidget?.let {
-            HorizontalDraggableDivider {
-                val newWidth = with(density) { max(0.dp, width + it.x.toDp()) }
-                if (newWidth < width || canGrow.value) {
-                    width = newWidth
-                }
-            }
+            HorizontalDraggableDivider(
+                onDrag = { offset ->
+                    with(density) {
+                        onWidthChange(width + offset.toDp())
+                    }
+                },
+                onDragStopped = onDragStopped,
+            )
         }
     }
 }
@@ -160,55 +230,52 @@ private fun LeftPanel(
 @Composable
 private fun RightPanel(
     content: List<Widget>,
-    canGrow: MutableState<Boolean>,
+    width: Dp,
+    settledWidth: Dp,
+    onWidthChange: (Dp) -> Unit,
+    onDragStopped: () -> Unit,
     defaultWidth: Dp = 100.dp
 ) {
     val density = LocalDensity.current
-    var width by remember { mutableStateOf(defaultWidth) }
     var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
 
     Row(modifier = Modifier.fillMaxHeight()) {
         selectedWidget?.let {
-            HorizontalDraggableDivider {
-                with(density) {
-                    val newWidth = max(0.dp, width - it.x.toDp())
-                    if (newWidth < width || canGrow.value) {
-                        width = newWidth
+            HorizontalDraggableDivider(
+                onDrag = { offset ->
+                    with(density) {
+                        onWidthChange(width - offset.toDp())
                     }
-                }
-            }
+                },
+                onDragStopped = onDragStopped,
+            )
         }
 
-        Box(
-            Modifier
-                .width(selectedWidget?.let {
-                    width
-                } ?: 0.dp)
-                .background(Color.DarkGray)
+        Surface(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxHeight()
+                .width(selectedWidget?.let { settledWidth } ?: 0.dp)
         ) {
             selectedWidget?.let {
                 content[it].ui()
             }
         }
 
-        Column() {
-            content.forEachIndexed { index, widget ->
-                Row(modifier = Modifier
-                    .clickable {
-                        if (selectedWidget == index) {
-                            selectedWidget = null
-                        } else {
-                            selectedWidget = index
-                        }
-
-                        if (width < 20.dp) {
-                            width = defaultWidth
-                        }
-                    }
-                    .padding(8.dp)) {
-                    Text(modifier = Modifier.rotateVertically(), text = widget.title + "  $width")
+        VerticalTabList(
+            tabs = content.map { widget ->
+                VerticalTab(
+                    title = widget.title + " $settledWidth",
+                )
+            },
+            clockwise = true,
+            selected = selectedWidget,
+            onSelect = { widget ->
+                selectedWidget = widget.takeUnless { widget == selectedWidget }
+                if (width < 20.dp) {
+                    onWidthChange(defaultWidth)
                 }
             }
-        }
+        )
     }
 }
