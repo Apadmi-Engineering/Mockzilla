@@ -1,7 +1,8 @@
 package com.apadmi.mockzilla.desktop.ui.widgets
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.material.TextField
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.TextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,7 +21,7 @@ fun DeviceConnectionWidget() {
 }
 
 @Composable
-fun DeviceConnectionContent(state: State, onIpAndPortChanged: (String) -> Unit) {
+fun DeviceConnectionContent(state: State, onIpAndPortChanged: (String) -> Unit) = Column {
     Text("State: ${state.connectionState}")
     TextField(value = state.ipAndPort, onValueChange = onIpAndPortChanged)
 }
