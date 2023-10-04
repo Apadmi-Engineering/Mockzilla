@@ -1,8 +1,9 @@
 package com.apadmi.mockzilla.lib.service
 
+import com.apadmi.mockzilla.lib.models.MockzillaConfig
+
 import co.touchlab.kermit.LogWriter
 import co.touchlab.kermit.Severity
-import com.apadmi.mockzilla.lib.models.MockzillaConfig
 
 @Suppress("EXTENSION_FUNCTION_WITH_CLASS")
 internal fun MockzillaLogWriter.toKermitLogWriter() = object : LogWriter() {

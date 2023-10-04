@@ -3,7 +3,10 @@ package com.apadmi.mockzilla.management.internal
 import com.apadmi.mockzilla.management.MockzillaManagement
 import io.ktor.client.HttpClient
 
-
+/**
+ * TODO: Fill this out with an actual implementation
+ * @property client
+ */
 internal class MockzillaManagementImpl(
     val client: HttpClient
 ) : MockzillaManagement {
@@ -26,5 +29,4 @@ internal class MockzillaManagementImpl(
     override suspend fun fetchMonitorLogsAndClearBuffer() {
         TODO("Not yet implemented")
     }
-
 }

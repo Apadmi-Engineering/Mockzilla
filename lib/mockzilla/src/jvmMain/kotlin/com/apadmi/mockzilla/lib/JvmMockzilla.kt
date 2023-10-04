@@ -11,7 +11,6 @@ import java.nio.file.Files
  * Starts the Mockzilla server,
  *
  * @param config The config with which to initialise mockzilla.
- * @param context The android context
  * @return runtimeParams Configuration of the mockzilla runtime environment
  */
 fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = startMockzilla(

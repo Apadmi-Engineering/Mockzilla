@@ -1,3 +1,5 @@
+import com.apadmi.mockzilla.extractVersion
+
 plugins {
     //trick: for the same plugin versions in all sub-modules
     id("com.android.library").version("7.3.1").apply(false)
@@ -13,6 +15,11 @@ buildscript {
         classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
         classpath(":build-logic")
     }
+}
+
+allprojects {
+    group = "com.apadmi"
+    version = extractVersion()
 }
 
 subprojects {

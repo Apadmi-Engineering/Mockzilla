@@ -5,14 +5,14 @@ import com.apadmi.mockzilla.lib.internal.service.validate
 import com.apadmi.mockzilla.lib.internal.startServer
 import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
+import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.service.toKermitLogWriter
+import com.apadmi.mockzilla.lib.service.toKermitSeverity
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
 import co.touchlab.kermit.platformLogWriter
-import com.apadmi.mockzilla.lib.models.MetaData
-import com.apadmi.mockzilla.lib.service.toKermitSeverity
 
 /**
  * Stops the Mockzilla server,

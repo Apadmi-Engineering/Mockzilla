@@ -1,13 +1,6 @@
 
 import com.apadmi.mockzilla.JavaConfig
-import com.apadmi.mockzilla.debugVersionFile
-import com.apadmi.mockzilla.extractVersion
-import com.apadmi.mockzilla.versionFile
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
-import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import com.apadmi.mockzilla.ProjectConfig
-
-import java.util.Date
 
 plugins {
 
@@ -17,9 +10,6 @@ plugins {
     id("publication-convention")
     id("com.android.library")
 }
-
-group = ProjectConfig.group
-version = extractVersion()
 
 kotlin {
     android {

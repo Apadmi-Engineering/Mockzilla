@@ -1,10 +1,10 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
-
-import co.touchlab.kermit.Severity
 import com.apadmi.mockzilla.lib.service.toKermitSeverity
 import com.apadmi.mockzilla.lib.service.toLogLevel
+
+import co.touchlab.kermit.Severity
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

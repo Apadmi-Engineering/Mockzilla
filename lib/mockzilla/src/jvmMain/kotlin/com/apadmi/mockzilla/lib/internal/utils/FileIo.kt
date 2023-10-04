@@ -1,9 +1,7 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
-import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
-import java.io.InputStreamReader
 import java.nio.file.Files
 
 internal actual class FileIo(private val cacheDir: File) {
@@ -23,9 +21,9 @@ internal actual class FileIo(private val cacheDir: File) {
         ?.joinToString("\n")
 
     actual suspend fun saveToCache(filename: String, contents: String) =
-        filename.fileInCache().also {
-            it.createNewFile()
-        }.writeText(contents)
+            filename.fileInCache().also {
+                it.createNewFile()
+            }.writeText(contents)
 
     actual suspend fun deleteCacheFile(filename: String) = filename.fileInCache()
         .takeIf {

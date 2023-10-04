@@ -1,13 +1,8 @@
 import com.apadmi.mockzilla.JavaConfig
-import com.apadmi.mockzilla.extractVersion
-import com.apadmi.mockzilla.ProjectConfig
 
 plugins {
     kotlin("multiplatform")
 }
-
-group = ProjectConfig.group
-version = extractVersion()
 
 repositories {
     mavenCentral()

@@ -54,19 +54,19 @@ class LocalMockControllerTests {
         /* Run Test */
         val response = sut.handleRequest(
             MockzillaHttpRequest(
-            "http://example.com/local-mock/my-id",
-            emptyMap(),
-            method = HttpMethod.Get
-        )
+                "http://example.com/local-mock/my-id",
+                emptyMap(),
+                method = HttpMethod.Get
+            )
         )
 
         /* Verify */
         assertEquals(
             MockzillaHttpResponse(
-            statusCode = HttpStatusCode.Created,
-            headers = mapOf("test-header" to "test-value"),
-            body = "my response body"
-        ), response)
+                statusCode = HttpStatusCode.Created,
+                headers = mapOf("test-header" to "test-value"),
+                body = "my response body"
+            ), response)
     }
 
     @Test
@@ -95,16 +95,16 @@ class LocalMockControllerTests {
         /* Run Test */
         val response = sut.handleRequest(
             MockzillaHttpRequest(
-            "http://example.com/local-mock/my-id",
-            emptyMap(),
-            method = HttpMethod.Get
-        )
+                "http://example.com/local-mock/my-id",
+                emptyMap(),
+                method = HttpMethod.Get
+            )
         )
 
         /* Verify */
         assertEquals(
             MockzillaHttpResponse(
-            statusCode = HttpStatusCode.InternalServerError
-        ), response)
+                statusCode = HttpStatusCode.InternalServerError
+            ), response)
     }
 }

@@ -4,7 +4,6 @@ import com.apadmi.mockzilla.management.internal.ConnectionConfig
 import com.apadmi.mockzilla.management.internal.MockzillaManagementImpl
 import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 
-
 interface MockzillaManagement {
     suspend fun isConnected(): Boolean
     suspend fun fetchMetaData()
