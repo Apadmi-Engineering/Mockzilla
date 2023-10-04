@@ -3,9 +3,8 @@ platform :ios do
     desc "iOS target for the lib"
     lane :lib_pull_request do
         gradle(
-            tasks: [":mockzilla:iosX64Test"],
-            project_dir: "./lib",
-            flags: "--info"
+            tasks: [":mockzilla:iosX64Test, :mockzilla-common:iosX64Test"],
+            project_dir: "./lib"
         )
 
         # Create the XCFramework
@@ -73,9 +72,12 @@ platform :android do
     desc "Android target for the lib"
     lane :lib_pull_request do
         gradle(
-            tasks: [":mockzilla:testDebugUnitTest"],
-            project_dir: "./lib",
-            flags: "--info"
+            tasks: [
+                ":mockzilla:testDebugUnitTest", 
+                ":mockzilla-management:jvmTest",
+                ":mockzilla-common:testDebugUnitTest"
+            ],
+            project_dir: "./lib"
         )
     end
 end

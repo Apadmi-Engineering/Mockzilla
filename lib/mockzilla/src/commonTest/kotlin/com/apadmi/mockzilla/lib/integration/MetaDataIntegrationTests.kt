@@ -15,7 +15,6 @@ import io.ktor.http.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @Suppress(
     "TOO_LONG_FUNCTION",

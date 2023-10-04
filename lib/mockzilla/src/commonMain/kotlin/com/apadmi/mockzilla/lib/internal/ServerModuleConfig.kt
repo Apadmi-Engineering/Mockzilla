@@ -18,7 +18,6 @@ import io.ktor.server.routing.*
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @Suppress("TOO_LONG_FUNCTION")
 internal fun Application.configureEndpoints(

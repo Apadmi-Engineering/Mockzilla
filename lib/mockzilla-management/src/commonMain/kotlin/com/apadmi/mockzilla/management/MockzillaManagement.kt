@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.management
 
-import com.apadmi.mockzilla.management.internal.ConnectionConfig
 import com.apadmi.mockzilla.management.internal.MockzillaManagementImpl
+import com.apadmi.mockzilla.management.internal.ktor.ConnectionConfig
 import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 
 interface MockzillaManagement {
@@ -15,6 +15,10 @@ interface MockzillaManagement {
         fun createConnection(
             ip: String,
             port: String
-        ): MockzillaManagement = MockzillaManagementImpl(KtorClientProvider.createKtorClient(ConnectionConfig(ip, port)))
+        ): MockzillaManagement = MockzillaManagementImpl(
+            KtorClientProvider.createKtorClient(
+                ConnectionConfig(ip, port)
+            )
+        )
     }
 }

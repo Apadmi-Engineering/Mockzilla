@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
