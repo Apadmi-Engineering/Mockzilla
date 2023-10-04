@@ -1,8 +1,9 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.*
@@ -12,6 +13,7 @@ import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
 import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
 import com.apadmi.mockzilla.desktop.ui.theme.AppTheme
 import com.apadmi.mockzilla.desktop.ui.widgets.DeviceConnectionWidget
+import java.awt.Dimension
 
 fun main() = application {
     val state = rememberWindowState(
@@ -28,7 +30,12 @@ fun main() = application {
         state = state,
         icon = null,
         onCloseRequest = ::exitApplication,
-        content = { App() }
+        content = {
+            SideEffect {
+                window.minimumSize = Dimension(600, 600)
+            }
+            App()
+        }
     )
 }
 
