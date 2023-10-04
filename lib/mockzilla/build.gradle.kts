@@ -1,3 +1,4 @@
+import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.debugVersionFile
 import com.apadmi.mockzilla.versionFile
@@ -107,10 +108,10 @@ kotlin {
 
 android {
     namespace = group.toString()
-    compileSdk = 32
+    compileSdk = AndroidConfig.targetSdk
     defaultConfig {
-        minSdk = 21
-        targetSdk = 32
+        minSdk = AndroidConfig.minSdk
+        targetSdk = AndroidConfig.targetSdk
 
         consumerProguardFiles("mockzilla-proguard-rules.pro")
     }
