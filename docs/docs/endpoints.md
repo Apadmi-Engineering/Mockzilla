@@ -17,7 +17,7 @@
     ```
 === "Swift"
     ```swift
-    let endpoint = EndpointConfiguration.Builder(id: "Hello world")
+    let endpoint = EndpointConfigurationBuilder(id: "Hello world")
         .setDefaultHandler { _ in
             MockzillaHttpResponse(
                 statusCode: HttpStatusCode.OK,
@@ -103,7 +103,7 @@ Request data is accessible as follows:
     ```
 === "Swift"
     ```swift
-        EndpointConfiguration.Builder(id: "Hello world")
+        EndpointConfigurationBuilder(id: "Hello world")
             .setSwiftPatternMatcher {
                 // $0: MockzillaHttpRequest
             }
@@ -135,7 +135,7 @@ either across all endpoints on the top level config, or on individual endpoints 
     ```
 === "Swift"
     ```swift
-        EndpointConfiguration.Builder(id: "Hello world")
+        EndpointConfigurationBuilder(id: "Hello world")
           .setMeanDelayMillis(delay: 100)
           .setDelayVarianceMillis(variance: 20)
     ```
@@ -166,7 +166,7 @@ For each individual request invocation, the decision on whether the request shou
     ```
 === "Swift"
     ```swift
-    EndpointConfiguration.Builder(id: "Hello world")
+    EndpointConfigurationBuilder(id: "Hello world")
     .setFailureProbability(percentage: 0)
     ```
 

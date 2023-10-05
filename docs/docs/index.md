@@ -51,8 +51,8 @@ Mockzilla is entirely driven by a config object which is used to start the serve
     ```
 === "Swift"
     ```swift
-    let config = MockzillaConfig.Builder()
-        .addEndpoint(endpoint: EndpointConfiguration.Builder(id: "Hello world")
+    let config = MockzillaConfigBuilder()
+        .addEndpoint(endpoint: EndpointConfigurationBuilder(id: "Hello world")
             .setDefaultHandler { _ in
                 MockzillaHttpResponse(body: "Hello world")
             }.build()

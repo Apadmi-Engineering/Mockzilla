@@ -17,7 +17,7 @@ By default, Mockzilla outputs minimal logging. If more is needed to help with de
     ```
 === "Swift"
     ```swift
-    let config = MockzillaConfig.Builder()
+    let config = MockzillaConfigBuilder()
         .setLogLevel(level: LogLevel.verbose)
         ...
         .build()
@@ -55,7 +55,7 @@ If you need to release your mock app to non-developers, we recommend enabling "r
     ```
 === "Swift"
     ```swift
-    let config = MockzillaConfig.Builder()
+    let config = MockzillaConfigBuilder()
         .setIsReleaseModeEnabled(isRelease: true)
          // Following is optional, the defaults should be fine for most apps
         .setReleaseModeConfig(

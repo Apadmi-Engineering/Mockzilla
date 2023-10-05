@@ -2,6 +2,8 @@ package com.apadmi.mockzilla.lib.models
 
 import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import io.ktor.http.*
+import kotlin.experimental.ExperimentalObjCName
+import kotlin.native.ObjCName
 
 /**
  * @property name
@@ -27,6 +29,7 @@ data class EndpointConfiguration(
     val defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     val errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) {
+    fun newBuilder() = Builder(this)
     /**
      * @param id An identifier for this endpoint. Endpoints cannot share an id.
      */
@@ -43,6 +46,9 @@ data class EndpointConfiguration(
                 MockzillaHttpResponse(HttpStatusCode.BadRequest)
             }
         )
+        constructor(config: EndpointConfiguration): this(config.key) {
+            this.config = config
+        }
 
         /**
          * Probability of Mockzilla returning a simulated http error for this endpoint. 100 being a
