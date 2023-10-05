@@ -92,7 +92,7 @@ kotlin {
 }
 
 android {
-    namespace = group.toString()
+    namespace = "$group.mockzilla.common"
     compileSdk = AndroidConfig.targetSdk
     defaultConfig {
         minSdk = AndroidConfig.minSdk

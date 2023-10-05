@@ -50,7 +50,7 @@ end
 desc "Publish to maven local"
 lane :publish_to_maven_local do
     gradle(
-        tasks: [":mockzilla:publishToMavenLocal"],
+        tasks: [":mockzilla:publishToMavenLocal", ":mockzilla-common:publishToMavenLocal"],
         project_dir: "./lib"
     )
 end
@@ -58,7 +58,7 @@ end
 desc "Publish to maven remote"
 lane :publish_to_maven do
     gradle(
-        tasks: [":mockzilla:publish"],
+        tasks: [":mockzilla:publish, :mockzilla-common:publish"],
         project_dir: "./lib",
         properties: {
             "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
