@@ -1,3 +1,4 @@
+import com.apadmi.mockzilla.JavaConfig
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -6,12 +7,9 @@ plugins {
     alias(libs.plugins.spotless) apply true
 }
 
-group = "com.apadmi.mockzilla.desktop"
-version = "0.0.0"
-
 kotlin {
     jvm {
-        jvmToolchain(11)
+        jvmToolchain(JavaConfig.toolchain)
         withJava()
     }
 
@@ -46,27 +44,3 @@ compose.desktop {
         }
     }
 }
-
-
-configure<com.diffplug.gradle.spotless.SpotlessExtension> {
-
-    kotlin {
-        target("src/**/*.kt")
-
-        // DO NOT ADD **/ REGEXES HERE FOR EXCLUSIONS (OR TARGETS) WITHOUT EXTENSIVE TESTING - THEY
-        // CAN EASILY EXPLODE SPOTLESS RUNTIMES FROM SECONDS TO MINUTES
-        targetExclude()
-
-        diktat("1.2.5").configFile("diktat-analysis.yml")
-
-        // TODO: Add this back in.
-//        // Checks to make sure some basic components are using material3 instead of material2
-//        custom("Material2 police") { str ->
-//            UseMaterial3Task.execute(str)
-//        }
-
-        // Bump if tweaking the custom step (required to retain performance: https://javadoc.io/doc/com.diffplug.spotless/spotless-plugin-gradle/latest/com/diffplug/gradle/spotless/FormatExtension.html#bumpThisNumberIfACustomStepChanges-int-)
-        bumpThisNumberIfACustomStepChanges(15)
-    }
-}
-
