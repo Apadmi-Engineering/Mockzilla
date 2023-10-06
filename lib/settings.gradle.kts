@@ -3,6 +3,7 @@ pluginManagement {
         google()
         gradlePluginPortal()
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -11,6 +12,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -19,3 +21,4 @@ includeBuild("build-logic")
 include(":mockzilla-management")
 include(":mockzilla-common")
 include(":mockzilla")
+include(":mockzilla-desktop")

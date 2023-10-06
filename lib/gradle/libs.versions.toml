@@ -13,8 +13,14 @@ spotless = "6.11.0"
 ksp = "1.8.22-1.0.11"
 dokka = "1.9.0"
 kover = "0.7.3"
+compose = "1.5.10-beta01"
+kotlinx-coroutines = "1.7.3"
+koin = "3.2.0"
+material-icons = "1.0.0-rc11"
 
 [libraries]
+material3 = { group = "org.jetbrains.compose.material3", name = "material3-desktop", version.ref = "compose" }
+material-icons = { group = "org.jetbrains.compose.material", name = "material-icons-extended-desktop", version.ref = "material-icons" }
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
@@ -32,6 +38,8 @@ ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negoti
 ktor-client-resources = { module = "io.ktor:ktor-client-resources", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
+kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref="kotlinx-coroutines" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
@@ -41,3 +49,4 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
