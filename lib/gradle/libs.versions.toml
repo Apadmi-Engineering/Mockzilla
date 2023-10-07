@@ -13,20 +13,38 @@ spotless = "6.11.0"
 ksp = "1.8.22-1.0.11"
 dokka = "1.9.0"
 kover = "0.7.3"
-compose = "1.5.10-beta01"
+compose = "1.5.2"
 kotlinx-coroutines = "1.7.3"
 koin = "3.2.0"
 material-icons = "1.0.0-rc11"
+lifecycle = "2.6.1"
+material = "1.9.0"
+material3 = "1.1.1"
 
 [libraries]
-material3 = { group = "org.jetbrains.compose.material3", name = "material3-desktop", version.ref = "compose" }
-material-icons = { group = "org.jetbrains.compose.material", name = "material-icons-extended-desktop", version.ref = "material-icons" }
+# Compose & Material
+androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+desktop-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3-desktop", version.ref = "compose" }
+androidx-compose-materialIconsExt = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
+desktop-compose-material-icons = { group = "org.jetbrains.compose.material", name = "material-icons-extended-desktop", version.ref = "material-icons" }
+androidx-compose-uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+# Android Lifecycle
+androidx-lifecycleViewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidx-lifecycleRuntimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidx-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+# BuildKonfig
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+# Kotlin
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref="kotlinx-coroutines" }
+# Ktor
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -37,10 +55,10 @@ ktor-server-rate-limit = { module = "io.ktor:ktor-server-rate-limit", version.re
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-resources = { module = "io.ktor:ktor-client-resources", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
-mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
-kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref="kotlinx-coroutines" }
+# DI
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
-
+# Testing
+mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

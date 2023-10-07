@@ -9,8 +9,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
-import com.apadmi.mockzilla.desktop.ui.viewmodel.getViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.DeviceConnectionViewModel.State
+import com.apadmi.mockzilla.desktop.viewmodel.getViewModel
 
 @Composable
 fun DeviceConnectionWidget() {

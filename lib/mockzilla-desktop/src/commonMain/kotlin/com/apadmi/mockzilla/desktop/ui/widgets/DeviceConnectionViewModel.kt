@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.desktop.ui.widgets
 
-import com.apadmi.mockzilla.desktop.ui.viewmodel.ViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.DeviceConnectionViewModel.State
 import com.apadmi.mockzilla.desktop.utils.setStateWithYield
+import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class DeviceConnectionViewModel : ViewModel<State>() {
