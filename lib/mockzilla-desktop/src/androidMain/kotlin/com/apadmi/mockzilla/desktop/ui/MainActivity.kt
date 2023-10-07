@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.desktop
+package com.apadmi.mockzilla.desktop.ui
 
 import android.app.Activity
 import android.os.Bundle
@@ -18,7 +18,7 @@ class MainActivity: ComponentActivity() {
 
         setContent {
             CompositionLocalProvider {
-                DeviceConnectionWidget()
+                App()
             }
         }
     }

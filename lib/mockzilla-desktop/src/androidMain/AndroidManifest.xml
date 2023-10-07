@@ -3,7 +3,8 @@
 
     <application android:name=".mockzilla.desktop.RootApplication">
         <activity
-            android:name=".mockzilla.desktop.MainActivity"
+            android:name=".mockzilla.desktop.ui.MainActivity"
+            android:screenOrientation="landscape"
             android:exported="true">
 
             <intent-filter>

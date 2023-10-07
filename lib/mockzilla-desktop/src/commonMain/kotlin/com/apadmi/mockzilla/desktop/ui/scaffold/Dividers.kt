@@ -11,7 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
-import java.awt.Cursor
+import com.apadmi.mockzilla.desktop.ui.utils.horizontalResizeCursor
+import com.apadmi.mockzilla.desktop.ui.utils.verticalResizeCursor
 
 @Composable
 internal fun HorizontalDraggableDivider(
@@ -23,7 +24,7 @@ internal fun HorizontalDraggableDivider(
             .background(color = Color.Black)
             .fillMaxHeight()
             .width(3.dp)
-            .pointerHoverIcon(PointerIcon(Cursor(Cursor.W_RESIZE_CURSOR)))
+            .horizontalResizeCursor()
             .draggable(
                 state = rememberDraggableState { dragAmount ->
                     onDrag(dragAmount)
@@ -44,7 +45,7 @@ internal fun VerticalDraggableDivider(
             .background(color = Color.Black)
             .fillMaxWidth()
             .height(3.dp)
-            .pointerHoverIcon(PointerIcon(Cursor(Cursor.N_RESIZE_CURSOR)))
+            .verticalResizeCursor()
             .draggable(
                 state = rememberDraggableState { dragAmount ->
                     onDrag(dragAmount)
