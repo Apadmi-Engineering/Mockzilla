@@ -20,9 +20,11 @@ material-icons = "1.0.0-rc11"
 lifecycle = "2.6.1"
 material = "1.9.0"
 material3 = "1.1.1"
+compose-activity = "1.8.0"
 
 [libraries]
 # Compose & Material
+androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity"  }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
@@ -57,6 +59,8 @@ ktor-client-resources = { module = "io.ktor:ktor-client-resources", version.ref 
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 # DI
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 # Testing
 mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
 [plugins]

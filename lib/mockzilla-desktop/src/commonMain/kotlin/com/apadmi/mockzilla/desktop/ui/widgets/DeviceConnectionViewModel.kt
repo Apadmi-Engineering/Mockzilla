@@ -5,8 +5,9 @@ import com.apadmi.mockzilla.desktop.utils.setStateWithYield
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class DeviceConnectionViewModel : ViewModel<State>() {
-    override val state = MutableStateFlow(State())
+class DeviceConnectionViewModel : ViewModel() {
+
+    val state = MutableStateFlow(State())
 
     fun onIpAndPortChanged(newValue: String) {
         state.setStateWithYield(viewModelScope, State(ipAndPort = newValue, State.ConnectionState.Connecting))

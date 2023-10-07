@@ -17,6 +17,9 @@ kotlin {
         val commonMain by getting {
 
             dependencies {
+                /* Compose */
+                implementation(compose.runtime)
+                implementation(compose.material3)
 
                 /* DI */
                 implementation(libs.koin.core)
@@ -44,6 +47,7 @@ kotlin {
             dependencies {
                 /* Compose */
                 implementation(libs.androidx.compose.ui)
+                implementation(libs.androidx.compose.activity)
                 implementation(libs.androidx.compose.material)
                 implementation(libs.androidx.compose.uiToolingPreview)
                 implementation(libs.androidx.lifecycleRuntimeKtx)
@@ -52,6 +56,8 @@ kotlin {
 
                 /* ViewModel */
                 implementation(libs.androidx.lifecycleViewModelCompose)
+                implementation(libs.koin.android)
+                implementation(libs.koin.compose)
             }
         }
     }
@@ -71,6 +77,10 @@ android {
     }
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+
+    buildFeatures {
+        compose = true
+    }
 }
 
 compose.desktop {
