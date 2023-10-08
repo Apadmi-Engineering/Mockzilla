@@ -82,9 +82,12 @@ dependencies {
 android {
     namespace = group.toString()
     compileSdk = AndroidConfig.targetSdk
+
     defaultConfig {
         minSdk = AndroidConfig.minSdk
         targetSdk = AndroidConfig.targetSdk
+
+        versionCode = System.getProperties().getOrDefault("versionCode", "1").toString().toInt()
     }
 
     compileOptions {

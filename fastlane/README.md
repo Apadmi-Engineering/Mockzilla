@@ -119,6 +119,22 @@ Android target for the kmm demo
 
 Android target for the lib
 
+### android management_ui_pull_request
+
+```sh
+[bundle exec] fastlane android management_ui_pull_request
+```
+
+Android target for the lib
+
+### android update_reference_screenshots
+
+```sh
+[bundle exec] fastlane android update_reference_screenshots
+```
+
+Generate screenshots and upload them
+
 ### android demo_android_pull_request
 
 ```sh
