@@ -16,6 +16,7 @@ import app.cash.paparazzi.*
 import com.airbnb.android.showkase.models.Showkase
 import com.airbnb.android.showkase.models.ShowkaseBrowserComponent
 import com.apadmi.mockzilla.desktop.ui.components.getMetadata
+import com.apadmi.mockzilla.desktop.ui.theme.LocalForceDarkMode
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.BeforeClass
@@ -37,15 +38,11 @@ class PaparazziScreenshotTest {
         override fun provideValues(): List<TestPreview> {
             val metadata = Showkase.getMetadata()
 
-//            val colors = metadata.colorList.map(::ColorTestPreview)
+            val colors = metadata.colorList.map(::ColorTestPreview)
             val components = metadata.componentList.map(::ComponentTestPreview)
-//            val typography = metadata.typographyList.map(::TypographyTestPreview)
+            val typography = metadata.typographyList.map(::TypographyTestPreview)
 
-            // FIXME: Include drawables in snapshots
-            // val drawables = DrawableTestPreview.getDrawables()
-
-//            return colors + components + typography
-            return  components
+            return colors + components + typography
         }
     }
 
@@ -53,7 +50,8 @@ class PaparazziScreenshotTest {
     fun previewTests(
         @TestParameter(valuesProvider = PreviewProvider::class) componentTestPreview: TestPreview,
         @TestParameter deviceConfigScenario: DeviceConfigScenario,
-        @TestParameter fontScaleScenario: FontScaleScenario
+        @TestParameter fontScaleScenario: FontScaleScenario,
+        @TestParameter theme: AppTheme,
     ) {
         // We don't need multiple device configs/font scales for previews other than components.
         if (
@@ -71,6 +69,7 @@ class PaparazziScreenshotTest {
             val lifecycleOwner = LocalLifecycleOwner.current
             CompositionLocalProvider(
                 LocalInspectionMode provides true,
+                LocalForceDarkMode provides (theme == AppTheme.Dark),
                 LocalDensity provides Density(
                     density = LocalDensity.current.density,
                     fontScale = fontScaleScenario.fontScale
@@ -103,6 +102,11 @@ class PaparazziScreenshotTest {
         ;
     }
 
+    enum class AppTheme {
+        Light,
+        Dark
+    }
+
     companion object {
         @BeforeClass
         fun setupKoin() {
@@ -123,19 +127,6 @@ interface TestPreview {
 enum class TestType {
     Color,
     Component,
-    Drawable,
     Typography,
     ;
-}
-
-class ComponentTestPreview(
-    private val showkaseBrowserComponent: ShowkaseBrowserComponent
-) : TestPreview {
-    override val type = TestType.Component
-
-    @Composable
-    override fun Content() = showkaseBrowserComponent.component()
-
-    override fun toString(): String =
-        "${showkaseBrowserComponent.group} - ${showkaseBrowserComponent.componentName}"
 }
