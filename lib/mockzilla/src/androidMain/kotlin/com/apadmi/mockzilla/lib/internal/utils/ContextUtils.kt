@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Build.VERSION
 
 import com.apadmi.mockzilla.BuildKonfig
-
 import com.apadmi.mockzilla.lib.models.MetaData
 
 internal val Context.applicationName: String? get() {

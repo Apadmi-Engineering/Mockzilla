@@ -17,3 +17,6 @@ debug-version.txt
 !demo-kmm/debug-version.txt
 
 docs/__pycache__/
+**/.gradle/**
+**/build/**
+**/.idea/**

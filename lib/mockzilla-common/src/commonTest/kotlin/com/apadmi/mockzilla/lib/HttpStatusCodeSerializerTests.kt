@@ -1,13 +1,13 @@
-package com.apadmi.mockzilla.lib.internal.utils
+package com.apadmi.mockzilla.lib
 
-import io.ktor.http.*
-
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
+import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class HttpStatusCodeSerializerTests {
     @Test
@@ -16,8 +16,8 @@ class HttpStatusCodeSerializerTests {
         val dummy = DummyContainer(HttpStatusCode.BadRequest)
 
         /* Run Test */
-        val encoded = Json.encodeToString(dummy)
-        val decoded: DummyContainer = Json.decodeFromString(encoded)
+        val encoded = JsonProvider.json.encodeToString(dummy)
+        val decoded: DummyContainer = JsonProvider.json.decodeFromString(encoded)
 
         /* Verify */
         assertEquals("""{"status":400}""", encoded)

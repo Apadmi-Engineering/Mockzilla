@@ -34,11 +34,6 @@ data class MockzillaConfig(
         Verbose,
         Warn,
         ;
-
-        internal fun toKermitSeverity() = Severity.valueOf(name)
-        companion object {
-            internal fun Severity.toLogLevel() = LogLevel.valueOf(name)
-        }
     }
 
     /**

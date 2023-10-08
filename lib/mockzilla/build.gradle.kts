@@ -1,20 +1,21 @@
+import com.apadmi.mockzilla.AndroidConfig
+import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.debugVersionFile
+import com.apadmi.mockzilla.versionFile
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 
 import java.util.Date
 
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("com.android.library")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
     id("maven-publish")
-    id("com.google.devtools.ksp")
     id("com.codingfeline.buildkonfig")
     id("publication-convention")
 }
-
-group = "com.apadmi"
-version = extractVersion()
 
 kotlin {
     android {
@@ -33,49 +34,57 @@ kotlin {
         }
     }
 
+    jvm()
+
     sourceSets {
         all {
             languageSettings.optIn("kotlin.RequiresOptIn")
             languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
         }
 
-        jvmToolchain(17)
+        jvmToolchain(JavaConfig.toolchain)
 
-        val ktorVersion = "2.3.3"
         val commonMain by getting {
             dependencies {
                 /* Kotlin */
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
+                implementation(libs.kotlinx.coroutines.core)
+                api(project(":mockzilla-common"))
 
                 /* Ktor */
-                api("io.ktor:ktor-server-core:$ktorVersion")
-                implementation("io.ktor:ktor-server-cio:$ktorVersion")
-                implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("io.ktor:ktor-client-core:$ktorVersion")
-                implementation("io.ktor:ktor-client-cio:$ktorVersion")
-                implementation("io.ktor:ktor-server-rate-limit:$ktorVersion")
+                api(libs.ktor.server.core)
+                implementation(libs.ktor.server.cio)
+                implementation(libs.ktor.server.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.cio)
+                implementation(libs.ktor.server.rate.limit)
 
                 /* Serialization */
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+                implementation(libs.kotlinx.serialization.json)
 
                 /* Logging */
-                implementation("co.touchlab:kermit:1.2.2")
+                implementation(libs.kermit)
 
                 /* Date Time */
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                implementation(libs.kotlinx.datetime)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
 
-                implementation("io.mockative:mockative:1.2.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+                implementation(libs.mockative)
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
         val androidMain by getting
         val androidTest by getting
+        val jvmMain by getting {
+            dependsOn(commonMain)
+        }
+        val jvmTest by getting {
+            dependsOn(commonTest)
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -99,17 +108,17 @@ kotlin {
 
 android {
     namespace = group.toString()
-    compileSdk = 32
+    compileSdk = AndroidConfig.targetSdk
     defaultConfig {
-        minSdk = 21
-        targetSdk = 32
+        minSdk = AndroidConfig.minSdk
+        targetSdk = AndroidConfig.targetSdk
 
         consumerProguardFiles("mockzilla-proguard-rules.pro")
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaConfig.version
+        targetCompatibility = JavaConfig.version
     }
 }
 
@@ -125,10 +134,6 @@ ksp {
     arg("mockative.stubsUnitByDefault", "true")
 }
 
-tasks.dokkaHtml {
-    outputDirectory.set(File(System.getProperty("docsOutputDirectory", "temp")))
-}
-
 dependencies {
     configurations
         .filter { it.name.startsWith("ksp") && it.name.contains("Test") }
@@ -137,9 +142,6 @@ dependencies {
         }
 }
 
-val debugVersionFile get() = File("${project.rootProject.projectDir.parent}/debug-version.txt")
-val versionFile get() = File("${project.rootProject.projectDir.parent}/version.txt")
-
 tasks.getByPath("publishToMavenLocal").dependsOn(
     tasks.register("updateDebugMockzillaVersion" ) {
         val newVersion = versionFile.readText().trim() + "-${Date().toInstant().epochSecond}"
@@ -147,10 +149,3 @@ tasks.getByPath("publishToMavenLocal").dependsOn(
         debugVersionFile.writeText(newVersion)
     }
 )
-
-fun extractVersion(): String {
-    return debugVersionFile
-        .takeIf { it.exists() }
-        ?.readText()
-        ?.trim()?.takeUnless { it.isBlank() } ?: versionFile.readText().trim()
-}

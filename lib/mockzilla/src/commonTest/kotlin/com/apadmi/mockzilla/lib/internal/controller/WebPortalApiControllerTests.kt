@@ -2,9 +2,9 @@ package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.GlobalOverridesDto
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.internal.models.toMockDataEntry
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
+import com.apadmi.mockzilla.lib.internal.utils.toMockDataEntry
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 

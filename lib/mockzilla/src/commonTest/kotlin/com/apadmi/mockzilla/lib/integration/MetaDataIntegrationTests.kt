@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.integration
 
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
@@ -14,7 +15,6 @@ import io.ktor.http.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @Suppress(
     "TOO_LONG_FUNCTION",
@@ -45,7 +45,7 @@ class MetaDataIntegrationTests {
 
         /* Verify */
         assertEquals(
-            Json.encodeToString(metaData),
+            JsonProvider.json.encodeToString(metaData),
             response.bodyAsText()
         )
         assertEquals(

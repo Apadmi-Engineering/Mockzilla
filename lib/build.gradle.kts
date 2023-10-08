@@ -1,29 +1,45 @@
+import com.apadmi.mockzilla.extractVersion
+
 plugins {
-    //trick: for the same plugin versions in all sub-modules
-    id("com.android.library").version("7.3.1").apply(false)
-    kotlin("multiplatform").version("1.8.22").apply(false)
-    kotlin("plugin.serialization").version("1.8.20")
-    id("com.diffplug.spotless").version("6.11.0")
-    id("com.google.devtools.ksp").version("1.8.21-1.0.11")
-    id("org.jetbrains.dokka").version("1.8.20")
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.spotless) apply true
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.dokka) apply true
 }
 
 buildscript {
     dependencies {
-        classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:0.13.3")
+        classpath(libs.buildkonfig.gradle.plugin)
         classpath(":build-logic")
     }
+}
+
+allprojects {
+    group = "com.apadmi"
+    version = extractVersion()
 }
 
 subprojects {
     apply(plugin = "org.jetbrains.dokka")
 }
 
+tasks.dokkaHtmlMultiModule {
+    outputDirectory.set(File(System.getProperty("docsOutputDirectory", "temp")))
+}
+
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
     kotlin {
-        target("**/*.kt")
-        targetExclude("build-logic/build/**", "build/**", "**/mockzilla/build/**", "fastlane/**", "fastlane-build/**")
+        target("mockzilla/**/*.kt", "mockzilla-management/**/*.kt")
+        targetExclude(
+            "build-logic/build/**",
+            "build/**",
+            "**/mockzilla/build/**",
+            "fastlane/**",
+            "fastlane-build/**"
+        )
 
         diktat("1.2.1").configFile("diktat-analysis.yml")
 

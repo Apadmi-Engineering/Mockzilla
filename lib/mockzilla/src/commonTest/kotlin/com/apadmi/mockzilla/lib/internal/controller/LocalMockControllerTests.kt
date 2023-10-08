@@ -52,18 +52,21 @@ class LocalMockControllerTests {
         given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(null)
 
         /* Run Test */
-        val response = sut.handleRequest(MockzillaHttpRequest(
-            "http://example.com/local-mock/my-id",
-            emptyMap(),
-            method = HttpMethod.Get
-        ))
+        val response = sut.handleRequest(
+            MockzillaHttpRequest(
+                "http://example.com/local-mock/my-id",
+                emptyMap(),
+                method = HttpMethod.Get
+            )
+        )
 
         /* Verify */
-        assertEquals(MockzillaHttpResponse(
-            statusCode = HttpStatusCode.Created,
-            headers = mapOf("test-header" to "test-value"),
-            body = "my response body"
-        ), response)
+        assertEquals(
+            MockzillaHttpResponse(
+                statusCode = HttpStatusCode.Created,
+                headers = mapOf("test-header" to "test-value"),
+                body = "my response body"
+            ), response)
     }
 
     @Test
@@ -90,15 +93,18 @@ class LocalMockControllerTests {
         )
 
         /* Run Test */
-        val response = sut.handleRequest(MockzillaHttpRequest(
-            "http://example.com/local-mock/my-id",
-            emptyMap(),
-            method = HttpMethod.Get
-        ))
+        val response = sut.handleRequest(
+            MockzillaHttpRequest(
+                "http://example.com/local-mock/my-id",
+                emptyMap(),
+                method = HttpMethod.Get
+            )
+        )
 
         /* Verify */
-        assertEquals(MockzillaHttpResponse(
-            statusCode = HttpStatusCode.InternalServerError
-        ), response)
+        assertEquals(
+            MockzillaHttpResponse(
+                statusCode = HttpStatusCode.InternalServerError
+            ), response)
     }
 }
