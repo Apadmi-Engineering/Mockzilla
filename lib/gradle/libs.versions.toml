@@ -9,6 +9,7 @@ ktor = "2.3.3"
 mockative = "1.2.3"
 kotlin = "1.8.22"
 agp = "7.3.1"
+showkase = "1.0.2"
 spotless = "6.11.0"
 ksp = "1.8.22-1.0.11"
 dokka = "1.9.0"
@@ -63,6 +64,8 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 # Testing
 mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
+showkase = { module = "com.airbnb.android:showkase", version.ref = "showkase" }
+showkase-processor = { module = "com.airbnb.android:showkase-processor", version.ref = "showkase" }
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

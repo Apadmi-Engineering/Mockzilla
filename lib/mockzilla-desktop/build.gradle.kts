@@ -6,7 +6,8 @@ plugins {
     kotlin("multiplatform")
     id("com.android.application")
     alias(libs.plugins.compose)
-    alias(libs.plugins.spotless) apply true
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -20,12 +21,15 @@ kotlin {
                 /* Compose */
                 implementation(compose.runtime)
                 implementation(compose.material3)
+                implementation(compose.preview)
 
                 /* DI */
                 implementation(libs.koin.core)
 
                 /* Coroutines */
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.showkase)
+
             }
         }
         val desktopMain by getting {
@@ -58,9 +62,14 @@ kotlin {
                 implementation(libs.androidx.lifecycleViewModelCompose)
                 implementation(libs.koin.android)
                 implementation(libs.koin.compose)
+
             }
         }
     }
+}
+
+dependencies {
+    ksp(libs.showkase.processor)
 }
 
 android {
