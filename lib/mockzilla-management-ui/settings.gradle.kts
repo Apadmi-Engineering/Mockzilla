@@ -21,5 +21,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "mockzilla-desktop"
+rootProject.name = "mockzilla-management-ui"
 

@@ -76,7 +76,7 @@ kotlin {
 }
 
 dependencies {
-    ksp(libs.showkase.processor)
+    "kspAndroid"(libs.showkase.processor)
 }
 
 android {
@@ -104,7 +104,7 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "mockzilla-desktop"
+            packageName = "mockzilla-management-ui"
             packageVersion = version.toString().split("-").first()
         }
     }
