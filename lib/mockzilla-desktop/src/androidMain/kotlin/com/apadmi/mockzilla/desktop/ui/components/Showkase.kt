@@ -20,15 +20,3 @@ actual fun showkaseLauncher(): () -> Unit {
         }
     }
 }
-
-@ShowkaseComposable("b", "a")
-@Composable
-fun a() {
-    Text(text = "Hello world")
-}
-
-@Preview("cc", "bb")
-@Composable
-fun b()  {
-    Text(text = "Hello tow")
-}

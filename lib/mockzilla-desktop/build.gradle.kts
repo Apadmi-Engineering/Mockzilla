@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.spotless)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.paparazzi)
 }
 
 kotlin {
@@ -65,6 +66,12 @@ kotlin {
 
             }
         }
+        val androidTest by getting {
+        dependencies {
+            implementation(libs.androidx.test.junit)
+            implementation(libs.testParamInjector)
+        }
+    }
     }
 }
 
