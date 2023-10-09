@@ -4,16 +4,14 @@ platform :android do
 
     screenshots_output_directory = "#{Apadmi::Grout::GitUtils.git_root}/lib/mockzilla-management-ui/src/test/snapshots/images"
 
-    desc "Android target for the lib"
     lane :management_ui_pull_request do
         gradle(
             tasks: [
-                ":mockzilla-management-ui:recordPaparazziDebug",
                 ":mockzilla-management-ui:bundleDebug"
             ],
             project_dir: "./lib"
         )
-        upload_screenshots
+        update_reference_screenshots
     end
 
     desc "Generate screenshots and upload them"

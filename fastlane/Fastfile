@@ -13,6 +13,9 @@ lane :combined_pull_request do
     # Documentation
     generate_docs
     
+    # Management UI
+    Fastlane::LaneManager.cruise_lane("android", "management_ui_pull_request", {})
+
     # Library
     Fastlane::LaneManager.cruise_lane("ios", "lib_pull_request", {})
     Fastlane::LaneManager.cruise_lane("android", "lib_pull_request", {})
