@@ -20,6 +20,6 @@ jobs:
         uses: mbowman100/swagger-validator-action@2.0
         with:
           files: webapi.yaml
-    variables:
+    env:
       PR: true
       GIT_REPOSITORY_URL: ${{ github.repositoryUrl }}
