@@ -23,3 +23,5 @@ jobs:
     env:
       PR: true
       GIT_REPOSITORY_URL: ${{ github.repositoryUrl }}
+      SCREENSHOTBOT_API_KEY:  ${{ secrets.SCREENSHOTBOT_API_KEY }}
+      SCREENSHOTBOT_API_SECRET: ${{ secrets.SCREENSHOTBOT_API_SECRET }}
