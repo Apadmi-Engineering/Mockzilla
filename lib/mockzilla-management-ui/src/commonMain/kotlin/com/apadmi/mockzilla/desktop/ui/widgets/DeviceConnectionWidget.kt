@@ -36,7 +36,7 @@ fun DeviceConnectionContent(state: State, onIpAndPortChanged: (String) -> Unit) 
     }
 }
 
-@ShowkaseComposable("name2", "groeir")
+@ShowkaseComposable("DeviceConnection-Idle", "DeviceConnection")
 @Composable
 @Preview
 fun DeviceConnectionWidgetPreview() = PreviewSurface {

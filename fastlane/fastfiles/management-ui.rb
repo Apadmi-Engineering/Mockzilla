@@ -18,6 +18,9 @@ platform :android do
 
     desc "Generate screenshots and upload them"
     lane :update_reference_screenshots do
+        # Clear output directory
+        sh("rm #{screenshots_output_directory}/*.png")
+
         # Compile and Test
         gradle(
             tasks: [":mockzilla-management-ui:recordPaparazziDebug"],
@@ -28,9 +31,12 @@ platform :android do
 
     private_lane :upload_screenshots do
         file_name_prefix = "screenshots_PaparazziScreenshotTest_previewTests\["
-        file_name_suffix = "\]"
-        sh("find #{screenshots_output_directory} -name '*png' -exec bash -c 'mv $0 ${0/#{file_name_prefix}/}' {} \\;")
-        sh("find #{screenshots_output_directory} -name '*png' -exec bash -c 'mv $0 ${0/#{file_name_suffix}/}' {} \\;")
+
+        # Remove the prefix
+        sh("cd #{screenshots_output_directory}; find . -name '*png' -exec sh -c 'mv \"$0\" \"$(dirname \"$0\")/${0\#./#{file_name_prefix}}\"' {} \\;")
+
+        # Remove remaining ']' chars
+        sh("cd #{screenshots_output_directory}; find . -name '*png' -exec sh -c 'mv \"$0\" \"$(dirname \"$0\")/${0//\]/}\"' {} \\;")
 
         screenshotbot_installer
         screenshotbot(
