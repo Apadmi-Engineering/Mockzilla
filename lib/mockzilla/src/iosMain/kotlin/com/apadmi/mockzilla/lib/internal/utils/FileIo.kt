@@ -2,6 +2,9 @@ package com.apadmi.mockzilla.lib.internal.utils
 
 import platform.Foundation.*
 
+import kotlinx.cinterop.ExperimentalForeignApi
+
+@OptIn(ExperimentalForeignApi::class)
 internal actual class FileIo {
     private val directoryPath by lazy {
         val dir = NSSearchPathForDirectoriesInDomains(

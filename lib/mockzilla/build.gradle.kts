@@ -18,7 +18,7 @@ plugins {
 }
 
 kotlin {
-    android {
+    androidTarget {
         publishAllLibraryVariants()
     }
     
@@ -78,7 +78,7 @@ kotlin {
             }
         }
         val androidMain by getting
-        val androidTest by getting
+        val androidUnitTest by getting
         val jvmMain by getting {
             dependsOn(commonMain)
         }
