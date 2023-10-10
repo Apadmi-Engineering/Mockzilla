@@ -9,12 +9,12 @@ before_all do |lane, options|
     lane_context[:repo_root] = sh("git rev-parse --show-toplevel").strip
 end
 
-lane :combined_pull_request do
-    # Documentation
-    generate_docs
-    
+lane :combined_pull_request do    
     # Management UI
     Fastlane::LaneManager.cruise_lane("android", "management_ui_pull_request", {})
+
+    # Documentation
+    generate_docs
 
     # Library
     Fastlane::LaneManager.cruise_lane("ios", "lib_pull_request", {})

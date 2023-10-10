@@ -16,9 +16,6 @@ platform :android do
 
     desc "Generate screenshots and upload them"
     lane :update_reference_screenshots do
-        # Clear output directory
-        sh("rm #{screenshots_output_directory}/*.png")
-
         # Compile and Test
         gradle(
             tasks: [":mockzilla-management-ui:recordPaparazziDebug"],

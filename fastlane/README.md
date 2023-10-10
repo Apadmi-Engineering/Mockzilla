@@ -125,7 +125,7 @@ Android target for the lib
 [bundle exec] fastlane android management_ui_pull_request
 ```
 
-Android target for the lib
+
 
 ### android update_reference_screenshots
 
