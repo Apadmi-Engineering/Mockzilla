@@ -1,4 +1,4 @@
-package screenshots
+package com.apadmi.mockzilla
 
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
@@ -12,11 +12,11 @@ import androidx.compose.ui.unit.Density
 import androidx.lifecycle.Lifecycle
 import com.android.ide.common.rendering.api.SessionParams
 
-import app.cash.paparazzi.*
-import com.airbnb.android.showkase.models.Showkase
-import com.airbnb.android.showkase.models.ShowkaseBrowserComponent
 import com.apadmi.mockzilla.desktop.ui.components.getMetadata
 import com.apadmi.mockzilla.desktop.ui.theme.LocalForceDarkMode
+
+import app.cash.paparazzi.*
+import com.airbnb.android.showkase.models.Showkase
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.BeforeClass
@@ -56,7 +56,7 @@ class PaparazziScreenshotTest {
         // We don't need multiple device configs/font scales for previews other than components.
         if (
             componentTestPreview.type != TestType.Component &&
-            (!deviceConfigScenario.default || !fontScaleScenario.default)
+                    (!deviceConfigScenario.default || !fontScaleScenario.default)
         ) {
             return
         }
@@ -78,7 +78,7 @@ class PaparazziScreenshotTest {
                 LocalOnBackPressedDispatcherOwner provides object : OnBackPressedDispatcherOwner {
                     override val lifecycle: Lifecycle = lifecycleOwner.lifecycle
                     override val onBackPressedDispatcher: OnBackPressedDispatcher =
-                        OnBackPressedDispatcher()
+                            OnBackPressedDispatcher()
                 }
             ) {
                 componentTestPreview.Content()
@@ -86,6 +86,10 @@ class PaparazziScreenshotTest {
         }
     }
 
+    /**
+     * @property deviceConfig
+     * @property default
+     */
     enum class DeviceConfigScenario(
         val deviceConfig: DeviceConfig,
         val default: Boolean = false
@@ -94,6 +98,10 @@ class PaparazziScreenshotTest {
         ;
     }
 
+    /**
+     * @property fontScale
+     * @property default
+     */
     enum class FontScaleScenario(
         val fontScale: Float,
         val default: Boolean = false
@@ -103,8 +111,9 @@ class PaparazziScreenshotTest {
     }
 
     enum class AppTheme {
+        Dark,
         Light,
-        Dark
+        ;
     }
 
     companion object {
@@ -121,7 +130,7 @@ interface TestPreview {
     val type: TestType
 
     @Composable
-    fun Content()
+    fun content()
 }
 
 enum class TestType {

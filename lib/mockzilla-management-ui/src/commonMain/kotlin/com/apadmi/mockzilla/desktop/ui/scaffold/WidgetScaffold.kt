@@ -1,12 +1,14 @@
+@file:Suppress("FILE_NAME_MATCH_CLASS")
+
 package com.apadmi.mockzilla.desktop.ui.scaffold
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -15,24 +17,33 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
-import com.apadmi.mockzilla.desktop.ui.components.DeviceTabsWidget
-import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
-import com.apadmi.mockzilla.desktop.ui.widgets.DeviceConnectionWidget
 
+import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
+
+import com.airbnb.android.showkase.annotation.ShowkaseComposable
+
+/**
+ * @property title
+ * @property ui
+ */
 data class Widget(
     val title: String,
     val ui: @Composable () -> Unit
 )
 
+@Suppress(
+    "TOO_LONG_FUNCTION",
+    "LOCAL_VARIABLE_EARLY_DECLARATION",
+    "MAGIC_NUMBER"
+)
 @Composable
 fun WidgetScaffold(
     modifier: Modifier,
-    top: @Composable () -> Unit,
     left: List<Widget>,
     middle: List<Widget>,
     right: List<Widget>,
     bottom: List<Widget>,
+    top: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current
 
@@ -127,14 +138,38 @@ fun WidgetScaffold(
     }
 }
 
+@ShowkaseComposable("WidgetScaffold", group = "Root")
+@Preview
+@Composable
+fun WidgetScaffoldPreview() = PreviewSurface {
+    WidgetScaffold(
+        modifier = Modifier.fillMaxSize(),
+        top = { Text("Top") },
+        left = listOf(
+            Widget("Left One") { Text("Left One") },
+            Widget("Left Two") { Text("Left Two") }),
+        right = listOf(Widget("Right") { Text("Right") }),
+        middle = listOf(Widget("Middle One") { Text("Middle One") }),
+        bottom = listOf(
+            Widget("Bottom One") { Text("Bottom One") },
+            Widget("Bottom Two", { Text("Bottom Two") })
+        ),
+    )
+}
+
+@Suppress(
+    "TOO_LONG_FUNCTION",
+    "LOCAL_VARIABLE_EARLY_DECLARATION",
+    "MAGIC_NUMBER"
+)
 @Composable
 private fun BottomPanel(
     content: List<Widget>,
     height: Dp,
     settledHeight: Dp,
-    onHeightChange: (Dp) -> Unit,
+    defaultHeight: Dp = 200.dp,
     onDragStopped: () -> Unit,
-    defaultHeight: Dp = 200.dp
+    onHeightChange: (Dp) -> Unit,
 ) {
     val density = LocalDensity.current
     var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
@@ -179,6 +214,7 @@ private fun BottomPanel(
     }
 }
 
+@Suppress("TOO_LONG_FUNCTION")
 @Composable
 private fun LeftPanel(
     content: List<Widget>,
@@ -232,6 +268,7 @@ private fun LeftPanel(
     }
 }
 
+@Suppress("TOO_LONG_FUNCTION")
 @Composable
 private fun RightPanel(
     content: List<Widget>,
@@ -283,23 +320,4 @@ private fun RightPanel(
             }
         )
     }
-}
-
-@ShowkaseComposable("WidgetScaffold", group = "Root")
-@Preview
-@Composable
-fun WidgetScaffoldPreview() = PreviewSurface {
-    WidgetScaffold(
-        modifier = Modifier.fillMaxSize(),
-        top = { Text("Top") },
-        left = listOf(
-            Widget("Left One") { Text("Left One") },
-            Widget("Left Two") { Text("Left Two") }),
-        right = listOf(Widget("Right") { Text("Right") }),
-        middle = listOf(Widget("Middle One") { Text("Middle One") }),
-        bottom = listOf(
-            Widget("Bottom One") { Text("Bottom One") },
-            Widget("Bottom Two", { Text("Bottom Two") })
-        ),
-    )
 }

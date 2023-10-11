@@ -20,6 +20,5 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
     return rotate then adjustBounds
 }
 
-
 expect fun Modifier.verticalResizeCursor(): Modifier
 expect fun Modifier.horizontalResizeCursor(): Modifier

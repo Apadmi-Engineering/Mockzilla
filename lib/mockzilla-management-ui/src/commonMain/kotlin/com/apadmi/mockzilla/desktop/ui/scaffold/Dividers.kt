@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.ui.utils.horizontalResizeCursor
 import com.apadmi.mockzilla.desktop.ui.utils.verticalResizeCursor

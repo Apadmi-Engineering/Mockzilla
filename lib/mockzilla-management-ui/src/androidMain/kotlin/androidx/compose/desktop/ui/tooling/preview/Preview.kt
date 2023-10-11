@@ -1,3 +1,4 @@
+@file:Suppress("diktat")
 package androidx.compose.desktop.ui.tooling.preview
 
 

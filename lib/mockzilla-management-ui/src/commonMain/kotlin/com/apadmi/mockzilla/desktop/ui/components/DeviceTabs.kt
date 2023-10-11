@@ -27,8 +27,8 @@ fun DeviceTabsWidget(
 fun DeviceTabsWidgetContent(
     devices: List<String>,
     selected: Int?,
-    onSelect: (Int?) -> Unit,
     modifier: Modifier = Modifier,
+    onSelect: (Int?) -> Unit,
 ) {
     Surface(modifier = modifier) {
         HorizontalTabList(

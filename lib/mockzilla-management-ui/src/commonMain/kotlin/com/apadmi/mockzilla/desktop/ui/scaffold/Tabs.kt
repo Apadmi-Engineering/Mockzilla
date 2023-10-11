@@ -13,14 +13,17 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.ui.utils.rotateVertically
 
+@Immutable
 internal data class VerticalTab(
     val title: String,
 )
 
+@Immutable
 internal data class HorizontalTab(
     val title: String,
 )
@@ -63,10 +66,10 @@ internal fun VerticalTabList(
 
 @Composable
 internal fun HorizontalTabList(
+    modifier: Modifier = Modifier,
     tabs: List<HorizontalTab>,
     selected: Int?,
     onSelect: (Int?) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier.horizontalScroll(rememberScrollState())) {
         tabs.forEachIndexed { index, tab ->

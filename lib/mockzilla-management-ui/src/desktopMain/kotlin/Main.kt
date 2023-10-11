@@ -1,19 +1,10 @@
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+@file:Suppress("PACKAGE_NAME_MISSING")
+
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.*
 import com.apadmi.mockzilla.desktop.di.startMockzillaKoin
 import com.apadmi.mockzilla.desktop.ui.App
-import com.apadmi.mockzilla.desktop.ui.components.DeviceTabsWidget
-import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
-import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
-import com.apadmi.mockzilla.desktop.ui.theme.AppTheme
-import com.apadmi.mockzilla.desktop.ui.widgets.DeviceConnectionWidget
 import java.awt.Dimension
 
 fun main() = application {
@@ -39,4 +30,3 @@ fun main() = application {
         }
     )
 }
-

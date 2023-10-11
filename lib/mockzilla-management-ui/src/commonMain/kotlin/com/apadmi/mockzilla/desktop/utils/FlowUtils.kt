@@ -11,6 +11,9 @@ import kotlinx.coroutines.yield
  *
  * Note: This doesn't await long-running tasks like network requests, it just allows any synchronous code
  * awaiting execution to run.
+ *
+ * @param vmScope [CoroutineScope] The VM scope associated with the flow
+ * @param newState [T] The new state value to be set if needed
  */
 internal fun <T> MutableStateFlow<T>.setStateWithYield(vmScope: CoroutineScope, newState: T) {
     val currentState = value

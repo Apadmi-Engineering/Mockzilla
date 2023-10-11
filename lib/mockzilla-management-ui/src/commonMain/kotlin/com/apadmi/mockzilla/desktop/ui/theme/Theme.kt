@@ -71,6 +71,7 @@ private val darkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
+@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalForceDarkMode = compositionLocalOf { false }
 
 @Composable
@@ -78,7 +79,6 @@ fun AppTheme(
     useDarkTheme: Boolean = LocalForceDarkMode.current || isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-
     val colors = if (useDarkTheme) {
         darkColors
     } else {

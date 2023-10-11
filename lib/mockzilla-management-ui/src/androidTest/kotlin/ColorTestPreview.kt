@@ -1,4 +1,4 @@
-package screenshots
+package com.apadmi.mockzilla
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,15 +15,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.airbnb.android.showkase.models.ShowkaseBrowserColor
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
+
+import com.airbnb.android.showkase.models.ShowkaseBrowserColor
 
 class ColorTestPreview(
     private val showkaseBrowserColor: ShowkaseBrowserColor
 ) : TestPreview {
     override val type = TestType.Color
     @Composable
-    override fun Content() = PreviewSurface(color = MaterialTheme.colorScheme.surface) {
+    override fun content() = PreviewSurface(color = MaterialTheme.colorScheme.surface) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -48,5 +49,5 @@ class ColorTestPreview(
     }
 
     override fun toString(): String =
-        "${showkaseBrowserColor.colorGroup} - ${showkaseBrowserColor.colorName}"
+            "${showkaseBrowserColor.colorGroup} - ${showkaseBrowserColor.colorName}"
 }

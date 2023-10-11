@@ -1,4 +1,4 @@
-package screenshots
+package com.apadmi.mockzilla
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,8 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.airbnb.android.showkase.models.ShowkaseBrowserTypography
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
+
+import com.airbnb.android.showkase.models.ShowkaseBrowserTypography
 
 import java.util.Locale
 
@@ -19,7 +20,7 @@ class TypographyTestPreview(
     override val type = TestType.Typography
 
     @Composable
-    override fun Content() = PreviewSurface(color = MaterialTheme.colorScheme.surface) {
+    override fun content() = PreviewSurface(color = MaterialTheme.colorScheme.surface) {
         Text(
             text = showkaseBrowserTypography.typographyName.replaceFirstChar {
                 it.titlecase(Locale.UK)
@@ -33,5 +34,5 @@ class TypographyTestPreview(
     }
 
     override fun toString(): String =
-        "${showkaseBrowserTypography.typographyGroup} - ${showkaseBrowserTypography.typographyName}"
+            "${showkaseBrowserTypography.typographyGroup} - ${showkaseBrowserTypography.typographyName}"
 }
