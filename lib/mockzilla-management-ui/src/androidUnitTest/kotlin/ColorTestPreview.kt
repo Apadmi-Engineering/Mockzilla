@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla
+package com.apadmi.mockzilla.androidUnitTest
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
