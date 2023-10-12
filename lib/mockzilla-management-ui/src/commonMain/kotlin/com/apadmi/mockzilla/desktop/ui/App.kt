@@ -1,3 +1,5 @@
+@file:Suppress("FILE_NAME_MATCH_CLASS")
+
 package com.apadmi.mockzilla.desktop.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +12,12 @@ import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
 import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
 import com.apadmi.mockzilla.desktop.ui.theme.AppTheme
 import com.apadmi.mockzilla.desktop.ui.widgets.DeviceConnectionWidget
+
+import com.airbnb.android.showkase.annotation.ShowkaseRoot
+import com.airbnb.android.showkase.annotation.ShowkaseRootModule
+
+@ShowkaseRoot
+class RootShowkaseModule : ShowkaseRootModule
 
 @Composable
 fun App() = AppTheme {

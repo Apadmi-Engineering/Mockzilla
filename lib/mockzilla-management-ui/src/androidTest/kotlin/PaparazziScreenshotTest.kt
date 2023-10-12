@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.Density
 import androidx.lifecycle.Lifecycle
 import com.android.ide.common.rendering.api.SessionParams
 
-import com.apadmi.mockzilla.desktop.ui.components.getMetadata
+import com.apadmi.mockzilla.desktop.ui.getMetadata
 import com.apadmi.mockzilla.desktop.ui.theme.LocalForceDarkMode
 
 import app.cash.paparazzi.*
@@ -130,7 +130,7 @@ interface TestPreview {
     val type: TestType
 
     @Composable
-    fun content()
+    fun Content()
 }
 
 enum class TestType {

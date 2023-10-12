@@ -9,7 +9,7 @@ class ComponentTestPreview(
     override val type = TestType.Component
 
     @Composable
-    override fun content() = showkaseBrowserComponent.component()
+    override fun Content() = showkaseBrowserComponent.component()
 
     override fun toString(): String =
             "${showkaseBrowserComponent.group} - ${showkaseBrowserComponent.componentName}"

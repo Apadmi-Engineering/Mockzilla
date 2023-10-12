@@ -24,7 +24,7 @@ class ColorTestPreview(
 ) : TestPreview {
     override val type = TestType.Color
     @Composable
-    override fun content() = PreviewSurface(color = MaterialTheme.colorScheme.surface) {
+    override fun Content() = PreviewSurface(color = MaterialTheme.colorScheme.surface) {
         Column(
             modifier = Modifier
                 .padding(16.dp)

@@ -20,7 +20,7 @@ class TypographyTestPreview(
     override val type = TestType.Typography
 
     @Composable
-    override fun content() = PreviewSurface(color = MaterialTheme.colorScheme.surface) {
+    override fun Content() = PreviewSurface(color = MaterialTheme.colorScheme.surface) {
         Text(
             text = showkaseBrowserTypography.typographyName.replaceFirstChar {
                 it.titlecase(Locale.UK)
