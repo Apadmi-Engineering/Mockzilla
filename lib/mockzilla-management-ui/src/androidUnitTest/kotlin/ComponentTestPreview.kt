@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.androidUnitTest.kotlin
+package com.apadmi.mockzilla.androidUnitTest
 
 import androidx.compose.runtime.Composable
 import com.airbnb.android.showkase.models.ShowkaseBrowserComponent

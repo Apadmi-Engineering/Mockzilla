@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.androidUnitTest.kotlin
+package com.apadmi.mockzilla.androidUnitTest
 
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
