@@ -7,6 +7,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+            fetch-depth: 0
+      - name: Fetch develop branch so screenshotbot can access it
+        run: |
+          git fetch origin develop
       - uses: actions/setup-python@v2
         with:
           python-version: 3.x
@@ -20,3 +25,8 @@ jobs:
         uses: mbowman100/swagger-validator-action@2.0
         with:
           files: webapi.yaml
+    env:
+      PR: true
+      GIT_REPOSITORY_URL: ${{ github.repositoryUrl }}
+      SCREENSHOTBOT_API_KEY:  ${{ secrets.SCREENSHOTBOT_API_KEY }}
+      SCREENSHOTBOT_API_SECRET: ${{ secrets.SCREENSHOTBOT_API_SECRET }}

@@ -5,20 +5,21 @@ pluginManagement {
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
+
+    plugins {
+        kotlin("multiplatform")
+    }
 }
 
+enableFeaturePreview("VERSION_CATALOGS")
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        gradlePluginPortal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
-rootProject.name = "lib"
-includeBuild("build-logic")
-include(":mockzilla-management")
-include(":mockzilla-common")
-include(":mockzilla")
-include(":mockzilla-management-ui")
+rootProject.name = "mockzilla-management-ui"
+

@@ -32,7 +32,7 @@ tasks.dokkaHtmlMultiModule {
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
     kotlin {
-        target("mockzilla/**/*.kt", "mockzilla-management/**/*.kt")
+        target("mockzilla/src/**/*.kt", "mockzilla-management/src/**/*.kt", "mockzilla-management-ui/src/**/*.kt")
         targetExclude(
             "build-logic/build/**",
             "build/**",
