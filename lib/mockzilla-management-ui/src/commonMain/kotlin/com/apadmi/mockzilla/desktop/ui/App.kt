@@ -7,17 +7,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import cafe.adriel.lyricist.LocalStrings
+
+import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.DeviceTabsWidget
 import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
 import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
 import com.apadmi.mockzilla.desktop.ui.theme.AppTheme
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionWidget
+import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 
+import cafe.adriel.lyricist.LocalStrings
 import com.airbnb.android.showkase.annotation.ShowkaseRoot
 import com.airbnb.android.showkase.annotation.ShowkaseRootModule
-import com.apadmi.mockzilla.desktop.i18n.Strings
-import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 
 @ShowkaseRoot
 class RootShowkaseModule : ShowkaseRootModule
@@ -26,7 +27,6 @@ class RootShowkaseModule : ShowkaseRootModule
 fun App(
     strings: Strings = LocalStrings.current
 ) = AppTheme {
-
     WidgetScaffold(
         modifier = Modifier.fillMaxSize(),
         top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },

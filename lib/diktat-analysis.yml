@@ -75,6 +75,7 @@
 # Checks that the name of variable is in lowerCamelCase and contains only ASCII letters
 - name: VARIABLE_NAME_INCORRECT_FORMAT
   enabled: true
+  ignoreAnnotated: [ LyricistStrings ]
 # Checks that functions have kdoc
 - name: MISSING_KDOC_ON_FUNCTION
   enabled: false

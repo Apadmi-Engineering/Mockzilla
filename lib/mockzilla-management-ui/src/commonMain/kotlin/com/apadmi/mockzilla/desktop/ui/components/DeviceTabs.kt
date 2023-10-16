@@ -7,10 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import cafe.adriel.lyricist.LocalStrings
+
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
+
+import cafe.adriel.lyricist.LocalStrings
 
 @Composable
 fun DeviceTabsWidget(

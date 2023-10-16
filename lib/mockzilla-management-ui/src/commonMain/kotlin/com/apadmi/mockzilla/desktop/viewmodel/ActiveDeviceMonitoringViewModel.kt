@@ -12,7 +12,6 @@ abstract class ActiveDeviceMonitoringViewModel(
     activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : ViewModel(scope), ActiveDeviceMonitor by activeDeviceMonitor {
-
     init {
         activeDeviceMonitor.onDeviceSelectionChange.onEach { reloadData() }.launchIn(viewModelScope)
         viewModelScope.launch {
@@ -28,4 +27,3 @@ abstract class ActiveDeviceMonitoringViewModel(
 
     abstract suspend fun reloadData()
 }
-

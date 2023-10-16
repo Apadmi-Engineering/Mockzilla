@@ -5,6 +5,9 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
 import com.apadmi.mockzilla.management.internal.ktor.get
 
+/**
+ * @property runner
+ */
 internal class MockzillaManagementImpl(
     val runner: KtorRequestRunner
 ) : MockzillaManagement {

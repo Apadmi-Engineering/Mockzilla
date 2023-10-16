@@ -6,12 +6,12 @@ import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceManagerImpl
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.management.MockzillaManagement
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+
 import org.koin.core.context.startKoin
 import org.koin.dsl.binds
 import org.koin.dsl.module
+
+import kotlinx.coroutines.GlobalScope
 
 internal fun startMockzillaKoin() = startKoin {
     modules(

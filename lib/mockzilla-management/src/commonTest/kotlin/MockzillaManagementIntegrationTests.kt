@@ -7,46 +7,50 @@ import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.startMockzilla
 import com.apadmi.mockzilla.lib.stopMockzilla
 import com.apadmi.mockzilla.management.MockzillaManagement
-import kotlinx.coroutines.runBlocking
+
 import org.junit.jupiter.api.Test
+
 import kotlin.test.assertEquals
+import kotlinx.coroutines.runBlocking
+
+private typealias TestBlock = suspend (
+    sut: MockzillaManagement,
+    connection: MockzillaManagement.ConnectionConfig,
+    runtimeParams: MockzillaRuntimeParams
+) -> Unit
 
 class MockzillaManagementIntegrationTests {
-
     private val dummyAppName = "MockzillaManagementTest"
     private val dummyAppVersion = "0.0.0-test"
 
     @Test
     fun `fetchMetaData - returns metadata`() =
-        runIntegrationTest { sut, connection, runtimeParams ->
-            /* Run Test */
-            val result = sut.fetchMetaData(connection)
+            runIntegrationTest { sut, connection, runtimeParams ->
+                /* Run Test */
+                val result = sut.fetchMetaData(connection)
 
-            /* Verify */
-            assertEquals(
-                Result.success(
-                    MetaData(
-                        appName = dummyAppName,
-                        appPackage = "-",
-                        operatingSystemVersion = System.getProperty("os.version"),
-                        deviceModel = "-",
-                        appVersion = dummyAppVersion,
-                        operatingSystem = System.getProperty("os.name"),
-                        mockzillaVersion = runtimeParams.mockzillaVersion
-                    )
-                ), result
-            )
-        }
+                /* Verify */
+                assertEquals(
+                    Result.success(
+                        MetaData(
+                            appName = dummyAppName,
+                            appPackage = "-",
+                            operatingSystemVersion = System.getProperty("os.version"),
+                            deviceModel = "-",
+                            appVersion = dummyAppVersion,
+                            operatingSystem = System.getProperty("os.name"),
+                            mockzillaVersion = runtimeParams.mockzillaVersion
+                        )
+                    ), result
+                )
+            }
 
     private fun runIntegrationTest(
         config: MockzillaConfig = MockzillaConfig.Builder().setPort(0).addEndpoint(
             EndpointConfiguration.Builder("Id").build()
-        ).build(),
-        testBlock: suspend (
-            sut: MockzillaManagement,
-            connection: MockzillaManagement.ConnectionConfig,
-            runtimeParams: MockzillaRuntimeParams
-        ) -> Unit
+        )
+            .build(),
+        testBlock: TestBlock
     ) = runBlocking {
         /* Setup */
         val sut = MockzillaManagement.create()

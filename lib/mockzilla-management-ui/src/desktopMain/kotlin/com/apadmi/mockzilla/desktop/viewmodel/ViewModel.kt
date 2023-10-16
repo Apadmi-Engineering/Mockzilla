@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.desktop.viewmodel
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import org.jetbrains.skiko.MainUIDispatcher
+
+import kotlinx.coroutines.CoroutineScope
 
 actual open class ViewModel actual constructor(
     scope: CoroutineScope?

@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.desktop.di
 
-import com.apadmi.mockzilla.desktop.di.utils.viewModel
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCaseImpl
 import org.koin.core.module.Module

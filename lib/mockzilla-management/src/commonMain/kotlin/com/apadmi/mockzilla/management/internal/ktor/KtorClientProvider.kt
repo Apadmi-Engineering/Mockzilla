@@ -20,7 +20,7 @@ internal object KtorClientProvider {
 
     private fun HttpClientConfig<*>.httpClientConfig() {
         install(ContentNegotiation) {
-             json(JsonProvider.json)
+            json(JsonProvider.json)
         }
 
         install(Logging) {

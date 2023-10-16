@@ -4,7 +4,6 @@ import androidx.compose.runtime.Immutable
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
-import com.apadmi.mockzilla.desktop.utils.setStateWithYield
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -17,12 +16,11 @@ class DeviceConnectionViewModel(
     private val activeDeviceSelector: ActiveDeviceSelector
 ) : ViewModel() {
     val state = MutableStateFlow(State())
-
     private var connectionJob: Job? = null
     fun onIpAndPortChanged(newValue: String) {
         connectionJob?.cancel()
         val device = createDeviceOrNull(newValue)
-        if (device == null) {
+        device ?: run {
             state.value = State(ipAndPort = newValue, State.ConnectionState.Disconnected)
             return
         }

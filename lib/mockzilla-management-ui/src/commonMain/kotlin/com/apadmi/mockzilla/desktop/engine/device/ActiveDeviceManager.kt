@@ -19,7 +19,8 @@ class ActiveDeviceManagerImpl(
 ) : ActiveDeviceMonitor, ActiveDeviceSelector {
     override val onDeviceSelectionChange = MutableSharedFlow<Unit>()
 
-    override var activeDevice: Device? = null; private set
+    override var activeDevice: Device? = null
+        private set
 
     override fun setActiveDevice(device: Device) {
         activeDevice = device
