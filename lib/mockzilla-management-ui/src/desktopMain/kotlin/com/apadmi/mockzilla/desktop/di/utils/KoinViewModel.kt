@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.desktop.di
+package com.apadmi.mockzilla.desktop.di.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

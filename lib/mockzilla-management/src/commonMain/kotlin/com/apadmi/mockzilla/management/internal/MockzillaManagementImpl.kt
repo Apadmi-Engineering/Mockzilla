@@ -1,32 +1,26 @@
 package com.apadmi.mockzilla.management.internal
 
+import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaManagement
-import io.ktor.client.HttpClient
+import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
+import com.apadmi.mockzilla.management.internal.ktor.get
 
-/**
- * TODO: Fill this out with an actual implementation
- * @property client
- */
 internal class MockzillaManagementImpl(
-    val client: HttpClient
+    val runner: KtorRequestRunner
 ) : MockzillaManagement {
-    override suspend fun isConnected(): Boolean {
+    override suspend fun fetchMetaData(connection: MockzillaManagement.ConnectionConfig): Result<MetaData> = runner {
+        get(connection, "/api/meta")
+    }
+
+    override suspend fun fetchAllMockData(connection: MockzillaManagement.ConnectionConfig) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun fetchMetaData() {
+    override suspend fun postMockData(connection: MockzillaManagement.ConnectionConfig) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun fetchAllMockData() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun postMockData() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun fetchMonitorLogsAndClearBuffer() {
+    override suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaManagement.ConnectionConfig) {
         TODO("Not yet implemented")
     }
 }

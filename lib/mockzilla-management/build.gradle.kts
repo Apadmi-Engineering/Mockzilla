@@ -23,6 +23,8 @@ kotlin {
                 /* Kotlin */
                 implementation(libs.kotlinx.coroutines.core)
 
+                /* Common Mockzilla */
+                api(project(":mockzilla-common"))
 
                 /* Ktor */
                 api(libs.ktor.server.core)

@@ -13,8 +13,20 @@ import java.nio.file.Files
  * @param config The config with which to initialise mockzilla.
  * @return runtimeParams Configuration of the mockzilla runtime environment
  */
-fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = startMockzilla(
+fun startMockzilla(
+    appName: String,
+    appVersion: String,
+    config: MockzillaConfig,
+): MockzillaRuntimeParams = startMockzilla(
     config,
-    MetaData("", "", "", "", "", "", BuildKonfig.VERSION_NAME),
+    MetaData(
+        appName = appName,
+        appPackage = "-", // Not really a thing on non-mobile platforms
+        operatingSystemVersion = System.getProperty("os.version"),
+        deviceModel = "-", // Covered by `operatingSystem`
+        appVersion = appVersion,
+        operatingSystem = System.getProperty("os.name"),
+        mockzillaVersion = BuildKonfig.VERSION_NAME
+    ),
     FileIo(Files.createTempDirectory("").toFile()),
 )

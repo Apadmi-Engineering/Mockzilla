@@ -210,4 +210,5 @@ data class MockzillaRuntimeParams(
     val apiBaseUrl: String,
     val port: Int,
     val authHeaderProvider: AuthHeaderProvider,
+    val mockzillaVersion: String
 )

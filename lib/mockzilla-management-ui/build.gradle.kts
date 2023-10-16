@@ -24,12 +24,18 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.preview)
 
+                /* Localisable Strings */
+                implementation(libs.lyricist.library)
+
                 /* DI */
                 implementation(libs.koin.core)
 
                 /* Coroutines */
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.showkase)
+
+                 /* Mockzilla Management */
+                implementation(project(":mockzilla-management"))
 
             }
         }
@@ -66,16 +72,24 @@ kotlin {
             }
         }
         val androidUnitTest by getting {
-        dependencies {
-            implementation(libs.androidx.test.junit)
-            implementation(libs.testParamInjector)
+            dependencies {
+                implementation(libs.androidx.test.junit)
+                implementation(libs.testParamInjector)
+            }
         }
-    }
     }
 }
 
 dependencies {
     "kspAndroid"(libs.showkase.processor)
+    add("kspCommonMainMetadata", "cafe.adriel.lyricist:lyricist-processor:${libs.versions.lyricist.get()}")
+    ksp(libs.lyricist.processor)
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
+    if(name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
 }
 
 android {

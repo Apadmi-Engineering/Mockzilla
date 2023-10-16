@@ -25,6 +25,7 @@ lifecycle = "2.6.2"
 material = "1.9.0"
 material3 = "1.1.2"
 compose-activity = "1.8.0"
+lyricist = "1.4.2"
 
 [libraries]
 # Compose & Material
@@ -71,6 +72,9 @@ showkase = { module = "com.airbnb.android:showkase", version.ref = "showkase" }
 showkase-processor = { module = "com.airbnb.android:showkase-processor", version.ref = "showkase" }
 androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
 testParamInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version.ref = "testParamInjector" }
+# Lyricist
+lyricist-library = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
+lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", version.ref = "lyricist" }
 
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

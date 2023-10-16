@@ -3,7 +3,7 @@
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.window.*
-import com.apadmi.mockzilla.desktop.di.startMockzillaKoin
+import com.apadmi.mockzilla.desktop.di.utils.startMockzillaKoin
 import com.apadmi.mockzilla.desktop.ui.App
 import java.awt.Dimension
 

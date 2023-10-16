@@ -7,16 +7,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import cafe.adriel.lyricist.LocalStrings
+import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
 
 @Composable
 fun DeviceTabsWidget(
-    modifier: Modifier
+    modifier: Modifier,
+    strings: Strings = LocalStrings.current
 ) {
     var selected by remember { mutableStateOf<Int?>(0) }
     DeviceTabsWidgetContent(
-        devices = listOf("Device 1", "Device 2", "+ Add Device"),
+        devices = listOf(strings.widgets.deviceTabs.addDevice),
         selected = selected,
         onSelect = { selected = it },
         modifier = modifier,
