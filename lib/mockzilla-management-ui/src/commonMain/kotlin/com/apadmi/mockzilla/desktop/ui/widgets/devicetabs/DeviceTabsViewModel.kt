@@ -1,16 +1,12 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.devicetabs
 
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-
-
-import androidx.compose.runtime.Immutable
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
-import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.desktop.viewmodel.ActiveDeviceMonitoringViewModel
-import com.apadmi.mockzilla.lib.models.MetaData
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class DeviceTabsViewModel(
     private val activeDeviceMonitor: ActiveDeviceMonitor,
@@ -29,7 +25,19 @@ class DeviceTabsViewModel(
         })
     }
 
+    /**
+     * @property devices
+     */
     data class State(val devices: List<DeviceTabEntry>) {
-        data class DeviceTabEntry(val name: String, val isActive: Boolean, val isConnected: Boolean)
+        /**
+         * @property name
+         * @property isActive
+         * @property isConnected
+         */
+        data class DeviceTabEntry(
+            val name: String,
+            val isActive: Boolean,
+            val isConnected: Boolean
+        )
     }
 }

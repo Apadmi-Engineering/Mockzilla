@@ -10,5 +10,5 @@ import org.koin.dsl.module
 internal fun viewModelModule(): Module = module {
     viewModel { DeviceConnectionViewModel(get(), get()) }
     viewModel { MetaDataWidgetViewModel(get(), get()) }
-    viewModel { DeviceTabsViewModel(get())}
+    viewModel { DeviceTabsViewModel(get()) }
 }

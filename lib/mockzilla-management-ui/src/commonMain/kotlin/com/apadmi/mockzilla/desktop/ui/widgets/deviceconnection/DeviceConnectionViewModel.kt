@@ -6,7 +6,6 @@ import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.models.MetaData
-import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.MockzillaManagement.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

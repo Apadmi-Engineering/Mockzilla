@@ -1,12 +1,13 @@
 package com.apadmi.mockzilla.desktop.engine.device
 
 import com.apadmi.mockzilla.lib.models.MetaData
+
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 interface ActiveDeviceMonitor {
     val onDeviceSelectionChange: SharedFlow<Unit>
@@ -26,9 +27,14 @@ class ActiveDeviceManagerImpl(
 ) : ActiveDeviceMonitor, ActiveDeviceSelector {
     override val onDeviceSelectionChange = MutableSharedFlow<Unit>()
     override val onDeviceConnectionStateChange = MutableSharedFlow<Unit>()
+    private val allDevicesInternal = mutableMapOf<Device, StatefulDevice>()
+    override val allDevices get() = allDevicesInternal.values
 
-    private val _allDevices = mutableMapOf<Device, StatefulDevice>()
-    override val allDevices get() = _allDevices.values
+    override var activeDevice: Device? = null
+        private set(value) {
+            field = value
+            notifyDeviceChange()
+        }
 
     init {
         // TODO: Hopefully this will eventually become a websocket
@@ -39,16 +45,16 @@ class ActiveDeviceManagerImpl(
 
     private suspend fun monitorDeviceConnections() {
         while (true) {
-            _allDevices.forEach { (device, statefulDevice) ->
+            allDevicesInternal.forEach { (device, statefulDevice) ->
                 val newStatefulDevice =
-                    metaDataUseCase.getMetaData(device).fold(onSuccess = { metaData ->
-                        statefulDevice.copy(
-                            isConnected = true,
-                            connectedAppPackage = metaData.appPackage
-                        )
-                    }, onFailure = {
-                        statefulDevice.copy(isConnected = false)
-                    })
+                        metaDataUseCase.getMetaData(device).fold(onSuccess = { metaData ->
+                            statefulDevice.copy(
+                                isConnected = true,
+                                connectedAppPackage = metaData.appPackage
+                            )
+                        }, onFailure = {
+                            statefulDevice.copy(isConnected = false)
+                        })
 
                 if (statefulDevice != newStatefulDevice) {
                     onDeviceConnectionStateChange.emit(Unit)
@@ -56,24 +62,18 @@ class ActiveDeviceManagerImpl(
                         notifyDeviceChange()
                     }
                 }
-                _allDevices[device] = newStatefulDevice
+                allDevicesInternal[device] = newStatefulDevice
             }
             delay(0.5.seconds)
         }
     }
-
-    override var activeDevice: Device? = null
-        private set(value) {
-            field = value
-            notifyDeviceChange()
-        }
 
     private fun notifyDeviceChange() = scope.launch {
         onDeviceSelectionChange.emit(Unit)
     }
 
     override fun setActiveDevice(device: Device, metadata: MetaData) {
-        _allDevices[device] = StatefulDevice(
+        allDevicesInternal[device] = StatefulDevice(
             device = device,
             name = "${metadata.operatingSystem}-${metadata.deviceModel}",
             isConnected = true,

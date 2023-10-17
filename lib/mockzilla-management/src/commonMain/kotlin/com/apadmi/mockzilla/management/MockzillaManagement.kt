@@ -13,8 +13,6 @@ interface MockzillaManagement {
 
     /**
      * Defines the info needed to create a connection to a device. (i.e. make a request)
-     * @property ip
-     * @property port
      */
     interface ConnectionConfig {
         val ip: String
