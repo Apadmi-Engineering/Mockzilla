@@ -43,11 +43,11 @@ fun DeviceTabsWidgetContent(
             tabs = state.devices.map { HorizontalTab(title = it.toString()) } + HorizontalTab(strings.widgets.deviceTabs.addDevice),
             selected = state.devices.indexOfFirst { it.isActive },
             onSelect = {
-               if (it > state.devices.lastIndex) {
-                   onAddNewDevice()
-               } else {
-                   onSelect(state.devices[it])
-               }
+                if (it > state.devices.lastIndex) {
+                    onAddNewDevice()
+                } else {
+                    onSelect(state.devices[it])
+                }
             },
         )
     }

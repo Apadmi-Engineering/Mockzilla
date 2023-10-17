@@ -8,7 +8,7 @@ import com.apadmi.mockzilla.lib.startMockzilla
 import com.apadmi.mockzilla.lib.stopMockzilla
 import com.apadmi.mockzilla.management.MockzillaManagement
 
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking

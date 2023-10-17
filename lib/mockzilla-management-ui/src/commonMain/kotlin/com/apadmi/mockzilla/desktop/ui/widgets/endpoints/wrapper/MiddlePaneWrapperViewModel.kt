@@ -10,16 +10,18 @@ class MiddlePaneWrapperViewModel(
     activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : ActiveDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
-
     val state = MutableStateFlow(State.NewDeviceConnection)
+
+    override suspend fun reloadData() {
+        state.value = activeDevice?.let {
+            State.Endpoints
+        } ?: State.NewDeviceConnection
+    }
 
     @Immutable
     enum class State {
         Endpoints,
-        NewDeviceConnection
-    }
-
-    override suspend fun reloadData() {
-        state.value = if (activeDevice == null) State.NewDeviceConnection else State.Endpoints
+        NewDeviceConnection,
+        ;
     }
 }

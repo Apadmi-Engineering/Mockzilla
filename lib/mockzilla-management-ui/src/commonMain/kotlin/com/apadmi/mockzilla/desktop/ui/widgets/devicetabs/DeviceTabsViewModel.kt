@@ -44,6 +44,7 @@ class DeviceTabsViewModel(
          * @property name
          * @property isActive
          * @property isConnected
+         * @property underlyingDevice
          */
         data class DeviceTabEntry(
             val name: String,

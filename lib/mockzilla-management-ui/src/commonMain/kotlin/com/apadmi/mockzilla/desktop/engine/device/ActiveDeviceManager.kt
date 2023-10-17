@@ -38,12 +38,12 @@ class ActiveDeviceManagerImpl(
         }
 
     init {
-        // TODO: Hopefully this will eventually become a websocket
         scope.launch {
             monitorDeviceConnections()
         }
     }
 
+    // TODO: Hopefully this will eventually become a websocket
     private suspend fun monitorDeviceConnections() {
         while (true) {
             allDevicesInternal.forEach { (device, statefulDevice) ->
