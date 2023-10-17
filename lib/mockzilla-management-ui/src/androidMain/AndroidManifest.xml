@@ -5,6 +5,7 @@
         <activity
             android:name=".mockzilla.desktop.ui.MainActivity"
             android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:exported="true">
 
             <intent-filter>

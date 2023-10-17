@@ -9,11 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 import com.apadmi.mockzilla.desktop.i18n.Strings
-import com.apadmi.mockzilla.desktop.ui.widgets.devicetabs.DeviceTabsWidget
 import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
 import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
 import com.apadmi.mockzilla.desktop.ui.theme.AppTheme
+import com.apadmi.mockzilla.desktop.ui.utils.androidStatusBarPadding
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionWidget
+import com.apadmi.mockzilla.desktop.ui.widgets.devicetabs.DeviceTabsWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 
 import cafe.adriel.lyricist.LocalStrings
@@ -28,7 +29,7 @@ fun App(
     strings: Strings = LocalStrings.current
 ) = AppTheme {
     WidgetScaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.androidStatusBarPadding().fillMaxSize(),
         top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
         left = listOf(Widget(strings.widgets.metaData.title) { MetaDataWidget() }),
         right = listOf(Widget("Right 1") { Text("Right1") }),
