@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 import com.apadmi.mockzilla.desktop.i18n.Strings
-import com.apadmi.mockzilla.desktop.ui.components.DeviceTabsWidget
+import com.apadmi.mockzilla.desktop.ui.widgets.devicetabs.DeviceTabsWidget
 import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
 import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
 import com.apadmi.mockzilla.desktop.ui.theme.AppTheme

@@ -2,17 +2,7 @@
 
 package com.apadmi.mockzilla.desktop.engine.device
 
-import com.apadmi.mockzilla.management.MockzillaManagement
+import com.apadmi.mockzilla.management.MockzillaManagement.*
 
-/**
- * @property deviceName
- * @property ip
- * @property port
- */
-data class Device(
-    val deviceName: String,
-    val ip: String,
-    val port: String
-) {
-    val connection = MockzillaManagement.ConnectionConfig(ip, port)
-}
+data class Device(override val ip: String, override val port: String): ConnectionConfig
+data class StatefulDevice(val device: Device, val name: String, val isConnected: Boolean, val connectedAppPackage: String)

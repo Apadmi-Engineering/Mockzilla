@@ -17,13 +17,13 @@ class MetaDataUseCaseImpl(
     private val mockzillaManagement: MockzillaManagement
 ) : MetaDataUseCase {
     private val mutex = Mutex()
-    private val cache = mutableMapOf<ConnectionConfig, DataWithTimestamp<MetaData>>()
+    private val cache = mutableMapOf<Device, DataWithTimestamp<MetaData>>()
 
     override suspend fun getMetaData(device: Device): Result<MetaData> = mutex.withLock {
-        cache[device.connection]?.takeUnless { it.isExpired(0.5.seconds) }
+        cache[device]?.takeUnless { it.isExpired(0.5.seconds) }
             ?.let { Result.success(it.data) }
-            ?: mockzillaManagement.fetchMetaData(device.connection).onSuccess {
-                cache[device.connection] = DataWithTimestamp(it)
+            ?: mockzillaManagement.fetchMetaData(device).onSuccess {
+                cache[device] = DataWithTimestamp(it)
             }
     }
 }

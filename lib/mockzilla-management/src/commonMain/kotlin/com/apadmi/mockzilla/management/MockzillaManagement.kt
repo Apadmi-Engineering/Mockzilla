@@ -10,12 +10,16 @@ interface MockzillaManagement {
     suspend fun fetchAllMockData(connection: ConnectionConfig)
     suspend fun postMockData(connection: ConnectionConfig)
     suspend fun fetchMonitorLogsAndClearBuffer(connection: ConnectionConfig)
+
     /**
      * Defines the info needed to create a connection to a device. (i.e. make a request)
      * @property ip
      * @property port
      */
-    data class ConnectionConfig(val ip: String, val port: String)
+    interface ConnectionConfig {
+        val ip: String
+        val port: String
+    }
 
     companion object {
         fun create(): MockzillaManagement = MockzillaManagementImpl(

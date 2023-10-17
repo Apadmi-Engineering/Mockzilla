@@ -1,31 +1,88 @@
 package com.apadmi.mockzilla.desktop.engine.device
 
+import com.apadmi.mockzilla.lib.models.MetaData
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 interface ActiveDeviceMonitor {
     val onDeviceSelectionChange: SharedFlow<Unit>
+    val onDeviceConnectionStateChange: SharedFlow<Unit>
     val activeDevice: Device?
+    val allDevices: Collection<StatefulDevice>
 }
 
 interface ActiveDeviceSelector {
-    fun setActiveDevice(device: Device)
+    fun clearActiveDevice()
+    fun setActiveDevice(device: Device, metadata: MetaData)
 }
 
 class ActiveDeviceManagerImpl(
+    private val metaDataUseCase: MetaDataUseCase,
     private val scope: CoroutineScope
 ) : ActiveDeviceMonitor, ActiveDeviceSelector {
     override val onDeviceSelectionChange = MutableSharedFlow<Unit>()
+    override val onDeviceConnectionStateChange = MutableSharedFlow<Unit>()
+
+    private val _allDevices = mutableMapOf<Device, StatefulDevice>()
+    override val allDevices get() = _allDevices.values
+
+    init {
+        // TODO: Hopefully this will eventually become a websocket
+        scope.launch {
+            monitorDeviceConnections()
+        }
+    }
+
+    private suspend fun monitorDeviceConnections() {
+        while (true) {
+            _allDevices.forEach { (device, statefulDevice) ->
+                val newStatefulDevice =
+                    metaDataUseCase.getMetaData(device).fold(onSuccess = { metaData ->
+                        statefulDevice.copy(
+                            isConnected = true,
+                            connectedAppPackage = metaData.appPackage
+                        )
+                    }, onFailure = {
+                        statefulDevice.copy(isConnected = false)
+                    })
+
+                if (statefulDevice != newStatefulDevice) {
+                    onDeviceConnectionStateChange.emit(Unit)
+                    if (device == activeDevice) {
+                        notifyDeviceChange()
+                    }
+                }
+                _allDevices[device] = newStatefulDevice
+            }
+            delay(0.5.seconds)
+        }
+    }
 
     override var activeDevice: Device? = null
-        private set
-
-    override fun setActiveDevice(device: Device) {
-        activeDevice = device
-        scope.launch {
-            onDeviceSelectionChange.emit(Unit)
+        private set(value) {
+            field = value
+            notifyDeviceChange()
         }
+
+    private fun notifyDeviceChange() = scope.launch {
+        onDeviceSelectionChange.emit(Unit)
+    }
+
+    override fun setActiveDevice(device: Device, metadata: MetaData) {
+        _allDevices[device] = StatefulDevice(
+            device = device,
+            name = "${metadata.operatingSystem}-${metadata.deviceModel}",
+            isConnected = true,
+            connectedAppPackage = metadata.appPackage
+        )
+        activeDevice = device
+    }
+
+    override fun clearActiveDevice() {
+        activeDevice = null
     }
 }
