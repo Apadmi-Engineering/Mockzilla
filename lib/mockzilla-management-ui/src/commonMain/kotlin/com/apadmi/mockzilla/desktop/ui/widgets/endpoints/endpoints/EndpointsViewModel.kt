@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.desktop.ui.widgets.endpoints
+package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints
 
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.viewmodel.ActiveDeviceMonitoringViewModel
@@ -9,6 +9,6 @@ class EndpointsViewModel(
     scope: CoroutineScope? = null
 ) : ActiveDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
     override suspend fun reloadData() {
-        TODO("Implement class")
+        // TODO Implement class
     }
 }

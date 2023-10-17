@@ -20,6 +20,8 @@ import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 import cafe.adriel.lyricist.LocalStrings
 import com.airbnb.android.showkase.annotation.ShowkaseRoot
 import com.airbnb.android.showkase.annotation.ShowkaseRootModule
+import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsWidget
+import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.wrapper.MiddlePaneWrapperWidget
 
 @ShowkaseRoot
 class RootShowkaseModule : ShowkaseRootModule
@@ -33,7 +35,14 @@ fun App(
         top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
         left = listOf(Widget(strings.widgets.metaData.title) { MetaDataWidget() }),
         right = listOf(Widget("Right 1") { Text("Right1") }),
-        middle = listOf(Widget("Middle 1") { DeviceConnectionWidget() }),
-        bottom = listOf(Widget("Bottom 1") { Text("Bottom 1") }, Widget("Bottom 2", { Text("Bottom 2") })),
+        middle = listOf(Widget("") {
+            MiddlePaneWrapperWidget(
+                { EndpointsWidget() },
+                { DeviceConnectionWidget() })
+        }),
+        bottom = listOf(
+            Widget("Bottom 1") { Text("Bottom 1") },
+            Widget("Bottom 2", { Text("Bottom 2") })
+        ),
     )
 }

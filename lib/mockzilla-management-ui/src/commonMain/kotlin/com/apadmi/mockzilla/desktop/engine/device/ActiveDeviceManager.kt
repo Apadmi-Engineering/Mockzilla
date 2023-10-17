@@ -18,7 +18,8 @@ interface ActiveDeviceMonitor {
 
 interface ActiveDeviceSelector {
     fun clearActiveDevice()
-    fun setActiveDevice(device: Device, metadata: MetaData)
+    fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData)
+    fun updateActiveDevice(device: Device)
 }
 
 class ActiveDeviceManagerImpl(
@@ -72,13 +73,17 @@ class ActiveDeviceManagerImpl(
         onDeviceSelectionChange.emit(Unit)
     }
 
-    override fun setActiveDevice(device: Device, metadata: MetaData) {
+    override fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData) {
         allDevicesInternal[device] = StatefulDevice(
             device = device,
             name = "${metadata.operatingSystem}-${metadata.deviceModel}",
             isConnected = true,
             connectedAppPackage = metadata.appPackage
         )
+        activeDevice = device
+    }
+
+    override fun updateActiveDevice(device: Device) {
         activeDevice = device
     }
 

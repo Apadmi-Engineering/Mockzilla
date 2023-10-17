@@ -69,7 +69,7 @@ internal fun HorizontalTabList(
     modifier: Modifier = Modifier,
     tabs: List<HorizontalTab>,
     selected: Int?,
-    onSelect: (Int?) -> Unit,
+    onSelect: (Int) -> Unit,
 ) {
     Row(modifier = modifier.horizontalScroll(rememberScrollState())) {
         tabs.forEachIndexed { index, tab ->
@@ -87,9 +87,9 @@ internal fun HorizontalTabList(
                     .selectable(
                         selected = selected == index,
                         onClick = {
-                            onSelect(
-                                index.takeUnless { selected == index }
-                            )
+                            if (selected != index) {
+                                onSelect(index)
+                            }
                         },
                     )
                     .minimumInteractiveComponentSize(),

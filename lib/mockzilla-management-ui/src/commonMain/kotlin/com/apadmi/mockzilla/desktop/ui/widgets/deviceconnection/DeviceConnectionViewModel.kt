@@ -52,7 +52,7 @@ class DeviceConnectionViewModel(
     }
 
     private fun onSuccessfulConnection(tmpDevice: Device, metaData: MetaData) {
-        activeDeviceSelector.setActiveDevice(tmpDevice, metaData)
+        activeDeviceSelector.setActiveDeviceWithMetaData(tmpDevice, metaData)
     }
 
     @Immutable

@@ -24,7 +24,8 @@ fun DeviceTabsWidget(
 
     DeviceTabsWidgetContent(
         state = state,
-        onSelect = {},
+        onSelect = viewModel::onChangeDevice,
+        onAddNewDevice = viewModel::addNewDevice,
         modifier = modifier,
     )
 }
@@ -34,13 +35,20 @@ fun DeviceTabsWidgetContent(
     state: State,
     modifier: Modifier = Modifier,
     strings: Strings = LocalStrings.current,
-    onSelect: (State.DeviceTabEntry?) -> Unit,
+    onSelect: (State.DeviceTabEntry) -> Unit,
+    onAddNewDevice: () -> Unit
 ) {
     Surface(modifier = modifier) {
         HorizontalTabList(
             tabs = state.devices.map { HorizontalTab(title = it.toString()) } + HorizontalTab(strings.widgets.deviceTabs.addDevice),
             selected = state.devices.indexOfFirst { it.isActive },
-            onSelect = { },
+            onSelect = {
+               if (it > state.devices.lastIndex) {
+                   onAddNewDevice()
+               } else {
+                   onSelect(state.devices[it])
+               }
+            },
         )
     }
 }
