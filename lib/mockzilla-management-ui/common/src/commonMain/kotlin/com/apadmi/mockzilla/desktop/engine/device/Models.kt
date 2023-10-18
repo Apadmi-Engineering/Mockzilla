@@ -4,7 +4,10 @@ package com.apadmi.mockzilla.desktop.engine.device
 
 import com.apadmi.mockzilla.management.MockzillaManagement.*
 
-data class Device(override val ip: String, override val port: String) : ConnectionConfig
+data class Device(override val ip: String, override val port: String) : ConnectionConfig {
+    companion object;
+}
+
 /**
  * @property device
  * @property name

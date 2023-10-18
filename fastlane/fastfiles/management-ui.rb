@@ -7,6 +7,7 @@ platform :android do
     lane :management_ui_pull_request do
         gradle(
             tasks: [
+                ":mockzilla-management-ui:common:desktopTest",
                 ":mockzilla-management-ui:android:bundleDebug"
             ],
             project_dir: "./lib"

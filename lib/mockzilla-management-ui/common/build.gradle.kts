@@ -79,12 +79,24 @@ kotlin {
 
             }
         }
-        val desktopTest by getting
+        val desktopTest by getting {
+            dependencies {
+                implementation(libs.turbine)
+                implementation(libs.mockative)
+                implementation(libs.kotlinx.coroutines.test)
+            }
+        }
     }
 }
 
 dependencies {
     "kspAndroid"(libs.showkase.processor)
+
+    configurations
+        .filter { it.name.startsWith("ksp") && it.name.contains("Test") }
+        .forEach {
+            add(it.name, "io.mockative:mockative-processor:2.0.1")
+        }
 }
 
 android {
