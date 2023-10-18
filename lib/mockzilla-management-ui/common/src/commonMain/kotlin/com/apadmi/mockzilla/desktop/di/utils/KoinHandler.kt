@@ -25,4 +25,4 @@ fun startMockzillaKoin() = startKoin {
             )
         }
     )
-}.let {  }
+}.let { Unit }

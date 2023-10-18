@@ -1,5 +1,17 @@
 package com.apadmi.mockzilla.desktop.i18n
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
+import cafe.adriel.lyricist.ProvideStrings
+import cafe.adriel.lyricist.rememberStrings
+
+@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
+val LocalStrings = staticCompositionLocalOf { EnStrings }
+
+private val strings = mapOf(
+    "en" to EnStrings
+)
+
 /**
  * @property widgets
  */
@@ -37,4 +49,11 @@ data class Strings(
             val addDevice: String
         )
     }
+}
+
+@Composable
+fun ProvideLocalisableStrings(content: @Composable () -> Unit) {
+    val lyricist = rememberStrings(strings)
+
+    ProvideStrings(lyricist, LocalStrings, content)
 }

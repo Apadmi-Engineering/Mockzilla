@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
+import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
 import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
@@ -21,7 +22,6 @@ import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 
 import com.airbnb.android.showkase.annotation.ShowkaseRoot
 import com.airbnb.android.showkase.annotation.ShowkaseRootModule
-import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 
 @ShowkaseRoot
 class RootShowkaseModule : ShowkaseRootModule
