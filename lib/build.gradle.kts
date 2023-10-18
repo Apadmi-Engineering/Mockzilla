@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.spotless) apply true
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.dokka) apply true
+    id("org.jetbrains.compose").version("1.5.3") apply false
 }
 
 buildscript {
@@ -19,6 +20,14 @@ buildscript {
 allprojects {
     group = "com.apadmi"
     version = extractVersion()
+
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    }
 }
 
 subprojects {
