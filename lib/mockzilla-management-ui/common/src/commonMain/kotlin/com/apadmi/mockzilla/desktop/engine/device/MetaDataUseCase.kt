@@ -20,7 +20,7 @@ class MetaDataUseCaseImpl(
     private val cache = mutableMapOf<Device, DataWithTimestamp<MetaData>>()
 
     override suspend fun getMetaData(device: Device): Result<MetaData> = mutex.withLock {
-        cache[device]?.takeUnless { it.isExpired(0.5.seconds) }
+        cache[device]?.takeUnless { it.isExpired(cacheLife = 0.5.seconds) }
             ?.let { Result.success(it.data) }
             ?: mockzillaManagement.fetchMetaData(device).onSuccess {
                 cache[device] = DataWithTimestamp(it)
