@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.desktop.engine.device
 
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
@@ -13,22 +14,23 @@ import org.junit.Test
 
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.runBlockingTest
 
-class ActiveDeviceManagerTests {
+class ActiveDeviceManagerTests : CoroutineTest() {
     @Mock
     private val metaDataUseCaseMock = mock(classOf<MetaDataUseCase>())
 
     private fun createSut() = ActiveDeviceManagerImpl(
         metaDataUseCaseMock,
-        CoroutineScope(Dispatchers.Default)
+        testScope
     )
 
     @Test
-    fun `updateActiveDevice - updates device and notifies listeners`() = runTest {
+    fun `updateActiveDevice - updates device and notifies listeners`() = runBlockingTest {
         /* Setup */
+        given(metaDataUseCaseMock).coroutine {
+            getMetaData(Device.dummy())
+        }.thenReturn(Result.success(MetaData.dummy()))
         val sut = createSut()
 
         sut.onDeviceSelectionChange.test {
@@ -38,12 +40,16 @@ class ActiveDeviceManagerTests {
             /* Verify */
             assertEquals(Unit, awaitItem())
             ensureAllEventsConsumed()
+            sut.cancelPolling()
         }
     }
 
     @Test
-    fun `setActiveDeviceWithMetaData - updates device and notifies listeners`() = runTest {
+    fun `setActiveDeviceWithMetaData - updates device and notifies listeners`() = runBlockingTest {
         /* Setup */
+        given(metaDataUseCaseMock).coroutine {
+            getMetaData(Device.dummy())
+        }.thenReturn(Result.success(MetaData.dummy()))
         val sut = createSut()
 
         sut.onDeviceSelectionChange.test {
@@ -69,13 +75,15 @@ class ActiveDeviceManagerTests {
                 ),
                 sut.allDevices.toList()
             )
-            assertEquals(Unit, awaitItem())
+            assertEquals(Unit, awaitItem())  // Initial set
+            assertEquals(Unit, awaitItem())  // When the polling registers change in app package
             ensureAllEventsConsumed()
+            sut.cancelPolling()
         }
     }
 
     @Test
-    fun `clearActiveDevice - clears notifies listeners`() = runTest {
+    fun `clearActiveDevice - clears notifies listeners`() = runBlockingTest {
         /* Setup */
         val sut = createSut()
 
@@ -87,16 +95,18 @@ class ActiveDeviceManagerTests {
             assertNull(sut.activeDevice)
             assertEquals(Unit, awaitItem())
             ensureAllEventsConsumed()
+            sut.cancelPolling()
         }
     }
 
     @Test
-    fun `monitorDeviceConnections - app package changes - notifies device change listeners`() = runTest {
-        val sut = createSut()
-
+    fun `monitorDeviceConnections - app package changes - notifies device change listeners`() = runBlockingTest {
+        /* Setup */
         given(metaDataUseCaseMock).coroutine {
             getMetaData(Device.dummy())
         }.thenReturn(Result.success(MetaData.dummy().copy(appPackage = "new.package")))
+
+        val sut = createSut()
 
         sut.onDeviceSelectionChange.test {
             /* Run Test */
@@ -106,16 +116,17 @@ class ActiveDeviceManagerTests {
             assertEquals(Unit, awaitItem())
             assertEquals(Unit, awaitItem())
             ensureAllEventsConsumed()
+            sut.cancelPolling()
         }
     }
 
     @Test
-    fun `monitorDeviceConnections - app package the same - does not notify device change listeners`() = runTest {
-        val sut = createSut()
-
+    fun `monitorDeviceConnections - app package the same - does not notify device change listeners`() = runBlockingTest {
+        /* Setup */
         given(metaDataUseCaseMock).coroutine {
             getMetaData(Device.dummy())
         }.thenReturn(Result.success(MetaData.dummy()))
+        val sut = createSut()
 
         sut.onDeviceSelectionChange.test {
             /* Run Test */
@@ -124,16 +135,17 @@ class ActiveDeviceManagerTests {
             /* Verify */
             skipItems(1)  // One event for setting active device
             expectNoEvents()
+            sut.cancelPolling()
         }
     }
 
     @Test
-    fun `monitorDeviceConnections - fails to get metadata - updates connection status`() = runTest {
-        val sut = createSut()
-
+    fun `monitorDeviceConnections - fails to get metadata - updates connection status`() = runBlockingTest {
+        /* Setup */
         given(metaDataUseCaseMock).coroutine {
             getMetaData(Device.dummy())
         }.thenReturn(Result.failure(Exception()))
+        val sut = createSut()
 
         sut.onDeviceConnectionStateChange.test {
             /* Run Test */
@@ -143,6 +155,7 @@ class ActiveDeviceManagerTests {
             assertEquals(Unit, awaitItem())
             assertFalse(sut.allDevices.first().isConnected)
             ensureAllEventsConsumed()
+            sut.cancelPolling()
         }
     }
 }

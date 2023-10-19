@@ -4,10 +4,13 @@ import com.apadmi.mockzilla.lib.models.MetaData
 
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 interface ActiveDeviceMonitor {
     val onDeviceSelectionChange: SharedFlow<Unit>
@@ -31,6 +34,8 @@ class ActiveDeviceManagerImpl(
     private val allDevicesInternal = mutableMapOf<Device, StatefulDevice>()
     override val allDevices get() = allDevicesInternal.values
 
+    private var pollingJob: Job? = null
+
     override var activeDevice: Device? = null
         private set(value) {
             field = value
@@ -38,13 +43,13 @@ class ActiveDeviceManagerImpl(
         }
 
     init {
-        scope.launch {
+        pollingJob = scope.launch {
             monitorDeviceConnections()
         }
     }
 
     // TODO: Hopefully this will eventually become a websocket
-    private suspend fun monitorDeviceConnections() {
+    private suspend fun monitorDeviceConnections() = coroutineScope {
         while (true) {
             allDevicesInternal.forEach { (device, statefulDevice) ->
                 val newStatefulDevice =
@@ -65,7 +70,9 @@ class ActiveDeviceManagerImpl(
                 }
                 allDevicesInternal[device] = newStatefulDevice
             }
+
             delay(0.5.seconds)
+            yield()
         }
     }
 
@@ -89,5 +96,11 @@ class ActiveDeviceManagerImpl(
 
     override fun clearActiveDevice() {
         activeDevice = null
+    }
+
+    // Only used by tests, otherwise should survive for the lifetime of the application i.e. the lifetime
+    // of the injected scope
+    internal fun cancelPolling() {
+        pollingJob?.cancel()
     }
 }

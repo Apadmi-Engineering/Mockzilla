@@ -66,5 +66,5 @@ project.afterEvaluate {
 }
 
 tasks.withType<Test> {
-    maxParallelForks = 0
+    maxParallelForks = 1
 }
