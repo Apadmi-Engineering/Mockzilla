@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.androidUnitTest.kotlin
+package com.apadmi.mockzilla
 
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
@@ -78,7 +78,7 @@ class PaparazziScreenshotTest {
                 LocalOnBackPressedDispatcherOwner provides object : OnBackPressedDispatcherOwner {
                     override val lifecycle: Lifecycle = lifecycleOwner.lifecycle
                     override val onBackPressedDispatcher: OnBackPressedDispatcher =
-                            OnBackPressedDispatcher()
+                        OnBackPressedDispatcher()
                 }
             ) {
                 componentTestPreview.Content()

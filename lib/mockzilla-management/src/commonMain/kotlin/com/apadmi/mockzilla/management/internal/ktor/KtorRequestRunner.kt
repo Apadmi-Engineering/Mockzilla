@@ -30,9 +30,9 @@ internal class KtorRequestRunner(private val client: HttpClient) {
     }
 
     private suspend inline fun <reified SuccessType : Any> HttpResponse.toResult() =
-            withContext(Dispatchers.IO) {
-                kotlin.runCatching { body<SuccessType>() }
-            }
+        withContext(Dispatchers.IO) {
+            kotlin.runCatching { body<SuccessType>() }
+        }
 }
 
 internal suspend inline fun HttpClient.get(
@@ -63,4 +63,4 @@ internal suspend inline fun HttpClient.delete(
 }
 
 private fun MockzillaManagement.ConnectionConfig.url(path: String) =
-        "http://$ip:$port/${path.removePrefix("/")}"
+    "http://$ip:$port/${path.removePrefix("/")}"

@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.androidUnitTest.kotlin
+package com.apadmi.mockzilla
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,5 +34,5 @@ class TypographyTestPreview(
     }
 
     override fun toString(): String =
-            "${showkaseBrowserTypography.typographyGroup} - ${showkaseBrowserTypography.typographyName}"
+        "${showkaseBrowserTypography.typographyGroup} - ${showkaseBrowserTypography.typographyName}"
 }

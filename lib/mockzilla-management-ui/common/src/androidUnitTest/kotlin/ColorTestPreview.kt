@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.androidUnitTest.kotlin
+package com.apadmi.mockzilla
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -49,5 +49,5 @@ class ColorTestPreview(
     }
 
     override fun toString(): String =
-            "${showkaseBrowserColor.colorGroup} - ${showkaseBrowserColor.colorName}"
+        "${showkaseBrowserColor.colorGroup} - ${showkaseBrowserColor.colorName}"
 }

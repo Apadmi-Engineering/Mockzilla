@@ -52,7 +52,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
             "fastlane-build/**"
         )
 
-        diktat("1.2.1").configFile("diktat-analysis.yml")
+        diktat("1.2.5").configFile("diktat-analysis.yml")
 
         // Bump if tweaking the custom step (required to retain performance: https://javadoc.io/doc/com.diffplug.spotless/spotless-plugin-gradle/latest/com/diffplug/gradle/spotless/FormatExtension.html#bumpThisNumberIfACustomStepChanges-int-)
         bumpThisNumberIfACustomStepChanges(14)

@@ -1,4 +1,4 @@
-package  com.apadmi.mockzilla.desktop.engine.device
+package com.apadmi.mockzilla.desktop.engine.device
 
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
@@ -100,7 +100,7 @@ class ActiveDeviceManagerTests {
 
         sut.onDeviceSelectionChange.test {
             /* Run Test */
-            sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
+            sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy().copy(appPackage = "old.package"))
 
             /* Verify */
             assertEquals(Unit, awaitItem())

@@ -48,14 +48,14 @@ class ActiveDeviceManagerImpl(
         while (true) {
             allDevicesInternal.forEach { (device, statefulDevice) ->
                 val newStatefulDevice =
-                        metaDataUseCase.getMetaData(device).fold(onSuccess = { metaData ->
-                            statefulDevice.copy(
-                                isConnected = true,
-                                connectedAppPackage = metaData.appPackage
-                            )
-                        }, onFailure = {
-                            statefulDevice.copy(isConnected = false)
-                        })
+                    metaDataUseCase.getMetaData(device).fold(onSuccess = { metaData ->
+                        statefulDevice.copy(
+                            isConnected = true,
+                            connectedAppPackage = metaData.appPackage
+                        )
+                    }, onFailure = {
+                        statefulDevice.copy(isConnected = false)
+                    })
 
                 if (statefulDevice != newStatefulDevice) {
                     onDeviceConnectionStateChange.emit(Unit)

@@ -25,25 +25,25 @@ class MockzillaManagementIntegrationTests {
 
     @Test
     fun `fetchMetaData - returns metadata`() =
-            runIntegrationTest { sut, connection, runtimeParams ->
-                /* Run Test */
-                val result = sut.fetchMetaData(connection)
+        runIntegrationTest { sut, connection, runtimeParams ->
+            /* Run Test */
+            val result = sut.fetchMetaData(connection)
 
-                /* Verify */
-                assertEquals(
-                    Result.success(
-                        MetaData(
-                            appName = dummyAppName,
-                            appPackage = "-",
-                            operatingSystemVersion = System.getProperty("os.version"),
-                            deviceModel = "-",
-                            appVersion = dummyAppVersion,
-                            operatingSystem = System.getProperty("os.name"),
-                            mockzillaVersion = runtimeParams.mockzillaVersion
-                        )
-                    ), result
-                )
-            }
+            /* Verify */
+            assertEquals(
+                Result.success(
+                    MetaData(
+                        appName = dummyAppName,
+                        appPackage = "-",
+                        operatingSystemVersion = System.getProperty("os.version"),
+                        deviceModel = "-",
+                        appVersion = dummyAppVersion,
+                        operatingSystem = System.getProperty("os.name"),
+                        mockzillaVersion = runtimeParams.mockzillaVersion
+                    )
+                ), result
+            )
+        }
 
     private fun runIntegrationTest(
         config: MockzillaConfig = MockzillaConfig.Builder().setPort(0).addEndpoint(
