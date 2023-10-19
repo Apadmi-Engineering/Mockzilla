@@ -53,7 +53,11 @@ data class Strings(
 
 @Composable
 fun ProvideLocalisableStrings(content: @Composable () -> Unit) {
-    val lyricist = rememberStrings(strings)
+    // Hardcoding the locale to english for now since we're only supporting english.
+    // If we want to support multiple languages we'll have to check if the following bug is fixed,
+    // if not we'll have to work around it:
+    // https://github.com/adrielcafe/lyricist/issues/10
+    val lyricist = rememberStrings(strings, strings.keys.first())
 
     ProvideStrings(lyricist, LocalStrings, content)
 }
