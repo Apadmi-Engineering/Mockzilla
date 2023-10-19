@@ -2,6 +2,8 @@ package com.apadmi.mockzilla.desktop.utils
 
 import kotlin.time.Duration
 
+typealias TimeStampAccessor = () -> Long
+
 /**
  * @property data
  * @property timeStamp

@@ -1,31 +1,23 @@
 package  com.apadmi.mockzilla.desktop.engine.device
 
-import app.cash.turbine.test
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
+
+import app.cash.turbine.test
 import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
 import io.mockative.mock
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.Before
 import org.junit.Test
+
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.runTest
 
 class ActiveDeviceManagerTests {
-
     @Mock
     private val metaDataUseCaseMock = mock(classOf<MetaDataUseCase>())
 
@@ -130,7 +122,7 @@ class ActiveDeviceManagerTests {
             sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
 
             /* Verify */
-            skipItems(1) // One event for setting active device
+            skipItems(1)  // One event for setting active device
             expectNoEvents()
         }
     }

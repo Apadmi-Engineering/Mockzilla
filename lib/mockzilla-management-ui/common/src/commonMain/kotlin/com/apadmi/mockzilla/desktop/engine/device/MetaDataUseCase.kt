@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.desktop.engine.device
 
 import com.apadmi.mockzilla.desktop.utils.DataWithTimestamp
+import com.apadmi.mockzilla.desktop.utils.TimeStampAccessor
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.MockzillaManagement.*
@@ -14,16 +15,17 @@ interface MetaDataUseCase {
 }
 
 class MetaDataUseCaseImpl(
-    private val mockzillaManagement: MockzillaManagement
+    private val mockzillaManagement: MockzillaManagement,
+    private val currentTimeStamp: TimeStampAccessor = System::currentTimeMillis
 ) : MetaDataUseCase {
     private val mutex = Mutex()
     private val cache = mutableMapOf<Device, DataWithTimestamp<MetaData>>()
 
     override suspend fun getMetaData(device: Device): Result<MetaData> = mutex.withLock {
-        cache[device]?.takeUnless { it.isExpired(cacheLife = 0.5.seconds) }
+        cache[device]?.takeUnless { it.isExpired(cacheLife = 0.5.seconds, currentTimeStamp()) }
             ?.let { Result.success(it.data) }
             ?: mockzillaManagement.fetchMetaData(device).onSuccess {
-                cache[device] = DataWithTimestamp(it)
+                cache[device] = DataWithTimestamp(it, currentTimeStamp())
             }
     }
 }

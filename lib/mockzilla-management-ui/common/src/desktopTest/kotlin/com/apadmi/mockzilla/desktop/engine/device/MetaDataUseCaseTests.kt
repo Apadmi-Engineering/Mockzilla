@@ -1,26 +1,29 @@
 package com.apadmi.mockzilla.desktop.engine.device
 
+import com.apadmi.mockzilla.desktop.utils.TimeStampAccessor
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
+
 import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
 import io.mockative.mock
 import io.mockative.time
 import io.mockative.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.runTest
 import org.junit.Test
+
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.test.runTest
 
 class MetaDataUseCaseTests {
     @Mock
     private val mockzillaManagementMock = mock(classOf<MockzillaManagement>())
-    private fun createSut() = MetaDataUseCaseImpl(mockzillaManagementMock)
+    private fun createSut(
+        timeStampAccessor: TimeStampAccessor = System::currentTimeMillis
+    ) = MetaDataUseCaseImpl(mockzillaManagementMock, timeStampAccessor)
 
     @Test
     fun `getMetaData - fails - returns failure`() = runTest {
@@ -47,7 +50,7 @@ class MetaDataUseCaseTests {
 
         /* Run Test */
         val result = sut.getMetaData(Device.dummy())
-        val result2 = sut.getMetaData(Device.dummy()) // Should hit cache
+        val result2 = sut.getMetaData(Device.dummy())  // Should hit cache
 
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
@@ -61,15 +64,15 @@ class MetaDataUseCaseTests {
         given(mockzillaManagementMock).coroutine {
             fetchMetaData(Device.dummy())
         }.thenReturn(Result.success(MetaData.dummy()))
-        val sut = createSut()
+        var currentTimeStamp = System.currentTimeMillis()
+        val sut = createSut { currentTimeStamp }
 
         /* Run Test */
         val result = sut.getMetaData(Device.dummy())
+        // Mimic time advancing
+        currentTimeStamp += 0.6.seconds.inWholeMilliseconds
 
-        // Actual thread.sleep needed here to test cache expiry
-        Thread.sleep(1.seconds.inWholeMilliseconds)
-
-        val result2 = sut.getMetaData(Device.dummy()) // Should cache-miss
+        val result2 = sut.getMetaData(Device.dummy())  // Should cache-miss
 
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
