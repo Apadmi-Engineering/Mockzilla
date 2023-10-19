@@ -33,7 +33,7 @@ internal fun VerticalTabList(
     tabs: List<VerticalTab>,
     clockwise: Boolean,
     selected: Int?,
-    onSelect: (Int?) -> Unit,
+    onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.verticalScroll(rememberScrollState())) {
@@ -53,9 +53,9 @@ internal fun VerticalTabList(
                     .selectable(
                         selected = selected == index,
                         onClick = {
-                            onSelect(
-                                index.takeUnless { selected == index }
-                            )
+                            if (selected != index) {
+                                onSelect(index)
+                            }
                         },
                     )
                     .minimumInteractiveComponentSize(),
