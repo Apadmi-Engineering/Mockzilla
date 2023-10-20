@@ -14,6 +14,7 @@ abstract class ActiveDeviceMonitoringViewModel(
 ) : ViewModel(scope), ActiveDeviceMonitor by activeDeviceMonitor {
     init {
         activeDeviceMonitor.onDeviceSelectionChange.onEach { reloadData() }.launchIn(viewModelScope)
+
         viewModelScope.launch {
             yield()
             reloadData()
