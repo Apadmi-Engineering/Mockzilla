@@ -19,6 +19,9 @@ dependencyResolutionManagement {
 rootProject.name = "lib"
 includeBuild("build-logic")
 include(":mockzilla-management")
+include(":mockzilla-management-ui")
+include(":mockzilla-management-ui:desktop")
+include(":mockzilla-management-ui:common")
+include(":mockzilla-management-ui:android")
 include(":mockzilla-common")
 include(":mockzilla")
-include(":mockzilla-management-ui")

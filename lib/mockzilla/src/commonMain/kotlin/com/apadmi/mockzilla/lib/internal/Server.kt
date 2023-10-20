@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.internal
 
+import com.apadmi.mockzilla.BuildKonfig
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.internal.plugin.SimpleAuthPlugin
 import com.apadmi.mockzilla.lib.internal.service.AuthenticationConstants
@@ -69,7 +70,8 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
         "http://127.0.0.1:$actualPort/local-mock",
         "http://127.0.0.1:$actualPort/api",
         actualPort,
-        di.authHeaderProvider
+        di.authHeaderProvider,
+        BuildKonfig.VERSION_NAME,
     )
 }
 

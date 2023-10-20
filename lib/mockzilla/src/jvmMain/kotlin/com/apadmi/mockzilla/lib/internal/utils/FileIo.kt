@@ -21,9 +21,9 @@ internal actual class FileIo(private val cacheDir: File) {
         ?.joinToString("\n")
 
     actual suspend fun saveToCache(filename: String, contents: String) =
-            filename.fileInCache().also {
-                it.createNewFile()
-            }.writeText(contents)
+        filename.fileInCache().also {
+            it.createNewFile()
+        }.writeText(contents)
 
     actual suspend fun deleteCacheFile(filename: String) = filename.fileInCache()
         .takeIf {

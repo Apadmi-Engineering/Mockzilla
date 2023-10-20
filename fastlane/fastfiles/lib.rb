@@ -3,7 +3,7 @@ platform :ios do
     desc "iOS target for the lib"
     lane :lib_pull_request do
         gradle(
-            tasks: [":mockzilla-common:iosX64Test", ":mockzilla:iosX64Test"],
+            tasks: [":mockzilla-common:iosX64Test", ":mockzilla:iosX64Test", ":mockzilla-management:jvmTest"],
             project_dir: "./lib"
         )
 

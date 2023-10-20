@@ -9,8 +9,8 @@
     # expected values:  disabledChapters: "Naming, Comments, General, Variables, Functions, Classes"
     # or: "1, 2, 3, 4, 5, 6"
     disabledChapters: ""
-    testDirs: test, androidUnitTest
-    kotlinVersion: 1.7
+    testDirs: test, androidUnitTest, desktopTest, commonTest
+    kotlinVersion: 1.9
     srcDirectories: main, desktopMain
 # Checks that the Class/Enum/Interface name matches Pascal case
 - name: CLASS_NAME_INCORRECT
@@ -75,6 +75,7 @@
 # Checks that the name of variable is in lowerCamelCase and contains only ASCII letters
 - name: VARIABLE_NAME_INCORRECT_FORMAT
   enabled: true
+  ignoreAnnotated: [ LyricistStrings ]
 # Checks that functions have kdoc
 - name: MISSING_KDOC_ON_FUNCTION
   enabled: false

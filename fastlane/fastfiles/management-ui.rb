@@ -2,12 +2,13 @@ require "apadmi_grout"
 
 platform :android do 
 
-    screenshots_output_directory = "#{Apadmi::Grout::GitUtils.git_root}/lib/mockzilla-management-ui/src/test/snapshots/images"
+    screenshots_output_directory = "#{Apadmi::Grout::GitUtils.git_root}/lib/mockzilla-management-ui/common/src/test/snapshots/images"
 
     lane :management_ui_pull_request do
         gradle(
             tasks: [
-                ":mockzilla-management-ui:bundleDebug"
+                ":mockzilla-management-ui:common:desktopTest",
+                ":mockzilla-management-ui:android:bundleDebug"
             ],
             project_dir: "./lib"
         )
@@ -18,7 +19,7 @@ platform :android do
     lane :update_reference_screenshots do
         # Compile and Test
         gradle(
-            tasks: [":mockzilla-management-ui:recordPaparazziDebug"],
+            tasks: [":mockzilla-management-ui:common:recordPaparazziDebug"],
             project_dir: "./lib"
         )
         upload_screenshots

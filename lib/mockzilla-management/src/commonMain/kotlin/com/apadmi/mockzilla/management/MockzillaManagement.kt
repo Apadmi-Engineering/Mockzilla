@@ -1,24 +1,27 @@
 package com.apadmi.mockzilla.management
 
+import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.internal.MockzillaManagementImpl
-import com.apadmi.mockzilla.management.internal.ktor.ConnectionConfig
 import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
+import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
 
 interface MockzillaManagement {
-    suspend fun isConnected(): Boolean
-    suspend fun fetchMetaData()
-    suspend fun fetchAllMockData()
-    suspend fun postMockData()
-    suspend fun fetchMonitorLogsAndClearBuffer()
+    suspend fun fetchMetaData(connection: ConnectionConfig): Result<MetaData>
+    suspend fun fetchAllMockData(connection: ConnectionConfig)
+    suspend fun postMockData(connection: ConnectionConfig)
+    suspend fun fetchMonitorLogsAndClearBuffer(connection: ConnectionConfig)
+
+    /**
+     * Defines the info needed to create a connection to a device. (i.e. make a request)
+     */
+    interface ConnectionConfig {
+        val ip: String
+        val port: String
+    }
 
     companion object {
-        fun createConnection(
-            ip: String,
-            port: String
-        ): MockzillaManagement = MockzillaManagementImpl(
-            KtorClientProvider.createKtorClient(
-                ConnectionConfig(ip, port)
-            )
+        fun create(): MockzillaManagement = MockzillaManagementImpl(
+            KtorRequestRunner(KtorClientProvider.createKtorClient())
         )
     }
 }

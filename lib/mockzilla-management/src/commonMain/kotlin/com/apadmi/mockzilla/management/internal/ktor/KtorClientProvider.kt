@@ -1,27 +1,26 @@
 package com.apadmi.mockzilla.management.internal.ktor
 
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.resources.Resources
-
-private val ConnectionConfig.baseUrl get() = "http://$ip:$port/api"
+import io.ktor.serialization.kotlinx.json.json
 
 internal object KtorClientProvider {
-    fun createKtorClient(connectionConfig: ConnectionConfig, engine: HttpClientEngine? = null) =
-            engine?.let {
-                HttpClient(engine) {
-                    httpClientConfig(connectionConfig.baseUrl)
-                }
-            } ?: HttpClient { httpClientConfig(connectionConfig.baseUrl) }
+    fun createKtorClient(engine: HttpClientEngine? = null) =
+        engine?.let {
+            HttpClient(engine) {
+                httpClientConfig()
+            }
+        } ?: HttpClient { httpClientConfig() }
 
-    private fun HttpClientConfig<*>.httpClientConfig(baseUrl: String) {
+    private fun HttpClientConfig<*>.httpClientConfig() {
         install(ContentNegotiation) {
-            // json(JsonProvider.json)
+            json(JsonProvider.json)
         }
 
         install(Logging) {
@@ -30,8 +29,5 @@ internal object KtorClientProvider {
         }
 
         install(Resources)
-        defaultRequest {
-            url(baseUrl)
-        }
     }
 }
