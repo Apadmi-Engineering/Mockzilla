@@ -21,6 +21,7 @@ class DeviceConnectionViewModel(
     private var connectionJob: Job? = null
 
     // TODO: Replace this with better strategies of device connections
+    // This is just a rough and ready way to get the UI to be testable
     fun onIpAndPortChanged(newValue: String) {
         connectionJob?.cancel()
         val device = createDeviceOrNull(newValue)
