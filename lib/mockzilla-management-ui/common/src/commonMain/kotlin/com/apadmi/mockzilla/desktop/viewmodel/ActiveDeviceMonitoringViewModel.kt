@@ -6,7 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 
 abstract class ActiveDeviceMonitoringViewModel(
     activeDeviceMonitor: ActiveDeviceMonitor,
@@ -16,7 +15,6 @@ abstract class ActiveDeviceMonitoringViewModel(
         activeDeviceMonitor.onDeviceSelectionChange.onEach { reloadData() }.launchIn(viewModelScope)
 
         viewModelScope.launch {
-            yield()
             reloadData()
         }
     }
