@@ -15,10 +15,12 @@ class DeviceTabsViewModel(
     private val activeDeviceSelector: ActiveDeviceSelector,
     scope: CoroutineScope? = null
 ) : ActiveDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
-    val state = MutableStateFlow<State>(State(emptyList()))
+    val state = MutableStateFlow(State(emptyList()))
 
     init {
-        activeDeviceMonitor.onDeviceConnectionStateChange.onEach { reloadData() }
+        activeDeviceMonitor
+            .onDeviceConnectionStateChange
+            .onEach { reloadData() }
             .launchIn(viewModelScope)
     }
 
@@ -27,6 +29,7 @@ class DeviceTabsViewModel(
     }
 
     fun addNewDevice() {
+        // No devices being active => User sees the screen to add a new device
         activeDeviceSelector.clearActiveDevice()
     }
 
@@ -51,6 +54,8 @@ class DeviceTabsViewModel(
             val isActive: Boolean,
             val isConnected: Boolean,
             val underlyingDevice: Device
-        )
+        ) {
+            companion object
+        }
     }
 }
