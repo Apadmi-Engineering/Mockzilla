@@ -8,7 +8,7 @@ import 'package:pigeon/pigeon.dart';
     kotlinOptions: KotlinOptions(),
   ),
 )
-enum HttpMethod {
+enum ApiHttpMethod {
   get,
   head,
   post,
@@ -20,7 +20,7 @@ enum HttpMethod {
   patch;
 }
 
-enum LogLevel {
+enum ApiLogLevel {
   debug,
   error,
   info,
@@ -28,13 +28,13 @@ enum LogLevel {
   warn;
 }
 
-class MockzillaHttpRequest {
+class ApiMockzillaHttpRequest {
   final String uri;
   final Map<String?, String?> headers;
   final String body;
-  final HttpMethod method;
+  final ApiHttpMethod method;
 
-  const MockzillaHttpRequest(
+  const ApiMockzillaHttpRequest(
     this.uri,
     this.headers,
     this.method, [
@@ -42,28 +42,28 @@ class MockzillaHttpRequest {
   ]);
 }
 
-class MockzillaHttpResponse {
+class ApiMockzillaHttpResponse {
   final int statusCode;
   final Map<String?, String?> headers;
   final String body;
 
-  const MockzillaHttpResponse([
+  const ApiMockzillaHttpResponse([
     this.statusCode = 200,
     this.headers = const {},
     this.body = "",
   ]);
 }
 
-class EndpointConfig {
+class ApiEndpointConfig {
   final String name;
   final String key;
   final int? failureProbability;
   final int? delayMean;
   final int? delayVariance;
-  final MockzillaHttpResponse? webApiDefaultResponse;
-  final MockzillaHttpResponse? webApiErrorResponse;
+  final ApiMockzillaHttpResponse? webApiDefaultResponse;
+  final ApiMockzillaHttpResponse? webApiErrorResponse;
 
-  const EndpointConfig(
+  const ApiEndpointConfig(
     this.name,
     this.key, [
     this.failureProbability,
@@ -74,37 +74,37 @@ class EndpointConfig {
   ]);
 }
 
-class ReleaseModeConfig {
+class ApiReleaseModeConfig {
   final int rateLimit;
   final Duration rateLimitRefillPeriod;
   final Duration tokenLifeSpan;
 
-  const ReleaseModeConfig([
+  const ApiReleaseModeConfig([
     this.rateLimit = 60,
     this.rateLimitRefillPeriod = const Duration(seconds: 60),
     this.tokenLifeSpan = const Duration(milliseconds: 500),
   ]);
 }
 
-class MockzillaLogger {
-  final LogLevel logLevel;
+class ApiMockzillaLogger {
+  final ApiLogLevel logLevel;
   final String message;
   final String tag;
   final String? exception;
 
-  const MockzillaLogger(this.logLevel, this.message, this.tag,
+  const ApiMockzillaLogger(this.logLevel, this.message, this.tag,
       [this.exception]);
 }
 
-class MockzillaConfig {
+class ApiMockzillaConfig {
   final int port;
-  final List<EndpointConfig?> endpoints;
+  final List<ApiEndpointConfig?> endpoints;
   final bool isRelease;
   final bool localHostOnly;
-  final LogLevel logLevel;
-  final List<MockzillaLogger?> additionalLogWriters;
+  final ApiLogLevel logLevel;
+  final List<ApiMockzillaLogger?> additionalLogWriters;
 
-  const MockzillaConfig(
+  const ApiMockzillaConfig(
     this.port,
     this.endpoints,
     this.isRelease,
@@ -114,13 +114,13 @@ class MockzillaConfig {
   );
 }
 
-class MockzillaRuntimeParams {
-  final MockzillaConfig config;
+class ApiMockzillaRuntimeParams {
+  final ApiMockzillaConfig config;
   final String mockBaseUrl;
   final String apiBaseUrl;
   final int port;
 
-  const MockzillaRuntimeParams(
+  const ApiMockzillaRuntimeParams(
     this.config,
     this.mockBaseUrl,
     this.apiBaseUrl,
@@ -128,11 +128,11 @@ class MockzillaRuntimeParams {
   );
 }
 
-class AuthHeader {
+class ApiAuthHeader {
   final String key;
   final String value;
 
-  const AuthHeader(
+  const ApiAuthHeader(
     this.key,
     this.value,
   );
@@ -140,19 +140,19 @@ class AuthHeader {
 
 @HostApi()
 abstract class MockzillaHostApi {
-  MockzillaRuntimeParams startServer(MockzillaConfig config);
+  ApiMockzillaRuntimeParams startServer(ApiMockzillaConfig config);
 
   void stopServer();
 }
 
 @FlutterApi()
 abstract class MockzillaFlutterApi {
-  bool endpointMatcher(MockzillaHttpRequest request);
+  bool endpointMatcher(ApiMockzillaHttpRequest request);
 
-  MockzillaHttpResponse defaultHandler(MockzillaHttpRequest request);
+  ApiMockzillaHttpResponse defaultHandler(ApiMockzillaHttpRequest request);
 
-  MockzillaHttpResponse errorHandler(MockzillaHttpRequest request);
+  ApiMockzillaHttpResponse errorHandler(ApiMockzillaHttpRequest request);
 
   @async
-  AuthHeader generateAuthHeader();
+  ApiAuthHeader generateAuthHeader();
 }
