@@ -1,6 +1,10 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.devicetabs
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,8 +52,19 @@ fun DeviceTabsWidgetContent(
     }
     Surface(modifier = modifier) {
         HorizontalTabList(
-            tabs = state.devices.map { HorizontalTab(title = it.toString()) } +
-                    HorizontalTab(strings.widgets.deviceTabs.addDevice),
+            tabs = state.devices.map { device ->
+                HorizontalTab(
+                    title = device.name,
+                    icon = if (device.isActive) {
+                        Icons.Filled.Edit
+                    } else {
+                        Icons.Filled.Pause
+                    }
+                )
+            } + HorizontalTab(
+                title = strings.widgets.deviceTabs.addDevice,
+                icon = Icons.Filled.Add,
+            ),
             selected = selectedTab,
             onSelect = {
                 if (it > state.devices.lastIndex) {
