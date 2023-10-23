@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.management.internal
 
+import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
@@ -23,7 +24,7 @@ internal class MockzillaManagementImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaManagement.ConnectionConfig) {
-        TODO("Not yet implemented")
+    override suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaManagement.ConnectionConfig) :Result<MonitorLogsResponse> = runner {
+        get(connection, "/api/monitor-logs")
     }
 }
