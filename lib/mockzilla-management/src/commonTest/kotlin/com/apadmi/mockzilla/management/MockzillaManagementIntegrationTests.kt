@@ -1,8 +1,13 @@
 package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.testutils.runIntegrationTest
+import io.ktor.client.utils.HttpRequestCreated
+import io.ktor.http.HttpStatusCode
 import testutils.dummyEmpty
 
 import kotlin.test.Test
@@ -47,5 +52,49 @@ class MockzillaManagementIntegrationTests {
                 ),
                 actual = result
             )
+        }
+
+    @Test
+    fun `fetchMonitorLogsAndClearBuffer with network calls- returns Monitor Logs`() =
+
+
+        runIntegrationTest(
+            dummyAppName,
+            dummyAppVersion,
+            config = MockzillaConfig.Builder()
+                .setPort(0)
+                .setFailureProbabilityPercentage(0)
+                .setMeanDelayMillis(24)
+                .setDelayVarianceMillis(0)
+                .addEndpoint(
+                    endpoint = EndpointConfiguration.Builder("my-id")
+                        .setDefaultHandler {
+                            MockzillaHttpResponse(
+                                statusCode = HttpStatusCode.Created,
+                                headers = mapOf("test" to "another test"),
+                                body = "body"
+                            )
+                        }.build()
+                ).build()
+        ) { sut, connection, _ ->
+
+            /* Setup */
+
+
+
+
+
+
+            /* Run Test */
+            val result = sut.fetchMonitorLogsAndClearBuffer(connection)
+
+            /* Verify */
+            assertEquals(
+                expected = Result.success(
+                    MonitorLogsResponse.dummyEmpty()
+                ),
+                actual = result
+            )
+
         }
 }
