@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.desktop.ui.widgets.metadata
 
 import androidx.compose.runtime.Immutable
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
+import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.desktop.viewmodel.ActiveDeviceMonitoringViewModel
 import com.apadmi.mockzilla.lib.models.MetaData
@@ -15,7 +16,7 @@ class MetaDataWidgetViewModel(
 ) : ActiveDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
     val state = MutableStateFlow<State>(State.NoDeviceConnected)
 
-    override suspend fun reloadData() {
+    override suspend fun reloadData(selectedDevice: Device?) {
         state.value = getMetaData()
     }
 

@@ -41,7 +41,7 @@ class DeviceTabsViewModelTests : CoroutineTest() {
         sut.onChangeDevice(State.DeviceTabEntry.dummy().copy(underlyingDevice = Device.dummy()))
 
         /* Verify */
-        verify(activeDeviceSelectorMock).invocation { updateActiveDevice(Device.dummy()) }
+        verify(activeDeviceSelectorMock).invocation { updateSelectedDevice(Device.dummy()) }
             .wasInvoked()
     }
 
@@ -55,7 +55,7 @@ class DeviceTabsViewModelTests : CoroutineTest() {
         sut.addNewDevice()
 
         /* Verify */
-        verify(activeDeviceSelectorMock).invocation { clearActiveDevice() }.wasInvoked()
+        verify(activeDeviceSelectorMock).invocation { clearSelectedDevice() }.wasInvoked()
     }
 
     @Suppress("TOO_LONG_FUNCTION")
@@ -86,7 +86,7 @@ class DeviceTabsViewModelTests : CoroutineTest() {
             skipItems(1)
 
             /* Run Test */
-            sut.reloadData()
+            sut.reloadData(it.device)
 
             /* Verify */
             assertEquals(

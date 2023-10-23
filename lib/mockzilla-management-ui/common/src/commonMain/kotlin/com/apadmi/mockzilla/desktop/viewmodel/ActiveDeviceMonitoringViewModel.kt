@@ -8,21 +8,17 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 abstract class ActiveDeviceMonitoringViewModel(
-    activeDeviceMonitor: ActiveDeviceMonitor,
+    private val activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
-) : ViewModel(scope), ActiveDeviceMonitor by activeDeviceMonitor {
+) : ViewModel(scope) {
     init {
-        activeDeviceMonitor.onDeviceSelectionChange.onEach { reloadData() }.launchIn(viewModelScope)
-
-        viewModelScope.launch {
-            reloadData()
-        }
+        activeDeviceMonitor.selectedDevice.onEach { reloadData(it?.device) }.launchIn(viewModelScope)
     }
 
     internal suspend fun <T> activeDeviceOrDefault(
         default: T,
         block: suspend (Device) -> T
-    ): T = activeDevice?.let { block(it) } ?: default
+    ): T = activeDeviceMonitor.selectedDevice.value?.device?.let { block(it) } ?: default
 
-    abstract suspend fun reloadData()
+    abstract suspend fun reloadData(selectedDevice: Device?)
 }

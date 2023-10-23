@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.desktop.viewmodel
 
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
+import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.testutils.CoroutineTest
 
 import io.mockative.Mock
@@ -46,7 +47,7 @@ private class ConcreteDeviceMonitoringViewModel(
     scope: CoroutineScope
 ) : ActiveDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
     var reloadDataInvocationCount = 0
-    override suspend fun reloadData() {
+    override suspend fun reloadData(selectedDevice: Device?) {
         reloadDataInvocationCount++
     }
 }

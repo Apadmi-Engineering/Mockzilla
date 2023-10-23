@@ -34,7 +34,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
 
         sut.onDeviceSelectionChange.test {
             /* Run Test */
-            sut.updateActiveDevice(Device.dummy())
+            sut.updateSelectedDevice(Device.dummy())
 
             /* Verify */
             assertEquals(Unit, awaitItem())
@@ -88,7 +88,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
 
         sut.onDeviceSelectionChange.test {
             /* Run Test */
-            sut.clearActiveDevice()
+            sut.clearSelectedDevice()
 
             /* Verify */
             assertNull(sut.activeDevice)

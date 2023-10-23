@@ -20,22 +20,22 @@ class DeviceTabsViewModel(
     init {
         activeDeviceMonitor
             .onDeviceConnectionStateChange
-            .onEach { reloadData() }
+            .onEach { reloadData(activeDeviceMonitor.selectedDevice.value?.device) }
             .launchIn(viewModelScope)
     }
 
     fun onChangeDevice(entry: State.DeviceTabEntry) {
-        activeDeviceSelector.updateActiveDevice(entry.underlyingDevice)
+        activeDeviceSelector.updateSelectedDevice(entry.underlyingDevice)
     }
 
     fun addNewDevice() {
         // No devices being active => User sees the screen to add a new device
-        activeDeviceSelector.clearActiveDevice()
+        activeDeviceSelector.clearSelectedDevice()
     }
 
-    override suspend fun reloadData() {
+    override suspend fun reloadData(selectedDevice: Device?) {
         state.value = State(devices = activeDeviceMonitor.allDevices.map {
-            State.DeviceTabEntry(it.name, it.device == activeDevice, it.isConnected, it.device)
+            State.DeviceTabEntry(it.name, it.device == selectedDevice, it.isConnected, it.device)
         })
     }
 
