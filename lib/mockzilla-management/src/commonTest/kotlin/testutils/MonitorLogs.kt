@@ -10,6 +10,7 @@ fun MonitorLogsResponse.Companion.dummyEmpty() = MonitorLogsResponse(
 )
 
 
+//NOTE: This should match your simulated request
 fun MonitorLogsResponse.Companion.dummyPopulated() = MonitorLogsResponse(
     appPackage = "-",
     logs = listOf(
