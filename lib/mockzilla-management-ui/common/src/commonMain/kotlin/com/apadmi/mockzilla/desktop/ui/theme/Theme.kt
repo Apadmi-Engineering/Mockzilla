@@ -6,6 +6,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.graphics.compositeOver
 import com.apadmi.mockzilla.desktop.i18n.ProvideLocalisableStrings
 
 private val lightColors = lightColorScheme(
@@ -27,7 +28,8 @@ private val lightColors = lightColorScheme(
     onErrorContainer = md_theme_light_onErrorContainer,
     background = md_theme_light_background,
     onBackground = md_theme_light_onBackground,
-    surface = md_theme_light_surface,
+    // Temporary solution to make surfaces a little darker than the backgrounds
+    surface = md_theme_light_primary.copy(alpha = 0.05F).compositeOver(md_theme_light_surface),
     onSurface = md_theme_light_onSurface,
     surfaceVariant = md_theme_light_surfaceVariant,
     onSurfaceVariant = md_theme_light_onSurfaceVariant,
@@ -59,7 +61,8 @@ private val darkColors = darkColorScheme(
     onErrorContainer = md_theme_dark_onErrorContainer,
     background = md_theme_dark_background,
     onBackground = md_theme_dark_onBackground,
-    surface = md_theme_dark_surface,
+    // Temporary solution to make surfaces a little darker than the backgrounds
+    surface = md_theme_dark_primary.copy(alpha = 0.05F).compositeOver(md_theme_dark_surface),
     onSurface = md_theme_dark_onSurface,
     surfaceVariant = md_theme_dark_surfaceVariant,
     onSurfaceVariant = md_theme_dark_onSurfaceVariant,

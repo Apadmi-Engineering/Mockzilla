@@ -47,24 +47,12 @@ internal fun VerticalTabList(
             TabItem(
                 title = tab.title,
                 selected = selected == index,
-                modifier = Modifier
-                    .rotateVertically(clockwise)
-                    .background(
-                        color = if (selected == index) {
-                            MaterialTheme.colorScheme.surfaceVariant
-                        } else {
-                            MaterialTheme.colorScheme.surface
-                        }
-                    )
-                    .selectable(
-                        selected = selected == index,
-                        onClick = {
-                            if (selected != index) {
-                                onSelect(index)
-                            }
-                        },
-                    )
-                    .minimumInteractiveComponentSize(),
+                onSelect = {
+                    if (selected != index) {
+                        onSelect(index)
+                    }
+                },
+                modifier = Modifier.rotateVertically(clockwise)
             )
         }
     }
@@ -81,25 +69,13 @@ internal fun HorizontalTabList(
         tabs.forEachIndexed { index, tab ->
             TabItem(
                 title = tab.title,
-                icon = tab.icon,
                 selected = selected == index,
-                modifier = Modifier
-                    .background(
-                        color = if (selected == index) {
-                            MaterialTheme.colorScheme.surfaceVariant
-                        } else {
-                            MaterialTheme.colorScheme.surface
-                        }
-                    )
-                    .selectable(
-                        selected = selected == index,
-                        onClick = {
-                            if (selected != index) {
-                                onSelect(index)
-                            }
-                        },
-                    )
-                    .minimumInteractiveComponentSize(),
+                onSelect = {
+                    if (selected != index) {
+                        onSelect(index)
+                    }
+                },
+                icon = tab.icon,
             )
         }
     }
@@ -109,6 +85,7 @@ internal fun HorizontalTabList(
 private fun TabItem(
     title: String,
     selected: Boolean,
+    onSelect: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
 ) {
@@ -118,9 +95,18 @@ private fun TabItem(
         } else {
             MaterialTheme.colorScheme.surface
         },
-        modifier = modifier.padding(8.dp),
+        modifier = modifier,
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .selectable(
+                    selected = selected,
+                    onClick = onSelect,
+                )
+                .minimumInteractiveComponentSize()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             if (icon != null) {
                 Icon(
                     imageVector = icon,

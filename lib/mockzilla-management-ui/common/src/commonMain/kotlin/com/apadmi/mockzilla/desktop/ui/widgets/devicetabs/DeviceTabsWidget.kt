@@ -4,6 +4,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -56,7 +57,11 @@ fun DeviceTabsWidgetContent(
                 HorizontalTab(
                     title = device.name,
                     icon = if (device.isActive) {
-                        Icons.Filled.Edit
+                        if (device.isConnected) {
+                            Icons.Filled.Edit
+                        } else {
+                            Icons.Filled.EditOff
+                        }
                     } else {
                         Icons.Filled.Pause
                     }
@@ -88,10 +93,10 @@ fun DeviceTabsWidgetEmptyContentPreview() = PreviewSurface {
     )
 }
 
-@ShowkaseComposable("DeviceTabsWidget-OneDeviceConnected", "DeviceTabsWidget")
+@ShowkaseComposable("DeviceTabsWidget-DeviceConnected", "DeviceTabsWidget")
 @Composable
 @Preview
-fun DeviceTabsWidgetContentPreview() = PreviewSurface {
+fun DeviceTabsWidgetConnectedContentPreview() = PreviewSurface {
     DeviceTabsWidgetContent(
         State(
             devices = listOf(
@@ -99,7 +104,39 @@ fun DeviceTabsWidgetContentPreview() = PreviewSurface {
                     name = "Phone",
                     isActive = true,
                     isConnected = true,
-                    underlyingDevice = Device(ip = "123.456.123.456", port = "8080")
+                    underlyingDevice = Device(ip = "123.0.0.1", port = "8080")
+                ),
+                State.DeviceTabEntry(
+                    name = "Second phone",
+                    isActive = false,
+                    isConnected = false,
+                    underlyingDevice = Device(ip = "123.0.0.2", port = "8080")
+                )
+            )
+        ),
+        onSelect = {},
+        onAddNewDevice = {},
+    )
+}
+
+@ShowkaseComposable("DeviceTabsWidget-Disconnected", "DeviceTabsWidget")
+@Composable
+@Preview
+fun DeviceTabsWidgetDisconnectedContentPreview() = PreviewSurface {
+    DeviceTabsWidgetContent(
+        State(
+            devices = listOf(
+                State.DeviceTabEntry(
+                    name = "Phone",
+                    isActive = true,
+                    isConnected = false,
+                    underlyingDevice = Device(ip = "123.0.0.1", port = "8080")
+                ),
+                State.DeviceTabEntry(
+                    name = "Second phone",
+                    isActive = false,
+                    isConnected = false,
+                    underlyingDevice = Device(ip = "123.0.0.2", port = "8080")
                 )
             )
         ),
