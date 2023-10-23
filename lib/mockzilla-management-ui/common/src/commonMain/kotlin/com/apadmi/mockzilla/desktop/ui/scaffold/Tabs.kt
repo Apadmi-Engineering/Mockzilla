@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.desktop.ui.scaffold
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +32,7 @@ internal data class VerticalTab(
 internal data class HorizontalTab(
     val title: String,
     val icon: ImageVector? = null,
+    val subtitle: String? = null,
 )
 
 @Composable
@@ -76,6 +77,7 @@ internal fun HorizontalTabList(
                     }
                 },
                 icon = tab.icon,
+                subtitle = tab.subtitle,
             )
         }
     }
@@ -88,6 +90,7 @@ private fun TabItem(
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
+    subtitle: String? = null,
 ) {
     Surface(
         color = if (selected) {
@@ -114,9 +117,20 @@ private fun TabItem(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
             }
-            Text(
-                text = title,
-            )
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = title,
+                )
+                if (subtitle != null) {
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
         }
     }
 }

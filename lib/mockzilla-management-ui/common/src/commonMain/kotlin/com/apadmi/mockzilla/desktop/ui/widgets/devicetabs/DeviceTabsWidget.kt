@@ -64,11 +64,18 @@ fun DeviceTabsWidgetContent(
                         }
                     } else {
                         Icons.Filled.Pause
+                    },
+                    subtitle = if (device.isConnected) {
+                        strings.widgets.deviceTabs.connected
+                    } else {
+                        strings.widgets.deviceTabs.disconnected
                     }
                 )
             } + HorizontalTab(
                 title = strings.widgets.deviceTabs.addDevice,
                 icon = Icons.Filled.Add,
+                // always ensure tabs have a subtitle to keep tab heights the same
+                subtitle = strings.widgets.deviceTabs.devices(state.devices.size),
             ),
             selected = selectedTab,
             onSelect = {
