@@ -1,10 +1,9 @@
 package com.apadmi.mockzilla.management
 
-import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.testutils.runIntegrationTest
-import io.ktor.http.HttpStatusCode
+import testutils.dummyEmpty
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,7 +35,7 @@ class MockzillaManagementIntegrationTests {
         }
 
     @Test
-    fun `fetchMonitorLogsAndClearBuffer - returns Monitor Logs with buffer clear`() =
+    fun `fetchMonitorLogsAndClearBuffer - returns empty Monitor Logs`() =
         runIntegrationTest(dummyAppName, dummyAppVersion) { sut, connection, _ ->
             /* Run Test */
             val result = sut.fetchMonitorLogsAndClearBuffer(connection)
@@ -44,26 +43,9 @@ class MockzillaManagementIntegrationTests {
             /* Verify */
             assertEquals(
                 expected = Result.success(
-                    MonitorLogsResponse(
-                        appPackage = "package",
-                        logs = listOf(
-                            LogEvent(
-                                timestamp = 1234,
-                                url = "url",
-                                requestBody = "body",
-                                requestHeaders = mapOf("1" to "request1", "2" to "request2"),
-                                responseHeaders = mapOf("1" to "response1", "2" to "request2"),
-                                responseBody = "body",
-                                status = HttpStatusCode.Accepted,
-                                delay = 1000,
-                                method = "method",
-                                isIntendedFailure = false,
-                            )
-                        ),
-                    )
+                    MonitorLogsResponse.dummyEmpty()
                 ),
                 actual = result
             )
-
         }
 }
