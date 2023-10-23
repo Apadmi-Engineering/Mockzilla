@@ -2,8 +2,6 @@ package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
-import com.apadmi.mockzilla.lib.internal.models.toJson
-import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
