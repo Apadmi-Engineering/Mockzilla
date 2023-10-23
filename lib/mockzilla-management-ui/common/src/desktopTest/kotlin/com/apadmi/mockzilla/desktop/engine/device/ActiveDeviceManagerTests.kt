@@ -14,7 +14,6 @@ import org.junit.Test
 
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
-import kotlinx.coroutines.test.runBlockingTest
 
 class ActiveDeviceManagerTests : CoroutineTest() {
     @Mock

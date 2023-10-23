@@ -7,14 +7,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
 interface ActiveDeviceMonitor {
-    val onDeviceSelectionChange: SharedFlow<Unit>
-    val onDeviceConnectionStateChange: SharedFlow<Unit>
+    // Fires each time the user changes the currently selected device (or connected app package changes)
+    val onDeviceSelectionChange: Flow<Unit>
+
+    // Fires when a device connects / disconnects
+    val onDeviceConnectionStateChange: Flow<Unit>
     val activeDevice: Device?
     val allDevices: Collection<StatefulDevice>
 }
