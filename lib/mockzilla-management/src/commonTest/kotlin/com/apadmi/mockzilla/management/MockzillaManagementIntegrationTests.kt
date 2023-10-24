@@ -61,6 +61,7 @@ class MockzillaManagementIntegrationTests {
     private val fetchLogsAndClearBufferEndpoint = "clear-endpoint"
 
     //the mock log
+    @Suppress("MAGIC_NUMBER")
     private val mockLog = LogEvent(
         timestamp = 0,
         url = "/local-mock/$fetchLogsAndClearBufferEndpoint",
