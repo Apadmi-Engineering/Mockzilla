@@ -1,5 +1,6 @@
 
-@file: Suppress("MAGIC_NUMBER")
+@file:Suppress("MAGIC_NUMBER")
+
 package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
@@ -19,6 +20,21 @@ import kotlin.test.assertEquals
 class MockzillaManagementIntegrationTests {
     private val dummyAppName = "MockzillaManagementTest"
     private val dummyAppVersion = "0.0.0-test"
+    private val fetchLogsAndClearBufferEndpoint = "clear-endpoint"
+
+    // the mock log
+    private val mockLog = LogEvent(
+        timestamp = 0,
+        url = "/local-mock/$fetchLogsAndClearBufferEndpoint",
+        requestBody = "",
+        requestHeaders = emptyMap(),
+        responseBody = "",
+        responseHeaders = emptyMap(),
+        status = HttpStatusCode.Created,
+        delay = 24,
+        method = "GET",
+        isIntendedFailure = false
+    )
 
     @Test
     fun `fetchMetaData - returns metadata`() =
@@ -59,24 +75,6 @@ class MockzillaManagementIntegrationTests {
             )
         }
 
-
-    private val fetchLogsAndClearBufferEndpoint = "clear-endpoint"
-
-    //the mock log
-    private val mockLog = LogEvent(
-        timestamp = 0,
-        url = "/local-mock/$fetchLogsAndClearBufferEndpoint",
-        requestBody = "",
-        requestHeaders = emptyMap(),
-        responseBody = "",
-        responseHeaders = emptyMap(),
-        status = HttpStatusCode.Created,
-        delay = 24,
-        method = "GET",
-        isIntendedFailure = false
-    )
-
-
     @Suppress("MAGIC_NUMBER")
     @Test
     fun `fetchMonitorLogsAndClearBuffer with network calls- returns list of logs`() =
@@ -106,7 +104,6 @@ class MockzillaManagementIntegrationTests {
             HttpClient(CIO)
                 .get(urlString = "${params.mockBaseUrl}/$fetchLogsAndClearBufferEndpoint")
 
-
             val expectedLogs = MonitorLogsResponse(appPackage = "-", listOf(mockLog))
 
             /* Run Test */
@@ -122,8 +119,5 @@ class MockzillaManagementIntegrationTests {
                     )
                 })
             )
-
-
         }
-
 }

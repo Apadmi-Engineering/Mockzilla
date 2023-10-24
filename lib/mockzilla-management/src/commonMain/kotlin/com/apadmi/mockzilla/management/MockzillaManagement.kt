@@ -10,7 +10,7 @@ interface MockzillaManagement {
     suspend fun fetchMetaData(connection: ConnectionConfig): Result<MetaData>
     suspend fun fetchAllMockData(connection: ConnectionConfig)
     suspend fun postMockData(connection: ConnectionConfig)
-    suspend fun fetchMonitorLogsAndClearBuffer(connection: ConnectionConfig) : Result<MonitorLogsResponse>
+    suspend fun fetchMonitorLogsAndClearBuffer(connection: ConnectionConfig): Result<MonitorLogsResponse>
 
     /**
      * Defines the info needed to create a connection to a device. (i.e. make a request)
