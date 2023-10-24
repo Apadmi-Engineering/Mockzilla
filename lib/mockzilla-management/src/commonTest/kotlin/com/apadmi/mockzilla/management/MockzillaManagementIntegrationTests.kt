@@ -75,6 +75,7 @@ class MockzillaManagementIntegrationTests {
     )
 
 
+    @Suppress("MAGIC_NUMBER")
     @Test
     fun `fetchMonitorLogsAndClearBuffer with network calls- returns list of logs`() =
         runIntegrationTest(
