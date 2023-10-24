@@ -1,3 +1,5 @@
+
+@file: Suppress("MAGIC_NUMBER")
 package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
@@ -61,7 +63,6 @@ class MockzillaManagementIntegrationTests {
     private val fetchLogsAndClearBufferEndpoint = "clear-endpoint"
 
     //the mock log
-    @Suppress("MAGIC_NUMBER")
     private val mockLog = LogEvent(
         timestamp = 0,
         url = "/local-mock/$fetchLogsAndClearBufferEndpoint",
