@@ -1,3 +1,5 @@
+@file:Suppress("MAGIC_NUMBER")
+
 package com.apadmi.mockzilla.desktop.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme

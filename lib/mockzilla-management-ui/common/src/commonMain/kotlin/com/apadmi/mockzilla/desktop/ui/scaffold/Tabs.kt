@@ -110,7 +110,7 @@ private fun TabItem(
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (icon != null) {
+            icon?.let {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
@@ -124,7 +124,7 @@ private fun TabItem(
                 Text(
                     text = title,
                 )
-                if (subtitle != null) {
+                subtitle?.let {
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodySmall,
