@@ -38,6 +38,10 @@ You might have all these installed already, but just in case:
 7. Go into the project level `build.gradle.kts` and sync the project.
 8. Finally, run a test to make sure everything built correctly!
 
+
+## Running the app
+1. Go into the `lib` directory in Android Studio.
+2. Run `./gradlew :mockzilla-management-ui:desktop:run` 
 ## Write your code!
 
 1. Checkout the tests. The library is setup with TDD in mind, we recommend writing your tests first!
