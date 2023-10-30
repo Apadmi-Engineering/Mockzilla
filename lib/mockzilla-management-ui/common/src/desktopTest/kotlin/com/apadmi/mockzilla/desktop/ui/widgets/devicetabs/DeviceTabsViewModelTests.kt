@@ -9,6 +9,7 @@ import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
+import com.apadmi.mockzilla.testutils.SelectedDeviceMonitoringViewModelBaseTest
 import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
@@ -19,16 +20,13 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.flowOf
 
-class DeviceTabsViewModelTests : CoroutineTest() {
-    @Mock
-    private val activeDeviceMonitorMock = mock(classOf<ActiveDeviceMonitor>())
+class DeviceTabsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
 
     @Mock
     private val activeDeviceSelectorMock = mock(classOf<ActiveDeviceSelector>())
 
     private fun createSut() = DeviceTabsViewModel(activeDeviceMonitorMock.also {
         given(it).invocation { onDeviceConnectionStateChange }.thenReturn(flowOf())
-        given(it).invocation { onDeviceSelectionChange }.thenReturn(flowOf())
     }, activeDeviceSelectorMock, testScope)
 
     @Test
@@ -79,14 +77,13 @@ class DeviceTabsViewModelTests : CoroutineTest() {
                 ),
             )
         )
-        given(activeDeviceMonitorMock).invocation { activeDevice }.thenReturn(dummyActiveDevice)
 
         val sut = createSut()
         sut.state.test {
             skipItems(1)
 
             /* Run Test */
-            sut.reloadData(it.device)
+            sut.reloadData(dummyActiveDevice)
 
             /* Verify */
             assertEquals(

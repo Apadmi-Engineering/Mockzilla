@@ -3,7 +3,7 @@ package com.apadmi.mockzilla.desktop.ui.widgets.devicetabs
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.desktop.engine.device.Device
-import com.apadmi.mockzilla.desktop.viewmodel.ActiveDeviceMonitoringViewModel
+import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ class DeviceTabsViewModel(
     private val activeDeviceMonitor: ActiveDeviceMonitor,
     private val activeDeviceSelector: ActiveDeviceSelector,
     scope: CoroutineScope? = null
-) : ActiveDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
+) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
     val state = MutableStateFlow(State(emptyList()))
 
     init {

@@ -19,4 +19,6 @@ data class StatefulDevice(
     val name: String,
     val isConnected: Boolean,
     val connectedAppPackage: String
-)
+) {
+    companion object
+}

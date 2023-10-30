@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
-import com.apadmi.mockzilla.desktop.viewmodel.ActiveDeviceMonitoringViewModel
+import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
 import com.apadmi.mockzilla.lib.models.MetaData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +13,7 @@ class MetaDataWidgetViewModel(
     private val metaDataUseCase: MetaDataUseCase,
     activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
-) : ActiveDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
+) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
     val state = MutableStateFlow<State>(State.NoDeviceConnected)
 
     override suspend fun reloadData(selectedDevice: Device?) {

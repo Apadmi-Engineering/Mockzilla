@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-abstract class ActiveDeviceMonitoringViewModel(
+abstract class SelectedDeviceMonitoringViewModel(
     private val activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
