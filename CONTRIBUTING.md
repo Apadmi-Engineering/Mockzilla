@@ -28,15 +28,14 @@ You might have all these installed already, but just in case:
 
 ## Getting Started
 
-1. Fork the repo. Make sure to untick the "Copy the master branch onl2" option to get all branches.
-3. Clone your local copy.
-4. Checkout the develop branch `git checkout develop`.
-5. Open up the project in the `lib` directory in Android Studio. 
-6. Regarding your `local.properties`: 
- * If you have one, verify in your `local.properties` sdk location contains `sdk.dir=/Users/[Your pc username]/Library/Android/sdk`. If you get errors, double check you've got Android SDK 32.
- * If not, create a `local.properties` file in your `lib` directory with the above path.
-7. Go into the project level `build.gradle.kts` and sync the project.
-8. Finally, run a test to make sure everything built correctly!
+1. Fork the repo. Make sure to untick the "Copy the master branch only" option to get all branches.
+2. Clone your local copy.
+3. Checkout the develop branch `git checkout develop`.
+4. Open up the project in the `lib` directory in Android Studio. 
+5. Regarding your `local.properties` - if you have one, verify in your `local.properties` sdk location contains `sdk.dir=/Users/[Your pc username]/Library/Android/sdk`. If you get errors, double check you've got Android SDK 32.
+If not, create a `local.properties` file in your `lib` directory containing the above path.
+6. Go into the project level `build.gradle.kts` and sync the project.
+7. Finally, run a test to make sure everything built correctly!
 
 
 ## Running the app
@@ -44,8 +43,10 @@ You might have all these installed already, but just in case:
 2. Run `./gradlew :mockzilla-management-ui:desktop:run` 
 ## Write your code!
 
-1. Checkout the tests. The library is setup with TDD in mind, we recommend writing your tests first!
+1. Checkout the tests. The library is setup with TDD in mind, we recommend writing your tests first! 
+You can make these in the `Mockzilla/lib/mockzilla/commonTest/` mockzilla package. 
 2. Implement your feature/bugfix!
+3. Write the tests and make the tests pass.
 
 ### Testing through the demo apps.
 
@@ -60,10 +61,16 @@ Note: Currently there's no way to test the Swift package locally without it firs
 
 We use Spotless to reformat and organise all of our library code. It runs automatically on compilation so please ensure you've compiled your code before submitting a pull request.
 
+To run spotless manually, do `./gradlew spotlessApply`.
+
 
 ## Create a pull request
 
-Creating a pull request will check everything compiles and runs all your tests. Once all the checks pass, we'll review your code and hopefully get it merged!
+Creating a pull request will check everything compiles and runs all your tests. 
+
+A good pull request will have an appropriate title and summary outlining what you've done.
+
+Once all the checks pass, we'll review your code and hopefully get it merged!
 
 ## Releases
 
