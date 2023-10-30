@@ -41,6 +41,9 @@ If not, create a `local.properties` file in your `lib` directory containing the 
 ## Running the app
 1. Go into the `lib` directory in Android Studio.
 2. Run `./gradlew :mockzilla-management-ui:desktop:run` 
+
+!!! note 
+    For front end development, you'll need to be connected to a running Mockzilla instance. You can use an app you already have or run one of the demo apps in the top level of the repo :) 
 ## Write your code!
 
 1. Checkout the tests. The library is setup with TDD in mind, we recommend writing your tests first! 
