@@ -87,7 +87,7 @@ internal suspend fun MockServerMonitor.log(
 ) = log(LogEvent(
     timestamp = timeStamp,
     url = request.uri,
-    requestBody = request.body,
+    requestBody = runCatching { request.bodyAsString() }.getOrDefault("<Could not read request body>"),
     requestHeaders = request.headers,
     responseHeaders = response.headers,
     responseBody = response.body,
