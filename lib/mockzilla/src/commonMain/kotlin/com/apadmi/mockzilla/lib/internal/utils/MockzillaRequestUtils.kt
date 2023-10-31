@@ -54,7 +54,7 @@ internal class FakeMockzillaHttpRequest(
     override fun bodyAsString() = body
 }
 
-internal suspend fun ApplicationCall.toMockzillaRequest(
+internal fun ApplicationCall.toMockzillaRequest(
     method: HttpMethod,
 ) = DefaultMockzillaHttpRequest(
     this,
