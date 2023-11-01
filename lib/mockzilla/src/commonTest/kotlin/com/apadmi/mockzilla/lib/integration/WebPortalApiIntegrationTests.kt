@@ -16,7 +16,6 @@ import io.ktor.http.*
 
 import kotlin.math.abs
 import kotlin.test.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -98,7 +97,7 @@ class WebPortalApiIntegrationTests {
             .build(),
         setup = { cacheService ->
             cacheService.updateLocalCache(
-                EndpointConfiguration.Builder("id").build().toMockDataEntry()
+                EndpointConfiguration.Builder("id").build().toMockDataEntryForWeb()
             )
             cacheService.updateGlobalOverrides(GlobalOverridesDto(null, null, null))
         }
@@ -135,7 +134,7 @@ class WebPortalApiIntegrationTests {
                                     headers = mapOf("Content-Type" to "application/json")
                                 )
                             }.build()
-                                .toMockDataEntry()
+                                .toMockDataEntryForWeb()
                         )
                     )
                 }
@@ -149,7 +148,7 @@ class WebPortalApiIntegrationTests {
                             headers = mapOf("Content-Type" to "application/json")
                         )
                     }.build()
-                        .toMockDataEntry(),
+                        .toMockDataEntryForWeb(),
                     cacheService.getLocalCache("id")
                 )
                 assertEquals(

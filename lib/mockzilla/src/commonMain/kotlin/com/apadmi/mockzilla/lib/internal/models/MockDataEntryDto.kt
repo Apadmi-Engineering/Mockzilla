@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.lib.internal.models
 
+import com.apadmi.mockzilla.lib.internal.utils.FakeMockzillaHttpRequest
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import io.ktor.http.*
 import kotlinx.serialization.SerialName
@@ -48,8 +48,8 @@ internal data class MockDataEntryDto(
     )
 }
 
-internal fun EndpointConfiguration.toMockDataEntry(): MockDataEntryDto {
-    val defaultRequest = MockzillaHttpRequest(
+internal fun EndpointConfiguration.toMockDataEntryForWeb(): MockDataEntryDto {
+    val defaultRequest = FakeMockzillaHttpRequest(
         "https://this-is-being-called-from-the-web-api.com",
         emptyMap(),
         "This is being called from the web portal",
