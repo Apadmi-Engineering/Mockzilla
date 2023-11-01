@@ -35,7 +35,7 @@ This is the bulk of the RFC. Explain the design in enough detail for somebody fa
 
 ## Drawbacks
 
-I Why should we not do this?
+Why should we not do this?
 
 ## Alternatives
 
