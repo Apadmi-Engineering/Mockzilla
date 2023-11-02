@@ -6,11 +6,11 @@ abstract class MockzillaPlatform extends PlatformInterface {
 
   MockzillaPlatform() : super(token: _token);
 
-  MockzillaRuntimeParams startMockzilla(MockzillaConfig config) {
+  Future<void> startMockzilla(MockzillaConfig config) {
     throw UnimplementedError("startMockzilla() has not been implemented");
   }
 
-  stopMockzilla() {
+  Future<void> stopMockzilla() {
     throw UnimplementedError("stopMockzilla() has not been implemented");
   }
 }
