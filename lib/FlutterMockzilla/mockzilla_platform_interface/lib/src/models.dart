@@ -10,9 +10,7 @@ enum HttpMethod {
   post,
   put,
   delete,
-  connect,
   options,
-  trace,
   patch;
 }
 
@@ -70,14 +68,8 @@ class ReleaseModeConfig with _$ReleaseModeConfig {
   }) = _ReleaseModeConfig;
 }
 
-@freezed
-class MockzillaLogger with _$MockzillaLogger {
-  const factory MockzillaLogger({
-    required LogLevel logLevel,
-    required String message,
-    required String tag,
-    Exception? exception,
-  }) = _MockzillaLogger;
+abstract class MockzillaLogger {
+  void log(LogLevel level, String message, String tag, Exception? exception);
 }
 
 @freezed
@@ -88,6 +80,7 @@ class MockzillaConfig with _$MockzillaConfig {
     required bool isRelease,
     required bool localHostOnly,
     required LogLevel logLevel,
+    required ReleaseModeConfig releaseModeConfig,
     required List<MockzillaLogger> additionalLogWriters,
   }) = _MockzillaConfig;
 }
