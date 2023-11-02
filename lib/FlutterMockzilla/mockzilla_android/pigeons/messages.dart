@@ -14,9 +14,7 @@ enum ApiHttpMethod {
   post,
   put,
   delete,
-  connect,
   options,
-  trace,
   patch;
 }
 
@@ -76,24 +74,14 @@ class ApiEndpointConfig {
 
 class ApiReleaseModeConfig {
   final int rateLimit;
-  final Duration rateLimitRefillPeriod;
-  final Duration tokenLifeSpan;
+  final int rateLimitRefillPeriodMillis;
+  final int tokenLifeSpanMillis;
 
   const ApiReleaseModeConfig([
     this.rateLimit = 60,
-    this.rateLimitRefillPeriod = const Duration(seconds: 60),
-    this.tokenLifeSpan = const Duration(milliseconds: 500),
+    this.rateLimitRefillPeriodMillis = 60000,
+    this.tokenLifeSpanMillis = 500,
   ]);
-}
-
-class ApiMockzillaLogger {
-  final ApiLogLevel logLevel;
-  final String message;
-  final String tag;
-  final String? exception;
-
-  const ApiMockzillaLogger(this.logLevel, this.message, this.tag,
-      [this.exception]);
 }
 
 class ApiMockzillaConfig {
@@ -102,7 +90,7 @@ class ApiMockzillaConfig {
   final bool isRelease;
   final bool localHostOnly;
   final ApiLogLevel logLevel;
-  final List<ApiMockzillaLogger?> additionalLogWriters;
+  final ApiReleaseModeConfig releaseModeConfig;
 
   const ApiMockzillaConfig(
     this.port,
@@ -110,7 +98,7 @@ class ApiMockzillaConfig {
     this.isRelease,
     this.localHostOnly,
     this.logLevel,
-    this.additionalLogWriters,
+    this.releaseModeConfig,
   );
 }
 
@@ -147,7 +135,7 @@ abstract class MockzillaHostApi {
 
 @FlutterApi()
 abstract class MockzillaFlutterApi {
-  bool endpointMatcher(ApiMockzillaHttpRequest request);
+  String endpointMatcher(ApiMockzillaHttpRequest request);
 
   ApiMockzillaHttpResponse defaultHandler(ApiMockzillaHttpRequest request);
 
@@ -155,4 +143,11 @@ abstract class MockzillaFlutterApi {
 
   @async
   ApiAuthHeader generateAuthHeader();
+
+  void log(
+    ApiLogLevel logLevel,
+    String message,
+    String tag,
+    String? exception,
+  );
 }
