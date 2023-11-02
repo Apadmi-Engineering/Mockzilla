@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mockzilla_android: ^0.0.1
+  mockzilla_android:
+    path: ../mockzilla_android
 
 dev_dependencies:
   flutter_test:
@@ -24,6 +25,4 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.apadmi.mockzilla
-        pluginClass: Mockzilla
         default_package: mockzilla_android
