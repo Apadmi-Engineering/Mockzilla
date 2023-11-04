@@ -33,7 +33,7 @@ class ActiveDeviceMonitoringViewModelTests : CoroutineTest() {
         given(activeDeviceMonitorMock).invocation { selectedDevice }.thenReturn(testFlow)
 
         testFlow.test {
-            val sut = ConcreteDeviceMonitoringViewModel(activeDeviceMonitorMock, this)
+            val sut = ConcreteDeviceMonitoringViewModel(activeDeviceMonitorMock, backgroundScope)
             yield()
 
             /* Run Test */
@@ -57,7 +57,7 @@ class ActiveDeviceMonitoringViewModelTests : CoroutineTest() {
         given(activeDeviceMonitorMock).invocation { selectedDevice }.thenReturn(MutableStateFlow(null))
 
         /* Run Test */
-        val sut = ConcreteDeviceMonitoringViewModel(activeDeviceMonitorMock, this)
+        val sut = ConcreteDeviceMonitoringViewModel(activeDeviceMonitorMock, backgroundScope)
 
         /* Verify */
         yield()

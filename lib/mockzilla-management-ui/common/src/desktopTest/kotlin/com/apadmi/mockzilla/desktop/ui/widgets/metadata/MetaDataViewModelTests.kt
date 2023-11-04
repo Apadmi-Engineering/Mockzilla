@@ -25,7 +25,7 @@ class MetaDataViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
     fun `getMetaData - no active device - state=NoDeviceConnected`() = runBlockingTest {
         /* Setup */
         selectedDeviceMock.value = null
-        val sut = MetaDataWidgetViewModel(metaDataUseCaseMock, activeDeviceMonitorMock, this)
+        val sut = MetaDataWidgetViewModel(metaDataUseCaseMock, activeDeviceMonitorMock, backgroundScope)
 
         /* Run Test */
         sut.state.test {
@@ -40,7 +40,7 @@ class MetaDataViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
         given(metaDataUseCaseMock).coroutine {
             getMetaData(StatefulDevice.dummy().device)
         }.thenReturn(Result.success(MetaData.dummy()))
-        val sut = MetaDataWidgetViewModel(metaDataUseCaseMock, activeDeviceMonitorMock, this)
+        val sut = MetaDataWidgetViewModel(metaDataUseCaseMock, activeDeviceMonitorMock, backgroundScope)
 
         /* Run Test */
         sut.state.test {
@@ -57,7 +57,7 @@ class MetaDataViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
         given(metaDataUseCaseMock).coroutine {
             getMetaData(StatefulDevice.dummy().device)
         }.thenReturn(Result.failure(Exception()))
-        val sut = MetaDataWidgetViewModel(metaDataUseCaseMock, activeDeviceMonitorMock, this)
+        val sut = MetaDataWidgetViewModel(metaDataUseCaseMock, activeDeviceMonitorMock, backgroundScope)
 
         /* Run Test */
         sut.state.test {

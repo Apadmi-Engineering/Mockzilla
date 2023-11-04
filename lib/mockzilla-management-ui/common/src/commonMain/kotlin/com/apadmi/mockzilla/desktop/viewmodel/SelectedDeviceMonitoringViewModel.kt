@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 abstract class SelectedDeviceMonitoringViewModel(
     private val activeDeviceMonitor: ActiveDeviceMonitor,
@@ -13,6 +14,10 @@ abstract class SelectedDeviceMonitoringViewModel(
 ) : ViewModel(scope) {
     init {
         activeDeviceMonitor.selectedDevice.onEach { reloadData(it?.device) }.launchIn(viewModelScope)
+        viewModelScope.launch {
+            yield()
+            reloadData(activeDeviceMonitor.selectedDevice.value?.device)
+        }
     }
 
     internal suspend fun <T> activeDeviceOrDefault(

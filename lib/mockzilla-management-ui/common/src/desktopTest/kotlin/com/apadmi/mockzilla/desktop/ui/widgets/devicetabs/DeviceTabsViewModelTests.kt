@@ -27,20 +27,23 @@ class DeviceTabsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
 
     private fun createSut() = DeviceTabsViewModel(activeDeviceMonitorMock.also {
         given(it).invocation { onDeviceConnectionStateChange }.thenReturn(flowOf())
-    }, activeDeviceSelectorMock, testScope)
+    }, activeDeviceSelectorMock, testScope.backgroundScope)
 
     @Test
     fun `onChangeDevice - calls through`() = runBlockingTest {
         /* Setup */
         given(activeDeviceMonitorMock).invocation { allDevices }.thenReturn(emptyList())
         val sut = createSut()
+        sut.state.test {
 
-        /* Run Test */
-        sut.onChangeDevice(State.DeviceTabEntry.dummy().copy(underlyingDevice = Device.dummy()))
+            /* Run Test */
+            sut.onChangeDevice(State.DeviceTabEntry.dummy().copy(underlyingDevice = Device.dummy()))
 
-        /* Verify */
-        verify(activeDeviceSelectorMock).invocation { updateSelectedDevice(Device.dummy()) }
-            .wasInvoked()
+            /* Verify */
+            verify(activeDeviceSelectorMock).invocation { updateSelectedDevice(Device.dummy()) }
+                .wasInvoked()
+            assertEquals(State(emptyList()), awaitItem())
+        }
     }
 
     @Test
