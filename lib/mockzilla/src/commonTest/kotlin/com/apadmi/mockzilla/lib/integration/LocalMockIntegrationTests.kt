@@ -146,41 +146,41 @@ class LocalMockIntegrationTests {
 
     @Test
     fun `POST - local-mock - uploading binary data - returns success`() =
-            runIntegrationTest(MockzillaConfig.Builder()
-                .setPort(0)  // Port determined at runtime
-                .setMeanDelayMillis(0)
-                .setDelayVarianceMillis(0)
-                .addEndpoint(EndpointConfiguration.Builder("my-id")
-                    .setPatternMatcher { uri.endsWith("test/my-id") }
-                    .setDefaultHandler { MockzillaHttpResponse() }
-                )
-                .build()
-            ) { params, _ ->
-                /* Setup */
-                val fileIo = createFileIoforTesting()
-                fileIo.saveToCache("test-file", "this is some contents")
+        runIntegrationTest(MockzillaConfig.Builder()
+            .setPort(0)  // Port determined at runtime
+            .setMeanDelayMillis(0)
+            .setDelayVarianceMillis(0)
+            .addEndpoint(EndpointConfiguration.Builder("my-id")
+                .setPatternMatcher { uri.endsWith("test/my-id") }
+                .setDefaultHandler { MockzillaHttpResponse() }
+            )
+            .build()
+        ) { params, _ ->
+            /* Setup */
+            val fileIo = createFileIoforTesting()
+            fileIo.saveToCache("test-file", "this is some contents")
 
-                // This is a file that can't be read as a UTF-8 text file (it's a PDF)
-                val invalidUtf8TestFile = "$currentWorkingDirectory/src/commonTest/testdata/sample.pdf"
+            // This is a file that can't be read as a UTF-8 text file (it's a PDF)
+            val invalidUtf8TestFile = "$currentWorkingDirectory/src/commonTest/testdata/sample.pdf"
 
-                /* Run Test */
-                val fileBytes = readBytes(invalidUtf8TestFile)
-                val response = HttpClient(CIO).submitFormWithBinaryData(
-                    "${params.mockBaseUrl}/test/my-id",
-                    formData = formData {
-                        append(
-                            "poa-evidence-file",
-                            fileBytes,
-                            Headers.build {
-                                append(HttpHeaders.ContentDisposition, "filename=\"test.txt\"")
-                            }
-                        )
-                    })
+            /* Run Test */
+            val fileBytes = readBytes(invalidUtf8TestFile)
+            val response = HttpClient(CIO).submitFormWithBinaryData(
+                "${params.mockBaseUrl}/test/my-id",
+                formData = formData {
+                    append(
+                        "poa-evidence-file",
+                        fileBytes,
+                        Headers.build {
+                            append(HttpHeaders.ContentDisposition, "filename=\"test.txt\"")
+                        }
+                    )
+                })
 
-                /* Verify */
-                assertEquals(
-                    HttpStatusCode.OK,
-                    response.status
-                )
-            }
+            /* Verify */
+            assertEquals(
+                HttpStatusCode.OK,
+                response.status
+            )
+        }
 }
