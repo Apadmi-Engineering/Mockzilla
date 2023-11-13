@@ -18,6 +18,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.yield
 
 @Suppress("MAGIC_NUMBER")
@@ -45,7 +47,7 @@ class ActiveDeviceMonitoringViewModelTests : CoroutineTest() {
             /* Verify */
             // Wait for each emission to be processed
             skipItems(numberOfEmits + 1)
-            println("waiting dome")
+            yield()
             // Expect an invocation for each emission plus one for the initial load.
             assertEquals(numberOfEmits + 1 , sut.reloadDataInvocationCount)
         }
@@ -60,7 +62,7 @@ class ActiveDeviceMonitoringViewModelTests : CoroutineTest() {
         val sut = ConcreteDeviceMonitoringViewModel(activeDeviceMonitorMock, backgroundScope)
 
         /* Verify */
-        yield()
+        runCurrent()
         assertEquals(1 , sut.reloadDataInvocationCount)
     }
 }
