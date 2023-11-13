@@ -3,7 +3,6 @@ package com.apadmi.mockzilla.lib.internal.service
 import com.apadmi.mockzilla.lib.internal.models.GlobalOverridesDto
 import com.apadmi.mockzilla.lib.internal.models.toMockDataEntryForWeb
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
-import com.apadmi.mockzilla.lib.internal.utils.toMockDataEntry
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.lib.service.MockzillaWeb

@@ -3,7 +3,6 @@ package com.apadmi.mockzilla.lib.integration
 import com.apadmi.mockzilla.lib.internal.models.*
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
-import com.apadmi.mockzilla.lib.internal.utils.toMockDataEntry
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
@@ -153,7 +152,7 @@ class WebPortalApiIntegrationTests {
                         .toMockDataEntryForWeb(),
                     cacheService.getLocalCache("id")
                 )
-            }
+
 
             /* Verify */
             assertEquals(
@@ -164,7 +163,7 @@ class WebPortalApiIntegrationTests {
                         headers = mapOf("Content-Type" to "application/json")
                     )
                 }.build()
-                    .toMockDataEntry(),
+                    .toMockDataEntryForWeb(),
                 cacheService.getLocalCache("id")
             )
             assertEquals(

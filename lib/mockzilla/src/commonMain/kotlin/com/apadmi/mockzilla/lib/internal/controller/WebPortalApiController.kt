@@ -5,7 +5,6 @@ import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
 import com.apadmi.mockzilla.lib.internal.models.toMockDataEntryForWeb
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
-import com.apadmi.mockzilla.lib.internal.utils.toMockDataEntry
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 internal class WebPortalApiController(

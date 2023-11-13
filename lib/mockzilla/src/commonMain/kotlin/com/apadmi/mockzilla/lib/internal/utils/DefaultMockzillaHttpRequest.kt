@@ -31,29 +31,6 @@ internal class DefaultMockzillaHttpRequest(
     override fun bodyAsString(): String = bodyBytes.decodeToString()
 }
 
-/**
- * This class is a temporary stopgap while we build the new management UI.
- *
- * Once that's implemented the mechanisms for defining mock data will be more advanced and this shouldn't be needed.
- * @property uri
- * @property headers
- * @property body
- * @property method
- */
-internal class FakeMockzillaHttpRequest(
-    override val uri: String,
-    override val headers: Map<String, String>,
-    @Deprecated("`body`is deprecated", replaceWith = ReplaceWith("bodyAsString()"))
-    override val body: String,
-    override val method: HttpMethod
-) : MockzillaHttpRequest {
-    override val underlyingKtorRequest: ApplicationRequest
-        get() = throw NotImplementedError("This is a fake request, it does not have an underlying ktor request")
-
-    override fun bodyAsBytes() = body.encodeToByteArray()
-    override fun bodyAsString() = body
-}
-
 internal fun ApplicationCall.toMockzillaRequest(
     method: HttpMethod,
 ) = DefaultMockzillaHttpRequest(

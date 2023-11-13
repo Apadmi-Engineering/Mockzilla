@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.lib.internal.models
 
-import com.apadmi.mockzilla.lib.internal.utils.FakeMockzillaHttpRequest
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import io.ktor.http.*
 import kotlinx.serialization.SerialName
@@ -23,7 +23,7 @@ import kotlinx.serialization.Serializable
  * @property defaultStatus
  */
 @Serializable
-internal data class MockDataEntryDto(
+data class MockDataEntryDto(
     val key: String,
     val name: String,
     val failProbability: Int,
@@ -48,11 +48,12 @@ internal data class MockDataEntryDto(
     )
 }
 
-internal fun EndpointConfiguration.toMockDataEntryForWeb(): MockDataEntryDto {
+fun EndpointConfiguration.toMockDataEntryForWeb(): MockDataEntryDto {
     val defaultRequest = FakeMockzillaHttpRequest(
         "https://this-is-being-called-from-the-web-api.com",
         emptyMap(),
         "This is being called from the web portal",
+
         HttpMethod.Get
     )
 
@@ -77,3 +78,26 @@ internal fun EndpointConfiguration.toMockDataEntryForWeb(): MockDataEntryDto {
         defaultStatus = defaultResponse.statusCode
     )
 }
+
+/**
+ * This class is a temporary stopgap while we build the new management UI.
+ *
+ * Once that's implemented the mechanisms for defining mock data will be more advanced and this shouldn't be needed.
+ * @property uri
+ * @property headers
+ * @property body
+ * @property method
+ */
+internal class FakeMockzillaHttpRequest(
+    override val uri: String,
+    override val headers: Map<String, String>,
+    @Deprecated("`body`is deprecated", replaceWith = ReplaceWith("bodyAsString()"))
+    override val body: String,
+    override val method: HttpMethod
+) : MockzillaHttpRequest {
+    override val underlyingKtorRequest get() = throw NotImplementedError("This is a fake request, it does not have an underlying ktor request")
+
+    override fun bodyAsBytes() = body.encodeToByteArray()
+    override fun bodyAsString() = body
+}
+
