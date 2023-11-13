@@ -97,7 +97,7 @@ internal class FakeMockzillaHttpRequest(
 ) : MockzillaHttpRequest {
     override val underlyingKtorRequest get() = throw NotImplementedError("This is a fake request, it does not have an underlying ktor request")
 
-    override fun bodyAsBytes() = body.encodeToByteArray()
+    override fun bodyAsBytes() = bodyAsString().encodeToByteArray()
     override fun bodyAsString() = body
 }
 

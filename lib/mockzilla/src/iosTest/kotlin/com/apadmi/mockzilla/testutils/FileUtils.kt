@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.testutils
 
+import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSBundle
 import platform.Foundation.NSData
 import platform.Foundation.dataWithContentsOfFile
@@ -13,6 +14,7 @@ import kotlinx.coroutines.withContext
 
 actual val currentWorkingDirectory: String get() = NSBundle.mainBundle.bundlePath.substringBefore("/build")
 
+@OptIn(ExperimentalForeignApi::class)
 private fun NSData.toByteArray(): ByteArray = ByteArray(length.toInt()).apply {
     usePinned {
         memcpy(it.addressOf(0), bytes, length)
