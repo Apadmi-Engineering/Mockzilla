@@ -13,10 +13,11 @@ abstract class SelectedDeviceMonitoringViewModel(
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
     init {
-        activeDeviceMonitor.selectedDevice.onEach { reloadData(it?.device) }.launchIn(viewModelScope)
         viewModelScope.launch {
             yield()
-            reloadData(activeDeviceMonitor.selectedDevice.value?.device)
+            activeDeviceMonitor.selectedDevice
+                .onEach { reloadData(it?.device) }
+                .launchIn(viewModelScope)
         }
     }
 
