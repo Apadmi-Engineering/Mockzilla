@@ -3,7 +3,6 @@ package com.apadmi.mockzilla.lib.integration
 import com.apadmi.mockzilla.lib.internal.models.*
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
-import com.apadmi.mockzilla.lib.internal.utils.toMockDataEntry
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
@@ -99,7 +98,7 @@ class WebPortalApiIntegrationTests {
             .build(),
         setup = { cacheService ->
             cacheService.updateLocalCache(
-                EndpointConfiguration.Builder("id").build().toMockDataEntry()
+                EndpointConfiguration.Builder("id").build().toMockDataEntryForWeb()
             )
             cacheService.updateGlobalOverrides(GlobalOverridesDto(null, null, null))
         }
@@ -128,7 +127,7 @@ class WebPortalApiIntegrationTests {
                 "${params.apiBaseUrl}/mock-data/id") {
                 contentType(ContentType.Application.Json)
                 setBody(
-                    JsonProvider.json.encodeToString(
+                    Json.encodeToString(
                         EndpointConfiguration.Builder("id").setDefaultHandler {
                             MockzillaHttpResponse(
                                 body = "hello",
@@ -136,7 +135,7 @@ class WebPortalApiIntegrationTests {
                                 headers = mapOf("Content-Type" to "application/json")
                             )
                         }.build()
-                            .toMockDataEntry()
+                            .toMockDataEntryForWeb()
                     )
                 )
             }
@@ -150,7 +149,20 @@ class WebPortalApiIntegrationTests {
                         headers = mapOf("Content-Type" to "application/json")
                     )
                 }.build()
-                    .toMockDataEntry(),
+                    .toMockDataEntryForWeb(),
+                cacheService.getLocalCache("id")
+            )
+
+            /* Verify */
+            assertEquals(
+                EndpointConfiguration.Builder("id").setDefaultHandler {
+                    MockzillaHttpResponse(
+                        body = "hello",
+                        statusCode = HttpStatusCode.NoContent,
+                        headers = mapOf("Content-Type" to "application/json")
+                    )
+                }.build()
+                    .toMockDataEntryForWeb(),
                 cacheService.getLocalCache("id")
             )
             assertEquals(

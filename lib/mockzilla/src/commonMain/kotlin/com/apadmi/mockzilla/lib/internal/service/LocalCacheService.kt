@@ -9,7 +9,6 @@ import co.touchlab.kermit.Logger
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 
 internal interface LocalCacheService {

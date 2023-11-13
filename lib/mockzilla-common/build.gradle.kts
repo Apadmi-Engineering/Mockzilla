@@ -42,7 +42,10 @@ kotlin {
             dependencies {
                 /* Kotlin */
                 implementation(libs.kotlinx.coroutines.core)
+
+                /* Ktor */
                 implementation(libs.ktor.client.core)
+                implementation(libs.ktor.server.core)
 
                 /* Serialization */
                 implementation(libs.kotlinx.serialization.json)
