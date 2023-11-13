@@ -2,8 +2,7 @@ package com.apadmi.mockzilla.lib.models
 
 import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import io.ktor.http.*
-import kotlin.experimental.ExperimentalObjCName
-import kotlin.native.ObjCName
+import io.ktor.server.request.ApplicationRequest
 
 /**
  * @property name
@@ -29,7 +28,6 @@ data class EndpointConfiguration(
     val defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     val errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) {
-    fun newBuilder() = Builder(this)
     /**
      * @param id An identifier for this endpoint. Endpoints cannot share an id.
      */
@@ -46,9 +44,6 @@ data class EndpointConfiguration(
                 MockzillaHttpResponse(HttpStatusCode.BadRequest)
             }
         )
-        constructor(config: EndpointConfiguration): this(config.key) {
-            this.config = config
-        }
 
         /**
          * Probability of Mockzilla returning a simulated http error for this endpoint. 100 being a
@@ -167,15 +162,42 @@ data class MockzillaHttpResponse(
     val body: String = "",
 )
 
-/**
- * @property headers
- * @property body
- * @property method
- * @property uri
- */
-data class MockzillaHttpRequest(
-    val uri: String,
-    val headers: Map<String, String>,
-    val body: String = "",
-    val method: HttpMethod,
-)
+interface MockzillaHttpRequest {
+    /**
+     * The full uri of the network request
+     */
+    val uri: String
+
+    /**
+     * Network request's headers
+     */
+    val headers: Map<String, String>
+
+    /**
+     * Network request method
+     */
+    val method: HttpMethod
+
+    /**
+     * The string representation of the request body
+     */
+    @Deprecated("`body`is deprecated", replaceWith = ReplaceWith("bodyAsString()"))
+    val body: String
+
+    /**
+     * The underlying ktor [ApplicationRequest](https://api.ktor.io/ktor-server/ktor-server-core/io.ktor.server.request/-application-request/index.html).
+     */
+    val underlyingKtorRequest: ApplicationRequest
+
+    /**
+     * @return The request body as a ByteArray. Probably only useful for non-string request payload.
+     * Most use cases probably should use [bodyAsString]
+     * It's safe to call this method multiple times.
+     */
+    fun bodyAsBytes(): ByteArray
+
+    /**
+     * @return The request body as a string. It's safe to call this method multiple times.
+     */
+    fun bodyAsString(): String
+}

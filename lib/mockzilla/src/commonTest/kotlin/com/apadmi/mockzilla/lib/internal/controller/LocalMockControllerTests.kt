@@ -5,8 +5,8 @@ import com.apadmi.mockzilla.lib.internal.service.DelayAndFailureDecisionImpl
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.testutils.TestMockzillaHttpRequest
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
@@ -53,9 +53,9 @@ class LocalMockControllerTests {
 
         /* Run Test */
         val response = sut.handleRequest(
-            MockzillaHttpRequest(
-                "http://example.com/local-mock/my-id",
-                emptyMap(),
+            TestMockzillaHttpRequest(
+                uri = "http://example.com/local-mock/my-id",
+                headers = emptyMap(),
                 method = HttpMethod.Get
             )
         )
@@ -93,13 +93,11 @@ class LocalMockControllerTests {
         )
 
         /* Run Test */
-        val response = sut.handleRequest(
-            MockzillaHttpRequest(
-                "http://example.com/local-mock/my-id",
-                emptyMap(),
-                method = HttpMethod.Get
-            )
-        )
+        val response = sut.handleRequest(TestMockzillaHttpRequest(
+            uri = "http://example.com/local-mock/my-id",
+            headers = emptyMap(),
+            method = HttpMethod.Get
+        ))
 
         /* Verify */
         assertEquals(
