@@ -1,12 +1,17 @@
 package com.apadmi.mockzilla.lib.integration
 
+import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.testutils.currentWorkingDirectory
+import com.apadmi.mockzilla.testutils.readBytes
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlin.test.Test
@@ -138,4 +143,44 @@ class LocalMockIntegrationTests {
                 response.status
             )
         }
+
+    @Test
+    fun `POST - local-mock - uploading binary data - returns success`() =
+            runIntegrationTest(MockzillaConfig.Builder()
+                .setPort(0)  // Port determined at runtime
+                .setMeanDelayMillis(0)
+                .setDelayVarianceMillis(0)
+                .addEndpoint(EndpointConfiguration.Builder("my-id")
+                    .setPatternMatcher { uri.endsWith("test/my-id") }
+                    .setDefaultHandler { MockzillaHttpResponse() }
+                )
+                .build()
+            ) { params, _ ->
+                /* Setup */
+                val fileIo = createFileIoforTesting()
+                fileIo.saveToCache("test-file", "this is some contents")
+
+                // This is a file that can't be read as a UTF-8 text file (it's a PDF)
+                val invalidUtf8TestFile = "$currentWorkingDirectory/src/commonTest/testdata/sample.pdf"
+
+                /* Run Test */
+                val fileBytes = readBytes(invalidUtf8TestFile)
+                val response = HttpClient(CIO).submitFormWithBinaryData(
+                    "${params.mockBaseUrl}/test/my-id",
+                    formData = formData {
+                        append(
+                            "poa-evidence-file",
+                            fileBytes,
+                            Headers.build {
+                                append(HttpHeaders.ContentDisposition, "filename=\"test.txt\"")
+                            }
+                        )
+                    })
+
+                /* Verify */
+                assertEquals(
+                    HttpStatusCode.OK,
+                    response.status
+                )
+            }
 }
