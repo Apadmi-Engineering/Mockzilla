@@ -135,11 +135,11 @@ abstract class MockzillaHostApi {
 
 @FlutterApi()
 abstract class MockzillaFlutterApi {
-  String endpointMatcher(ApiMockzillaHttpRequest request);
+  bool endpointMatcher(ApiMockzillaHttpRequest request, String key);
 
-  ApiMockzillaHttpResponse defaultHandler(ApiMockzillaHttpRequest request);
+  ApiMockzillaHttpResponse defaultHandler(ApiMockzillaHttpRequest request, String key);
 
-  ApiMockzillaHttpResponse errorHandler(ApiMockzillaHttpRequest request);
+  ApiMockzillaHttpResponse errorHandler(ApiMockzillaHttpRequest request, String key);
 
   @async
   ApiAuthHeader generateAuthHeader();
