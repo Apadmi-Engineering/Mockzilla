@@ -29,7 +29,7 @@ fun ApiHttpMethod.toNative() = when (this) {
 
 fun ApiHttpMethod.Companion.fromNative(
     data: HttpMethod
-) = when(data) {
+) = when (data) {
     HttpMethod.Get -> ApiHttpMethod.GET
     HttpMethod.Head -> ApiHttpMethod.HEAD
     HttpMethod.Post -> ApiHttpMethod.POST
@@ -50,7 +50,7 @@ fun ApiLogLevel.toNative() = when (this) {
 
 fun ApiLogLevel.Companion.fromNative(
     data: MockzillaConfig.LogLevel
-) = when(data) {
+) = when (data) {
     MockzillaConfig.LogLevel.Debug -> ApiLogLevel.DEBUG
     MockzillaConfig.LogLevel.Error -> ApiLogLevel.ERROR
     MockzillaConfig.LogLevel.Info -> ApiLogLevel.INFO
@@ -93,8 +93,8 @@ fun ApiMockzillaHttpResponse.Companion.fromNative(
 
 fun ApiEndpointConfig.toNative(
     endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
-    defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
-    errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
+    defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
+    errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
 ) = EndpointConfiguration(
     this.name,
     this.key,
@@ -104,7 +104,8 @@ fun ApiEndpointConfig.toNative(
     { endpointMatcher(this, key) },
     this.webApiDefaultResponse?.toNative(),
     this.webApiErrorResponse?.toNative(),
-    defaultHandler, errorHandler,
+    { defaultHandler(this, key) },
+    { errorHandler(this, key) },
 )
 
 fun ApiEndpointConfig.Companion.fromNative(
@@ -135,8 +136,8 @@ fun ApiReleaseModeConfig.Companion.fromNative(
 
 fun ApiMockzillaConfig.toNative(
     endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
-    defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
-    errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
+    defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
+    errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
 ) = MockzillaConfig(
     this.port.toInt(),
     this.endpoints.filterNotNull().map {
@@ -160,6 +161,7 @@ fun ApiMockzillaConfig.Companion.fromNative(
     ApiLogLevel.fromNative(data.logLevel),
     ApiReleaseModeConfig.fromNative(data.releaseModeConfig),
 )
+
 fun ApiMockzillaRuntimeParams.Companion.fromNative(
     data: MockzillaRuntimeParams
 ) = ApiMockzillaRuntimeParams(

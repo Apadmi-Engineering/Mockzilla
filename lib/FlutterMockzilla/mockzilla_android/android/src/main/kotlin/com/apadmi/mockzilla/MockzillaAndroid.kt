@@ -25,8 +25,8 @@ class MockzillaAndroid(
     override fun startServer(config: ApiMockzillaConfig): ApiMockzillaRuntimeParams {
         val nativeConfig = config.toNative(
             { key -> callEndpointMatcher(this, key) },
-            { callDefaultHandler(this) },
-            { callErrorHandler(this) }
+            { key -> callDefaultHandler(this, key) },
+            { key -> callErrorHandler(this, key) }
         )
         val nativeRuntimeParams = startMockzilla(nativeConfig, context)
         return ApiMockzillaRuntimeParams.fromNative(nativeRuntimeParams)
@@ -39,27 +39,27 @@ class MockzillaAndroid(
     private fun callEndpointMatcher(request: MockzillaHttpRequest, key: String): Boolean {
         val completer = CompletableDeferred<Boolean>()
         uiThreadHandler.post {
-            flutterApi.endpointMatcher(ApiMockzillaHttpRequest.fromNative(request)) {
-                completer.complete(it.getOrThrow() == key)
+            flutterApi.endpointMatcher(ApiMockzillaHttpRequest.fromNative(request), key) {
+                completer.complete(it.getOrThrow())
             }
         }
         return runBlocking { completer.await() }
     }
 
-    private fun callDefaultHandler(request: MockzillaHttpRequest): MockzillaHttpResponse {
+    private fun callDefaultHandler(request: MockzillaHttpRequest, key: String): MockzillaHttpResponse {
         val completer = CompletableDeferred<MockzillaHttpResponse>()
         uiThreadHandler.post {
-            flutterApi.defaultHandler(ApiMockzillaHttpRequest.fromNative(request)) {
+            flutterApi.defaultHandler(ApiMockzillaHttpRequest.fromNative(request), key) {
                 completer.complete(it.getOrThrow().toNative())
             }
         }
         return runBlocking { completer.await() }
     }
 
-    private fun callErrorHandler(request: MockzillaHttpRequest): MockzillaHttpResponse {
+    private fun callErrorHandler(request: MockzillaHttpRequest, key: String): MockzillaHttpResponse {
         val completer = CompletableDeferred<MockzillaHttpResponse>()
         uiThreadHandler.post {
-            flutterApi.errorHandler(ApiMockzillaHttpRequest.fromNative(request)) {
+            flutterApi.errorHandler(ApiMockzillaHttpRequest.fromNative(request), key) {
                 completer.complete(it.getOrThrow().toNative())
             }
         }
