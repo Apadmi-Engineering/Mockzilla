@@ -6,11 +6,15 @@ import ApiMockzillaRuntimeParams
 import MockzillaFlutterApi
 import MockzillaHostApi
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.lib.startMockzilla
 import com.apadmi.mockzilla.lib.stopMockzilla
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
 class MockzillaAndroid(
@@ -18,9 +22,11 @@ class MockzillaAndroid(
     private val context: Context
 ): MockzillaHostApi {
 
+    val uiThreadHandler = Handler(Looper.getMainLooper())
+
     override fun startServer(config: ApiMockzillaConfig): ApiMockzillaRuntimeParams {
         val nativeConfig = config.toModel(
-            { callEndpointMatcher(this) },
+            { key -> callEndpointMatcher(this, key) },
             { callDefaultHandler(this) },
             { callErrorHandler(this) }
         )
@@ -32,26 +38,32 @@ class MockzillaAndroid(
         stopMockzilla()
     }
 
-    private fun callEndpointMatcher(request: MockzillaHttpRequest): Boolean {
+    private fun callEndpointMatcher(request: MockzillaHttpRequest, key: String): Boolean {
         val completer = CompletableDeferred<Boolean>()
-        flutterApi.endpointMatcher(ApiMockzillaHttpRequest.fromModel(request)) {
-            completer.complete(it.getOrThrow())
+        uiThreadHandler.post {
+            flutterApi.endpointMatcher(ApiMockzillaHttpRequest.fromModel(request)) {
+                completer.complete(it.getOrThrow() == key)
+            }
         }
         return runBlocking { completer.await() }
     }
 
     private fun callDefaultHandler(request: MockzillaHttpRequest): MockzillaHttpResponse {
         val completer = CompletableDeferred<MockzillaHttpResponse>()
-        flutterApi.defaultHandler(ApiMockzillaHttpRequest.fromModel(request)) {
-            completer.complete(it.getOrThrow().toModel())
+        uiThreadHandler.post {
+            flutterApi.defaultHandler(ApiMockzillaHttpRequest.fromModel(request)) {
+                completer.complete(it.getOrThrow().toModel())
+            }
         }
-        return  runBlocking { completer.await() }
+        return runBlocking { completer.await() }
     }
 
     private fun callErrorHandler(request: MockzillaHttpRequest): MockzillaHttpResponse {
         val completer = CompletableDeferred<MockzillaHttpResponse>()
-        flutterApi.errorHandler(ApiMockzillaHttpRequest.fromModel(request)) {
-            completer.complete(it.getOrThrow().toModel())
+        uiThreadHandler.post {
+            flutterApi.errorHandler(ApiMockzillaHttpRequest.fromModel(request)) {
+                completer.complete(it.getOrThrow().toModel())
+            }
         }
         return runBlocking { completer.await() }
     }

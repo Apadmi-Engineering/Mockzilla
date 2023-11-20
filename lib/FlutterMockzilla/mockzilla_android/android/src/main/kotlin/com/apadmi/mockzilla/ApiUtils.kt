@@ -6,7 +6,6 @@ import ApiLogLevel
 import ApiMockzillaConfig
 import ApiMockzillaHttpRequest
 import ApiMockzillaHttpResponse
-import ApiMockzillaLogger
 import ApiMockzillaRuntimeParams
 import ApiReleaseModeConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -14,10 +13,8 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
-import com.apadmi.mockzilla.lib.service.MockzillaLogWriter
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 fun ApiHttpMethod.toModel() = when (this) {
@@ -95,7 +92,7 @@ fun ApiMockzillaHttpResponse.Companion.fromModel(
 )
 
 fun ApiEndpointConfig.toModel(
-    endpointMatcher: MockzillaHttpRequest.() -> Boolean,
+    endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
     defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) = EndpointConfiguration(
@@ -104,7 +101,7 @@ fun ApiEndpointConfig.toModel(
     this.failureProbability?.toInt(),
     this.delayMean?.toInt(),
     this.delayVariance?.toInt(),
-    endpointMatcher,
+    { endpointMatcher(this, key) },
     this.webApiDefaultResponse?.toModel(),
     this.webApiErrorResponse?.toModel(),
     defaultHandler, errorHandler,
@@ -137,7 +134,7 @@ fun ApiReleaseModeConfig.Companion.fromModel(
 )
 
 fun ApiMockzillaConfig.toModel(
-    endpointMatcher: MockzillaHttpRequest.() -> Boolean,
+    endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
     defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) = MockzillaConfig(
@@ -162,7 +159,6 @@ fun ApiMockzillaConfig.Companion.fromModel(
     data.localhostOnly,
     ApiLogLevel.fromModel(data.logLevel),
     ApiReleaseModeConfig.fromModel(data.releaseModeConfig),
-    emptyList()
 )
 fun ApiMockzillaRuntimeParams.Companion.fromModel(
     data: MockzillaRuntimeParams
