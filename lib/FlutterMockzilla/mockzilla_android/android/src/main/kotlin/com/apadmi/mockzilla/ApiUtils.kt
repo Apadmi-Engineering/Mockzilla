@@ -17,7 +17,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import kotlin.time.Duration.Companion.milliseconds
 
-fun ApiHttpMethod.toModel() = when (this) {
+fun ApiHttpMethod.toNative() = when (this) {
     ApiHttpMethod.GET -> HttpMethod.Get
     ApiHttpMethod.HEAD -> HttpMethod.Head
     ApiHttpMethod.POST -> HttpMethod.Post
@@ -27,7 +27,7 @@ fun ApiHttpMethod.toModel() = when (this) {
     ApiHttpMethod.PATCH -> HttpMethod.Patch
 }
 
-fun ApiHttpMethod.Companion.fromModel(
+fun ApiHttpMethod.Companion.fromNative(
     data: HttpMethod
 ) = when(data) {
     HttpMethod.Get -> ApiHttpMethod.GET
@@ -40,7 +40,7 @@ fun ApiHttpMethod.Companion.fromModel(
     else -> throw NotImplementedError()
 }
 
-fun ApiLogLevel.toModel() = when (this) {
+fun ApiLogLevel.toNative() = when (this) {
     ApiLogLevel.DEBUG -> MockzillaConfig.LogLevel.Debug
     ApiLogLevel.ERROR -> MockzillaConfig.LogLevel.Error
     ApiLogLevel.INFO -> MockzillaConfig.LogLevel.Info
@@ -48,7 +48,7 @@ fun ApiLogLevel.toModel() = when (this) {
     ApiLogLevel.WARN -> MockzillaConfig.LogLevel.Warn
 }
 
-fun ApiLogLevel.Companion.fromModel(
+fun ApiLogLevel.Companion.fromNative(
     data: MockzillaConfig.LogLevel
 ) = when(data) {
     MockzillaConfig.LogLevel.Debug -> ApiLogLevel.DEBUG
@@ -59,31 +59,31 @@ fun ApiLogLevel.Companion.fromModel(
     MockzillaConfig.LogLevel.Assert -> throw NotImplementedError()
 }
 
-fun ApiMockzillaHttpRequest.toModel() = MockzillaHttpRequest(
+fun ApiMockzillaHttpRequest.toNative() = MockzillaHttpRequest(
     this.uri,
     this.headers.filter { entry -> entry.key != null && entry.value != null } as? Map<String, String>
         ?: emptyMap(),
     this.body,
-    this.method.toModel(),
+    this.method.toNative(),
 )
 
-fun ApiMockzillaHttpRequest.Companion.fromModel(
+fun ApiMockzillaHttpRequest.Companion.fromNative(
     data: MockzillaHttpRequest
 ) = ApiMockzillaHttpRequest(
     data.uri,
     data.headers as Map<String?, String?>,
     data.body,
-    ApiHttpMethod.fromModel(data.method)
+    ApiHttpMethod.fromNative(data.method)
 )
 
-fun ApiMockzillaHttpResponse.toModel() = MockzillaHttpResponse(
+fun ApiMockzillaHttpResponse.toNative() = MockzillaHttpResponse(
     HttpStatusCode.fromValue(this.statusCode.toInt()),
     this.headers.filter { entry -> entry.key != null && entry.value != null } as? Map<String, String>
         ?: emptyMap(),
     this.body,
 )
 
-fun ApiMockzillaHttpResponse.Companion.fromModel(
+fun ApiMockzillaHttpResponse.Companion.fromNative(
     data: MockzillaHttpResponse
 ) = ApiMockzillaHttpResponse(
     data.statusCode.value.toLong(),
@@ -91,7 +91,7 @@ fun ApiMockzillaHttpResponse.Companion.fromModel(
     data.body,
 )
 
-fun ApiEndpointConfig.toModel(
+fun ApiEndpointConfig.toNative(
     endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
     defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
@@ -102,12 +102,12 @@ fun ApiEndpointConfig.toModel(
     this.delayMean?.toInt(),
     this.delayVariance?.toInt(),
     { endpointMatcher(this, key) },
-    this.webApiDefaultResponse?.toModel(),
-    this.webApiErrorResponse?.toModel(),
+    this.webApiDefaultResponse?.toNative(),
+    this.webApiErrorResponse?.toNative(),
     defaultHandler, errorHandler,
 )
 
-fun ApiEndpointConfig.Companion.fromModel(
+fun ApiEndpointConfig.Companion.fromNative(
     data: EndpointConfiguration
 ) = ApiEndpointConfig(
     data.name,
@@ -115,17 +115,17 @@ fun ApiEndpointConfig.Companion.fromModel(
     data.failureProbability?.toLong(),
     data.delayMean?.toLong(),
     data.delayVariance?.toLong(),
-    data.webApiDefaultResponse?.let { ApiMockzillaHttpResponse.fromModel(it) },
-    data.webApiErrorResponse?.let { ApiMockzillaHttpResponse.fromModel(it) },
+    data.webApiDefaultResponse?.let { ApiMockzillaHttpResponse.fromNative(it) },
+    data.webApiErrorResponse?.let { ApiMockzillaHttpResponse.fromNative(it) },
 )
 
-fun ApiReleaseModeConfig.toModel() = MockzillaConfig.ReleaseModeConfig(
+fun ApiReleaseModeConfig.toNative() = MockzillaConfig.ReleaseModeConfig(
     this.rateLimit.toInt(),
     this.rateLimitRefillPeriodMillis.milliseconds,
     this.tokenLifeSpanMillis.milliseconds,
 )
 
-fun ApiReleaseModeConfig.Companion.fromModel(
+fun ApiReleaseModeConfig.Companion.fromNative(
     data: MockzillaConfig.ReleaseModeConfig
 ) = ApiReleaseModeConfig(
     data.rateLimit.toLong(),
@@ -133,37 +133,37 @@ fun ApiReleaseModeConfig.Companion.fromModel(
     data.tokenLifeSpan.inWholeMilliseconds
 )
 
-fun ApiMockzillaConfig.toModel(
+fun ApiMockzillaConfig.toNative(
     endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
     defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) = MockzillaConfig(
     this.port.toInt(),
     this.endpoints.filterNotNull().map {
-        it.toModel(endpointMatcher, defaultHandler, errorHandler)
+        it.toNative(endpointMatcher, defaultHandler, errorHandler)
     },
     this.isRelease,
     this.localHostOnly,
-    this.logLevel.toModel(),
-    this.releaseModeConfig.toModel(),
+    this.logLevel.toNative(),
+    this.releaseModeConfig.toNative(),
     emptyList()
 )
 
 
-fun ApiMockzillaConfig.Companion.fromModel(
+fun ApiMockzillaConfig.Companion.fromNative(
     data: MockzillaConfig
 ) = ApiMockzillaConfig(
     data.port.toLong(),
-    data.endpoints.map { ApiEndpointConfig.fromModel(it) },
+    data.endpoints.map { ApiEndpointConfig.fromNative(it) },
     data.isRelease,
     data.localhostOnly,
-    ApiLogLevel.fromModel(data.logLevel),
-    ApiReleaseModeConfig.fromModel(data.releaseModeConfig),
+    ApiLogLevel.fromNative(data.logLevel),
+    ApiReleaseModeConfig.fromNative(data.releaseModeConfig),
 )
-fun ApiMockzillaRuntimeParams.Companion.fromModel(
+fun ApiMockzillaRuntimeParams.Companion.fromNative(
     data: MockzillaRuntimeParams
 ) = ApiMockzillaRuntimeParams(
-    ApiMockzillaConfig.fromModel(data.config),
+    ApiMockzillaConfig.fromNative(data.config),
     data.mockBaseUrl,
     data.apiBaseUrl,
     data.port.toLong()
