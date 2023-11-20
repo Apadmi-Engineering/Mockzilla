@@ -1,5 +1,6 @@
 import 'package:mockzilla_android/src/api_utils.dart';
 import 'package:mockzilla_android/src/messages.g.dart';
+import 'package:mockzilla_android/src/utils/list_utils.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 class MockzillaAndroid extends MockzillaPlatform {
@@ -35,28 +36,30 @@ class CallbackProvider extends MockzillaFlutterApi {
     this._additionalLoggers,
   );
 
-  EndpointConfig _determineEndpoint(MockzillaHttpRequest request) =>
-      endpoints.firstWhere(
-        (endpoint) => endpoint.endpointMatcher(request),
+  /// Used to resolve the endpoint matching the specified key.
+  EndpointConfig? _determineEndpoint(String key) => endpoints.firstWhereOrNull(
+        (endpoint) => endpoint.key == key,
       );
 
+  /// Calls the matcher on the specified endpoint.
   @override
-  String endpointMatcher(ApiMockzillaHttpRequest request) {
-    return _determineEndpoint(request.toDart()).key;
+  bool endpointMatcher(ApiMockzillaHttpRequest request, String key) {
+    return _determineEndpoint(key)?.endpointMatcher(request.toDart()) ?? false;
   }
 
+  /// Returns the default response for the endpoint associated with [key].
   @override
-  ApiMockzillaHttpResponse defaultHandler(ApiMockzillaHttpRequest request) {
-    return _determineEndpoint(request.toDart())
-        .defaultHandler(request.toDart())
-        .toApi();
+  ApiMockzillaHttpResponse defaultHandler(
+      ApiMockzillaHttpRequest request, String key) {
+    return _determineEndpoint(key)?.defaultHandler(request.toDart()).toApi();
   }
 
+  /// Returns the default error response for the endpoint associated with
+  /// [key].
   @override
-  ApiMockzillaHttpResponse errorHandler(ApiMockzillaHttpRequest request) {
-    return _determineEndpoint(request.toDart())
-        .errorHandler(request.toDart())
-        .toApi();
+  ApiMockzillaHttpResponse errorHandler(
+      ApiMockzillaHttpRequest request, String key) {
+    return _determineEndpoint(key)?.errorHandler(request.toDart()).toApi();
   }
 
   @override
