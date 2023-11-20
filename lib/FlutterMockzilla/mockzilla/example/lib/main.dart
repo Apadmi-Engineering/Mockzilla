@@ -31,7 +31,7 @@ final mockzillaConfig = MockzillaConfig(
     EndpointConfig(
       name: "Fetch Packages",
       key: "fetch-packages",
-      endpointMatcher: (request) => true,
+      endpointMatcher: (request) => RegExp(r"/packages").hasMatch(request.uri) && request.method == HttpMethod.get,
       defaultHandler: (_) => defaultResponse,
       errorHandler: (_) => errorResponse,
       failureProbability: 0,
