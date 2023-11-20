@@ -1,7 +1,4 @@
 library mockzilla;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/mockzilla.dart';
+export 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
