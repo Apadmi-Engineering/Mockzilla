@@ -2,7 +2,7 @@ import 'package:mockzilla_android/src/api_utils.dart';
 import 'package:mockzilla_android/src/messages.g.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
-class MockzillaAndroid implements MockzillaPlatform {
+class MockzillaAndroid extends MockzillaPlatform {
   final mockzillaHostApi = MockzillaHostApi();
 
   @override
@@ -18,6 +18,10 @@ class MockzillaAndroid implements MockzillaPlatform {
 
   @override
   stopMockzilla() => mockzillaHostApi.stopServer();
+
+  static void registerWith() {
+    MockzillaPlatform.instance = MockzillaAndroid();
+  }
 }
 
 class CallbackProvider extends MockzillaFlutterApi {

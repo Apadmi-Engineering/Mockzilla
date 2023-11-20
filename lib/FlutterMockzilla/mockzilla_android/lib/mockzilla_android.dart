@@ -5,10 +5,4 @@
 // platforms in the `pubspec.yaml` at
 // https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
 
-import 'mockzilla_android_platform_interface.dart';
-
-class MockzillaAndroid {
-  Future<String?> getPlatformVersion() {
-    return MockzillaAndroidPlatform.instance.getPlatformVersion();
-  }
-}
+export 'src/mockzilla_android.dart';
