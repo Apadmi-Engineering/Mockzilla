@@ -1,4 +1,4 @@
-package com.example.mockzilla_android
+package com.apadmi.mockzilla
 
 import MockzillaFlutterApi
 import MockzillaHostApi
@@ -13,19 +13,20 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.plugin.common.PluginRegistry.Registrar
 
 /** MockzillaAndroidPlugin */
-class MockzillaAndroidPlugin: FlutterPlugin {
+class MockzillaAndroidPlugin : FlutterPlugin {
 
-  lateinit var mockzillaApi: MockzillaAndroid
+    lateinit var mockzillaApi: MockzillaAndroid
 
-  override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    val flutterApi = MockzillaFlutterApi(flutterPluginBinding.binaryMessenger)
-    mockzillaApi = MockzillaAndroid(flutterApi, flutterPluginBinding.applicationContext)
-    MockzillaHostApi.setUp(flutterPluginBinding.binaryMessenger, mockzillaApi)
-  }
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        val flutterApi = MockzillaFlutterApi(flutterPluginBinding.binaryMessenger)
+        mockzillaApi = MockzillaAndroid(flutterApi, flutterPluginBinding.applicationContext)
+        MockzillaHostApi.setUp(flutterPluginBinding.binaryMessenger, mockzillaApi)
+    }
 
-  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    mockzillaApi.stopServer()
-  }
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        mockzillaApi.stopServer()
+    }
 }

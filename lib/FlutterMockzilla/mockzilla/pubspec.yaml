@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  mockzilla_platform_interface:
+    path: ../mockzilla_platform_interface
   mockzilla_android:
     path: ../mockzilla_android
 
