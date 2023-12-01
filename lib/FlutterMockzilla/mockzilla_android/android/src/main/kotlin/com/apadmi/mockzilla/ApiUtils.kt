@@ -61,7 +61,9 @@ fun ApiLogLevel.Companion.fromNative(
 
 fun ApiMockzillaHttpRequest.toNative() = MockzillaHttpRequest(
     this.uri,
-    this.headers.filter { entry -> entry.key != null && entry.value != null } as? Map<String, String>
+    this.headers.filter { entry ->
+        entry.key != null && entry.value != null
+    } as? Map<String, String>
         ?: emptyMap(),
     this.body,
     this.method.toNative(),
