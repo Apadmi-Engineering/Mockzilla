@@ -1,31 +1,31 @@
 import 'package:mockzilla_android/src/messages.g.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
-extension ApiHttpMethodBridge on ApiHttpMethod {
+extension BridgeHttpMethodBridge on BridgeHttpMethod {
   HttpMethod toDart() => HttpMethod.values.firstWhere(
         (element) => element.name == name,
       );
 }
 
 extension HttpMethodBridge on HttpMethod {
-  ApiHttpMethod toApi() => ApiHttpMethod.values.firstWhere(
+  BridgeHttpMethod toBridge() => BridgeHttpMethod.values.firstWhere(
         (element) => element.name == name,
       );
 }
 
-extension ApiLogLevelBridge on ApiLogLevel {
+extension BridgeLogLevelBridge on BridgeLogLevel {
   LogLevel toDart() => LogLevel.values.firstWhere(
         (element) => element.name == name,
       );
 }
 
 extension LogLevelBridge on LogLevel {
-  ApiLogLevel toApi() => ApiLogLevel.values.firstWhere(
+  BridgeLogLevel toBridge() => BridgeLogLevel.values.firstWhere(
         (element) => element.name == name,
       );
 }
 
-extension ApiMockzillaHttpRequestBridge on ApiMockzillaHttpRequest {
+extension BridgeMockzillaHttpRequestBridge on BridgeMockzillaHttpRequest {
   toDart() => MockzillaHttpRequest(
         uri: uri,
         headers: Map.fromEntries(
@@ -36,15 +36,15 @@ extension ApiMockzillaHttpRequestBridge on ApiMockzillaHttpRequest {
 }
 
 extension MockzillaHttpRequestBridge on MockzillaHttpRequest {
-  toApi() => ApiMockzillaHttpRequest(
+  toBridge() => BridgeMockzillaHttpRequest(
         uri: uri,
         headers: headers,
         body: body,
-        method: method.toApi(),
+        method: method.toBridge(),
       );
 }
 
-extension ApiMockzillaHttpResponseBridge on ApiMockzillaHttpResponse {
+extension BridgeMockzillaHttpResponseBridge on BridgeMockzillaHttpResponse {
   toDart() => MockzillaHttpResponse(
         statusCode: statusCode,
         headers: Map.fromEntries(
@@ -55,14 +55,14 @@ extension ApiMockzillaHttpResponseBridge on ApiMockzillaHttpResponse {
 }
 
 extension MockzillaHttpResponseBridge on MockzillaHttpResponse {
-  toApi() => ApiMockzillaHttpResponse(
+  toBridge() => BridgeMockzillaHttpResponse(
         statusCode: statusCode,
         headers: headers,
         body: body,
       );
 }
 
-extension ApiEndpointConfigBridge on ApiEndpointConfig {
+extension BridgeEndpointConfigBridge on BridgeEndpointConfig {
   toDart(
     bool Function(MockzillaHttpRequest request) endpointMatcher,
     MockzillaHttpResponse Function(MockzillaHttpRequest request) defaultHandler,
@@ -82,18 +82,18 @@ extension ApiEndpointConfigBridge on ApiEndpointConfig {
 }
 
 extension EndpointConfigBridge on EndpointConfig {
-  ApiEndpointConfig toApi() => ApiEndpointConfig(
+  BridgeEndpointConfig toBridge() => BridgeEndpointConfig(
         name: name,
         key: key,
         failureProbability: failureProbability,
         delayMean: delayMean,
         delayVariance: delayVariance,
-        webApiDefaultResponse: webApiDefaultResponse?.toApi(),
-        webApiErrorResponse: webApiErrorResponse?.toApi(),
+        webApiDefaultResponse: webApiDefaultResponse?.toBridge(),
+        webApiErrorResponse: webApiErrorResponse?.toBridge(),
       );
 }
 
-extension ApiReleaseModeConfigBridge on ApiReleaseModeConfig {
+extension BridgeReleaseModeConfigBridge on BridgeReleaseModeConfig {
   toDart() => ReleaseModeConfig(
         rateLimit: rateLimit,
         rateLimitRefillPeriod:
@@ -103,14 +103,14 @@ extension ApiReleaseModeConfigBridge on ApiReleaseModeConfig {
 }
 
 extension ReleaseModeConfigBridge on ReleaseModeConfig {
-  toApi() => ApiReleaseModeConfig(
+  toBridge() => BridgeReleaseModeConfig(
         rateLimit: rateLimit,
         rateLimitRefillPeriodMillis: rateLimitRefillPeriod.inMilliseconds,
         tokenLifeSpanMillis: tokenLifeSpan.inMilliseconds,
       );
 }
 
-extension ApiAuthHeaderBridge on ApiAuthHeader {
+extension BridgeAuthHeaderBridge on BridgeAuthHeader {
   toDart() => AuthHeader(
         key: key,
         value: value,
@@ -118,28 +118,28 @@ extension ApiAuthHeaderBridge on ApiAuthHeader {
 }
 
 extension AuthHeaderBridge on AuthHeader {
-  toApi() => ApiAuthHeader(
+  toBridge() => BridgeAuthHeader(
         key: key,
         value: value,
       );
 }
 
 extension MockzillaConfigBridge on MockzillaConfig {
-  toApi() => ApiMockzillaConfig(
+  toBridge() => BridgeMockzillaConfig(
         port: port,
         endpoints: endpoints
             .map(
-              (endpoint) => endpoint.toApi(),
+              (endpoint) => endpoint.toBridge(),
             )
             .toList(),
         isRelease: isRelease,
         localHostOnly: localHostOnly,
-        logLevel: logLevel.toApi(),
-        releaseModeConfig: releaseModeConfig.toApi(),
+        logLevel: logLevel.toBridge(),
+        releaseModeConfig: releaseModeConfig.toBridge(),
       );
 }
 
-extension ApiMockzillaConfigBridge on ApiMockzillaConfig {
+extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
   toDart(
     bool Function(MockzillaHttpRequest request) endpointMatcher,
     MockzillaHttpResponse Function(MockzillaHttpRequest request) defaultHandler,

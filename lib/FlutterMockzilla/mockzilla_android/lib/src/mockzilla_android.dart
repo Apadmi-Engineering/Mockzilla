@@ -4,21 +4,21 @@ import 'package:mockzilla_android/src/utils/list_utils.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 class MockzillaAndroid extends MockzillaPlatform {
-  final mockzillaHostApi = MockzillaHostApi();
+  final mockzillaHostBridge = MockzillaHostApi();
 
   @override
   Future<void> startMockzilla(MockzillaConfig config) {
     final callbackProvider = CallbackProvider(
       config.endpoints,
-      () => Future.value(ApiAuthHeader(key: "Authorization", value: "Bearer")),
+      () => Future.value(BridgeAuthHeader(key: "Authorization", value: "Bearer")),
       config.additionalLogWriters,
     );
     MockzillaFlutterApi.setup(callbackProvider);
-    return mockzillaHostApi.startServer(config.toApi());
+    return mockzillaHostBridge.startServer(config.toBridge());
   }
 
   @override
-  stopMockzilla() => mockzillaHostApi.stopServer();
+  stopMockzilla() => mockzillaHostBridge.stopServer();
 
   static void registerWith() {
     MockzillaPlatform.instance = MockzillaAndroid();
@@ -27,7 +27,7 @@ class MockzillaAndroid extends MockzillaPlatform {
 
 class CallbackProvider extends MockzillaFlutterApi {
   final List<EndpointConfig> endpoints;
-  final Future<ApiAuthHeader> Function() _generateAuthHeader;
+  final Future<BridgeAuthHeader> Function() _generateAuthHeader;
   final List<MockzillaLogger> _additionalLoggers;
 
   CallbackProvider(
@@ -43,33 +43,33 @@ class CallbackProvider extends MockzillaFlutterApi {
 
   /// Calls the matcher on the specified endpoint.
   @override
-  bool endpointMatcher(ApiMockzillaHttpRequest request, String key) {
+  bool endpointMatcher(BridgeMockzillaHttpRequest request, String key) {
     return _determineEndpoint(key)?.endpointMatcher(request.toDart()) ?? false;
   }
 
   /// Returns the default response for the endpoint associated with [key].
   @override
-  ApiMockzillaHttpResponse defaultHandler(
-      ApiMockzillaHttpRequest request, String key) {
-    return _determineEndpoint(key)?.defaultHandler(request.toDart()).toApi();
+  BridgeMockzillaHttpResponse defaultHandler(
+      BridgeMockzillaHttpRequest request, String key) {
+    return _determineEndpoint(key)?.defaultHandler(request.toDart()).toBridge();
   }
 
   /// Returns the default error response for the endpoint associated with
   /// [key].
   @override
-  ApiMockzillaHttpResponse errorHandler(
-      ApiMockzillaHttpRequest request, String key) {
-    return _determineEndpoint(key)?.errorHandler(request.toDart()).toApi();
+  BridgeMockzillaHttpResponse errorHandler(
+      BridgeMockzillaHttpRequest request, String key) {
+    return _determineEndpoint(key)?.errorHandler(request.toDart()).toBridge();
   }
 
   @override
-  Future<ApiAuthHeader> generateAuthHeader() => _generateAuthHeader().then(
+  Future<BridgeAuthHeader> generateAuthHeader() => _generateAuthHeader().then(
         (result) => result.toDart(),
       );
 
   @override
   void log(
-    ApiLogLevel logLevel,
+    BridgeLogLevel logLevel,
     String message,
     String tag,
     String? exception,
