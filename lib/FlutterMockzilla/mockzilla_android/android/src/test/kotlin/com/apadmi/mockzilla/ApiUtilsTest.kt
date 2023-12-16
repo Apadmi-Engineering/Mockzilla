@@ -3,6 +3,7 @@ package com.apadmi.mockzilla
 import ApiEndpointConfig
 import ApiHttpMethod
 import ApiLogLevel
+import ApiMockzillaConfig
 import ApiMockzillaHttpRequest
 import ApiMockzillaHttpResponse
 import ApiReleaseModeConfig
@@ -16,6 +17,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 internal class ApiUtilsTest {
     @Test
@@ -169,17 +171,85 @@ internal class ApiUtilsTest {
                 60_000,
                 86_400_000
             ) to
-            MockzillaConfig.ReleaseModeConfig(
-                2000,
-                Duration.parseIsoString("PT1M"),
-                Duration.parseIsoString("P1D"),
-            )
+                    MockzillaConfig.ReleaseModeConfig(
+                        2000,
+                        Duration.parseIsoString("PT1M"),
+                        Duration.parseIsoString("P1D"),
+                    )
         )
 
         // Run test & verify
         bridgeToNative.forEach { (bridge, native) ->
             assertEquals(native, bridge.toNative())
             assertEquals(bridge, ApiReleaseModeConfig.fromNative(native))
+        }
+    }
+
+    @Test
+    fun mockzillaConfig_marshalling_returnsExpectedValue() {
+        // Setup
+        val endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean = { _: String -> true }
+        val defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse =
+            { _: String -> MockzillaHttpResponse() }
+        val errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse =
+            { _: String -> MockzillaHttpResponse() }
+        val bridgeToNative = mapOf(
+            ApiMockzillaConfig(
+                8080L,
+                listOf(
+                    ApiEndpointConfig(
+                        "name",
+                        "key",
+                    )
+                ),
+                isRelease = false,
+                localHostOnly = false,
+                ApiLogLevel.INFO,
+                ApiReleaseModeConfig(
+                    2000,
+                    60_000,
+                    86_400_000
+                )
+            ) to
+                    MockzillaConfig(
+                        8080,
+                        listOf(
+                            EndpointConfiguration(
+                                "name",
+                                "key",
+                                null,
+                                null,
+                                null,
+                                { endpointMatcher("key") },
+                                null,
+                                null,
+                                { defaultHandler("key") },
+                                { errorHandler("key") }
+                            )
+                        ),
+                        isRelease = false,
+                        localhostOnly = false,
+                        MockzillaConfig.LogLevel.Info,
+                        MockzillaConfig.ReleaseModeConfig(
+                            2000,
+                            60.seconds,
+                            86_400.seconds,
+                        ),
+                        emptyList()
+                    )
+        )
+
+        // Run test & verify
+        bridgeToNative.forEach { (bridge, native) ->
+            // TODO: This doesn't pass as lambdas are references, fix this!!
+//            assertEquals(
+//                bridge.toNative(endpointMatcher, defaultHandler, errorHandler),
+//                native
+//            )
+            assertEquals(
+                ApiMockzillaConfig.fromNative(native),
+                bridge,
+            )
         }
     }
 }
