@@ -4,11 +4,12 @@ import 'package:pigeon/pigeon.dart';
   PigeonOptions(
     dartOut: "lib/src/messages.g.dart",
     dartOptions: DartOptions(),
+    dartTestOut: "test/messages_test.g.dart",
     kotlinOut: "android/src/main/kotlin/com/apadmi/mockzilla/Messages.g.kt",
     kotlinOptions: KotlinOptions(),
   ),
 )
-enum ApiHttpMethod {
+enum BridgeHttpMethod {
   get,
   head,
   post,
@@ -18,21 +19,22 @@ enum ApiHttpMethod {
   patch;
 }
 
-enum ApiLogLevel {
+enum BridgeLogLevel {
   debug,
   error,
   info,
   verbose,
-  warn;
+  warn,
+  assertion;
 }
 
-class ApiMockzillaHttpRequest {
+class BridgeMockzillaHttpRequest {
   final String uri;
   final Map<String?, String?> headers;
   final String body;
-  final ApiHttpMethod method;
+  final BridgeHttpMethod method;
 
-  const ApiMockzillaHttpRequest(
+  const BridgeMockzillaHttpRequest(
     this.uri,
     this.headers,
     this.method, [
@@ -40,28 +42,28 @@ class ApiMockzillaHttpRequest {
   ]);
 }
 
-class ApiMockzillaHttpResponse {
+class BridgeMockzillaHttpResponse {
   final int statusCode;
   final Map<String?, String?> headers;
   final String body;
 
-  const ApiMockzillaHttpResponse([
+  const BridgeMockzillaHttpResponse([
     this.statusCode = 200,
     this.headers = const {},
     this.body = "",
   ]);
 }
 
-class ApiEndpointConfig {
+class BridgeEndpointConfig {
   final String name;
   final String key;
   final int? failureProbability;
   final int? delayMean;
   final int? delayVariance;
-  final ApiMockzillaHttpResponse? webApiDefaultResponse;
-  final ApiMockzillaHttpResponse? webApiErrorResponse;
+  final BridgeMockzillaHttpResponse? webApiDefaultResponse;
+  final BridgeMockzillaHttpResponse? webApiErrorResponse;
 
-  const ApiEndpointConfig(
+  const BridgeEndpointConfig(
     this.name,
     this.key, [
     this.failureProbability,
@@ -72,27 +74,27 @@ class ApiEndpointConfig {
   ]);
 }
 
-class ApiReleaseModeConfig {
+class BridgeReleaseModeConfig {
   final int rateLimit;
   final int rateLimitRefillPeriodMillis;
   final int tokenLifeSpanMillis;
 
-  const ApiReleaseModeConfig([
+  const BridgeReleaseModeConfig([
     this.rateLimit = 60,
     this.rateLimitRefillPeriodMillis = 60000,
     this.tokenLifeSpanMillis = 500,
   ]);
 }
 
-class ApiMockzillaConfig {
+class BridgeMockzillaConfig {
   final int port;
-  final List<ApiEndpointConfig?> endpoints;
+  final List<BridgeEndpointConfig?> endpoints;
   final bool isRelease;
   final bool localHostOnly;
-  final ApiLogLevel logLevel;
-  final ApiReleaseModeConfig releaseModeConfig;
+  final BridgeLogLevel logLevel;
+  final BridgeReleaseModeConfig releaseModeConfig;
 
-  const ApiMockzillaConfig(
+  const BridgeMockzillaConfig(
     this.port,
     this.endpoints,
     this.isRelease,
@@ -102,13 +104,13 @@ class ApiMockzillaConfig {
   );
 }
 
-class ApiMockzillaRuntimeParams {
-  final ApiMockzillaConfig config;
+class BridgeMockzillaRuntimeParams {
+  final BridgeMockzillaConfig config;
   final String mockBaseUrl;
   final String apiBaseUrl;
   final int port;
 
-  const ApiMockzillaRuntimeParams(
+  const BridgeMockzillaRuntimeParams(
     this.config,
     this.mockBaseUrl,
     this.apiBaseUrl,
@@ -116,11 +118,11 @@ class ApiMockzillaRuntimeParams {
   );
 }
 
-class ApiAuthHeader {
+class BridgeAuthHeader {
   final String key;
   final String value;
 
-  const ApiAuthHeader(
+  const BridgeAuthHeader(
     this.key,
     this.value,
   );
@@ -128,24 +130,24 @@ class ApiAuthHeader {
 
 @HostApi()
 abstract class MockzillaHostApi {
-  ApiMockzillaRuntimeParams startServer(ApiMockzillaConfig config);
+  BridgeMockzillaRuntimeParams startServer(BridgeMockzillaConfig config);
 
   void stopServer();
 }
 
 @FlutterApi()
 abstract class MockzillaFlutterApi {
-  bool endpointMatcher(ApiMockzillaHttpRequest request, String key);
+  bool endpointMatcher(BridgeMockzillaHttpRequest request, String key);
 
-  ApiMockzillaHttpResponse defaultHandler(ApiMockzillaHttpRequest request, String key);
+  BridgeMockzillaHttpResponse defaultHandler(BridgeMockzillaHttpRequest request, String key);
 
-  ApiMockzillaHttpResponse errorHandler(ApiMockzillaHttpRequest request, String key);
+  BridgeMockzillaHttpResponse errorHandler(BridgeMockzillaHttpRequest request, String key);
 
   @async
-  ApiAuthHeader generateAuthHeader();
+  BridgeAuthHeader generateAuthHeader();
 
   void log(
-    ApiLogLevel logLevel,
+    BridgeLogLevel logLevel,
     String message,
     String tag,
     String? exception,

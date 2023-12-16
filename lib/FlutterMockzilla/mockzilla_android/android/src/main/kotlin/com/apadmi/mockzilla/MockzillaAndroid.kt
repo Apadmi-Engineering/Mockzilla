@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla
 
-import ApiMockzillaConfig
-import ApiMockzillaHttpRequest
-import ApiMockzillaRuntimeParams
+import BridgeMockzillaConfig
+import BridgeMockzillaHttpRequest
+import BridgeMockzillaRuntimeParams
 import MockzillaFlutterApi
 import MockzillaHostApi
 import android.content.Context
@@ -22,14 +22,14 @@ class MockzillaAndroid(
 
     val uiThreadHandler = Handler(Looper.getMainLooper())
 
-    override fun startServer(config: ApiMockzillaConfig): ApiMockzillaRuntimeParams {
+    override fun startServer(config: BridgeMockzillaConfig): BridgeMockzillaRuntimeParams {
         val nativeConfig = config.toNative(
             { key -> callEndpointMatcher(this, key) },
             { key -> callDefaultHandler(this, key) },
             { key -> callErrorHandler(this, key) }
         )
         val nativeRuntimeParams = startMockzilla(nativeConfig, context)
-        return ApiMockzillaRuntimeParams.fromNative(nativeRuntimeParams)
+        return BridgeMockzillaRuntimeParams.fromNative(nativeRuntimeParams)
     }
 
     override fun stopServer() {
@@ -39,7 +39,7 @@ class MockzillaAndroid(
     private fun callEndpointMatcher(request: MockzillaHttpRequest, key: String): Boolean {
         val completer = CompletableDeferred<Boolean>()
         uiThreadHandler.post {
-            flutterApi.endpointMatcher(ApiMockzillaHttpRequest.fromNative(request), key) {
+            flutterApi.endpointMatcher(BridgeMockzillaHttpRequest.fromNative(request), key) {
                 completer.complete(it.getOrThrow())
             }
         }
@@ -49,7 +49,7 @@ class MockzillaAndroid(
     private fun callDefaultHandler(request: MockzillaHttpRequest, key: String): MockzillaHttpResponse {
         val completer = CompletableDeferred<MockzillaHttpResponse>()
         uiThreadHandler.post {
-            flutterApi.defaultHandler(ApiMockzillaHttpRequest.fromNative(request), key) {
+            flutterApi.defaultHandler(BridgeMockzillaHttpRequest.fromNative(request), key) {
                 completer.complete(it.getOrThrow().toNative())
             }
         }
@@ -59,7 +59,7 @@ class MockzillaAndroid(
     private fun callErrorHandler(request: MockzillaHttpRequest, key: String): MockzillaHttpResponse {
         val completer = CompletableDeferred<MockzillaHttpResponse>()
         uiThreadHandler.post {
-            flutterApi.errorHandler(ApiMockzillaHttpRequest.fromNative(request), key) {
+            flutterApi.errorHandler(BridgeMockzillaHttpRequest.fromNative(request), key) {
                 completer.complete(it.getOrThrow().toNative())
             }
         }

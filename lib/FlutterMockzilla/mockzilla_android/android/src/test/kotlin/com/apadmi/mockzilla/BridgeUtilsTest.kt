@@ -1,12 +1,12 @@
 package com.apadmi.mockzilla
 
-import ApiEndpointConfig
-import ApiHttpMethod
-import ApiLogLevel
-import ApiMockzillaConfig
-import ApiMockzillaHttpRequest
-import ApiMockzillaHttpResponse
-import ApiReleaseModeConfig
+import BridgeEndpointConfig
+import BridgeHttpMethod
+import BridgeLogLevel
+import BridgeMockzillaConfig
+import BridgeMockzillaHttpRequest
+import BridgeMockzillaHttpResponse
+import BridgeReleaseModeConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
@@ -15,28 +15,27 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertSame
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-internal class ApiUtilsTest {
+internal class BridgeUtilsTest {
     @Test
     fun httpMethod_marshalling_returnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
-            ApiHttpMethod.GET to HttpMethod.Get,
-            ApiHttpMethod.HEAD to HttpMethod.Head,
-            ApiHttpMethod.POST to HttpMethod.Post,
-            ApiHttpMethod.PUT to HttpMethod.Put,
-            ApiHttpMethod.DELETE to HttpMethod.Delete,
-            ApiHttpMethod.OPTIONS to HttpMethod.Options,
-            ApiHttpMethod.PATCH to HttpMethod.Patch
+            BridgeHttpMethod.GET to HttpMethod.Get,
+            BridgeHttpMethod.HEAD to HttpMethod.Head,
+            BridgeHttpMethod.POST to HttpMethod.Post,
+            BridgeHttpMethod.PUT to HttpMethod.Put,
+            BridgeHttpMethod.DELETE to HttpMethod.Delete,
+            BridgeHttpMethod.OPTIONS to HttpMethod.Options,
+            BridgeHttpMethod.PATCH to HttpMethod.Patch
         )
 
         // Run test & verify
         bridgeToNative.forEach { (bridge, native) ->
             assertEquals(bridge.toNative(), native)
-            assertEquals(ApiHttpMethod.fromNative(native), bridge)
+            assertEquals(BridgeHttpMethod.fromNative(native), bridge)
         }
     }
 
@@ -44,17 +43,18 @@ internal class ApiUtilsTest {
     fun logLevel_marshalling_returnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
-            ApiLogLevel.DEBUG to MockzillaConfig.LogLevel.Debug,
-            ApiLogLevel.ERROR to MockzillaConfig.LogLevel.Error,
-            ApiLogLevel.INFO to MockzillaConfig.LogLevel.Info,
-            ApiLogLevel.VERBOSE to MockzillaConfig.LogLevel.Verbose,
-            ApiLogLevel.WARN to MockzillaConfig.LogLevel.Warn
+            BridgeLogLevel.DEBUG to MockzillaConfig.LogLevel.Debug,
+            BridgeLogLevel.ERROR to MockzillaConfig.LogLevel.Error,
+            BridgeLogLevel.INFO to MockzillaConfig.LogLevel.Info,
+            BridgeLogLevel.VERBOSE to MockzillaConfig.LogLevel.Verbose,
+            BridgeLogLevel.WARN to MockzillaConfig.LogLevel.Warn,
+            BridgeLogLevel.ASSERTION to MockzillaConfig.LogLevel.Assert,
         )
 
         // Run test & verify
         bridgeToNative.forEach { (bridge, native) ->
             assertEquals(bridge.toNative(), native)
-            assertEquals(ApiLogLevel.fromNative(native), bridge)
+            assertEquals(BridgeLogLevel.fromNative(native), bridge)
         }
     }
 
@@ -62,11 +62,11 @@ internal class ApiUtilsTest {
     fun mockzillaHttpRequest_marshalling_returnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
-            ApiMockzillaHttpRequest(
+            BridgeMockzillaHttpRequest(
                 "https://www.example.com",
                 mapOf("Authorization" to "abcd"),
                 "body",
-                ApiHttpMethod.PUT,
+                BridgeHttpMethod.PUT,
             ) to
                     MockzillaHttpRequest(
                         "https://www.example.com",
@@ -79,7 +79,7 @@ internal class ApiUtilsTest {
         // Run test & verify
         bridgeToNative.forEach { (bridge, native) ->
             assertEquals(bridge.toNative(), native)
-            assertEquals(ApiMockzillaHttpRequest.fromNative(native), bridge)
+            assertEquals(BridgeMockzillaHttpRequest.fromNative(native), bridge)
         }
     }
 
@@ -87,7 +87,7 @@ internal class ApiUtilsTest {
     fun mockzillaHttpResponse_marshalling_returnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
-            ApiMockzillaHttpResponse(
+            BridgeMockzillaHttpResponse(
                 200,
                 mapOf("Content-type" to "application/json"),
                 "body"
@@ -102,7 +102,7 @@ internal class ApiUtilsTest {
         // Run test & verify
         bridgeToNative.forEach { (bridge, native) ->
             assertEquals(bridge.toNative(), native)
-            assertEquals(ApiMockzillaHttpResponse.fromNative(native), bridge)
+            assertEquals(BridgeMockzillaHttpResponse.fromNative(native), bridge)
         }
     }
 
@@ -115,18 +115,18 @@ internal class ApiUtilsTest {
         val errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse =
             { _: String -> MockzillaHttpResponse() }
         val bridgeToNative = mapOf(
-            ApiEndpointConfig(
+            BridgeEndpointConfig(
                 "MyEndpoint",
                 "my-endpoint",
                 50,
                 200,
                 100,
-                ApiMockzillaHttpResponse(
+                BridgeMockzillaHttpResponse(
                     200,
                     mapOf("Content-type" to "application/json"),
                     "body"
                 ),
-                ApiMockzillaHttpResponse(
+                BridgeMockzillaHttpResponse(
                     400,
                     mapOf("Content-type" to "application/json"),
                     "error"
@@ -158,7 +158,7 @@ internal class ApiUtilsTest {
         bridgeToNative.forEach { (bridge, native) ->
             // TODO: This doesn't pass as lambdas are references, fix this!!
             // assertEquals(bridge.toNative(endpointMatcher, defaultHandler, errorHandler), native)
-            assertEquals(ApiEndpointConfig.fromNative(native), bridge)
+            assertEquals(BridgeEndpointConfig.fromNative(native), bridge)
         }
     }
 
@@ -166,7 +166,7 @@ internal class ApiUtilsTest {
     fun releaseModeConfig_marshalling_returnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
-            ApiReleaseModeConfig(
+            BridgeReleaseModeConfig(
                 2000,
                 60_000,
                 86_400_000
@@ -181,7 +181,7 @@ internal class ApiUtilsTest {
         // Run test & verify
         bridgeToNative.forEach { (bridge, native) ->
             assertEquals(native, bridge.toNative())
-            assertEquals(bridge, ApiReleaseModeConfig.fromNative(native))
+            assertEquals(bridge, BridgeReleaseModeConfig.fromNative(native))
         }
     }
 
@@ -194,18 +194,18 @@ internal class ApiUtilsTest {
         val errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse =
             { _: String -> MockzillaHttpResponse() }
         val bridgeToNative = mapOf(
-            ApiMockzillaConfig(
+            BridgeMockzillaConfig(
                 8080L,
                 listOf(
-                    ApiEndpointConfig(
+                    BridgeEndpointConfig(
                         "name",
                         "key",
                     )
                 ),
                 isRelease = false,
                 localHostOnly = false,
-                ApiLogLevel.INFO,
-                ApiReleaseModeConfig(
+                BridgeLogLevel.INFO,
+                BridgeReleaseModeConfig(
                     2000,
                     60_000,
                     86_400_000
@@ -247,7 +247,7 @@ internal class ApiUtilsTest {
 //                native
 //            )
             assertEquals(
-                ApiMockzillaConfig.fromNative(native),
+                BridgeMockzillaConfig.fromNative(native),
                 bridge,
             )
         }
