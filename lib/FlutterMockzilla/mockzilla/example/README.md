@@ -1,16 +1,21 @@
-# example
+This Flutter app is an example of how to use the `mockzilla` plugin.
 
-A new Flutter project.
+> *Note*: The `mockzila` plugin is currently under development and as such, the interface is not 
+> yet stable. This example will be updated inline with interface changes.
 
-## Getting Started
+## Getting started
 
-This project is a starting point for a Flutter application.
+In order to download the required dependencies for this app, run the following command in the base 
+directory.
 
-A few resources to get you started if this is your first Flutter project:
+``shell
+flutter pub gt
+``
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+This app uses the `freezed` package for code generation of immutable classes that contain utilities 
+such as `=`, `hashCode`, and `copyWith`. In order to execute the code generation, run the following 
+command in the base directory of this app.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```shell
+dart run build_runner build
+```
