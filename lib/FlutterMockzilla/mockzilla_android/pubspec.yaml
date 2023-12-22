@@ -1,6 +1,15 @@
 name: mockzilla_android
-description: A new Flutter plugin project.
-version: 0.0.1
+description: The Android implementation for the mockzilla plugin.
+version: 1.0.0-dev
+homepage: https://apadmi-engineering.github.io/Mockzilla/
+repository: https://github.com/Apadmi-Engineering/Mockzilla
+issue_tracker: https://github.com/Apadmi-Engineering/Mockzilla/issues
+documentation: https://apadmi-engineering.github.io/Mockzilla/
+topics:
+  - http
+  - server
+  - tool
+  - mockzilla
 
 environment:
   sdk: '>=3.1.0 <4.0.0'

@@ -1,7 +1,15 @@
 name: mockzilla
-description: A new Flutter package project.
-version: 0.0.1
-homepage:
+description: A solution for configuring and running a local HTTP server as part of a Flutter app.
+version: 1.0.0-dev
+homepage: https://apadmi-engineering.github.io/Mockzilla/
+repository: https://github.com/Apadmi-Engineering/Mockzilla
+issue_tracker: https://github.com/Apadmi-Engineering/Mockzilla/issues
+documentation: https://apadmi-engineering.github.io/Mockzilla/
+topics:
+  - http
+  - server
+  - tool
+  - mockzilla
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
