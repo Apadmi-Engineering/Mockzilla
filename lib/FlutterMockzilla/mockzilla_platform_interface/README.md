@@ -1,18 +1,9 @@
-# mockzilla_platform_interface
+A common platform interface for the mockzilla plugin.
 
-A new Flutter plugin project.
+This interface is used by for platform-specific implementations of the mockzilla plugin, as well as said plugin itself to ensure that they are supporting the same interface.
 
-## Getting Started
+## Usage
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+To implement a new platform-specific implementation of the mockzilla plugin, extend `MockzillaPlatform` and when you register your native implementation, be sure to call `MockzillaPlatform.instance = /* your implementation */;`.
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-The plugin project was generated without specifying the `--platforms` flag, no platforms are currently supported.
-To add platforms, run `flutter create -t plugin --platforms <platforms> .` in this directory.
-You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
+There is a strong preference to keep the API defined in this package closely aligned with the native Mockzilla packages to make maintenance of all Mockzilla packages easier.

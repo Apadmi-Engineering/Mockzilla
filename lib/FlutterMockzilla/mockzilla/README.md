@@ -1,39 +1,22 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+A plugin for configuring and running a local HTTP server that mimics a REST API consumed by your Flutter mobile app.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+> This plugin is currently under development, the API is unstable and it's implementation may contain bugs.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+* Compile safe mock endpoint definitions.
+* HTTP Client agnostic.
+* Works completely offline.
+* Entirely self-contained within your application's codebase.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+TODO: Update online documentation with Flutter usage instructions and include a link here.
 
-## Usage
+## Important note
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+Mockzilla is designed as a development and test tool **only**.
 
-```dart
-const like = 'sample';
-```
+Mockzilla should **never be used in production**. Its traffic is unprotected and by nature of running a server on device, it can introduce security issues.
 
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+**Do not ship it to production**.
