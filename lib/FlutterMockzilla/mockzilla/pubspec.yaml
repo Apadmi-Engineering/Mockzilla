@@ -18,6 +18,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # TODO: Local dependencies used for ease of development, these should be regular dependencies
+  # once this plugin is hosted.
   mockzilla_platform_interface:
     path: ../mockzilla_platform_interface
   mockzilla_android:
@@ -27,9 +29,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
 
 flutter:
   plugin:
