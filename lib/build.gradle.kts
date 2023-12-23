@@ -25,7 +25,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
         target("**/*.kt")
         targetExclude(
             "build-logic/build/**", "build/**", "**/mockzilla/build/**", "fastlane/**",
-            "fastlane-build/**", "**/FlutterMockzilla/*.g.kt"
+            "fastlane-build/**", "**/FlutterMockzilla/**/*.g.kt"
         )
 
         diktat("1.2.1").configFile("diktat-analysis.yml")
