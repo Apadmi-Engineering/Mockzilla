@@ -17,7 +17,7 @@
     ```
 === "Swift"
     ```swift
-    let endpoint = EndpointConfiguration.Builder(id: "Hello world")
+    let endpoint = EndpointConfigurationBuilder(id: "Hello world")
         .setDefaultHandler { _ in
             MockzillaHttpResponse(
                 statusCode: HttpStatusCode.OK,
@@ -103,7 +103,7 @@ Request data is accessible as follows:
     ```
 === "Swift"
     ```swift
-        EndpointConfiguration.Builder(id: "Hello world")
+        EndpointConfigurationBuilder(id: "Hello world")
             .setSwiftPatternMatcher {
                 // $0: MockzillaHttpRequest
             }
@@ -122,7 +122,7 @@ data class MockzillaHttpRequest(
 
 ### (2) - Artificial Latency
 
-The following can be configured globally across all endpoints [here](../dokka/mockzilla/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
+The following can be configured globally across all endpoints [here](../dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
 
 Network requests generally don't complete instantly. Mockzilla mimics the latency of a network and can be configured 
 either across all endpoints on the top level config, or on individual endpoints as follows:
@@ -135,7 +135,7 @@ either across all endpoints on the top level config, or on individual endpoints 
     ```
 === "Swift"
     ```swift
-        EndpointConfiguration.Builder(id: "Hello world")
+        EndpointConfigurationBuilder(id: "Hello world")
           .setMeanDelayMillis(delay: 100)
           .setDelayVarianceMillis(variance: 20)
     ```
@@ -153,7 +153,7 @@ The delay will be randomised and sit somewhere between $delayMean - delayVarianc
 
 ### (3) - Artificial Errors
 
-The following can be configured globally across all endpoints [here](../dokka/mockzilla/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
+The following can be configured globally across all endpoints [here](../dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
 
 Mockzilla supports artificially causing network requests to fail.
 
@@ -166,7 +166,7 @@ For each individual request invocation, the decision on whether the request shou
     ```
 === "Swift"
     ```swift
-    EndpointConfiguration.Builder(id: "Hello world")
+    EndpointConfigurationBuilder(id: "Hello world")
     .setFailureProbability(percentage: 0)
     ```
 

@@ -1,7 +1,8 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
-import com.apadmi.mockzilla.lib.models.MockzillaConfig.LogLevel.Companion.toLogLevel
+import com.apadmi.mockzilla.lib.service.toKermitSeverity
+import com.apadmi.mockzilla.lib.service.toLogLevel
 
 import co.touchlab.kermit.Severity
 

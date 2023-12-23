@@ -2,7 +2,7 @@ package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.GlobalOverridesDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
-import com.apadmi.mockzilla.lib.internal.models.toMockDataEntry
+import com.apadmi.mockzilla.lib.internal.models.toMockDataEntryForWeb
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -19,7 +19,7 @@ internal class WebPortalApiController(
     }
 
     suspend fun getAllMockDataEntries() = endpoints.map {
-        localCacheService.getLocalCache(it.key) ?: it.toMockDataEntry()
+        localCacheService.getLocalCache(it.key) ?: it.toMockDataEntryForWeb()
     }
 
     suspend fun clearAllCaches() {

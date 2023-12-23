@@ -3,9 +3,8 @@ platform :ios do
     desc "iOS target for the lib"
     lane :lib_pull_request do
         gradle(
-            tasks: [":mockzilla:iosX64Test"],
-            project_dir: "./lib",
-            flags: "--info"
+            tasks: [":mockzilla-common:iosX64Test", ":mockzilla:iosX64Test", ":mockzilla-management:jvmTest"],
+            project_dir: "./lib"
         )
 
         # Create the XCFramework
@@ -51,7 +50,7 @@ end
 desc "Publish to maven local"
 lane :publish_to_maven_local do
     gradle(
-        tasks: [":mockzilla:publishToMavenLocal"],
+        tasks: [":mockzilla-common:publishToMavenLocal", ":mockzilla:publishToMavenLocal"],
         project_dir: "./lib"
     )
 end
@@ -59,7 +58,7 @@ end
 desc "Publish to maven remote"
 lane :publish_to_maven do
     gradle(
-        tasks: [":mockzilla:publish"],
+        tasks: [":mockzilla-common:publish", ":mockzilla:publish"],
         project_dir: "./lib",
         properties: {
             "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
@@ -73,9 +72,12 @@ platform :android do
     desc "Android target for the lib"
     lane :lib_pull_request do
         gradle(
-            tasks: [":mockzilla:testDebugUnitTest"],
-            project_dir: "./lib",
-            flags: "--info"
+            tasks: [
+                ":mockzilla-common:testDebugUnitTest",
+                ":mockzilla:testDebugUnitTest", 
+                ":mockzilla-management:jvmTest"
+            ],
+            project_dir: "./lib"
         )
     end
 end

@@ -2,7 +2,7 @@ package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.GlobalOverridesDto
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.internal.models.toMockDataEntry
+import com.apadmi.mockzilla.lib.internal.models.toMockDataEntryForWeb
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -58,7 +58,7 @@ class WebPortalApiControllerTests {
     @Test
     fun `getAllMockDataEntries - replaces cached data - calls through`() = runTest {
         /* Setup */
-        val dummyCacheEntry = dummyEndpoints.first().toMockDataEntry().copy(
+        val dummyCacheEntry = dummyEndpoints.first().toMockDataEntryForWeb().copy(
             defaultBody = "my cached value"
         )
         given(localCacheServiceMock).coroutine {
@@ -74,7 +74,7 @@ class WebPortalApiControllerTests {
 
         /* Verify */
         assertEquals(
-            listOf(dummyCacheEntry, dummyEndpoints[1].toMockDataEntry()),
+            listOf(dummyCacheEntry, dummyEndpoints[1].toMockDataEntryForWeb()),
             result
         )
     }
@@ -88,7 +88,7 @@ class WebPortalApiControllerTests {
         val result = assertFails {
             sut.updateEntry(
                 "another id",
-                dummyEndpoints.first().toMockDataEntry()
+                dummyEndpoints.first().toMockDataEntryForWeb()
             )
         }
         assertTrue(result is IllegalStateException)
@@ -102,12 +102,12 @@ class WebPortalApiControllerTests {
         /* Run Test */
         sut.updateEntry(
             dummyEndpoints.first().key,
-            dummyEndpoints.first().toMockDataEntry()
+            dummyEndpoints.first().toMockDataEntryForWeb()
         )
 
         /* Verify */
         verify(localCacheServiceMock).coroutine {
-            updateLocalCache(dummyEndpoints.first().toMockDataEntry())
+            updateLocalCache(dummyEndpoints.first().toMockDataEntryForWeb())
         }.wasInvoked(1.time)
     }
 

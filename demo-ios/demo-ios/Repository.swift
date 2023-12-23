@@ -7,6 +7,7 @@
 
 import Foundation
 import mockzilla
+import SwiftMockzilla
 
 struct GetCowRequestDto: Codable {
     let aValueInTheRequest: String

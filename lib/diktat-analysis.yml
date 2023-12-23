@@ -9,9 +9,9 @@
     # expected values:  disabledChapters: "Naming, Comments, General, Variables, Functions, Classes"
     # or: "1, 2, 3, 4, 5, 6"
     disabledChapters: ""
-    testDirs: test
-    kotlinVersion: 1.7
-    srcDirectories: "main"
+    testDirs: test, androidUnitTest, desktopTest, commonTest
+    kotlinVersion: 1.9
+    srcDirectories: main, desktopMain
 # Checks that the Class/Enum/Interface name matches Pascal case
 - name: CLASS_NAME_INCORRECT
   enabled: true
@@ -41,6 +41,7 @@
 # Checks that function/method name is in lowerCamelCase
 - name: FUNCTION_NAME_INCORRECT_CASE
   enabled: true
+  ignoreAnnotated: [Composable]
 # Checks that generic name doesn't contain more than 1 letter (capital). It can be followed by numbers, example: T12, T
 - name: GENERIC_NAME
   enabled: false
@@ -52,7 +53,7 @@
   enabled: true
 # Checks that package name is in correct (lower) case
 - name: PACKAGE_NAME_INCORRECT_CASE
-  enabled: true
+  enabled: false
 # Checks that package name starts with the company's domain
 - name: PACKAGE_NAME_INCORRECT_PREFIX
   enabled: true
@@ -74,6 +75,7 @@
 # Checks that the name of variable is in lowerCamelCase and contains only ASCII letters
 - name: VARIABLE_NAME_INCORRECT_FORMAT
   enabled: true
+  ignoreAnnotated: [ LyricistStrings ]
 # Checks that functions have kdoc
 - name: MISSING_KDOC_ON_FUNCTION
   enabled: false
@@ -318,7 +320,7 @@
     # Ignore numbers from test
     ignoreTest: "true"
     # Ignore numbers
-    ignoreNumbers: "-1, 1, 0, 0.0, 1.0, 2, 100, 20"
+    ignoreNumbers: "-1, 1, 1f, -1f, 0, 0.0, 1.0, 2, 100, 20"
     # Is ignore override hashCode function
     ignoreHashCodeFunction: "true"
     # Is ignore property
@@ -385,7 +387,7 @@
   enabled: true
 # Checks that variables of generic types have explicit type declaration
 - name: GENERIC_VARIABLE_WRONG_DECLARATION
-  enabled: true
+  enabled: false
 # Inspection that checks if string template has redundant curly braces
 - name: STRING_TEMPLATE_CURLY_BRACES
   enabled: true
@@ -417,11 +419,13 @@
 # Checks that lambda inside function parameters is in the end
 - name: LAMBDA_IS_NOT_LAST_PARAMETER
   enabled: true
+  ignoreAnnotated: [ Composable ]
 # Checks that function doesn't contains too many parameters
 - name: TOO_MANY_PARAMETERS
   enabled: true
+  ignoreAnnotated: [ Composable ]
   configuration:
-    maxParameterListSize: '5' # max parameters size
+    maxParameterListSize: '6' # max parameters size
 # Checks that function doesn't have too many nested blocks
 - name: NESTED_BLOCK
   enabled: true
@@ -447,15 +451,19 @@
 # Checks that property in constructor doesn't contain comment
 - name: KDOC_NO_CONSTRUCTOR_PROPERTY
   enabled: true
+  ignoreAnnotated: [ Immutable ]
 # Checks that property in KDoc present in class
 - name: KDOC_EXTRA_PROPERTY
   enabled: true
+  ignoreAnnotated: [ Immutable ]
 # Checks that KDoc in constructor has property tag but with comment inside constructor
 - name: KDOC_NO_CONSTRUCTOR_PROPERTY_WITH_COMMENT
   enabled: true
+  ignoreAnnotated: [ Immutable ]
 # if a class has single constructor, it should be converted to a primary constructor
 - name: SINGLE_CONSTRUCTOR_SHOULD_BE_PRIMARY
   enabled: true
+  ignoreAnnotated: [ Immutable ]
 # Checks if class can be made as data class
 - name: USE_DATA_CLASS
   enabled: true

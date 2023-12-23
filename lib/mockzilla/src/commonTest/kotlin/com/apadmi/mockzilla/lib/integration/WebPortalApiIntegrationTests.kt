@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib.integration
 
 import com.apadmi.mockzilla.lib.internal.models.*
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
@@ -16,7 +17,6 @@ import io.ktor.http.*
 
 import kotlin.math.abs
 import kotlin.test.*
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -74,7 +74,7 @@ class WebPortalApiIntegrationTests {
             response.status
         )
         assertEquals(
-            Json.encodeToString(listOf(MockDataEntryDto(
+            JsonProvider.json.encodeToString(listOf(MockDataEntryDto(
                 name = "my-id",
                 key = "my-id",
                 failProbability = 50,
@@ -98,7 +98,7 @@ class WebPortalApiIntegrationTests {
             .build(),
         setup = { cacheService ->
             cacheService.updateLocalCache(
-                EndpointConfiguration.Builder("id").build().toMockDataEntry()
+                EndpointConfiguration.Builder("id").build().toMockDataEntryForWeb()
             )
             cacheService.updateGlobalOverrides(GlobalOverridesDto(null, null, null))
         }
@@ -117,46 +117,59 @@ class WebPortalApiIntegrationTests {
 
     @Test
     fun `POST mock-data - updates cache as expected`() =
-            runIntegrationTest(MockzillaConfig.Builder()
-                .setPort(0)  // Port determined at runtime
-                .addEndpoint(EndpointConfiguration.Builder("id"))
-                .build()
-            ) { params, cacheService ->
-                /* Run Test */
-                val response = HttpClient(CIO).post(
-                    "${params.apiBaseUrl}/mock-data/id") {
-                    contentType(ContentType.Application.Json)
-                    setBody(
-                        Json.encodeToString(
-                            EndpointConfiguration.Builder("id").setDefaultHandler {
-                                MockzillaHttpResponse(
-                                    body = "hello",
-                                    statusCode = HttpStatusCode.NoContent,
-                                    headers = mapOf("Content-Type" to "application/json")
-                                )
-                            }.build()
-                                .toMockDataEntry()
-                        )
+        runIntegrationTest(MockzillaConfig.Builder()
+            .setPort(0)  // Port determined at runtime
+            .addEndpoint(EndpointConfiguration.Builder("id"))
+            .build()
+        ) { params, cacheService ->
+            /* Run Test */
+            val response = HttpClient(CIO).post(
+                "${params.apiBaseUrl}/mock-data/id") {
+                contentType(ContentType.Application.Json)
+                setBody(
+                    Json.encodeToString(
+                        EndpointConfiguration.Builder("id").setDefaultHandler {
+                            MockzillaHttpResponse(
+                                body = "hello",
+                                statusCode = HttpStatusCode.NoContent,
+                                headers = mapOf("Content-Type" to "application/json")
+                            )
+                        }.build()
+                            .toMockDataEntryForWeb()
                     )
-                }
-
-                /* Verify */
-                assertEquals(
-                    EndpointConfiguration.Builder("id").setDefaultHandler {
-                        MockzillaHttpResponse(
-                            body = "hello",
-                            statusCode = HttpStatusCode.NoContent,
-                            headers = mapOf("Content-Type" to "application/json")
-                        )
-                    }.build()
-                        .toMockDataEntry(),
-                    cacheService.getLocalCache("id")
-                )
-                assertEquals(
-                    HttpStatusCode.NoContent,
-                    response.status
                 )
             }
+
+            /* Verify */
+            assertEquals(
+                EndpointConfiguration.Builder("id").setDefaultHandler {
+                    MockzillaHttpResponse(
+                        body = "hello",
+                        statusCode = HttpStatusCode.NoContent,
+                        headers = mapOf("Content-Type" to "application/json")
+                    )
+                }.build()
+                    .toMockDataEntryForWeb(),
+                cacheService.getLocalCache("id")
+            )
+
+            /* Verify */
+            assertEquals(
+                EndpointConfiguration.Builder("id").setDefaultHandler {
+                    MockzillaHttpResponse(
+                        body = "hello",
+                        statusCode = HttpStatusCode.NoContent,
+                        headers = mapOf("Content-Type" to "application/json")
+                    )
+                }.build()
+                    .toMockDataEntryForWeb(),
+                cacheService.getLocalCache("id")
+            )
+            assertEquals(
+                HttpStatusCode.NoContent,
+                response.status
+            )
+        }
 
     @Test
     fun `GET global - returns as expected`() = runIntegrationTest(
@@ -177,7 +190,7 @@ class WebPortalApiIntegrationTests {
             response.status
         )
         assertEquals(
-            Json.encodeToString(GlobalOverridesDto(11, 12, 13)),
+            JsonProvider.json.encodeToString(GlobalOverridesDto(11, 12, 13)),
             response.bodyAsText()
         )
     }
@@ -194,7 +207,7 @@ class WebPortalApiIntegrationTests {
             "${params.apiBaseUrl}/global") {
             contentType(ContentType.Application.Json)
             setBody(
-                Json.encodeToString(
+                JsonProvider.json.encodeToString(
                     GlobalOverridesDto(11, 12, 13)
                 )
             )
@@ -234,7 +247,7 @@ class WebPortalApiIntegrationTests {
 
         /* Run Test */
         val response = HttpClient(CIO).get("${params.apiBaseUrl}/monitor-logs")
-        val responseBody: MonitorLogsResponse = Json.decodeFromString(response.bodyAsText())
+        val responseBody: MonitorLogsResponse = JsonProvider.json.decodeFromString(response.bodyAsText())
 
         /* Verify */
         assertEquals(

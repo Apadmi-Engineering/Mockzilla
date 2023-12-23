@@ -17,3 +17,9 @@ debug-version.txt
 !demo-kmm/debug-version.txt
 
 docs/__pycache__/
+**/.gradle/**
+**/build/**
+**/.idea/**
+
+lib/mockzilla-management-ui/src/test/snapshots/images/
+.secret.env

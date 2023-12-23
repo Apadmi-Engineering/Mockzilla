@@ -18,7 +18,6 @@ import io.ktor.server.routing.*
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @Suppress("TOO_LONG_FUNCTION")
 internal fun Application.configureEndpoints(
@@ -57,7 +56,7 @@ internal fun Application.configureEndpoints(
             safeResponse(di.logger) {
                 call.allowCors()
                 call.respondText(
-                    Json.encodeToString(
+                    JsonProvider.json.encodeToString(
                         di.webPortalApiController.getAllMockDataEntries()
                     )
                 )
@@ -83,7 +82,7 @@ internal fun Application.configureEndpoints(
         get("/api/monitor-logs") {
             safeResponse(di.logger) {
                 call.allowCors()
-                call.respondText(Json.encodeToString(MonitorLogsResponse(
+                call.respondText(JsonProvider.json.encodeToString(MonitorLogsResponse(
                     di.metaData.appPackage, di.webPortalApiController.consumeLogEntries()
                 )))
             }
@@ -96,7 +95,7 @@ internal fun Application.configureEndpoints(
 
                 globalOverrides?.let {
                     call.respondText(
-                        Json.encodeToString(globalOverrides)
+                        JsonProvider.json.encodeToString(globalOverrides)
                     )
                 } ?: call.respond(HttpStatusCode.NoContent)
             }

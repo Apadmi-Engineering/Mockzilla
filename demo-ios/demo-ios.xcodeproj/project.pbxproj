@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		830304BF2934DC8900847F4B /* MockServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830304BE2934DC8900847F4B /* MockServerConfig.swift */; };
-		831726792A6EB0CB008295EB /* SwiftMockzilla in Frameworks */ = {isa = PBXBuildFile; productRef = 831726782A6EB0CB008295EB /* SwiftMockzilla */; };
+		83C012DC2ACF265200DADD93 /* SwiftMockzilla in Frameworks */ = {isa = PBXBuildFile; productRef = 83C012DB2ACF265200DADD93 /* SwiftMockzilla */; };
 		83C94E9A290975E000D7BCCD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C94E99290975E000D7BCCD /* AppDelegate.swift */; };
 		83C94E9C290975E000D7BCCD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C94E9B290975E000D7BCCD /* SceneDelegate.swift */; };
 		83C94EA3290975E200D7BCCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83C94EA2290975E200D7BCCD /* Assets.xcassets */; };
@@ -37,6 +37,7 @@
 
 /* Begin PBXFileReference section */
 		830304BE2934DC8900847F4B /* MockServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockServerConfig.swift; sourceTree = "<group>"; };
+		83C012DA2ACF25EC00DADD93 /* SwiftMockzilla */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftMockzilla; path = ../lib/SwiftMockzilla; sourceTree = "<group>"; };
 		83C94E96290975E000D7BCCD /* demo-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "demo-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83C94E99290975E000D7BCCD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		83C94E9B290975E000D7BCCD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -55,7 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				831726792A6EB0CB008295EB /* SwiftMockzilla in Frameworks */,
+				83C012DC2ACF265200DADD93 /* SwiftMockzilla in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,9 +77,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		83C012D92ACF25EC00DADD93 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				83C012DA2ACF25EC00DADD93 /* SwiftMockzilla */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		83C94E8D290975E000D7BCCD = {
 			isa = PBXGroup;
 			children = (
+				83C012D92ACF25EC00DADD93 /* Packages */,
 				83C94EC9290976F300D7BCCD /* Frameworks */,
 				83C94E98290975E000D7BCCD /* demo-ios */,
 				83C94EAF290975E200D7BCCD /* demo-iosTests */,
@@ -159,7 +169,7 @@
 			);
 			name = "demo-ios";
 			packageProductDependencies = (
-				831726782A6EB0CB008295EB /* SwiftMockzilla */,
+				83C012DB2ACF265200DADD93 /* SwiftMockzilla */,
 			);
 			productName = "demo-ios";
 			productReference = 83C94E96290975E000D7BCCD /* demo-ios.app */;
@@ -234,7 +244,6 @@
 			);
 			mainGroup = 83C94E8D290975E000D7BCCD;
 			packageReferences = (
-				831726772A6EB0CB008295EB /* XCRemoteSwiftPackageReference "SwiftMockzilla" */,
 			);
 			productRefGroup = 83C94E97290975E000D7BCCD /* Products */;
 			projectDirPath = "";
@@ -623,21 +632,9 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		831726772A6EB0CB008295EB /* XCRemoteSwiftPackageReference "SwiftMockzilla" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Apadmi-Engineering/SwiftMockzilla";
-			requirement = {
-				kind = revision;
-				revision = d6553a460dee11bac1c2093767f0121453f6c6c4;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		831726782A6EB0CB008295EB /* SwiftMockzilla */ = {
+		83C012DB2ACF265200DADD93 /* SwiftMockzilla */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 831726772A6EB0CB008295EB /* XCRemoteSwiftPackageReference "SwiftMockzilla" */;
 			productName = SwiftMockzilla;
 		};
 /* End XCSwiftPackageProductDependency section */

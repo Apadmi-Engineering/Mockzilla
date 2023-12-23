@@ -10,3 +10,5 @@ local.properties
 xcuserdata
 SwiftMockzilla/.build
 SwiftMockzilla/.swiftpm
+temp/
+mockzilla-management-ui/common/src/test/snapshots/images
