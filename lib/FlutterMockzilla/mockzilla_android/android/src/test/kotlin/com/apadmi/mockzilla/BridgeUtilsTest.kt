@@ -1,5 +1,10 @@
 package com.apadmi.mockzilla
 
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
+import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+
 import BridgeEndpointConfig
 import BridgeHttpMethod
 import BridgeLogLevel
@@ -7,12 +12,9 @@ import BridgeMockzillaConfig
 import BridgeMockzillaHttpRequest
 import BridgeMockzillaHttpResponse
 import BridgeReleaseModeConfig
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.lib.models.MockzillaConfig
-import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
-import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration
@@ -20,7 +22,7 @@ import kotlin.time.Duration.Companion.seconds
 
 internal class BridgeUtilsTest {
     @Test
-    fun httpMethod_marshalling_returnsExpectedValue() {
+    fun httpMethodMarshallingReturnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
             BridgeHttpMethod.GET to HttpMethod.Get,
@@ -40,7 +42,7 @@ internal class BridgeUtilsTest {
     }
 
     @Test
-    fun logLevel_marshalling_returnsExpectedValue() {
+    fun logLevelMarshallingReturnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
             BridgeLogLevel.DEBUG to MockzillaConfig.LogLevel.Debug,
@@ -59,7 +61,7 @@ internal class BridgeUtilsTest {
     }
 
     @Test
-    fun mockzillaHttpRequest_marshalling_returnsExpectedValue() {
+    fun mockzillaHttpRequestMarshallingReturnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
             BridgeMockzillaHttpRequest(
@@ -84,7 +86,7 @@ internal class BridgeUtilsTest {
     }
 
     @Test
-    fun mockzillaHttpResponse_marshalling_returnsExpectedValue() {
+    fun mockzillaHttpResponseMarshallingReturnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
             BridgeMockzillaHttpResponse(
@@ -107,46 +109,31 @@ internal class BridgeUtilsTest {
     }
 
     @Test
-    fun endpointConfig_marshalling_returnsExpectedValue() {
+    fun endpointConfigMarshallingReturnsExpectedValue() {
         // Setup
         val endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean = { _: String -> true }
         val defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse =
-            { _: String -> MockzillaHttpResponse() }
+                { _: String -> MockzillaHttpResponse() }
         val errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse =
-            { _: String -> MockzillaHttpResponse() }
+                { _: String -> MockzillaHttpResponse() }
         val bridgeToNative = mapOf(
             BridgeEndpointConfig(
-                "MyEndpoint",
-                "my-endpoint",
-                50,
-                200,
-                100,
+                "MyEndpoint", "my-endpoint", 50, 200, 100,
                 BridgeMockzillaHttpResponse(
-                    200,
-                    mapOf("Content-type" to "application/json"),
-                    "body"
+                    200, mapOf("Content-type" to "application/json"), "body"
                 ),
                 BridgeMockzillaHttpResponse(
-                    400,
-                    mapOf("Content-type" to "application/json"),
-                    "error"
+                    400, mapOf("Content-type" to "application/json"), "error"
                 )
             ) to
                     EndpointConfiguration(
-                        "MyEndpoint",
-                        "my-endpoint",
-                        50,
-                        200,
-                        100,
+                        "MyEndpoint", "my-endpoint", 50, 200, 100,
                         { endpointMatcher("my-endpoint") },
                         MockzillaHttpResponse(
-                            HttpStatusCode.OK,
-                            mapOf("Content-type" to "application/json"),
-                            "body"
+                            HttpStatusCode.OK, mapOf("Content-type" to "application/json"), "body"
                         ),
                         MockzillaHttpResponse(
-                            HttpStatusCode.BadRequest,
-                            mapOf("Content-type" to "application/json"),
+                            HttpStatusCode.BadRequest, mapOf("Content-type" to "application/json"),
                             "error"
                         ),
                         { defaultHandler("my-endpoint") },
@@ -163,7 +150,7 @@ internal class BridgeUtilsTest {
     }
 
     @Test
-    fun releaseModeConfig_marshalling_returnsExpectedValue() {
+    fun releaseModeConfigMarshallingReturnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
             BridgeReleaseModeConfig(
@@ -186,70 +173,45 @@ internal class BridgeUtilsTest {
     }
 
     @Test
-    fun mockzillaConfig_marshalling_returnsExpectedValue() {
+    fun mockzillaConfigMarshallingReturnsExpectedValue() {
         // Setup
         val endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean = { _: String -> true }
         val defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse =
-            { _: String -> MockzillaHttpResponse() }
+                { _: String -> MockzillaHttpResponse() }
         val errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse =
-            { _: String -> MockzillaHttpResponse() }
+                { _: String -> MockzillaHttpResponse() }
         val bridgeToNative = mapOf(
             BridgeMockzillaConfig(
-                8080L,
+                8080L, listOf(BridgeEndpointConfig("name", "key")),
+                isRelease = false, localHostOnly = false, BridgeLogLevel.INFO,
+                BridgeReleaseModeConfig(2000, 60_000, 86_400_000)
+            ) to MockzillaConfig(
+                8080,
                 listOf(
-                    BridgeEndpointConfig(
-                        "name",
-                        "key",
+                    EndpointConfiguration(
+                        "name", "key", null, null, null,
+                        { endpointMatcher("key") },
+                        null,
+                        null,
+                        { defaultHandler("key") },
+                        { errorHandler("key") }
                     )
                 ),
                 isRelease = false,
-                localHostOnly = false,
-                BridgeLogLevel.INFO,
-                BridgeReleaseModeConfig(
-                    2000,
-                    60_000,
-                    86_400_000
-                )
-            ) to
-                    MockzillaConfig(
-                        8080,
-                        listOf(
-                            EndpointConfiguration(
-                                "name",
-                                "key",
-                                null,
-                                null,
-                                null,
-                                { endpointMatcher("key") },
-                                null,
-                                null,
-                                { defaultHandler("key") },
-                                { errorHandler("key") }
-                            )
-                        ),
-                        isRelease = false,
-                        localhostOnly = false,
-                        MockzillaConfig.LogLevel.Info,
-                        MockzillaConfig.ReleaseModeConfig(
-                            2000,
-                            60.seconds,
-                            86_400.seconds,
-                        ),
-                        emptyList()
-                    )
+                localhostOnly = false,
+                MockzillaConfig.LogLevel.Info,
+                MockzillaConfig.ReleaseModeConfig(2000, 60.seconds, 86_400.seconds),
+                emptyList()
+            )
         )
 
         // Run test & verify
         bridgeToNative.forEach { (bridge, native) ->
             // TODO: This doesn't pass as lambdas are references, fix this!!
-//            assertEquals(
-//                bridge.toNative(endpointMatcher, defaultHandler, errorHandler),
-//                native
-//            )
-            assertEquals(
-                BridgeMockzillaConfig.fromNative(native),
-                bridge,
-            )
+            // assertEquals(
+            // bridge.toNative(endpointMatcher, defaultHandler, errorHandler),native
+            // )
+            assertEquals(BridgeMockzillaConfig.fromNative(native), bridge)
         }
     }
 }

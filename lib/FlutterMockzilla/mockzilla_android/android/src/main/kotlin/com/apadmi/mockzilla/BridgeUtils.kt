@@ -1,5 +1,11 @@
 package com.apadmi.mockzilla
 
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
+import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
+
 import BridgeEndpointConfig
 import BridgeHttpMethod
 import BridgeLogLevel
@@ -8,13 +14,9 @@ import BridgeMockzillaHttpRequest
 import BridgeMockzillaHttpResponse
 import BridgeMockzillaRuntimeParams
 import BridgeReleaseModeConfig
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.lib.models.MockzillaConfig
-import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
-import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
-import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+
 import kotlin.time.Duration.Companion.milliseconds
 
 fun BridgeHttpMethod.toNative() = when (this) {
@@ -152,7 +154,6 @@ fun BridgeMockzillaConfig.toNative(
     this.releaseModeConfig.toNative(),
     emptyList()
 )
-
 
 fun BridgeMockzillaConfig.Companion.fromNative(
     data: MockzillaConfig
