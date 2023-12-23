@@ -369,21 +369,21 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1"
+    version: "1.0.0-dev"
   mockzilla_android:
     dependency: transitive
     description:
       path: "../../mockzilla_android"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "1.0.0-dev"
   mockzilla_platform_interface:
     dependency: transitive
     description:
       path: "../../mockzilla_platform_interface"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "1.0.0-dev"
   package_config:
     dependency: transitive
     description:
