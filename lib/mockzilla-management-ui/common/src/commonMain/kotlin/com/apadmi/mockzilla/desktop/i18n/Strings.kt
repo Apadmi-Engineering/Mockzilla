@@ -43,10 +43,16 @@ data class Strings(
         /**
          * @property tabTitle
          * @property addDevice
+         * @property connected
+         * @property disconnected
+         * @property devices
          */
         data class DeviceTabs(
             val tabTitle: (index: Int) -> String,
-            val addDevice: String
+            val addDevice: String,
+            val connected: String,
+            val disconnected: String,
+            val devices: (number: Int) -> String,
         )
     }
 }
