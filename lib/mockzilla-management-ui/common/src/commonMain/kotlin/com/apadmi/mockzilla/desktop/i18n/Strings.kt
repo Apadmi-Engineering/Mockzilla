@@ -22,12 +22,19 @@ data class Strings(
      * @property deviceConnection
      * @property deviceTabs
      * @property metaData
+     * @property logs
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
         val deviceTabs: DeviceTabs,
         val metaData: MetaData,
+        val logs: Logs
     ) {
+        /**
+         * @property title
+         */
+        data class Logs(val title: String)
+
         /**
          * @property title
          */

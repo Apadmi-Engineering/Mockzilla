@@ -5,6 +5,7 @@ import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.internal.plugin.SimpleAuthPlugin
 import com.apadmi.mockzilla.lib.internal.service.AuthenticationConstants
 import com.apadmi.mockzilla.lib.internal.service.TokensService
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.internal.utils.environment
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
@@ -50,7 +51,7 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     ) {
         install(IgnoreTrailingSlash)
         install(ContentNegotiation) {
-            json()
+            json(JsonProvider.json)
         }
 
         if (di.config.isRelease) {

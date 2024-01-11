@@ -22,6 +22,7 @@ import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 
 import com.airbnb.android.showkase.annotation.ShowkaseRoot
 import com.airbnb.android.showkase.annotation.ShowkaseRootModule
+import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsWidget
 
 @ShowkaseRoot
 class RootShowkaseModule : ShowkaseRootModule
@@ -36,12 +37,13 @@ fun App(
         left = listOf(Widget(strings.widgets.metaData.title) { MetaDataWidget() }),
         right = listOf(Widget("Right 1") { Text("Right1") }),
         middle = listOf(Widget("") {
-            MiddlePaneWrapperWidget({ EndpointsWidget() },
-                { DeviceConnectionWidget() })
+            MiddlePaneWrapperWidget(
+                { EndpointsWidget() },
+                { DeviceConnectionWidget() }
+            )
         }),
         bottom = listOf(
-            Widget("Bottom 1") { Text("Bottom 1") },
-            Widget("Bottom 2", { Text("Bottom 2") })
+            Widget(strings.widgets.logs.title) { MonitorLogsWidget() }
         ),
     )
 }

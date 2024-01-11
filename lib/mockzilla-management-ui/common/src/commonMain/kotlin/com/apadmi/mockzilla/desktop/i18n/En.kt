@@ -16,6 +16,9 @@ val EnStrings = Strings(
                     else -> "$number devices"
                 }
             }
-        ), metaData = Strings.Widgets.MetaData(title = "Meta Data")
+        ), metaData = Strings.Widgets.MetaData(title = "Meta Data"),
+        logs = Strings.Widgets.Logs(
+            "Logs"
+        )
     )
 )

@@ -5,6 +5,7 @@ import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnection
 import com.apadmi.mockzilla.desktop.ui.widgets.devicetabs.DeviceTabsViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.wrapper.MiddlePaneWrapperViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel
+import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsViewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -13,4 +14,5 @@ internal fun viewModelModule(): Module = module {
     viewModel { MetaDataWidgetViewModel(get(), get()) }
     viewModel { DeviceTabsViewModel(get(), get()) }
     viewModel { MiddlePaneWrapperViewModel(get()) }
+    viewModel { MonitorLogsViewModel(get(), get()) }
 }
