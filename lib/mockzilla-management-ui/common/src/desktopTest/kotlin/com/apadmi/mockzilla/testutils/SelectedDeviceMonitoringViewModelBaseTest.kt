@@ -7,8 +7,9 @@ import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
 import io.mockative.mock
-import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
+
+import kotlinx.coroutines.flow.MutableStateFlow
 
 abstract class SelectedDeviceMonitoringViewModelBaseTest : CoroutineTest() {
     @Mock

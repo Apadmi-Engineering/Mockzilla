@@ -1,13 +1,13 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.metadata
 
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
+import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel.*
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.testutils.SelectedDeviceMonitoringViewModelBaseTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
-import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
 import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given

@@ -1,12 +1,12 @@
 package com.apadmi.mockzilla.desktop.viewmodel
 
-import app.cash.turbine.test
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
 import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
+import app.cash.turbine.test
 import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
@@ -17,12 +17,10 @@ import kotlin.test.assertEquals
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.yield
 
-@Suppress("MAGIC_NUMBER")
+@Suppress("MAGIC_NUMBER", "LOCAL_VARIABLE_EARLY_DECLARATION")
 class ActiveDeviceMonitoringViewModelTests : CoroutineTest() {
     @Mock
     private val activeDeviceMonitorMock = mock(classOf<ActiveDeviceMonitor>())
@@ -39,9 +37,9 @@ class ActiveDeviceMonitoringViewModelTests : CoroutineTest() {
             yield()
 
             /* Run Test */
-            repeat(numberOfEmits){
+            repeat(numberOfEmits) {
                 delay(1)
-                testFlow.value = StatefulDevice(Device.dummy(), "", false, "$it")
+                testFlow.value = StatefulDevice(Device.dummy(), "", false, it)
             }
 
             /* Verify */
@@ -49,7 +47,7 @@ class ActiveDeviceMonitoringViewModelTests : CoroutineTest() {
             skipItems(numberOfEmits + 1)
             yield()
             // Expect an invocation for each emission plus one for the initial load.
-            assertEquals(numberOfEmits + 1 , sut.reloadDataInvocationCount)
+            assertEquals(numberOfEmits + 1, sut.reloadDataInvocationCount)
         }
     }
 
@@ -63,7 +61,7 @@ class ActiveDeviceMonitoringViewModelTests : CoroutineTest() {
 
         /* Verify */
         runCurrent()
-        assertEquals(1 , sut.reloadDataInvocationCount)
+        assertEquals(1, sut.reloadDataInvocationCount)
     }
 }
 

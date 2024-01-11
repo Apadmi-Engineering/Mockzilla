@@ -1,15 +1,13 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.devicetabs
 
-import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
 import com.apadmi.mockzilla.desktop.ui.widgets.devicetabs.DeviceTabsViewModel.*
-import com.apadmi.mockzilla.testutils.CoroutineTest
+import com.apadmi.mockzilla.testutils.SelectedDeviceMonitoringViewModelBaseTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
-import com.apadmi.mockzilla.testutils.SelectedDeviceMonitoringViewModelBaseTest
 import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
@@ -21,7 +19,6 @@ import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.flowOf
 
 class DeviceTabsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
-
     @Mock
     private val activeDeviceSelectorMock = mock(classOf<ActiveDeviceSelector>())
 
@@ -35,7 +32,6 @@ class DeviceTabsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
         given(activeDeviceMonitorMock).invocation { allDevices }.thenReturn(emptyList())
         val sut = createSut()
         sut.state.test {
-
             /* Run Test */
             sut.onChangeDevice(State.DeviceTabEntry.dummy().copy(underlyingDevice = Device.dummy()))
 
