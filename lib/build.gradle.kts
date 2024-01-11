@@ -47,7 +47,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
             "build/**",
             "mockzilla-management-ui/build/**",
             "mockzilla-management-ui/*/build/**",
-            "**/mockzilla/build/**",
+            "*/build/**",
             "fastlane/**",
             "fastlane-build/**",
             "**/FlutterMockzilla/**/*.g.kt"
