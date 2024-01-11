@@ -8,7 +8,9 @@
 |- demo-ios     : A native iOS app demo
 |- demo-kmm     : A KMM project using Mockzilla from a shared module
 |- lib          : The main library code
+|--- mockzilla : The directory forming the KMM module
 |--- SwiftMockzilla : The directory forming the SPM package
+|--- FlutterMockzilla : The directory containing the federated Flutter plugin
 
 ```
 
