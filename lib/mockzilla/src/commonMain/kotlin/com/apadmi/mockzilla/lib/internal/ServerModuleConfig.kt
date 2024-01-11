@@ -82,9 +82,11 @@ internal fun Application.configureEndpoints(
         get("/api/monitor-logs") {
             safeResponse(di.logger) {
                 call.allowCors()
-                call.respondText(JsonProvider.json.encodeToString(MonitorLogsResponse(
-                    di.metaData.appPackage, di.webPortalApiController.consumeLogEntries()
-                )))
+                call.respond(
+                    MonitorLogsResponse(
+                        di.metaData.appPackage, di.webPortalApiController.consumeLogEntries()
+                    )
+                )
             }
         }
         get("/api/global") {
