@@ -47,9 +47,10 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
             "build/**",
             "mockzilla-management-ui/build/**",
             "mockzilla-management-ui/*/build/**",
-            "**/mockzilla/build/**",
+            "*/build/**",
             "fastlane/**",
-            "fastlane-build/**"
+            "fastlane-build/**",
+            "**/FlutterMockzilla/**/*.g.kt"
         )
 
         diktat("1.2.5").configFile("diktat-analysis.yml")
