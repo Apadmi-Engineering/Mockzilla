@@ -13,7 +13,7 @@ import Foundation
 extension MockzillaConfig {
     
     static func createConfig() -> MockzillaConfig {
-        MockzillaConfigBuilder()
+        MockzillaConfig.Builder()
            .setFailureProbabilityPercentage(percentage: 0)
            .setIsReleaseModeEnabled(isRelease: false) // Change to true to test release mode
            .setMeanDelayMillis(delay: 100)
@@ -27,7 +27,7 @@ extension MockzillaConfig {
 fileprivate extension MockzillaConfig {
     static var getCowEndpoint: EndpointConfiguration {
         get {
-            EndpointConfigurationBuilder(id: "cow")
+            EndpointConfiguration.Builder(id: "cow")
                 .setSwiftPatternMatcher {
                     $0.uri.hasSuffix("cow")
                 }
