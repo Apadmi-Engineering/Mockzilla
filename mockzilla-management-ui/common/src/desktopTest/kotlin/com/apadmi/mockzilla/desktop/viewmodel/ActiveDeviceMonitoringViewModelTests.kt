@@ -39,7 +39,7 @@ class ActiveDeviceMonitoringViewModelTests : CoroutineTest() {
             /* Run Test */
             repeat(numberOfEmits) {
                 delay(1)
-                testFlow.value = StatefulDevice(Device.dummy(), "", false, it)
+                testFlow.value = StatefulDevice(Device.dummy(), "", false, it.toString())
             }
 
             /* Verify */
