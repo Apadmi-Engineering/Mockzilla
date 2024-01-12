@@ -9,41 +9,35 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
 interface ActiveDeviceMonitor {
-    // Fires each time the user changes the currently selected device (or connected app package changes)
-    val onDeviceSelectionChange: Flow<Unit>
+    val selectedDevice: StateFlow<StatefulDevice?>
 
     // Fires when a device connects / disconnects
     val onDeviceConnectionStateChange: Flow<Unit>
-    val activeDevice: Device?
     val allDevices: Collection<StatefulDevice>
 }
 
 interface ActiveDeviceSelector {
-    fun clearActiveDevice()
+    fun clearSelectedDevice()
     fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData)
-    fun updateActiveDevice(device: Device)
+    fun updateSelectedDevice(device: Device)
 }
 
 class ActiveDeviceManagerImpl(
     private val metaDataUseCase: MetaDataUseCase,
-    private val scope: CoroutineScope
+    scope: CoroutineScope
 ) : ActiveDeviceMonitor, ActiveDeviceSelector {
-    override val onDeviceSelectionChange = MutableSharedFlow<Unit>()
+    override val selectedDevice = MutableStateFlow<StatefulDevice?>(null)
     override val onDeviceConnectionStateChange = MutableSharedFlow<Unit>()
     private val allDevicesInternal = mutableMapOf<Device, StatefulDevice>()
     override val allDevices get() = allDevicesInternal.values
 
     private var pollingJob: Job? = null
-
-    override var activeDevice: Device? = null
-        private set(value) {
-            field = value
-            notifyDeviceChange()
-        }
 
     init {
         pollingJob = scope.launch {
@@ -67,8 +61,8 @@ class ActiveDeviceManagerImpl(
 
                 if (statefulDevice != newStatefulDevice) {
                     onDeviceConnectionStateChange.emit(Unit)
-                    if (device == activeDevice) {
-                        notifyDeviceChange()
+                    if (device == statefulDevice.device) {
+                        selectedDevice.value = newStatefulDevice
                     }
                 }
                 allDevicesInternal[device] = newStatefulDevice
@@ -78,27 +72,23 @@ class ActiveDeviceManagerImpl(
             yield()
         }
     }
-
-    private fun notifyDeviceChange() = scope.launch {
-        onDeviceSelectionChange.emit(Unit)
-    }
-
     override fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData) {
         allDevicesInternal[device] = StatefulDevice(
             device = device,
             name = "${metadata.operatingSystem}-${metadata.deviceModel}",
             isConnected = true,
             connectedAppPackage = metadata.appPackage
-        )
-        activeDevice = device
+        ).also {
+            selectedDevice.value = it
+        }
     }
 
-    override fun updateActiveDevice(device: Device) {
-        activeDevice = device
+    override fun updateSelectedDevice(device: Device) {
+        selectedDevice.value = allDevicesInternal[device]
     }
 
-    override fun clearActiveDevice() {
-        activeDevice = null
+    override fun clearSelectedDevice() {
+        selectedDevice.value = null
     }
 
     // Only used by tests, otherwise should survive for the lifetime of the application i.e. the lifetime

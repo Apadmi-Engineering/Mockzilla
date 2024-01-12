@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
 import io.mockative.Mock
+import io.mockative.any
 import io.mockative.classOf
 import io.mockative.given
 import io.mockative.mock
@@ -27,17 +28,21 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `updateActiveDevice - updates device and notifies listeners`() = runBlockingTest {
         /* Setup */
-        given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy())
-        }.thenReturn(Result.success(MetaData.dummy()))
+        given(metaDataUseCaseMock).suspendFunction(metaDataUseCaseMock::getMetaData)
+            .whenInvokedWith(any())
+            .thenReturn(Result.success(MetaData.dummy()))
+
         val sut = createSut()
 
-        sut.onDeviceSelectionChange.test {
+        sut.selectedDevice.test {
+            skipItems(1)
+            sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
+
             /* Run Test */
-            sut.updateActiveDevice(Device.dummy())
+            sut.updateSelectedDevice(Device.dummy())
 
             /* Verify */
-            assertEquals(Unit, awaitItem())
+            assertEquals(Device.dummy(), awaitItem()?.device)
             ensureAllEventsConsumed()
             sut.cancelPolling()
         }
@@ -51,7 +56,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
         }.thenReturn(Result.success(MetaData.dummy()))
         val sut = createSut()
 
-        sut.onDeviceSelectionChange.test {
+        sut.selectedDevice.test {
             /* Run Test */
             sut.setActiveDeviceWithMetaData(
                 Device.dummy(),
@@ -74,8 +79,9 @@ class ActiveDeviceManagerTests : CoroutineTest() {
                 ),
                 sut.allDevices.toList()
             )
-            assertEquals(Unit, awaitItem())  // Initial set
-            assertEquals(Unit, awaitItem())  // When the polling registers change in app package
+            assertNull(awaitItem())
+            assertEquals(Device.dummy(), awaitItem()?.device)
+
             ensureAllEventsConsumed()
             sut.cancelPolling()
         }
@@ -86,13 +92,12 @@ class ActiveDeviceManagerTests : CoroutineTest() {
         /* Setup */
         val sut = createSut()
 
-        sut.onDeviceSelectionChange.test {
+        sut.selectedDevice.test {
             /* Run Test */
-            sut.clearActiveDevice()
+            sut.clearSelectedDevice()
 
             /* Verify */
-            assertNull(sut.activeDevice)
-            assertEquals(Unit, awaitItem())
+            assertNull(awaitItem())
             ensureAllEventsConsumed()
             sut.cancelPolling()
         }
@@ -107,13 +112,20 @@ class ActiveDeviceManagerTests : CoroutineTest() {
 
         val sut = createSut()
 
-        sut.onDeviceSelectionChange.test {
+        sut.selectedDevice.test {
+            skipItems(1)
             /* Run Test */
             sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy().copy(appPackage = "old.package"))
 
             /* Verify */
-            assertEquals(Unit, awaitItem())
-            assertEquals(Unit, awaitItem())
+            awaitItem().apply {
+                assertEquals(Device.dummy(), this?.device)
+                assertEquals("old.package", this?.connectedAppPackage)
+            }
+            awaitItem().apply {
+                assertEquals(Device.dummy(), this?.device)
+                assertEquals("new.package", this?.connectedAppPackage)
+            }
             ensureAllEventsConsumed()
             sut.cancelPolling()
         }
@@ -127,7 +139,8 @@ class ActiveDeviceManagerTests : CoroutineTest() {
         }.thenReturn(Result.success(MetaData.dummy()))
         val sut = createSut()
 
-        sut.onDeviceSelectionChange.test {
+        sut.selectedDevice.test {
+            skipItems(1)
             /* Run Test */
             sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
 

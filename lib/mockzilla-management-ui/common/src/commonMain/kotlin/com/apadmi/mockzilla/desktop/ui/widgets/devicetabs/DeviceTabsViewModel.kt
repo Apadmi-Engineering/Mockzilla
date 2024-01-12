@@ -3,7 +3,7 @@ package com.apadmi.mockzilla.desktop.ui.widgets.devicetabs
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.desktop.engine.device.Device
-import com.apadmi.mockzilla.desktop.viewmodel.ActiveDeviceMonitoringViewModel
+import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,28 +14,28 @@ class DeviceTabsViewModel(
     private val activeDeviceMonitor: ActiveDeviceMonitor,
     private val activeDeviceSelector: ActiveDeviceSelector,
     scope: CoroutineScope? = null
-) : ActiveDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
+) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
     val state = MutableStateFlow(State(emptyList()))
 
     init {
         activeDeviceMonitor
             .onDeviceConnectionStateChange
-            .onEach { reloadData() }
+            .onEach { reloadData(activeDeviceMonitor.selectedDevice.value?.device) }
             .launchIn(viewModelScope)
     }
 
     fun onChangeDevice(entry: State.DeviceTabEntry) {
-        activeDeviceSelector.updateActiveDevice(entry.underlyingDevice)
+        activeDeviceSelector.updateSelectedDevice(entry.underlyingDevice)
     }
 
     fun addNewDevice() {
         // No devices being active => User sees the screen to add a new device
-        activeDeviceSelector.clearActiveDevice()
+        activeDeviceSelector.clearSelectedDevice()
     }
 
-    override suspend fun reloadData() {
+    override suspend fun reloadData(selectedDevice: Device?) {
         state.value = State(devices = activeDeviceMonitor.allDevices.map {
-            State.DeviceTabEntry(it.name, it.device == activeDevice, it.isConnected, it.device)
+            State.DeviceTabEntry(it.name, it.device == selectedDevice, it.isConnected, it.device)
         })
     }
 

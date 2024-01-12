@@ -1,11 +1,10 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.devicetabs
 
-import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
 import com.apadmi.mockzilla.desktop.ui.widgets.devicetabs.DeviceTabsViewModel.*
-import com.apadmi.mockzilla.testutils.CoroutineTest
+import com.apadmi.mockzilla.testutils.SelectedDeviceMonitoringViewModelBaseTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
@@ -19,30 +18,28 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.flowOf
 
-class DeviceTabsViewModelTests : CoroutineTest() {
-    @Mock
-    private val activeDeviceMonitorMock = mock(classOf<ActiveDeviceMonitor>())
-
+class DeviceTabsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
     @Mock
     private val activeDeviceSelectorMock = mock(classOf<ActiveDeviceSelector>())
 
     private fun createSut() = DeviceTabsViewModel(activeDeviceMonitorMock.also {
         given(it).invocation { onDeviceConnectionStateChange }.thenReturn(flowOf())
-        given(it).invocation { onDeviceSelectionChange }.thenReturn(flowOf())
-    }, activeDeviceSelectorMock, testScope)
+    }, activeDeviceSelectorMock, testScope.backgroundScope)
 
     @Test
     fun `onChangeDevice - calls through`() = runBlockingTest {
         /* Setup */
         given(activeDeviceMonitorMock).invocation { allDevices }.thenReturn(emptyList())
         val sut = createSut()
+        sut.state.test {
+            /* Run Test */
+            sut.onChangeDevice(State.DeviceTabEntry.dummy().copy(underlyingDevice = Device.dummy()))
 
-        /* Run Test */
-        sut.onChangeDevice(State.DeviceTabEntry.dummy().copy(underlyingDevice = Device.dummy()))
-
-        /* Verify */
-        verify(activeDeviceSelectorMock).invocation { updateActiveDevice(Device.dummy()) }
-            .wasInvoked()
+            /* Verify */
+            verify(activeDeviceSelectorMock).invocation { updateSelectedDevice(Device.dummy()) }
+                .wasInvoked()
+            assertEquals(State(emptyList()), awaitItem())
+        }
     }
 
     @Test
@@ -55,7 +52,7 @@ class DeviceTabsViewModelTests : CoroutineTest() {
         sut.addNewDevice()
 
         /* Verify */
-        verify(activeDeviceSelectorMock).invocation { clearActiveDevice() }.wasInvoked()
+        verify(activeDeviceSelectorMock).invocation { clearSelectedDevice() }.wasInvoked()
     }
 
     @Suppress("TOO_LONG_FUNCTION")
@@ -79,14 +76,13 @@ class DeviceTabsViewModelTests : CoroutineTest() {
                 ),
             )
         )
-        given(activeDeviceMonitorMock).invocation { activeDevice }.thenReturn(dummyActiveDevice)
 
         val sut = createSut()
         sut.state.test {
             skipItems(1)
 
             /* Run Test */
-            sut.reloadData()
+            sut.reloadData(dummyActiveDevice)
 
             /* Verify */
             assertEquals(
