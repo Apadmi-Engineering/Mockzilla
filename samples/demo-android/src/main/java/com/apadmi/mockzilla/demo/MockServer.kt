@@ -21,10 +21,10 @@ private val getMyCow = EndpointConfiguration
                 CowDto(
                     name = "Bessie",
                     age = 1,
-                    true,
+                    likesGrass = true,
                     hasHorns = false,
                     mooSample = "Mooooooooo",
-                    Json.decodeFromString<GetCowRequestDto>(body).valueInTheRequest
+                    someValueFromRequest = Json.decodeFromString<GetCowRequestDto>(body).valueInTheRequest
                 )
             )
         )
