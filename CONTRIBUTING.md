@@ -3,14 +3,14 @@
 ## Repo Structure
 
 ```
-|- fastlane.    : Build scripts and configuration
-|- demo-android : A native Android app demo
-|- demo-ios     : A native iOS app demo
-|- demo-kmm     : A KMM project using Mockzilla from a shared module
-|- lib          : The main library code
-|--- mockzilla : The directory forming the KMM module
-|--- SwiftMockzilla : The directory forming the SPM package
-|--- FlutterMockzilla : The directory containing the federated Flutter plugin
+|- fastlane.       : Build scripts and configuration
+|- samples         : Sample apps demonstrating usage of Mockzilla
+|- mockzilla       : The directory forming the core Mockzilla KMM module
+|- mockzilla-common: Common utilities used by multiple other modules
+|- mockzilla-management: A kotlin wrapper around the http apis defined in `mockzilla`
+|- mockzilla-management-ui: Compose multiplatform app used to maniplulate mockzilla at runtime
+|- SwiftMockzilla  : The directory forming the SPM package
+|- FlutterMockzilla: The directory containing the federated Flutter plugin
 
 ```
 
@@ -29,9 +29,7 @@ All work is tracked using Github Issues. Before starting please ensure you creat
 
 It's a good idea to sanity check your work by using the library through the demo apps.
 
-1. From within the `lib` directory, call `./gradlew publishToMavenLocal` to make the package available locally.
-2. You can now run the KMM or Android apps as normal using the local package. (See [here](https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html) for an introduction to KMM development). They will automatically pickup the new package from your local maven repository.
-
+Open the root of this repo in Android Studio and run the `samples.demo-kmm.AndroidApp` or `samples.demo-android` targets. The KMM iOS app can also be run through XCode as normal.
 Note: Currently there's no way to test the Swift package locally without it first being deployed.
 
 ## Spotless
