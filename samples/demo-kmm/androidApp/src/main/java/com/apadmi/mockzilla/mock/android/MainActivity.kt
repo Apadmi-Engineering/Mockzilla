@@ -51,7 +51,6 @@ fun MainContent(
         .padding(16.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp)
 ) {
-
     val text = remember { mutableStateOf("") }
 
     Text(
@@ -72,7 +71,7 @@ fun MainContent(
         Text("Make Network Request")
     }
 
-    if (cowResult != null) {
+    cowResult?.let {
         Text("Network Request Body")
         Text(
             "${GetCowRequestDto(text.value)}",

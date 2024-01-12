@@ -6,9 +6,8 @@ import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
 import com.apadmi.mockzilla.lib.stopMockzilla
 
 class RootApplication : Application(), MockzillaTokenProvider {
-
+    var params: MockzillaRuntimeParams? = null
     lateinit var repository: Repository
-    var params: MockzillaRuntimeParams ? = null
 
     override fun onCreate() {
         super.onCreate()

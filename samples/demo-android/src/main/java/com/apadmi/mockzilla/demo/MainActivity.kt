@@ -52,7 +52,6 @@ fun MainContent(
         .padding(16.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp)
 ) {
-
     val text = remember { mutableStateOf("") }
     val isRelease = remember { mutableStateOf(false) }
 
@@ -80,9 +79,7 @@ fun MainContent(
     }) {
         Text("Release Mode is ${if (isRelease.value) "On" else "Off"}")
     }
-
-
-    if (cowResult != null) {
+    cowResult?.let {
         Text("Network Request Body")
         Text(
             "${GetCowRequestDto(text.value)}",

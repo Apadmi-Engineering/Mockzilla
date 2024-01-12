@@ -9,7 +9,6 @@ import com.apadmi.mockzilla.lib.startMockzilla
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(MockzillaWeb::class)
 private val getMyCow = EndpointConfiguration
@@ -21,11 +20,11 @@ private val getMyCow = EndpointConfiguration
             body = Json.encodeToString(
                 CowDto(
                     name = "Bessie",
-                    age = 41,
+                    age = 1,
                     true,
                     hasHorns = false,
                     mooSample = "Mooooooooo",
-                    Json.decodeFromString<GetCowRequestDto>(body).aValueInTheRequest
+                    Json.decodeFromString<GetCowRequestDto>(body).valueInTheRequest
                 )
             )
         )

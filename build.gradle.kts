@@ -42,7 +42,15 @@ tasks.dokkaHtmlMultiModule {
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
     kotlin {
-        target("mockzilla/src/**/*.kt", "mockzilla-management/src/**/*.kt", "mockzilla-management-ui/**/*.kt")
+        target(
+            "mockzilla/src/**/*.kt",
+            "mockzilla-common/src/**/*.kt",
+            "mockzilla-management/src/**/*.kt",
+            "mockzilla-management-ui/**/*.kt",
+            "samples/demo-android/src/**/*.kt",
+            "samples/demo-kmm/shared/**/*.kt",
+            "samples/demo-kmm/androidApp/**/*.kt"
+        )
         targetExclude(
             "build-logic/build/**",
             "build/**",
@@ -62,8 +70,8 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 }
 
 project.afterEvaluate {
-    tasks.getByPath(":mockzilla:preBuild").apply {
-//        dependsOn(":spotlessApply")
+    tasks.getByPath(":mockzilla-common:preBuild").apply {
+        dependsOn(":spotlessApply")
     }
 }
 

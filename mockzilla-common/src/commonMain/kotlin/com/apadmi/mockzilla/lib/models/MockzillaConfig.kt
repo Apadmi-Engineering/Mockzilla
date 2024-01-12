@@ -3,8 +3,6 @@ package com.apadmi.mockzilla.lib.models
 import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
 import com.apadmi.mockzilla.lib.service.MockzillaLogWriter
 
-import co.touchlab.kermit.Severity
-
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -203,6 +201,7 @@ data class MockzillaConfig(
  * @property apiBaseUrl
  * @property port
  * @property authHeaderProvider
+ * @property mockzillaVersion
  */
 data class MockzillaRuntimeParams(
     val config: MockzillaConfig,

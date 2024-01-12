@@ -2,12 +2,13 @@ package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
+
 import io.ktor.http.HttpStatusCode
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 
 class HttpStatusCodeSerializerTests {
     @Test

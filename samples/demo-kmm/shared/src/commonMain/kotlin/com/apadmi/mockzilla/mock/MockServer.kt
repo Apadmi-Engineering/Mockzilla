@@ -10,7 +10,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-
 @OptIn(MockzillaWeb::class)
 private val getMyCow = EndpointConfiguration
     .Builder("cow")
@@ -26,7 +25,7 @@ private val getMyCow = EndpointConfiguration
             body = Json.encodeToString(
                 CowDto(
                     name = "Bessie",
-                    age = 41,
+                    age = 1,
                     true,
                     hasHorns = false,
                     mooSample = "Mooooooooo",
@@ -40,7 +39,3 @@ val mockzillaConfig = MockzillaConfig.Builder()
     .addEndpoint(getMyCow)
     .setLogLevel(MockzillaConfig.LogLevel.Verbose)
     .build()
-
-
-
-

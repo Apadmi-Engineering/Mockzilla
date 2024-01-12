@@ -6,7 +6,6 @@ import com.apadmi.mockzilla.mock.Repository
 import com.apadmi.mockzilla.mock.mockzillaConfig
 
 class RootApplication : Application() {
-
     lateinit var repository: Repository
 
     override fun onCreate() {

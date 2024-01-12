@@ -1,3 +1,5 @@
+@file:Suppress("KDOC_EXTRA_PROPERTY", "KDOC_NO_CONSTRUCTOR_PROPERTY")
+
 package com.apadmi.mockzilla.mock
 
 import kotlinx.serialization.Serializable
@@ -17,4 +19,4 @@ data class CowDto(
 }
 
 @Serializable
-data class GetCowRequestDto(val aValueInTheRequest: String)
+data class GetCowRequestDto(val valueInTheRequest: String)

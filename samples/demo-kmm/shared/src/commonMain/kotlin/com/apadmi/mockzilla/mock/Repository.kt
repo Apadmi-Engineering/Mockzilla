@@ -22,14 +22,19 @@ sealed class DataResult<out T, out E> {
 
     fun isSuccess() = this is Success
 
+    /**
+     * @property error
+     */
     data class Failure<E>(val error: E) : DataResult<Nothing, E>()
+    /**
+     * @property ok
+     */
     data class Success<T>(val ok: T) : DataResult<T, Nothing>()
 
     companion object
 }
 
 class Repository(private val baseUrl: String) {
-
     suspend fun getCow(someRequestValue: String): DataResult<CowDto, String> {
         val response = HttpClient(CIO).post(
             "$baseUrl/cow") {
@@ -40,7 +45,7 @@ class Repository(private val baseUrl: String) {
         return if (response.status.isSuccess()) {
             DataResult.Success(Json.decodeFromString(response.bodyAsText()))
         } else {
-            DataResult.Failure(response.status.toString() + " - " + response.bodyAsText())
+            DataResult.Failure("${response.status} - ${response.bodyAsText()}")
         }
     }
 }

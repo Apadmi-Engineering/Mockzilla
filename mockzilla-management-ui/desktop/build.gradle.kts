@@ -6,10 +6,6 @@ plugins {
     alias(libs.plugins.compose)
 }
 
-group = "com.example"
-version = "1.0-SNAPSHOT"
-
-
 kotlin {
     jvm {
         jvmToolchain(JavaConfig.toolchain)
@@ -32,7 +28,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "mockzilla-management-ui"
-            packageVersion = "1.0.0"
+            packageVersion = rootProject.version.toString().split("-").first()
         }
     }
 }
