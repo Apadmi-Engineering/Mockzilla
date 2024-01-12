@@ -1,7 +1,10 @@
+import com.apadmi.mockzilla.AndroidConfig
+import com.apadmi.mockzilla.JavaConfig
+
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -21,14 +24,14 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 /* Mockzilla */
-                api("com.apadmi:mockzilla:${extractMockzillaVersion()}")
+                api(project(":mockzilla"))
 
                 /* Json parsing */
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
+                implementation(libs.kotlinx.serialization.json)
 
                 /* Networking */
-                implementation("io.ktor:ktor-client-core:2.3.3")
-                implementation("io.ktor:ktor-client-cio:2.3.3")
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.cio)
             }
         }
         val commonTest by getting {
@@ -60,23 +63,15 @@ kotlin {
 }
 
 android {
-    namespace = "com.apadmi.mockzilla.mock"
-    compileSdk = 33
+    namespace = "$group.mockzilla.kmm.shared"
+    compileSdk = AndroidConfig.targetSdk
     defaultConfig {
-        minSdk = 23
-        targetSdk = 33
+        minSdk = AndroidConfig.minSdk
+        targetSdk = AndroidConfig.targetSdk
+
+        compileOptions {
+            sourceCompatibility = JavaConfig.version
+            targetCompatibility = JavaConfig.version
+        }
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-}
-
-fun extractMockzillaVersion(): String {
-    val version = providers.fileContents(
-        rootProject.layout.projectDirectory.file("version.txt")
-    ).asText.get().trim()
-
-    return version
 }

@@ -1,18 +1,28 @@
+import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.AndroidConfig
+
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.compose)
     kotlin("android")
+    alias(libs.plugins.android.app)
 }
 
 android {
-    namespace = "com.apadmi.mockzilla.mock.android"
-    compileSdk = 33
+    namespace = "$group.mockzilla.kmm.sample"
+    compileSdk = AndroidConfig.targetSdk
     defaultConfig {
-        applicationId = "com.apadmi.mockzilla.mock.android"
-        minSdk = 23
-        targetSdk = 33
+        minSdk = AndroidConfig.minSdk
+        targetSdk = AndroidConfig.targetSdk
+
         versionCode = 1
-        versionName = "1.0"
+        versionName = rootProject.version.toString()
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
+
     buildFeatures {
         compose = true
     }
@@ -30,22 +40,20 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaConfig.version
+        targetCompatibility = JavaConfig.version
     }
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(JavaConfig.toolchain)
 }
 
 dependencies {
-    implementation(project(":shared"))
+    implementation(project(":samples:demo-kmm:shared"))
 
-    implementation("androidx.compose.ui:ui:1.3.0")
-    implementation("androidx.compose.ui:ui-tooling:1.3.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0")
-    implementation("androidx.compose.foundation:foundation:1.3.0")
-    implementation("androidx.compose.material:material:1.3.0")
-    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.uiToolingPreview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.activity)
 }

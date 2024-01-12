@@ -1,7 +1,8 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import com.apadmi.mockzilla.JavaConfig
 
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
 }
 
@@ -11,7 +12,7 @@ version = "1.0-SNAPSHOT"
 
 kotlin {
     jvm {
-        jvmToolchain(17)
+        jvmToolchain(JavaConfig.toolchain)
         withJava()
     }
     sourceSets {

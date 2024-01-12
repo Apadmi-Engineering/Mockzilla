@@ -4,13 +4,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".RootApplication"
+        android:name="com.apadmi.mockzilla.mock.android.RootApplication"
         android:allowBackup="false"
         android:supportsRtl="true"
         android:label="demo-mockzilla-kmm"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.apadmi.mockzilla.mock.android.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
