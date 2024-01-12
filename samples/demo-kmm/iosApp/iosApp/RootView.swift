@@ -37,7 +37,7 @@ struct RootView: View {
                 Text("Network Request Body").font(.system(size: 16))
 
                 Text(
-                    "\(GetCowRequestDto(aValueInTheRequest: text))"
+                    "\(GetCowRequestDto(valueInTheRequest: text))"
                 ).font(Fonts.debug)
 
                 Divider()

@@ -11,14 +11,9 @@ platform :ios do
     end
 end
 
-platform :android do 
-
-
+platform :android do
     desc "Android target for the kmm demo"
     lane :demo_kmm_pull_request do 
-        gradle(
-            tasks: [":androidApp:assembleDebug"],
-            project_dir: "./demo-kmm"
-        )
+        gradle(tasks: [":samples:demo-kmm:androidApp:assembleDebug"])
     end
 end
