@@ -1,6 +1,5 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
-import com.apadmi.mockzilla.debugVersionFile
 import com.apadmi.mockzilla.versionFile
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
@@ -141,11 +140,3 @@ dependencies {
             add(it.name, "io.mockative:mockative-processor:1.2.3")
         }
 }
-
-tasks.getByPath("publishToMavenLocal").dependsOn(
-    tasks.register("updateDebugMockzillaVersion" ) {
-        val newVersion = versionFile.readText().trim() + "-${Date().toInstant().epochSecond}"
-        version = newVersion
-        debugVersionFile.writeText(newVersion)
-    }
-)

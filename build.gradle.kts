@@ -62,7 +62,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
 project.afterEvaluate {
     tasks.getByPath(":mockzilla:preBuild").apply {
-        dependsOn(":spotlessApply")
+//        dependsOn(":spotlessApply")
     }
 }
 
