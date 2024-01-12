@@ -22,7 +22,6 @@ class MonitorLogsViewModel(
     override suspend fun reloadData(selectedDevice: Device?) {
         val device = selectedDevice ?: return
         pollForLogs(device)
-
     }
 
     private fun pollForLogs(device: Device) {
@@ -43,7 +42,10 @@ class MonitorLogsViewModel(
     }
 
     sealed class State {
-        data class DisplayLogs(val entries: Sequence<LogEvent>): State()
-        object Empty: State()
+        object Empty : State()
+        /**
+         * @property entries
+         */
+        data class DisplayLogs(val entries: Sequence<LogEvent>) : State()
     }
 }

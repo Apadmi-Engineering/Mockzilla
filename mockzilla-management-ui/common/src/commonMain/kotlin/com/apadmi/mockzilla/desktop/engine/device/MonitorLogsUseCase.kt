@@ -9,11 +9,9 @@ interface MonitorLogsUseCase {
     suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>>
 }
 
-private data class CacheKey(val device: Device, val appPackage: String)
-
 class MonitorLogsUseCaseImpl(
     private val mockzillaManagement: MockzillaManagement
-): MonitorLogsUseCase {
+) : MonitorLogsUseCase {
     private val mutex = Mutex()
     private val cache = mutableMapOf<CacheKey, Sequence<LogEvent>>()
 
@@ -27,3 +25,9 @@ class MonitorLogsUseCaseImpl(
         }
     }
 }
+
+/**
+ * @property device
+ * @property appPackage
+ */
+private data class CacheKey(val device: Device, val appPackage: String)
