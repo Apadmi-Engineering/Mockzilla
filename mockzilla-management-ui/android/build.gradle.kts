@@ -2,7 +2,7 @@ import com.apadmi.mockzilla.AndroidConfig
 
 plugins {
     alias(libs.plugins.compose)
-    id("com.android.application")
+    alias(libs.plugins.android.app)
     kotlin("android")
 }
 

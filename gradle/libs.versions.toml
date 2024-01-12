@@ -83,6 +83,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+android-app = { id = "com.android.application", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }

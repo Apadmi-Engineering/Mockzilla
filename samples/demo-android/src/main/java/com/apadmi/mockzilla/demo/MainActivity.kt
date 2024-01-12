@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Surface(
                 modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colors.background
+                color = MaterialTheme.colorScheme.background
             ) {
                 MainContent(cowResult = response.value, { someValue ->
                     lifecycleScope.launchWhenCreated {
