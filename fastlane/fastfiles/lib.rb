@@ -3,25 +3,25 @@ platform :ios do
     desc "iOS target for the lib"
     lane :lib_pull_request do
         gradle(
-            tasks: [":mockzilla-common:iosX64Test", ":mockzilla:iosX64Test", ":mockzilla-management:jvmTest"],
-            project_dir: "./lib"
+            tasks: [":mockzilla-common:iosX64Test", ":mockzilla:iosX64Test", ":mockzilla-management:jvmTest"]
         )
 
         # Create the XCFramework
         generate_xcframework
 
-        sh("cd #{lane_context[:repo_root]}/lib/SwiftMockzilla; xcodebuild -scheme SwiftMockzilla test -destination 'platform=iOS Simulator,name=iPhone 12,OS=16.2'")
+        # If running this locally check the simulator in the command exists locally, if it doesn't, change it
+        # to one that does but remember to change it back before committing changes.
+        sh("cd #{lane_context[:repo_root]}/SwiftMockzilla; xcodebuild -scheme SwiftMockzilla test -destination 'platform=iOS Simulator,name=iPhone 12,OS=16.2'")
     end
     
     desc "Generate XCFramework"
     lane :generate_xcframework do
         gradle(
-            tasks: [":mockzilla:assembleXCFramework"],
-            project_dir: "./lib"
+            tasks: [":mockzilla:assembleXCFramework"]
         )
 
         # Copy the XCFramework to where the SPM package can find it
-        sh("cp -rf #{lane_context[:repo_root]}/lib/mockzilla/build/XCFrameworks/release/mockzilla.xcframework #{lane_context[:repo_root]}/lib/SwiftMockzilla")
+        sh("cp -rf #{lane_context[:repo_root]}/mockzilla/build/XCFrameworks/release/mockzilla.xcframework #{lane_context[:repo_root]}/SwiftMockzilla")
     end
 
     desc "Deploy the package to github"
@@ -35,7 +35,7 @@ platform :ios do
         sh(%{
             cd apadmi-mockzilla-ios;  
             rm -rf ./*;
-            cp -r #{lane_context[:repo_root]}/lib/SwiftMockzilla/ .;
+            cp -r #{lane_context[:repo_root]}/SwiftMockzilla/ .;
 
             git add .;
             git add --force mockzilla.xcframework
@@ -50,8 +50,7 @@ end
 desc "Publish to maven local"
 lane :publish_to_maven_local do
     gradle(
-        tasks: [":mockzilla-common:publishToMavenLocal", ":mockzilla:publishToMavenLocal"],
-        project_dir: "./lib"
+        tasks: [":mockzilla-common:publishToMavenLocal", ":mockzilla:publishToMavenLocal"]
     )
 end
 
@@ -59,7 +58,6 @@ desc "Publish to maven remote"
 lane :publish_to_maven do
     gradle(
         tasks: [":mockzilla-common:publish", ":mockzilla:publish"],
-        project_dir: "./lib",
         properties: {
             "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
             "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
@@ -76,8 +74,7 @@ platform :android do
                 ":mockzilla-common:testDebugUnitTest",
                 ":mockzilla:testDebugUnitTest", 
                 ":mockzilla-management:jvmTest"
-            ],
-            project_dir: "./lib"
+            ]
         )
     end
 end

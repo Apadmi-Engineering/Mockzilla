@@ -12,9 +12,6 @@ demo-android/.idea
 demo-android/build
 .idea/*
 generated_docs/*
-debug-version.txt
-!demo-android/debug-version.txt
-!demo-kmm/debug-version.txt
 
 docs/__pycache__/
 **/.gradle/**
@@ -23,3 +20,17 @@ docs/__pycache__/
 
 lib/mockzilla-management-ui/src/test/snapshots/images/
 .secret.env
+*.iml
+.gradle
+.idea
+.DS_Store
+build
+captures
+.externalNativeBuild
+.cxx
+local.properties
+xcuserdata
+SwiftMockzilla/.build
+SwiftMockzilla/.swiftpm
+temp/
+mockzilla-management-ui/common/src/test/snapshots/images
