@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
-import com.apadmi.mockzilla.lib.internal.models.GlobalOverridesDto
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.internal.models.toMockDataEntryForManagementApi
+import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
+import com.apadmi.mockzilla.lib.internal.models.SetOrDoNotSetValue
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -15,7 +15,7 @@ import kotlin.test.*
 import kotlinx.coroutines.test.runTest
 
 @Suppress("MAGIC_NUMBER")
-class WebPortalApiControllerTests {
+class ManagementApiControllerTests {
     @Mock
     private val localCacheServiceMock = mock(classOf<LocalCacheService>())
 
@@ -58,8 +58,8 @@ class WebPortalApiControllerTests {
     @Test
     fun `getAllMockDataEntries - replaces cached data - calls through`() = runTest {
         /* Setup */
-        val dummyCacheEntry = dummyEndpoints.first().toMockDataEntryForManagementApi().copy(
-            defaultBody = "my cached value"
+        val dummyCacheEntry = MockDataEntryDto.allUnset("my-id", "id").copy(
+            defaultBody = SetOrDoNotSetValue.Set("my cached value")
         )
         given(localCacheServiceMock).coroutine {
             getLocalCache("my-id")
@@ -67,6 +67,7 @@ class WebPortalApiControllerTests {
         given(localCacheServiceMock).coroutine {
             getLocalCache("my-second-id")
         }.thenReturn(null)
+
         val sut = ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
 
         /* Run Test */
@@ -74,7 +75,7 @@ class WebPortalApiControllerTests {
 
         /* Verify */
         assertEquals(
-            listOf(dummyCacheEntry, dummyEndpoints[1].toMockDataEntryForManagementApi()),
+            listOf(dummyCacheEntry, MockDataEntryDto.allUnset("my-second-id", "my-second-id")),
             result
         )
     }
@@ -88,7 +89,7 @@ class WebPortalApiControllerTests {
         val result = assertFails {
             sut.updateEntry(
                 "another id",
-                dummyEndpoints.first().toMockDataEntryForManagementApi()
+                MockDataEntryDto.allUnset("id", "")
             )
         }
         assertTrue(result is IllegalStateException)
@@ -102,66 +103,13 @@ class WebPortalApiControllerTests {
         /* Run Test */
         sut.updateEntry(
             dummyEndpoints.first().key,
-            dummyEndpoints.first().toMockDataEntryForManagementApi()
+            MockDataEntryDto.allUnset(dummyEndpoints.first().key, "")
         )
 
         /* Verify */
         verify(localCacheServiceMock).coroutine {
-            updateLocalCache(dummyEndpoints.first().toMockDataEntryForManagementApi())
+            updateLocalCache(MockDataEntryDto.allUnset(dummyEndpoints.first().key, ""))
         }.wasInvoked(1.time)
-    }
-
-    @Test
-    fun `updateGlobalOverrides - calls through`() = runTest {
-        /* Setup */
-        val sut = ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
-
-        /* Run Test */
-        sut.updateGlobalOverrides(GlobalOverridesDto(11, 12, 13))
-
-        /* Verify */
-        verify(localCacheServiceMock).coroutine {
-            updateGlobalOverrides(
-                GlobalOverridesDto(11, 12, 13)
-            )
-        }.wasInvoked(1.time)
-    }
-
-    @Test
-    fun `getGlobalOverrides - calls through`() = runTest {
-        /* Setup */
-        given(localCacheServiceMock).coroutine {
-            getGlobalOverrides()
-        }.thenReturn(GlobalOverridesDto(11, 12, 13))
-        val sut = ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
-
-        /* Run Test */
-        val result = sut.getGlobalOverrides()
-
-        /* Verify */
-        assertEquals(
-            GlobalOverridesDto(11, 12, 13),
-            result
-        )
-    }
-
-    @Test
-    fun `getGlobalOverrides - is null - calls through`() = runTest {
-        /* Setup */
-        given(localCacheServiceMock).coroutine {
-            getGlobalOverrides()
-        }.thenReturn(null)
-        val sut = ManagementApiController(
-            dummyEndpoints,
-            localCacheServiceMock,
-            mockServerMonitorMock
-        )
-
-        /* Run Test */
-        val result = sut.getGlobalOverrides()
-
-        /* Verify */
-        assertNull(result)
     }
 
     @Test

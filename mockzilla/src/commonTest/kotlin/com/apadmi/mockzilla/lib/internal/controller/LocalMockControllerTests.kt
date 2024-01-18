@@ -9,6 +9,7 @@ import com.apadmi.mockzilla.testutils.TestMockzillaHttpRequest
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
+import com.apadmi.mockzilla.lib.internal.models.SetOrDoNotSetValue
 import io.ktor.http.*
 import io.mockative.Mock
 import io.mockative.classOf
@@ -47,7 +48,6 @@ class LocalMockControllerTests {
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine { getGlobalOverrides() }.thenReturn(null)
         given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(null)
 
         /* Run Test */
@@ -65,11 +65,12 @@ class LocalMockControllerTests {
                 statusCode = HttpStatusCode.Created,
                 headers = mapOf("test-header" to "test-value"),
                 body = "my response body"
-            ), response)
+            ), response
+        )
     }
 
     @Test
-    fun `GET response - 100 failure probability cached - fails`() = runTest {
+    fun `GET response - shouldFail=true cached - fails`() = runTest {
         /* Setup */
         val sut = LocalMockController(
             localCacheServiceMock,
@@ -77,31 +78,34 @@ class LocalMockControllerTests {
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine { getGlobalOverrides() }.thenReturn(null)
         given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(
-            MockDataEntryDto("my-id",
-                "my-id",
-                100,
-                0,
-                0,
-                emptyMap(),
-                "",
-                "",
-                HttpStatusCode.InternalServerError,
-                HttpStatusCode.OK)
+            MockDataEntryDto(
+                key = "my-id",
+                name = "my-id",
+                shouldFail = SetOrDoNotSetValue.Set(true),
+                delayMs = SetOrDoNotSetValue.Set(0),
+                headers = SetOrDoNotSetValue.Set(emptyMap()),
+                defaultBody = SetOrDoNotSetValue.Set(""),
+                defaultStatus = SetOrDoNotSetValue.Set(HttpStatusCode.OK),
+                errorBody = SetOrDoNotSetValue.Set(""),
+                errorStatus = SetOrDoNotSetValue.Set(HttpStatusCode.InternalServerError),
+            )
         )
 
         /* Run Test */
-        val response = sut.handleRequest(TestMockzillaHttpRequest(
-            uri = "http://example.com/local-mock/my-id",
-            headers = emptyMap(),
-            method = HttpMethod.Get
-        ))
+        val response = sut.handleRequest(
+            TestMockzillaHttpRequest(
+                uri = "http://example.com/local-mock/my-id",
+                headers = emptyMap(),
+                method = HttpMethod.Get
+            )
+        )
 
         /* Verify */
         assertEquals(
             MockzillaHttpResponse(
                 statusCode = HttpStatusCode.InternalServerError
-            ), response)
+            ), response
+        )
     }
 }

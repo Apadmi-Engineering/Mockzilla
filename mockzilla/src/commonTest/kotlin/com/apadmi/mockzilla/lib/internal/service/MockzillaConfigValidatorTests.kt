@@ -37,33 +37,7 @@ class MockzillaConfigValidatorTests {
     }
 
     @Test
-    fun `invalid failureProbability- throws`() {
-        runTest(
-            MockzillaConfig.Builder()
-                .addEndpoint(EndpointConfiguration
-                    .Builder("id")
-                    .setFailureProbability(101)
-                )
-                .build(),
-            "Failure probability must be between 0 and 100 (inclusive)"
-        )
-    }
-
-    @Test
-    fun `negative failureProbability- throws`() {
-        runTest(
-            MockzillaConfig.Builder()
-                .addEndpoint(EndpointConfiguration
-                    .Builder("id")
-                    .setFailureProbability(-1)
-                )
-                .build(),
-            "Failure probability must be between 0 and 100 (inclusive)"
-        )
-    }
-
-    @Test
-    fun `negative delayMean- throws`() {
+    fun `negative delay- throws`() {
         runTest(
             MockzillaConfig.Builder()
                 .addEndpoint(EndpointConfiguration
@@ -75,34 +49,9 @@ class MockzillaConfigValidatorTests {
         )
     }
 
-    @Test
-    fun `negative delayVariance- throws`() {
-        runTest(
-            MockzillaConfig.Builder()
-                .addEndpoint(EndpointConfiguration
-                    .Builder("id")
-                    .setDelayVarianceMillis(-1)
-                )
-                .build(),
-            "Delay variance must be in range 0 to ${Int.MAX_VALUE / 2 - 1}"
-        )
-    }
 
     @Test
-    fun `delayVariance too large - throws`() {
-        runTest(
-            MockzillaConfig.Builder()
-                .addEndpoint(EndpointConfiguration
-                    .Builder("id")
-                    .setDelayVarianceMillis(Int.MAX_VALUE / 2 + 10)
-                )
-                .build(),
-            "Delay variance must be in range 0 to ${Int.MAX_VALUE / 2 - 1}"
-        )
-    }
-
-    @Test
-    fun `delayMean too large - throws`() {
+    fun `delay too large - throws`() {
         runTest(
             MockzillaConfig.Builder()
                 .addEndpoint(EndpointConfiguration
