@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
-import com.apadmi.mockzilla.lib.internal.service.DelayAndFailureDecisionImpl
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -42,9 +41,9 @@ class LocalMockControllerTests {
     @Test
     fun `GET response - no caches - 0 failure probability - succeeds`() = runTest {
         /* Setup */
-        val sut = LocalMockController(localCacheServiceMock,
+        val sut = LocalMockController(
+            localCacheServiceMock,
             mockServerMonitorMock,
-            DelayAndFailureDecisionImpl,
             dummyEndpoints,
             Logger(StaticConfig())
         )
@@ -72,9 +71,9 @@ class LocalMockControllerTests {
     @Test
     fun `GET response - 100 failure probability cached - fails`() = runTest {
         /* Setup */
-        val sut = LocalMockController(localCacheServiceMock,
+        val sut = LocalMockController(
+            localCacheServiceMock,
             mockServerMonitorMock,
-            DelayAndFailureDecisionImpl,
             dummyEndpoints,
             Logger(StaticConfig())
         )

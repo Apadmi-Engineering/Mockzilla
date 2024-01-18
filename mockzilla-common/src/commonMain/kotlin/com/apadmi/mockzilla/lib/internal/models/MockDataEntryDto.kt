@@ -1,20 +1,23 @@
 package com.apadmi.mockzilla.lib.internal.models
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
-import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import io.ktor.http.*
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 /**
  * DTO for interaction with the web portal.
  *
  * @property name
  * @property key
- * @property failProbability
- * @property delayMean
+ * @property shouldFail
+ * @property delayMs
  * @property delayVariance
  * @property headers
  * @property defaultBody
@@ -26,77 +29,92 @@ import kotlinx.serialization.Serializable
 data class MockDataEntryDto(
     val key: String,
     val name: String,
-    val failProbability: Int,
-    val delayMean: Int,
-    val delayVariance: Int,
-    val headers: Map<String, String>,
-    @SerialName("contentJson") val defaultBody: String,
-    @SerialName("errorJson") val errorBody: String,
-    @Serializable(with = HttpStatusCodeSerializer::class) val errorStatus: HttpStatusCode,
-    @Serializable(with = HttpStatusCodeSerializer::class) @SerialName("successStatus") val defaultStatus: HttpStatusCode,
+    val shouldFail: SetOrDoNotSetValue<Boolean>,
+    val delayMs: SetOrDoNotSetValue<Int>,
+    val headers: SetOrDoNotSetValue<Map<String, String>>,
+    val defaultBody: SetOrDoNotSetValue<String>,
+    val defaultStatus: SetOrDoNotSetValue<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode>,
+    val errorBody: SetOrDoNotSetValue<String>,
+    val errorStatus: SetOrDoNotSetValue<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode>,
 ) {
-    fun toDefaultMockzillaResponse() = MockzillaHttpResponse(
-        defaultStatus,
-        headers,
-        defaultBody
-    )
 
-    fun toErrorMockzillaResponse() = MockzillaHttpResponse(
-        errorStatus,
-        headers,
-        errorBody
-    )
+    companion object {
+        fun allUnset(key: String, name: String) = MockDataEntryDto(
+            key = key,
+            name = name,
+            shouldFail = SetOrDoNotSetValue.DoNotSet,
+            delayMs = SetOrDoNotSetValue.DoNotSet,
+            headers = SetOrDoNotSetValue.DoNotSet,
+            defaultBody = SetOrDoNotSetValue.DoNotSet,
+            defaultStatus = SetOrDoNotSetValue.DoNotSet,
+            errorBody = SetOrDoNotSetValue.DoNotSet,
+            errorStatus = SetOrDoNotSetValue.DoNotSet,
+        )
+    }
 }
 
-/**
- * This class is a temporary stopgap while we build the new management UI.
- *
- * Once that's implemented the mechanisms for defining mock data will be more advanced and this shouldn't be needed.
- * @property uri
- * @property headers
- * @property body
- * @property method
- */
-internal class FakeMockzillaHttpRequest(
-    override val uri: String,
-    override val headers: Map<String, String>,
-    @Deprecated("`body`is deprecated", replaceWith = ReplaceWith("bodyAsString()"))
-    override val body: String,
-    override val method: HttpMethod
-) : MockzillaHttpRequest {
-    override val underlyingKtorRequest get() = throw NotImplementedError("This is a fake request, it does not have an underlying ktor request")
+@Serializable
+data class MockDataResponseDto(
+    val entries: List<MockDataEntryDto>
+)
+@Serializable(with = ServiceResultSerializer::class)
+sealed class SetOrDoNotSetValue<out T> {
+    @Serializable
+    @SerialName("DoNotSet")
+    data object DoNotSet : SetOrDoNotSetValue<Nothing>()
 
-    override fun bodyAsBytes() = bodyAsString().encodeToByteArray()
-    override fun bodyAsString() = body
+    /**
+     * @property value
+     */
+    @Serializable
+    @SerialName("Set")
+    data class Set<T>(val value: T) : SetOrDoNotSetValue<T>()
+
 }
+    fun <T> SetOrDoNotSetValue<T>?.valueOrDefault(default:  T): T = when(this) {
+        is SetOrDoNotSetValue.Set -> value
+        null,
+        SetOrDoNotSetValue.DoNotSet -> default
+    }
 
-fun EndpointConfiguration.toMockDataEntryForWeb(): MockDataEntryDto {
-    val defaultRequest = FakeMockzillaHttpRequest(
-        "https://this-is-being-called-from-the-web-api.com",
-        emptyMap(),
-        "This is being called from the web portal",
 
-        HttpMethod.Get
-    )
+class ServiceResultSerializer<T : Any>(
+    tSerializer: KSerializer<T>
+) : KSerializer<SetOrDoNotSetValue<T>> {
+    @Serializable
+    @SerialName("ServiceResult")
+    data class ServiceResultSurrogate<out T : Any>(
+        val type: Type,
+        // The annotation is not necessary, but it avoids serializing "data = null"
+        // for "UnSet" results.
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
+        val value: T? = null,
+    ) {
+        enum class Type { Set, UnSet }
+    }
 
-    val defaultResponse = webApiDefaultResponse ?: runCatching {
-        defaultHandler.invoke(defaultRequest)
-    }.getOrDefault(MockzillaHttpResponse(body = "{}"))
+    private val surrogateSerializer = ServiceResultSurrogate.serializer(tSerializer)
 
-    val errorResponse = webApiErrorResponse ?: runCatching {
-        errorHandler.invoke(defaultRequest)
-    }.getOrDefault(MockzillaHttpResponse(statusCode = HttpStatusCode.BadRequest, body = "{}"))
+    override val descriptor: SerialDescriptor = surrogateSerializer.descriptor
 
-    return MockDataEntryDto(
-        name = name,
-        key = key,
-        failProbability = failureProbability ?: 0,
-        delayMean = delayMean ?: 0,
-        delayVariance = delayVariance ?: 0,
-        headers = defaultResponse.headers,
-        defaultBody = defaultResponse.body,
-        errorBody = errorResponse.body,
-        errorStatus = errorResponse.statusCode,
-        defaultStatus = defaultResponse.statusCode
-    )
+    override fun deserialize(decoder: Decoder): SetOrDoNotSetValue<T> {
+        val surrogate = surrogateSerializer.deserialize(decoder)
+        return when (surrogate.type) {
+            ServiceResultSurrogate.Type.Set ->
+                if (surrogate.value != null)
+                    SetOrDoNotSetValue.Set(surrogate.value)
+                else
+                    throw SerializationException("Missing data for set result")
+            ServiceResultSurrogate.Type.UnSet ->
+                SetOrDoNotSetValue.DoNotSet
+        }
+    }
+
+    override fun serialize(encoder: Encoder, value: SetOrDoNotSetValue<T>) {
+        val surrogate = when (value) {
+            is SetOrDoNotSetValue.Set -> ServiceResultSurrogate(ServiceResultSurrogate.Type.Set, value.value)
+            SetOrDoNotSetValue.DoNotSet -> ServiceResultSurrogate(ServiceResultSurrogate.Type.UnSet, null)
+        }
+        surrogateSerializer.serialize(encoder, surrogate)
+    }
 }

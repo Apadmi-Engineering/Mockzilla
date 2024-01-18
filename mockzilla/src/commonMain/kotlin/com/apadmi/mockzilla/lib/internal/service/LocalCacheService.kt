@@ -69,7 +69,7 @@ internal class LocalCacheServiceImpl(
     }
 
     override suspend fun updateLocalCache(entry: MockDataEntryDto) = lock.withLock {
-        logger.v { "Writing to cache ${entry.key} - $entry " }
+        logger.v { "Writing to cache ${entry.key} - $entry" }
 
         fileIo.saveToCache(entry.fileName, JsonProvider.json.encodeToString(entry))
     }

@@ -77,8 +77,8 @@ class WebPortalApiIntegrationTests {
             JsonProvider.json.encodeToString(listOf(MockDataEntryDto(
                 name = "my-id",
                 key = "my-id",
-                failProbability = 50,
-                delayMean = 100,
+                shouldFail = 50,
+                delayMs = 100,
                 delayVariance = 60,
                 headers = emptyMap(),
                 defaultBody = "my web api body",
@@ -98,7 +98,7 @@ class WebPortalApiIntegrationTests {
             .build(),
         setup = { cacheService ->
             cacheService.updateLocalCache(
-                EndpointConfiguration.Builder("id").build().toMockDataEntryForWeb()
+                EndpointConfiguration.Builder("id").build().toMockDataEntryForManagementApi()
             )
             cacheService.updateGlobalOverrides(GlobalOverridesDto(null, null, null))
         }
@@ -135,7 +135,7 @@ class WebPortalApiIntegrationTests {
                                 headers = mapOf("Content-Type" to "application/json")
                             )
                         }.build()
-                            .toMockDataEntryForWeb()
+                            .toMockDataEntryForManagementApi()
                     )
                 )
             }
@@ -149,7 +149,7 @@ class WebPortalApiIntegrationTests {
                         headers = mapOf("Content-Type" to "application/json")
                     )
                 }.build()
-                    .toMockDataEntryForWeb(),
+                    .toMockDataEntryForManagementApi(),
                 cacheService.getLocalCache("id")
             )
 
@@ -162,7 +162,7 @@ class WebPortalApiIntegrationTests {
                         headers = mapOf("Content-Type" to "application/json")
                     )
                 }.build()
-                    .toMockDataEntryForWeb(),
+                    .toMockDataEntryForManagementApi(),
                 cacheService.getLocalCache("id")
             )
             assertEquals(

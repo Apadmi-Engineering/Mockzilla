@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.lib.internal.service
 
 import com.apadmi.mockzilla.lib.internal.models.GlobalOverridesDto
-import com.apadmi.mockzilla.lib.internal.models.toMockDataEntryForWeb
+import com.apadmi.mockzilla.lib.internal.models.toMockDataEntryForManagementApi
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
@@ -41,7 +41,7 @@ class LocalCacheServiceTests {
             .setFailureProbability(40)
             .setWebApiDefaultResponse(MockzillaHttpResponse(body = "hello"))
             .build()
-            .toMockDataEntryForWeb()
+            .toMockDataEntryForManagementApi()
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
         /* Run Test */
