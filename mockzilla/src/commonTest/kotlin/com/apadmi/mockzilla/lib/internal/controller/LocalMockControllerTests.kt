@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
+import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -9,7 +10,6 @@ import com.apadmi.mockzilla.testutils.TestMockzillaHttpRequest
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
-import com.apadmi.mockzilla.lib.internal.models.SetOrDoNotSetValue
 import io.ktor.http.*
 import io.mockative.Mock
 import io.mockative.classOf
@@ -82,13 +82,13 @@ class LocalMockControllerTests {
             MockDataEntryDto(
                 key = "my-id",
                 name = "my-id",
-                shouldFail = SetOrDoNotSetValue.Set(true),
-                delayMs = SetOrDoNotSetValue.Set(0),
-                headers = SetOrDoNotSetValue.Set(emptyMap()),
-                defaultBody = SetOrDoNotSetValue.Set(""),
-                defaultStatus = SetOrDoNotSetValue.Set(HttpStatusCode.OK),
-                errorBody = SetOrDoNotSetValue.Set(""),
-                errorStatus = SetOrDoNotSetValue.Set(HttpStatusCode.InternalServerError),
+                shouldFail = SetOrDont.Set(true),
+                delayMs = SetOrDont.Set(0),
+                headers = SetOrDont.Set(emptyMap()),
+                defaultBody = SetOrDont.Set(""),
+                defaultStatus = SetOrDont.Set(HttpStatusCode.OK),
+                errorBody = SetOrDont.Set(""),
+                errorStatus = SetOrDont.Set(HttpStatusCode.InternalServerError),
             )
         )
 

@@ -49,7 +49,6 @@ class MockzillaConfigValidatorTests {
         )
     }
 
-
     @Test
     fun `delay too large - throws`() {
         runTest(

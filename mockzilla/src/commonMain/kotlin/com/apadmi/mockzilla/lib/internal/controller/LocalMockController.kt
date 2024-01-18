@@ -1,6 +1,8 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
+import com.apadmi.mockzilla.lib.internal.models.SetOrDont
+import com.apadmi.mockzilla.lib.internal.models.valueOrDefault
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
@@ -9,8 +11,6 @@ import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.internal.models.SetOrDoNotSetValue
-import com.apadmi.mockzilla.lib.internal.models.valueOrDefault
 import io.ktor.http.*
 
 import kotlinx.coroutines.delay
@@ -44,10 +44,10 @@ internal class LocalMockController(
         // then we return that, otherwise we call the appropriate handler.
         return if (shouldFail) {
             val response = if (listOf(
-                    cachedResponse?.errorStatus,
-                    cachedResponse?.headers,
-                    cachedResponse?.errorBody
-                ).all { it is SetOrDoNotSetValue.Set }
+                cachedResponse?.errorStatus,
+                cachedResponse?.headers,
+                cachedResponse?.errorBody
+            ).all { it is SetOrDont.Set }
             ) {
                 null
             } else {
@@ -62,10 +62,10 @@ internal class LocalMockController(
             )
         } else {
             val response = if (listOf(
-                    cachedResponse?.defaultStatus,
-                    cachedResponse?.headers,
-                    cachedResponse?.defaultBody
-                ).all { it is SetOrDoNotSetValue.Set }
+                cachedResponse?.defaultStatus,
+                cachedResponse?.headers,
+                cachedResponse?.defaultBody
+            ).all { it is SetOrDont.Set }
             ) {
                 null
             } else {

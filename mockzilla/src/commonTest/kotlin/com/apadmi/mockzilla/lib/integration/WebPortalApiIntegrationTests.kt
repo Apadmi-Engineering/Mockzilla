@@ -74,13 +74,13 @@ class WebPortalApiIntegrationTests {
         assertEquals(
             JsonProvider.json.encodeToString(
                 MockDataResponseDto(
-                listOf(
-                    MockDataEntryDto.allUnset(
-                        name = "my-id",
-                        key = "my-id"
+                    listOf(
+                        MockDataEntryDto.allUnset(
+                            name = "my-id",
+                            key = "my-id"
+                        )
                     )
-                )
-            )),
+                )),
             response.bodyAsText()
         )
     }
@@ -124,9 +124,9 @@ class WebPortalApiIntegrationTests {
                 setBody(
                     Json.encodeToString(
                         MockDataEntryDto.allUnset("id", "id").copy(
-                            defaultBody = SetOrDoNotSetValue.Set("hello"),
-                            defaultStatus = SetOrDoNotSetValue.Set(HttpStatusCode.NoContent),
-                            headers = SetOrDoNotSetValue.Set(mapOf("Content-Type" to "application/json"))
+                            defaultBody = SetOrDont.Set("hello"),
+                            defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
+                            headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
                         )
                     )
                 )
@@ -135,9 +135,9 @@ class WebPortalApiIntegrationTests {
             /* Verify */
             assertEquals(
                 MockDataEntryDto.allUnset("id", "id").copy(
-                    defaultBody = SetOrDoNotSetValue.Set("hello"),
-                    defaultStatus = SetOrDoNotSetValue.Set(HttpStatusCode.NoContent),
-                    headers = SetOrDoNotSetValue.Set(mapOf("Content-Type" to "application/json"))
+                    defaultBody = SetOrDont.Set("hello"),
+                    defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
+                    headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
                 ),
                 cacheService.getLocalCache("id")
             )

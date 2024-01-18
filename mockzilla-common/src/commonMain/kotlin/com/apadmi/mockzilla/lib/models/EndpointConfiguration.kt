@@ -7,9 +7,8 @@ import io.ktor.server.request.ApplicationRequest
 /**
  * @property name
  * @property key
- * @property failureProbability
+ * @property shouldFail
  * @property delay
- * @property delayVariance
  * @property endpointMatcher
  * @property defaultHandler
  * @property errorHandler
@@ -85,7 +84,7 @@ data class EndpointConfiguration(
 
         /**
          * The block called when a network request is made to this endpoint. Note: If the value of
-         * [setFailureProbability] causes Mockzilla to generate a failure response, then this block
+         * [setShouldFail] causes Mockzilla to generate a failure response, then this block
          * will *not* be called, instead the block specified by [setErrorHandler] is called.
          *
          * @param handler

@@ -2,7 +2,7 @@ package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
-import com.apadmi.mockzilla.lib.internal.models.SetOrDoNotSetValue
+import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -59,7 +59,7 @@ class ManagementApiControllerTests {
     fun `getAllMockDataEntries - replaces cached data - calls through`() = runTest {
         /* Setup */
         val dummyCacheEntry = MockDataEntryDto.allUnset("my-id", "id").copy(
-            defaultBody = SetOrDoNotSetValue.Set("my cached value")
+            defaultBody = SetOrDont.Set("my cached value")
         )
         given(localCacheServiceMock).coroutine {
             getLocalCache("my-id")
