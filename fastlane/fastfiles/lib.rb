@@ -88,3 +88,14 @@ lane :get_version_name do
 
     str
 end
+
+platform :flutter do
+
+    desc "Flutter target for the lib"
+    lane :lib_pull_request do
+        flutter_setup
+        flutter_dart_test
+        flutter_android_test
+    end
+
+end
