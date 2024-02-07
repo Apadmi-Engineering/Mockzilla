@@ -17,9 +17,16 @@ Ensure Python is installed on your system.
 
 Tested on python `v{{get_python_version()}}`
 
+Python: 
 ```bash
 # Install all dependencies
 pip install -r requirements.txt
+```
+
+Python 3:
+```bash
+# Install all dependencies
+pip3 install -r requirements.txt
 ```
 
 Run the following to start the server.
