@@ -198,11 +198,7 @@ private fun BottomPanel(
         }
 
         HorizontalTabList(
-            tabs = content.map { widget ->
-                HorizontalTab(
-                    title = widget.title + " $settledHeight",
-                )
-            },
+            tabs = content.map { widget -> HorizontalTab(title = widget.title) },
             selected = selectedWidget,
             onSelect = { widget ->
                 selectedWidget = widget.takeUnless { widget == selectedWidget }

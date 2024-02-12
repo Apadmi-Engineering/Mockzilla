@@ -381,7 +381,7 @@
 - name: TYPE_ALIAS
   enabled: true
   configuration:
-    typeReferenceLength: '25' # max length of type reference
+    typeReferenceLength: '30' # max length of type reference
 # Checks if casting can be omitted
 - name: SMART_CAST_NEEDED
   enabled: true

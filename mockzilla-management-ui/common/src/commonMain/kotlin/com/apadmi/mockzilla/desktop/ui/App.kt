@@ -19,6 +19,7 @@ import com.apadmi.mockzilla.desktop.ui.widgets.devicetabs.DeviceTabsWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.wrapper.MiddlePaneWrapperWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
+import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsWidget
 
 import com.airbnb.android.showkase.annotation.ShowkaseRoot
 import com.airbnb.android.showkase.annotation.ShowkaseRootModule
@@ -37,11 +38,11 @@ fun App(
         right = listOf(Widget("Right 1") { Text("Right1") }),
         middle = listOf(Widget("") {
             MiddlePaneWrapperWidget({ EndpointsWidget() },
-                { DeviceConnectionWidget() })
+                { DeviceConnectionWidget() }
+            )
         }),
         bottom = listOf(
-            Widget("Bottom 1") { Text("Bottom 1") },
-            Widget("Bottom 2", { Text("Bottom 2") })
+            Widget(strings.widgets.logs.title) { MonitorLogsWidget() }
         ),
     )
 }
