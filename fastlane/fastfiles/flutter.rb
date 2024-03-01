@@ -1,5 +1,5 @@
 flutter_directory = "#{lane_context[:repo_root]}/FlutterMockzilla"
-main_package_root = "#{flutter_directory}/mockziila"
+main_package_root = "#{flutter_directory}/mockzilla"
 platform_interface_root = "#{flutter_directory}/mockzilla_platform_interface"
 android_plugin_root = "#{flutter_directory}/mockzilla_android"
 
@@ -19,8 +19,9 @@ end
 
 desc "Executes Android unit tests"
 lane :flutter_android_test do
+    sh("cd #{android_plugin_root}/example; flutter build apk --config-only")
     gradle(
-        project_dir: "#{android_plugin_root}/android",
-        task: "test"
+        project_dir: "#{android_plugin_root}/example/android",
+        task: "testDebugUnitTest"
     )
 end

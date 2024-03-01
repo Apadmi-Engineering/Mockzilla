@@ -21,6 +21,30 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 
 
+### flutter_setup
+
+```sh
+[bundle exec] fastlane flutter_setup
+```
+
+
+
+### flutter_dart_test
+
+```sh
+[bundle exec] fastlane flutter_dart_test
+```
+
+Executes Dart unit tests
+
+### flutter_android_test
+
+```sh
+[bundle exec] fastlane flutter_android_test
+```
+
+Executes Android unit tests
+
 ### publish_to_maven_local
 
 ```sh
@@ -53,10 +77,26 @@ Publish to maven remote
 
 
 
+### flutter_pull_request_test
+
+```sh
+[bundle exec] fastlane flutter_pull_request_test
+```
+
+
+
 ----
 
 
 ## iOS
+
+### ios demo_ios_pull_request
+
+```sh
+[bundle exec] fastlane ios demo_ios_pull_request
+```
+
+iOS target for the pure iOS demo
 
 ### ios demo_kmm_pull_request
 
@@ -90,18 +130,18 @@ Generate XCFramework
 
 Deploy the package to github
 
-### ios demo_ios_pull_request
-
-```sh
-[bundle exec] fastlane ios demo_ios_pull_request
-```
-
-iOS target for the pure iOS demo
-
 ----
 
 
 ## Android
+
+### android demo_android_pull_request
+
+```sh
+[bundle exec] fastlane android demo_android_pull_request
+```
+
+Android target for the pure android demo
 
 ### android demo_kmm_pull_request
 
@@ -135,13 +175,18 @@ Android target for the lib
 
 Generate screenshots and upload them
 
-### android demo_android_pull_request
+----
+
+
+## flutter
+
+### flutter lib_pull_request
 
 ```sh
-[bundle exec] fastlane android demo_android_pull_request
+[bundle exec] fastlane flutter lib_pull_request
 ```
 
-Android target for the pure android demo
+Flutter target for the lib
 
 ----
 
