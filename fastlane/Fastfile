@@ -19,7 +19,9 @@ lane :combined_pull_request do
     # Library
     Fastlane::LaneManager.cruise_lane("ios", "lib_pull_request", {})
     Fastlane::LaneManager.cruise_lane("android", "lib_pull_request", {})
-    flutter_lib_pull_request
+    if should_flutter_run
+        flutter_lib_pull_request
+    end
     publish_to_maven_local
 
     # Pure Android Demo

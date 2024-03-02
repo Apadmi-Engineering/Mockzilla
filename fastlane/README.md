@@ -21,13 +21,23 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 
 
+### should_flutter_run
+
+```sh
+[bundle exec] fastlane should_flutter_run
+```
+
+Returns whether Flutter lanes should run due to either the Flutter 
+
+source changing or Fastlane config changing
+
 ### flutter_setup
 
 ```sh
 [bundle exec] fastlane flutter_setup
 ```
 
-
+Installs Flutter SDK and project dependencies
 
 ### flutter_dart_test
 
@@ -69,18 +79,18 @@ Publish to maven remote
 
 
 
+### flutter_lib_pull_request
+
+```sh
+[bundle exec] fastlane flutter_lib_pull_request
+```
+
+Flutter target for the lib
+
 ### combined_pull_request
 
 ```sh
 [bundle exec] fastlane combined_pull_request
-```
-
-
-
-### flutter_pull_request_test
-
-```sh
-[bundle exec] fastlane flutter_pull_request_test
 ```
 
 
@@ -174,19 +184,6 @@ Android target for the lib
 ```
 
 Generate screenshots and upload them
-
-----
-
-
-## flutter
-
-### flutter lib_pull_request
-
-```sh
-[bundle exec] fastlane flutter lib_pull_request
-```
-
-Flutter target for the lib
 
 ----
 
