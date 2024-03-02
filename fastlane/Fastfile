@@ -33,4 +33,9 @@ lane :combined_pull_request do
     # KMM Demo
     Fastlane::LaneManager.cruise_lane("ios", "demo_kmm_pull_request", {})
     Fastlane::LaneManager.cruise_lane("android", "demo_kmm_pull_request", {})
+
+    # Flutter Demo
+    if should_flutter_run
+        demo_flutter_pull_request
+    end
 end

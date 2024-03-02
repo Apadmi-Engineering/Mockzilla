@@ -25,8 +25,7 @@ end
 
 desc "Executes Dart unit tests"
 lane :flutter_dart_test do
-    sh("cd #{flutter_directory}/mockzilla; flutter test")
-    sh("cd #{flutter_directory}/mockzilla_platform_interface; flutter test")
+    # Currently, unit tests are only present in `mockzilla_android`.
     sh("cd #{flutter_directory}/mockzilla_android; flutter test")
 end
 
@@ -37,4 +36,9 @@ lane :flutter_android_test do
         project_dir: "#{flutter_directory}/mockzilla_android/example/android",
         task: "testDebugUnitTest"
     )
+end
+
+lane :demo_flutter_pull_request do
+    sh("cd #{flutter_directory}/mockzilla/example; dart run build_runner build")
+    sh("cd #{flutter_directory}/mockzilla/example; flutter build apk")
 end

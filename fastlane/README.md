@@ -55,6 +55,14 @@ Executes Dart unit tests
 
 Executes Android unit tests
 
+### demo_flutter_pull_request
+
+```sh
+[bundle exec] fastlane demo_flutter_pull_request
+```
+
+
+
 ### publish_to_maven_local
 
 ```sh
