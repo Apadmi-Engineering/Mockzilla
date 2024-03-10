@@ -91,7 +91,6 @@ end
 
 desc "Flutter target for the lib"
 lane :flutter_lib_pull_request do
-    flutter_setup
     flutter_dart_test
     flutter_android_test
 end
