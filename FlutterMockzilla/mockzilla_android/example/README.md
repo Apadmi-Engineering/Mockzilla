@@ -1,16 +1,7 @@
-# example
+# Mockzilla Android Example
 
-A new Flutter project.
+This Android example app exists such that the `mockzilla_android` Flutter plugin can be built, 
+thereby allowing native unit tests to be run on CI.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+If you are looking for an example on how to use the Mockzilla plugin, please see the main plugin 
+example [here](https://github.com/Apadmi-Engineering/Mockzilla/tree/develop/FlutterMockzilla/mockzilla/example).
