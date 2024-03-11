@@ -9,7 +9,7 @@ end
 desc "Returns whether Flutter lanes should run due to either the Flutter "
 desc "source changing or Fastlane config changing"
 lane :should_flutter_run do
-    sh("git fetch origin develop")
+    sh("git fetch origin develop:develop")
     changed_files = sh("cd #{flutter_directory}; git --no-pager diff --name-only HEAD $(git merge-base develop HEAD)")
     flutter_source_changed = changed_files.include? flutter_directory
     fastlane_changed = changed_files.include? fastlane_directory
