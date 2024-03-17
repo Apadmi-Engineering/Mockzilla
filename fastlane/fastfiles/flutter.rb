@@ -25,8 +25,7 @@ desc "Executes Android unit tests"
 lane :flutter_android_test do
     sh("cd #{flutter_root}/mockzilla_android/example; flutter build apk --config-only")
     gradle(
-        project_dir: "#{flutter_root
-}/mockzilla_android/example/android",
+        project_dir: "#{flutter_root}/mockzilla_android/example/android",
         task: "testDebugUnitTest"
     )
 end
