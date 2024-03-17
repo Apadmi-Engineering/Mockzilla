@@ -1,5 +1,10 @@
-flutter_directory = "FlutterMockzilla"
-fastlane_directory = "fastlane"
+def flutter_directory
+    "FlutterMockzilla"
+end
+
+def fastlane_directory
+    "fastlane"
+end
 
 def flutter_root
     "#{lane_context[:repo_root]}/#{flutter_directory}"
