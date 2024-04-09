@@ -1,10 +1,7 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
-import com.apadmi.mockzilla.versionFile
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-
-import java.util.Date
 
 plugins {
     alias(libs.plugins.android.library)

@@ -3,7 +3,7 @@ import com.apadmi.mockzilla.JavaConfig
 
 plugins {
     alias(libs.plugins.compose)
-    kotlin("android")
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.app)
     alias(libs.plugins.kotlin.serialization)
 }

@@ -1,34 +1,60 @@
 [versions]
-buildKonfig = "0.13.3"
-kermit = "1.2.2"
+
+# Kotlin
+kotlin = "1.9.23" # https://github.com/JetBrains/kotlin
+agp = "8.2.2" # https://developer.android.com/build/releases/gradle-plugin
+ksp = "1.9.23-1.0.20" # https://github.com/google/ksp
+
+# Logging
+kermit = "1.2.2" # https://github.com/touchlab/Kermit
+
+# Config
+buildKonfig = "0.13.3" # https://github.com/yshrsmz/BuildKonfig
+
+# Documentation
+dokka = "1.9.0" # https://github.com/Kotlin/dokka
+
+# Localization
+lyricist = "1.4.2" # https://github.com/adrielcafe/lyricist
+
+# Networking
+ktor = "2.3.3" # https://github.com/ktorio/ktor
+
+# Compose
+compose = "1.6.1" # https://github.com/JetBrains/compose-multiplatform
+
+# DI
+koin = "3.4.2" # https://github.com/InsertKoinIO/koin
+
+# KotlinX
 kotlinx-coroutines-core = "1.7.3"
 kotlinxCoroutinesTest = "1.7.3"
 kotlinxDatetime = "0.4.0"
 kotlinxSerializationJson = "1.5.1"
-ktor = "2.3.3"
-kotlin = "1.9.10"
-agp = "8.1.2"
-mockative = "1.4.1"
-junit = "1.1.5"
-testParamInjector = "1.12"
-showkase = "1.0.2"
-paparazzi = "1.3.1"
-spotless = "6.11.0"
-ksp = "1.9.10-1.0.13"
-dokka = "1.9.0"
-kover = "0.7.3"
-compose = "1.5.3"
 kotlinx-coroutines = "1.7.3"
-koin = "3.4.2"
-material-icons = "1.0.0-rc11"
+
+# AndroidX
 lifecycle = "2.6.2"
-material = "1.9.0"
 material3 = "1.1.2"
 compose-activity = "1.8.0"
-lyricist = "1.4.2"
-turbine = "1.0.0"
+material-icons = "1.0.0-rc11"
+
+# Code Formatting
+spotless = "6.25.0" # https://github.com/diffplug/spotless
+
+# Testing
+kover = "0.7.6" # https://github.com/Kotlin/kotlinx-kover
+turbine = "1.1.0" # https://github.com/cashapp/turbine
+mockative = "1.4.1" # https://github.com/mockative/mockative
+junit = "1.1.5" # https://developer.android.com/jetpack/androidx/releases/test
+testParamInjector = "1.12" # https://github.com/google/TestParameterInjector
+
+# Screenshots
+showkase = "1.0.2" # https://github.com/airbnb/Showkase
+paparazzi = "1.3.1" # https://github.com/cashapp/paparazzi
 
 [libraries]
+
 # Compose & Material
 androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity"  }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
@@ -39,19 +65,25 @@ desktop-compose-material3 = { group = "org.jetbrains.compose.material3", name = 
 androidx-compose-materialIconsExt = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 desktop-compose-material-icons = { group = "org.jetbrains.compose.material", name = "material-icons-extended-desktop", version.ref = "material-icons" }
 androidx-compose-uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+
 # Android Lifecycle
 androidx-lifecycleViewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 androidx-lifecycleRuntimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+
 # BuildKonfig
 buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
+
+# Logging
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+
 # Kotlin
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref="kotlinx-coroutines" }
+
 # Ktor
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -63,10 +95,12 @@ ktor-server-rate-limit = { module = "io.ktor:ktor-server-rate-limit", version.re
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-resources = { module = "io.ktor:ktor-client-resources", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+
 # DI
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+
 # Testing
 mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
 showkase = { module = "com.airbnb.android:showkase", version.ref = "showkase" }
@@ -74,13 +108,15 @@ showkase-processor = { module = "com.airbnb.android:showkase-processor", version
 androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
 testParamInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version.ref = "testParamInjector" }
 turbine = { module="app.cash.turbine:turbine", version.ref = "turbine" }
-# Lyricist
+
+# Localization
 lyricist-library = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
 lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", version.ref = "lyricist" }
 
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-app = { id = "com.android.application", version.ref = "agp" }

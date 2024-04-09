@@ -3,7 +3,7 @@ import com.apadmi.mockzilla.AndroidConfig
 plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.android.app)
-    kotlin("android")
+    alias(libs.plugins.kotlin.android)
 }
 
 dependencies {
@@ -12,7 +12,6 @@ dependencies {
 }
 
 android {
-
     compileSdk = AndroidConfig.targetSdk
     namespace = group.toString()
     defaultConfig {

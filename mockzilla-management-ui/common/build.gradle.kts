@@ -2,7 +2,7 @@ import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
 
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
     alias(libs.plugins.paparazzi)
