@@ -22,6 +22,7 @@ ktor = "2.3.3" # https://github.com/ktorio/ktor
 
 # Compose
 compose = "1.6.1" # https://github.com/JetBrains/compose-multiplatform
+compose-compiler = "1.5.10" # https://developer.android.com/jetpack/androidx/releases/compose-compiler
 
 # DI
 koin = "3.4.2" # https://github.com/InsertKoinIO/koin
