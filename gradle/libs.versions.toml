@@ -18,7 +18,7 @@ dokka = "1.9.0" # https://github.com/Kotlin/dokka
 lyricist = "1.4.2" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "2.3.3" # https://github.com/ktorio/ktor
+ktor = "2.3.10" # https://github.com/ktorio/ktor
 
 # Compose
 compose = "1.6.1" # https://github.com/JetBrains/compose-multiplatform
@@ -28,11 +28,9 @@ compose-compiler = "1.5.10" # https://developer.android.com/jetpack/androidx/rel
 koin = "3.4.2" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
-kotlinx-coroutines-core = "1.7.3"
-kotlinxCoroutinesTest = "1.7.3"
-kotlinxDatetime = "0.4.0"
-kotlinxSerializationJson = "1.5.1"
-kotlinx-coroutines = "1.7.3"
+kotlinx-coroutines = "1.8.0" # https://github.com/Kotlin/kotlinx.coroutines
+kotlinx-datetime = "0.5.0" # https://github.com/Kotlin/kotlinx-datetime
+kotlinx-serialization = "1.6.3" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
 lifecycle = "2.6.2"
@@ -79,10 +77,10 @@ buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 # Kotlin
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref="kotlinx-coroutines" }
 
 # Ktor
