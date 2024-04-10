@@ -9,7 +9,7 @@ ksp = "1.9.23-1.0.20" # https://github.com/google/ksp
 kermit = "1.2.2" # https://github.com/touchlab/Kermit
 
 # Config
-buildKonfig = "0.13.3" # https://github.com/yshrsmz/BuildKonfig
+buildKonfig = "0.15.1" # https://github.com/yshrsmz/BuildKonfig
 
 # Documentation
 dokka = "1.9.0" # https://github.com/Kotlin/dokka
@@ -25,7 +25,7 @@ compose = "1.6.1" # https://github.com/JetBrains/compose-multiplatform
 compose-compiler = "1.5.10" # https://developer.android.com/jetpack/androidx/releases/compose-compiler
 
 # DI
-koin = "3.4.2" # https://github.com/InsertKoinIO/koin
+koin = "3.5.4" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
 kotlinx-coroutines = "1.8.0" # https://github.com/Kotlin/kotlinx.coroutines
@@ -33,10 +33,9 @@ kotlinx-datetime = "0.5.0" # https://github.com/Kotlin/kotlinx-datetime
 kotlinx-serialization = "1.6.3" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
-lifecycle = "2.6.2"
-material3 = "1.1.2"
-compose-activity = "1.8.0"
-material-icons = "1.0.0-rc11"
+lifecycle = "2.7.0" # https://developer.android.com/jetpack/androidx/releases/lifecycle
+material3 = "1.2.1" # https://developer.android.com/jetpack/androidx/releases/compose-material3
+compose-activity = "1.8.2" # https://developer.android.com/jetpack/androidx/releases/activity
 
 # Code Formatting
 spotless = "6.25.0" # https://github.com/diffplug/spotless
@@ -62,7 +61,7 @@ androidx-compose-material = { module = "androidx.compose.material:material", ver
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 desktop-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3-desktop", version.ref = "compose" }
 androidx-compose-materialIconsExt = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
-desktop-compose-material-icons = { group = "org.jetbrains.compose.material", name = "material-icons-extended-desktop", version.ref = "material-icons" }
+desktop-compose-material-icons = { module = "org.jetbrains.compose.material:material-icons-extended-desktop", version.ref = "compose" }
 androidx-compose-uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 
 # Android Lifecycle

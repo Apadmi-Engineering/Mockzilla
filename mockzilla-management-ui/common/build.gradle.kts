@@ -76,7 +76,6 @@ kotlin {
 
                 /* Coroutines */
                 implementation(libs.kotlinx.coroutines.swing)
-
             }
         }
         val desktopTest by getting {
