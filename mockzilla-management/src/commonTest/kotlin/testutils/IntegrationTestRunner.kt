@@ -19,8 +19,7 @@ internal fun runIntegrationTest(
     appVersion: String = "dummy-app-version",
     config: MockzillaConfig = MockzillaConfig.Builder().setPort(0).addEndpoint(
         EndpointConfiguration.Builder("Id").build()
-    )
-        .build(),
+    ).build(),
     testBlock: TestBlock
 ) = runBlocking {
     /* Setup */

@@ -1,10 +1,11 @@
-
 @file:Suppress("MAGIC_NUMBER")
 
 package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
+import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
@@ -16,6 +17,7 @@ import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class MockzillaManagementIntegrationTests {
     private val dummyAppName = "MockzillaManagementTest"
@@ -74,6 +76,49 @@ class MockzillaManagementIntegrationTests {
                 actual = result
             )
         }
+
+    @Test
+    fun `fetchAllMockData and updateMockData - behaves somewhat sensibly`() =
+        runIntegrationTest(
+            dummyAppName,
+            dummyAppVersion,
+            config = MockzillaConfig.Builder().setPort(0).addEndpoint(
+                EndpointConfiguration.Builder("Id")
+                    .setDefaultHandler { MockzillaHttpResponse(body = "this is a body") }
+                    .setShouldFail(false)
+                    .setMeanDelayMillis(10)
+                    .build()
+            ).addEndpoint(
+                EndpointConfiguration.Builder("Id 2")
+                    .setDefaultHandler { MockzillaHttpResponse(body = "this is another body") }
+                    .setShouldFail(false)
+                    .build()
+            ).setLogLevel(MockzillaConfig.LogLevel.Verbose)
+                .build()
+        ) { sut, connection, _ ->
+            /* Run Test */
+            val preUpdateData = sut.fetchAllMockData(connection)
+            val entryToUpdate =
+                preUpdateData.getOrThrow().last().copy(shouldFail = SetOrDont.Set(true))
+            val updateResult = sut.updateMockDataEntry(entryToUpdate, connection)
+            val postUpdateData = sut.fetchAllMockData(connection)
+
+            /* Verify */
+            listOf(preUpdateData, updateResult, postUpdateData).forEach { assertTrue(it.isSuccess) }
+            assertEquals(
+                listOf(
+                    MockDataEntryDto.allUnset(key = "Id", name = "Id"),
+                    MockDataEntryDto.allUnset(key = "Id 2", name = "Id 2")
+                ), preUpdateData.getOrThrow()
+            )
+            assertEquals(
+                listOf(
+                    MockDataEntryDto.allUnset(key = "Id", name = "Id"),
+                    MockDataEntryDto.allUnset(key = "Id 2", name = "Id 2").copy(shouldFail = SetOrDont.Set(true))
+                ), postUpdateData.getOrThrow()
+            )
+        }
+
 
     @Suppress("MAGIC_NUMBER")
     @Test
