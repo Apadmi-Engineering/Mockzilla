@@ -6,6 +6,8 @@ import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.internal.MockzillaManagementImpl
 import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.Logger
 
 interface MockzillaManagement {
     suspend fun fetchMetaData(connection: ConnectionConfig): Result<MetaData>
@@ -22,8 +24,8 @@ interface MockzillaManagement {
     }
 
     companion object {
-        fun create(): MockzillaManagement = MockzillaManagementImpl(
-            KtorRequestRunner(KtorClientProvider.createKtorClient())
+        fun create(logger: Logger = Logger.DEFAULT): MockzillaManagement = MockzillaManagementImpl(
+            KtorRequestRunner(KtorClientProvider.createKtorClient(logger = logger))
         )
     }
 }
