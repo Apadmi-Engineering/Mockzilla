@@ -52,8 +52,7 @@ data class MockzillaConfig(
         private var logLevel: LogLevel = LogLevel.Info
         private var port = defaultPort
         private var endpoints: MutableList<EndpointConfiguration> = mutableListOf()
-        private var defaultShouldFail = false
-        private var defaultDelayMean = 100
+        private var delay = 100
         private var isRelease = false
         private var releaseConfig: ReleaseModeConfig = ReleaseModeConfig()
         private var localhostOnly = false
@@ -90,14 +89,24 @@ data class MockzillaConfig(
 
         /**
          * Used to simulate latency: The artificial mean delay Mockzilla with add to a network request.
-         * Used alongside [setMeanDelayMillis] to calculate the actual artificial delay on each invocation.
          *
          * Value set on individual endpoints takes priority over this value
          *
          * @param delay delay in milliseconds
          */
+        @Deprecated("Delay is now constant with no variance", replaceWith = ReplaceWith("setDelayMillis"))
         fun setMeanDelayMillis(delay: Int) = apply {
-            defaultDelayMean = delay
+            this.delay = delay
+        }
+
+        /**
+         * Used to simulate latency: The artificial delay Mockzilla with add to a network request.
+         * Value set on individual endpoints takes priority over this value
+         *
+         * @param delay delay in milliseconds
+         */
+        fun setDelayMillis(delay: Int) = apply {
+            this.delay = delay
         }
 
         /**
@@ -181,7 +190,7 @@ data class MockzillaConfig(
          */
         fun build() = MockzillaConfig(port, endpoints.map {
             it.copy(
-                delay = it.delay ?: defaultDelayMean,
+                delay = it.delay ?: delay,
             )
         }, isRelease, localhostOnly, logLevel, releaseConfig, additionalLogWriters)
 

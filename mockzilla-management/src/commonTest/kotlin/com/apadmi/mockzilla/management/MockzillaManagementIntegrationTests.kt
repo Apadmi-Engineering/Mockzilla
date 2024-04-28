@@ -77,6 +77,7 @@ class MockzillaManagementIntegrationTests {
             )
         }
 
+    @Suppress("TOO_LONG_FUNCTION")
     @Test
     fun `fetchAllMockData and updateMockData - behaves somewhat sensibly`() =
         runIntegrationTest(
@@ -88,12 +89,13 @@ class MockzillaManagementIntegrationTests {
                     .setShouldFail(false)
                     .setMeanDelayMillis(10)
                     .build()
-            ).addEndpoint(
-                EndpointConfiguration.Builder("Id 2")
-                    .setDefaultHandler { MockzillaHttpResponse(body = "this is another body") }
-                    .setShouldFail(false)
-                    .build()
-            ).setLogLevel(MockzillaConfig.LogLevel.Verbose)
+            )
+                .addEndpoint(
+                    EndpointConfiguration.Builder("Id 2")
+                        .setDefaultHandler { MockzillaHttpResponse(body = "this is another body") }
+                        .setShouldFail(false)
+                        .build()
+                ).setLogLevel(MockzillaConfig.LogLevel.Verbose)
                 .build()
         ) { sut, connection, _ ->
             /* Run Test */
@@ -119,7 +121,6 @@ class MockzillaManagementIntegrationTests {
             )
         }
 
-
     @Suppress("MAGIC_NUMBER")
     @Test
     fun `fetchMonitorLogsAndClearBuffer with network calls- returns list of logs`() =
@@ -128,9 +129,7 @@ class MockzillaManagementIntegrationTests {
             dummyAppVersion,
             config = MockzillaConfig.Builder()
                 .setPort(0)  // Port determined at runtime
-                .setFailureProbabilityPercentage(0)
-                .setMeanDelayMillis(24)
-                .setDelayVarianceMillis(0)
+                .setDelayMillis(24)
                 .addEndpoint(
                     EndpointConfiguration.Builder(fetchLogsAndClearBufferEndpoint)
                         .setDefaultHandler {

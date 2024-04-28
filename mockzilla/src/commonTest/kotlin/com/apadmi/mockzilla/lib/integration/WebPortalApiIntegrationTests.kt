@@ -31,7 +31,7 @@ class WebPortalApiIntegrationTests {
     fun `GET mock-data - returns as expected`() = runIntegrationTest(
         MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
-            .setMeanDelayMillis(100)
+            .setDelayMillis(100)
             .addEndpoint(EndpointConfiguration.Builder("my-id")
                 .setWebApiDefaultResponse(
                     MockzillaHttpResponse(
@@ -151,9 +151,7 @@ class WebPortalApiIntegrationTests {
     fun `GET monitor-logs - returns as expected`() = runIntegrationTest(
         MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
-            .setFailureProbabilityPercentage(0)
-            .setMeanDelayMillis(24)
-            .setDelayVarianceMillis(0)
+            .setDelayMillis(24)
             .addEndpoint(
                 EndpointConfiguration.Builder("my-id")
                     .setDefaultHandler {

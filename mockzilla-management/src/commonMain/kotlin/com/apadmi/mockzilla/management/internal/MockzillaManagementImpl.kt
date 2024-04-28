@@ -12,7 +12,6 @@ import com.apadmi.mockzilla.management.internal.ktor.post
 import co.touchlab.kermit.Logger
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.appendEncodedPathSegments
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 
