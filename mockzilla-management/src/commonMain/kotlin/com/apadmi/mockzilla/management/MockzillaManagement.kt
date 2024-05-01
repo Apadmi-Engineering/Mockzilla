@@ -24,8 +24,10 @@ interface MockzillaManagement {
     }
 
     companion object {
-        fun create(logger: Logger = Logger.DEFAULT): MockzillaManagement = MockzillaManagementImpl(
+        internal fun create(logger: Logger): MockzillaManagement = MockzillaManagementImpl(
             KtorRequestRunner(KtorClientProvider.createKtorClient(logger = logger))
         )
+
+        fun create(): MockzillaManagement = create(Logger.DEFAULT)
     }
 }
