@@ -7,9 +7,8 @@ import io.ktor.server.request.ApplicationRequest
 /**
  * @property name
  * @property key
- * @property failureProbability
- * @property delayMean
- * @property delayVariance
+ * @property shouldFail
+ * @property delay
  * @property endpointMatcher
  * @property defaultHandler
  * @property errorHandler
@@ -19,9 +18,8 @@ import io.ktor.server.request.ApplicationRequest
 data class EndpointConfiguration(
     val name: String,
     val key: String,
-    val failureProbability: Int? = null,
-    val delayMean: Int? = null,
-    val delayVariance: Int? = null,
+    val shouldFail: Boolean,
+    val delay: Int? = null,
     val endpointMatcher: MockzillaHttpRequest.() -> Boolean,
     val webApiDefaultResponse: MockzillaHttpResponse?,
     val webApiErrorResponse: MockzillaHttpResponse?,
@@ -38,6 +36,7 @@ data class EndpointConfiguration(
             endpointMatcher = { uri.endsWith(id) },
             webApiDefaultResponse = null,
             webApiErrorResponse = null,
+            shouldFail = false,
             defaultHandler = {
                 MockzillaHttpResponse(HttpStatusCode.OK)
             }, errorHandler = {
@@ -51,8 +50,16 @@ data class EndpointConfiguration(
          *
          * @param percentage (0 -> 100 inclusive)
          */
+        @Deprecated("Probabilities are no longer supported", ReplaceWith("setShouldFail(false)"))
         fun setFailureProbability(percentage: Int) = apply {
-            config = config.copy(failureProbability = percentage)
+            config = config.copy(shouldFail = percentage == 100)
+        }
+
+        /**
+         * Controls whether calls to this endpoint should fail by default
+         */
+        fun setShouldFail(shouldFail: Boolean) = apply {
+            config = config.copy(shouldFail = shouldFail)
         }
 
         /**
@@ -62,23 +69,22 @@ data class EndpointConfiguration(
          * @param delay delay in milliseconds
          */
         fun setMeanDelayMillis(delay: Int) = apply {
-            config = config.copy(delayMean = delay)
+            config = config.copy(delay = delay)
         }
 
         /**
-         * Used to simulate latency:  The artificial variance in the delay Mockzillaadds to a network
-         * request. Used alongside [setMeanDelayMillis] to calculate the actual artificial delay on each
-         * invocation. Set this value to 0 to remove any randomness from the delay.
+         * No longer supported
          *
          * @param delay delay in milliseconds
          */
+        @Deprecated("No longer supported")
         fun setDelayVarianceMillis(variance: Int) = apply {
-            config = config.copy(delayVariance = variance)
+            // No-op
         }
 
         /**
          * The block called when a network request is made to this endpoint. Note: If the value of
-         * [setFailureProbability] causes Mockzilla to generate a failure response, then this block
+         * [setShouldFail] causes Mockzilla to generate a failure response, then this block
          * will *not* be called, instead the block specified by [setErrorHandler] is called.
          *
          * @param handler

@@ -1,10 +1,7 @@
 package com.apadmi.mockzilla.lib.internal.service
 
-import com.apadmi.mockzilla.lib.internal.models.GlobalOverridesDto
-import com.apadmi.mockzilla.lib.internal.models.toMockDataEntryForWeb
+import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.lib.service.MockzillaWeb
 
 import co.touchlab.kermit.Logger
@@ -37,16 +34,12 @@ class LocalCacheServiceTests {
     @Test
     fun `updateLocalCache and getLocalCache - returns value`() = runTest {
         /* Setup */
-        val entryDummy = EndpointConfiguration.Builder("id")
-            .setFailureProbability(40)
-            .setWebApiDefaultResponse(MockzillaHttpResponse(body = "hello"))
-            .build()
-            .toMockDataEntryForWeb()
+        val entryDummy = MockDataEntryDto.allUnset("id1", "")
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
         /* Run Test */
         sut.updateLocalCache(entryDummy)
-        val result = sut.getLocalCache("id")
+        val result = sut.getLocalCache("id1")
 
         /* Verify */
         assertEquals(result, entryDummy)
@@ -64,59 +57,6 @@ class LocalCacheServiceTests {
         /* Run Test */
         fileIo.saveToCache("invalid.json", "{,")
         val result = runCatching { sut.getLocalCache("invalid") }
-
-        /* Verify */
-        assertTrue(result.exceptionOrNull() is IllegalStateException)
-
-        /* Cleanup */
-        sut.clearAllCaches()
-    }
-
-    @Test
-    fun `getGlobalOverrides - doesnt exist - returns null`() = runTest {
-        /* Setup */
-        val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
-
-        /* Run Test */
-        val result = sut.getGlobalOverrides()
-
-        /* Verify */
-        assertNull(result)
-
-        /* Cleanup */
-        sut.clearAllCaches()
-    }
-
-    @Test
-    fun `updateGlobalOverrides and getGlobalOverrides - exists - returns null`() = runTest {
-        /* Setup */
-        val overridesDummy = GlobalOverridesDto(
-            67,
-            1,
-            1
-        )
-        val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
-
-        /* Run Test */
-        sut.updateGlobalOverrides(overridesDummy)
-        val result = sut.getGlobalOverrides()
-
-        /* Verify */
-        assertEquals(result, overridesDummy)
-
-        /* Cleanup */
-        sut.clearAllCaches()
-    }
-
-    @Test
-    fun `getGlobalOverrides - invalid - throws exception`() = runTest {
-        /* Setup */
-        val fileIo = createFileIoforTesting()
-        val sut = LocalCacheServiceImpl(fileIo, Logger(StaticConfig()))
-
-        /* Run Test */
-        fileIo.saveToCache(LocalCacheServiceImpl.globalOverridesFileName, "{,")
-        val result = runCatching { sut.getGlobalOverrides() }
 
         /* Verify */
         assertTrue(result.exceptionOrNull() is IllegalStateException)

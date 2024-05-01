@@ -6,6 +6,8 @@ import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.startMockzilla
 import com.apadmi.mockzilla.lib.stopMockzilla
 import com.apadmi.mockzilla.management.MockzillaManagement
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.SIMPLE
 import kotlinx.coroutines.runBlocking
 
 private typealias TestBlock = suspend (
@@ -24,7 +26,7 @@ internal fun runIntegrationTest(
     testBlock: TestBlock
 ) = runBlocking {
     /* Setup */
-    val sut = MockzillaManagement.create()
+    val sut = MockzillaManagement.create(logger = Logger.SIMPLE)
     val runtimeParams = startMockzilla(appName, appVersion, config)
 
     /* Run Test */

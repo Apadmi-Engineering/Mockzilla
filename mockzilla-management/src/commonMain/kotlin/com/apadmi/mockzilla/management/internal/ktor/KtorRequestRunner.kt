@@ -10,6 +10,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.isSuccess
 
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,11 @@ internal class KtorRequestRunner(private val client: HttpClient) {
 
     private suspend inline fun <reified SuccessType : Any> HttpResponse.toResult() =
         withContext(Dispatchers.IO) {
-            kotlin.runCatching { body<SuccessType>() }
+            if (this@toResult.status.isSuccess()) {
+                kotlin.runCatching { body<SuccessType>() }
+            } else {
+                Result.failure(Exception("Failed network call, see logs"))
+            }
         }
 }
 

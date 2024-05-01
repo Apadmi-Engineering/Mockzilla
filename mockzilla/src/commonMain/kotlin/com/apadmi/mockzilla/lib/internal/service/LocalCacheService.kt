@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.lib.internal.service
 
-import com.apadmi.mockzilla.lib.internal.models.GlobalOverridesDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
@@ -13,10 +12,8 @@ import kotlinx.serialization.encodeToString
 
 internal interface LocalCacheService {
     suspend fun getLocalCache(endpointKey: String): MockDataEntryDto?
-    suspend fun getGlobalOverrides(): GlobalOverridesDto?
     suspend fun clearAllCaches()
     suspend fun updateLocalCache(entry: MockDataEntryDto)
-    suspend fun updateGlobalOverrides(globalOverrides: GlobalOverridesDto)
 }
 
 internal class LocalCacheServiceImpl(
@@ -52,36 +49,13 @@ internal class LocalCacheServiceImpl(
         }
     }
 
-    override suspend fun getGlobalOverrides() = lock.withLock {
-        fileIo.readFromCache(globalOverridesFileName)?.let {
-            try {
-                JsonProvider.json.decodeFromString<GlobalOverridesDto>(it)
-            } catch (e: Exception) {
-                throw parseException(e)
-            }
-        }.also {
-            logger.v { "Reading from cache global overrides - $it" }
-        }
-    }
-
     override suspend fun clearAllCaches() = lock.withLock {
         fileIo.deleteAllCaches()
     }
 
     override suspend fun updateLocalCache(entry: MockDataEntryDto) = lock.withLock {
-        logger.v { "Writing to cache ${entry.key} - $entry " }
+        logger.v { "Writing to cache ${entry.key} - $entry" }
 
         fileIo.saveToCache(entry.fileName, JsonProvider.json.encodeToString(entry))
-    }
-
-    override suspend fun updateGlobalOverrides(
-        globalOverrides: GlobalOverridesDto,
-    ) = lock.withLock {
-        logger.v { "Writing to cache $globalOverrides" }
-        fileIo.saveToCache(globalOverridesFileName, JsonProvider.json.encodeToString(globalOverrides))
-    }
-
-    companion object {
-        internal val globalOverridesFileName = "global-overrides.json"
     }
 }
