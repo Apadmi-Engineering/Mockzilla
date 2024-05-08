@@ -4,13 +4,12 @@
   configuration:
     # put your package name here - it will be autofixed and checked
     domainName: com.apadmi.mockzilla
-    # testDirs: test
     # can also use chapter names here (not only numbers)
     # expected values:  disabledChapters: "Naming, Comments, General, Variables, Functions, Classes"
     # or: "1, 2, 3, 4, 5, 6"
     disabledChapters: ""
-    testDirs: test
-    kotlinVersion: 1.7
+    testDirs: "test, androidUnitTest"
+    kotlinVersion: 1.9
     srcDirectories: "main"
 # Checks that the Class/Enum/Interface name matches Pascal case
 - name: CLASS_NAME_INCORRECT

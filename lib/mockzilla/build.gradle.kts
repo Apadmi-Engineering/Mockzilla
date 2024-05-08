@@ -41,11 +41,11 @@ kotlin {
 
         jvmToolchain(17)
 
-        val ktorVersion = "2.3.3"
+        val ktorVersion = "2.3.10"
         val commonMain by getting {
             dependencies {
                 /* Kotlin */
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
                 /* Ktor */
                 api("io.ktor:ktor-server-core:$ktorVersion")
@@ -57,25 +57,25 @@ kotlin {
                 implementation("io.ktor:ktor-server-rate-limit:$ktorVersion")
 
                 /* Serialization */
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
                 /* Logging */
-                implementation("co.touchlab:kermit:1.2.2")
+                implementation("co.touchlab:kermit:2.0.3")
 
                 /* Date Time */
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
 
-                implementation("io.mockative:mockative:1.2.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+                implementation("io.mockative:mockative:1.2.6")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
             }
         }
         val androidMain by getting
-        val androidTest by getting
+        val androidUnitTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -99,10 +99,10 @@ kotlin {
 
 android {
     namespace = group.toString()
-    compileSdk = 32
+    compileSdk = 34
     defaultConfig {
         minSdk = 21
-        targetSdk = 32
+        targetSdk = 34
 
         consumerProguardFiles("mockzilla-proguard-rules.pro")
     }
