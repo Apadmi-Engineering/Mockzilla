@@ -60,7 +60,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
                 /* Logging */
-                implementation("co.touchlab:kermit:2.0.3")
+                implementation("co.touchlab:kermit:1.2.3")
 
                 /* Date Time */
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
