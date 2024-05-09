@@ -11,7 +11,7 @@ platform :ios do
         # Create the XCFramework
         generate_xcframework
 
-        sh("cd #{lane_context[:repo_root]}/lib/SwiftMockzilla; xcodebuild -scheme SwiftMockzilla test -destination 'platform=iOS Simulator,name=iPhone 15 Pro Max,OS=17.5")
+        sh("cd #{lane_context[:repo_root]}/lib/SwiftMockzilla; xcodebuild -scheme SwiftMockzilla test -destination 'platform=iOS Simulator,name=iPhone 15 Pro Max,OS=17.5'")
     end
     
     desc "Generate XCFramework"
