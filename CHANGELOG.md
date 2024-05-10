@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.1-alpha2](https://github.com/Apadmi-Engineering/Mockzilla/compare/v1.2.0-alpha2...v1.2.1-alpha2) (2024-05-10)
+
+
+### Bug Fixes
+
+* Bump many dependency versions ([5cbd982](https://github.com/Apadmi-Engineering/Mockzilla/commit/5cbd9824cf2985d8246faec13d93b60d14565ae6))
+* exclude all the build folders from Diktat scanning ([b273669](https://github.com/Apadmi-Engineering/Mockzilla/commit/b2736696dc36d5d981619cdbbf179e5b259f1b5b))
+* explicitly install setuptools to fix pkg_resource error ([833c457](https://github.com/Apadmi-Engineering/Mockzilla/commit/833c45773cbdde989b92fbede656663020352a9d))
+* fix fastlane config ([834414c](https://github.com/Apadmi-Engineering/Mockzilla/commit/834414c34dd16d08e5a7ef5e12b26f466813befd))
+* Fix missing annotation ([b0bdf1f](https://github.com/Apadmi-Engineering/Mockzilla/commit/b0bdf1fa38c8ea894409a72a818b3e1aa2a7792b))
+* install our gem dependencies ([b92eb96](https://github.com/Apadmi-Engineering/Mockzilla/commit/b92eb9631a9e123933a27db0e537bc5f94b918e1))
+* link in the SwiftMockzilla release notes had an extra 'v' ([6048258](https://github.com/Apadmi-Engineering/Mockzilla/commit/60482588ae7b379e207c308752ea09940abfb7d6))
+* Reduce kermit version to avoid api changes ([bd3a39d](https://github.com/Apadmi-Engineering/Mockzilla/commit/bd3a39d355bf34d5d6f2c7424aea27c30e595e5d))
+
 ## [1.2.0-alpha2](https://github.com/Apadmi-Engineering/Mockzilla/compare/v1.1.0-alpha2...v1.2.0-alpha2) (2023-11-01)
 
 
