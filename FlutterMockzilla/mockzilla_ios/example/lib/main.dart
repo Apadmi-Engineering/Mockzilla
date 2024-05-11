@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:mockzilla_ios/mockzilla_ios.dart';
+import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 void main() {
   runApp(const MyApp());

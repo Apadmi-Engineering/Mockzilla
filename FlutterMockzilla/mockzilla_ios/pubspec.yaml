@@ -34,4 +34,5 @@ flutter:
     implements: mockzilla
     platforms:
       ios:
+        dartPluginClass: MockzillaIos
         pluginClass: MockzillaIosPlugin
