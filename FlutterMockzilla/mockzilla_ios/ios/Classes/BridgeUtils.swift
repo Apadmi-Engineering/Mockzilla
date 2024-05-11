@@ -40,41 +40,32 @@ extension BridgeHttpMethod {
 }
 
 extension BridgeLogLevel {
-    func toNative() -> MockzillaConfig.LogLevel {
+    func toNative() -> Mockzilla_commonMockzillaConfig.LogLevel {
         return switch self {
-        case BridgeLogLevel.assertion: MockzillaConfig.LogLevel.assert
-        case BridgeLogLevel.debug: MockzillaConfig.LogLevel.debug
-        case BridgeLogLevel.error: MockzillaConfig.LogLevel.error
-        case BridgeLogLevel.info: MockzillaConfig.LogLevel.info
-        case BridgeLogLevel.verbose: MockzillaConfig.LogLevel.verbose
-        case BridgeLogLevel.warn: MockzillaConfig.LogLevel.warn
+        case BridgeLogLevel.assertion: Mockzilla_commonMockzillaConfig.LogLevel.assert
+        case BridgeLogLevel.debug: Mockzilla_commonMockzillaConfig.LogLevel.debug
+        case BridgeLogLevel.error: Mockzilla_commonMockzillaConfig.LogLevel.error
+        case BridgeLogLevel.info: Mockzilla_commonMockzillaConfig.LogLevel.info
+        case BridgeLogLevel.verbose: Mockzilla_commonMockzillaConfig.LogLevel.verbose
+        case BridgeLogLevel.warn: Mockzilla_commonMockzillaConfig.LogLevel.warn
         }
     }
     
-    static func fromNative(_ logLevel: MockzillaConfig.LogLevel) throws -> BridgeLogLevel {
+    static func fromNative(_ logLevel: Mockzilla_commonMockzillaConfig.LogLevel) throws -> BridgeLogLevel {
         return switch(logLevel) {
-        case MockzillaConfig.LogLevel.info: BridgeLogLevel.info
-        case MockzillaConfig.LogLevel.debug: BridgeLogLevel.debug
-        case MockzillaConfig.LogLevel.assert: BridgeLogLevel.assertion
-        case MockzillaConfig.LogLevel.verbose: BridgeLogLevel.verbose
-        case MockzillaConfig.LogLevel.warn: BridgeLogLevel.warn
-        case MockzillaConfig.LogLevel.error: BridgeLogLevel.error
+        case Mockzilla_commonMockzillaConfig.LogLevel.info: BridgeLogLevel.info
+        case Mockzilla_commonMockzillaConfig.LogLevel.debug: BridgeLogLevel.debug
+        case Mockzilla_commonMockzillaConfig.LogLevel.assert: BridgeLogLevel.assertion
+        case Mockzilla_commonMockzillaConfig.LogLevel.verbose: BridgeLogLevel.verbose
+        case Mockzilla_commonMockzillaConfig.LogLevel.warn: BridgeLogLevel.warn
+        case Mockzilla_commonMockzillaConfig.LogLevel.error: BridgeLogLevel.error
         default: throw MockzillaError.argumentError
         }
     }
 }
 
 extension BridgeMockzillaHttpRequest {
-    func toNative() -> MockzillaHttpRequest {
-        return MockzillaHttpRequest(
-            uri: self.uri,
-            headers: DictionaryUtils.removeNils(self.headers),
-            body: self.body,
-            method: self.method.toNative()
-        )
-    }
-    
-    static func fromNative(_ request: MockzillaHttpRequest) throws -> BridgeMockzillaHttpRequest {
+    static func fromNative(_ request: Mockzilla_commonMockzillaHttpRequest) throws -> BridgeMockzillaHttpRequest {
         return try BridgeMockzillaHttpRequest(
             uri: request.uri,
             headers: request.headers,
@@ -85,15 +76,15 @@ extension BridgeMockzillaHttpRequest {
 }
 
 extension BridgeMockzillaHttpResponse {
-    func toNative() -> MockzillaHttpResponse {
-        return MockzillaHttpResponse(
+    func toNative() -> Mockzilla_commonMockzillaHttpResponse {
+        return Mockzilla_commonMockzillaHttpResponse(
             statusCode: Ktor_httpHttpStatusCode.init(value: Int32(self.statusCode), description: ""),
             headers: DictionaryUtils.removeNils(self.headers),
             body: self.body
         )
     }
     
-    static func fromNative(_ response: MockzillaHttpResponse) -> BridgeMockzillaHttpResponse {
+    static func fromNative(_ response: Mockzilla_commonMockzillaHttpResponse) -> BridgeMockzillaHttpResponse {
         return BridgeMockzillaHttpResponse(
             statusCode: Int64(response.statusCode.value),
             headers: response.headers,
@@ -104,16 +95,15 @@ extension BridgeMockzillaHttpResponse {
 
 extension BridgeEndpointConfig {
     func toNative(
-        endpointMatcher: (_ key: String, _ request: MockzillaHttpRequest) -> Bool,
-        defaultHandler: (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse,
-        errorHandler: (_ key: String, _ request: MockzillaHttpRequest) ->MockzillaHttpResponse
-    ) -> EndpointConfiguration {
-        return EndpointConfiguration(
+        endpointMatcher: @escaping (_ key: String, _ request: Mockzilla_commonMockzillaHttpRequest) -> Bool,
+        defaultHandler: @escaping (_ key: String, _ request: Mockzilla_commonMockzillaHttpRequest) -> Mockzilla_commonMockzillaHttpResponse,
+        errorHandler: @escaping (_ key: String, _ request: Mockzilla_commonMockzillaHttpRequest) -> Mockzilla_commonMockzillaHttpResponse
+    ) -> Mockzilla_commonEndpointConfiguration {
+        return Mockzilla_commonEndpointConfiguration(
             name: name,
             key: key,
-            failureProbability: failureProbability as? KotlinInt,
-            delayMean: delayMean as? KotlinInt,
-            delayVariance: delayVariance as? KotlinInt,
+            shouldFail: false,
+            delay: 0,
             endpointMatcher: { request in endpointMatcher(key, request) as! KotlinBoolean },
             webApiDefaultResponse: webApiErrorResponse?.toNative(),
             webApiErrorResponse: webApiErrorResponse?.toNative(),
@@ -122,13 +112,13 @@ extension BridgeEndpointConfig {
         )
     }
     
-    static func fromNative(_ endpoint: EndpointConfiguration) -> BridgeEndpointConfig {
+    static func fromNative(_ endpoint: Mockzilla_commonEndpointConfiguration) -> BridgeEndpointConfig {
         return BridgeEndpointConfig(
             name: endpoint.name,
             key: endpoint.key,
-            failureProbability: endpoint.failureProbability as? Int64,
-            delayMean: endpoint.delayMean as? Int64,
-            delayVariance: endpoint.delayVariance as? Int64,
+            failureProbability: 0,
+            delayMean: endpoint.delay as? Int64,
+            delayVariance: 0,
             webApiDefaultResponse: endpoint.webApiDefaultResponse.map {
                 response in BridgeMockzillaHttpResponse.fromNative(response)
             },
@@ -140,15 +130,15 @@ extension BridgeEndpointConfig {
 }
 
 extension BridgeReleaseModeConfig {
-    func toNative() -> MockzillaConfig.ReleaseModeConfig {
-        return MockzillaConfig.ReleaseModeConfig(
+    func toNative() -> Mockzilla_commonMockzillaConfig.ReleaseModeConfig {
+        return Mockzilla_commonMockzillaConfig.ReleaseModeConfig(
             rateLimit: Int32(rateLimit),
             rateLimitRefillPeriod: rateLimitRefillPeriodMillis,
             tokenLifeSpan: tokenLifeSpanMillis
         )
     }
     
-    static func fromNative(_ config: MockzillaConfig.ReleaseModeConfig) -> BridgeReleaseModeConfig {
+    static func fromNative(_ config: Mockzilla_commonMockzillaConfig.ReleaseModeConfig) -> BridgeReleaseModeConfig {
         return BridgeReleaseModeConfig(
             rateLimit: Int64(config.rateLimit),
             rateLimitRefillPeriodMillis: config.rateLimitRefillPeriod,
@@ -159,26 +149,25 @@ extension BridgeReleaseModeConfig {
 
 extension BridgeMockzillaConfig {
     func toNative(
-        endpointMatcher: (_ key: String, _ request: MockzillaHttpRequest) -> Bool,
-        defaultHandler: (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse,
-        errorHandler: (_ key: String, _ request: MockzillaHttpRequest) ->MockzillaHttpResponse
-    ) -> MockzillaConfig {
-        return MockzillaConfig(
+        endpointMatcher: @escaping (_ key: String, _ request: Mockzilla_commonMockzillaHttpRequest) -> Bool,
+        defaultHandler: @escaping (_ key: String, _ request: Mockzilla_commonMockzillaHttpRequest) -> Mockzilla_commonMockzillaHttpResponse,
+        errorHandler: @escaping (_ key: String, _ request: Mockzilla_commonMockzillaHttpRequest) -> Mockzilla_commonMockzillaHttpResponse
+    ) -> Mockzilla_commonMockzillaConfig {
+        return Mockzilla_commonMockzillaConfig(
             port: Int32(port),
-            metaData: extractMetaData(),
             endpoints: endpoints.map {
                 endpoint in endpoint?.toNative(endpointMatcher: endpointMatcher, defaultHandler: defaultHandler, errorHandler: errorHandler)
             }.filter {
                 endpoint in endpoint != nil
-            } as! Array<EndpointConfiguration>,
-            allowKeepAlive: true,
+            } as! Array<Mockzilla_commonEndpointConfiguration>,
             isRelease: isRelease,
-            logLevel: logLevel.toNative(),
-            releaseModeConfig: releaseModeConfig.toNative()
+            localhostOnly: false, logLevel: logLevel.toNative(),
+            releaseModeConfig: releaseModeConfig.toNative(),
+            additionalLogWriters: []
         )
     }
     
-    static func fromNative(_ config: MockzillaConfig) throws -> BridgeMockzillaConfig {
+    static func fromNative(_ config: Mockzilla_commonMockzillaConfig) throws -> BridgeMockzillaConfig {
         return BridgeMockzillaConfig(
             port: Int64(config.port),
             endpoints: config.endpoints.map {
@@ -193,7 +182,7 @@ extension BridgeMockzillaConfig {
 }
 
 extension BridgeMockzillaRuntimeParams {
-    static func fromNative(_ params: MockzillaRuntimeParams) throws -> BridgeMockzillaRuntimeParams {
+    static func fromNative(_ params: Mockzilla_commonMockzillaRuntimeParams) throws -> BridgeMockzillaRuntimeParams {
         return BridgeMockzillaRuntimeParams(
             config: try BridgeMockzillaConfig.fromNative(params.config),
             mockBaseUrl: params.mockBaseUrl,
