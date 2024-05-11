@@ -10,6 +10,7 @@
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		61B189CF2BEFE155008BA405 /* mockzilla.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61B189CE2BEFE155008BA405 /* mockzilla.xcframework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7EC2146F0B61608E4EE1CA83 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62C9FCE7824453283D8D65C9 /* Pods_Runner.framework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
@@ -48,6 +49,7 @@
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		61B189CE2BEFE155008BA405 /* mockzilla.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = mockzilla.xcframework; path = ../../../../mockzilla/build/cocoapods/publish/release/mockzilla.xcframework; sourceTree = "<group>"; };
 		62C9FCE7824453283D8D65C9 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E7AB169DE3F306A8DB0F7EF /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61B189CF2BEFE155008BA405 /* mockzilla.xcframework in Frameworks */,
 				7EC2146F0B61608E4EE1CA83 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,6 +101,7 @@
 		5E78B2C35B13B82A995D5559 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				61B189CE2BEFE155008BA405 /* mockzilla.xcframework */,
 				62C9FCE7824453283D8D65C9 /* Pods_Runner.framework */,
 				BE790454236F02CD44E32A90 /* Pods_RunnerTests.framework */,
 			);
@@ -161,7 +165,6 @@
 				6E7AB169DE3F306A8DB0F7EF /* Pods-RunnerTests.release.xcconfig */,
 				8F1810117753AA9D00030A96 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
