@@ -1,10 +1,9 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
-import com.apadmi.mockzilla.versionFile
+import com.apadmi.mockzilla.extractVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 
-import java.util.Date
 
 plugins {
     alias(libs.plugins.android.library)
@@ -14,6 +13,7 @@ plugins {
     id("maven-publish")
     id("com.codingfeline.buildkonfig")
     id("publication-convention")
+    kotlin("native.cocoapods") apply true
 }
 
 kotlin {
@@ -34,6 +34,14 @@ kotlin {
     }
 
     jvm()
+    cocoapods {
+        version = extractVersion()
+        summary = "A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your application."
+        homepage = "https://apadmi-engineering.github.io/Mockzilla/"
+        framework {
+            baseName = "mockzilla"
+        }
+    }
 
     sourceSets {
         all {

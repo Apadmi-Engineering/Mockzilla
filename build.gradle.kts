@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.spotless) apply true
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.dokka) apply true
-    id("org.jetbrains.compose").version("1.5.3") apply false
+    id("org.jetbrains.compose").version("1.5.10") apply false
 }
 
 buildscript {
