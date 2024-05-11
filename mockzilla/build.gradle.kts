@@ -35,12 +35,18 @@ kotlin {
 
     jvm()
     cocoapods {
+        name = "Mockzilla"
         version = extractVersion()
         summary = "A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your application."
         homepage = "https://apadmi-engineering.github.io/Mockzilla/"
         framework {
             baseName = "mockzilla"
         }
+        extraSpecAttributes["vendored_frameworks"] = "'Mockzilla.xcframework'"
+        license = "{:type => 'MIT', :file => '$rootDir/LICENSE'}"
+        source = "{ :git => 'https://github.com/TomRHandcock/MockzillaPod.git', :tag => '$version' }"
+
+        ios.deploymentTarget = "13.0"
     }
 
     sourceSets {
