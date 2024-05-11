@@ -20,14 +20,25 @@ platform :ios do
             tasks: [":mockzilla:assembleXCFramework"]
         )
 
-        # Copy the XCFramework to where the SPM package can find it
+        # Copy the XCFramework to where the publish lane can find it
         sh("cp -rf #{lane_context[:repo_root]}/mockzilla/build/XCFrameworks/release/mockzilla.xcframework #{lane_context[:repo_root]}/SwiftMockzilla")
     end
 
-    desc "Deploy the package to github"
+    desc "Generate Podspec"
+    lane :generate_podspec do
+        gradle(
+            tasks: [":mockzilla:podPublishXCFramework"]
+        )
+
+        # Copy the Podspec to where the publish lane can find it
+        sh("cp -rf #{lane_context[:repo_root]}/mockzilla/build/cocoapods/publish/release/Mockzilla.podspec #{lane_context[:repo_root]}/SwiftMockzilla")
+    end
+
+    desc "Deploy the SPM package to github"
     lane :publish_spm_package do
         # Create the XCFramework
         generate_xcframework
+        generate_podspec
 
         sh("rm -rf apadmi-mockzilla-ios")
 

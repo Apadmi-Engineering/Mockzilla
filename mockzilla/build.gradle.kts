@@ -44,7 +44,7 @@ kotlin {
         }
         extraSpecAttributes["vendored_frameworks"] = "'Mockzilla.xcframework'"
         license = "{:type => 'MIT', :file => '$rootDir/LICENSE'}"
-        source = "{ :git => 'https://github.com/TomRHandcock/MockzillaPod.git', :tag => '$version' }"
+        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => '$version' }"
 
         ios.deploymentTarget = "13.0"
     }
