@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
+import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
 import com.apadmi.mockzilla.management.internal.ktor.get
@@ -31,7 +32,9 @@ interface MockzillaManagementRepository {
  */
 internal class MockzillaManagementRepositoryImpl(
     val runner: KtorRequestRunner
-) : MockzillaManagementRepository {
+) : MockzillaManagementRepository,
+MockzillaManagement.LogsService,
+MockzillaManagement.MetaDataService {
     override suspend fun fetchMetaData(
         connection: MockzillaConnectionConfig
     ) = runner<MetaData> {
@@ -72,10 +75,10 @@ internal class MockzillaManagementRepositoryImpl(
     }
 
     companion object {
-        internal fun create(logger: KtorLogger): MockzillaManagementRepository = MockzillaManagementRepositoryImpl(
+        internal fun create(logger: KtorLogger) = MockzillaManagementRepositoryImpl(
             KtorRequestRunner(KtorClientProvider.createKtorClient(logger = logger))
         )
 
-        fun create(): MockzillaManagementRepository = create(KtorLogger.DEFAULT)
+        fun create() = create(KtorLogger.DEFAULT)
     }
 }
