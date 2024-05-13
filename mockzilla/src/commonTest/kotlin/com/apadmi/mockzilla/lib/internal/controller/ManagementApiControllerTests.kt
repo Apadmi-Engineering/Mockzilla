@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
+import com.apadmi.mockzilla.lib.internal.models.MockDataEntryUpdateRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
@@ -58,8 +59,8 @@ class ManagementApiControllerTests {
     @Test
     fun `getAllMockDataEntries - replaces cached data - calls through`() = runTest {
         /* Setup */
-        val dummyCacheEntry = MockDataEntryDto.allUnset("my-id", "id").copy(
-            defaultBody = SetOrDont.Set("my cached value")
+        val dummyCacheEntry = MockDataEntryDto.allNulls("my-id", "id").copy(
+            defaultBody = "my cached value"
         )
         given(localCacheServiceMock).coroutine {
             getLocalCache("my-id")
@@ -75,7 +76,7 @@ class ManagementApiControllerTests {
 
         /* Verify */
         assertEquals(
-            listOf(dummyCacheEntry, MockDataEntryDto.allUnset("my-second-id", "my-second-id")),
+            listOf(dummyCacheEntry, MockDataEntryDto.allNulls("my-second-id", "my-second-id")),
             result
         )
     }
@@ -89,7 +90,7 @@ class ManagementApiControllerTests {
         val result = assertFails {
             sut.updateEntry(
                 "another id",
-                MockDataEntryDto.allUnset("id", "")
+                MockDataEntryUpdateRequestDto.allUnset("id", "")
             )
         }
         assertTrue(result is IllegalStateException)
@@ -103,12 +104,12 @@ class ManagementApiControllerTests {
         /* Run Test */
         sut.updateEntry(
             dummyEndpoints.first().key,
-            MockDataEntryDto.allUnset(dummyEndpoints.first().key, "")
+            MockDataEntryUpdateRequestDto.allUnset(dummyEndpoints.first().key, "")
         )
 
         /* Verify */
         verify(localCacheServiceMock).coroutine {
-            updateLocalCache(MockDataEntryDto.allUnset(dummyEndpoints.first().key, ""))
+            updateLocalCache(MockDataEntryUpdateRequestDto.allUnset(dummyEndpoints.first().key, ""))
         }.wasInvoked(1.time)
     }
 

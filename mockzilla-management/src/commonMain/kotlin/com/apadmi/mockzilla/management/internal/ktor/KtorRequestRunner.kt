@@ -1,6 +1,6 @@
 package com.apadmi.mockzilla.management.internal.ktor
 
-import com.apadmi.mockzilla.management.MockzillaManagement
+import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -41,31 +41,31 @@ internal class KtorRequestRunner(private val client: HttpClient) {
 }
 
 internal suspend inline fun HttpClient.get(
-    connectionConfig: MockzillaManagement.ConnectionConfig,
+    connection: MockzillaConnectionConfig,
     path: String,
     block: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse = get {
-    url(connectionConfig.url(path))
+    url(connection.url(path))
     block()
 }
 
 internal suspend inline fun HttpClient.post(
-    connectionConfig: MockzillaManagement.ConnectionConfig,
+    connection: MockzillaConnectionConfig,
     path: String,
     block: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse = post {
-    url(connectionConfig.url(path))
+    url(connection.url(path))
     block()
 }
 
 internal suspend inline fun HttpClient.delete(
-    connectionConfig: MockzillaManagement.ConnectionConfig,
+    connection: MockzillaConnectionConfig,
     path: String,
     block: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse = delete {
-    url(connectionConfig.url(path))
+    url(connection.url(path))
     block()
 }
 
-private fun MockzillaManagement.ConnectionConfig.url(path: String) =
+private fun MockzillaConnectionConfig.url(path: String) =
     "http://$ip:$port/${path.removePrefix("/")}"

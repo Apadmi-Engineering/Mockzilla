@@ -1,8 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.internal.models.SetOrDont
-import com.apadmi.mockzilla.lib.internal.models.valueOrDefault
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
@@ -34,49 +32,47 @@ internal class LocalMockController(
         )
 
         val cachedResponse = localCacheService.getLocalCache(endpoint.key)
-        val shouldFail = cachedResponse?.shouldFail.valueOrDefault(endpoint.shouldFail)
+        val shouldFail = cachedResponse?.shouldFail ?: endpoint.shouldFail
 
         // Delay the response for the correct amount of time
-        val delay = cachedResponse?.delayMs.valueOrDefault(endpoint.delay ?: 0).toLong()
+        val delay = (cachedResponse?.delayMs ?: endpoint.delay)?.toLong() ?: 0
         delay(delay)
 
         // Use the cached response by default, i.e. if a user has specified data via the web portal
         // then we return that, otherwise we call the appropriate handler.
         return if (shouldFail) {
+            logger.v { "Call to ${endpoint.key} should fail, returning error response"}
             val response = if (listOf(
                 cachedResponse?.errorStatus,
                 cachedResponse?.headers,
                 cachedResponse?.errorBody
-            ).all { it is SetOrDont.Set }
+            ).any { it == null }
             ) {
-                null
-            } else {
                 endpoint.errorHandler(request)
+            } else {
+                null
             }
             MockzillaHttpResponse(
-                statusCode = cachedResponse?.errorStatus.valueOrDefault(
-                    response?.statusCode ?: HttpStatusCode.InternalServerError
-                ),
-                headers = cachedResponse?.headers.valueOrDefault(response?.headers ?: emptyMap()),
-                body = cachedResponse?.errorBody.valueOrDefault(response?.body ?: "")
+                statusCode = cachedResponse?.errorStatus ?: response?.statusCode ?: HttpStatusCode.InternalServerError,
+                headers = cachedResponse?.headers ?: response?.headers ?: emptyMap(),
+                body = cachedResponse?.errorBody ?: response?.body ?: ""
             )
         } else {
             val response = if (listOf(
                 cachedResponse?.defaultStatus,
                 cachedResponse?.headers,
                 cachedResponse?.defaultBody
-            ).all { it is SetOrDont.Set }
+            ).any { it == null }
             ) {
-                null
-            } else {
                 endpoint.defaultHandler(request)
+            } else {
+                null
             }
+
             MockzillaHttpResponse(
-                statusCode = cachedResponse?.defaultStatus.valueOrDefault(
-                    response?.statusCode ?: HttpStatusCode.InternalServerError
-                ),
-                headers = cachedResponse?.headers.valueOrDefault(response?.headers ?: emptyMap()),
-                body = cachedResponse?.defaultBody.valueOrDefault(response?.body ?: "")
+                statusCode = cachedResponse?.defaultStatus ?: response?.statusCode ?: HttpStatusCode.InternalServerError,
+                headers = cachedResponse?.headers ?: response?.headers ?: emptyMap(),
+                body = cachedResponse?.defaultBody ?: response?.body ?: ""
             )
         }.also { response ->
             mockServerMonitor.log(

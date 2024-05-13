@@ -75,7 +75,7 @@ class WebPortalApiIntegrationTests {
             JsonProvider.json.encodeToString(
                 MockDataResponseDto(
                     listOf(
-                        MockDataEntryDto.allUnset(
+                        MockDataEntryDto.allNulls(
                             name = "my-id",
                             key = "my-id"
                         )
@@ -93,7 +93,7 @@ class WebPortalApiIntegrationTests {
             .build(),
         setup = { cacheService ->
             cacheService.updateLocalCache(
-                MockDataEntryDto.allUnset("id", "name")
+                MockDataEntryUpdateRequestDto.allUnset("id", "name")
             )
         }
     ) { params, cacheService ->
@@ -123,7 +123,7 @@ class WebPortalApiIntegrationTests {
                 contentType(ContentType.Application.Json)
                 setBody(
                     Json.encodeToString(
-                        MockDataEntryDto.allUnset("id", "id").copy(
+                        MockDataEntryUpdateRequestDto.allUnset("id", "id").copy(
                             defaultBody = SetOrDont.Set("hello"),
                             defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
                             headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
@@ -134,10 +134,10 @@ class WebPortalApiIntegrationTests {
 
             /* Verify */
             assertEquals(
-                MockDataEntryDto.allUnset("id", "id").copy(
-                    defaultBody = SetOrDont.Set("hello"),
-                    defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
-                    headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
+                MockDataEntryDto.allNulls("id", "id").copy(
+                    defaultBody = "hello",
+                    defaultStatus = HttpStatusCode.NoContent,
+                    headers = mapOf("Content-Type" to "application/json")
                 ),
                 cacheService.getLocalCache("id")
             )

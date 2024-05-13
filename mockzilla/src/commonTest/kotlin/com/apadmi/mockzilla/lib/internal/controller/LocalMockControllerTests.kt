@@ -82,13 +82,13 @@ class LocalMockControllerTests {
             MockDataEntryDto(
                 key = "my-id",
                 name = "my-id",
-                shouldFail = SetOrDont.Set(true),
-                delayMs = SetOrDont.Set(0),
-                headers = SetOrDont.Set(emptyMap()),
-                defaultBody = SetOrDont.Set(""),
-                defaultStatus = SetOrDont.Set(HttpStatusCode.OK),
-                errorBody = SetOrDont.Set(""),
-                errorStatus = SetOrDont.Set(HttpStatusCode.InternalServerError),
+                shouldFail = true,
+                delayMs =0,
+                headers = emptyMap(),
+                defaultBody = "",
+                defaultStatus = HttpStatusCode.OK,
+                errorBody = "",
+                errorStatus = HttpStatusCode.InternalServerError,
             )
         )
 
