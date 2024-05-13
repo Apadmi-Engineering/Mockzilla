@@ -1,8 +1,10 @@
 package com.apadmi.mockzilla.lib.models
 
+import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import io.ktor.http.*
 import io.ktor.server.request.ApplicationRequest
+import kotlinx.serialization.Serializable
 
 /**
  * @property name
@@ -12,15 +14,14 @@ import io.ktor.server.request.ApplicationRequest
  * @property endpointMatcher
  * @property defaultHandler
  * @property errorHandler
- * @property webApiDefaultResponse
- * @property webApiErrorResponse
+ * @property dashboardOptionsConfig
  */
 data class EndpointConfiguration(
     val name: String,
     val key: String,
     val shouldFail: Boolean,
     val delay: Int? = null,
-    val dashboardOverrides: DashboardOverrides,
+    val dashboardOptionsConfig: DashboardOptionsConfig,
     val endpointMatcher: MockzillaHttpRequest.() -> Boolean,
     val defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     val errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
@@ -34,7 +35,7 @@ data class EndpointConfiguration(
             key = id,
             endpointMatcher = { uri.endsWith(id) },
             shouldFail = false,
-            dashboardOverrides = DashboardOverrides(emptyList(), emptyList()),
+            dashboardOptionsConfig = DashboardOptionsConfig(emptyList(), emptyList()),
             defaultHandler = {
                 MockzillaHttpResponse(HttpStatusCode.OK)
             }, errorHandler = {
@@ -119,9 +120,9 @@ data class EndpointConfiguration(
         @Deprecated("Obsolete, see `configureDashboardOverrides`", replaceWith = ReplaceWith("configureDashboardOverrides"))
         fun setWebApiErrorResponse(response: MockzillaHttpResponse) = this
 
-        fun configureDashboardOverrides(action: DashboardOverrides.Builder.() -> DashboardOverrides.Builder) =
+        fun configureDashboardOverrides(action: DashboardOptionsConfig.Builder.() -> DashboardOptionsConfig.Builder) =
             apply {
-                config = config.copy(dashboardOverrides = action(DashboardOverrides.Builder()).build())
+                config = config.copy(dashboardOptionsConfig = action(DashboardOptionsConfig.Builder()).build())
             }
 
         /**
@@ -163,7 +164,9 @@ data class EndpointConfiguration(
  * @property headers
  * @property body
  */
+@Serializable
 data class MockzillaHttpResponse(
+    @Serializable(with = HttpStatusCodeSerializer::class)
     val statusCode: HttpStatusCode = HttpStatusCode.OK,
     val headers: Map<String, String> = emptyMap(),
     val body: String = "",
@@ -209,12 +212,16 @@ interface MockzillaHttpRequest {
     fun bodyAsString(): String
 }
 
-class DashboardOverrides(
+/**
+ * @property errorPresets
+ * @property successPresets
+ */
+@Serializable
+data class DashboardOptionsConfig(
     val errorPresets: List<DashboardOverridePreset>,
     val successPresets: List<DashboardOverridePreset>
 ) {
     class Builder {
-
         private val errorPresets = mutableListOf<DashboardOverridePreset>()
         private val successPresets = mutableListOf<DashboardOverridePreset>()
 
@@ -242,13 +249,19 @@ class DashboardOverrides(
             )
         ).let { this }
 
-        fun build() = DashboardOverrides(
+        fun build() = DashboardOptionsConfig(
             errorPresets = errorPresets,
             successPresets = successPresets
         )
     }
 }
 
+/**
+ * @property name
+ * @property description
+ * @property response
+ */
+@Serializable
 data class DashboardOverridePreset(
     val name: String,
     val description: String?,

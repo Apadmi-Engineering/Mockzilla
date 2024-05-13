@@ -3,7 +3,6 @@ package com.apadmi.mockzilla.mock
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
-import com.apadmi.mockzilla.lib.service.MockzillaWeb
 
 import io.ktor.server.application.hooks.*
 import kotlinx.serialization.decodeFromString

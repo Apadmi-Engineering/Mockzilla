@@ -21,6 +21,7 @@ import kotlinx.serialization.encoding.Encoder
  * @property defaultStatus
  * @property errorBody
  * @property errorStatus
+ * @property errorHeaders
  */
 @Serializable
 data class SerializableEndpointConfig(
@@ -61,6 +62,7 @@ data class SerializableEndpointConfig(
  * @property errorBody
  * @property errorStatus
  * @property defaultStatus
+ * @property errorHeaders
  */
 @Suppress("TYPE_ALIAS")
 @Serializable
@@ -108,6 +110,7 @@ data class SerializableEndpointConfigurationPatchRequestDto(
 data class MockDataResponseDto(
     val entries: List<SerializableEndpointConfig>
 )
+
 @Serializable(with = ServiceResultSerializer::class)
 sealed class SetOrDont<out T> {
     @Serializable

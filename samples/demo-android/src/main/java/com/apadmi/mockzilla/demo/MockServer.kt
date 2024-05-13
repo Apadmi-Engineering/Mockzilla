@@ -4,7 +4,6 @@ import android.content.Context
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
-import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import com.apadmi.mockzilla.lib.startMockzilla
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString

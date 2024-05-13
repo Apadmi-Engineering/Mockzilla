@@ -58,6 +58,14 @@ internal fun Application.configureEndpoints(
                 )
             }
         }
+        get("/api/mock-data/{key}/presets") {
+            di.logger.v { "Handling GET mock-data presets: ${call.request.uri}" }
+            safeResponse(di.logger) {
+                val key = call.parameters["key"] ?: ""
+                call.allowCors()
+                call.respond(di.managementApiController.getPresets(key))
+            }
+        }
         post("/api/mock-data/{key}") {
             di.logger.v { "Handling POST mock-data: ${call.request.uri}" }
             safeResponse(di.logger) {

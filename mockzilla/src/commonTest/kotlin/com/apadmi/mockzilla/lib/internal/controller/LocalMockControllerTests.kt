@@ -87,7 +87,7 @@ class LocalMockControllerTests {
                 defaultBody = "",
                 defaultStatus = HttpStatusCode.OK,
                 errorBody = "",
-                errorHeaders =  emptyMap(),
+                errorHeaders = emptyMap(),
                 errorStatus = HttpStatusCode.InternalServerError,
             )
         )

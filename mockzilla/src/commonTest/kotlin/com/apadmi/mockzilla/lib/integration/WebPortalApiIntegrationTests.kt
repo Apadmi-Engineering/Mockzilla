@@ -3,10 +3,11 @@ package com.apadmi.mockzilla.lib.integration
 import com.apadmi.mockzilla.lib.internal.models.*
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
+import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
-import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
 import io.ktor.client.*
@@ -26,7 +27,6 @@ import kotlinx.serialization.json.Json
     "TOO_MANY_LINES_IN_LAMBDA"
 )
 class WebPortalApiIntegrationTests {
-    @OptIn(MockzillaWeb::class)
     @Test
     fun `GET mock-data - returns as expected`() = runIntegrationTest(
         MockzillaConfig.Builder()
@@ -59,19 +59,63 @@ class WebPortalApiIntegrationTests {
             HttpStatusCode.OK,
             response.status
         )
-        // TODO: Update in next PR with more sophisticated configuration system
-        // assertEquals(
-        // JsonProvider.json.encodeToString(
-        // MockDataResponseDto(
-        // listOf(
-        // SerializableEndpointConfiguration.allNulls(
-        // name = "my-id",
-        // key = "my-id",
-        // )
-        // )
-        // )),
-        // response.bodyAsText()
-        // )
+        assertEquals(
+            JsonProvider.json.encodeToString(
+                MockDataResponseDto(
+                    listOf(
+                        SerializableEndpointConfig.allNulls(
+                            name = "my-id",
+                            key = "my-id",
+                        )
+                    )
+                )
+            ),
+            response.bodyAsText()
+        )
+    }
+
+    @Test
+    fun `GET mock-data presets - returns as expected`() = runIntegrationTest(
+        MockzillaConfig.Builder()
+            .setPort(0)  // Port determined at runtime
+            .setDelayMillis(100)
+            .addEndpoint(EndpointConfiguration.Builder("my-id")
+                .configureDashboardOverrides {
+                    addSuccessPreset(
+                        MockzillaHttpResponse(
+                            HttpStatusCode.Created,
+                            emptyMap(),
+                            "my body"
+                        ), name = "Preset name", description = "Preset description"
+                    )
+                }
+                .build()
+            )
+            .build()
+    ) { params, _ ->
+        /* Run Test */
+        val response = HttpClient(CIO).get("${params.apiBaseUrl}/mock-data/my-id/presets")
+
+        /* Verify */
+        assertEquals(
+            HttpStatusCode.OK,
+            response.status
+        )
+        assertEquals(
+            DashboardOptionsConfig(
+                successPresets = listOf(
+                    DashboardOverridePreset(
+                        response = MockzillaHttpResponse(
+                            HttpStatusCode.Created,
+                            emptyMap(),
+                            "my body"
+                        ), name = "Preset name", description = "Preset description"
+                    )
+                ),
+                errorPresets = emptyList()
+            ),
+            JsonProvider.json.decodeFromString<DashboardOptionsConfig>(response.bodyAsText())
+        )
     }
 
     @Test

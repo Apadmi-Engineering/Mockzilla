@@ -5,6 +5,8 @@ import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
+import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 
@@ -14,7 +16,7 @@ import io.mockative.*
 import kotlin.test.*
 import kotlinx.coroutines.test.runTest
 
-@Suppress("MAGIC_NUMBER")
+@Suppress("MAGIC_NUMBER", "TOO_LONG_FUNCTION")
 class ManagementApiControllerTests {
     @Mock
     private val localCacheServiceMock = mock(classOf<LocalCacheService>())
@@ -32,6 +34,29 @@ class ManagementApiControllerTests {
         }.build(),
         EndpointConfiguration.Builder("my-second-id")
             .setPatternMatcher { uri.endsWith("my-second-id") }
+            .configureDashboardOverrides {
+                addSuccessPreset(
+                    MockzillaHttpResponse(
+                        statusCode = HttpStatusCode.Created,
+                        headers = mapOf("test-header" to "test-value"),
+                        body = "my response body"
+                    ), name = "p1", description = "p2"
+                )
+                addErrorPreset(
+                    MockzillaHttpResponse(
+                        statusCode = HttpStatusCode.Created,
+                        headers = mapOf("test-header" to "test-value"),
+                        body = "my response body2"
+                    )
+                )
+                addSuccessPreset(
+                    MockzillaHttpResponse(
+                        statusCode = HttpStatusCode.Created,
+                        headers = mapOf("test-header" to "test-value"),
+                        body = "my response body3"
+                    )
+                )
+            }
             .setDefaultHandler {
                 MockzillaHttpResponse(
                     statusCode = HttpStatusCode.Created,
@@ -76,11 +101,13 @@ class ManagementApiControllerTests {
         val result = sut.getAllMockDataEntries()
 
         /* Verify */
-        // TODO: Update in next PR with more sophisticated configuration system
-        // assertEquals(
-        // listOf(dummyCacheEntry, SerializableEndpointConfiguration.allNulls("my-second-id", "my-second-id")),
-        // result
-        // )
+        assertEquals(
+            listOf(
+                dummyCacheEntry,
+                SerializableEndpointConfig.allNulls("my-second-id", "my-second-id")
+            ),
+            result
+        )
     }
 
     @Test
@@ -150,5 +177,67 @@ class ManagementApiControllerTests {
 
         /* Verify */
         assertEquals(listOf(dummyEvent), result)
+    }
+
+    @Test
+    fun `getPresets - invalid key - throws exception`() {
+        /* Setup */
+        val sut = ManagementApiController(
+            dummyEndpoints,
+            localCacheServiceMock,
+            mockServerMonitorMock
+        )
+
+        /* Run test & Verify */
+        assertFails {
+            sut.getPresets("random key")
+        }
+    }
+
+    @Test
+    fun `getPresets - valid key - returns correct presets`() {
+        /* Setup */
+        val sut = ManagementApiController(
+            dummyEndpoints,
+            localCacheServiceMock,
+            mockServerMonitorMock
+        )
+
+        /* Run Test */
+        val result = sut.getPresets("my-second-id")
+
+        /* Verify */
+        assertEquals(
+            DashboardOptionsConfig(
+                errorPresets = listOf(
+                    DashboardOverridePreset(
+                        response = MockzillaHttpResponse(
+                            statusCode = HttpStatusCode.Created,
+                            headers = mapOf("test-header" to "test-value"),
+                            body = "my response body2"
+                        ), name = "Error Preset 1",
+                        description = null
+                    )
+                ),
+                successPresets = listOf(
+                    DashboardOverridePreset(
+                        response = MockzillaHttpResponse(
+                            statusCode = HttpStatusCode.Created,
+                            headers = mapOf("test-header" to "test-value"),
+                            body = "my response body"
+                        ), name = "p1", description = "p2"
+                    ), DashboardOverridePreset(
+                        response = MockzillaHttpResponse(
+                            statusCode = HttpStatusCode.Created,
+                            headers = mapOf("test-header" to "test-value"),
+                            body = "my response body3"
+                        ),
+                        name = "Preset 2",
+                        description = null
+                    )
+                )
+            ),
+            result
+        )
     }
 }
