@@ -44,7 +44,7 @@ internal class LocalMockController(
             logger.v { "Call to ${endpoint.key} should fail, returning error response" }
             val response = if (listOf(
                 cachedResponse?.errorStatus,
-                cachedResponse?.headers,
+                cachedResponse?.errorHeaders,
                 cachedResponse?.errorBody
             ).any { it == null }
             ) {
@@ -54,13 +54,13 @@ internal class LocalMockController(
             }
             MockzillaHttpResponse(
                 statusCode = cachedResponse?.errorStatus ?: response?.statusCode ?: HttpStatusCode.InternalServerError,
-                headers = cachedResponse?.headers ?: response?.headers ?: emptyMap(),
+                headers = cachedResponse?.errorHeaders ?: response?.headers ?: emptyMap(),
                 body = cachedResponse?.errorBody ?: response?.body ?: ""
             )
         } else {
             val response = if (listOf(
                 cachedResponse?.defaultStatus,
-                cachedResponse?.headers,
+                cachedResponse?.defaultHeaders,
                 cachedResponse?.defaultBody
             ).any { it == null }
             ) {
@@ -71,7 +71,7 @@ internal class LocalMockController(
 
             MockzillaHttpResponse(
                 statusCode = cachedResponse?.defaultStatus ?: response?.statusCode ?: HttpStatusCode.InternalServerError,
-                headers = cachedResponse?.headers ?: response?.headers ?: emptyMap(),
+                headers = cachedResponse?.defaultHeaders ?: response?.headers ?: emptyMap(),
                 body = cachedResponse?.defaultBody ?: response?.body ?: ""
             )
         }.also { response ->

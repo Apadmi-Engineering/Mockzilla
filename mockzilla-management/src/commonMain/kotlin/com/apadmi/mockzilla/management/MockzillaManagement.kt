@@ -30,7 +30,7 @@ interface MockzillaManagement {
             delayMs: Int?
         ): Result<SerializableEndpointConfig>
 
-        suspend fun setHeaders(
+        suspend fun setDefaultHeaders(
             connection: MockzillaConnectionConfig,
             key: String,
             header: Map<String, String>
@@ -49,6 +49,11 @@ interface MockzillaManagement {
             connection: MockzillaConnectionConfig,
             key: String,
             body: String
+        ): Result<SerializableEndpointConfig>
+        suspend fun setErrorHeaders(
+            connection: MockzillaConnectionConfig,
+            key: String,
+            header: Map<String, String>
         ): Result<SerializableEndpointConfig>
         suspend fun setErrorStatus(
             connection: MockzillaConnectionConfig,

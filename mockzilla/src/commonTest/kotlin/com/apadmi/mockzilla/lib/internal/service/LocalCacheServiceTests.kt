@@ -47,7 +47,7 @@ class LocalCacheServiceTests {
 
         /* Verify */
         assertEquals(SerializableEndpointConfig.allNulls("id1", "").copy(
-            headers = mapOf("my" to "header")
+            defaultHeaders = mapOf("my" to "header")
         ), result)
 
         /* Cleanup */

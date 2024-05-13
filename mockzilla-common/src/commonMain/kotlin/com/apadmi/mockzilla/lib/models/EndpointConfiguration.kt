@@ -20,9 +20,8 @@ data class EndpointConfiguration(
     val key: String,
     val shouldFail: Boolean,
     val delay: Int? = null,
+    val dashboardOverrides: DashboardOverrides,
     val endpointMatcher: MockzillaHttpRequest.() -> Boolean,
-    val webApiDefaultResponse: MockzillaHttpResponse?,
-    val webApiErrorResponse: MockzillaHttpResponse?,
     val defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     val errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) {
@@ -34,9 +33,8 @@ data class EndpointConfiguration(
             name = id,
             key = id,
             endpointMatcher = { uri.endsWith(id) },
-            webApiDefaultResponse = null,
-            webApiErrorResponse = null,
             shouldFail = false,
+            dashboardOverrides = DashboardOverrides(emptyList(), emptyList()),
             defaultHandler = {
                 MockzillaHttpResponse(HttpStatusCode.OK)
             }, errorHandler = {
@@ -109,9 +107,8 @@ data class EndpointConfiguration(
          * @param response
          */
         @MockzillaWeb
-        fun setWebApiDefaultResponse(response: MockzillaHttpResponse) = apply {
-            config = config.copy(webApiDefaultResponse = response)
-        }
+        @Deprecated("Obsolete, see `configureDashboardOverrides`", replaceWith = ReplaceWith("configureDashboardOverrides"))
+        fun setWebApiDefaultResponse(response: MockzillaHttpResponse) = this
 
         /**
          * The error response which is prefilled in the Mockzilla web page.
@@ -119,9 +116,13 @@ data class EndpointConfiguration(
          * @param response
          */
         @MockzillaWeb
-        fun setWebApiErrorResponse(response: MockzillaHttpResponse) = apply {
-            config = config.copy(webApiErrorResponse = response)
-        }
+        @Deprecated("Obsolete, see `configureDashboardOverrides`", replaceWith = ReplaceWith("configureDashboardOverrides"))
+        fun setWebApiErrorResponse(response: MockzillaHttpResponse) = this
+
+        fun configureDashboardOverrides(action: DashboardOverrides.Builder.() -> DashboardOverrides) =
+            apply {
+                config = config.copy(dashboardOverrides = action(DashboardOverrides.Builder()))
+            }
 
         /**
          * Specifies whether Mockzilla should map a network request to this endpoint.
@@ -207,3 +208,49 @@ interface MockzillaHttpRequest {
      */
     fun bodyAsString(): String
 }
+
+class DashboardOverrides(
+    val errorPresets: List<DashboardOverridePreset>,
+    val successPresets: List<DashboardOverridePreset>
+) {
+    class Builder {
+
+        private val errorPresets = mutableListOf<DashboardOverridePreset>()
+        private val successPresets = mutableListOf<DashboardOverridePreset>()
+
+        fun addSuccessPreset(
+            response: MockzillaHttpResponse,
+            name: String? = null,
+            description: String? = null
+        ) = successPresets.add(
+            DashboardOverridePreset(
+                name ?: "Preset ${successPresets.count() + 1}",
+                description,
+                response
+            )
+        )
+
+        fun addErrorPreset(
+            response: MockzillaHttpResponse,
+            name: String? = null,
+            description: String? = null
+        ) = errorPresets.add(
+            DashboardOverridePreset(
+                name ?: "Error Preset ${errorPresets.count() + 1}",
+                description,
+                response
+            )
+        )
+
+        fun build() = DashboardOverrides(
+            errorPresets = errorPresets,
+            successPresets = successPresets
+        )
+    }
+}
+
+data class DashboardOverridePreset(
+    val name: String,
+    val description: String?,
+    val response: MockzillaHttpResponse
+)

@@ -139,7 +139,7 @@ class WebPortalApiIntegrationTests {
                 SerializableEndpointConfig.allNulls("id", "id").copy(
                     defaultBody = "hello",
                     defaultStatus = HttpStatusCode.NoContent,
-                    headers = mapOf("Content-Type" to "application/json")
+                    defaultHeaders = mapOf("Content-Type" to "application/json")
                 ),
                 cacheService.getLocalCache("id")
             )

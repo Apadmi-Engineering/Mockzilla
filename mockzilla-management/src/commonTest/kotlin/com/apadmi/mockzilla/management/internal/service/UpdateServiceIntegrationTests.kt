@@ -60,7 +60,7 @@ class UpdateServiceIntegrationTests {
         }
 
     @Test
-    fun `setHeaders - performs update`() =
+    fun `setDefaultHeaders - performs update`() =
         runIntegrationTest(
             config = MockzillaConfig.Builder().setPort(0).addEndpoint(dummyConfig)
                 .build(),
@@ -70,10 +70,27 @@ class UpdateServiceIntegrationTests {
             val preUpdate = getEndpointConfig(connection)
 
             /* Run Test */
-            val result = sut.setHeaders(connection, dummyConfig.key, mapOf("my test header" to "a test value"))
+            val result = sut.setDefaultHeaders(connection, dummyConfig.key, mapOf("my test header" to "a test value"))
 
             /* Verify */
-            assertEquals(preUpdate.copy(headers = mapOf("my test header" to "a test value")), result.getOrThrow())
+            assertEquals(preUpdate.copy(defaultHeaders = mapOf("my test header" to "a test value")), result.getOrThrow())
+        }
+
+    @Test
+    fun `setErrorHeaders - performs update`() =
+        runIntegrationTest(
+            config = MockzillaConfig.Builder().setPort(0).addEndpoint(dummyConfig)
+                .build(),
+            createSut = { UpdateServiceImpl(it) }
+        ) { sut, connection, _ ->
+            /* Setup */
+            val preUpdate = getEndpointConfig(connection)
+
+            /* Run Test */
+            val result = sut.setErrorHeaders(connection, dummyConfig.key, mapOf("my test header" to "a test value"))
+
+            /* Verify */
+            assertEquals(preUpdate.copy(errorHeaders = mapOf("my test header" to "a test value")), result.getOrThrow())
         }
 
     @Test

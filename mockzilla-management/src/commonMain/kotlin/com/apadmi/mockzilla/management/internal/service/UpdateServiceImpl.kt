@@ -31,14 +31,14 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
         ), connection
     )
 
-    override suspend fun setHeaders(
+    override suspend fun setDefaultHeaders(
         connection: MockzillaConnectionConfig,
         key: String,
-        header: Map<String, String>
+        headers: Map<String, String>
     ) = repo.updateMockDataEntry(
         SerializableEndpointConfigurationPatchRequestDto(
             key = key,
-            headers = SetOrDont.Set(header)
+            headers = SetOrDont.Set(headers)
         ), connection
     )
 
@@ -75,6 +75,16 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
         ), connection
     )
 
+    override suspend fun setErrorHeaders(
+        connection: MockzillaConnectionConfig,
+        key: String,
+        headers: Map<String, String>
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointConfigurationPatchRequestDto(
+            key = key,
+            errorHeaders = SetOrDont.Set(headers)
+        ), connection
+    )
     override suspend fun setErrorStatus(
         connection: MockzillaConnectionConfig,
         key: String,

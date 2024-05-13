@@ -16,7 +16,7 @@ import kotlinx.serialization.encoding.Encoder
  * @property name
  * @property shouldFail
  * @property delayMs
- * @property headers
+ * @property defaultHeaders
  * @property defaultBody
  * @property defaultStatus
  * @property errorBody
@@ -28,9 +28,10 @@ data class SerializableEndpointConfig(
     val name: String,
     val shouldFail: Boolean?,
     val delayMs: Int?,
-    val headers: Map<String, String>?,
+    val defaultHeaders: Map<String, String>?,
     val defaultBody: String?,
     val defaultStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
+    val errorHeaders: Map<String, String>?,
     val errorBody: String?,
     val errorStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
 ) {
@@ -39,10 +40,11 @@ data class SerializableEndpointConfig(
             key = key, name = name,
             shouldFail = null,
             delayMs = null,
-            headers = null,
+            defaultHeaders = null,
             defaultBody = null,
             defaultStatus = null,
             errorBody = null,
+            errorHeaders = null,
             errorStatus = null,
         )
     }
@@ -70,6 +72,7 @@ data class SerializableEndpointConfigurationPatchRequestDto(
     val defaultBody: SetOrDont<String?> = SetOrDont.DoNotSet,
     val defaultStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
     val errorBody: SetOrDont<String?> = SetOrDont.DoNotSet,
+    val errorHeaders: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
     val errorStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
 ) {
     companion object {
@@ -88,7 +91,7 @@ data class SerializableEndpointConfigurationPatchRequestDto(
             key = mockDataEntry.key,
             shouldFail = SetOrDont.Set(mockDataEntry.shouldFail),
             delayMs = SetOrDont.Set(mockDataEntry.delayMs),
-            headers = SetOrDont.Set(mockDataEntry.headers),
+            headers = SetOrDont.Set(mockDataEntry.defaultHeaders),
             defaultBody = SetOrDont.Set(mockDataEntry.defaultBody),
             defaultStatus = SetOrDont.Set(mockDataEntry.defaultStatus),
             errorBody = SetOrDont.Set(mockDataEntry.errorBody),

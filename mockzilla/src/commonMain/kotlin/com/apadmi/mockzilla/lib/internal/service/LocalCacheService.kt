@@ -76,10 +76,11 @@ internal class LocalCacheServiceImpl(
         val newCache = currentCache.copy(
             shouldFail = patch.shouldFail.valueOrDefault(currentCache.shouldFail),
             delayMs = patch.delayMs.valueOrDefault(currentCache.delayMs),
-            headers = patch.headers.valueOrDefault(currentCache.headers),
+            defaultHeaders = patch.headers.valueOrDefault(currentCache.defaultHeaders),
             defaultBody = patch.defaultBody.valueOrDefault(currentCache.defaultBody),
             defaultStatus = patch.defaultStatus.valueOrDefault(currentCache.defaultStatus),
             errorBody = patch.errorBody.valueOrDefault(currentCache.errorBody),
+            errorHeaders = patch.errorHeaders.valueOrDefault(currentCache.errorHeaders),
             errorStatus = patch.errorStatus.valueOrDefault(currentCache.errorStatus)
 
         )
