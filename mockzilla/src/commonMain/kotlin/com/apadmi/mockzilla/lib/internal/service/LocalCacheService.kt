@@ -1,11 +1,11 @@
 package com.apadmi.mockzilla.lib.internal.service
 
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryUpdateRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 
 import kotlinx.coroutines.sync.Mutex
@@ -13,9 +13,9 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.encodeToString
 
 internal interface LocalCacheService {
-    suspend fun getLocalCache(endpointKey: String): MockDataEntryDto?
+    suspend fun getLocalCache(endpointKey: String): SerializableEndpointConfiguration?
     suspend fun clearAllCaches()
-    suspend fun updateLocalCache(entry: MockDataEntryUpdateRequestDto)
+    suspend fun updateLocalCache(entry: SerializableEndpointConfigurationPatchRequestDto)
 }
 
 internal class LocalCacheServiceImpl(
@@ -24,7 +24,7 @@ internal class LocalCacheServiceImpl(
 ) : LocalCacheService {
     private val lock = Mutex()
 
-    private val MockDataEntryUpdateRequestDto.fileName get() = key.fileName
+    private val SerializableEndpointConfigurationPatchRequestDto.fileName get() = key.fileName
     private val String.fileName get() = "${this}.json"
 
     private fun parseException(cause: Throwable) = IllegalStateException(
@@ -39,7 +39,7 @@ internal class LocalCacheServiceImpl(
 
     override suspend fun getLocalCache(
         endpointKey: String,
-    ): MockDataEntryDto? = lock.withLock {
+    ): SerializableEndpointConfiguration? = lock.withLock {
         getLocalCacheUnlocked(endpointKey)
     }
 
@@ -47,7 +47,7 @@ internal class LocalCacheServiceImpl(
         endpointKey: String
     ) = fileIo.readFromCache(endpointKey.fileName)?.let {
         try {
-            JsonProvider.json.decodeFromString<MockDataEntryDto>(it)
+            JsonProvider.json.decodeFromString<SerializableEndpointConfiguration>(it)
         } catch (e: Exception) {
             throw parseException(e)
         }
@@ -60,10 +60,10 @@ internal class LocalCacheServiceImpl(
         fileIo.deleteAllCaches()
     }
 
-    override suspend fun updateLocalCache(entry: MockDataEntryUpdateRequestDto) = lock.withLock {
+    override suspend fun updateLocalCache(entry: SerializableEndpointConfigurationPatchRequestDto) = lock.withLock {
         logger.v { "Writing to cache ${entry.key} - $entry" }
 
-        val currentCache = getLocalCacheUnlocked(entry.key) ?: MockDataEntryDto.allNulls(
+        val currentCache = getLocalCacheUnlocked(entry.key) ?: SerializableEndpointConfiguration.allNulls(
             key = entry.key, name = entry.name
         )
 
@@ -77,7 +77,7 @@ internal class LocalCacheServiceImpl(
             errorStatus = entry.errorStatus.valueOrDefault(currentCache.errorStatus)
 
         )
-        fileIo.saveToCache(entry.fileName, JsonProvider.json.encodeToString<MockDataEntryDto>(newCache))
+        fileIo.saveToCache(entry.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfiguration>(newCache))
     }
 
     private fun <T> SetOrDont<T?>?.valueOrDefault(default: T): T = when (this) {

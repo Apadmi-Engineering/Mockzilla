@@ -1,10 +1,12 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryUpdateRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
+import io.ktor.http.HttpStatusCode
 
 internal class ManagementApiController(
     private val endpoints: List<EndpointConfiguration>,
@@ -12,22 +14,26 @@ internal class ManagementApiController(
     private val monitor: MockServerMonitor,
 ) {
     @Throws(IllegalStateException::class)
-    suspend fun updateEntry(key: String, entry: MockDataEntryUpdateRequestDto) {
+    suspend fun updateEntry(key: String, entry: SerializableEndpointConfigurationPatchRequestDto) {
         check(key == entry.key) { "Endpoint key mismatch, $key does not match ${entry.key}" }
         localCacheService.updateLocalCache(entry)
     }
 
     suspend fun getAllMockDataEntries() = endpoints.map { config ->
-        localCacheService.getLocalCache(config.key) ?: MockDataEntryDto(
-            config.key, config.name,
-            shouldFail = null,
-            delayMs = null,
-            headers = null,
-            defaultBody = null,
-            defaultStatus = null,
-            errorBody = null,
-            errorStatus = null,
-        )
+        localCacheService.getLocalCache(config.key) ?: run {
+            // TODO: This will be updated once the more sophisticated mechanisms of configuring the
+            // mock data are implemented
+            SerializableEndpointConfiguration(
+                config.key, config.name,
+                shouldFail = config.shouldFail,
+                delayMs = config.delay,
+                headers = config.webApiDefaultResponse?.headers ?: emptyMap(),
+                defaultBody = config.webApiDefaultResponse?.body ?: "{}",
+                defaultStatus = config.webApiDefaultResponse?.statusCode ?: HttpStatusCode.OK,
+                errorBody = config.webApiErrorResponse?.body ?: "{}",
+                errorStatus = config.webApiErrorResponse?.statusCode ?: HttpStatusCode.InternalServerError,
+            )
+        }
     }
 
     suspend fun clearAllCaches() {

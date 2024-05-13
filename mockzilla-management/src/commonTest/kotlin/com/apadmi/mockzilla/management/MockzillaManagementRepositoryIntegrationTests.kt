@@ -3,8 +3,8 @@
 package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryUpdateRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -112,7 +112,7 @@ class MockzillaManagementRepositoryIntegrationTests {
             val preUpdateData = sut.fetchAllMockData(connection)
             val entryToUpdate = preUpdateData.getOrThrow().last()
             val updateResult = sut.updateMockDataEntry(
-                MockDataEntryUpdateRequestDto(
+                SerializableEndpointConfigurationPatchRequestDto(
                     key = entryToUpdate.key,
                     name = entryToUpdate.name,
                     shouldFail = SetOrDont.Set(true)
@@ -123,17 +123,11 @@ class MockzillaManagementRepositoryIntegrationTests {
             /* Verify */
             listOf(preUpdateData, updateResult, postUpdateData).forEach { assertTrue(it.isSuccess) }
             assertEquals(
-                listOf(
-                    MockDataEntryDto.allNulls(key = "Id", name = "Id"),
-                    MockDataEntryDto.allNulls(key = "Id 2", name = "Id 2")
-                ), preUpdateData.getOrThrow()
+                listOf(false, false), preUpdateData.getOrThrow().map { it.shouldFail }
             )
             assertEquals(
-                listOf(
-                    MockDataEntryDto.allNulls(key = "Id", name = "Id"),
-                    MockDataEntryDto.allNulls(key = "Id 2", name = "Id 2")
-                        .copy(shouldFail = true)
-                ), postUpdateData.getOrThrow()
+                listOf(false, true),
+                postUpdateData.getOrThrow().map { it.shouldFail }
             )
         }
 

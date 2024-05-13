@@ -1,16 +1,15 @@
 package com.apadmi.mockzilla.management.internal
 
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.models.MetaData
-import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
 import com.apadmi.mockzilla.management.internal.ktor.get
 import com.apadmi.mockzilla.management.internal.ktor.post
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryUpdateRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 import io.ktor.client.plugins.logging.DEFAULT
@@ -21,8 +20,8 @@ import io.ktor.http.contentType
 
 interface MockzillaManagementRepository {
     suspend fun fetchMetaData(connection: MockzillaConnectionConfig): Result<MetaData>
-    suspend fun fetchAllMockData(connection: MockzillaConnectionConfig): Result<List<MockDataEntryDto>>
-    suspend fun updateMockDataEntry(entry: MockDataEntryUpdateRequestDto, connection: MockzillaConnectionConfig): Result<Unit>
+    suspend fun fetchAllMockData(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfiguration>>
+    suspend fun updateMockDataEntry(entry: SerializableEndpointConfigurationPatchRequestDto, connection: MockzillaConnectionConfig): Result<Unit>
     suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig): Result<MonitorLogsResponse>
 }
 
@@ -49,7 +48,7 @@ internal class MockzillaManagementRepositoryImpl(
     }.map { it.entries }
 
     override suspend fun updateMockDataEntry(
-        entry: MockDataEntryUpdateRequestDto,
+        entry: SerializableEndpointConfigurationPatchRequestDto,
         connection: MockzillaConnectionConfig,
     ) = runner<Unit> {
         post(connection, "/api/mock-data") {

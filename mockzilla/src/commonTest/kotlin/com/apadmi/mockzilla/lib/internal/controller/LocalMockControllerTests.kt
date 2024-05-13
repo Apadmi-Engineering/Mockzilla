@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
-import com.apadmi.mockzilla.lib.internal.models.SetOrDont
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -79,7 +78,7 @@ class LocalMockControllerTests {
             Logger(StaticConfig())
         )
         given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(
-            MockDataEntryDto(
+            SerializableEndpointConfiguration(
                 key = "my-id",
                 name = "my-id",
                 shouldFail = true,

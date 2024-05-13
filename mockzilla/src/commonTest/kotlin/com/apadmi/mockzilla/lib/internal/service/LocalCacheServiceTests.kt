@@ -1,12 +1,11 @@
 package com.apadmi.mockzilla.lib.internal.service
 
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
-import com.apadmi.mockzilla.lib.service.MockzillaWeb
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryUpdateRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import io.ktor.http.HttpStatusCode
 
@@ -36,7 +35,7 @@ class LocalCacheServiceTests {
     @Test
     fun `updateLocalCache and getLocalCache - returns value`() = runTest {
         /* Setup */
-        val entryDummy = MockDataEntryUpdateRequestDto.allUnset("id1", "").copy(
+        val entryDummy = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1", "").copy(
             headers = SetOrDont.Set(mapOf("my" to "header"))
         )
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
@@ -46,7 +45,7 @@ class LocalCacheServiceTests {
         val result = sut.getLocalCache("id1")
 
         /* Verify */
-        assertEquals(MockDataEntryDto.allNulls("id1", "").copy(
+        assertEquals(SerializableEndpointConfiguration.allNulls("id1", "").copy(
             headers = mapOf("my" to "header")
         ), result)
 
@@ -74,11 +73,11 @@ class LocalCacheServiceTests {
     @Test
     fun `updateLocalCache and getLocalCache - some overridden values - returns correctly`() = runTest {
         /* Setup */
-        val initialCacheValue = MockDataEntryUpdateRequestDto.allUnset("id1", "").copy(
+        val initialCacheValue = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1", "").copy(
             shouldFail = SetOrDont.Set(true),
             errorStatus = SetOrDont.Set(HttpStatusCode.BadGateway)
         )
-        val cacheUpdate = MockDataEntryUpdateRequestDto.allUnset("id1", "").copy(
+        val cacheUpdate = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1", "").copy(
             shouldFail = SetOrDont.Set(false),
             defaultStatus = SetOrDont.Set(HttpStatusCode.Created)
         )
@@ -90,7 +89,7 @@ class LocalCacheServiceTests {
         val result = sut.getLocalCache("id1")
 
         /* Verify */
-        assertEquals(MockDataEntryDto.allNulls("id1", "").copy(
+        assertEquals(SerializableEndpointConfiguration.allNulls("id1", "").copy(
             shouldFail = false,
             errorStatus = HttpStatusCode.BadGateway,
             defaultStatus = HttpStatusCode.Created

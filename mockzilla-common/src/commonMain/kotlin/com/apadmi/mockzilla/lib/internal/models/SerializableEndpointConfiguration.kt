@@ -12,7 +12,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 @Serializable
-data class MockDataEntryDto(
+data class SerializableEndpointConfiguration(
     val key: String,
     val name: String,
     val shouldFail: Boolean?,
@@ -24,7 +24,7 @@ data class MockDataEntryDto(
     val errorStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
 ) {
     companion object {
-        fun allNulls(key: String, name: String) = MockDataEntryDto(
+        fun allNulls(key: String, name: String) = SerializableEndpointConfiguration(
             key = key, name = name,
             shouldFail = null,
             delayMs = null,
@@ -51,7 +51,7 @@ data class MockDataEntryDto(
  * @property defaultStatus
  */
 @Serializable
-data class MockDataEntryUpdateRequestDto(
+data class SerializableEndpointConfigurationPatchRequestDto(
     val key: String,
     val name: String,
     val shouldFail: SetOrDont<Boolean?> = SetOrDont.DoNotSet,
@@ -63,7 +63,7 @@ data class MockDataEntryUpdateRequestDto(
     val errorStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
 ) {
     companion object {
-        fun allUnset(key: String, name: String) = MockDataEntryUpdateRequestDto(
+        fun allUnset(key: String, name: String) = SerializableEndpointConfigurationPatchRequestDto(
             key = key,
             name = name,
             shouldFail = SetOrDont.DoNotSet,
@@ -75,7 +75,7 @@ data class MockDataEntryUpdateRequestDto(
             errorStatus = SetOrDont.DoNotSet,
         )
 
-        fun allSet(mockDataEntry: MockDataEntryDto) = MockDataEntryUpdateRequestDto(
+        fun allSet(mockDataEntry: SerializableEndpointConfiguration) = SerializableEndpointConfigurationPatchRequestDto(
             key = mockDataEntry.key,
             name = mockDataEntry.name,
             shouldFail = SetOrDont.Set(mockDataEntry.shouldFail),
@@ -95,7 +95,7 @@ data class MockDataEntryUpdateRequestDto(
  */
 @Serializable
 data class MockDataResponseDto(
-    val entries: List<MockDataEntryDto>
+    val entries: List<SerializableEndpointConfiguration>
 )
 @Serializable(with = ServiceResultSerializer::class)
 sealed class SetOrDont<out T> {
