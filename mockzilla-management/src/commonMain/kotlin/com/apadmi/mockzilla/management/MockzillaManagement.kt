@@ -2,9 +2,11 @@ package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepositoryImpl
 import com.apadmi.mockzilla.management.internal.service.UpdateServiceImpl
+import io.ktor.http.HttpStatusCode
 import kotlin.time.Duration
 
 interface MockzillaManagement {
@@ -18,10 +20,14 @@ interface MockzillaManagement {
     val logsService: LogsService
 
     interface UpdateService {
-        fun setShouldFail(connection: MockzillaConnectionConfig, shouldFail: Boolean)
-        fun setDelay(connection: MockzillaConnectionConfig, delay: Duration?)
+        fun setShouldFail(connection: MockzillaConnectionConfig, key: String, shouldFail: Boolean): Result<Unit>
+        fun setDelay(connection: MockzillaConnectionConfig, key: String, delay: Duration?): Result<Unit>
 
-        // TODO: Fill this out
+        fun setHeaders(connection: MockzillaConnectionConfig, key: String, header: Map<String, String>): Result<Unit>
+        fun setDefaultBody(connection: MockzillaConnectionConfig, key: String, body: String): Result<Unit>
+        fun setDefaultStatus(connection: MockzillaConnectionConfig, key: String, statusCode: HttpStatusCode): Result<Unit>
+        fun setErrorBody(connection: MockzillaConnectionConfig, key: String, body: String): Result<Unit>
+        fun setErrorStatus(connection: MockzillaConnectionConfig, key: String, statusCode: HttpStatusCode): Result<Unit>
     }
 
     interface MetaDataService {

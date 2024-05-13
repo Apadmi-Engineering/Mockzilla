@@ -13,9 +13,10 @@ internal class ManagementApiController(
     private val monitor: MockServerMonitor,
 ) {
     @Throws(IllegalStateException::class)
-    suspend fun updateEntry(key: String, entry: SerializableEndpointConfigurationPatchRequestDto) {
-        check(key == entry.key) { "Endpoint key mismatch, $key does not match ${entry.key}" }
-        localCacheService.updateLocalCache(entry)
+    suspend fun updateEntry(key: String, patch: SerializableEndpointConfigurationPatchRequestDto) {
+        check(key == patch.key) { "Endpoint key mismatch, $key does not match ${patch.key}" }
+        val endpoint = endpoints.firstOrNull { it.key == key } ?: throw Exception("No such endpoint: $key")
+        localCacheService.updateLocalCache(patch, endpoint)
     }
 
     suspend fun getAllMockDataEntries() = endpoints.map { config ->

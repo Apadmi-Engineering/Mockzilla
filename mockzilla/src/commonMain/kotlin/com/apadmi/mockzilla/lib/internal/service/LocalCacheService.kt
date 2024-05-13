@@ -7,6 +7,7 @@ import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -15,7 +16,10 @@ import kotlinx.serialization.encodeToString
 internal interface LocalCacheService {
     suspend fun getLocalCache(endpointKey: String): SerializableEndpointConfig?
     suspend fun clearAllCaches()
-    suspend fun updateLocalCache(entry: SerializableEndpointConfigurationPatchRequestDto)
+    suspend fun updateLocalCache(
+        patch: SerializableEndpointConfigurationPatchRequestDto,
+        endpoint: EndpointConfiguration
+    )
 }
 
 internal class LocalCacheServiceImpl(
@@ -59,24 +63,27 @@ internal class LocalCacheServiceImpl(
         fileIo.deleteAllCaches()
     }
 
-    override suspend fun updateLocalCache(entry: SerializableEndpointConfigurationPatchRequestDto) = lock.withLock {
-        logger.v { "Writing to cache ${entry.key} - $entry" }
+    override suspend fun updateLocalCache(
+        patch: SerializableEndpointConfigurationPatchRequestDto,
+        endpoint: EndpointConfiguration
+    ) = lock.withLock {
+        logger.v { "Writing to cache ${patch.key} - $patch" }
 
-        val currentCache = getLocalCacheUnlocked(entry.key) ?: SerializableEndpointConfig.allNulls(
-            key = entry.key, name = entry.name
+        val currentCache = getLocalCacheUnlocked(patch.key) ?: SerializableEndpointConfig.allNulls(
+            key = patch.key, name = endpoint.name
         )
 
         val newCache = currentCache.copy(
-            shouldFail = entry.shouldFail.valueOrDefault(currentCache.shouldFail),
-            delayMs = entry.delayMs.valueOrDefault(currentCache.delayMs),
-            headers = entry.headers.valueOrDefault(currentCache.headers),
-            defaultBody = entry.defaultBody.valueOrDefault(currentCache.defaultBody),
-            defaultStatus = entry.defaultStatus.valueOrDefault(currentCache.defaultStatus),
-            errorBody = entry.errorBody.valueOrDefault(currentCache.errorBody),
-            errorStatus = entry.errorStatus.valueOrDefault(currentCache.errorStatus)
+            shouldFail = patch.shouldFail.valueOrDefault(currentCache.shouldFail),
+            delayMs = patch.delayMs.valueOrDefault(currentCache.delayMs),
+            headers = patch.headers.valueOrDefault(currentCache.headers),
+            defaultBody = patch.defaultBody.valueOrDefault(currentCache.defaultBody),
+            defaultStatus = patch.defaultStatus.valueOrDefault(currentCache.defaultStatus),
+            errorBody = patch.errorBody.valueOrDefault(currentCache.errorBody),
+            errorStatus = patch.errorStatus.valueOrDefault(currentCache.errorStatus)
 
         )
-        fileIo.saveToCache(entry.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfig>(newCache))
+        fileIo.saveToCache(patch.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfig>(newCache))
     }
 
     private fun <T> SetOrDont<T?>?.valueOrDefault(default: T): T = when (this) {

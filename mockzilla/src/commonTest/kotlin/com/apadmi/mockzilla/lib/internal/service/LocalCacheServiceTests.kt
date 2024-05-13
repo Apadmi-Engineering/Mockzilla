@@ -7,6 +7,7 @@ import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import io.ktor.http.HttpStatusCode
 
 import kotlin.test.Test
@@ -41,7 +42,7 @@ class LocalCacheServiceTests {
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
         /* Run Test */
-        sut.updateLocalCache(entryDummy)
+        sut.updateLocalCache(entryDummy, EndpointConfiguration.Builder("").build())
         val result = sut.getLocalCache("id1")
 
         /* Verify */
@@ -84,8 +85,8 @@ class LocalCacheServiceTests {
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
         /* Run Test */
-        sut.updateLocalCache(initialCacheValue)
-        sut.updateLocalCache(cacheUpdate)
+        sut.updateLocalCache(initialCacheValue, EndpointConfiguration.Builder("").build())
+        sut.updateLocalCache(cacheUpdate, EndpointConfiguration.Builder("").build())
         val result = sut.getLocalCache("id1")
 
         /* Verify */

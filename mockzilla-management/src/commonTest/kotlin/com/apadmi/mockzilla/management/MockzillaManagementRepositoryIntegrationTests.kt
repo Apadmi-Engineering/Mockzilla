@@ -115,7 +115,6 @@ class MockzillaManagementRepositoryIntegrationTests {
             val updateResult = sut.updateMockDataEntry(
                 SerializableEndpointConfigurationPatchRequestDto(
                     key = entryToUpdate.key,
-                    name = entryToUpdate.name,
                     shouldFail = SetOrDont.Set(true)
                 ), connection
             )

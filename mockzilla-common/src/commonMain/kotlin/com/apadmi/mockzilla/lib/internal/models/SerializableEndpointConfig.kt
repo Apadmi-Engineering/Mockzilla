@@ -65,7 +65,6 @@ data class SerializableEndpointConfig(
 @Serializable
 data class SerializableEndpointConfigurationPatchRequestDto(
     val key: String,
-    val name: String,
     val shouldFail: SetOrDont<Boolean?> = SetOrDont.DoNotSet,
     val delayMs: SetOrDont<Int?> = SetOrDont.DoNotSet,
     val headers: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
@@ -77,7 +76,6 @@ data class SerializableEndpointConfigurationPatchRequestDto(
     companion object {
         fun allUnset(key: String, name: String) = SerializableEndpointConfigurationPatchRequestDto(
             key = key,
-            name = name,
             shouldFail = SetOrDont.DoNotSet,
             delayMs = SetOrDont.DoNotSet,
             headers = SetOrDont.DoNotSet,
@@ -89,7 +87,6 @@ data class SerializableEndpointConfigurationPatchRequestDto(
 
         fun allSet(mockDataEntry: SerializableEndpointConfig) = SerializableEndpointConfigurationPatchRequestDto(
             key = mockDataEntry.key,
-            name = mockDataEntry.name,
             shouldFail = SetOrDont.Set(mockDataEntry.shouldFail),
             delayMs = SetOrDont.Set(mockDataEntry.delayMs),
             headers = SetOrDont.Set(mockDataEntry.headers),

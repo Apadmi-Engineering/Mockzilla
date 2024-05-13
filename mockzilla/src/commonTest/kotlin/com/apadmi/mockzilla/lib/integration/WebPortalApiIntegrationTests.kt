@@ -94,7 +94,8 @@ class WebPortalApiIntegrationTests {
             .build(),
         setup = { cacheService ->
             cacheService.updateLocalCache(
-                SerializableEndpointConfigurationPatchRequestDto.allUnset("id", "name")
+                SerializableEndpointConfigurationPatchRequestDto.allUnset("id", "name"),
+                EndpointConfiguration.Builder("id").build()
             )
         }
     ) { params, cacheService ->
