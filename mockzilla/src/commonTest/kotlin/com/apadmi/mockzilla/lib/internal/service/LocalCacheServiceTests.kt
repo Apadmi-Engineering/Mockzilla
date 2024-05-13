@@ -8,6 +8,7 @@ import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
 import com.apadmi.mockzilla.lib.internal.models.MockDataEntryUpdateRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
+import io.ktor.http.HttpStatusCode
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -65,6 +66,35 @@ class LocalCacheServiceTests {
 
         /* Verify */
         assertTrue(result.exceptionOrNull() is IllegalStateException)
+
+        /* Cleanup */
+        sut.clearAllCaches()
+    }
+
+    @Test
+    fun `updateLocalCache and getLocalCache - some overridden values - returns correctly`() = runTest {
+        /* Setup */
+        val initialCacheValue = MockDataEntryUpdateRequestDto.allUnset("id1", "").copy(
+            shouldFail = SetOrDont.Set(true),
+            errorStatus = SetOrDont.Set(HttpStatusCode.BadGateway)
+        )
+        val cacheUpdate = MockDataEntryUpdateRequestDto.allUnset("id1", "").copy(
+            shouldFail = SetOrDont.Set(false),
+            defaultStatus = SetOrDont.Set(HttpStatusCode.Created)
+        )
+        val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
+
+        /* Run Test */
+        sut.updateLocalCache(initialCacheValue)
+        sut.updateLocalCache(cacheUpdate)
+        val result = sut.getLocalCache("id1")
+
+        /* Verify */
+        assertEquals(MockDataEntryDto.allNulls("id1", "").copy(
+            shouldFail = false,
+            errorStatus = HttpStatusCode.BadGateway,
+            defaultStatus = HttpStatusCode.Created
+        ), result)
 
         /* Cleanup */
         sut.clearAllCaches()
