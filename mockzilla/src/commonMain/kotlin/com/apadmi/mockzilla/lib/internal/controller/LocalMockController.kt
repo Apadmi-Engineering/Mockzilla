@@ -41,7 +41,7 @@ internal class LocalMockController(
         // Use the cached response by default, i.e. if a user has specified data via the web portal
         // then we return that, otherwise we call the appropriate handler.
         return if (shouldFail) {
-            logger.v { "Call to ${endpoint.key} should fail, returning error response"}
+            logger.v { "Call to ${endpoint.key} should fail, returning error response" }
             val response = if (listOf(
                 cachedResponse?.errorStatus,
                 cachedResponse?.headers,

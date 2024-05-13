@@ -1,19 +1,19 @@
 package com.apadmi.mockzilla.lib.internal.service
 
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
-import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.encodeToString
 
 internal interface LocalCacheService {
-    suspend fun getLocalCache(endpointKey: String): SerializableEndpointConfiguration?
+    suspend fun getLocalCache(endpointKey: String): SerializableEndpointConfig?
     suspend fun clearAllCaches()
     suspend fun updateLocalCache(entry: SerializableEndpointConfigurationPatchRequestDto)
 }
@@ -39,7 +39,7 @@ internal class LocalCacheServiceImpl(
 
     override suspend fun getLocalCache(
         endpointKey: String,
-    ): SerializableEndpointConfiguration? = lock.withLock {
+    ): SerializableEndpointConfig? = lock.withLock {
         getLocalCacheUnlocked(endpointKey)
     }
 
@@ -47,14 +47,13 @@ internal class LocalCacheServiceImpl(
         endpointKey: String
     ) = fileIo.readFromCache(endpointKey.fileName)?.let {
         try {
-            JsonProvider.json.decodeFromString<SerializableEndpointConfiguration>(it)
+            JsonProvider.json.decodeFromString<SerializableEndpointConfig>(it)
         } catch (e: Exception) {
             throw parseException(e)
         }
     }.also {
         logger.v { "Reading from cache $endpointKey - $it" }
     }
-
 
     override suspend fun clearAllCaches() = lock.withLock {
         fileIo.deleteAllCaches()
@@ -63,7 +62,7 @@ internal class LocalCacheServiceImpl(
     override suspend fun updateLocalCache(entry: SerializableEndpointConfigurationPatchRequestDto) = lock.withLock {
         logger.v { "Writing to cache ${entry.key} - $entry" }
 
-        val currentCache = getLocalCacheUnlocked(entry.key) ?: SerializableEndpointConfiguration.allNulls(
+        val currentCache = getLocalCacheUnlocked(entry.key) ?: SerializableEndpointConfig.allNulls(
             key = entry.key, name = entry.name
         )
 
@@ -77,7 +76,7 @@ internal class LocalCacheServiceImpl(
             errorStatus = entry.errorStatus.valueOrDefault(currentCache.errorStatus)
 
         )
-        fileIo.saveToCache(entry.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfiguration>(newCache))
+        fileIo.saveToCache(entry.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfig>(newCache))
     }
 
     private fun <T> SetOrDont<T?>?.valueOrDefault(default: T): T = when (this) {
@@ -85,5 +84,4 @@ internal class LocalCacheServiceImpl(
         null,
         SetOrDont.DoNotSet -> default
     }
-
 }

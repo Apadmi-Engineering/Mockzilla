@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
@@ -58,7 +58,7 @@ class ManagementApiControllerTests {
     @Test
     fun `getAllMockDataEntries - replaces cached data - calls through`() = runTest {
         /* Setup */
-        val dummyCacheEntry = SerializableEndpointConfiguration.allNulls("my-id", "id").copy(
+        val dummyCacheEntry = SerializableEndpointConfig.allNulls("my-id", "id").copy(
             defaultBody = "my cached value"
         )
         given(localCacheServiceMock).coroutine {
@@ -75,10 +75,10 @@ class ManagementApiControllerTests {
 
         /* Verify */
         // TODO: Update in next PR with more sophisticated configuration system
-//        assertEquals(
-//            listOf(dummyCacheEntry, SerializableEndpointConfiguration.allNulls("my-second-id", "my-second-id")),
-//            result
-//        )
+        // assertEquals(
+        // listOf(dummyCacheEntry, SerializableEndpointConfiguration.allNulls("my-second-id", "my-second-id")),
+        // result
+        // )
     }
 
     @Test

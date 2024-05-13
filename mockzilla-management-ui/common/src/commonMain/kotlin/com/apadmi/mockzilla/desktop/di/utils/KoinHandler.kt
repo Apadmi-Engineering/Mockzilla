@@ -5,7 +5,6 @@ import com.apadmi.mockzilla.desktop.di.viewModelModule
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceManagerImpl
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
-import com.apadmi.mockzilla.management.MockzillaManagement
 
 import org.koin.core.context.startKoin
 import org.koin.dsl.binds

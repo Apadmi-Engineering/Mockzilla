@@ -1,6 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -78,11 +78,11 @@ class LocalMockControllerTests {
             Logger(StaticConfig())
         )
         given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(
-            SerializableEndpointConfiguration(
+            SerializableEndpointConfig(
                 key = "my-id",
                 name = "my-id",
                 shouldFail = true,
-                delayMs =0,
+                delayMs = 0,
                 headers = emptyMap(),
                 defaultBody = "",
                 defaultStatus = HttpStatusCode.OK,

@@ -72,18 +72,18 @@ class WebPortalApiIntegrationTests {
             response.status
         )
         // TODO: Update in next PR with more sophisticated configuration system
-//        assertEquals(
-//            JsonProvider.json.encodeToString(
-//                MockDataResponseDto(
-//                    listOf(
-//                        SerializableEndpointConfiguration.allNulls(
-//                            name = "my-id",
-//                            key = "my-id",
-//                        )
-//                    )
-//                )),
-//            response.bodyAsText()
-//        )
+        // assertEquals(
+        // JsonProvider.json.encodeToString(
+        // MockDataResponseDto(
+        // listOf(
+        // SerializableEndpointConfiguration.allNulls(
+        // name = "my-id",
+        // key = "my-id",
+        // )
+        // )
+        // )),
+        // response.bodyAsText()
+        // )
     }
 
     @Test
@@ -135,7 +135,7 @@ class WebPortalApiIntegrationTests {
 
             /* Verify */
             assertEquals(
-                SerializableEndpointConfiguration.allNulls("id", "id").copy(
+                SerializableEndpointConfig.allNulls("id", "id").copy(
                     defaultBody = "hello",
                     defaultStatus = HttpStatusCode.NoContent,
                     headers = mapOf("Content-Type" to "application/json")

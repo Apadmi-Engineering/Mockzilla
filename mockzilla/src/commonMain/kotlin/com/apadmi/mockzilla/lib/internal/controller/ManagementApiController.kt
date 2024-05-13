@@ -1,11 +1,10 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import io.ktor.http.HttpStatusCode
 
 internal class ManagementApiController(
@@ -23,7 +22,7 @@ internal class ManagementApiController(
         localCacheService.getLocalCache(config.key) ?: run {
             // TODO: This will be updated once the more sophisticated mechanisms of configuring the
             // mock data are implemented
-            SerializableEndpointConfiguration(
+            SerializableEndpointConfig(
                 config.key, config.name,
                 shouldFail = config.shouldFail,
                 delayMs = config.delay,

@@ -1,18 +1,19 @@
 package com.apadmi.mockzilla.management.internal
 
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.management.MockzillaConnectionConfig
+import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
 import com.apadmi.mockzilla.management.internal.ktor.get
 import com.apadmi.mockzilla.management.internal.ktor.post
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
-import com.apadmi.mockzilla.management.MockzillaConnectionConfig
-import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.Logger as KtorLogger
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.appendPathSegments
@@ -20,7 +21,7 @@ import io.ktor.http.contentType
 
 interface MockzillaManagementRepository {
     suspend fun fetchMetaData(connection: MockzillaConnectionConfig): Result<MetaData>
-    suspend fun fetchAllMockData(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfiguration>>
+    suspend fun fetchAllMockData(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
     suspend fun updateMockDataEntry(entry: SerializableEndpointConfigurationPatchRequestDto, connection: MockzillaConnectionConfig): Result<Unit>
     suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig): Result<MonitorLogsResponse>
 }
@@ -71,10 +72,10 @@ internal class MockzillaManagementRepositoryImpl(
     }
 
     companion object {
-        internal fun create(logger: io.ktor.client.plugins.logging.Logger): MockzillaManagementRepository = MockzillaManagementRepositoryImpl(
+        internal fun create(logger: KtorLogger): MockzillaManagementRepository = MockzillaManagementRepositoryImpl(
             KtorRequestRunner(KtorClientProvider.createKtorClient(logger = logger))
         )
 
-        fun create(): MockzillaManagementRepository = create(io.ktor.client.plugins.logging.Logger.DEFAULT)
+        fun create(): MockzillaManagementRepository = create(KtorLogger.DEFAULT)
     }
 }

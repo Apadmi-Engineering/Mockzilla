@@ -1,12 +1,12 @@
 package com.apadmi.mockzilla.lib.internal.service
 
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
-import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import io.ktor.http.HttpStatusCode
 
 import kotlin.test.Test
@@ -45,7 +45,7 @@ class LocalCacheServiceTests {
         val result = sut.getLocalCache("id1")
 
         /* Verify */
-        assertEquals(SerializableEndpointConfiguration.allNulls("id1", "").copy(
+        assertEquals(SerializableEndpointConfig.allNulls("id1", "").copy(
             headers = mapOf("my" to "header")
         ), result)
 
@@ -89,7 +89,7 @@ class LocalCacheServiceTests {
         val result = sut.getLocalCache("id1")
 
         /* Verify */
-        assertEquals(SerializableEndpointConfiguration.allNulls("id1", "").copy(
+        assertEquals(SerializableEndpointConfig.allNulls("id1", "").copy(
             shouldFail = false,
             errorStatus = HttpStatusCode.BadGateway,
             defaultStatus = HttpStatusCode.Created

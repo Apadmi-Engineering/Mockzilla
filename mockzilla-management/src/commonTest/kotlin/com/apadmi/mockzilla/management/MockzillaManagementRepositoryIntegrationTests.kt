@@ -3,19 +3,20 @@
 package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguration
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.testutils.runIntegrationTest
+
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -99,7 +100,7 @@ class MockzillaManagementRepositoryIntegrationTests {
                     .setMeanDelayMillis(10)
                     .build(),
 
-                )
+            )
                 .addEndpoint(
                     EndpointConfiguration.Builder("Id 2")
                         .setDefaultHandler { MockzillaHttpResponse(body = "this is another body") }

@@ -11,8 +11,19 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+/**
+ * @property key
+ * @property name
+ * @property shouldFail
+ * @property delayMs
+ * @property headers
+ * @property defaultBody
+ * @property defaultStatus
+ * @property errorBody
+ * @property errorStatus
+ */
 @Serializable
-data class SerializableEndpointConfiguration(
+data class SerializableEndpointConfig(
     val key: String,
     val name: String,
     val shouldFail: Boolean?,
@@ -24,7 +35,7 @@ data class SerializableEndpointConfiguration(
     val errorStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
 ) {
     companion object {
-        fun allNulls(key: String, name: String) = SerializableEndpointConfiguration(
+        fun allNulls(key: String, name: String) = SerializableEndpointConfig(
             key = key, name = name,
             shouldFail = null,
             delayMs = null,
@@ -50,6 +61,7 @@ data class SerializableEndpointConfiguration(
  * @property errorStatus
  * @property defaultStatus
  */
+@Suppress("TYPE_ALIAS")
 @Serializable
 data class SerializableEndpointConfigurationPatchRequestDto(
     val key: String,
@@ -75,16 +87,16 @@ data class SerializableEndpointConfigurationPatchRequestDto(
             errorStatus = SetOrDont.DoNotSet,
         )
 
-        fun allSet(mockDataEntry: SerializableEndpointConfiguration) = SerializableEndpointConfigurationPatchRequestDto(
+        fun allSet(mockDataEntry: SerializableEndpointConfig) = SerializableEndpointConfigurationPatchRequestDto(
             key = mockDataEntry.key,
             name = mockDataEntry.name,
             shouldFail = SetOrDont.Set(mockDataEntry.shouldFail),
             delayMs = SetOrDont.Set(mockDataEntry.delayMs),
-            headers =SetOrDont.Set(mockDataEntry.headers),
+            headers = SetOrDont.Set(mockDataEntry.headers),
             defaultBody = SetOrDont.Set(mockDataEntry.defaultBody),
-            defaultStatus =SetOrDont.Set(mockDataEntry.defaultStatus),
-            errorBody =SetOrDont.Set(mockDataEntry.errorBody),
-            errorStatus =SetOrDont.Set(mockDataEntry.errorStatus),
+            defaultStatus = SetOrDont.Set(mockDataEntry.defaultStatus),
+            errorBody = SetOrDont.Set(mockDataEntry.errorBody),
+            errorStatus = SetOrDont.Set(mockDataEntry.errorStatus),
 
         )
     }
@@ -95,7 +107,7 @@ data class SerializableEndpointConfigurationPatchRequestDto(
  */
 @Serializable
 data class MockDataResponseDto(
-    val entries: List<SerializableEndpointConfiguration>
+    val entries: List<SerializableEndpointConfig>
 )
 @Serializable(with = ServiceResultSerializer::class)
 sealed class SetOrDont<out T> {
