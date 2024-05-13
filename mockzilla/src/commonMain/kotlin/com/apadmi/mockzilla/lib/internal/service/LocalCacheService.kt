@@ -5,9 +5,9 @@ import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfiguratio
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -19,7 +19,7 @@ internal interface LocalCacheService {
     suspend fun updateLocalCache(
         patch: SerializableEndpointConfigurationPatchRequestDto,
         endpoint: EndpointConfiguration
-    )
+    ): SerializableEndpointConfig
 }
 
 internal class LocalCacheServiceImpl(
@@ -84,6 +84,7 @@ internal class LocalCacheServiceImpl(
 
         )
         fileIo.saveToCache(patch.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfig>(newCache))
+        newCache
     }
 
     private fun <T> SetOrDont<T?>?.valueOrDefault(default: T): T = when (this) {

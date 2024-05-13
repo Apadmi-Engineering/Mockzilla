@@ -44,7 +44,8 @@ class ManagementApiControllerTests {
     @Test
     fun `clearAllCaches - calls through`() = runTest {
         /* Setup */
-        val sut = ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
+        val sut =
+            ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
 
         /* Run Test */
         sut.clearAllCaches()
@@ -68,7 +69,8 @@ class ManagementApiControllerTests {
             getLocalCache("my-second-id")
         }.thenReturn(null)
 
-        val sut = ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
+        val sut =
+            ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
 
         /* Run Test */
         val result = sut.getAllMockDataEntries()
@@ -84,13 +86,14 @@ class ManagementApiControllerTests {
     @Test
     fun `updateEntry - mismatch ids - throws exception`() = runTest {
         /* Setup */
-        val sut = ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
+        val sut =
+            ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
 
         /* Run Test & Verify */
         val result = assertFails {
             sut.updateEntry(
                 "another id",
-                SerializableEndpointConfigurationPatchRequestDto.allUnset("id", "")
+                SerializableEndpointConfigurationPatchRequestDto.allUnset("id")
             )
         }
         assertTrue(result is IllegalStateException)
@@ -99,18 +102,20 @@ class ManagementApiControllerTests {
     @Test
     fun `updateEntry - calls through`() = runTest {
         /* Setup */
-        val sut = ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
-
+        val sut =
+            ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
+        given(localCacheServiceMock).suspendFunction(localCacheServiceMock::updateLocalCache)
+            .whenInvokedWith(any(), any()).thenReturn(SerializableEndpointConfig.allNulls("", ""))
         /* Run Test */
         sut.updateEntry(
             dummyEndpoints.first().key,
-            SerializableEndpointConfigurationPatchRequestDto.allUnset(dummyEndpoints.first().key, "")
+            SerializableEndpointConfigurationPatchRequestDto.allUnset(dummyEndpoints.first().key)
         )
 
         /* Verify */
         verify(localCacheServiceMock).coroutine {
             updateLocalCache(
-                SerializableEndpointConfigurationPatchRequestDto.allUnset(dummyEndpoints.first().key, ""),
+                SerializableEndpointConfigurationPatchRequestDto.allUnset(dummyEndpoints.first().key),
                 dummyEndpoints.first()
             )
         }.wasInvoked(1.time)
@@ -119,7 +124,8 @@ class ManagementApiControllerTests {
     @Test
     fun `consumeLogEntries - calls through`() = runTest {
         /* Setup */
-        val dummyEvent = LogEvent(timestamp = 3,
+        val dummyEvent = LogEvent(
+            timestamp = 3,
             url = "url",
             requestBody = "body",
             requestHeaders = mapOf("a" to "b"),

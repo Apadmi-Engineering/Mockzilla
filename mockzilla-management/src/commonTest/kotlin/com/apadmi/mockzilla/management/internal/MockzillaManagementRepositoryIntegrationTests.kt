@@ -1,6 +1,6 @@
 @file:Suppress("MAGIC_NUMBER")
 
-package com.apadmi.mockzilla.management
+package com.apadmi.mockzilla.management.internal
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
@@ -110,7 +110,7 @@ class MockzillaManagementRepositoryIntegrationTests {
                 .build()
         ) { sut, connection, _ ->
             /* Run Test */
-            val preUpdateData = sut.fetchAllMockData(connection)
+            val preUpdateData = sut.fetchAllEndpointConfigs(connection)
             val entryToUpdate = preUpdateData.getOrThrow().last()
             val updateResult = sut.updateMockDataEntry(
                 SerializableEndpointConfigurationPatchRequestDto(
@@ -118,15 +118,15 @@ class MockzillaManagementRepositoryIntegrationTests {
                     shouldFail = SetOrDont.Set(true)
                 ), connection
             )
-            val postUpdateData = sut.fetchAllMockData(connection)
+            val postUpdateData = sut.fetchAllEndpointConfigs(connection)
 
             /* Verify */
             listOf(preUpdateData, updateResult, postUpdateData).forEach { assertTrue(it.isSuccess) }
             assertEquals(
-                listOf(false, false), preUpdateData.getOrThrow().map { it.shouldFail }
+                listOf(null, null), preUpdateData.getOrThrow().map { it.shouldFail }
             )
             assertEquals(
-                listOf(false, true),
+                listOf(null, true),
                 postUpdateData.getOrThrow().map { it.shouldFail }
             )
         }

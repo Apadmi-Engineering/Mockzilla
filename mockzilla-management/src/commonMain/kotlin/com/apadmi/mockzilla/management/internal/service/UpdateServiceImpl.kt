@@ -1,68 +1,88 @@
 package com.apadmi.mockzilla.management.internal.service
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
 import io.ktor.http.HttpStatusCode
-import kotlin.time.Duration
 
-internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository) : MockzillaManagement.UpdateService {
-    override fun setShouldFail(
+internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository) :
+    MockzillaManagement.UpdateService {
+    override suspend fun setShouldFail(
         connection: MockzillaConnectionConfig,
         key: String,
         shouldFail: Boolean
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointConfigurationPatchRequestDto(
+            key = key,
+            shouldFail = SetOrDont.Set(shouldFail)
+        ), connection
+    )
 
-    override fun setDelay(
+    override suspend fun setDelay(
         connection: MockzillaConnectionConfig,
         key: String,
-        delay: Duration?
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+        delayMs: Int?
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointConfigurationPatchRequestDto(
+            key = key,
+            delayMs = SetOrDont.Set(delayMs)
+        ), connection
+    )
 
-    override fun setHeaders(
+    override suspend fun setHeaders(
         connection: MockzillaConnectionConfig,
         key: String,
         header: Map<String, String>
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointConfigurationPatchRequestDto(
+            key = key,
+            headers = SetOrDont.Set(header)
+        ), connection
+    )
 
-    override fun setDefaultBody(
+    override suspend fun setDefaultBody(
         connection: MockzillaConnectionConfig,
         key: String,
         body: String
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointConfigurationPatchRequestDto(
+            key = key,
+            defaultBody = SetOrDont.Set(body)
+        ), connection
+    )
 
-    override fun setDefaultStatus(
+    override suspend fun setDefaultStatus(
         connection: MockzillaConnectionConfig,
         key: String,
         statusCode: HttpStatusCode
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointConfigurationPatchRequestDto(
+            key = key,
+            defaultStatus = SetOrDont.Set(statusCode)
+        ), connection
+    )
 
-    override fun setErrorBody(
+    override suspend fun setErrorBody(
         connection: MockzillaConnectionConfig,
         key: String,
         body: String
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointConfigurationPatchRequestDto(
+            key = key,
+            errorBody = SetOrDont.Set(body)
+        ), connection
+    )
 
-    override fun setErrorStatus(
+    override suspend fun setErrorStatus(
         connection: MockzillaConnectionConfig,
         key: String,
         statusCode: HttpStatusCode
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
-
-
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointConfigurationPatchRequestDto(
+            key = key,
+            errorStatus = SetOrDont.Set(statusCode)
+        ), connection
+    )
 }

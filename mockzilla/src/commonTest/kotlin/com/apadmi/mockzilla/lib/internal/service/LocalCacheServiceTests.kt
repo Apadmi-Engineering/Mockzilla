@@ -4,10 +4,10 @@ import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import io.ktor.http.HttpStatusCode
 
 import kotlin.test.Test
@@ -36,7 +36,7 @@ class LocalCacheServiceTests {
     @Test
     fun `updateLocalCache and getLocalCache - returns value`() = runTest {
         /* Setup */
-        val entryDummy = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1", "").copy(
+        val entryDummy = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1").copy(
             headers = SetOrDont.Set(mapOf("my" to "header"))
         )
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
@@ -74,11 +74,11 @@ class LocalCacheServiceTests {
     @Test
     fun `updateLocalCache and getLocalCache - some overridden values - returns correctly`() = runTest {
         /* Setup */
-        val initialCacheValue = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1", "").copy(
+        val initialCacheValue = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1").copy(
             shouldFail = SetOrDont.Set(true),
             errorStatus = SetOrDont.Set(HttpStatusCode.BadGateway)
         )
-        val cacheUpdate = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1", "").copy(
+        val cacheUpdate = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1").copy(
             shouldFail = SetOrDont.Set(false),
             defaultStatus = SetOrDont.Set(HttpStatusCode.Created)
         )

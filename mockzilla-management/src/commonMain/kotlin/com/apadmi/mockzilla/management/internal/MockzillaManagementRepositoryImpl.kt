@@ -22,8 +22,8 @@ import io.ktor.http.contentType
 
 interface MockzillaManagementRepository {
     suspend fun fetchMetaData(connection: MockzillaConnectionConfig): Result<MetaData>
-    suspend fun fetchAllMockData(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
-    suspend fun updateMockDataEntry(entry: SerializableEndpointConfigurationPatchRequestDto, connection: MockzillaConnectionConfig): Result<Unit>
+    suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
+    suspend fun updateMockDataEntry(entry: SerializableEndpointConfigurationPatchRequestDto, connection: MockzillaConnectionConfig): Result<SerializableEndpointConfig>
     suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig): Result<MonitorLogsResponse>
 }
 
@@ -43,7 +43,7 @@ MockzillaManagement.MetaDataService {
         Logger.v(tag = "Management", it) { "Request Failed: /api/meta" }
     }
 
-    override suspend fun fetchAllMockData(
+    override suspend fun fetchAllEndpointConfigs(
         connection: MockzillaConnectionConfig
     ) = runner<MockDataResponseDto> {
         get(connection, "/api/mock-data")
@@ -54,7 +54,7 @@ MockzillaManagement.MetaDataService {
     override suspend fun updateMockDataEntry(
         entry: SerializableEndpointConfigurationPatchRequestDto,
         connection: MockzillaConnectionConfig,
-    ) = runner<Unit> {
+    ) = runner<SerializableEndpointConfig> {
         post(connection, "/api/mock-data") {
             url {
                 appendPathSegments(entry.key)

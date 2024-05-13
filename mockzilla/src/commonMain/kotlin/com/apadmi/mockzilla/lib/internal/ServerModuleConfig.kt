@@ -3,16 +3,12 @@ package com.apadmi.mockzilla.lib.internal
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
-import com.apadmi.mockzilla.lib.internal.utils.*
 import com.apadmi.mockzilla.lib.internal.utils.allowCors
 import com.apadmi.mockzilla.lib.internal.utils.respondMockzilla
 import com.apadmi.mockzilla.lib.internal.utils.safeResponse
 import com.apadmi.mockzilla.lib.internal.utils.toMockzillaRequest
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -62,13 +58,12 @@ internal fun Application.configureEndpoints(
                 )
             }
         }
-        post("/api/mock-data/{id}") {
+        post("/api/mock-data/{key}") {
             di.logger.v { "Handling POST mock-data: ${call.request.uri}" }
             safeResponse(di.logger) {
-                val id = call.parameters["id"] ?: ""
-                di.managementApiController.updateEntry(id, call.receive())
+                val key = call.parameters["key"] ?: ""
                 call.allowCors()
-                call.respond(HttpStatusCode.NoContent)
+                call.respond(di.managementApiController.updateEntry(key, call.receive()))
             }
         }
         delete("/api/mock-data") {

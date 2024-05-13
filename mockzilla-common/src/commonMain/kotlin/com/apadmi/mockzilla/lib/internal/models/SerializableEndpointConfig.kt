@@ -51,7 +51,6 @@ data class SerializableEndpointConfig(
 /**
  * DTO for interaction with the web portal.
  *
- * @property name
  * @property key
  * @property shouldFail
  * @property delayMs
@@ -74,7 +73,7 @@ data class SerializableEndpointConfigurationPatchRequestDto(
     val errorStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
 ) {
     companion object {
-        fun allUnset(key: String, name: String) = SerializableEndpointConfigurationPatchRequestDto(
+        fun allUnset(key: String) = SerializableEndpointConfigurationPatchRequestDto(
             key = key,
             shouldFail = SetOrDont.DoNotSet,
             delayMs = SetOrDont.DoNotSet,

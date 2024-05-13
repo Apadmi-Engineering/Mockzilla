@@ -94,7 +94,7 @@ class WebPortalApiIntegrationTests {
             .build(),
         setup = { cacheService ->
             cacheService.updateLocalCache(
-                SerializableEndpointConfigurationPatchRequestDto.allUnset("id", "name"),
+                SerializableEndpointConfigurationPatchRequestDto.allUnset("id"),
                 EndpointConfiguration.Builder("id").build()
             )
         }
@@ -125,7 +125,7 @@ class WebPortalApiIntegrationTests {
                 contentType(ContentType.Application.Json)
                 setBody(
                     Json.encodeToString(
-                        SerializableEndpointConfigurationPatchRequestDto.allUnset("id", "id").copy(
+                        SerializableEndpointConfigurationPatchRequestDto.allUnset("id").copy(
                             defaultBody = SetOrDont.Set("hello"),
                             defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
                             headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
@@ -144,7 +144,11 @@ class WebPortalApiIntegrationTests {
                 cacheService.getLocalCache("id")
             )
             assertEquals(
-                HttpStatusCode.NoContent,
+                cacheService.getLocalCache("id"),
+                JsonProvider.json.decodeFromString<SerializableEndpointConfig>(response.bodyAsText())
+            )
+            assertEquals(
+                HttpStatusCode.OK,
                 response.status
             )
         }
