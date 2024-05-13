@@ -33,18 +33,6 @@ class WebPortalApiIntegrationTests {
             .setPort(0)  // Port determined at runtime
             .setDelayMillis(100)
             .addEndpoint(EndpointConfiguration.Builder("my-id")
-                .setWebApiDefaultResponse(
-                    MockzillaHttpResponse(
-                        statusCode = HttpStatusCode.Created,
-                        body = "my web api body"
-                    )
-                )
-                .setWebApiErrorResponse(
-                    MockzillaHttpResponse(
-                        body = "my web api error body",
-                        statusCode = HttpStatusCode.NotAcceptable
-                    )
-                )
                 .setDefaultHandler {
                     MockzillaHttpResponse(
                         HttpStatusCode.Created,

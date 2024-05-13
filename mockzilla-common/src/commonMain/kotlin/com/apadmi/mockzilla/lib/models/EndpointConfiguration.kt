@@ -119,9 +119,9 @@ data class EndpointConfiguration(
         @Deprecated("Obsolete, see `configureDashboardOverrides`", replaceWith = ReplaceWith("configureDashboardOverrides"))
         fun setWebApiErrorResponse(response: MockzillaHttpResponse) = this
 
-        fun configureDashboardOverrides(action: DashboardOverrides.Builder.() -> DashboardOverrides) =
+        fun configureDashboardOverrides(action: DashboardOverrides.Builder.() -> DashboardOverrides.Builder) =
             apply {
-                config = config.copy(dashboardOverrides = action(DashboardOverrides.Builder()))
+                config = config.copy(dashboardOverrides = action(DashboardOverrides.Builder()).build())
             }
 
         /**
@@ -228,7 +228,7 @@ class DashboardOverrides(
                 description,
                 response
             )
-        )
+        ).let { this }
 
         fun addErrorPreset(
             response: MockzillaHttpResponse,
@@ -240,7 +240,7 @@ class DashboardOverrides(
                 description,
                 response
             )
-        )
+        ).let { this }
 
         fun build() = DashboardOverrides(
             errorPresets = errorPresets,

@@ -10,11 +10,9 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-@OptIn(MockzillaWeb::class)
 private val getMyCow = EndpointConfiguration
     .Builder("cow")
     .setPatternMatcher { uri.endsWith("cow") }
-    .setWebApiDefaultResponse(MockzillaHttpResponse(body = Json.encodeToString(CowDto.empty)))
     .setDefaultHandler {
         MockzillaHttpResponse(
             body = Json.encodeToString(

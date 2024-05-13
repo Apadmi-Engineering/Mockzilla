@@ -10,16 +10,28 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-@OptIn(MockzillaWeb::class)
 private val getMyCow = EndpointConfiguration
     .Builder("cow")
     .setPatternMatcher { uri.endsWith("cow") }
-    .setWebApiDefaultResponse(
-        MockzillaHttpResponse(
-            body = Json.encodeToString(CowDto.empty),
-            headers = mapOf("Content-Type" to "application/json")
+    .configureDashboardOverrides {
+        addSuccessPreset(
+            MockzillaHttpResponse(
+                body = Json.encodeToString(CowDto.empty),
+                headers = mapOf("Content-Type" to "application/json")
+            ), name = "Cow preset 1", description = "A simple cow preset"
         )
-    )
+        addSuccessPreset(
+            MockzillaHttpResponse(
+                body = Json.encodeToString(CowDto.empty.copy(mooSample = "A VERY BIG MOO")),
+                headers = mapOf("Content-Type" to "application/json")
+            ), name = "Cow preset 2", description = "A cow preset with a big moo"
+        )
+        addErrorPreset(
+            MockzillaHttpResponse(
+                body = "Moooo something's gone mooosively wrong",
+            ), description = "A cow error"
+        )
+    }
     .setDefaultHandler {
         MockzillaHttpResponse(
             body = Json.encodeToString(
