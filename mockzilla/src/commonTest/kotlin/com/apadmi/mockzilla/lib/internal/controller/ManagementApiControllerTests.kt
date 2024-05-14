@@ -176,7 +176,7 @@ class ManagementApiControllerTests {
     }
 
     @Test
-    fun `getPresets - invalid key - throws exception`() {
+    fun `getDashboardConfig - invalid key - throws exception`() {
         /* Setup */
         val sut = ManagementApiController(
             dummyEndpoints,
@@ -186,12 +186,12 @@ class ManagementApiControllerTests {
 
         /* Run test & Verify */
         assertFails {
-            sut.getPresets(EndpointConfiguration.Key("random key"))
+            sut.getDashboardConfig(EndpointConfiguration.Key("random key"))
         }
     }
 
     @Test
-    fun `getPresets - valid key - returns correct presets`() {
+    fun `getDashboardConfig - valid key - returns correct presets`() {
         /* Setup */
         val sut = ManagementApiController(
             dummyEndpoints,
@@ -200,7 +200,7 @@ class ManagementApiControllerTests {
         )
 
         /* Run Test */
-        val result = sut.getPresets(EndpointConfiguration.Key("my-second-id"))
+        val result = sut.getDashboardConfig(EndpointConfiguration.Key("my-second-id"))
 
         /* Verify */
         assertEquals(

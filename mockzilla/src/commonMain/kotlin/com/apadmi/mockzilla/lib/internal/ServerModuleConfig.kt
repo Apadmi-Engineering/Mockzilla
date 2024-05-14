@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib.internal
 
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
+import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
@@ -60,14 +61,11 @@ internal fun Application.configureEndpoints(
                 )
             }
         }
-        get("/api/mock-data/{key}/presets") {
+        get("/api/mock-data/{key}/dashboard-config") {
             di.logger.v { "Handling GET mock-data presets: ${call.request.uri}" }
             safeResponse(di.logger) {
-                val key = call.parameters["key"]?.takeUnless {
-                    it.isBlank()
-                }?.let { EndpointConfiguration.Key(it) } ?: throw Exception("No key found in URL")
                 call.allowCors()
-                call.respond(di.managementApiController.getPresets(key))
+                call.respond(di.managementApiController.getDashboardConfig(call.extractKey()))
             }
         }
         patch("/api/mock-data") {
@@ -79,10 +77,18 @@ internal fun Application.configureEndpoints(
                 call.respond(HttpStatusCode.Created)
             }
         }
-        delete("/api/mock-data") {
+        delete("/api/mock-data/all") {
             di.logger.v { "Handling DELETE mock-data: ${call.request.uri}" }
             safeResponse(di.logger) {
                 di.managementApiController.clearAllCaches()
+                call.allowCors()
+                call.respond(HttpStatusCode.NoContent)
+            }
+        }
+        delete("/api/mock-data") {
+            di.logger.v { "Handling DELETE mock-data: ${call.request.uri}" }
+            safeResponse(di.logger) {
+                di.managementApiController.clearCache(call.receive<ClearCachesRequestDto>().keys)
                 call.allowCors()
                 call.respond(HttpStatusCode.NoContent)
             }
@@ -112,3 +118,7 @@ internal fun Application.configureEndpoints(
         }
     }
 }
+
+private fun ApplicationCall.extractKey() = parameters["key"]?.takeUnless {
+    it.isBlank()
+}?.let { EndpointConfiguration.Key(it) } ?: throw Exception("No key found in URL")

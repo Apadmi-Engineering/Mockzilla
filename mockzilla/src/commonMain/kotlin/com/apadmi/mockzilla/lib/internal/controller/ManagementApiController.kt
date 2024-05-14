@@ -30,15 +30,13 @@ internal class ManagementApiController(
             ?: SerializableEndpointConfig.allNulls(config.key, config.name, config.versionCode)
     }
 
-    fun getPresets(key: EndpointConfiguration.Key): DashboardOptionsConfig {
+    fun getDashboardConfig(key: EndpointConfiguration.Key): DashboardOptionsConfig {
         val endpoint =
-            endpoints.firstOrNull { it.key == key } ?: throw Exception("No such endpoint: $key")
+            endpoints.firstOrNull { it.key == key } ?: throw Exception("No such endpoint: ${key.raw}")
         return endpoint.dashboardOptionsConfig
     }
 
-    suspend fun clearAllCaches() {
-        localCacheService.clearAllCaches()
-    }
-
+    suspend fun clearAllCaches() = localCacheService.clearAllCaches()
+    suspend fun clearCache(key: List<EndpointConfiguration.Key>) = localCacheService.clearCache(key)
     suspend fun consumeLogEntries() = monitor.consumeCurrentLogs()
 }

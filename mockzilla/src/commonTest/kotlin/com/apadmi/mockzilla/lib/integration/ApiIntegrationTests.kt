@@ -26,7 +26,7 @@ import kotlinx.serialization.json.Json
     "MAGIC_NUMBER",
     "TOO_MANY_LINES_IN_LAMBDA"
 )
-class WebPortalApiIntegrationTests {
+class ApiIntegrationTests {
     @Test
     fun `GET mock-data - returns as expected`() = runIntegrationTest(
         MockzillaConfig.Builder()
@@ -76,7 +76,7 @@ class WebPortalApiIntegrationTests {
     }
 
     @Test
-    fun `GET mock-data presets - returns as expected`() = runIntegrationTest(
+    fun `GET dashboard-config presets - returns as expected`() = runIntegrationTest(
         MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
             .setDelayMillis(100)
@@ -95,7 +95,7 @@ class WebPortalApiIntegrationTests {
             .build()
     ) { params, _ ->
         /* Run Test */
-        val response = HttpClient(CIO).get("${params.apiBaseUrl}/mock-data/my-id/presets")
+        val response = HttpClient(CIO).get("${params.apiBaseUrl}/mock-data/my-id/dashboard-config")
 
         /* Verify */
         assertEquals(
@@ -134,8 +134,59 @@ class WebPortalApiIntegrationTests {
             )
         }
     ) { params, cacheService ->
+        /* Setup */
+        cacheService.patchLocalCaches(
+            mapOf(
+                EndpointConfiguration.Builder("id").build() to SerializableEndpointPatchItemDto(
+                    EndpointConfiguration.Key("id"), delayMs = SetOrDont.Set(1442)
+                )
+            )
+        )
+        check(cacheService.getLocalCache(EndpointConfiguration.Key("id")) != null)
+
         /* Run Test */
-        val response = HttpClient(CIO).delete("${params.apiBaseUrl}/mock-data")
+        val response = HttpClient(CIO).delete("${params.apiBaseUrl}/mock-data/all")
+
+        /* Verify */
+        assertNull(cacheService.getLocalCache(EndpointConfiguration.Key("id")))
+        assertEquals(
+            HttpStatusCode.NoContent,
+            response.status
+        )
+    }
+
+    @Test
+    fun `DELETE mock-data specific key - clears caches as expected`() = runIntegrationTest(
+        MockzillaConfig.Builder()
+            .setPort(0)  // Port determined at runtime
+            .addEndpoint(EndpointConfiguration.Builder("id"))
+            .build(),
+        setup = { cacheService ->
+            cacheService.patchLocalCaches(
+                mapOf(
+                    EndpointConfiguration.Builder("id").build() to
+                            SerializableEndpointPatchItemDto.allUnset("id")
+                )
+            )
+        }
+    ) { params, cacheService ->
+        /* Setup */
+        cacheService.patchLocalCaches(
+            mapOf(
+                EndpointConfiguration.Builder("id").build() to SerializableEndpointPatchItemDto(
+                    EndpointConfiguration.Key("id"), delayMs = SetOrDont.Set(1442)
+                )
+            )
+        )
+        check(cacheService.getLocalCache(EndpointConfiguration.Key("id")) != null)
+
+        /* Run Test */
+        val response = HttpClient(CIO).delete("${params.apiBaseUrl}/mock-data") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                Json.encodeToString(ClearCachesRequestDto(listOf(EndpointConfiguration.Key("id"))))
+            )
+        }
 
         /* Verify */
         assertNull(cacheService.getLocalCache(EndpointConfiguration.Key("id")))

@@ -31,9 +31,6 @@ fileprivate extension MockzillaConfig {
                 .setSwiftPatternMatcher {
                     $0.uri.hasSuffix("cow")
                 }
-                .setWebApiDefaultResponse(response: MockzillaHttpResponse(
-                    body: CowDto.empty.toJson())
-                )
                 .setErrorHandler { _ in
                     MockzillaHttpResponse(status: HttpStatusCode.InternalServerError)
                 }
