@@ -1,10 +1,11 @@
 package com.apadmi.mockzilla.lib.internal.service
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import co.touchlab.kermit.Logger
 
@@ -13,9 +14,11 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.encodeToString
 
 internal interface LocalCacheService {
-    suspend fun getLocalCache(endpointKey: String): SerializableEndpointConfig?
+    suspend fun getLocalCache(endpointKey: EndpointConfiguration.Key): SerializableEndpointConfig?
     suspend fun clearAllCaches()
-    suspend fun updateLocalCache(entry: SerializableEndpointConfigurationPatchRequestDto)
+    suspend fun patchLocalCaches(
+        patches: Map<EndpointConfiguration, SerializableEndpointPatchItemDto>,
+    )
 }
 
 internal class LocalCacheServiceImpl(
@@ -24,8 +27,8 @@ internal class LocalCacheServiceImpl(
 ) : LocalCacheService {
     private val lock = Mutex()
 
-    private val SerializableEndpointConfigurationPatchRequestDto.fileName get() = key.fileName
-    private val String.fileName get() = "${this}.json"
+    private val SerializableEndpointPatchItemDto.fileName get() = key.fileName
+    private val EndpointConfiguration.Key.fileName get() = "$raw.json"
 
     private fun parseException(cause: Throwable) = IllegalStateException(
         """
@@ -38,13 +41,13 @@ internal class LocalCacheServiceImpl(
     )
 
     override suspend fun getLocalCache(
-        endpointKey: String,
+        endpointKey: EndpointConfiguration.Key,
     ): SerializableEndpointConfig? = lock.withLock {
         getLocalCacheUnlocked(endpointKey)
     }
 
     private suspend fun getLocalCacheUnlocked(
-        endpointKey: String
+        endpointKey: EndpointConfiguration.Key
     ) = fileIo.readFromCache(endpointKey.fileName)?.let {
         try {
             JsonProvider.json.decodeFromString<SerializableEndpointConfig>(it)
@@ -59,24 +62,30 @@ internal class LocalCacheServiceImpl(
         fileIo.deleteAllCaches()
     }
 
-    override suspend fun updateLocalCache(entry: SerializableEndpointConfigurationPatchRequestDto) = lock.withLock {
-        logger.v { "Writing to cache ${entry.key} - $entry" }
+    override suspend fun patchLocalCaches(
+        patches: Map<EndpointConfiguration, SerializableEndpointPatchItemDto>,
+    ) = lock.withLock {
+        patches.forEach { (patch, endpoint) -> patchLocalCache(patch, endpoint) }
+    }
 
-        val currentCache = getLocalCacheUnlocked(entry.key) ?: SerializableEndpointConfig.allNulls(
-            key = entry.key, name = entry.name
+    private suspend fun patchLocalCache(endpoint: EndpointConfiguration, patch: SerializableEndpointPatchItemDto) {
+        logger.v { "Writing to cache ${patch.key} - $patch" }
+        val currentCache = getLocalCacheUnlocked(patch.key) ?: SerializableEndpointConfig.allNulls(
+            key = patch.key, name = endpoint.name
         )
 
         val newCache = currentCache.copy(
-            shouldFail = entry.shouldFail.valueOrDefault(currentCache.shouldFail),
-            delayMs = entry.delayMs.valueOrDefault(currentCache.delayMs),
-            headers = entry.headers.valueOrDefault(currentCache.headers),
-            defaultBody = entry.defaultBody.valueOrDefault(currentCache.defaultBody),
-            defaultStatus = entry.defaultStatus.valueOrDefault(currentCache.defaultStatus),
-            errorBody = entry.errorBody.valueOrDefault(currentCache.errorBody),
-            errorStatus = entry.errorStatus.valueOrDefault(currentCache.errorStatus)
+            shouldFail = patch.shouldFail.valueOrDefault(currentCache.shouldFail),
+            delayMs = patch.delayMs.valueOrDefault(currentCache.delayMs),
+            defaultHeaders = patch.headers.valueOrDefault(currentCache.defaultHeaders),
+            defaultBody = patch.defaultBody.valueOrDefault(currentCache.defaultBody),
+            defaultStatus = patch.defaultStatus.valueOrDefault(currentCache.defaultStatus),
+            errorBody = patch.errorBody.valueOrDefault(currentCache.errorBody),
+            errorHeaders = patch.errorHeaders.valueOrDefault(currentCache.errorHeaders),
+            errorStatus = patch.errorStatus.valueOrDefault(currentCache.errorStatus)
 
         )
-        fileIo.saveToCache(entry.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfig>(newCache))
+        fileIo.saveToCache(patch.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfig>(newCache))
     }
 
     private fun <T> SetOrDont<T?>?.valueOrDefault(default: T): T = when (this) {

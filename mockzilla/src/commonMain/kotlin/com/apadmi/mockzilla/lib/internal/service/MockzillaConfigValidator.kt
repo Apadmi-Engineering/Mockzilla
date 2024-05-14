@@ -7,7 +7,6 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 
 internal object Constants {
     const val maxDelayMean = Int.MAX_VALUE / 2 - 1
-    const val maxDelayVariance = Int.MAX_VALUE / 2 - 1
     const val errorPrefix = "Invalid Config:"
     const val invalidEndpointIdChars = "/\\:*"
 }
@@ -23,10 +22,10 @@ internal fun MockzillaConfig.validate() {
 }
 
 private fun EndpointConfiguration.validate() {
-    check(key.isNotBlank()) {
+    check(key.raw.isNotBlank()) {
         "$errorPrefix Endpoints must have non blank keys"
     }
-    check(key.none { invalidEndpointIdChars.contains(it) }) {
+    check(key.raw.none { invalidEndpointIdChars.contains(it) }) {
         "Endpoint IDs cannot contain any of the following characters: $invalidEndpointIdChars"
     }
     check((0..Constants.maxDelayMean).contains(delay)) {

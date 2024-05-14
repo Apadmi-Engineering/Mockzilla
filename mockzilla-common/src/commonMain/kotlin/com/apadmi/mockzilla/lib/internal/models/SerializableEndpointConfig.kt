@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib.internal.models
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import io.ktor.http.*
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.KSerializer
@@ -16,42 +17,45 @@ import kotlinx.serialization.encoding.Encoder
  * @property name
  * @property shouldFail
  * @property delayMs
- * @property headers
+ * @property defaultHeaders
  * @property defaultBody
  * @property defaultStatus
  * @property errorBody
  * @property errorStatus
+ * @property errorHeaders
  */
 @Serializable
 data class SerializableEndpointConfig(
-    val key: String,
+    val key: EndpointConfiguration.Key,
     val name: String,
     val shouldFail: Boolean?,
     val delayMs: Int?,
-    val headers: Map<String, String>?,
+    val defaultHeaders: Map<String, String>?,
     val defaultBody: String?,
     val defaultStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
+    val errorHeaders: Map<String, String>?,
     val errorBody: String?,
     val errorStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
 ) {
     companion object {
-        fun allNulls(key: String, name: String) = SerializableEndpointConfig(
+        fun allNulls(key: EndpointConfiguration.Key, name: String) = SerializableEndpointConfig(
             key = key, name = name,
             shouldFail = null,
             delayMs = null,
-            headers = null,
+            defaultHeaders = null,
             defaultBody = null,
             defaultStatus = null,
             errorBody = null,
+            errorHeaders = null,
             errorStatus = null,
         )
+        fun allNulls(key: String, name: String) = allNulls(EndpointConfiguration.Key(key), name)
     }
 }
 
 /**
  * DTO for interaction with the web portal.
  *
- * @property name
  * @property key
  * @property shouldFail
  * @property delayMs
@@ -60,24 +64,26 @@ data class SerializableEndpointConfig(
  * @property errorBody
  * @property errorStatus
  * @property defaultStatus
+ * @property errorHeaders
  */
 @Suppress("TYPE_ALIAS")
 @Serializable
-data class SerializableEndpointConfigurationPatchRequestDto(
-    val key: String,
-    val name: String,
+data class SerializableEndpointPatchItemDto(
+    val key: EndpointConfiguration.Key,
     val shouldFail: SetOrDont<Boolean?> = SetOrDont.DoNotSet,
     val delayMs: SetOrDont<Int?> = SetOrDont.DoNotSet,
     val headers: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
     val defaultBody: SetOrDont<String?> = SetOrDont.DoNotSet,
     val defaultStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
     val errorBody: SetOrDont<String?> = SetOrDont.DoNotSet,
+    val errorHeaders: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
     val errorStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
 ) {
     companion object {
-        fun allUnset(key: String, name: String) = SerializableEndpointConfigurationPatchRequestDto(
+        fun allUnset(key: String) = allUnset(EndpointConfiguration.Key(key))
+
+        fun allUnset(key: EndpointConfiguration.Key) = SerializableEndpointPatchItemDto(
             key = key,
-            name = name,
             shouldFail = SetOrDont.DoNotSet,
             delayMs = SetOrDont.DoNotSet,
             headers = SetOrDont.DoNotSet,
@@ -87,16 +93,15 @@ data class SerializableEndpointConfigurationPatchRequestDto(
             errorStatus = SetOrDont.DoNotSet,
         )
 
-        fun allSet(mockDataEntry: SerializableEndpointConfig) = SerializableEndpointConfigurationPatchRequestDto(
-            key = mockDataEntry.key,
-            name = mockDataEntry.name,
-            shouldFail = SetOrDont.Set(mockDataEntry.shouldFail),
-            delayMs = SetOrDont.Set(mockDataEntry.delayMs),
-            headers = SetOrDont.Set(mockDataEntry.headers),
-            defaultBody = SetOrDont.Set(mockDataEntry.defaultBody),
-            defaultStatus = SetOrDont.Set(mockDataEntry.defaultStatus),
-            errorBody = SetOrDont.Set(mockDataEntry.errorBody),
-            errorStatus = SetOrDont.Set(mockDataEntry.errorStatus),
+        fun allSet(config: SerializableEndpointConfig) = SerializableEndpointPatchItemDto(
+            key = config.key,
+            shouldFail = SetOrDont.Set(config.shouldFail),
+            delayMs = SetOrDont.Set(config.delayMs),
+            headers = SetOrDont.Set(config.defaultHeaders),
+            defaultBody = SetOrDont.Set(config.defaultBody),
+            defaultStatus = SetOrDont.Set(config.defaultStatus),
+            errorBody = SetOrDont.Set(config.errorBody),
+            errorStatus = SetOrDont.Set(config.errorStatus),
 
         )
     }
@@ -109,6 +114,17 @@ data class SerializableEndpointConfigurationPatchRequestDto(
 data class MockDataResponseDto(
     val entries: List<SerializableEndpointConfig>
 )
+
+/**
+ * @property entries
+ */
+@Serializable
+data class SerializableEndpointConfigPatchRequestDto(
+    val entries: List<SerializableEndpointPatchItemDto>
+) {
+    constructor(entry: SerializableEndpointPatchItemDto) : this(listOf(entry))
+}
+
 @Serializable(with = ServiceResultSerializer::class)
 sealed class SetOrDont<out T> {
     @Serializable

@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib.service
 
-@RequiresOptIn(message = "Mockzilla's web interface and everything surrounding it is legacy, awaiting rewriting. This feature is likely to change.")
+@RequiresOptIn(message = "Web portal is now not supported. This is obsolete and will soon be removed")
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Deprecated("Web api is no longer used, see ")
 annotation class MockzillaWeb

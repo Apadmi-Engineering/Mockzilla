@@ -1,11 +1,11 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
+import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import io.ktor.http.HttpStatusCode
 
 internal class ManagementApiController(
     private val endpoints: List<EndpointConfiguration>,
@@ -13,26 +13,27 @@ internal class ManagementApiController(
     private val monitor: MockServerMonitor,
 ) {
     @Throws(IllegalStateException::class)
-    suspend fun updateEntry(key: String, entry: SerializableEndpointConfigurationPatchRequestDto) {
-        check(key == entry.key) { "Endpoint key mismatch, $key does not match ${entry.key}" }
-        localCacheService.updateLocalCache(entry)
+    suspend fun patchEntries(
+        patches: List<SerializableEndpointPatchItemDto>
+    ) {
+        val endpointsToPatches = patches.associateBy { patch ->
+            endpoints.firstOrNull {
+                it.key == patch.key
+            } ?: throw IllegalStateException("No endpoint with key ${patch.key}")
+        }
+
+        localCacheService.patchLocalCaches(endpointsToPatches)
     }
 
     suspend fun getAllMockDataEntries() = endpoints.map { config ->
-        localCacheService.getLocalCache(config.key) ?: run {
-            // TODO: This will be updated once the more sophisticated mechanisms of configuring the
-            // mock data are implemented
-            SerializableEndpointConfig(
-                config.key, config.name,
-                shouldFail = config.shouldFail,
-                delayMs = config.delay,
-                headers = config.webApiDefaultResponse?.headers ?: emptyMap(),
-                defaultBody = config.webApiDefaultResponse?.body ?: "{}",
-                defaultStatus = config.webApiDefaultResponse?.statusCode ?: HttpStatusCode.OK,
-                errorBody = config.webApiErrorResponse?.body ?: "{}",
-                errorStatus = config.webApiErrorResponse?.statusCode ?: HttpStatusCode.InternalServerError,
-            )
-        }
+        localCacheService.getLocalCache(config.key)
+            ?: SerializableEndpointConfig.allNulls(config.key, config.name)
+    }
+
+    fun getPresets(key: EndpointConfiguration.Key): DashboardOptionsConfig {
+        val endpoint =
+            endpoints.firstOrNull { it.key == key } ?: throw Exception("No such endpoint: $key")
+        return endpoint.dashboardOptionsConfig
     }
 
     suspend fun clearAllCaches() {

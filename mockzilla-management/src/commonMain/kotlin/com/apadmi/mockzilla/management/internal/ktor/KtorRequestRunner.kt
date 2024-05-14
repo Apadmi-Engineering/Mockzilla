@@ -7,7 +7,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
-import io.ktor.client.request.post
+import io.ktor.client.request.patch
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
@@ -49,11 +49,11 @@ internal suspend inline fun HttpClient.get(
     block()
 }
 
-internal suspend inline fun HttpClient.post(
+internal suspend inline fun HttpClient.patch(
     connection: MockzillaConnectionConfig,
     path: String,
     block: HttpRequestBuilder.() -> Unit = {}
-): HttpResponse = post {
+): HttpResponse = patch {
     url(connection.url(path))
     block()
 }

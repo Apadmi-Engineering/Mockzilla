@@ -47,7 +47,9 @@ class LocalMockControllerTests {
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(null)
+        given(localCacheServiceMock).coroutine {
+            getLocalCache(EndpointConfiguration.Key("my-id"))
+        }.thenReturn(null)
 
         /* Run Test */
         val response = sut.handleRequest(
@@ -77,16 +79,17 @@ class LocalMockControllerTests {
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(
+        given(localCacheServiceMock).coroutine { getLocalCache(EndpointConfiguration.Key("my-id")) }.thenReturn(
             SerializableEndpointConfig(
-                key = "my-id",
+                key = EndpointConfiguration.Key("my-id"),
                 name = "my-id",
                 shouldFail = true,
                 delayMs = 0,
-                headers = emptyMap(),
+                defaultHeaders = emptyMap(),
                 defaultBody = "",
                 defaultStatus = HttpStatusCode.OK,
                 errorBody = "",
+                errorHeaders = emptyMap(),
                 errorStatus = HttpStatusCode.InternalServerError,
             )
         )

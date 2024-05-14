@@ -1,11 +1,12 @@
 package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepositoryImpl
 import com.apadmi.mockzilla.management.internal.service.UpdateServiceImpl
-import kotlin.time.Duration
+import io.ktor.http.HttpStatusCode
 
 interface MockzillaManagement {
     /**
@@ -18,10 +19,47 @@ interface MockzillaManagement {
     val logsService: LogsService
 
     interface UpdateService {
-        fun setShouldFail(connection: MockzillaConnectionConfig, shouldFail: Boolean)
-        fun setDelay(connection: MockzillaConnectionConfig, delay: Duration?)
+        suspend fun setShouldFail(
+            connection: MockzillaConnectionConfig,
+            keys: List<EndpointConfiguration.Key>,
+            shouldFail: Boolean
+        ): Result<Unit>
+        suspend fun setDelay(
+            connection: MockzillaConnectionConfig,
+            keys: List<EndpointConfiguration.Key>,
+            delayMs: Int?
+        ): Result<Unit>
 
-        // TODO: Fill this out
+        suspend fun setDefaultHeaders(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key,
+            headers: Map<String, String>
+        ): Result<Unit>
+        suspend fun setDefaultBody(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key,
+            body: String
+        ): Result<Unit>
+        suspend fun setDefaultStatus(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key,
+            statusCode: HttpStatusCode
+        ): Result<Unit>
+        suspend fun setErrorBody(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key,
+            body: String
+        ): Result<Unit>
+        suspend fun setErrorHeaders(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key,
+            headers: Map<String, String>
+        ): Result<Unit>
+        suspend fun setErrorStatus(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key,
+            statusCode: HttpStatusCode
+        ): Result<Unit>
     }
 
     interface MetaDataService {

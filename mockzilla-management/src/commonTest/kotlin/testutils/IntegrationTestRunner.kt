@@ -30,12 +30,12 @@ internal fun <Sut> runIntegrationTest(
     testBlock: TestBlock<Sut>
 ) = runBlocking {
     /* Setup */
-    val sut = MockzillaManagementRepositoryImpl.create(logger = Logger.SIMPLE)
+    val repo = MockzillaManagementRepositoryImpl.create(logger = Logger.SIMPLE)
     val runtimeParams = startMockzilla(appName, appVersion, config)
 
     /* Run Test */
     testBlock(
-        createSut(sut),
+        createSut(repo),
         MockzillaConnectionConfigImpl("127.0.0.1", port = runtimeParams.port.toString()),
         runtimeParams
     )
