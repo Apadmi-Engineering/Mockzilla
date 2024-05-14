@@ -15,6 +15,7 @@ import kotlinx.serialization.Serializable
  * @property shouldFail
  * @property delay
  * @property endpointMatcher
+ * @property versionCode
  * @property defaultHandler
  * @property errorHandler
  * @property dashboardOptionsConfig
@@ -25,6 +26,7 @@ data class EndpointConfiguration(
     val shouldFail: Boolean,
     val delay: Int? = null,
     val dashboardOptionsConfig: DashboardOptionsConfig,
+    val versionCode: Int,
     val endpointMatcher: MockzillaHttpRequest.() -> Boolean,
     val defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     val errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
@@ -46,6 +48,7 @@ data class EndpointConfiguration(
             endpointMatcher = { uri.endsWith(key) },
             shouldFail = false,
             dashboardOptionsConfig = DashboardOptionsConfig(emptyList(), emptyList()),
+            versionCode = Int.MIN_VALUE,
             defaultHandler = {
                 MockzillaHttpResponse(HttpStatusCode.OK)
             }, errorHandler = {
@@ -118,7 +121,10 @@ data class EndpointConfiguration(
          * @param response
          */
         @MockzillaWeb
-        @Deprecated("Obsolete, see `configureDashboardOverrides`", replaceWith = ReplaceWith("configureDashboardOverrides"))
+        @Deprecated(
+            "Obsolete, see `configureDashboardOverrides`",
+            replaceWith = ReplaceWith("configureDashboardOverrides")
+        )
         fun setWebApiDefaultResponse(response: MockzillaHttpResponse) = this
 
         /**
@@ -127,13 +133,31 @@ data class EndpointConfiguration(
          * @param response
          */
         @MockzillaWeb
-        @Deprecated("Obsolete, see `configureDashboardOverrides`", replaceWith = ReplaceWith("configureDashboardOverrides"))
+        @Deprecated(
+            "Obsolete, see `configureDashboardOverrides`",
+            replaceWith = ReplaceWith("configureDashboardOverrides")
+        )
         fun setWebApiErrorResponse(response: MockzillaHttpResponse) = this
 
-        fun configureDashboardOverrides(action: DashboardOptionsConfig.Builder.() -> DashboardOptionsConfig.Builder) =
-            apply {
-                config = config.copy(dashboardOptionsConfig = action(DashboardOptionsConfig.Builder()).build())
-            }
+        /**
+         * Configure the presets that are available to users of the dashboard.
+         *
+         * @param action
+         * @return
+         */
+        fun configureDashboardOverrides(
+            action: DashboardOptionsConfig.Builder.() -> DashboardOptionsConfig.Builder
+        ) = apply {
+            config = config.copy(dashboardOptionsConfig = action(DashboardOptionsConfig.Builder()).build())
+        }
+
+        /**
+         * Sets the version this endpoint is currently set to. A change in the version code will
+         * automatically clear any caches on the device associated with this endpoint.
+         */
+        fun setVersionCode(code: Int) = apply {
+            config = config.copy(versionCode = code)
+        }
 
         /**
          * Specifies whether Mockzilla should map a network request to this endpoint.

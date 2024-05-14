@@ -66,6 +66,7 @@ class WebPortalApiIntegrationTests {
                         SerializableEndpointConfig.allNulls(
                             name = "my-id",
                             key = "my-id",
+                            versionCode = Int.MIN_VALUE
                         )
                     )
                 )
@@ -145,7 +146,7 @@ class WebPortalApiIntegrationTests {
     }
 
     @Test
-    fun `POST mock-data - updates cache as expected`() =
+    fun `PATCH mock-data - updates cache as expected`() =
         runIntegrationTest(
             MockzillaConfig.Builder()
                 .setPort(0)  // Port determined at runtime
@@ -176,7 +177,7 @@ class WebPortalApiIntegrationTests {
                 response.status
             )
             assertEquals(
-                SerializableEndpointConfig.allNulls("id", "id").copy(
+                SerializableEndpointConfig.allNulls("id", "id", Int.MIN_VALUE).copy(
                     defaultBody = "hello",
                     defaultStatus = HttpStatusCode.NoContent,
                     defaultHeaders = mapOf("Content-Type" to "application/json")

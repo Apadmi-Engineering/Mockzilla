@@ -83,6 +83,7 @@ class LocalMockControllerTests {
             SerializableEndpointConfig(
                 key = EndpointConfiguration.Key("my-id"),
                 name = "my-id",
+                versionCode = 0,
                 shouldFail = true,
                 delayMs = 0,
                 defaultHeaders = emptyMap(),
