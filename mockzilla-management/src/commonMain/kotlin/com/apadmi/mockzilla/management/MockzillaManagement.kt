@@ -28,7 +28,7 @@ interface MockzillaManagement {
     }
 
     interface EndpointsService {
-        suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig,): Result<List<SerializableEndpointConfig>>
+        suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
         suspend fun fetchDashboardOptionsConfig(connection: MockzillaConnectionConfig, key: EndpointConfiguration.Key): Result<DashboardOptionsConfig>
     }
 
