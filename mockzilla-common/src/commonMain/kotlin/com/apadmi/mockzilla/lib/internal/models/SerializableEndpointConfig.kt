@@ -23,11 +23,13 @@ import kotlinx.serialization.encoding.Encoder
  * @property errorBody
  * @property errorStatus
  * @property errorHeaders
+ * @property versionCode
  */
 @Serializable
 data class SerializableEndpointConfig(
     val key: EndpointConfiguration.Key,
     val name: String,
+    val versionCode: Int,
     val shouldFail: Boolean?,
     val delayMs: Int?,
     val defaultHeaders: Map<String, String>?,
@@ -38,8 +40,14 @@ data class SerializableEndpointConfig(
     val errorStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
 ) {
     companion object {
-        fun allNulls(key: EndpointConfiguration.Key, name: String) = SerializableEndpointConfig(
-            key = key, name = name,
+        fun allNulls(
+            key: EndpointConfiguration.Key,
+            name: String,
+            versionCode: Int
+        ) = SerializableEndpointConfig(
+            key = key,
+            name = name,
+            versionCode = versionCode,
             shouldFail = null,
             delayMs = null,
             defaultHeaders = null,
@@ -49,7 +57,11 @@ data class SerializableEndpointConfig(
             errorHeaders = null,
             errorStatus = null,
         )
-        fun allNulls(key: String, name: String) = allNulls(EndpointConfiguration.Key(key), name)
+        fun allNulls(
+            key: String,
+            name: String,
+            versionCode: Int
+        ) = allNulls(EndpointConfiguration.Key(key), name, versionCode)
     }
 }
 

@@ -16,6 +16,7 @@ import kotlinx.serialization.encodeToString
 internal interface LocalCacheService {
     suspend fun getLocalCache(endpointKey: EndpointConfiguration.Key): SerializableEndpointConfig?
     suspend fun clearAllCaches()
+    suspend fun clearCache(key: EndpointConfiguration.Key)
     suspend fun patchLocalCaches(
         patches: Map<EndpointConfiguration, SerializableEndpointPatchItemDto>,
     )
@@ -25,8 +26,6 @@ internal class LocalCacheServiceImpl(
     private val fileIo: FileIo,
     private val logger: Logger,
 ) : LocalCacheService {
-    private val lock = Mutex()
-
     private val SerializableEndpointPatchItemDto.fileName get() = key.fileName
     private val EndpointConfiguration.Key.fileName get() = "$raw.json"
 
@@ -62,6 +61,15 @@ internal class LocalCacheServiceImpl(
         fileIo.deleteAllCaches()
     }
 
+    override suspend fun clearCache(key: EndpointConfiguration.Key) = lock.withLock {
+        clearCacheUnlocked(key)
+    }
+
+    private suspend fun clearCacheUnlocked(key: EndpointConfiguration.Key) {
+        logger.v { "Clearing cache for ${key.raw}" }
+        fileIo.deleteCacheFile(key.fileName)
+    }
+
     override suspend fun patchLocalCaches(
         patches: Map<EndpointConfiguration, SerializableEndpointPatchItemDto>,
     ) = lock.withLock {
@@ -71,10 +79,12 @@ internal class LocalCacheServiceImpl(
     private suspend fun patchLocalCache(endpoint: EndpointConfiguration, patch: SerializableEndpointPatchItemDto) {
         logger.v { "Writing to cache ${patch.key} - $patch" }
         val currentCache = getLocalCacheUnlocked(patch.key) ?: SerializableEndpointConfig.allNulls(
-            key = patch.key, name = endpoint.name
+            key = patch.key, name = endpoint.name, versionCode = endpoint.versionCode
         )
 
         val newCache = currentCache.copy(
+            name = endpoint.name,
+            versionCode = endpoint.versionCode,
             shouldFail = patch.shouldFail.valueOrDefault(currentCache.shouldFail),
             delayMs = patch.delayMs.valueOrDefault(currentCache.delayMs),
             defaultHeaders = patch.headers.valueOrDefault(currentCache.defaultHeaders),
@@ -88,9 +98,26 @@ internal class LocalCacheServiceImpl(
         fileIo.saveToCache(patch.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfig>(newCache))
     }
 
+    suspend fun clearStaleCaches(endpoints: List<EndpointConfiguration>) = lock.withLock {
+        endpoints.filter { endpoint ->
+            val cache = getLocalCacheUnlocked(endpoint.key)
+            cache != null && cache.versionCode != endpoint.versionCode
+        }.apply {
+            if (isEmpty()) {
+                logger.v { "No caches to clear" }
+            } else {
+                logger.v { "Clearing stale caches" }
+            }
+        }.forEach { clearCacheUnlocked(it.key) }
+    }
+
     private fun <T> SetOrDont<T?>?.valueOrDefault(default: T): T = when (this) {
         is SetOrDont.Set -> value ?: default
         null,
         SetOrDont.DoNotSet -> default
+    }
+
+    companion object {
+        private val lock = Mutex()
     }
 }

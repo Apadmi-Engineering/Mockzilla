@@ -84,7 +84,7 @@ class ManagementApiControllerTests {
     @Test
     fun `getAllMockDataEntries - replaces cached data - calls through`() = runTest {
         /* Setup */
-        val dummyCacheEntry = SerializableEndpointConfig.allNulls("my-id", "id").copy(
+        val dummyCacheEntry = SerializableEndpointConfig.allNulls("my-id", "id", 0).copy(
             defaultBody = "my cached value"
         )
         given(localCacheServiceMock).coroutine {
@@ -104,7 +104,7 @@ class ManagementApiControllerTests {
         assertEquals(
             listOf(
                 dummyCacheEntry,
-                SerializableEndpointConfig.allNulls("my-second-id", "my-second-id")
+                SerializableEndpointConfig.allNulls("my-second-id", "my-second-id", Int.MIN_VALUE)
             ),
             result
         )
