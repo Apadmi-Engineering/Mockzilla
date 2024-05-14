@@ -30,7 +30,7 @@ internal class ManagementApiController(
             ?: SerializableEndpointConfig.allNulls(config.key, config.name)
     }
 
-    fun getPresets(key: String): DashboardOptionsConfig {
+    fun getPresets(key: EndpointConfiguration.Key): DashboardOptionsConfig {
         val endpoint =
             endpoints.firstOrNull { it.key == key } ?: throw Exception("No such endpoint: $key")
         return endpoint.dashboardOptionsConfig

@@ -24,7 +24,7 @@ class LocalCacheServiceTests {
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
         /* Run Test */
-        val result = sut.getLocalCache("I do not exist")
+        val result = sut.getLocalCache(EndpointConfiguration.Key("I do not exist"))
 
         /* Verify */
         assertNull(result)
@@ -43,7 +43,7 @@ class LocalCacheServiceTests {
 
         /* Run Test */
         sut.patchLocalCaches(mapOf(EndpointConfiguration.Builder("").build() to entryDummy))
-        val result = sut.getLocalCache("id1")
+        val result = sut.getLocalCache(entryDummy.key)
 
         /* Verify */
         assertEquals(SerializableEndpointConfig.allNulls("id1", "").copy(
@@ -62,7 +62,7 @@ class LocalCacheServiceTests {
 
         /* Run Test */
         fileIo.saveToCache("invalid.json", "{,")
-        val result = runCatching { sut.getLocalCache("invalid") }
+        val result = runCatching { sut.getLocalCache(EndpointConfiguration.Key("invalid")) }
 
         /* Verify */
         assertTrue(result.exceptionOrNull() is IllegalStateException)
@@ -87,7 +87,7 @@ class LocalCacheServiceTests {
         /* Run Test */
         sut.patchLocalCaches(mapOf(EndpointConfiguration.Builder("").build() to initialCacheValue))
         sut.patchLocalCaches(mapOf(EndpointConfiguration.Builder("").build() to cacheUpdate))
-        val result = sut.getLocalCache("id1")
+        val result = sut.getLocalCache(initialCacheValue.key)
 
         /* Verify */
         assertEquals(SerializableEndpointConfig.allNulls("id1", "").copy(

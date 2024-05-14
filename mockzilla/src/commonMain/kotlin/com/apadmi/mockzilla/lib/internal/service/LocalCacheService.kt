@@ -14,7 +14,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.encodeToString
 
 internal interface LocalCacheService {
-    suspend fun getLocalCache(endpointKey: String): SerializableEndpointConfig?
+    suspend fun getLocalCache(endpointKey: EndpointConfiguration.Key): SerializableEndpointConfig?
     suspend fun clearAllCaches()
     suspend fun patchLocalCaches(
         patches: Map<EndpointConfiguration, SerializableEndpointPatchItemDto>,
@@ -28,7 +28,7 @@ internal class LocalCacheServiceImpl(
     private val lock = Mutex()
 
     private val SerializableEndpointPatchItemDto.fileName get() = key.fileName
-    private val String.fileName get() = "${this}.json"
+    private val EndpointConfiguration.Key.fileName get() = "${raw}.json"
 
     private fun parseException(cause: Throwable) = IllegalStateException(
         """
@@ -41,13 +41,13 @@ internal class LocalCacheServiceImpl(
     )
 
     override suspend fun getLocalCache(
-        endpointKey: String,
+        endpointKey: EndpointConfiguration.Key,
     ): SerializableEndpointConfig? = lock.withLock {
         getLocalCacheUnlocked(endpointKey)
     }
 
     private suspend fun getLocalCacheUnlocked(
-        endpointKey: String
+        endpointKey: EndpointConfiguration.Key
     ) = fileIo.readFromCache(endpointKey.fileName)?.let {
         try {
             JsonProvider.json.decodeFromString<SerializableEndpointConfig>(it)

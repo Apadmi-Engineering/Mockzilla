@@ -137,7 +137,7 @@ class WebPortalApiIntegrationTests {
         val response = HttpClient(CIO).delete("${params.apiBaseUrl}/mock-data")
 
         /* Verify */
-        assertNull(cacheService.getLocalCache("id"))
+        assertNull(cacheService.getLocalCache(EndpointConfiguration.Key("id")))
         assertEquals(
             HttpStatusCode.NoContent,
             response.status
@@ -181,7 +181,7 @@ class WebPortalApiIntegrationTests {
                     defaultStatus = HttpStatusCode.NoContent,
                     defaultHeaders = mapOf("Content-Type" to "application/json")
                 ),
-                cacheService.getLocalCache("id")
+                cacheService.getLocalCache(EndpointConfiguration.Key("id"))
             )
         }
 

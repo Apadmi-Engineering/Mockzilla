@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepositoryImpl
@@ -21,43 +22,43 @@ interface MockzillaManagement {
     interface UpdateService {
         suspend fun setShouldFail(
             connection: MockzillaConnectionConfig,
-            keys: List<String>,
+            keys: List<EndpointConfiguration.Key>,
             shouldFail: Boolean
         ): Result<Unit>
         suspend fun setDelay(
             connection: MockzillaConnectionConfig,
-            keys: List<String>,
+            keys: List<EndpointConfiguration.Key>,
             delayMs: Int?
         ): Result<Unit>
 
         suspend fun setDefaultHeaders(
             connection: MockzillaConnectionConfig,
-            key: String,
+            key: EndpointConfiguration.Key,
             headers: Map<String, String>
         ): Result<Unit>
         suspend fun setDefaultBody(
             connection: MockzillaConnectionConfig,
-            key: String,
+            key: EndpointConfiguration.Key,
             body: String
         ): Result<Unit>
         suspend fun setDefaultStatus(
             connection: MockzillaConnectionConfig,
-            key: String,
+            key: EndpointConfiguration.Key,
             statusCode: HttpStatusCode
         ): Result<Unit>
         suspend fun setErrorBody(
             connection: MockzillaConnectionConfig,
-            key: String,
+            key: EndpointConfiguration.Key,
             body: String
         ): Result<Unit>
         suspend fun setErrorHeaders(
             connection: MockzillaConnectionConfig,
-            key: String,
+            key: EndpointConfiguration.Key,
             headers: Map<String, String>
         ): Result<Unit>
         suspend fun setErrorStatus(
             connection: MockzillaConnectionConfig,
-            key: String,
+            key: EndpointConfiguration.Key,
             statusCode: HttpStatusCode
         ): Result<Unit>
     }

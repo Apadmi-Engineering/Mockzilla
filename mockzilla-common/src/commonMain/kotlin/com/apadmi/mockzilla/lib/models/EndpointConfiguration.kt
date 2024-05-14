@@ -5,6 +5,7 @@ import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import io.ktor.http.*
 import io.ktor.server.request.ApplicationRequest
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmInline
 
 /**
  * @property name
@@ -18,7 +19,7 @@ import kotlinx.serialization.Serializable
  */
 data class EndpointConfiguration(
     val name: String,
-    val key: String,
+    val key: Key,
     val shouldFail: Boolean,
     val delay: Int? = null,
     val dashboardOptionsConfig: DashboardOptionsConfig,
@@ -26,14 +27,19 @@ data class EndpointConfiguration(
     val defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     val errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) {
+
+    @Serializable
+    @JvmInline
+    value class Key(val raw: String)
+
     /**
-     * @param id An identifier for this endpoint. Endpoints cannot share an id.
+     * @param key An identifier for this endpoint. Endpoints cannot share an id.
      */
-    class Builder(id: String) {
+    class Builder(key: String) {
         private var config = EndpointConfiguration(
-            name = id,
-            key = id,
-            endpointMatcher = { uri.endsWith(id) },
+            name = key,
+            key = Key(key),
+            endpointMatcher = { uri.endsWith(key) },
             shouldFail = false,
             dashboardOptionsConfig = DashboardOptionsConfig(emptyList(), emptyList()),
             defaultHandler = {

@@ -88,10 +88,10 @@ class ManagementApiControllerTests {
             defaultBody = "my cached value"
         )
         given(localCacheServiceMock).coroutine {
-            getLocalCache("my-id")
+            getLocalCache(dummyCacheEntry.key)
         }.thenReturn(dummyCacheEntry)
         given(localCacheServiceMock).coroutine {
-            getLocalCache("my-second-id")
+            getLocalCache(EndpointConfiguration.Key("my-second-id"))
         }.thenReturn(null)
 
         val sut =
@@ -186,7 +186,7 @@ class ManagementApiControllerTests {
 
         /* Run test & Verify */
         assertFails {
-            sut.getPresets("random key")
+            sut.getPresets(EndpointConfiguration.Key("random key"))
         }
     }
 
@@ -200,7 +200,7 @@ class ManagementApiControllerTests {
         )
 
         /* Run Test */
-        val result = sut.getPresets("my-second-id")
+        val result = sut.getPresets(EndpointConfiguration.Key("my-second-id"))
 
         /* Verify */
         assertEquals(

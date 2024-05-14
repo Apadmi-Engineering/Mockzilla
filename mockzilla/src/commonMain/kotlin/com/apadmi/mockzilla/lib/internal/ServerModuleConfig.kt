@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.lib.internal.utils.allowCors
 import com.apadmi.mockzilla.lib.internal.utils.respondMockzilla
 import com.apadmi.mockzilla.lib.internal.utils.safeResponse
 import com.apadmi.mockzilla.lib.internal.utils.toMockzillaRequest
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -62,7 +63,9 @@ internal fun Application.configureEndpoints(
         get("/api/mock-data/{key}/presets") {
             di.logger.v { "Handling GET mock-data presets: ${call.request.uri}" }
             safeResponse(di.logger) {
-                val key = call.parameters["key"] ?: ""
+                val key = call.parameters["key"]?.takeUnless {
+                    it.isBlank()
+                }?.let { EndpointConfiguration.Key(it) } ?: throw Exception("No key found in URL")
                 call.allowCors()
                 call.respond(di.managementApiController.getPresets(key))
             }
