@@ -18,7 +18,8 @@ fun startMockzillaKoin() = startKoin {
         viewModelModule(),
         useCaseModule(),
         module {
-            single { MockzillaManagement.create() }
+            single { MockzillaManagement.instance.metaDataService }
+            single { MockzillaManagement.instance.logsService }
             single { ActiveDeviceManagerImpl(get(), GlobalScope) } binds arrayOf(
                 ActiveDeviceMonitor::class,
                 ActiveDeviceSelector::class

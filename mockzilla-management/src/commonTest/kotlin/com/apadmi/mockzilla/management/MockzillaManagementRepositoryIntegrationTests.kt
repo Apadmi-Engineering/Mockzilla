@@ -3,23 +3,25 @@
 package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.testutils.runIntegrationTest
+
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class MockzillaManagementIntegrationTests {
+class MockzillaManagementRepositoryIntegrationTests {
     private val dummyAppName = "MockzillaManagementTest"
     private val dummyAppVersion = "0.0.0-test"
     private val fetchLogsAndClearBufferEndpoint = "clear-endpoint"
@@ -40,7 +42,11 @@ class MockzillaManagementIntegrationTests {
 
     @Test
     fun `fetchMetaData - returns metadata`() =
-        runIntegrationTest(dummyAppName, dummyAppVersion) { sut, connection, runtimeParams ->
+        runIntegrationTest(
+            dummyAppName,
+            dummyAppVersion,
+            createSut = { it }
+        ) { sut, connection, runtimeParams ->
             /* Run Test */
             val result = sut.fetchMetaData(connection)
 
@@ -62,7 +68,10 @@ class MockzillaManagementIntegrationTests {
 
     @Test
     fun `fetchMonitorLogsAndClearBuffer - returns empty Monitor Logs`() =
-        runIntegrationTest(dummyAppName, dummyAppVersion) { sut, connection, _ ->
+        runIntegrationTest(
+            dummyAppName,
+            dummyAppVersion,
+            createSut = { it }) { sut, connection, _ ->
             /* Run Test */
             val result = sut.fetchMonitorLogsAndClearBuffer(connection)
 
@@ -83,12 +92,14 @@ class MockzillaManagementIntegrationTests {
         runIntegrationTest(
             dummyAppName,
             dummyAppVersion,
+            createSut = { it },
             config = MockzillaConfig.Builder().setPort(0).addEndpoint(
                 EndpointConfiguration.Builder("Id")
                     .setDefaultHandler { MockzillaHttpResponse(body = "this is a body") }
                     .setShouldFail(false)
                     .setMeanDelayMillis(10)
-                    .build()
+                    .build(),
+
             )
                 .addEndpoint(
                     EndpointConfiguration.Builder("Id 2")
@@ -100,24 +111,24 @@ class MockzillaManagementIntegrationTests {
         ) { sut, connection, _ ->
             /* Run Test */
             val preUpdateData = sut.fetchAllMockData(connection)
-            val entryToUpdate =
-                preUpdateData.getOrThrow().last().copy(shouldFail = SetOrDont.Set(true))
-            val updateResult = sut.updateMockDataEntry(entryToUpdate, connection)
+            val entryToUpdate = preUpdateData.getOrThrow().last()
+            val updateResult = sut.updateMockDataEntry(
+                SerializableEndpointConfigurationPatchRequestDto(
+                    key = entryToUpdate.key,
+                    name = entryToUpdate.name,
+                    shouldFail = SetOrDont.Set(true)
+                ), connection
+            )
             val postUpdateData = sut.fetchAllMockData(connection)
 
             /* Verify */
             listOf(preUpdateData, updateResult, postUpdateData).forEach { assertTrue(it.isSuccess) }
             assertEquals(
-                listOf(
-                    MockDataEntryDto.allUnset(key = "Id", name = "Id"),
-                    MockDataEntryDto.allUnset(key = "Id 2", name = "Id 2")
-                ), preUpdateData.getOrThrow()
+                listOf(false, false), preUpdateData.getOrThrow().map { it.shouldFail }
             )
             assertEquals(
-                listOf(
-                    MockDataEntryDto.allUnset(key = "Id", name = "Id"),
-                    MockDataEntryDto.allUnset(key = "Id 2", name = "Id 2").copy(shouldFail = SetOrDont.Set(true))
-                ), postUpdateData.getOrThrow()
+                listOf(false, true),
+                postUpdateData.getOrThrow().map { it.shouldFail }
             )
         }
 
@@ -127,6 +138,7 @@ class MockzillaManagementIntegrationTests {
         runIntegrationTest(
             dummyAppName,
             dummyAppVersion,
+            createSut = { it },
             config = MockzillaConfig.Builder()
                 .setPort(0)  // Port determined at runtime
                 .setDelayMillis(24)

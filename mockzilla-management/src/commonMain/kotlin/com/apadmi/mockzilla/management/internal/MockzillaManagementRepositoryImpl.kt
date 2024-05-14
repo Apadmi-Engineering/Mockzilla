@@ -1,28 +1,42 @@
 package com.apadmi.mockzilla.management.internal
 
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.MockzillaManagement
+import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
 import com.apadmi.mockzilla.management.internal.ktor.get
 import com.apadmi.mockzilla.management.internal.ktor.post
 
 import co.touchlab.kermit.Logger
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.Logger as KtorLogger
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 
+interface MockzillaManagementRepository {
+    suspend fun fetchMetaData(connection: MockzillaConnectionConfig): Result<MetaData>
+    suspend fun fetchAllMockData(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
+    suspend fun updateMockDataEntry(entry: SerializableEndpointConfigurationPatchRequestDto, connection: MockzillaConnectionConfig): Result<Unit>
+    suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig): Result<MonitorLogsResponse>
+}
+
 /**
- * @property runner
+ * @property runner The KTOR wrapper that actually runs requests
  */
-internal class MockzillaManagementImpl(
+internal class MockzillaManagementRepositoryImpl(
     val runner: KtorRequestRunner
-) : MockzillaManagement {
+) : MockzillaManagementRepository,
+MockzillaManagement.LogsService,
+MockzillaManagement.MetaDataService {
     override suspend fun fetchMetaData(
-        connection: MockzillaManagement.ConnectionConfig
+        connection: MockzillaConnectionConfig
     ) = runner<MetaData> {
         get(connection, "/api/meta")
     }.onFailure {
@@ -30,7 +44,7 @@ internal class MockzillaManagementImpl(
     }
 
     override suspend fun fetchAllMockData(
-        connection: MockzillaManagement.ConnectionConfig
+        connection: MockzillaConnectionConfig
     ) = runner<MockDataResponseDto> {
         get(connection, "/api/mock-data")
     }.onFailure {
@@ -38,8 +52,8 @@ internal class MockzillaManagementImpl(
     }.map { it.entries }
 
     override suspend fun updateMockDataEntry(
-        entry: MockDataEntryDto,
-        connection: MockzillaManagement.ConnectionConfig,
+        entry: SerializableEndpointConfigurationPatchRequestDto,
+        connection: MockzillaConnectionConfig,
     ) = runner<Unit> {
         post(connection, "/api/mock-data") {
             url {
@@ -53,10 +67,18 @@ internal class MockzillaManagementImpl(
     }
 
     override suspend fun fetchMonitorLogsAndClearBuffer(
-        connection: MockzillaManagement.ConnectionConfig
+        connection: MockzillaConnectionConfig
     ) = runner<MonitorLogsResponse> {
         get(connection, "/api/monitor-logs")
     }.onFailure {
         Logger.v(tag = "Management", it) { "Request Failed: /api/monitor-logs" }
+    }
+
+    companion object {
+        internal fun create(logger: KtorLogger) = MockzillaManagementRepositoryImpl(
+            KtorRequestRunner(KtorClientProvider.createKtorClient(logger = logger))
+        )
+
+        fun create() = create(KtorLogger.DEFAULT)
     }
 }

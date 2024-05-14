@@ -12,6 +12,43 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 /**
+ * @property key
+ * @property name
+ * @property shouldFail
+ * @property delayMs
+ * @property headers
+ * @property defaultBody
+ * @property defaultStatus
+ * @property errorBody
+ * @property errorStatus
+ */
+@Serializable
+data class SerializableEndpointConfig(
+    val key: String,
+    val name: String,
+    val shouldFail: Boolean?,
+    val delayMs: Int?,
+    val headers: Map<String, String>?,
+    val defaultBody: String?,
+    val defaultStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
+    val errorBody: String?,
+    val errorStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
+) {
+    companion object {
+        fun allNulls(key: String, name: String) = SerializableEndpointConfig(
+            key = key, name = name,
+            shouldFail = null,
+            delayMs = null,
+            headers = null,
+            defaultBody = null,
+            defaultStatus = null,
+            errorBody = null,
+            errorStatus = null,
+        )
+    }
+}
+
+/**
  * DTO for interaction with the web portal.
  *
  * @property name
@@ -24,20 +61,21 @@ import kotlinx.serialization.encoding.Encoder
  * @property errorStatus
  * @property defaultStatus
  */
+@Suppress("TYPE_ALIAS")
 @Serializable
-data class MockDataEntryDto(
+data class SerializableEndpointConfigurationPatchRequestDto(
     val key: String,
     val name: String,
-    val shouldFail: SetOrDont<Boolean>,
-    val delayMs: SetOrDont<Int>,
-    val headers: SetOrDont<Map<String, String>>,
-    val defaultBody: SetOrDont<String>,
-    val defaultStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode>,
-    val errorBody: SetOrDont<String>,
-    val errorStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode>,
+    val shouldFail: SetOrDont<Boolean?> = SetOrDont.DoNotSet,
+    val delayMs: SetOrDont<Int?> = SetOrDont.DoNotSet,
+    val headers: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
+    val defaultBody: SetOrDont<String?> = SetOrDont.DoNotSet,
+    val defaultStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
+    val errorBody: SetOrDont<String?> = SetOrDont.DoNotSet,
+    val errorStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
 ) {
     companion object {
-        fun allUnset(key: String, name: String) = MockDataEntryDto(
+        fun allUnset(key: String, name: String) = SerializableEndpointConfigurationPatchRequestDto(
             key = key,
             name = name,
             shouldFail = SetOrDont.DoNotSet,
@@ -48,6 +86,19 @@ data class MockDataEntryDto(
             errorBody = SetOrDont.DoNotSet,
             errorStatus = SetOrDont.DoNotSet,
         )
+
+        fun allSet(mockDataEntry: SerializableEndpointConfig) = SerializableEndpointConfigurationPatchRequestDto(
+            key = mockDataEntry.key,
+            name = mockDataEntry.name,
+            shouldFail = SetOrDont.Set(mockDataEntry.shouldFail),
+            delayMs = SetOrDont.Set(mockDataEntry.delayMs),
+            headers = SetOrDont.Set(mockDataEntry.headers),
+            defaultBody = SetOrDont.Set(mockDataEntry.defaultBody),
+            defaultStatus = SetOrDont.Set(mockDataEntry.defaultStatus),
+            errorBody = SetOrDont.Set(mockDataEntry.errorBody),
+            errorStatus = SetOrDont.Set(mockDataEntry.errorStatus),
+
+        )
     }
 }
 
@@ -56,7 +107,7 @@ data class MockDataEntryDto(
  */
 @Serializable
 data class MockDataResponseDto(
-    val entries: List<MockDataEntryDto>
+    val entries: List<SerializableEndpointConfig>
 )
 @Serializable(with = ServiceResultSerializer::class)
 sealed class SetOrDont<out T> {
@@ -114,9 +165,4 @@ class ServiceResultSerializer<T : Any>(
             Set, UnSet
         }
     }
-}
-fun <T> SetOrDont<T>?.valueOrDefault(default: T): T = when (this) {
-    is SetOrDont.Set -> value
-    null,
-    SetOrDont.DoNotSet -> default
 }

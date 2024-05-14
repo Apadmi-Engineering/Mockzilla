@@ -21,15 +21,15 @@ import kotlinx.coroutines.test.runBlockingTest
 
 class MetaDataUseCaseTests : CoroutineTest() {
     @Mock
-    private val mockzillaManagementMock = mock(classOf<MockzillaManagement>())
+    private val serviceMock = mock(classOf<MockzillaManagement.MetaDataService>())
     private fun createSut(
         timeStampAccessor: TimeStampAccessor = System::currentTimeMillis
-    ) = MetaDataUseCaseImpl(mockzillaManagementMock, timeStampAccessor)
+    ) = MetaDataUseCaseImpl(serviceMock, timeStampAccessor)
     
     @Test
     fun `getMetaData - fails - returns failure`() = runBlockingTest {
         /* Setup */
-        given(mockzillaManagementMock).coroutine {
+        given(serviceMock).coroutine {
             fetchMetaData(Device.dummy())
         }.thenReturn(Result.failure(Exception()))
         val sut = createSut()
@@ -44,7 +44,7 @@ class MetaDataUseCaseTests : CoroutineTest() {
     @Test
     fun `getMetaData - succeeds - returns and sets cache`() = runBlockingTest {
         /* Setup */
-        given(mockzillaManagementMock).coroutine {
+        given(serviceMock).coroutine {
             fetchMetaData(Device.dummy())
         }.thenReturn(Result.success(MetaData.dummy()))
         val sut = createSut()
@@ -56,14 +56,14 @@ class MetaDataUseCaseTests : CoroutineTest() {
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
         assertEquals(result, result2)
-        verify(mockzillaManagementMock).coroutine { fetchMetaData(Device.dummy()) }
+        verify(serviceMock).coroutine { fetchMetaData(Device.dummy()) }
             .wasInvoked(1.time)
     }
 
     @Test
     fun `getMetaData - refreshes after cache expires`() = runBlockingTest {
         /* Setup */
-        given(mockzillaManagementMock).coroutine {
+        given(serviceMock).coroutine {
             fetchMetaData(Device.dummy())
         }.thenReturn(Result.success(MetaData.dummy()))
         var currentTimeStamp = System.currentTimeMillis()
@@ -79,7 +79,7 @@ class MetaDataUseCaseTests : CoroutineTest() {
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
         assertEquals(result, result2)
-        verify(mockzillaManagementMock).coroutine { fetchMetaData(Device.dummy()) }
+        verify(serviceMock).coroutine { fetchMetaData(Device.dummy()) }
             .wasInvoked(2.time)
     }
 }

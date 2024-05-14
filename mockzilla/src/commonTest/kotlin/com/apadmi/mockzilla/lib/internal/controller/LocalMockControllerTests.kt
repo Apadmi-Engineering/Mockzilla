@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
-import com.apadmi.mockzilla.lib.internal.models.SetOrDont
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -79,16 +78,16 @@ class LocalMockControllerTests {
             Logger(StaticConfig())
         )
         given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(
-            MockDataEntryDto(
+            SerializableEndpointConfig(
                 key = "my-id",
                 name = "my-id",
-                shouldFail = SetOrDont.Set(true),
-                delayMs = SetOrDont.Set(0),
-                headers = SetOrDont.Set(emptyMap()),
-                defaultBody = SetOrDont.Set(""),
-                defaultStatus = SetOrDont.Set(HttpStatusCode.OK),
-                errorBody = SetOrDont.Set(""),
-                errorStatus = SetOrDont.Set(HttpStatusCode.InternalServerError),
+                shouldFail = true,
+                delayMs = 0,
+                headers = emptyMap(),
+                defaultBody = "",
+                defaultStatus = HttpStatusCode.OK,
+                errorBody = "",
+                errorStatus = HttpStatusCode.InternalServerError,
             )
         )
 
