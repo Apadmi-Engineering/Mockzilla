@@ -4,12 +4,16 @@ package com.apadmi.mockzilla.management.internal
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
+import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
 import io.ktor.client.HttpClient
@@ -21,6 +25,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@Suppress("TOO_LONG_FUNCTION")
 class MockzillaManagementRepositoryIntegrationTests {
     private val dummyAppName = "MockzillaManagementTest"
     private val dummyAppVersion = "0.0.0-test"
@@ -86,9 +91,8 @@ class MockzillaManagementRepositoryIntegrationTests {
             )
         }
 
-    @Suppress("TOO_LONG_FUNCTION")
     @Test
-    fun `fetchAllMockData and updateMockData - behaves somewhat sensibly`() =
+    fun `fetchAllEndpointConfigs and updateMockData - behaves somewhat sensibly`() =
         runIntegrationTest(
             dummyAppName,
             dummyAppVersion,
@@ -173,6 +177,98 @@ class MockzillaManagementRepositoryIntegrationTests {
                         requestHeaders = emptyMap()
                     )
                 })
+            )
+        }
+
+    @Test
+    fun `fetchDashboardOptionsConfig - returns config`() =
+        runIntegrationTest(
+            dummyAppName,
+            dummyAppVersion,
+            createSut = { it as MockzillaManagement.EndpointsService },
+            config = MockzillaConfig.Builder()
+                .setPort(0)  // Port determined at runtime
+                .addEndpoint(
+                    EndpointConfiguration.Builder("my key")
+                        .configureDashboardOverrides {
+                            addSuccessPreset(MockzillaHttpResponse(body = "preset"), "name", "desc")
+                        }.build()
+                )
+                .build()
+        ) { sut, connection, _ ->
+            /* Run Test */
+            val result =
+                sut.fetchDashboardOptionsConfig(connection, EndpointConfiguration.Key("my key"))
+
+            /* Verify */
+            assertEquals(
+                DashboardOptionsConfig(
+                    successPresets = listOf(
+                        DashboardOverridePreset(
+                            "name",
+                            "desc",
+                            MockzillaHttpResponse(body = "preset")
+                        )
+                    ),
+                    errorPresets = emptyList()
+                ), result.getOrThrow()
+            )
+        }
+
+    @Test
+    fun `clearCaches and clearAllCaches - behave correctly`() =
+        runIntegrationTest(
+            dummyAppName,
+            dummyAppVersion,
+            createSut = { it },
+            config = MockzillaConfig.Builder().setPort(0)
+                .addEndpoint(EndpointConfiguration.Builder("Id"))
+                .addEndpoint(EndpointConfiguration.Builder("Id 2"))
+                .setLogLevel(MockzillaConfig.LogLevel.Verbose)
+                .build()
+        ) { sut, connection, _ ->
+            /* Run Test */
+            // Populate Cache
+            sut.updateMockDataEntries(
+                listOf(
+                    SerializableEndpointPatchItemDto(
+                        key = EndpointConfiguration.Key("Id"),
+                        shouldFail = SetOrDont.Set(true)
+                    ),
+                    SerializableEndpointPatchItemDto(
+                        key = EndpointConfiguration.Key("Id 2"),
+                        shouldFail = SetOrDont.Set(true)
+                    )
+                ), connection
+            )
+            // Check cache was populated
+            check(
+                sut.fetchAllEndpointConfigs(connection)
+                    .getOrThrow()
+                    .map { it.shouldFail } == listOf(true, true)
+            )
+
+            /* Run Test */
+            sut.clearCaches(connection, listOf(EndpointConfiguration.Key("Id")))
+            val afterClearingOneCache = sut.fetchAllEndpointConfigs(connection)
+            sut.clearAllCaches(connection)
+            val afterClearingAllCaches = sut.fetchAllEndpointConfigs(connection)
+
+            /* Verify */
+            assertEquals(
+                listOf(
+                    SerializableEndpointConfig.allNulls("Id", "Id", Int.MIN_VALUE),
+                    SerializableEndpointConfig.allNulls("Id 2", "Id 2", Int.MIN_VALUE)
+                        .copy(shouldFail = true),
+                ),
+                afterClearingOneCache.getOrThrow()
+            )
+            assertEquals(
+                listOf(
+                    SerializableEndpointConfig.allNulls("Id", "Id", Int.MIN_VALUE),
+                    SerializableEndpointConfig.allNulls("Id 2", "Id 2", Int.MIN_VALUE),
+                ),
+                afterClearingAllCaches.getOrThrow()
             )
         }
 }

@@ -16,7 +16,7 @@ import kotlinx.serialization.encodeToString
 internal interface LocalCacheService {
     suspend fun getLocalCache(endpointKey: EndpointConfiguration.Key): SerializableEndpointConfig?
     suspend fun clearAllCaches()
-    suspend fun clearCache(key: EndpointConfiguration.Key)
+    suspend fun clearCache(keys: List<EndpointConfiguration.Key>)
     suspend fun patchLocalCaches(
         patches: Map<EndpointConfiguration, SerializableEndpointPatchItemDto>,
     )
@@ -61,8 +61,8 @@ internal class LocalCacheServiceImpl(
         fileIo.deleteAllCaches()
     }
 
-    override suspend fun clearCache(key: EndpointConfiguration.Key) = lock.withLock {
-        clearCacheUnlocked(key)
+    override suspend fun clearCache(keys: List<EndpointConfiguration.Key>) = lock.withLock {
+        keys.forEach { clearCacheUnlocked(it) }
     }
 
     private suspend fun clearCacheUnlocked(key: EndpointConfiguration.Key) {

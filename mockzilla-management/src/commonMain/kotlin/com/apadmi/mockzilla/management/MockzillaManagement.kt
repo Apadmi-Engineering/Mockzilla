@@ -1,6 +1,8 @@
 package com.apadmi.mockzilla.management
 
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
+import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
@@ -17,6 +19,18 @@ interface MockzillaManagement {
     val updateService: UpdateService
     val metaDataService: MetaDataService
     val logsService: LogsService
+    val cacheClearingService: CacheClearingService
+    val endpointsService: EndpointsService
+
+    interface CacheClearingService {
+        suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
+        suspend fun clearCaches(connection: MockzillaConnectionConfig, keys: List<EndpointConfiguration.Key>): Result<Unit>
+    }
+
+    interface EndpointsService {
+        suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
+        suspend fun fetchDashboardOptionsConfig(connection: MockzillaConnectionConfig, key: EndpointConfiguration.Key): Result<DashboardOptionsConfig>
+    }
 
     interface UpdateService {
         suspend fun setShouldFail(
@@ -74,13 +88,15 @@ interface MockzillaManagement {
         override val underlyingRepository: MockzillaManagementRepository,
         override val updateService: UpdateService,
         override val metaDataService: MetaDataService,
-        override val logsService: LogsService
+        override val logsService: LogsService,
+        override val cacheClearingService: CacheClearingService,
+        override val endpointsService: EndpointsService
     ) : MockzillaManagement
 
     companion object {
         val instance: MockzillaManagement by lazy {
             val repo = MockzillaManagementRepositoryImpl.create()
-            Instance(repo, UpdateServiceImpl(repo), repo, repo)
+            Instance(repo, UpdateServiceImpl(repo), repo, repo, repo, repo)
         }
     }
 }
