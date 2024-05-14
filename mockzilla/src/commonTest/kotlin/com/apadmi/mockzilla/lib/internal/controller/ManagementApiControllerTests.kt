@@ -139,7 +139,7 @@ class ManagementApiControllerTests {
         verify(localCacheServiceMock).coroutine {
             patchLocalCaches(
                 mapOf(dummyEndpoints.first() to
-                SerializableEndpointPatchItemDto.allUnset(dummyEndpoints.first().key))
+                        SerializableEndpointPatchItemDto.allUnset(dummyEndpoints.first().key))
             )
         }.wasInvoked(1.time)
     }

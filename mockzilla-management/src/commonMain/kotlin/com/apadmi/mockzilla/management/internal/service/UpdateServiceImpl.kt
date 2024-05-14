@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.management.internal.service
 
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration

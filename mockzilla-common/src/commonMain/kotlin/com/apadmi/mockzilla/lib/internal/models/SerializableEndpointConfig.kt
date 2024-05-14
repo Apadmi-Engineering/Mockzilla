@@ -11,7 +11,6 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlin.jvm.JvmInline
 
 /**
  * @property key
@@ -38,7 +37,6 @@ data class SerializableEndpointConfig(
     val errorBody: String?,
     val errorStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
 ) {
-
     companion object {
         fun allNulls(key: EndpointConfiguration.Key, name: String) = SerializableEndpointConfig(
             key = key, name = name,
@@ -117,11 +115,14 @@ data class MockDataResponseDto(
     val entries: List<SerializableEndpointConfig>
 )
 
+/**
+ * @property entries
+ */
 @Serializable
 data class SerializableEndpointConfigPatchRequestDto(
     val entries: List<SerializableEndpointPatchItemDto>
 ) {
-    constructor(entry: SerializableEndpointPatchItemDto): this(listOf(entry))
+    constructor(entry: SerializableEndpointPatchItemDto) : this(listOf(entry))
 }
 
 @Serializable(with = ServiceResultSerializer::class)

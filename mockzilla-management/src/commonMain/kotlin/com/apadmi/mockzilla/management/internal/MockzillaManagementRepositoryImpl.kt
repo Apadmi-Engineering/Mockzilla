@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.management.internal
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
@@ -10,10 +11,9 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
 import com.apadmi.mockzilla.management.internal.ktor.get
+import com.apadmi.mockzilla.management.internal.ktor.patch
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
-import com.apadmi.mockzilla.management.internal.ktor.patch
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 import io.ktor.client.request.setBody

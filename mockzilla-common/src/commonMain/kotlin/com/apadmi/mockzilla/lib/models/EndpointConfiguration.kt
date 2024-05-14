@@ -2,10 +2,12 @@ package com.apadmi.mockzilla.lib.models
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import com.apadmi.mockzilla.lib.service.MockzillaWeb
+
 import io.ktor.http.*
 import io.ktor.server.request.ApplicationRequest
-import kotlinx.serialization.Serializable
+
 import kotlin.jvm.JvmInline
+import kotlinx.serialization.Serializable
 
 /**
  * @property name
@@ -27,7 +29,9 @@ data class EndpointConfiguration(
     val defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     val errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) {
-
+    /**
+     * @property raw
+     */
     @Serializable
     @JvmInline
     value class Key(val raw: String)

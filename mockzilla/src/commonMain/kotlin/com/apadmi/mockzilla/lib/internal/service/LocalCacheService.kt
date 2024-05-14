@@ -28,7 +28,7 @@ internal class LocalCacheServiceImpl(
     private val lock = Mutex()
 
     private val SerializableEndpointPatchItemDto.fileName get() = key.fileName
-    private val EndpointConfiguration.Key.fileName get() = "${raw}.json"
+    private val EndpointConfiguration.Key.fileName get() = "$raw.json"
 
     private fun parseException(cause: Throwable) = IllegalStateException(
         """
@@ -68,7 +68,7 @@ internal class LocalCacheServiceImpl(
         patches.forEach { (patch, endpoint) -> patchLocalCache(patch, endpoint) }
     }
 
-    private suspend fun patchLocalCache(endpoint: EndpointConfiguration, patch: SerializableEndpointPatchItemDto, ) {
+    private suspend fun patchLocalCache(endpoint: EndpointConfiguration, patch: SerializableEndpointPatchItemDto) {
         logger.v { "Writing to cache ${patch.key} - $patch" }
         val currentCache = getLocalCacheUnlocked(patch.key) ?: SerializableEndpointConfig.allNulls(
             key = patch.key, name = endpoint.name
