@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.lib.internal.service
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -34,15 +34,15 @@ class LocalCacheServiceTests {
     }
 
     @Test
-    fun `updateLocalCache and getLocalCache - returns value`() = runTest {
+    fun `patchLocalCaches and getLocalCache - returns value`() = runTest {
         /* Setup */
-        val entryDummy = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1").copy(
+        val entryDummy = SerializableEndpointPatchItemDto.allUnset("id1").copy(
             headers = SetOrDont.Set(mapOf("my" to "header"))
         )
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
         /* Run Test */
-        sut.updateLocalCache(entryDummy, EndpointConfiguration.Builder("").build())
+        sut.patchLocalCaches(mapOf(EndpointConfiguration.Builder("").build() to entryDummy))
         val result = sut.getLocalCache("id1")
 
         /* Verify */
@@ -72,21 +72,21 @@ class LocalCacheServiceTests {
     }
 
     @Test
-    fun `updateLocalCache and getLocalCache - some overridden values - returns correctly`() = runTest {
+    fun `patchLocalCaches and getLocalCache - some overridden values - returns correctly`() = runTest {
         /* Setup */
-        val initialCacheValue = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1").copy(
+        val initialCacheValue = SerializableEndpointPatchItemDto.allUnset("id1").copy(
             shouldFail = SetOrDont.Set(true),
             errorStatus = SetOrDont.Set(HttpStatusCode.BadGateway)
         )
-        val cacheUpdate = SerializableEndpointConfigurationPatchRequestDto.allUnset("id1").copy(
+        val cacheUpdate = SerializableEndpointPatchItemDto.allUnset("id1").copy(
             shouldFail = SetOrDont.Set(false),
             defaultStatus = SetOrDont.Set(HttpStatusCode.Created)
         )
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
         /* Run Test */
-        sut.updateLocalCache(initialCacheValue, EndpointConfiguration.Builder("").build())
-        sut.updateLocalCache(cacheUpdate, EndpointConfiguration.Builder("").build())
+        sut.patchLocalCaches(mapOf(EndpointConfiguration.Builder("").build() to initialCacheValue))
+        sut.patchLocalCaches(mapOf(EndpointConfiguration.Builder("").build() to cacheUpdate))
         val result = sut.getLocalCache("id1")
 
         /* Verify */

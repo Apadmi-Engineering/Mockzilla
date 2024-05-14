@@ -125,9 +125,11 @@ class WebPortalApiIntegrationTests {
             .addEndpoint(EndpointConfiguration.Builder("id"))
             .build(),
         setup = { cacheService ->
-            cacheService.updateLocalCache(
-                SerializableEndpointConfigurationPatchRequestDto.allUnset("id"),
-                EndpointConfiguration.Builder("id").build()
+            cacheService.patchLocalCaches(
+                mapOf(
+                    EndpointConfiguration.Builder("id").build() to
+                            SerializableEndpointPatchItemDto.allUnset("id")
+                )
             )
         }
     ) { params, cacheService ->
@@ -151,16 +153,18 @@ class WebPortalApiIntegrationTests {
                 .build()
         ) { params, cacheService ->
             /* Run Test */
-            val response = HttpClient(CIO).post(
-                "${params.apiBaseUrl}/mock-data/id"
+            val response = HttpClient(CIO).patch(
+                "${params.apiBaseUrl}/mock-data"
             ) {
                 contentType(ContentType.Application.Json)
                 setBody(
                     Json.encodeToString(
-                        SerializableEndpointConfigurationPatchRequestDto.allUnset("id").copy(
-                            defaultBody = SetOrDont.Set("hello"),
-                            defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
-                            headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
+                        SerializableEndpointConfigPatchRequestDto(
+                            SerializableEndpointPatchItemDto.allUnset("id").copy(
+                                defaultBody = SetOrDont.Set("hello"),
+                                defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
+                                headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
+                            )
                         )
                     )
                 )
@@ -168,20 +172,16 @@ class WebPortalApiIntegrationTests {
 
             /* Verify */
             assertEquals(
+                HttpStatusCode.Created,
+                response.status
+            )
+            assertEquals(
                 SerializableEndpointConfig.allNulls("id", "id").copy(
                     defaultBody = "hello",
                     defaultStatus = HttpStatusCode.NoContent,
                     defaultHeaders = mapOf("Content-Type" to "application/json")
                 ),
                 cacheService.getLocalCache("id")
-            )
-            assertEquals(
-                cacheService.getLocalCache("id"),
-                JsonProvider.json.decodeFromString<SerializableEndpointConfig>(response.bodyAsText())
-            )
-            assertEquals(
-                HttpStatusCode.OK,
-                response.status
             )
         }
 

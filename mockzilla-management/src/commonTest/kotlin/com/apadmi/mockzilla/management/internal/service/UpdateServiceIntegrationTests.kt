@@ -34,12 +34,16 @@ class UpdateServiceIntegrationTests {
             val preUpdate = getEndpointConfig(connection)
 
             /* Run Test */
-            val resultTrue = sut.setShouldFail(connection, dummyConfig.key, true)
-            val resultFalse = sut.setShouldFail(connection, dummyConfig.key, false)
+            val resultTrue = sut.setShouldFail(connection, listOf(dummyConfig.key), true).let {
+                getEndpointConfig(connection)
+            }
+            val resultFalse = sut.setShouldFail(connection, listOf(dummyConfig.key), false).let {
+                getEndpointConfig(connection)
+            }
 
             /* Verify */
-            assertEquals(preUpdate.copy(shouldFail = true), resultTrue.getOrThrow())
-            assertEquals(preUpdate.copy(shouldFail = false), resultFalse.getOrThrow())
+            assertEquals(preUpdate.copy(shouldFail = true), resultTrue)
+            assertEquals(preUpdate.copy(shouldFail = false), resultFalse)
         }
 
     @Test
@@ -53,10 +57,12 @@ class UpdateServiceIntegrationTests {
             val preUpdate = getEndpointConfig(connection)
 
             /* Run Test */
-            val result = sut.setDelay(connection, dummyConfig.key, 14872)
+            val result = sut.setDelay(connection, listOf(dummyConfig.key), 14872)
+            val postUpdate = getEndpointConfig(connection)
 
             /* Verify */
-            assertEquals(preUpdate.copy(delayMs = 14872), result.getOrThrow())
+            assertEquals(Result.success(Unit), result)
+            assertEquals(preUpdate.copy(delayMs = 14872), postUpdate)
         }
 
     @Test
@@ -71,9 +77,11 @@ class UpdateServiceIntegrationTests {
 
             /* Run Test */
             val result = sut.setDefaultHeaders(connection, dummyConfig.key, mapOf("my test header" to "a test value"))
+            val postUpdate = getEndpointConfig(connection)
 
             /* Verify */
-            assertEquals(preUpdate.copy(defaultHeaders = mapOf("my test header" to "a test value")), result.getOrThrow())
+            assertEquals(Result.success(Unit), result)
+            assertEquals(preUpdate.copy(defaultHeaders = mapOf("my test header" to "a test value")), postUpdate)
         }
 
     @Test
@@ -88,9 +96,11 @@ class UpdateServiceIntegrationTests {
 
             /* Run Test */
             val result = sut.setErrorHeaders(connection, dummyConfig.key, mapOf("my test header" to "a test value"))
+            val postUpdate = getEndpointConfig(connection)
 
             /* Verify */
-            assertEquals(preUpdate.copy(errorHeaders = mapOf("my test header" to "a test value")), result.getOrThrow())
+            assertEquals(Result.success(Unit), result)
+            assertEquals(preUpdate.copy(errorHeaders = mapOf("my test header" to "a test value")), postUpdate)
         }
 
     @Test
@@ -105,9 +115,11 @@ class UpdateServiceIntegrationTests {
 
             /* Run Test */
             val result = sut.setDefaultBody(connection, dummyConfig.key, "my test body")
+            val postUpdate = getEndpointConfig(connection)
 
             /* Verify */
-            assertEquals(preUpdate.copy(defaultBody = "my test body"), result.getOrThrow())
+            assertEquals(Result.success(Unit), result)
+            assertEquals(preUpdate.copy(defaultBody = "my test body"), postUpdate)
         }
 
     @Test
@@ -122,9 +134,11 @@ class UpdateServiceIntegrationTests {
 
             /* Run Test */
             val result = sut.setDefaultStatus(connection, dummyConfig.key, HttpStatusCode.Conflict)
+            val postUpdate = getEndpointConfig(connection)
 
             /* Verify */
-            assertEquals(preUpdate.copy(defaultStatus = HttpStatusCode.Conflict), result.getOrThrow())
+            assertEquals(Result.success(Unit), result)
+            assertEquals(preUpdate.copy(defaultStatus = HttpStatusCode.Conflict), postUpdate)
         }
 
     @Test
@@ -139,9 +153,11 @@ class UpdateServiceIntegrationTests {
 
             /* Run Test */
             val result = sut.setErrorBody(connection, dummyConfig.key, "my test body")
+            val postUpdate = getEndpointConfig(connection)
 
             /* Verify */
-            assertEquals(preUpdate.copy(errorBody = "my test body"), result.getOrThrow())
+            assertEquals(Result.success(Unit), result)
+            assertEquals(preUpdate.copy(errorBody = "my test body"), postUpdate)
         }
 
     @Test
@@ -156,8 +172,10 @@ class UpdateServiceIntegrationTests {
 
             /* Run Test */
             val result = sut.setErrorStatus(connection, dummyConfig.key, HttpStatusCode.Conflict)
+            val postUpdate = getEndpointConfig(connection)
 
             /* Verify */
-            assertEquals(preUpdate.copy(errorStatus = HttpStatusCode.Conflict), result.getOrThrow())
+            assertEquals(Result.success(Unit), result)
+            assertEquals(preUpdate.copy(errorStatus = HttpStatusCode.Conflict), postUpdate)
         }
 }

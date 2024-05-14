@@ -2,7 +2,7 @@ package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
@@ -118,10 +118,7 @@ class ManagementApiControllerTests {
 
         /* Run Test & Verify */
         val result = assertFails {
-            sut.updateEntry(
-                "another id",
-                SerializableEndpointConfigurationPatchRequestDto.allUnset("id")
-            )
+            sut.patchEntries(listOf(SerializableEndpointPatchItemDto.allUnset("random id invalid")))
         }
         assertTrue(result is IllegalStateException)
     }
@@ -131,19 +128,18 @@ class ManagementApiControllerTests {
         /* Setup */
         val sut =
             ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
-        given(localCacheServiceMock).suspendFunction(localCacheServiceMock::updateLocalCache)
-            .whenInvokedWith(any(), any()).thenReturn(SerializableEndpointConfig.allNulls("", ""))
+        given(localCacheServiceMock).suspendFunction(localCacheServiceMock::patchLocalCaches)
+            .whenInvokedWith(any()).thenReturn(Unit)
         /* Run Test */
-        sut.updateEntry(
-            dummyEndpoints.first().key,
-            SerializableEndpointConfigurationPatchRequestDto.allUnset(dummyEndpoints.first().key)
+        sut.patchEntries(
+            listOf(SerializableEndpointPatchItemDto.allUnset(dummyEndpoints.first().key))
         )
 
         /* Verify */
         verify(localCacheServiceMock).coroutine {
-            updateLocalCache(
-                SerializableEndpointConfigurationPatchRequestDto.allUnset(dummyEndpoints.first().key),
-                dummyEndpoints.first()
+            patchLocalCaches(
+                mapOf(dummyEndpoints.first() to
+                SerializableEndpointPatchItemDto.allUnset(dummyEndpoints.first().key))
             )
         }.wasInvoked(1.time)
     }

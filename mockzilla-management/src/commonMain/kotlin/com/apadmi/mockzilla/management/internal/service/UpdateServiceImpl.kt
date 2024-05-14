@@ -1,6 +1,6 @@
 package com.apadmi.mockzilla.management.internal.service
 
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.MockzillaManagement
@@ -11,24 +11,28 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     MockzillaManagement.UpdateService {
     override suspend fun setShouldFail(
         connection: MockzillaConnectionConfig,
-        key: String,
+        keys: List<String>,
         shouldFail: Boolean
-    ) = repo.updateMockDataEntry(
-        SerializableEndpointConfigurationPatchRequestDto(
-            key = key,
-            shouldFail = SetOrDont.Set(shouldFail)
-        ), connection
+    ) = repo.updateMockDataEntries(
+        keys.map { key ->
+            SerializableEndpointPatchItemDto(
+                key = key,
+                shouldFail = SetOrDont.Set(shouldFail)
+            )
+        }, connection
     )
 
     override suspend fun setDelay(
         connection: MockzillaConnectionConfig,
-        key: String,
+        keys: List<String>,
         delayMs: Int?
-    ) = repo.updateMockDataEntry(
-        SerializableEndpointConfigurationPatchRequestDto(
-            key = key,
-            delayMs = SetOrDont.Set(delayMs)
-        ), connection
+    ) = repo.updateMockDataEntries(
+        keys.map { key ->
+            SerializableEndpointPatchItemDto(
+                key = key,
+                delayMs = SetOrDont.Set(delayMs)
+            )
+        }, connection
     )
 
     override suspend fun setDefaultHeaders(
@@ -36,7 +40,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
         key: String,
         headers: Map<String, String>
     ) = repo.updateMockDataEntry(
-        SerializableEndpointConfigurationPatchRequestDto(
+        SerializableEndpointPatchItemDto(
             key = key,
             headers = SetOrDont.Set(headers)
         ), connection
@@ -47,7 +51,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
         key: String,
         body: String
     ) = repo.updateMockDataEntry(
-        SerializableEndpointConfigurationPatchRequestDto(
+        SerializableEndpointPatchItemDto(
             key = key,
             defaultBody = SetOrDont.Set(body)
         ), connection
@@ -58,7 +62,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
         key: String,
         statusCode: HttpStatusCode
     ) = repo.updateMockDataEntry(
-        SerializableEndpointConfigurationPatchRequestDto(
+        SerializableEndpointPatchItemDto(
             key = key,
             defaultStatus = SetOrDont.Set(statusCode)
         ), connection
@@ -69,7 +73,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
         key: String,
         body: String
     ) = repo.updateMockDataEntry(
-        SerializableEndpointConfigurationPatchRequestDto(
+        SerializableEndpointPatchItemDto(
             key = key,
             errorBody = SetOrDont.Set(body)
         ), connection
@@ -80,17 +84,18 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
         key: String,
         headers: Map<String, String>
     ) = repo.updateMockDataEntry(
-        SerializableEndpointConfigurationPatchRequestDto(
+        SerializableEndpointPatchItemDto(
             key = key,
             errorHeaders = SetOrDont.Set(headers)
         ), connection
     )
+
     override suspend fun setErrorStatus(
         connection: MockzillaConnectionConfig,
         key: String,
         statusCode: HttpStatusCode
     ) = repo.updateMockDataEntry(
-        SerializableEndpointConfigurationPatchRequestDto(
+        SerializableEndpointPatchItemDto(
             key = key,
             errorStatus = SetOrDont.Set(statusCode)
         ), connection

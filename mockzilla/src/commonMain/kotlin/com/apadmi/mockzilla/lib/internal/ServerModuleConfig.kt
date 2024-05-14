@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.lib.internal
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.utils.allowCors
 import com.apadmi.mockzilla.lib.internal.utils.respondMockzilla
 import com.apadmi.mockzilla.lib.internal.utils.safeResponse
@@ -66,12 +67,13 @@ internal fun Application.configureEndpoints(
                 call.respond(di.managementApiController.getPresets(key))
             }
         }
-        post("/api/mock-data/{key}") {
+        patch("/api/mock-data") {
             di.logger.v { "Handling POST mock-data: ${call.request.uri}" }
             safeResponse(di.logger) {
-                val key = call.parameters["key"] ?: ""
                 call.allowCors()
-                call.respond(di.managementApiController.updateEntry(key, call.receive()))
+                val patches = call.receive<SerializableEndpointConfigPatchRequestDto>().entries
+                di.managementApiController.patchEntries(patches)
+                call.respond(HttpStatusCode.Created)
             }
         }
         delete("/api/mock-data") {

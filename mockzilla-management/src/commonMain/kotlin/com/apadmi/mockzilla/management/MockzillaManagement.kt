@@ -21,45 +21,45 @@ interface MockzillaManagement {
     interface UpdateService {
         suspend fun setShouldFail(
             connection: MockzillaConnectionConfig,
-            key: String,
+            keys: List<String>,
             shouldFail: Boolean
-        ): Result<SerializableEndpointConfig>
+        ): Result<Unit>
         suspend fun setDelay(
             connection: MockzillaConnectionConfig,
-            key: String,
+            keys: List<String>,
             delayMs: Int?
-        ): Result<SerializableEndpointConfig>
+        ): Result<Unit>
 
         suspend fun setDefaultHeaders(
             connection: MockzillaConnectionConfig,
             key: String,
-            header: Map<String, String>
-        ): Result<SerializableEndpointConfig>
+            headers: Map<String, String>
+        ): Result<Unit>
         suspend fun setDefaultBody(
             connection: MockzillaConnectionConfig,
             key: String,
             body: String
-        ): Result<SerializableEndpointConfig>
+        ): Result<Unit>
         suspend fun setDefaultStatus(
             connection: MockzillaConnectionConfig,
             key: String,
             statusCode: HttpStatusCode
-        ): Result<SerializableEndpointConfig>
+        ): Result<Unit>
         suspend fun setErrorBody(
             connection: MockzillaConnectionConfig,
             key: String,
             body: String
-        ): Result<SerializableEndpointConfig>
+        ): Result<Unit>
         suspend fun setErrorHeaders(
             connection: MockzillaConnectionConfig,
             key: String,
-            header: Map<String, String>
-        ): Result<SerializableEndpointConfig>
+            headers: Map<String, String>
+        ): Result<Unit>
         suspend fun setErrorStatus(
             connection: MockzillaConnectionConfig,
             key: String,
             statusCode: HttpStatusCode
-        ): Result<SerializableEndpointConfig>
+        ): Result<Unit>
     }
 
     interface MetaDataService {

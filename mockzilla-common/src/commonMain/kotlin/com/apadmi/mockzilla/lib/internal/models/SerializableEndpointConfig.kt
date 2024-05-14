@@ -66,7 +66,7 @@ data class SerializableEndpointConfig(
  */
 @Suppress("TYPE_ALIAS")
 @Serializable
-data class SerializableEndpointConfigurationPatchRequestDto(
+data class SerializableEndpointPatchItemDto(
     val key: String,
     val shouldFail: SetOrDont<Boolean?> = SetOrDont.DoNotSet,
     val delayMs: SetOrDont<Int?> = SetOrDont.DoNotSet,
@@ -78,7 +78,7 @@ data class SerializableEndpointConfigurationPatchRequestDto(
     val errorStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
 ) {
     companion object {
-        fun allUnset(key: String) = SerializableEndpointConfigurationPatchRequestDto(
+        fun allUnset(key: String) = SerializableEndpointPatchItemDto(
             key = key,
             shouldFail = SetOrDont.DoNotSet,
             delayMs = SetOrDont.DoNotSet,
@@ -89,7 +89,7 @@ data class SerializableEndpointConfigurationPatchRequestDto(
             errorStatus = SetOrDont.DoNotSet,
         )
 
-        fun allSet(mockDataEntry: SerializableEndpointConfig) = SerializableEndpointConfigurationPatchRequestDto(
+        fun allSet(mockDataEntry: SerializableEndpointConfig) = SerializableEndpointPatchItemDto(
             key = mockDataEntry.key,
             shouldFail = SetOrDont.Set(mockDataEntry.shouldFail),
             delayMs = SetOrDont.Set(mockDataEntry.delayMs),
@@ -110,6 +110,13 @@ data class SerializableEndpointConfigurationPatchRequestDto(
 data class MockDataResponseDto(
     val entries: List<SerializableEndpointConfig>
 )
+
+@Serializable
+data class SerializableEndpointConfigPatchRequestDto(
+    val entries: List<SerializableEndpointPatchItemDto>
+) {
+    constructor(entry: SerializableEndpointPatchItemDto): this(listOf(entry))
+}
 
 @Serializable(with = ServiceResultSerializer::class)
 sealed class SetOrDont<out T> {

@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.lib.internal.service
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
@@ -16,10 +16,9 @@ import kotlinx.serialization.encodeToString
 internal interface LocalCacheService {
     suspend fun getLocalCache(endpointKey: String): SerializableEndpointConfig?
     suspend fun clearAllCaches()
-    suspend fun updateLocalCache(
-        patch: SerializableEndpointConfigurationPatchRequestDto,
-        endpoint: EndpointConfiguration
-    ): SerializableEndpointConfig
+    suspend fun patchLocalCaches(
+        patches: Map<EndpointConfiguration, SerializableEndpointPatchItemDto>,
+    )
 }
 
 internal class LocalCacheServiceImpl(
@@ -28,7 +27,7 @@ internal class LocalCacheServiceImpl(
 ) : LocalCacheService {
     private val lock = Mutex()
 
-    private val SerializableEndpointConfigurationPatchRequestDto.fileName get() = key.fileName
+    private val SerializableEndpointPatchItemDto.fileName get() = key.fileName
     private val String.fileName get() = "${this}.json"
 
     private fun parseException(cause: Throwable) = IllegalStateException(
@@ -63,12 +62,14 @@ internal class LocalCacheServiceImpl(
         fileIo.deleteAllCaches()
     }
 
-    override suspend fun updateLocalCache(
-        patch: SerializableEndpointConfigurationPatchRequestDto,
-        endpoint: EndpointConfiguration
+    override suspend fun patchLocalCaches(
+        patches: Map<EndpointConfiguration, SerializableEndpointPatchItemDto>,
     ) = lock.withLock {
-        logger.v { "Writing to cache ${patch.key} - $patch" }
+        patches.forEach { (patch, endpoint) -> patchLocalCache(patch, endpoint) }
+    }
 
+    private suspend fun patchLocalCache(endpoint: EndpointConfiguration, patch: SerializableEndpointPatchItemDto, ) {
+        logger.v { "Writing to cache ${patch.key} - $patch" }
         val currentCache = getLocalCacheUnlocked(patch.key) ?: SerializableEndpointConfig.allNulls(
             key = patch.key, name = endpoint.name
         )
@@ -85,7 +86,6 @@ internal class LocalCacheServiceImpl(
 
         )
         fileIo.saveToCache(patch.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfig>(newCache))
-        newCache
     }
 
     private fun <T> SetOrDont<T?>?.valueOrDefault(default: T): T = when (this) {

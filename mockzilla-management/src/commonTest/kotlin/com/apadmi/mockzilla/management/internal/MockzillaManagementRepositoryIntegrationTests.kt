@@ -4,7 +4,7 @@ package com.apadmi.mockzilla.management.internal
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigurationPatchRequestDto
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
@@ -113,7 +113,7 @@ class MockzillaManagementRepositoryIntegrationTests {
             val preUpdateData = sut.fetchAllEndpointConfigs(connection)
             val entryToUpdate = preUpdateData.getOrThrow().last()
             val updateResult = sut.updateMockDataEntry(
-                SerializableEndpointConfigurationPatchRequestDto(
+                SerializableEndpointPatchItemDto(
                     key = entryToUpdate.key,
                     shouldFail = SetOrDont.Set(true)
                 ), connection
