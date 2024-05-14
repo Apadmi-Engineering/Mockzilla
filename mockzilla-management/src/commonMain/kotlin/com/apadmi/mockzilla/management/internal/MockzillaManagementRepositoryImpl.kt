@@ -1,23 +1,23 @@
 package com.apadmi.mockzilla.management.internal
 
+import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
+import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.ktor.KtorClientProvider
 import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
+import com.apadmi.mockzilla.management.internal.ktor.delete
 import com.apadmi.mockzilla.management.internal.ktor.get
 import com.apadmi.mockzilla.management.internal.ktor.patch
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
-import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.management.internal.ktor.delete
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 import io.ktor.client.request.setBody
@@ -49,10 +49,10 @@ interface MockzillaManagementRepository {
 internal class MockzillaManagementRepositoryImpl(
     val runner: KtorRequestRunner
 ) : MockzillaManagementRepository,
-    MockzillaManagement.LogsService,
-    MockzillaManagement.MetaDataService,
-    MockzillaManagement.EndpointsService,
-    MockzillaManagement.CacheClearingService {
+MockzillaManagement.LogsService,
+MockzillaManagement.MetaDataService,
+MockzillaManagement.EndpointsService,
+MockzillaManagement.CacheClearingService {
     override suspend fun fetchMetaData(
         connection: MockzillaConnectionConfig
     ) = runner<MetaData> {
@@ -109,7 +109,7 @@ internal class MockzillaManagementRepositoryImpl(
 
     override suspend fun clearAllCaches(
         connection: MockzillaConnectionConfig
-    )= runner<Unit> {
+    ) = runner<Unit> {
         delete(connection, "/api/mock-data/all")
     }.onFailure {
         Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
@@ -118,7 +118,7 @@ internal class MockzillaManagementRepositoryImpl(
     override suspend fun clearCaches(
         connection: MockzillaConnectionConfig,
         keys: List<EndpointConfiguration.Key>
-    )= runner<Unit> {
+    ) = runner<Unit> {
         delete(connection, "/api/mock-data") {
             contentType(ContentType.Application.Json)
             setBody(ClearCachesRequestDto(keys))

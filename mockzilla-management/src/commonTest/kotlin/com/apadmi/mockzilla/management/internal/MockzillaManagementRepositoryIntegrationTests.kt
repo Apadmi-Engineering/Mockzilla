@@ -25,6 +25,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@Suppress("TOO_LONG_FUNCTION")
 class MockzillaManagementRepositoryIntegrationTests {
     private val dummyAppName = "MockzillaManagementTest"
     private val dummyAppVersion = "0.0.0-test"
@@ -90,7 +91,6 @@ class MockzillaManagementRepositoryIntegrationTests {
             )
         }
 
-    @Suppress("TOO_LONG_FUNCTION")
     @Test
     fun `fetchAllEndpointConfigs and updateMockData - behaves somewhat sensibly`() =
         runIntegrationTest(
@@ -104,7 +104,7 @@ class MockzillaManagementRepositoryIntegrationTests {
                     .setMeanDelayMillis(10)
                     .build(),
 
-                )
+            )
                 .addEndpoint(
                     EndpointConfiguration.Builder("Id 2")
                         .setDefaultHandler { MockzillaHttpResponse(body = "this is another body") }
@@ -244,8 +244,8 @@ class MockzillaManagementRepositoryIntegrationTests {
             // Check cache was populated
             check(
                 sut.fetchAllEndpointConfigs(connection)
-                .getOrThrow()
-                .map { it.shouldFail } == listOf(true, true)
+                    .getOrThrow()
+                    .map { it.shouldFail } == listOf(true, true)
             )
 
             /* Run Test */
@@ -271,5 +271,4 @@ class MockzillaManagementRepositoryIntegrationTests {
                 afterClearingAllCaches.getOrThrow()
             )
         }
-
 }

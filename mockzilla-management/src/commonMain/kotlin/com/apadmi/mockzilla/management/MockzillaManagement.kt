@@ -32,7 +32,6 @@ interface MockzillaManagement {
         suspend fun fetchDashboardOptionsConfig(connection: MockzillaConnectionConfig, key: EndpointConfiguration.Key): Result<DashboardOptionsConfig>
     }
 
-
     interface UpdateService {
         suspend fun setShouldFail(
             connection: MockzillaConnectionConfig,
