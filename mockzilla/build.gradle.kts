@@ -31,6 +31,7 @@ kotlin {
         }
     }
 
+    jvm()
     jvmToolchain(JavaConfig.toolchain)
 
     sourceSets {

@@ -8,8 +8,8 @@ plugins {
 
 kotlin {
     applyDefaultHierarchyTemplate()
+    jvmToolchain(JavaConfig.toolchain)
     jvm {
-        jvmToolchain(JavaConfig.toolchain)
         withJava()
     }
     sourceSets {

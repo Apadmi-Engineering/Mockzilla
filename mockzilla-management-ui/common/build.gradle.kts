@@ -13,9 +13,8 @@ plugins {
 kotlin {
     applyDefaultHierarchyTemplate()
     androidTarget()
-    jvm("desktop") {
-        jvmToolchain(JavaConfig.toolchain)
-    }
+    jvmToolchain(JavaConfig.toolchain)
+    jvm("desktop")
     sourceSets {
         commonMain.dependencies {
             /* Compose */

@@ -24,7 +24,6 @@ allprojects {
     group = "com.apadmi"
     version = extractVersion()
 
-
     repositories {
         google()
         mavenCentral()

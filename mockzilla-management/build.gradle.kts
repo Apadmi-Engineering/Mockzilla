@@ -12,12 +12,12 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     jvm {
-        jvmToolchain(JavaConfig.toolchain)
         withJava()
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
         }
     }
+    jvmToolchain(JavaConfig.toolchain)
 
     sourceSets {
         commonMain.dependencies {
