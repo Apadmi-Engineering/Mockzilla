@@ -12,7 +12,9 @@ class EndpointConfigBuilder {
       (_) => const MockzillaHttpResponse();
 
   int? _failureProbability;
+
   int? _delayMean;
+
   int? _delayVariance;
 
   EndpointConfigBuilder({
@@ -49,19 +51,19 @@ class EndpointConfigBuilder {
 
   EndpointConfigBuilder setDefaultHandler(
       MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler) {
-    this._defaultHandler = defaultHandler;
+    _defaultHandler = defaultHandler;
     return this;
   }
 
   EndpointConfigBuilder setEndpointMatcher(
       bool Function(MockzillaHttpRequest) endpointMatcher) {
-    this._endpointMatcher = endpointMatcher;
+    _endpointMatcher = endpointMatcher;
     return this;
   }
 
   EndpointConfigBuilder setErrorHandler(
       MockzillaHttpResponse Function(MockzillaHttpRequest) errorHandler) {
-    this._errorHandler = errorHandler;
+    _errorHandler = errorHandler;
     return this;
   }
 }
