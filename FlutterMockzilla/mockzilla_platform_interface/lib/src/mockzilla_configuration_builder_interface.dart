@@ -3,7 +3,6 @@ import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 class MockzillaConfigBuilder {
   MockzillaConfigBuilder();
 
-  /// The port that the Mockzilla should be available through.
   int _port = 8080;
 
   final List<EndpointConfig> _endpoints = [];
