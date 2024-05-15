@@ -90,7 +90,7 @@ class EndpointConfig with _$EndpointConfig {
         errorHandler,
   }) = _EndpointConfig;
 
-  static EndpointBuilderDefaultHandlerStep builder(
+  static EndpointConfigBuilder builder(
     String name,
     String key,
   ) =>
