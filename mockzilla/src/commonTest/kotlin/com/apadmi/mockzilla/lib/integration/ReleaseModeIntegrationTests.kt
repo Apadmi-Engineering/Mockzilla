@@ -15,8 +15,7 @@ class ReleaseModeIntegrationTests {
     fun `GET meta - without header - errors`() = runIntegrationTest(
         MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
-            .setMeanDelayMillis(0)
-            .setDelayVarianceMillis(0)
+            .setDelayMillis(0)
             .addEndpoint(EndpointConfiguration.Builder("id"))
             .setIsReleaseModeEnabled(true)
             .build()
@@ -35,8 +34,7 @@ class ReleaseModeIntegrationTests {
     fun `GET meta - with header - errors`() = runIntegrationTest(
         MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
-            .setMeanDelayMillis(0)
-            .setDelayVarianceMillis(0)
+            .setDelayMillis(0)
             .addEndpoint(EndpointConfiguration.Builder("id"))
             .setIsReleaseModeEnabled(true)
             .build()

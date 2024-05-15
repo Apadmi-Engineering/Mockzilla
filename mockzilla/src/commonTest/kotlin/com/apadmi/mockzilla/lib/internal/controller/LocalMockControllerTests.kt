@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
-import com.apadmi.mockzilla.lib.internal.service.DelayAndFailureDecisionImpl
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -42,14 +41,15 @@ class LocalMockControllerTests {
     @Test
     fun `GET response - no caches - 0 failure probability - succeeds`() = runTest {
         /* Setup */
-        val sut = LocalMockController(localCacheServiceMock,
+        val sut = LocalMockController(
+            localCacheServiceMock,
             mockServerMonitorMock,
-            DelayAndFailureDecisionImpl,
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine { getGlobalOverrides() }.thenReturn(null)
-        given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(null)
+        given(localCacheServiceMock).coroutine {
+            getLocalCache(EndpointConfiguration.Key("my-id"))
+        }.thenReturn(null)
 
         /* Run Test */
         val response = sut.handleRequest(
@@ -66,43 +66,49 @@ class LocalMockControllerTests {
                 statusCode = HttpStatusCode.Created,
                 headers = mapOf("test-header" to "test-value"),
                 body = "my response body"
-            ), response)
+            ), response
+        )
     }
 
     @Test
-    fun `GET response - 100 failure probability cached - fails`() = runTest {
+    fun `GET response - shouldFail=true cached - fails`() = runTest {
         /* Setup */
-        val sut = LocalMockController(localCacheServiceMock,
+        val sut = LocalMockController(
+            localCacheServiceMock,
             mockServerMonitorMock,
-            DelayAndFailureDecisionImpl,
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine { getGlobalOverrides() }.thenReturn(null)
-        given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(
-            MockDataEntryDto("my-id",
-                "my-id",
-                100,
-                0,
-                0,
-                emptyMap(),
-                "",
-                "",
-                HttpStatusCode.InternalServerError,
-                HttpStatusCode.OK)
+        given(localCacheServiceMock).coroutine { getLocalCache(EndpointConfiguration.Key("my-id")) }.thenReturn(
+            SerializableEndpointConfig(
+                key = EndpointConfiguration.Key("my-id"),
+                name = "my-id",
+                versionCode = 0,
+                shouldFail = true,
+                delayMs = 0,
+                defaultHeaders = emptyMap(),
+                defaultBody = "",
+                defaultStatus = HttpStatusCode.OK,
+                errorBody = "",
+                errorHeaders = emptyMap(),
+                errorStatus = HttpStatusCode.InternalServerError,
+            )
         )
 
         /* Run Test */
-        val response = sut.handleRequest(TestMockzillaHttpRequest(
-            uri = "http://example.com/local-mock/my-id",
-            headers = emptyMap(),
-            method = HttpMethod.Get
-        ))
+        val response = sut.handleRequest(
+            TestMockzillaHttpRequest(
+                uri = "http://example.com/local-mock/my-id",
+                headers = emptyMap(),
+                method = HttpMethod.Get
+            )
+        )
 
         /* Verify */
         assertEquals(
             MockzillaHttpResponse(
                 statusCode = HttpStatusCode.InternalServerError
-            ), response)
+            ), response
+        )
     }
 }

@@ -1,43 +1,54 @@
 package com.apadmi.mockzilla.lib.models
 
+import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import com.apadmi.mockzilla.lib.service.MockzillaWeb
+
 import io.ktor.http.*
 import io.ktor.server.request.ApplicationRequest
+
+import kotlin.jvm.JvmInline
+import kotlinx.serialization.Serializable
 
 /**
  * @property name
  * @property key
- * @property failureProbability
- * @property delayMean
- * @property delayVariance
+ * @property shouldFail
+ * @property delay
  * @property endpointMatcher
+ * @property versionCode
  * @property defaultHandler
  * @property errorHandler
- * @property webApiDefaultResponse
- * @property webApiErrorResponse
+ * @property dashboardOptionsConfig
  */
 data class EndpointConfiguration(
     val name: String,
-    val key: String,
-    val failureProbability: Int? = null,
-    val delayMean: Int? = null,
-    val delayVariance: Int? = null,
+    val key: Key,
+    val shouldFail: Boolean,
+    val delay: Int? = null,
+    val dashboardOptionsConfig: DashboardOptionsConfig,
+    val versionCode: Int,
     val endpointMatcher: MockzillaHttpRequest.() -> Boolean,
-    val webApiDefaultResponse: MockzillaHttpResponse?,
-    val webApiErrorResponse: MockzillaHttpResponse?,
     val defaultHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
     val errorHandler: MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) {
     /**
-     * @param id An identifier for this endpoint. Endpoints cannot share an id.
+     * @property raw
      */
-    class Builder(id: String) {
+    @Serializable
+    @JvmInline
+    value class Key(val raw: String)
+
+    /**
+     * @param key An identifier for this endpoint. Endpoints cannot share an id.
+     */
+    class Builder(key: String) {
         private var config = EndpointConfiguration(
-            name = id,
-            key = id,
-            endpointMatcher = { uri.endsWith(id) },
-            webApiDefaultResponse = null,
-            webApiErrorResponse = null,
+            name = key,
+            key = Key(key),
+            endpointMatcher = { uri.endsWith(key) },
+            shouldFail = false,
+            dashboardOptionsConfig = DashboardOptionsConfig(emptyList(), emptyList()),
+            versionCode = Int.MIN_VALUE,
             defaultHandler = {
                 MockzillaHttpResponse(HttpStatusCode.OK)
             }, errorHandler = {
@@ -51,8 +62,16 @@ data class EndpointConfiguration(
          *
          * @param percentage (0 -> 100 inclusive)
          */
+        @Deprecated("Probabilities are no longer supported", ReplaceWith("setShouldFail(false)"))
         fun setFailureProbability(percentage: Int) = apply {
-            config = config.copy(failureProbability = percentage)
+            config = config.copy(shouldFail = percentage == 100)
+        }
+
+        /**
+         * Controls whether calls to this endpoint should fail by default
+         */
+        fun setShouldFail(shouldFail: Boolean) = apply {
+            config = config.copy(shouldFail = shouldFail)
         }
 
         /**
@@ -62,23 +81,22 @@ data class EndpointConfiguration(
          * @param delay delay in milliseconds
          */
         fun setMeanDelayMillis(delay: Int) = apply {
-            config = config.copy(delayMean = delay)
+            config = config.copy(delay = delay)
         }
 
         /**
-         * Used to simulate latency:  The artificial variance in the delay Mockzillaadds to a network
-         * request. Used alongside [setMeanDelayMillis] to calculate the actual artificial delay on each
-         * invocation. Set this value to 0 to remove any randomness from the delay.
+         * No longer supported
          *
          * @param delay delay in milliseconds
          */
+        @Deprecated("No longer supported")
         fun setDelayVarianceMillis(variance: Int) = apply {
-            config = config.copy(delayVariance = variance)
+            // No-op
         }
 
         /**
          * The block called when a network request is made to this endpoint. Note: If the value of
-         * [setFailureProbability] causes Mockzilla to generate a failure response, then this block
+         * [setShouldFail] causes Mockzilla to generate a failure response, then this block
          * will *not* be called, instead the block specified by [setErrorHandler] is called.
          *
          * @param handler
@@ -103,9 +121,11 @@ data class EndpointConfiguration(
          * @param response
          */
         @MockzillaWeb
-        fun setWebApiDefaultResponse(response: MockzillaHttpResponse) = apply {
-            config = config.copy(webApiDefaultResponse = response)
-        }
+        @Deprecated(
+            "Obsolete, see `configureDashboardOverrides`",
+            replaceWith = ReplaceWith("configureDashboardOverrides")
+        )
+        fun setWebApiDefaultResponse(response: MockzillaHttpResponse) = this
 
         /**
          * The error response which is prefilled in the Mockzilla web page.
@@ -113,8 +133,30 @@ data class EndpointConfiguration(
          * @param response
          */
         @MockzillaWeb
-        fun setWebApiErrorResponse(response: MockzillaHttpResponse) = apply {
-            config = config.copy(webApiErrorResponse = response)
+        @Deprecated(
+            "Obsolete, see `configureDashboardOverrides`",
+            replaceWith = ReplaceWith("configureDashboardOverrides")
+        )
+        fun setWebApiErrorResponse(response: MockzillaHttpResponse) = this
+
+        /**
+         * Configure the presets that are available to users of the dashboard.
+         *
+         * @param action
+         * @return
+         */
+        fun configureDashboardOverrides(
+            action: DashboardOptionsConfig.Builder.() -> DashboardOptionsConfig.Builder
+        ) = apply {
+            config = config.copy(dashboardOptionsConfig = action(DashboardOptionsConfig.Builder()).build())
+        }
+
+        /**
+         * Sets the version this endpoint is currently set to. A change in the version code will
+         * automatically clear any caches on the device associated with this endpoint.
+         */
+        fun setVersionCode(code: Int) = apply {
+            config = config.copy(versionCode = code)
         }
 
         /**
@@ -156,7 +198,9 @@ data class EndpointConfiguration(
  * @property headers
  * @property body
  */
+@Serializable
 data class MockzillaHttpResponse(
+    @Serializable(with = HttpStatusCodeSerializer::class)
     val statusCode: HttpStatusCode = HttpStatusCode.OK,
     val headers: Map<String, String> = emptyMap(),
     val body: String = "",
@@ -201,3 +245,59 @@ interface MockzillaHttpRequest {
      */
     fun bodyAsString(): String
 }
+
+/**
+ * @property errorPresets
+ * @property successPresets
+ */
+@Serializable
+data class DashboardOptionsConfig(
+    val errorPresets: List<DashboardOverridePreset>,
+    val successPresets: List<DashboardOverridePreset>
+) {
+    class Builder {
+        private val errorPresets = mutableListOf<DashboardOverridePreset>()
+        private val successPresets = mutableListOf<DashboardOverridePreset>()
+
+        fun addSuccessPreset(
+            response: MockzillaHttpResponse,
+            name: String? = null,
+            description: String? = null
+        ) = successPresets.add(
+            DashboardOverridePreset(
+                name ?: "Preset ${successPresets.count() + 1}",
+                description,
+                response
+            )
+        ).let { this }
+
+        fun addErrorPreset(
+            response: MockzillaHttpResponse,
+            name: String? = null,
+            description: String? = null
+        ) = errorPresets.add(
+            DashboardOverridePreset(
+                name ?: "Error Preset ${errorPresets.count() + 1}",
+                description,
+                response
+            )
+        ).let { this }
+
+        fun build() = DashboardOptionsConfig(
+            errorPresets = errorPresets,
+            successPresets = successPresets
+        )
+    }
+}
+
+/**
+ * @property name
+ * @property description
+ * @property response
+ */
+@Serializable
+data class DashboardOverridePreset(
+    val name: String,
+    val description: String?,
+    val response: MockzillaHttpResponse
+)

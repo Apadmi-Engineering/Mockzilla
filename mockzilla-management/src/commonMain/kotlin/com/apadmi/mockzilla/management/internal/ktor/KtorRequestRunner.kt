@@ -1,15 +1,16 @@
 package com.apadmi.mockzilla.management.internal.ktor
 
-import com.apadmi.mockzilla.management.MockzillaManagement
+import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
-import io.ktor.client.request.post
+import io.ktor.client.request.patch
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.isSuccess
 
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -31,36 +32,40 @@ internal class KtorRequestRunner(private val client: HttpClient) {
 
     private suspend inline fun <reified SuccessType : Any> HttpResponse.toResult() =
         withContext(Dispatchers.IO) {
-            kotlin.runCatching { body<SuccessType>() }
+            if (this@toResult.status.isSuccess()) {
+                kotlin.runCatching { body<SuccessType>() }
+            } else {
+                Result.failure(Exception("Failed network call, see logs"))
+            }
         }
 }
 
 internal suspend inline fun HttpClient.get(
-    connectionConfig: MockzillaManagement.ConnectionConfig,
+    connection: MockzillaConnectionConfig,
     path: String,
     block: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse = get {
-    url(connectionConfig.url(path))
+    url(connection.url(path))
     block()
 }
 
-internal suspend inline fun HttpClient.post(
-    connectionConfig: MockzillaManagement.ConnectionConfig,
+internal suspend inline fun HttpClient.patch(
+    connection: MockzillaConnectionConfig,
     path: String,
     block: HttpRequestBuilder.() -> Unit = {}
-): HttpResponse = post {
-    url(connectionConfig.url(path))
+): HttpResponse = patch {
+    url(connection.url(path))
     block()
 }
 
 internal suspend inline fun HttpClient.delete(
-    connectionConfig: MockzillaManagement.ConnectionConfig,
+    connection: MockzillaConnectionConfig,
     path: String,
     block: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse = delete {
-    url(connectionConfig.url(path))
+    url(connection.url(path))
     block()
 }
 
-private fun MockzillaManagement.ConnectionConfig.url(path: String) =
+private fun MockzillaConnectionConfig.url(path: String) =
     "http://$ip:$port/${path.removePrefix("/")}"

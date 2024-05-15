@@ -52,9 +52,7 @@ data class MockzillaConfig(
         private var logLevel: LogLevel = LogLevel.Info
         private var port = defaultPort
         private var endpoints: MutableList<EndpointConfiguration> = mutableListOf()
-        private var defaultFailureProbability = 0
-        private var defaultDelayMean = 100
-        private var defaultDelayVariance = 20
+        private var delay = 100
         private var isRelease = false
         private var releaseConfig: ReleaseModeConfig = ReleaseModeConfig()
         private var localhostOnly = false
@@ -80,27 +78,35 @@ data class MockzillaConfig(
         }
 
         /**
-         * Probability of Mockzilla returning a simulated http error for this endpoint. 100 being a
-         * guaranteed error .
+         * No-Op
          *
-         * Value set on individual endpoints takes priority over this value
-         *
-         * @param percentage (0 -> 100 inclusive)
+         * @param percentage Not supported
          */
+        @Deprecated("Configuring failure on top level config is now not supported")
         fun setFailureProbabilityPercentage(percentage: Int) = apply {
-            defaultFailureProbability = percentage
+            // No op
         }
 
         /**
          * Used to simulate latency: The artificial mean delay Mockzilla with add to a network request.
-         * Used alongside [setMeanDelayMillis] to calculate the actual artificial delay on each invocation.
          *
          * Value set on individual endpoints takes priority over this value
          *
          * @param delay delay in milliseconds
          */
+        @Deprecated("Delay is now constant with no variance", replaceWith = ReplaceWith("setDelayMillis"))
         fun setMeanDelayMillis(delay: Int) = apply {
-            defaultDelayMean = delay
+            this.delay = delay
+        }
+
+        /**
+         * Used to simulate latency: The artificial delay Mockzilla with add to a network request.
+         * Value set on individual endpoints takes priority over this value
+         *
+         * @param delay delay in milliseconds
+         */
+        fun setDelayMillis(delay: Int) = apply {
+            this.delay = delay
         }
 
         /**
@@ -112,8 +118,9 @@ data class MockzillaConfig(
          *
          * @param delay delay in milliseconds
          */
+        @Deprecated("No longer supported, now does nothing")
         fun setDelayVarianceMillis(variance: Int) = apply {
-            defaultDelayVariance = variance
+            // No-Op
         }
 
         /**
@@ -183,9 +190,7 @@ data class MockzillaConfig(
          */
         fun build() = MockzillaConfig(port, endpoints.map {
             it.copy(
-                failureProbability = it.failureProbability ?: defaultFailureProbability,
-                delayMean = it.delayMean ?: defaultDelayMean,
-                delayVariance = it.delayVariance ?: defaultDelayVariance
+                delay = it.delay ?: delay,
             )
         }, isRelease, localhostOnly, logLevel, releaseConfig, additionalLogWriters)
 

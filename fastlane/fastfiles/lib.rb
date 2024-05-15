@@ -11,7 +11,7 @@ platform :ios do
 
         # If running this locally check the simulator in the command exists locally, if it doesn't, change it
         # to one that does but remember to change it back before committing changes.
-        sh("cd #{lane_context[:repo_root]}/SwiftMockzilla; xcodebuild -scheme SwiftMockzilla test -destination 'platform=iOS Simulator,name=iPhone 12,OS=16.2'")
+        sh("cd #{lane_context[:repo_root]}/SwiftMockzilla; xcodebuild -scheme SwiftMockzilla test -destination 'platform=iOS Simulator,name=iPhone 15 Pro Max,OS=17.5'")
     end
     
     desc "Generate XCFramework"
