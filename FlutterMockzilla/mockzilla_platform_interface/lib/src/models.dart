@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 import 'package:mockzilla_platform_interface/src/endpoint_configuration_builder_interface.dart';
 import 'package:mockzilla_platform_interface/src/mockzilla_configuration_builder_interface.dart';
 
