@@ -46,7 +46,31 @@ class MockzillaHttpResponse with _$MockzillaHttpResponse {
   }) = _MockzillaHttpResponse;
 }
 
-// TODO: Implement builder pattern to create endpoints.
+abstract class EndpointBuilderBuildStep
+    implements EndpointBuilderOptionalsStep {
+  EndpointConfig build();
+}
+
+abstract class EndpointBuilderDefaultHandlerStep {
+  EndpointBuilderMatcherStep setDefaultHandler();
+}
+
+abstract class EndpointBuilderMatcherStep {
+  EndpointBuilderErrorHandlerStep setEndpointMatcher();
+}
+
+abstract class EndpointBuilderErrorHandlerStep {
+  EndpointBuilderOptionalsStep setErrorHandler();
+}
+
+abstract class EndpointBuilderOptionalsStep {
+  EndpointBuilderBuildStep setFailureProbability(int failureProbability);
+
+  EndpointBuilderBuildStep setMeanDelayMillis(int delayMean);
+
+  EndpointBuilderBuildStep setDelayMean(int delayVariance);
+}
+
 class EndpointConfigBuilder {
   final String name;
 
@@ -139,21 +163,8 @@ class EndpointConfig with _$EndpointConfig {
         errorHandler,
   }) = _EndpointConfig;
 
-  static EndpointConfigBuilder builder({
-    required String name,
-    required String key,
-    required bool Function(MockzillaHttpRequest) endpointMatcher,
-    required MockzillaHttpResponse Function(MockzillaHttpRequest)
-        defaultHandler,
-    required MockzillaHttpResponse Function(MockzillaHttpRequest) errorHandler,
-  }) {
-    return EndpointConfigBuilder(
-      name: name,
-      key: key,
-      endpointMatcher: endpointMatcher,
-      defaultHandler: defaultHandler,
-      errorHandler: errorHandler,
-    );
+  static EndpointBuilderDefaultHandlerStep builder(String name) {
+    throw UnimplementedError();
   }
 }
 
