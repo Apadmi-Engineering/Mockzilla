@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 import 'package:mockzilla_platform_interface/src/endpoint_configuration_builder_interface.dart';
+import 'package:mockzilla_platform_interface/src/mockzilla_configuration_builder_interface.dart';
 
 part 'models.freezed.dart';
 
@@ -128,10 +129,22 @@ class MockzillaConfig with _$MockzillaConfig {
 
     /// Whether Mockzilla server should only be available on the host device.
     required bool localHostOnly,
+
+    /// The level of logging that should be used by Mockzilla.
     required LogLevel logLevel,
+
+    /// The configuration for rate limiting.
+    /// Rate limiting uses Ktor's implementation, please see
+    /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
+    /// info.
     required ReleaseModeConfig releaseModeConfig,
+
+    /// The list of additional log writers that should be used by Mockzilla.
     required List<MockzillaLogger> additionalLogWriters,
   }) = _MockzillaConfig;
+
+  /// A builder for creating a [MockzillaConfig] instance.
+  static MockzillaConfigBuilder builder() => MockzillaConfigBuilder();
 }
 
 // TODO: Implement returning this class from `startMockzilla`.
