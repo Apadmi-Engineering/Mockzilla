@@ -92,12 +92,8 @@ class EndpointConfig with _$EndpointConfig {
 
   static EndpointConfigBuilder builder(
     String name,
-    String key,
   ) =>
-      EndpointConfigBuilder(
-        name: name,
-        key: key,
-      );
+      EndpointConfigBuilder(name: name);
 }
 
 @freezed

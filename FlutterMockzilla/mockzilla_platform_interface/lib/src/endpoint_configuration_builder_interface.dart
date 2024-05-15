@@ -3,8 +3,6 @@ import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 class EndpointConfigBuilder {
   final String name;
 
-  final String key;
-
   bool Function(MockzillaHttpRequest) endpointMatcher = (_) => false;
 
   MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler =
@@ -19,7 +17,6 @@ class EndpointConfigBuilder {
 
   EndpointConfigBuilder({
     required this.name,
-    required this.key,
   });
 
   EndpointConfigBuilder setFailureProbability(int failureProbability) {
@@ -39,7 +36,7 @@ class EndpointConfigBuilder {
 
   EndpointConfig build() {
     return EndpointConfig(
-      key: key,
+      key: name,
       name: name,
       endpointMatcher: endpointMatcher,
       defaultHandler: defaultHandler,
