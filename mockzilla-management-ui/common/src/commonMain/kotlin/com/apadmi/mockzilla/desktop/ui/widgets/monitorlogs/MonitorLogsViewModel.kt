@@ -20,7 +20,9 @@ class MonitorLogsViewModel(
     private var pollingJob: Job? = null
 
     override suspend fun reloadData(selectedDevice: Device?) {
-        val device = selectedDevice ?: return
+        val device = selectedDevice ?: return run {
+            state.value = State.Empty
+        }
         pollForLogs(device)
     }
 
