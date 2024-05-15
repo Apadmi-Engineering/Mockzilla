@@ -1,64 +1,67 @@
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 class EndpointConfigBuilder {
-  final String name;
+  final String _name;
 
-  bool Function(MockzillaHttpRequest) endpointMatcher = (_) => false;
+  bool Function(MockzillaHttpRequest) _endpointMatcher = (_) => false;
 
-  MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler =
+  MockzillaHttpResponse Function(MockzillaHttpRequest) _defaultHandler =
       (_) => const MockzillaHttpResponse();
 
-  MockzillaHttpResponse Function(MockzillaHttpRequest) errorHandler =
+  MockzillaHttpResponse Function(MockzillaHttpRequest) _errorHandler =
       (_) => const MockzillaHttpResponse();
 
-  int? failureProbability;
-  int? delayMean;
-  int? delayVariance;
+  int? _failureProbability;
+  int? _delayMean;
+  int? _delayVariance;
 
   EndpointConfigBuilder({
-    required this.name,
-  });
+    required String name,
+  }) : _name = name;
 
   EndpointConfigBuilder setFailureProbability(int failureProbability) {
-    this.failureProbability = failureProbability;
+    _failureProbability = failureProbability;
     return this;
   }
 
   EndpointConfigBuilder setMeanDelayMillis(int delayMean) {
-    this.delayMean = delayMean;
+    _delayMean = delayMean;
     return this;
   }
 
   EndpointConfigBuilder setDelayMean(int delayVariance) {
-    this.delayVariance = delayVariance;
+    _delayVariance = delayVariance;
     return this;
   }
 
   EndpointConfig build() {
     return EndpointConfig(
-      key: name,
-      name: name,
-      endpointMatcher: endpointMatcher,
-      defaultHandler: defaultHandler,
-      errorHandler: errorHandler,
+      key: _name,
+      name: _name,
+      endpointMatcher: _endpointMatcher,
+      defaultHandler: _defaultHandler,
+      errorHandler: _errorHandler,
+      failureProbability: _failureProbability,
+      delayMean: _delayMean,
+      delayVariance: _delayVariance,
     );
   }
 
   EndpointConfigBuilder setDefaultHandler(
       MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler) {
-    this.defaultHandler = defaultHandler;
+    this._defaultHandler = defaultHandler;
     return this;
   }
 
   EndpointConfigBuilder setEndpointMatcher(
       bool Function(MockzillaHttpRequest) endpointMatcher) {
-    this.endpointMatcher = endpointMatcher;
+    this._endpointMatcher = endpointMatcher;
     return this;
   }
 
   EndpointConfigBuilder setErrorHandler(
       MockzillaHttpResponse Function(MockzillaHttpRequest) errorHandler) {
-    this.errorHandler = errorHandler;
+    this._errorHandler = errorHandler;
     return this;
   }
 }
