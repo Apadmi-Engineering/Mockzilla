@@ -1,8 +1,12 @@
+@file:OptIn(ExperimentalObjCName::class)
+
 package com.apadmi.mockzilla.lib.models
 
 import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import io.ktor.http.*
 import io.ktor.server.request.ApplicationRequest
+import kotlin.experimental.ExperimentalObjCName
+import kotlin.native.ObjCName
 
 /**
  * @property name
@@ -15,6 +19,7 @@ import io.ktor.server.request.ApplicationRequest
  * @property webApiDefaultResponse
  * @property webApiErrorResponse
  */
+@ObjCName("EndpointConfiguration", exact = true)
 data class EndpointConfiguration(
     val name: String,
     val key: String,
@@ -29,6 +34,7 @@ data class EndpointConfiguration(
     /**
      * @param id An identifier for this endpoint. Endpoints cannot share an id.
      */
+    @ObjCName("EndpointConfigurationBuilder", exact = true)
     class Builder(id: String) {
         private var config = EndpointConfiguration(
             name = id,
@@ -162,12 +168,14 @@ data class EndpointConfiguration(
  * @property headers
  * @property body
  */
+@ObjCName("MockzillaHttpResponse", exact = true)
 data class MockzillaHttpResponse(
     val statusCode: HttpStatusCode = HttpStatusCode.OK,
     val headers: Map<String, String> = emptyMap(),
     val body: String = "",
 )
 
+@ObjCName("MockzillaHttpRequest", exact = true)
 interface MockzillaHttpRequest {
     /**
      * The full uri of the network request

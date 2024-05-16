@@ -1,6 +1,10 @@
+@file:OptIn(ExperimentalObjCName::class)
+
 package com.apadmi.mockzilla.lib.models
 
 import kotlinx.serialization.Serializable
+import kotlin.experimental.ExperimentalObjCName
+import kotlin.native.ObjCName
 
 /**
  * @property appName
@@ -11,6 +15,7 @@ import kotlinx.serialization.Serializable
  * @property operatingSystem
  * @property mockzillaVersion
  */
+@ObjCName("MockzillaMetaData")
 @Serializable
 data class MetaData(
     val appName: String,
