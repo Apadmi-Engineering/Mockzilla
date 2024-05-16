@@ -35,7 +35,7 @@ kotlin {
 
     jvm()
     cocoapods {
-        name = "Mockzilla"
+        name = "SwiftMockzilla"
         version = extractVersion()
         summary = "A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your application."
         homepage = "https://apadmi-engineering.github.io/Mockzilla/"
