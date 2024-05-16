@@ -18,7 +18,7 @@ def define_env(env):
 
   @env.macro
   def get_version():
-      return print_source_file("version")
+      return print_source_file("version.txt")
 
   @env.macro
   def get_python_version():
