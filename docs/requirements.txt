@@ -1,2 +1,2 @@
 mkdocs-material==8.2.13
-mkdocs-macros-plugin==0.7.0
+mkdocs-macros-plugin==1.0.5
