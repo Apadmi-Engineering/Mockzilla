@@ -8,13 +8,12 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.buildKonfig)
     id("maven-publish")
-    id("com.codingfeline.buildkonfig")
     id("publication-convention")
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
     androidTarget {
         publishAllLibraryVariants()
     }

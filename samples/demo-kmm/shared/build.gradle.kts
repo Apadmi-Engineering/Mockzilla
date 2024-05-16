@@ -8,7 +8,6 @@ plugins {
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
     androidTarget()
 
     listOf(

@@ -11,11 +11,11 @@ plugins {
     alias(libs.plugins.dokka) apply true
     alias(libs.plugins.compose) apply false
     alias(libs.plugins.paparazzi) apply false
+    alias(libs.plugins.buildKonfig) apply false
 }
 
 buildscript {
     dependencies {
-        classpath(libs.buildkonfig.gradle.plugin)
         classpath(":build-logic")
     }
 }

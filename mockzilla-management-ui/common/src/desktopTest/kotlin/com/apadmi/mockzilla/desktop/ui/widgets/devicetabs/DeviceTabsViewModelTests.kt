@@ -12,6 +12,7 @@ import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
 import io.mockative.mock
+import io.mockative.thenDoNothing
 import io.mockative.verify
 import org.junit.Test
 
@@ -30,6 +31,7 @@ class DeviceTabsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
     fun `onChangeDevice - calls through`() = runBlockingTest {
         /* Setup */
         given(activeDeviceMonitorMock).invocation { allDevices }.thenReturn(emptyList())
+        given(activeDeviceSelectorMock).invocation { updateSelectedDevice(Device.dummy()) }.thenDoNothing()
         val sut = createSut()
         sut.state.test {
             /* Run Test */
@@ -46,6 +48,7 @@ class DeviceTabsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
     fun `addNewDevice - clears active device`() = runBlockingTest {
         /* Setup */
         given(activeDeviceMonitorMock).invocation { allDevices }.thenReturn(emptyList())
+        given(activeDeviceSelectorMock).invocation { clearSelectedDevice() }.thenDoNothing()
         val sut = createSut()
 
         /* Run Test */

@@ -9,8 +9,6 @@ repositories {
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
-
     jvm {
         withJava()
         testRuns["test"].executionTask.configure {

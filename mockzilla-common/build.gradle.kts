@@ -11,8 +11,6 @@ plugins {
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
-
     androidTarget {
         publishAllLibraryVariants()
     }
@@ -79,4 +77,3 @@ android {
         targetCompatibility = JavaConfig.version
     }
 }
-

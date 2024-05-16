@@ -69,9 +69,6 @@ androidx-lifecycleViewModelCompose = { module = "androidx.lifecycle:lifecycle-vi
 androidx-lifecycleRuntimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
-# BuildKonfig
-buildkonfig-gradle-plugin = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildKonfig" }
-
 # Logging
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
@@ -125,3 +122,4 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
+buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
