@@ -8,9 +8,10 @@ plugins {
 }
 
 kotlin {
-    android()
-    
-    listOf( 
+    applyDefaultHierarchyTemplate()
+    androidTarget()
+
+    listOf(
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
@@ -19,25 +20,22 @@ kotlin {
             baseName = "shared"
         }
     }
+    jvmToolchain(JavaConfig.toolchain)
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                /* Mockzilla */
-                api(project(":mockzilla"))
+        commonMain.dependencies {
+            /* Mockzilla */
+            api(project(":mockzilla"))
 
-                /* Json parsing */
-                implementation(libs.kotlinx.serialization.json)
+            /* Json parsing */
+            implementation(libs.kotlinx.serialization.json)
 
-                /* Networking */
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.cio)
-            }
+            /* Networking */
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
     }
 }

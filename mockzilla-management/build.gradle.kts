@@ -9,48 +9,44 @@ repositories {
 }
 
 kotlin {
+    applyDefaultHierarchyTemplate()
+
     jvm {
-        jvmToolchain(JavaConfig.toolchain)
         withJava()
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
         }
     }
+    jvmToolchain(JavaConfig.toolchain)
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                /* Kotlin */
-                implementation(libs.kotlinx.coroutines.core)
+        commonMain.dependencies {
+            /* Kotlin */
+            implementation(libs.kotlinx.coroutines.core)
 
-                /* Common Mockzilla */
-                api(project(":mockzilla-common"))
+            /* Common Mockzilla */
+            api(project(":mockzilla-common"))
 
-                /* Ktor */
-                api(libs.ktor.server.core)
-                implementation(libs.ktor.serialization.kotlinx.json)
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.cio)
-                implementation(libs.ktor.client.content.negotiation)
-                implementation(libs.ktor.client.resources)
-                implementation(libs.ktor.client.logging)
+            /* Ktor */
+            api(libs.ktor.server.core)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.resources)
+            implementation(libs.ktor.client.logging)
 
-                /* Serialization */
-                implementation(libs.kotlinx.serialization.json)
+            /* Serialization */
+            implementation(libs.kotlinx.serialization.json)
 
-                /* Logging */
-                implementation(libs.kermit)
-            }
+            /* Logging */
+            implementation(libs.kermit)
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
+        commonTest.dependencies {
+            implementation(kotlin("test"))
 
-                /* Mockzilla */
-                implementation(project(":mockzilla"))
-            }
+            /* Mockzilla */
+            implementation(project(":mockzilla"))
         }
-        val jvmMain by getting
-        val jvmTest by getting
     }
 }
