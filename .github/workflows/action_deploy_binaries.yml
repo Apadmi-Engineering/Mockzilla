@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - feature/setup-snapshot-deployments
       - release-please--branches--develop--components--release-please-action
     tags:
       - v**
