@@ -1,4 +1,3 @@
-
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
@@ -29,6 +28,7 @@ kotlin {
     }
 
     jvm()
+    jvmToolchain(JavaConfig.toolchain)
 
     sourceSets {
         all {
@@ -36,34 +36,28 @@ kotlin {
             languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
         }
 
-        jvmToolchain(JavaConfig.toolchain)
+        commonMain.dependencies {
+            /* Kotlin */
+            implementation(libs.kotlinx.coroutines.core)
 
-        val commonMain by getting {
-            dependencies {
-                /* Kotlin */
-                implementation(libs.kotlinx.coroutines.core)
+            /* Ktor */
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.server.core)
 
-                /* Ktor */
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.server.core)
+            /* Serialization */
+            implementation(libs.kotlinx.serialization.json)
 
-                /* Serialization */
-                implementation(libs.kotlinx.serialization.json)
+            /* Date Time */
+            implementation(libs.kotlinx.datetime)
 
-                /* Date Time */
-                implementation(libs.kotlinx.datetime)
-
-                /* Logging */
-                implementation(libs.kermit)
-            }
+            /* Logging */
+            implementation(libs.kermit)
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
+        commonTest.dependencies {
+            implementation(kotlin("test"))
 
-                implementation(libs.mockative)
-                implementation(libs.kotlinx.coroutines.test)
-            }
+            implementation(libs.mockative)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }

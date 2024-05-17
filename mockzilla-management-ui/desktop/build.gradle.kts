@@ -1,5 +1,5 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import com.apadmi.mockzilla.JavaConfig
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -7,18 +7,15 @@ plugins {
 }
 
 kotlin {
+    jvmToolchain(JavaConfig.toolchain)
     jvm {
-        jvmToolchain(JavaConfig.toolchain)
         withJava()
     }
     sourceSets {
-        val jvmMain by getting {
-            dependencies {
-                implementation(project(":mockzilla-management-ui:common"))
-                implementation(compose.desktop.currentOs)
-            }
+        jvmMain.dependencies {
+            implementation(project(":mockzilla-management-ui:common"))
+            implementation(compose.desktop.currentOs)
         }
-        val jvmTest by getting
     }
 }
 

@@ -2,7 +2,7 @@ import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
 
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
     alias(libs.plugins.paparazzi)
@@ -11,52 +11,45 @@ plugins {
 }
 
 kotlin {
-    android()
-    jvm("desktop") {
-        jvmToolchain(JavaConfig.toolchain)
-    }
+    androidTarget()
+    jvmToolchain(JavaConfig.toolchain)
+    jvm("desktop")
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                /* Compose */
-                implementation(compose.runtime)
-                implementation(compose.material3)
-                implementation(compose.preview)
+        commonMain.dependencies {
+            /* Compose */
+            implementation(compose.runtime)
+            implementation(compose.material3)
+            implementation(compose.preview)
 
-                /* Localisable Strings */
-                implementation(libs.lyricist.library)
+            /* Localisable Strings */
+            implementation(libs.lyricist.library)
 
-                /* DI */
-                implementation(libs.koin.core)
+            /* DI */
+            implementation(libs.koin.core)
 
-                /* Coroutines */
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.showkase)
+            /* Coroutines */
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.showkase)
 
-                /* Mockzilla Management */
-                implementation(project(":mockzilla-management"))
-            }
+            /* Mockzilla Management */
+            implementation(project(":mockzilla-management"))
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
-        val androidMain by getting {
-            dependencies {
-                /* Compose */
-                implementation(libs.androidx.compose.ui)
-                implementation(libs.androidx.compose.activity)
-                implementation(libs.androidx.compose.uiToolingPreview)
-                implementation(libs.androidx.lifecycleRuntimeKtx)
-                implementation(libs.androidx.compose.material3)
-                implementation(libs.androidx.compose.materialIconsExt)
+        androidMain.dependencies {
+            /* Compose */
+            implementation(libs.androidx.compose.ui)
+            implementation(libs.androidx.compose.activity)
+            implementation(libs.androidx.compose.uiToolingPreview)
+            implementation(libs.androidx.lifecycleRuntimeKtx)
+            implementation(libs.androidx.compose.material3)
+            implementation(libs.androidx.compose.materialIconsExt)
 
-                /* ViewModel */
-                implementation(libs.androidx.lifecycleViewModelCompose)
-                implementation(libs.koin.android)
-                implementation(libs.koin.compose)
-            }
+            /* ViewModel */
+            implementation(libs.androidx.lifecycleViewModelCompose)
+            implementation(libs.koin.android)
+            implementation(libs.koin.compose)
         }
         val androidUnitTest by getting {
             dependencies {
@@ -76,7 +69,6 @@ kotlin {
 
                 /* Coroutines */
                 implementation(libs.kotlinx.coroutines.swing)
-
             }
         }
         val desktopTest by getting {
@@ -95,7 +87,7 @@ dependencies {
     configurations
         .filter { it.name.startsWith("ksp") && it.name.contains("Test") }
         .forEach {
-            add(it.name, "io.mockative:mockative-processor:2.0.1")
+            add(it.name, libs.mockative.processor)
         }
 }
 
