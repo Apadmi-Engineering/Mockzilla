@@ -3,9 +3,13 @@ name: Deploy Binaries
 on: 
   workflow_dispatch:
   push:
+    branches:
+      - feature/setup-snapshot-deployments
+      - release-please--branches--develop--components--release-please-action
     tags:
       - v**
-
+env:
+  is_snapshot: ${{ github.ref_type == 'branch' }}
 
 jobs:
   deploy:
@@ -25,19 +29,21 @@ jobs:
         run: bundle install
       - name: Deploy package to Maven Central
         run: | 
+          echo "Testing env var: $is_snapshot"
           export GPG_TTY=$(tty)
-          bundle exec fastlane publish_to_maven
+          bundle exec fastlane publish_to_maven is_snapshot:$is_snapshot
         env:
           GPG_PASSPHRASE:  ${{ secrets.GPG_PASSWORD }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_KEY: ${{ secrets.OSSRH_KEY }}
       - name: Deploy package to Github for SPM
-        run: bundle exec fastlane ios publish_spm_package
+        run: bundle exec fastlane ios publish_spm_package is_snapshot:$is_snapshot
         env:
           IOS_DEPLOY_URL: ${{ secrets.IOS_DEPLOY_URL }}
       - uses: google-github-actions/release-please-action@v3
         with:
+          if: ${{ !env.is_snapshot }}
           release-type: simple
           package-name: release-please-action
           command: github-release

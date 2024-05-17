@@ -84,3 +84,15 @@ android {
     }
 }
 
+publishing {
+    publications.withType<MavenPublication> {
+        pom {
+            name.set("mockzilla-common")
+            description.set(
+                """
+                A utility module containing common utilities and models used by multiple different mockzilla libraries.
+            """.trimIndent()
+            )
+        }
+    }
+}
