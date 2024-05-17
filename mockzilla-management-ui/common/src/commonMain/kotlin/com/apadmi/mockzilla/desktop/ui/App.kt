@@ -23,6 +23,7 @@ import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsWidget
 
 import com.airbnb.android.showkase.annotation.ShowkaseRoot
 import com.airbnb.android.showkase.annotation.ShowkaseRootModule
+import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetailsWidget
 
 @ShowkaseRoot
 class RootShowkaseModule : ShowkaseRootModule
@@ -35,7 +36,7 @@ fun App(
         modifier = Modifier.androidStatusBarPadding().fillMaxSize(),
         top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
         left = listOf(Widget(strings.widgets.metaData.title) { MetaDataWidget() }),
-        right = listOf(Widget("Right 1") { Text("Right1") }),
+        right = listOf(Widget("Right 1") { EndpointDetailsWidget() }),
         middle = listOf(Widget("") {
             MiddlePaneWrapperWidget({ EndpointsWidget() },
                 { DeviceConnectionWidget() }
