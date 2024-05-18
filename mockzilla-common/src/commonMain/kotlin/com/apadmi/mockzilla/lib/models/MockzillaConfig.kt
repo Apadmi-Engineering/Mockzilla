@@ -2,8 +2,6 @@ package com.apadmi.mockzilla.lib.models
 
 import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
 import com.apadmi.mockzilla.lib.service.MockzillaLogWriter
-import kotlin.experimental.ExperimentalObjCName
-import kotlin.native.ObjCName
 
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds

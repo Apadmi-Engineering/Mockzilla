@@ -1,8 +1,6 @@
 package com.apadmi.mockzilla.lib.models
 
 import kotlinx.serialization.Serializable
-import kotlin.experimental.ExperimentalObjCName
-import kotlin.native.ObjCName
 
 /**
  * @property appName

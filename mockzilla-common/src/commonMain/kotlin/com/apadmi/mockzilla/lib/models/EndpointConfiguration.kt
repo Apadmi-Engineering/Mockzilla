@@ -3,9 +3,6 @@ package com.apadmi.mockzilla.lib.models
 import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import io.ktor.http.*
 import io.ktor.server.request.ApplicationRequest
-import kotlin.experimental.ExperimentalObjCName
-import kotlin.native.ObjCName
-
 /**
  * @property name
  * @property key
@@ -168,9 +165,7 @@ data class MockzillaHttpResponse(
     val statusCode: HttpStatusCode = HttpStatusCode.OK,
     val headers: Map<String, String> = emptyMap(),
     val body: String = "",
-) {
-    companion object {}
-}
+)
 
 interface MockzillaHttpRequest {
     /**
