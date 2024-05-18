@@ -27,7 +27,7 @@ platform :ios do
     desc "Generate Podspec"
     lane :generate_podspec do
         gradle(
-            tasks: [":mockzilla:podPublishXCFramework"]
+            tasks: [":mockzilla:podPublishReleaseXCFramework"]
         )
 
         # Copy the Podspec to where the publish lane can find it
