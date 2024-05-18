@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalObjCName::class)
-
 package com.apadmi.mockzilla.lib.models
 
 import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
@@ -19,7 +17,6 @@ import kotlin.time.Duration.Companion.seconds
  * @property localhostOnly
  * @property additionalLogWriters
  */
-@ObjCName("MockzillaConfig", exact = true)
 data class MockzillaConfig(
     val port: Int,
     val endpoints: List<EndpointConfiguration>,
@@ -29,7 +26,6 @@ data class MockzillaConfig(
     val releaseModeConfig: ReleaseModeConfig,
     val additionalLogWriters: List<MockzillaLogWriter>
 ) {
-    @ObjCName("MockzillaLogLevel", exact = true)
     enum class LogLevel {
         Assert,
         Debug,
@@ -48,14 +44,12 @@ data class MockzillaConfig(
      * @property rateLimitRefillPeriod
      * @property tokenLifeSpan
      */
-    @ObjCName("MockzillaReleaseModeConfig", exact = true)
     data class ReleaseModeConfig(
         val rateLimit: Int = 60,
         val rateLimitRefillPeriod: Duration = 60.seconds,
         val tokenLifeSpan: Duration = 0.5.seconds
     )
 
-    @ObjCName("MockzillaConfigBuilder", exact = true)
     class Builder {
         private var logLevel: LogLevel = LogLevel.Info
         private var port = defaultPort
@@ -216,7 +210,6 @@ data class MockzillaConfig(
  * @property authHeaderProvider
  * @property mockzillaVersion
  */
-@ObjCName("MockzillaRuntimeParams", exact = true)
 data class MockzillaRuntimeParams(
     val config: MockzillaConfig,
     val mockBaseUrl: String,
