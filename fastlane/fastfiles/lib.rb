@@ -31,7 +31,7 @@ platform :ios do
         )
 
         # Copy the Podspec to where the publish lane can find it
-        sh("cp -rf #{lane_context[:repo_root]}/mockzilla/build/cocoapods/publish/release/Mockzilla.podspec #{lane_context[:repo_root]}/SwiftMockzilla")
+        sh("cp -rf #{lane_context[:repo_root]}/mockzilla/build/cocoapods/publish/release/SwiftMockzilla.podspec #{lane_context[:repo_root]}/SwiftMockzilla")
     end
 
     desc "Deploy the Swift package to github & push new podspec"
@@ -51,11 +51,15 @@ platform :ios do
 
             git add .;
             git add --force mockzilla.xcframework
+            git add --forge SwiftMockzilla.podspec
             git commit -m "Updating Package"
             git push
             git tag v#{get_version_name}
             git push --tags
         })
+
+        # Push podspec to trunk
+        sh("pod trunk push")
     end
 end
 
