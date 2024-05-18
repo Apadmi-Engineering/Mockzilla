@@ -34,10 +34,11 @@ platform :ios do
         sh("cp -rf #{lane_context[:repo_root]}/mockzilla/build/cocoapods/publish/release/Mockzilla.podspec #{lane_context[:repo_root]}/SwiftMockzilla")
     end
 
-    desc "Deploy the SPM package to github"
-    lane :publish_spm_package do
+    desc "Deploy the Swift package to github & push new podspec"
+    lane :publish_swift_package do
         # Create the XCFramework
         generate_xcframework
+        # Create podspec
         generate_podspec
 
         sh("rm -rf apadmi-mockzilla-ios")

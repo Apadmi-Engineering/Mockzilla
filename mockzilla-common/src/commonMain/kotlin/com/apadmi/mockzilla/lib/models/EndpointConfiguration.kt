@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.lib.models
 import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import io.ktor.http.*
 import io.ktor.server.request.ApplicationRequest
+
 /**
  * @property name
  * @property key
