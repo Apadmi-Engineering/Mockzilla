@@ -42,10 +42,11 @@ kotlin {
         framework {
             baseName = "mockzilla"
         }
-        license = "{:type => 'MIT', :file => '$rootDir/LICENSE'}"
-        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => '$version' }"
+        license = "{:type => 'MIT', :file => 'LICENSE'}"
+        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => 'v$version' }"
         extraSpecAttributes["vendored_frameworks"] = "'Mockzilla.xcframework'"
         extraSpecAttributes["source_files"] = "'Sources/SwiftMockzilla/SwiftMockzilla.swift'"
+        extraSpecAttributes["swift_version"] = "'5.9.2'"
 
         ios.deploymentTarget = "13.0"
     }
