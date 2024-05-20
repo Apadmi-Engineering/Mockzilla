@@ -19,6 +19,7 @@ class EndpointDetailsViewModel(
     // see https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
     // for reasons
     val state = mutableStateOf<State>(State.Empty)
+
     override suspend fun reloadData(selectedDevice: Device?) {
         val device = selectedDevice ?: return run {
             state.value = State.Empty
