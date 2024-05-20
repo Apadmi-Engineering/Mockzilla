@@ -1,3 +1,5 @@
+@file:Suppress("MAGIC_NUMBER")
+
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -5,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -25,14 +26,77 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
+
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
+
+import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import io.ktor.http.HttpStatusCode
+
+@Composable
+fun ColumnScope.EndpointDetailsResponseBody(
+    statusCode: HttpStatusCode?,
+    onStatusCodeChange: (HttpStatusCode?) -> Unit,
+    body: String?,
+    onResponseBodyChange: (String?) -> Unit,
+    strings: Strings = LocalStrings.current,
+) {
+    Spacer(Modifier.height(4.dp))
+    statusCode?.let {
+        // FIXME Add picker
+        Text(
+            text = strings.widgets.endpointDetails.statusCodeLabel(statusCode),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        )
+        Button(onClick = {}, modifier = Modifier.padding(horizontal = 8.dp)) {
+            Text(text = strings.widgets.endpointDetails.reset)
+        }
+    } ?: run {
+        Text(
+            text = strings.widgets.endpointDetails.noOverrideStatusCode,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+        Button(onClick = {}, modifier = Modifier.padding(horizontal = 8.dp)) {
+            Text(text = strings.widgets.endpointDetails.edit)
+        }
+    }
+    body?.let {
+        TextField(
+            value = body,
+            onValueChange = onResponseBodyChange,
+            // Might not have enough screen real estate for a weight here, but don't particularly
+            // want double scrolling either
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 200.dp, max = 500.dp)
+                .padding(horizontal = 8.dp),
+            label = { Text(text = strings.widgets.endpointDetails.bodyLabel) },
+            singleLine = false,
+        )
+        // TODO: Might want warning here before losing mock data
+        Button(
+            onClick = { onResponseBodyChange(null) },
+            modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp)
+        ) {
+            Text(text = strings.widgets.endpointDetails.reset)
+        }
+    } ?: run {
+        Text(
+            text = strings.widgets.endpointDetails.noOverrideBody,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+        Button(
+            onClick = { onResponseBodyChange("") },
+            modifier = Modifier.padding(horizontal = 8.dp)
+        ) {
+            Text(text = strings.widgets.endpointDetails.edit)
+        }
+    }
+}
 
 @Composable
 fun EndpointDetailsWidget() {
@@ -106,68 +170,10 @@ fun EndpointDetailsWidgetContent(
                     body = state.errorBody,
                     onResponseBodyChange = onErrorBodyChange,
                 )
+                else -> {
+                    // this is a generated else block
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun ColumnScope.EndpointDetailsResponseBody(
-    statusCode: HttpStatusCode?,
-    onStatusCodeChange: (HttpStatusCode?) -> Unit,
-    body: String?,
-    onResponseBodyChange: (String?) -> Unit,
-    strings: Strings = LocalStrings.current,
-) {
-    Spacer(Modifier.height(4.dp))
-    if (statusCode == null) {
-        Text(
-            text = strings.widgets.endpointDetails.noOverrideStatusCode,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-        Button(onClick = {}, modifier = Modifier.padding(horizontal = 8.dp)) {
-            Text(text = strings.widgets.endpointDetails.edit)
-        }
-    } else {
-        // FIXME Add picker
-        Text(
-            text = strings.widgets.endpointDetails.statusCodeLabel(statusCode),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        )
-        Button(onClick = {}, modifier = Modifier.padding(horizontal = 8.dp)) {
-            Text(text = strings.widgets.endpointDetails.reset)
-        }
-    }
-    if (body == null) {
-        Text(
-            text = strings.widgets.endpointDetails.noOverrideBody,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-        Button(
-            onClick = { onResponseBodyChange("") },
-            modifier = Modifier.padding(horizontal = 8.dp)
-        ) {
-            Text(text = strings.widgets.endpointDetails.edit)
-        }
-    } else {
-        TextField(
-            value = body,
-            onValueChange = onResponseBodyChange,
-            // Might not have enough screen real estate for a weight here, but don't particularly
-            // want double scrolling either
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 200.dp, max = 500.dp)
-                .padding(horizontal = 8.dp),
-            label = { Text(text = strings.widgets.endpointDetails.bodyLabel) },
-            singleLine = false,
-        )
-        // TODO: Might want warning here before losing mock data
-        Button(
-            onClick = { onResponseBodyChange(null) },
-            modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp)
-        ) {
-            Text(text = strings.widgets.endpointDetails.reset)
         }
     }
 }

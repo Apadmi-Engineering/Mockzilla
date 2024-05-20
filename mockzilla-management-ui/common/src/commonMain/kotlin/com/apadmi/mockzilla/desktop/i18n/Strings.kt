@@ -69,8 +69,17 @@ data class Strings(
 
         /**
          * @property none
-         * @property successData
+         * @property useErrorResponse
+         * @property defaultData
          * @property errorData
+         * @property noOverrideBody
+         * @property noOverrideStatusCode
+         * @property edit
+         * @property reset
+         * @property resetUseErrorResponse
+         * @property bodyLabel
+         * @property statusCodeLabel
+         * @property delayLabel
          */
         data class EndpointDetails(
             val none: String,

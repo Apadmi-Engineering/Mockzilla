@@ -6,11 +6,9 @@ import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class EndpointDetailsViewModel(
     private val endpointsService: MockzillaManagement.EndpointsService,
@@ -31,12 +29,9 @@ class EndpointDetailsViewModel(
 
         state.value = endpoints.fold(
             onSuccess = { config ->
-                if (config == null) {
-                    State.Empty
-                } else {
-                    val presets = endpointsService.fetchDashboardOptionsConfig(device, config.key)
-                    presets.fold(
-                        onSuccess = {
+                config?.let {
+                    endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
+                        onSuccess = { presets ->
                             State.Endpoint(
                                 config = config,
                                 defaultBody = config.defaultBody,
@@ -45,12 +40,12 @@ class EndpointDetailsViewModel(
                                 errorStatus = config.errorStatus,
                                 fail = config.shouldFail,
                                 delayMillis = config.delayMs.toString(),
-                                presets = it
+                                presets = presets
                             )
                         },
                         onFailure = { State.Empty }
                     )
-                }
+                } ?: State.Empty
             },
             onFailure = { State.Empty }
         )
