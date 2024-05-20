@@ -40,6 +40,9 @@ class EndpointDetailsViewModel(
                                 errorStatus = config.errorStatus,
                                 fail = config.shouldFail,
                                 delayMillis = config.delayMs.toString(),
+                                // TODO: Should auto infer based on if body is valid JSON
+                                jsonEditingDefault = true,
+                                jsonEditingError = true,
                                 presets = presets
                             )
                         },
@@ -94,6 +97,20 @@ class EndpointDetailsViewModel(
         }
     }
 
+    fun onJsonDefaultEditingChange(value: Boolean) {
+        state.value = when (val state = state.value) {
+            is State.Empty -> state
+            is State.Endpoint -> state.copy(jsonEditingDefault = value)
+        }
+    }
+
+    fun onJsonErrorEditingChange(value: Boolean) {
+        state.value = when (val state = state.value) {
+            is State.Empty -> state
+            is State.Endpoint -> state.copy(jsonEditingError = value)
+        }
+    }
+
     sealed class State {
         data object Empty : State()
 
@@ -105,6 +122,8 @@ class EndpointDetailsViewModel(
          * @property errorStatus
          * @property fail
          * @property delayMillis
+         * @property jsonEditingDefault
+         * @property jsonEditingError
          * @property presets
          */
         data class Endpoint(
@@ -115,6 +134,8 @@ class EndpointDetailsViewModel(
             val errorStatus: HttpStatusCode?,
             val fail: Boolean?,
             val delayMillis: String?,
+            val jsonEditingDefault: Boolean,
+            val jsonEditingError: Boolean,
             val presets: DashboardOptionsConfig
         ) : State()
     }

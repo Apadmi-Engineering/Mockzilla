@@ -70,30 +70,38 @@ data class Strings(
         /**
          * @property none
          * @property useErrorResponse
-         * @property defaultData
-         * @property errorData
+         * @property defaultDataTab
+         * @property errorDataTab
+         * @property settingsTab
          * @property noOverrideBody
          * @property noOverrideStatusCode
+         * @property statusCodeLabel
          * @property edit
          * @property reset
          * @property resetUseErrorResponse
          * @property bodyLabel
-         * @property statusCodeLabel
          * @property delayLabel
+         * @property jsonEditingLabel
+         * @property failOptionsLabel
+         * @property failLabel
          */
         data class EndpointDetails(
             val none: String,
             val useErrorResponse: String,
-            val defaultData: String,
-            val errorData: String,
+            val defaultDataTab: String,
+            val errorDataTab: String,
+            val settingsTab: String,
             val noOverrideBody: String,
             val noOverrideStatusCode: String,
+            val statusCodeLabel: (HttpStatusCode) -> String,
             val edit: String,
             val reset: String,
             val resetUseErrorResponse: String,
             val bodyLabel: String,
-            val statusCodeLabel: (HttpStatusCode) -> String,
             val delayLabel: String,
+            val jsonEditingLabel: (Boolean) -> String,
+            val failOptionsLabel: String,
+            val failLabel: (Boolean?) -> String,
         )
     }
 }

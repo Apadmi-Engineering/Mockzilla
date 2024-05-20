@@ -28,16 +28,34 @@ val EnStrings = Strings(
         endpointDetails = Strings.Widgets.EndpointDetails(
             none = "No endpoint selected",
             useErrorResponse = "Return failure response",
-            defaultData = "Default Response",
-            errorData = "Error Response",
+            defaultDataTab = "Default Response",
+            errorDataTab = "Error Response",
+            settingsTab = "Settings",
             noOverrideBody = "Response body not overridden",
-            noOverrideStatusCode = "Status code not overridden",
+            noOverrideStatusCode = "Unset (no override)",
+            statusCodeLabel = { statusCode: HttpStatusCode ->
+                "${statusCode.value} ${statusCode.description}"
+            },
             edit = "Add override",
             reset = "Reset",
             resetUseErrorResponse = "Reset",
             bodyLabel = "Response body",
-            statusCodeLabel = { statusCode: HttpStatusCode -> "Status code: $statusCode" },
-            delayLabel = "Delay (milliseconds)"
+            delayLabel = "Delay (milliseconds)",
+            jsonEditingLabel = { enabled: Boolean ->
+                if (enabled) {
+                    "JSON"
+                } else {
+                    "Text"
+                }
+            },
+            failOptionsLabel = "Response to use:",
+            failLabel = { shouldFail: Boolean? ->
+                when (shouldFail) {
+                    null -> "Unset"
+                    true -> "Fail"
+                    false -> "Default"
+                }
+            }
         )
     )
 )
