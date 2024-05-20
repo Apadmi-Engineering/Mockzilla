@@ -1,4 +1,4 @@
-import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
+import 'package:mockzilla/mockzilla.dart';
 
 class MockzillaConfigBuilder {
   MockzillaConfigBuilder();

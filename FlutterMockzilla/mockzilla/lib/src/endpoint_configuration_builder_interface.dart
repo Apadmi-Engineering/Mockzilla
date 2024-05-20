@@ -1,4 +1,6 @@
-import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:mockzilla/mockzilla.dart';
 
 class EndpointConfigBuilder {
   final String _name;
