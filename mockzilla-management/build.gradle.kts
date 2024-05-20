@@ -2,6 +2,7 @@ import com.apadmi.mockzilla.JavaConfig
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    id("publication-convention")
 }
 
 repositories {
@@ -45,6 +46,20 @@ kotlin {
 
             /* Mockzilla */
             implementation(project(":mockzilla"))
+        }
+    }
+}
+
+publishing {
+    publications.withType<MavenPublication> {
+        pom {
+            name.set("mockzilla-management")
+            description.set(
+                """
+                A library that provides a kotlin interface to interact with the Mockzilla server 
+                running on device. This is used by the Mockzilla dashboard ui internally.
+            """.trimIndent()
+            )
         }
     }
 }

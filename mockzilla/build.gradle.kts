@@ -106,3 +106,12 @@ dependencies {
             add(it.name, libs.mockative.processor)
         }
 }
+
+publishing {
+    publications.withType<MavenPublication> {
+        pom {
+            name.set("Mockzilla")
+            description.set("Solution for running and configuring a local HTTP server on mobile.")
+        }
+    }
+}
