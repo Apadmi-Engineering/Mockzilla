@@ -3,17 +3,21 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +48,7 @@ import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
 
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.launch
 
 private enum class Tab {
     Default,
@@ -53,7 +59,7 @@ private enum class Tab {
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun ColumnScope.EndpointDetailsResponseBody(
+private fun EndpointDetailsResponseBody(
     statusCode: HttpStatusCode?,
     onStatusCodeChange: (HttpStatusCode?) -> Unit,
     body: String?,
@@ -61,7 +67,7 @@ private fun ColumnScope.EndpointDetailsResponseBody(
     jsonEditing: Boolean,
     onJsonEditingChange: (Boolean) -> Unit,
     strings: Strings = LocalStrings.current,
-) {
+) = Column {
     Spacer(Modifier.height(4.dp))
     var pickingStatusCode by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
@@ -169,7 +175,7 @@ private fun ColumnScope.EndpointDetailsResponseBody(
 }
 
 @Composable
-private fun ColumnScope.Settings() {
+private fun Settings() = Column {
     // TODO
 }
 
@@ -190,7 +196,7 @@ fun EndpointDetailsWidget() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun EndpointDetailsWidgetContent(
     state: EndpointDetailsViewModel.State,
@@ -203,7 +209,9 @@ fun EndpointDetailsWidgetContent(
     onErrorStatusCodeChange: (HttpStatusCode?) -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
-    var tab by remember { mutableStateOf(Tab.Default) }
+    val pagerState = rememberPagerState(initialPage = 0) { Tab.entries.size }
+    val coroutineScope = rememberCoroutineScope()
+
     when (state) {
         is EndpointDetailsViewModel.State.Empty -> Text(text = strings.widgets.endpointDetails.none)
         is EndpointDetailsViewModel.State.Endpoint -> {
@@ -254,28 +262,38 @@ fun EndpointDetailsWidgetContent(
                         }
                     )
                 },
-                selected = tab.ordinal,
-                onSelect = { tab = Tab.entries[it] }
+                selected = pagerState.currentPage,
+                onSelect = { coroutineScope.launch { pagerState.animateScrollToPage(page = it) } }
             )
-            when (tab) {
-                Tab.Default -> EndpointDetailsResponseBody(
-                    statusCode = state.defaultStatus,
-                    onStatusCodeChange = onDefaultStatusCodeChange,
-                    body = state.defaultBody,
-                    onResponseBodyChange = onDefaultBodyChange,
-                    jsonEditing = state.jsonEditingDefault,
-                    onJsonEditingChange = onJsonDefaultEditingChange,
-                )
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth(),
+                // May want to enable this for mobile, but on desktop with no snapping to pages
+                // this doesn't feel very good
+                userScrollEnabled = false,
+            ) { tabIndex ->
+                val tab = Tab.entries[tabIndex]
+                when (tab) {
+                    Tab.Default -> EndpointDetailsResponseBody(
+                        statusCode = state.defaultStatus,
+                        onStatusCodeChange = onDefaultStatusCodeChange,
+                        body = state.defaultBody,
+                        onResponseBodyChange = onDefaultBodyChange,
+                        jsonEditing = state.jsonEditingDefault,
+                        onJsonEditingChange = onJsonDefaultEditingChange,
+                    )
 
-                Tab.Error -> EndpointDetailsResponseBody(
-                    statusCode = state.errorStatus,
-                    onStatusCodeChange = onErrorStatusCodeChange,
-                    body = state.errorBody,
-                    onResponseBodyChange = onErrorBodyChange,
-                    jsonEditing = state.jsonEditingError,
-                    onJsonEditingChange = onJsonErrorEditingChange,
-                )
-                Tab.Settings -> Settings()
+                    Tab.Error -> EndpointDetailsResponseBody(
+                        statusCode = state.errorStatus,
+                        onStatusCodeChange = onErrorStatusCodeChange,
+                        body = state.errorBody,
+                        onResponseBodyChange = onErrorBodyChange,
+                        jsonEditing = state.jsonEditingError,
+                        onJsonEditingChange = onJsonErrorEditingChange,
+                    )
+
+                    Tab.Settings -> Settings()
+                }
             }
         }
     }
