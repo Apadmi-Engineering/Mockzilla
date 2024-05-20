@@ -31,15 +31,16 @@ val EnStrings = Strings(
             defaultDataTab = "Default Response",
             errorDataTab = "Error Response",
             settingsTab = "Settings",
-            noOverrideBody = "Response body not overridden",
-            noOverrideStatusCode = "Unset (no override)",
+            noOverrideStatusCode = "Unset",
             statusCodeLabel = { statusCode: HttpStatusCode ->
                 "${statusCode.value} ${statusCode.description}"
             },
-            edit = "Add override",
+            statusCode = "Status code",
+            edit = "Edit",
             reset = "Reset",
             resetUseErrorResponse = "Reset",
             bodyLabel = "Response body",
+            bodyUnset = "Response body unset",
             delayLabel = "Delay (milliseconds)",
             jsonEditingLabel = { enabled: Boolean ->
                 if (enabled) {
@@ -55,7 +56,12 @@ val EnStrings = Strings(
                     true -> "Fail"
                     false -> "Default"
                 }
-            }
+            },
+            responseDelay = "Response delay:",
+            noOverrideResponseDelay = "Unset",
+            customResponseDelay = "Custom",
+            responseDelayUnits = "ms",
+            responseDelayLabel = "Delay",
         )
     )
 )

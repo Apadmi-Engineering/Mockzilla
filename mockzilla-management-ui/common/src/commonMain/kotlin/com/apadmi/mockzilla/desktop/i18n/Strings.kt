@@ -73,17 +73,23 @@ data class Strings(
          * @property defaultDataTab
          * @property errorDataTab
          * @property settingsTab
-         * @property noOverrideBody
          * @property noOverrideStatusCode
          * @property statusCodeLabel
+         * @property statusCode
          * @property edit
          * @property reset
          * @property resetUseErrorResponse
          * @property bodyLabel
+         * @property bodyUnset
          * @property delayLabel
          * @property jsonEditingLabel
          * @property failOptionsLabel
          * @property failLabel
+         * @property responseDelay
+         * @property noOverrideResponseDelay
+         * @property customResponseDelay
+         * @property responseDelayUnits
+         * @property responseDelayLabel
          */
         data class EndpointDetails(
             val none: String,
@@ -91,17 +97,23 @@ data class Strings(
             val defaultDataTab: String,
             val errorDataTab: String,
             val settingsTab: String,
-            val noOverrideBody: String,
             val noOverrideStatusCode: String,
             val statusCodeLabel: (HttpStatusCode) -> String,
+            val statusCode: String,
             val edit: String,
             val reset: String,
             val resetUseErrorResponse: String,
             val bodyLabel: String,
+            val bodyUnset: String,
             val delayLabel: String,
             val jsonEditingLabel: (Boolean) -> String,
             val failOptionsLabel: String,
             val failLabel: (Boolean?) -> String,
+            val responseDelay: String,
+            val noOverrideResponseDelay: String,
+            val customResponseDelay: String,
+            val responseDelayUnits: String,
+            val responseDelayLabel: String,
         )
     }
 }

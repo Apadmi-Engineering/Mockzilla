@@ -39,7 +39,7 @@ class EndpointDetailsViewModel(
                                 errorBody = config.errorBody,
                                 errorStatus = config.errorStatus,
                                 fail = config.shouldFail,
-                                delayMillis = config.delayMs.toString(),
+                                delayMillis = config.delayMs?.toString(),
                                 // TODO: Should auto infer based on if body is valid JSON
                                 jsonEditingDefault = true,
                                 jsonEditingError = true,

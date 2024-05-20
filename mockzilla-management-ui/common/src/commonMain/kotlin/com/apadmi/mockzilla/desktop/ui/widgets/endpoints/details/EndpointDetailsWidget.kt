@@ -6,11 +6,9 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -57,128 +55,6 @@ private enum class Tab {
     ;
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
-@Composable
-private fun EndpointDetailsResponseBody(
-    statusCode: HttpStatusCode?,
-    onStatusCodeChange: (HttpStatusCode?) -> Unit,
-    body: String?,
-    onResponseBodyChange: (String?) -> Unit,
-    jsonEditing: Boolean,
-    onJsonEditingChange: (Boolean) -> Unit,
-    strings: Strings = LocalStrings.current,
-) = Column {
-    Spacer(Modifier.height(4.dp))
-    var pickingStatusCode by remember { mutableStateOf(false) }
-    ExposedDropdownMenuBox(
-        expanded = pickingStatusCode,
-        onExpandedChange = { pickingStatusCode = it },
-        modifier = Modifier.padding(horizontal = 8.dp),
-    ) {
-        TextField(
-            value = statusCode
-                ?.let { strings.widgets.endpointDetails.statusCodeLabel(it) }
-                ?: strings.widgets.endpointDetails.noOverrideStatusCode,
-            // TODO: Work out how to also let user type in custom number like on web portal
-            onValueChange = {},
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
-            readOnly = true,
-            singleLine = true,
-            label = { Text(text = "Status code") },
-        )
-        ExposedDropdownMenu(
-            expanded = pickingStatusCode,
-            onDismissRequest = { pickingStatusCode = false },
-        ) {
-            DropdownMenuItem(
-                text = { Text(text = strings.widgets.endpointDetails.noOverrideStatusCode) },
-                onClick = {
-                    onStatusCodeChange(null)
-                    pickingStatusCode = false
-                },
-            )
-            HttpStatusCode.allStatusCodes.forEach { statusCode ->
-                DropdownMenuItem(
-                    text = {
-                        Text(text = strings.widgets.endpointDetails.statusCodeLabel(statusCode))
-                    },
-                    onClick = {
-                        onStatusCodeChange(statusCode)
-                        pickingStatusCode = false
-                    },
-                )
-            }
-        }
-    }
-    body?.let {
-        TextField(
-            value = body,
-            onValueChange = onResponseBodyChange,
-            // Might not have enough screen real estate for a weight here, but don't particularly
-            // want double scrolling either
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 200.dp, max = 500.dp)
-                .padding(horizontal = 8.dp),
-            label = { Text(text = strings.widgets.endpointDetails.bodyLabel) },
-            singleLine = false,
-        )
-        FlowRow(
-            modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.End,
-        ) {
-            SingleChoiceSegmentedButtonRow {
-                val options = listOf(true, false)
-                options.forEachIndexed { index, option ->
-                    SegmentedButton(
-                        selected = jsonEditing == option,
-                        onClick = { onJsonEditingChange(option) },
-                        label = {
-                            Text(
-                                text = strings.widgets.endpointDetails.jsonEditingLabel(
-                                    option
-                                ),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        },
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = options.size
-                        ),
-                        // Remove icon as we don't have much horizontal space to work with
-                        // due to row here and sometimes very minimal horizontal area
-                        icon = {},
-                    )
-                }
-            }
-            Spacer(Modifier.width(8.dp))
-            Button(
-                // TODO: Might want warning here before losing mock data
-                onClick = { onResponseBodyChange(null) },
-            ) {
-                Text(text = strings.widgets.endpointDetails.reset)
-            }
-        }
-    } ?: run {
-        Text(
-            text = strings.widgets.endpointDetails.noOverrideBody,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-        Button(
-            onClick = { onResponseBodyChange("") },
-            modifier = Modifier.padding(horizontal = 8.dp)
-        ) {
-            Text(text = strings.widgets.endpointDetails.edit)
-        }
-    }
-}
-
-@Composable
-private fun Settings() = Column {
-    // TODO
-}
-
 @Composable
 fun EndpointDetailsWidget() {
     val viewModel = getViewModel<EndpointDetailsViewModel>()
@@ -193,6 +69,7 @@ fun EndpointDetailsWidget() {
         viewModel::onJsonErrorEditingChange,
         viewModel::onDefaultStatusChange,
         viewModel::onErrorStatusChange,
+        viewModel::onDelayChange,
     )
 }
 
@@ -207,6 +84,7 @@ fun EndpointDetailsWidgetContent(
     onJsonErrorEditingChange: (Boolean) -> Unit,
     onDefaultStatusCodeChange: (HttpStatusCode?) -> Unit,
     onErrorStatusCodeChange: (HttpStatusCode?) -> Unit,
+    onDelayChange: (String?) -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
     val pagerState = rememberPagerState(initialPage = 0) { Tab.entries.size }
@@ -268,31 +146,38 @@ fun EndpointDetailsWidgetContent(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top,
                 // May want to enable this for mobile, but on desktop with no snapping to pages
                 // this doesn't feel very good
                 userScrollEnabled = false,
             ) { tabIndex ->
                 val tab = Tab.entries[tabIndex]
-                when (tab) {
-                    Tab.Default -> EndpointDetailsResponseBody(
-                        statusCode = state.defaultStatus,
-                        onStatusCodeChange = onDefaultStatusCodeChange,
-                        body = state.defaultBody,
-                        onResponseBodyChange = onDefaultBodyChange,
-                        jsonEditing = state.jsonEditingDefault,
-                        onJsonEditingChange = onJsonDefaultEditingChange,
-                    )
+                Column {
+                    when (tab) {
+                        Tab.Default -> EndpointDetailsResponseBody(
+                            statusCode = state.defaultStatus,
+                            onStatusCodeChange = onDefaultStatusCodeChange,
+                            body = state.defaultBody,
+                            onResponseBodyChange = onDefaultBodyChange,
+                            jsonEditing = state.jsonEditingDefault,
+                            onJsonEditingChange = onJsonDefaultEditingChange,
+                        )
 
-                    Tab.Error -> EndpointDetailsResponseBody(
-                        statusCode = state.errorStatus,
-                        onStatusCodeChange = onErrorStatusCodeChange,
-                        body = state.errorBody,
-                        onResponseBodyChange = onErrorBodyChange,
-                        jsonEditing = state.jsonEditingError,
-                        onJsonEditingChange = onJsonErrorEditingChange,
-                    )
+                        Tab.Error -> EndpointDetailsResponseBody(
+                            statusCode = state.errorStatus,
+                            onStatusCodeChange = onErrorStatusCodeChange,
+                            body = state.errorBody,
+                            onResponseBodyChange = onErrorBodyChange,
+                            jsonEditing = state.jsonEditingError,
+                            onJsonEditingChange = onJsonErrorEditingChange,
+                        )
 
-                    Tab.Settings -> Settings()
+                        Tab.Settings -> Settings(
+                            delayMillis = state.delayMillis,
+                            onDelayChange = onDelayChange,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
@@ -312,5 +197,188 @@ fun EndpointDetailsWidgetNonePreview() = PreviewSurface {
         onJsonErrorEditingChange = {},
         onDefaultStatusCodeChange = {},
         onErrorStatusCodeChange = {},
+        onDelayChange = {},
+    )
+}
+
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+private fun EndpointDetailsResponseBody(
+    statusCode: HttpStatusCode?,
+    onStatusCodeChange: (HttpStatusCode?) -> Unit,
+    body: String?,
+    onResponseBodyChange: (String?) -> Unit,
+    jsonEditing: Boolean,
+    onJsonEditingChange: (Boolean) -> Unit,
+    strings: Strings = LocalStrings.current,
+) = Column {
+    Spacer(Modifier.height(4.dp))
+    var pickingStatusCode by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(
+        expanded = pickingStatusCode,
+        onExpandedChange = { pickingStatusCode = it },
+        modifier = Modifier.padding(horizontal = 8.dp),
+    ) {
+        TextField(
+            value = statusCode
+                ?.let { strings.widgets.endpointDetails.statusCodeLabel(it) }
+                ?: strings.widgets.endpointDetails.noOverrideStatusCode,
+            // TODO: Work out how to also let user type in custom status number like on web portal
+            onValueChange = {},
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            readOnly = true,
+            singleLine = true,
+            label = { Text(text = strings.widgets.endpointDetails.statusCode) },
+        )
+        ExposedDropdownMenu(
+            expanded = pickingStatusCode,
+            onDismissRequest = { pickingStatusCode = false },
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = strings.widgets.endpointDetails.noOverrideStatusCode) },
+                onClick = {
+                    onStatusCodeChange(null)
+                    pickingStatusCode = false
+                },
+            )
+            HttpStatusCode.allStatusCodes.forEach { statusCode ->
+                DropdownMenuItem(
+                    text = {
+                        Text(text = strings.widgets.endpointDetails.statusCodeLabel(statusCode))
+                    },
+                    onClick = {
+                        onStatusCodeChange(statusCode)
+                        pickingStatusCode = false
+                    },
+                )
+            }
+        }
+    }
+    TextField(
+        // TODO: Might want to show what the response body defaults to for reference purposes
+        // so users can get an idea of what mockzilla is returning by default especially to
+        // later edit
+        value = body ?: "",
+        onValueChange = onResponseBodyChange,
+        // Might not have enough screen real estate for a weight here, but don't particularly
+        // want double scrolling either
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 200.dp, max = 500.dp)
+            .padding(horizontal = 8.dp),
+        enabled = body != null,
+        label = {
+            Text(
+                text = body?.let {
+                    strings.widgets.endpointDetails.bodyLabel
+                } ?: strings.widgets.endpointDetails.bodyUnset
+            )
+        },
+        singleLine = false,
+    )
+    FlowRow(
+        modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp),
+        horizontalArrangement = Arrangement.End,
+    ) {
+        SingleChoiceSegmentedButtonRow {
+            val options = listOf(true, false)
+            options.forEachIndexed { index, option ->
+                SegmentedButton(
+                    selected = jsonEditing == option,
+                    onClick = { onJsonEditingChange(option) },
+                    label = {
+                        Text(
+                            text = strings.widgets.endpointDetails.jsonEditingLabel(option),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = index,
+                        count = options.size
+                    ),
+                    enabled = body != null,
+                    // Remove icon as we don't have much horizontal space to work with
+                    // due to row here and sometimes very minimal horizontal area
+                    icon = {},
+                )
+            }
+        }
+        Spacer(Modifier.width(8.dp))
+        Button(
+            // TODO: Might want warning here before losing mock data
+            onClick = {
+                // TODO: Might want this to prompt user to pick from presets if available
+                onResponseBodyChange(body?.let { null } ?: "")
+            },
+        ) {
+            Text(
+                text = body?.let {
+                    strings.widgets.endpointDetails.reset
+                } ?: strings.widgets.endpointDetails.edit
+            )
+        }
+    }
+}
+
+@Suppress("LOCAL_VARIABLE_EARLY_DECLARATION")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun Settings(
+    delayMillis: String?,
+    onDelayChange: (String?) -> Unit,
+    strings: Strings = LocalStrings.current,
+) = Column {
+    var customDelay by remember { mutableStateOf("") }
+    Spacer(Modifier.height(4.dp))
+    Text(
+        text = strings.widgets.endpointDetails.responseDelay,
+        modifier = Modifier.padding(horizontal = 8.dp),
+    )
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+        val options = listOf(
+            strings.widgets.endpointDetails.noOverrideResponseDelay,
+            strings.widgets.endpointDetails.customResponseDelay
+        )
+        options.forEachIndexed { index, label ->
+            SegmentedButton(
+                selected = if (index == 0) {
+                    delayMillis == null
+                } else {
+                    delayMillis != null
+                },
+                onClick = {
+                    if (index == 0) {
+                        onDelayChange(null)
+                    } else {
+                        onDelayChange(customDelay)
+                    }
+                },
+                label = {
+                    Text(
+                        text = label,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                },
+                shape = SegmentedButtonDefaults.itemShape(
+                    index = index,
+                    count = options.size,
+                ),
+                icon = {},
+            )
+        }
+    }
+    TextField(
+        value = customDelay,
+        onValueChange = {
+            customDelay = it
+            onDelayChange(it)
+        },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        enabled = delayMillis != null,
+        singleLine = true,
+        label = { Text(text = strings.widgets.endpointDetails.responseDelayLabel) },
+        suffix = { Text(text = strings.widgets.endpointDetails.responseDelayUnits) },
     )
 }
