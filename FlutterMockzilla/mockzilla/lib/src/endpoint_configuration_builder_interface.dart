@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:mockzilla/mockzilla.dart';
 
 class EndpointConfigBuilder {
@@ -23,21 +21,26 @@ class EndpointConfigBuilder {
     required String name,
   }) : _name = name;
 
+  /// Sets the [failureProbability] as a percentage that an error is returned from this [EndpointConfig].
   EndpointConfigBuilder setFailureProbability(int failureProbability) {
     _failureProbability = failureProbability;
     return this;
   }
 
-  EndpointConfigBuilder setMeanDelayMillis(int delayMean) {
-    _delayMean = delayMean;
+  /// Set the artificial latency in milliseconds for this [EndpointConfig].
+  EndpointConfigBuilder setMeanDelayMillis(int delayMeanMillis) {
+    _delayMean = delayMeanMillis;
     return this;
   }
 
-  EndpointConfigBuilder setDelayMean(int delayVariance) {
-    _delayVariance = delayVariance;
+  /// Sets the delay variance in milliseconds for this [EndpointConfig], simulating latency.
+  /// Defaults to 0ms.
+  EndpointConfigBuilder setDelayVariance(int delayVarianceMillis) {
+    _delayVariance = delayVarianceMillis;
     return this;
   }
 
+  /// Build this [EndpointConfig] with applied options.
   EndpointConfig build() {
     return EndpointConfig(
       key: _name,
@@ -51,18 +54,24 @@ class EndpointConfigBuilder {
     );
   }
 
+  /// Sets the default handler for this [EndpointConfig].
+  /// i.e. What this endpoint should return.
   EndpointConfigBuilder setDefaultHandler(
       MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler) {
     _defaultHandler = defaultHandler;
     return this;
   }
 
+  /// Sets the endpoint matcher for this [EndpointConfig].
+  /// Evaluates if some [MockzillaHttpRequest] should be handled by this endpoint.
   EndpointConfigBuilder setEndpointMatcher(
       bool Function(MockzillaHttpRequest) endpointMatcher) {
     _endpointMatcher = endpointMatcher;
     return this;
   }
 
+  /// Sets the error handler for this [EndpointConfig].
+  /// Given an error is simulated, call the [errorHandler] and respond with your designated [MockzillaHttpResponse].
   EndpointConfigBuilder setErrorHandler(
       MockzillaHttpResponse Function(MockzillaHttpRequest) errorHandler) {
     _errorHandler = errorHandler;

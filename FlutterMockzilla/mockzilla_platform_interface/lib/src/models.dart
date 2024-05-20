@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mockzilla_platform_interface/src/endpoint_configuration_builder_interface.dart';
-import 'package:mockzilla_platform_interface/src/mockzilla_configuration_builder_interface.dart';
 
 part 'models.freezed.dart';
 
@@ -89,11 +87,6 @@ class EndpointConfig with _$EndpointConfig {
     required MockzillaHttpResponse Function(MockzillaHttpRequest request)
         errorHandler,
   }) = _EndpointConfig;
-
-  static EndpointConfigBuilder builder(
-    String name,
-  ) =>
-      EndpointConfigBuilder(name: name);
 }
 
 @freezed
@@ -141,9 +134,6 @@ class MockzillaConfig with _$MockzillaConfig {
     /// The list of additional log writers that should be used by Mockzilla.
     required List<MockzillaLogger> additionalLogWriters,
   }) = _MockzillaConfig;
-
-  /// A builder for creating a [MockzillaConfig] instance.
-  static MockzillaConfigBuilder builder() => MockzillaConfigBuilder();
 }
 
 // TODO: Implement returning this class from `startMockzilla`.
