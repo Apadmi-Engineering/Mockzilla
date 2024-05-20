@@ -17,6 +17,7 @@ class EndpointConfigBuilder {
 
   int? _delayVariance;
 
+  /// Create a new [EndpointConfigBuilder] with an endpoint [name]
   EndpointConfigBuilder({
     required String name,
   }) : _name = name;
