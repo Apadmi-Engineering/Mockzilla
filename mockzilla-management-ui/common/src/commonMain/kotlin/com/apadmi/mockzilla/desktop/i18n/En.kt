@@ -30,7 +30,7 @@ val EnStrings = Strings(
             useErrorResponse = "Return failure response",
             defaultDataTab = "Default Response",
             errorDataTab = "Error Response",
-            settingsTab = "Settings",
+            generalTab = "General",
             noOverrideStatusCode = "Unset",
             statusCodeLabel = { statusCode: HttpStatusCode ->
                 "${statusCode.value} ${statusCode.description}"
@@ -62,6 +62,7 @@ val EnStrings = Strings(
             customResponseDelay = "Custom",
             responseDelayUnits = "ms",
             responseDelayLabel = "Delay",
+            resetAll = "Reset all overrides",
         )
     )
 )

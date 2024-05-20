@@ -72,7 +72,7 @@ data class Strings(
          * @property useErrorResponse
          * @property defaultDataTab
          * @property errorDataTab
-         * @property settingsTab
+         * @property generalTab
          * @property noOverrideStatusCode
          * @property statusCodeLabel
          * @property statusCode
@@ -90,13 +90,14 @@ data class Strings(
          * @property customResponseDelay
          * @property responseDelayUnits
          * @property responseDelayLabel
+         * @property resetAll
          */
         data class EndpointDetails(
             val none: String,
             val useErrorResponse: String,
             val defaultDataTab: String,
             val errorDataTab: String,
-            val settingsTab: String,
+            val generalTab: String,
             val noOverrideStatusCode: String,
             val statusCodeLabel: (HttpStatusCode) -> String,
             val statusCode: String,
@@ -114,6 +115,7 @@ data class Strings(
             val customResponseDelay: String,
             val responseDelayUnits: String,
             val responseDelayLabel: String,
+            val resetAll: String,
         )
     }
 }

@@ -136,7 +136,7 @@ fun EndpointDetailsWidgetContent(
                         when (tabLabel) {
                             Tab.Default -> strings.widgets.endpointDetails.defaultDataTab
                             Tab.Error -> strings.widgets.endpointDetails.errorDataTab
-                            Tab.Settings -> strings.widgets.endpointDetails.settingsTab
+                            Tab.Settings -> strings.widgets.endpointDetails.generalTab
                         }
                     )
                 },
@@ -381,4 +381,11 @@ private fun Settings(
         label = { Text(text = strings.widgets.endpointDetails.responseDelayLabel) },
         suffix = { Text(text = strings.widgets.endpointDetails.responseDelayUnits) },
     )
+    Spacer(modifier = Modifier.height(16.dp))
+    Button(
+        onClick = { /* TODO, maybe with popup to confirm? */ },
+        modifier = Modifier.padding(horizontal = 8.dp),
+    ) {
+        Text(text = strings.widgets.endpointDetails.resetAll)
+    }
 }
