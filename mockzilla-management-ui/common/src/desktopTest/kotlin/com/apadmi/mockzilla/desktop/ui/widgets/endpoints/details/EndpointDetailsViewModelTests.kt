@@ -68,8 +68,10 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
                 config = config,
                 defaultBody = "{}",
                 defaultStatus = HttpStatusCode.OK,
+                defaultHeaders = listOf(),
                 errorBody = "{}",
                 errorStatus = HttpStatusCode.BadRequest,
+                errorHeaders = listOf(),
                 fail = false,
                 delayMillis = "50",
                 jsonEditingDefault = true,
@@ -113,6 +115,8 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
         sut.onFailChange(true)
         sut.onJsonDefaultEditingChange(false)
         sut.onJsonErrorEditingChange(false)
+        sut.onDefaultHeadersChange(listOf("" to ""))
+        sut.onErrorHeadersChange(listOf())
 
         /* Verify */
         assertEquals(
@@ -120,8 +124,10 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
                 config = config,
                 defaultBody = "not json",
                 defaultStatus = HttpStatusCode.Accepted,
+                defaultHeaders = listOf("" to ""),
                 errorBody = "unauthorized",
                 errorStatus = HttpStatusCode.Unauthorized,
+                errorHeaders = listOf(),
                 fail = true,
                 delayMillis = "100",
                 jsonEditingDefault = false,

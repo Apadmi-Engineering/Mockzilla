@@ -37,8 +37,10 @@ class EndpointDetailsViewModel(
                                 config = config,
                                 defaultBody = config.defaultBody,
                                 defaultStatus = config.defaultStatus,
+                                defaultHeaders = config.defaultHeaders?.toList(),
                                 errorBody = config.errorBody,
                                 errorStatus = config.errorStatus,
+                                errorHeaders = config.errorHeaders?.toList(),
                                 fail = config.shouldFail,
                                 delayMillis = config.delayMs?.toString(),
                                 // TODO: Should auto infer based on if body is valid JSON
@@ -112,6 +114,20 @@ class EndpointDetailsViewModel(
         }
     }
 
+    fun onDefaultHeadersChange(value: List<Pair<String, String>>?) {
+        state.value = when (val state = state.value) {
+            is State.Empty -> state
+            is State.Endpoint -> state.copy(defaultHeaders = value)
+        }
+    }
+
+    fun onErrorHeadersChange(value: List<Pair<String, String>>?) {
+        state.value = when (val state = state.value) {
+            is State.Empty -> state
+            is State.Endpoint -> state.copy(errorHeaders = value)
+        }
+    }
+
     sealed class State {
         data object Empty : State()
 
@@ -126,13 +142,17 @@ class EndpointDetailsViewModel(
          * @property jsonEditingDefault
          * @property jsonEditingError
          * @property presets
+         * @property defaultHeaders
+         * @property errorHeaders
          */
         data class Endpoint(
             val config: SerializableEndpointConfig,
             val defaultBody: String?,
             val defaultStatus: HttpStatusCode?,
+            val defaultHeaders: List<Pair<String, String>>?,
             val errorBody: String?,
             val errorStatus: HttpStatusCode?,
+            val errorHeaders: List<Pair<String, String>>?,
             val fail: Boolean?,
             val delayMillis: String?,
             val jsonEditingDefault: Boolean,

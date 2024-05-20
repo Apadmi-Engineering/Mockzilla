@@ -63,6 +63,15 @@ val EnStrings = Strings(
             responseDelayUnits = "ms",
             responseDelayLabel = "Delay",
             resetAll = "Reset all overrides",
+            headersLabel = "Headers:",
+            headerKeyLabel = "Key",
+            headerValueLabel = "Value",
+            headerDeleteContentDescription = "Delete header",
+            addHeader = "Add header",
+            editHeaders = "Edit headers",
+            resetHeaders = "Reset all headers",
+            noHeaders = "Headers set to an empty list",
+            headersUnset = "Headers unset",
         )
     )
 )

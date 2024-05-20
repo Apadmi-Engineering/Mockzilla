@@ -8,22 +8,29 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -70,6 +77,8 @@ fun EndpointDetailsWidget() {
         viewModel::onDefaultStatusChange,
         viewModel::onErrorStatusChange,
         viewModel::onDelayChange,
+        viewModel::onDefaultHeadersChange,
+        viewModel::onErrorHeadersChange,
     )
 }
 
@@ -85,6 +94,8 @@ fun EndpointDetailsWidgetContent(
     onDefaultStatusCodeChange: (HttpStatusCode?) -> Unit,
     onErrorStatusCodeChange: (HttpStatusCode?) -> Unit,
     onDelayChange: (String?) -> Unit,
+    onDefaultHeadersChange: (List<Pair<String, String>>?) -> Unit,
+    onErrorHeadersChange: (List<Pair<String, String>>?) -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
     val pagerState = rememberPagerState(initialPage = 0) { Tab.entries.size }
@@ -102,7 +113,6 @@ fun EndpointDetailsWidgetContent(
                 text = strings.widgets.endpointDetails.failOptionsLabel,
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
-            // TODO: Needs to scroll horizontally if really constrained on horizontal space
             SingleChoiceSegmentedButtonRow(
                 modifier = Modifier.padding(horizontal = 8.dp),
             ) {
@@ -128,7 +138,6 @@ fun EndpointDetailsWidgetContent(
                     )
                 }
             }
-            // TODO: Pager here as side swipe animation is really useful feedback
             HorizontalTabList(
                 modifier = Modifier.fillMaxWidth(),
                 tabs = Tab.entries.map { tabLabel ->
@@ -161,6 +170,8 @@ fun EndpointDetailsWidgetContent(
                             onResponseBodyChange = onDefaultBodyChange,
                             jsonEditing = state.jsonEditingDefault,
                             onJsonEditingChange = onJsonDefaultEditingChange,
+                            headers = state.defaultHeaders,
+                            onHeadersChange = onDefaultHeadersChange,
                         )
 
                         Tab.Error -> EndpointDetailsResponseBody(
@@ -170,6 +181,8 @@ fun EndpointDetailsWidgetContent(
                             onResponseBodyChange = onErrorBodyChange,
                             jsonEditing = state.jsonEditingError,
                             onJsonEditingChange = onJsonErrorEditingChange,
+                            headers = state.errorHeaders,
+                            onHeadersChange = onErrorHeadersChange,
                         )
 
                         Tab.Settings -> Settings(
@@ -198,6 +211,8 @@ fun EndpointDetailsWidgetNonePreview() = PreviewSurface {
         onDefaultStatusCodeChange = {},
         onErrorStatusCodeChange = {},
         onDelayChange = {},
+        onDefaultHeadersChange = {},
+        onErrorHeadersChange = {},
     )
 }
 
@@ -210,6 +225,8 @@ private fun EndpointDetailsResponseBody(
     onResponseBodyChange: (String?) -> Unit,
     jsonEditing: Boolean,
     onJsonEditingChange: (Boolean) -> Unit,
+    headers: List<Pair<String, String>>?,
+    onHeadersChange: (List<Pair<String, String>>?) -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
     Spacer(Modifier.height(4.dp))
@@ -269,9 +286,9 @@ private fun EndpointDetailsResponseBody(
         enabled = body != null,
         label = {
             Text(
-                text = body?.let {
-                    strings.widgets.endpointDetails.bodyLabel
-                } ?: strings.widgets.endpointDetails.bodyUnset
+                text = body
+                    ?.let { strings.widgets.endpointDetails.bodyLabel }
+                    ?: strings.widgets.endpointDetails.bodyUnset
             )
         },
         singleLine = false,
@@ -304,7 +321,7 @@ private fun EndpointDetailsResponseBody(
                 )
             }
         }
-        Spacer(Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(8.dp))
         Button(
             // TODO: Might want warning here before losing mock data
             onClick = {
@@ -313,12 +330,14 @@ private fun EndpointDetailsResponseBody(
             },
         ) {
             Text(
-                text = body?.let {
-                    strings.widgets.endpointDetails.reset
-                } ?: strings.widgets.endpointDetails.edit
+                text = body
+                    ?.let { strings.widgets.endpointDetails.reset }
+                    ?: strings.widgets.endpointDetails.edit
             )
         }
     }
+    Spacer(modifier = Modifier.heightIn(8.dp))
+    HeadersEditor(headers, onHeadersChange)
 }
 
 @Suppress("LOCAL_VARIABLE_EARLY_DECLARATION")
@@ -387,5 +406,113 @@ private fun Settings(
         modifier = Modifier.padding(horizontal = 8.dp),
     ) {
         Text(text = strings.widgets.endpointDetails.resetAll)
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun HeadersEditor(
+    headers: List<Pair<String, String>>?,
+    onHeadersChange: (List<Pair<String, String>>?) -> Unit,
+    strings: Strings = LocalStrings.current,
+) = Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+    Text(text = strings.widgets.endpointDetails.headersLabel)
+    Spacer(modifier = Modifier.height(4.dp))
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        headers?.forEachIndexed { index, entry ->
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+            ) {
+                Row(
+                    modifier = Modifier.padding(8.dp),
+                    verticalAlignment = Alignment.Top,
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1F)
+                    ) {
+                        TextField(
+                            value = entry.first,
+                            onValueChange = {
+                                onHeadersChange(
+                                    headers
+                                        .toMutableList()
+                                        .apply { set(index, entry.copy(first = it)) }
+                                        .toList()
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = {
+                                Text(text = strings.widgets.endpointDetails.headerKeyLabel)
+                            },
+                            singleLine = true,
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        TextField(
+                            value = entry.second,
+                            onValueChange = {
+                                onHeadersChange(
+                                    headers
+                                        .toMutableList()
+                                        .apply { set(index, entry.copy(second = it)) }
+                                        .toList()
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            label = {
+                                Text(text = strings.widgets.endpointDetails.headerValueLabel)
+                            },
+                            singleLine = true,
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            onHeadersChange(
+                                headers
+                                    .toMutableList()
+                                    .apply { removeAt(index) }
+                                    .toList()
+                            )
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = strings.widgets.endpointDetails.headerDeleteContentDescription
+                        )
+                    }
+                }
+            }
+        }
+    }
+    if (headers != null && headers.isEmpty()) {
+        Text(text = strings.widgets.endpointDetails.noHeaders)
+    }
+    headers ?: Text(text = strings.widgets.endpointDetails.headersUnset)
+    Spacer(modifier = Modifier.height(4.dp))
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+    ) {
+        Button(
+            onClick = {
+                headers
+                    ?.let { onHeadersChange(headers + ("" to "")) }
+                    ?: onHeadersChange(listOf())
+            },
+        ) {
+            Text(
+                text = headers
+                    ?.let { strings.widgets.endpointDetails.addHeader }
+                    ?: strings.widgets.endpointDetails.editHeaders
+            )
+        }
+        Spacer(modifier = Modifier.size(8.dp))
+        Button(
+            onClick = { onHeadersChange(null) },
+            enabled = headers != null,
+        ) {
+            Text(text = strings.widgets.endpointDetails.resetHeaders)
+        }
     }
 }

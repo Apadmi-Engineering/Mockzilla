@@ -91,6 +91,15 @@ data class Strings(
          * @property responseDelayUnits
          * @property responseDelayLabel
          * @property resetAll
+         * @property headersLabel
+         * @property headerKeyLabel
+         * @property headerValueLabel
+         * @property headerDeleteContentDescription
+         * @property addHeader
+         * @property editHeaders
+         * @property resetHeaders
+         * @property noHeaders
+         * @property headersUnset
          */
         data class EndpointDetails(
             val none: String,
@@ -116,6 +125,15 @@ data class Strings(
             val responseDelayUnits: String,
             val responseDelayLabel: String,
             val resetAll: String,
+            val headersLabel: String,
+            val headerKeyLabel: String,
+            val headerValueLabel: String,
+            val headerDeleteContentDescription: String,
+            val addHeader: String,
+            val editHeaders: String,
+            val resetHeaders: String,
+            val noHeaders: String,
+            val headersUnset: String,
         )
     }
 }
