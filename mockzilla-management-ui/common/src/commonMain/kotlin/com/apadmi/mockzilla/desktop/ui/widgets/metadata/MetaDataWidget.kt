@@ -108,5 +108,6 @@ fun MetaDataWidgetConnectedDeviceContentPreview() = PreviewSurface {
             operatingSystemVersion = "34",
             deviceModel = "Pixel 3",
             mockzillaVersion = "1.0.0"
-    )))
+        )
+    ))
 }

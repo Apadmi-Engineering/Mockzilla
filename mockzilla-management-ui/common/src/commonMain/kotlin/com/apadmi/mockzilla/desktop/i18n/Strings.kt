@@ -36,6 +36,7 @@ data class Strings(
         data class Logs(val title: String)
 
         /**
+         * @property title
          * @property noDeviceConnected
          * @property appName
          * @property appPackage
@@ -46,6 +47,7 @@ data class Strings(
          * @property mockzillaVersion
          */
         data class MetaData(
+            val title: String,
             val noDeviceConnected: String,
             val appName: String,
             val appPackage: String,
