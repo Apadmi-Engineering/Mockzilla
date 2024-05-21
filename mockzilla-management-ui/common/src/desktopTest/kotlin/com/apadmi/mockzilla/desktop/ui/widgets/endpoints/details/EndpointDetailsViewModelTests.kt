@@ -107,6 +107,7 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
         /* Run Test */
         val sut = createSut()
         sut.reloadData(dummyActiveDevice)
+        val initialState = sut.state.value
         sut.onDefaultBodyChange("not json")
         sut.onDefaultStatusChange(HttpStatusCode.Accepted)
         sut.onDelayChange("100")
@@ -119,6 +120,23 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
         sut.onErrorHeadersChange(listOf())
 
         /* Verify */
+        assertEquals(
+            EndpointDetailsViewModel.State.Endpoint(
+                config = config,
+                defaultBody = null,
+                defaultStatus = null,
+                defaultHeaders = null,
+                errorBody = null,
+                errorStatus = null,
+                errorHeaders = null,
+                fail = null,
+                delayMillis = null,
+                jsonEditingDefault = true,
+                jsonEditingError = true,
+                presets = presets,
+            ),
+            initialState
+        )
         assertEquals(
             EndpointDetailsViewModel.State.Endpoint(
                 config = config,

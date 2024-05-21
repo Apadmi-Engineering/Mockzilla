@@ -50,9 +50,12 @@ import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
+import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import io.ktor.http.HttpStatusCode
+
 import kotlinx.coroutines.launch
 
 private enum class Tab {
@@ -216,6 +219,78 @@ fun EndpointDetailsWidgetNonePreview() = PreviewSurface {
     )
 }
 
+@ShowkaseComposable("EndpointDetails-SetContent", "EndpointDetails")
+@Composable
+@Preview
+fun EndpointDetailsWidgetPreview() = PreviewSurface {
+    EndpointDetailsWidgetContent(
+        state = EndpointDetailsViewModel.State.Endpoint(
+            config = SerializableEndpointConfig.allNulls(
+                key = "key",
+                name = "getCows",
+                versionCode = 1
+            ),
+            defaultBody = """{ "cows": [] }""",
+            defaultStatus = HttpStatusCode.OK,
+            defaultHeaders = listOf("a" to "b"),
+            errorBody = """{ "error": 500 }""",
+            errorStatus = HttpStatusCode.InternalServerError,
+            errorHeaders = listOf(),
+            fail = false,
+            delayMillis = "100",
+            jsonEditingDefault = true,
+            jsonEditingError = true,
+            presets = DashboardOptionsConfig(listOf(), listOf()),
+        ),
+        onDefaultBodyChange = {},
+        onErrorBodyChange = {},
+        onFailChange = {},
+        onJsonDefaultEditingChange = {},
+        onJsonErrorEditingChange = {},
+        onDefaultStatusCodeChange = {},
+        onErrorStatusCodeChange = {},
+        onDelayChange = {},
+        onDefaultHeadersChange = {},
+        onErrorHeadersChange = {},
+    )
+}
+
+@ShowkaseComposable("EndpointDetails-UnsetContent", "EndpointDetails")
+@Composable
+@Preview
+fun EndpointDetailsWidgetUnsetPreview() = PreviewSurface {
+    EndpointDetailsWidgetContent(
+        state = EndpointDetailsViewModel.State.Endpoint(
+            config = SerializableEndpointConfig.allNulls(
+                key = "key",
+                name = "getCows",
+                versionCode = 1
+            ),
+            defaultBody = null,
+            defaultStatus = null,
+            defaultHeaders = null,
+            errorBody = null,
+            errorStatus = null,
+            errorHeaders = null,
+            fail = null,
+            delayMillis = null,
+            jsonEditingDefault = true,
+            jsonEditingError = true,
+            presets = DashboardOptionsConfig(listOf(), listOf()),
+        ),
+        onDefaultBodyChange = {},
+        onErrorBodyChange = {},
+        onFailChange = {},
+        onJsonDefaultEditingChange = {},
+        onJsonErrorEditingChange = {},
+        onDefaultStatusCodeChange = {},
+        onErrorStatusCodeChange = {},
+        onDelayChange = {},
+        onDefaultHeadersChange = {},
+        onErrorHeadersChange = {},
+    )
+}
+
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun EndpointDetailsResponseBody(
@@ -279,6 +354,8 @@ private fun EndpointDetailsResponseBody(
         onValueChange = onResponseBodyChange,
         // Might not have enough screen real estate for a weight here, but don't particularly
         // want double scrolling either
+        // Maybe we should have a button to open the body editor in a full screen size editor
+        // rather than user being stuck with small text field inside widget
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 200.dp, max = 500.dp)
