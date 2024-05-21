@@ -36,9 +36,25 @@ data class Strings(
         data class Logs(val title: String)
 
         /**
-         * @property title
+         * @property noDeviceConnected
+         * @property appName
+         * @property appPackage
+         * @property operatingSystemVersion
+         * @property deviceModel
+         * @property appVersion
+         * @property operatingSystem
+         * @property mockzillaVersion
          */
-        data class MetaData(val title: String)
+        data class MetaData(
+            val noDeviceConnected: String,
+            val appName: String,
+            val appPackage: String,
+            val operatingSystemVersion: String,
+            val deviceModel: String,
+            val appVersion: String,
+            val operatingSystem: String,
+            val mockzillaVersion: String
+        )
 
         /**
          * @property tabTitle

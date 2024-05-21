@@ -16,7 +16,16 @@ val EnStrings = Strings(
                     else -> "$number devices"
                 }
             }
-        ), metaData = Strings.Widgets.MetaData(title = "Meta Data"),
+        ), metaData = Strings.Widgets.MetaData(
+            noDeviceConnected = "No device connected",
+            appName = "App Name",
+            appPackage = "App Package",
+            operatingSystem = "Operating System",
+            operatingSystemVersion = "Operating System Version",
+            deviceModel = "Device",
+            appVersion = "App Version",
+            mockzillaVersion = "Mockzilla Version"
+        ),
         logs = Strings.Widgets.Logs(
             "Logs"
         )
