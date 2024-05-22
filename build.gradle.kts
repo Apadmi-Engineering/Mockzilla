@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.compose) apply false
     alias(libs.plugins.paparazzi) apply false
     alias(libs.plugins.buildKonfig) apply false
+    alias(libs.plugins.swiftklib) apply false
 }
 
 buildscript {

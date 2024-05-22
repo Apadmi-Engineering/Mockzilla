@@ -13,6 +13,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
+import java.net.InetAddress
+import javax.jmdns.JmDNS
+import javax.jmdns.ServiceEvent
+import javax.jmdns.ServiceInfo
+import javax.jmdns.ServiceListener
+import javax.jmdns.ServiceTypeListener
+
 
 class DeviceConnectionViewModel(
     private val metaDataUseCase: MetaDataUseCase,
@@ -22,6 +29,7 @@ class DeviceConnectionViewModel(
     val state = MutableStateFlow(State())
     private var connectionJob: Job? = null
 
+
     init {
         // TODO: This is proof of concept, tidy all this and bullet proof it once Bonjour is brought in
         viewModelScope.launch {
@@ -29,7 +37,73 @@ class DeviceConnectionViewModel(
                 state.value = state.value.copy(adbDevices = it)
             }
         }
+
+        val jmdns: JmDNS = JmDNS.create(InetAddress.getLocalHost())
+
+
+        // Register a service
+//            val serviceInfo =
+//                ServiceInfo.create("_http._tcp.local.", "example", 1234, "path=index.html")
+//            jmdns.registerService(serviceInfo)
+//
+//
+//            val type = "_http._tcp.local."
+//            println("abc starting service listener ${InetAddress.getLocalHost()}")
+//
+//
+//
+
+        jmdns.addServiceTypeListener(object : ServiceTypeListener {
+            override fun serviceTypeAdded(event: ServiceEvent?) {
+                println("abc serviceTypeAdded $event")
+
+                if (event?.type?.startsWith("_mockzilla._tcp.") == true) {
+                    jmdns.addServiceListener("_mockzilla._tcp.local.", object : ServiceListener {
+                        override fun serviceAdded(event: ServiceEvent) {
+                        println("abc adding ${format(event.info)}")
+                        }
+
+                        override fun serviceRemoved(event: ServiceEvent) {
+                        println("abc removed ${format(event.info)}")
+                        }
+
+                        override fun serviceResolved(event: ServiceEvent) {
+                        println("abc resolved ${format(event.info)}")
+                        }
+                    })
+
+                    viewModelScope.launch {
+                        while (true) {
+                            delay(1500)
+                            println(
+                                "abc mockzilla subtype ${
+                                    jmdns.list("_mockzilla._tcp.local.").joinToString {
+                                        format(it)
+                                    }
+                                }"
+                            )
+                        }
+                    }
+//                    println("ABC ---------- \n\n")
+//                    println(event.name)
+//                    println(event.dns)
+//                    println(event.info)
+//                    println("------")
+//                    println()
+                    }
+                }
+
+                override fun subTypeForServiceTypeAdded(event: ServiceEvent?) {
+                    println("abc subTypeForServiceTypeAdded $event")
+                }
+
+            })
+
+
     }
+
+    private fun format(it: ServiceInfo) = "${it.name}: ${it.port} ${it.getPropertyString("isEmulator")}"
+
 
     // TODO: Replace this with better strategies of device connections
     // This is just a rough and ready way to get the UI to be testable
