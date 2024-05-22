@@ -32,6 +32,9 @@ fun DeviceConnectionContent(
 ) = Column {
     Text("State: ${state.connectionState}")
     TextField(value = state.ipAndPort, onValueChange = onIpAndPortChanged)
+    Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
+        Text("Set to localhost:8080")
+    }
     state.adbDevices.forEach {
         Button(onClick = { onTapAdbDevice(it) }, enabled = it.isActive) {
             Text("Connect to ${it.name} (isActive: ${it.isActive})")

@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation(project(":mockzilla-management-ui:common"))
+    implementation(project(":mockzilla"))
     implementation(libs.androidx.compose.activity)
 }
 
