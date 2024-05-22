@@ -50,6 +50,12 @@ kotlin {
             implementation(libs.androidx.lifecycleViewModelCompose)
             implementation(libs.koin.android)
             implementation(libs.koin.compose)
+
+            /* Mockzilla */
+            // Android target is only used for development since it's a better dev experience than desktop
+            // So using mockzilla to have a "Mock app" to connect to
+            implementation(project(":mockzilla"))
+            implementation(libs.ktor.client.core)
         }
         val androidUnitTest by getting {
             dependencies {
