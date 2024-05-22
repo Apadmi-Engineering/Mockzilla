@@ -11,7 +11,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal fun viewModelModule(): Module = module {
-    viewModel { DeviceConnectionViewModel(get(), get()) }
+    viewModel { DeviceConnectionViewModel(get(), get(), get()) }
     viewModel { MetaDataWidgetViewModel(get(), get()) }
     viewModel { DeviceTabsViewModel(get(), get()) }
     viewModel { MiddlePaneWrapperViewModel(get()) }
