@@ -3,30 +3,26 @@ package com.apadmi.mockzilla.lib.internal.discovery
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import android.os.Build
 import com.apadmi.mockzilla.lib.internal.utils.isProbablyRunningOnEmulator
 import java.util.UUID
 
-actual class DiscoveryService actual constructor(x: String) {
-    companion object {
+class ZeroConfDiscoveryServiceImpl(private val context: Context) : ZeroConfDiscoveryService {
 
-        // STOP DOING THIS
-        var context: Context? = null
-    }
-    actual fun makeDiscoverable() {
+    override fun makeDiscoverable() {
         val serviceInfo = NsdServiceInfo().apply {
             // The name is subject to change based on conflicts
             // with other services advertised on the same network.
             serviceName = "test1234" + UUID.randomUUID().toString();
-            serviceType = "_mockzilla._tcp.local."
+            serviceType = "_mockzilla._tcp."
             port = 8080
             setAttribute("isEmulator", isProbablyRunningOnEmulator.toString())
         }
 
-        val nsdManager = (context?.getSystemService(Context.NSD_SERVICE) as NsdManager).apply {
-            registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
-        }
-
+        (context.getSystemService(Context.NSD_SERVICE) as NsdManager).registerService(
+            serviceInfo,
+            NsdManager.PROTOCOL_DNS_SD,
+            registrationListener
+        )
     }
 
     private val registrationListener = object : NsdManager.RegistrationListener {

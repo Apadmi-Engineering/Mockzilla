@@ -12,6 +12,7 @@ import com.apadmi.mockzilla.lib.stopMockzilla
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import io.ktor.client.network.sockets.*
 
 import kotlinx.coroutines.delay
@@ -25,6 +26,9 @@ private object Constants {
     const val maxRetries = 3
 }
 
+private val zeroConfStub = object: ZeroConfDiscoveryService {
+    override fun makeDiscoverable() = Unit
+}
 private fun MetaData.Companion.dummy() = MetaData(
     appName = "",
     appPackage = "",
@@ -82,7 +86,13 @@ private suspend fun runFullIntegrationTest(
     block: TestBlock,
 ) {
     /* Setup */
-    val di = prepareMockzilla(config, metaData, fileIo, Logger(StaticConfig()))
+    val di = prepareMockzilla(
+        config,
+        metaData,
+        fileIo,
+        Logger(StaticConfig()),
+        zeroConfStub
+    )
     fileIo.deleteAllCaches()
     setup(di.localCacheService)
     val params = startMockzilla(config, di)

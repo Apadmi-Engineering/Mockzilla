@@ -40,19 +40,6 @@ class DeviceConnectionViewModel(
 
         val jmdns: JmDNS = JmDNS.create(InetAddress.getLocalHost())
 
-
-        // Register a service
-//            val serviceInfo =
-//                ServiceInfo.create("_http._tcp.local.", "example", 1234, "path=index.html")
-//            jmdns.registerService(serviceInfo)
-//
-//
-//            val type = "_http._tcp.local."
-//            println("abc starting service listener ${InetAddress.getLocalHost()}")
-//
-//
-//
-
         jmdns.addServiceTypeListener(object : ServiceTypeListener {
             override fun serviceTypeAdded(event: ServiceEvent?) {
                 println("abc serviceTypeAdded $event")
@@ -60,15 +47,15 @@ class DeviceConnectionViewModel(
                 if (event?.type?.startsWith("_mockzilla._tcp.") == true) {
                     jmdns.addServiceListener("_mockzilla._tcp.local.", object : ServiceListener {
                         override fun serviceAdded(event: ServiceEvent) {
-                        println("abc adding ${format(event.info)}")
+                            println("abc adding ${format(event.info)}")
                         }
 
                         override fun serviceRemoved(event: ServiceEvent) {
-                        println("abc removed ${format(event.info)}")
+                            println("abc removed ${format(event.info)}")
                         }
 
                         override fun serviceResolved(event: ServiceEvent) {
-                        println("abc resolved ${format(event.info)}")
+                            println("abc resolved ${format(event.info)}")
                         }
                     })
 
@@ -84,25 +71,21 @@ class DeviceConnectionViewModel(
                             )
                         }
                     }
-//                    println("ABC ---------- \n\n")
-//                    println(event.name)
-//                    println(event.dns)
-//                    println(event.info)
-//                    println("------")
-//                    println()
-                    }
-                }
 
-                override fun subTypeForServiceTypeAdded(event: ServiceEvent?) {
-                    println("abc subTypeForServiceTypeAdded $event")
                 }
+            }
 
-            })
+            override fun subTypeForServiceTypeAdded(event: ServiceEvent?) {
+                println("abc subTypeForServiceTypeAdded $event")
+            }
+
+        })
 
 
     }
 
-    private fun format(it: ServiceInfo) = "${it.name}: ${it.port} ${it.getPropertyString("isEmulator")}"
+    private fun format(it: ServiceInfo) =
+        "${it.name}: ${it.port} ${it.getPropertyString("isEmulator")}"
 
 
     // TODO: Replace this with better strategies of device connections

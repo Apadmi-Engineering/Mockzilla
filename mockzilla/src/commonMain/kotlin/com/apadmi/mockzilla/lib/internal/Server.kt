@@ -16,11 +16,8 @@ import io.ktor.server.engine.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.routing.*
-import com.apadmi.mockzilla.lib.internal.discovery.DiscoveryService
 
 import kotlinx.coroutines.*
-
-private val discoveryService by lazy { DiscoveryService("kflsfds") }
 
 private var server: ApplicationEngine? = null
 private var job: Job? = null
@@ -68,7 +65,7 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
         start(wait = false)
     }
 
-    discoveryService.makeDiscoverable()
+    di.zeroConfDiscoveryService.makeDiscoverable()
 
     val actualPort = serverEngine.resolvedConnectors().firstOrNull()?.port
         ?: throw Exception("Could not determine runtime port")

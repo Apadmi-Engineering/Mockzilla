@@ -11,6 +11,7 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 
 /**
  * @property logger
@@ -22,6 +23,7 @@ internal class DependencyInjector(
     val config: MockzillaConfig,
     val metaData: MetaData,
     fileIo: FileIo,
+    val zeroConfDiscoveryService: ZeroConfDiscoveryService,
     val logger: Logger,
 ) {
     /* Service */

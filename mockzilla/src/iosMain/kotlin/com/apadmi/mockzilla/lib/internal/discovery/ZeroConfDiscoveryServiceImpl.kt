@@ -6,11 +6,11 @@ import com.apadmi.mockzilla.lib.nativedarwin.localdiscovery.BonjourService
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.UIKit.UIDevice
 
-actual class DiscoveryService actual constructor(x: String) {
+class ZeroConfDiscoveryServiceImpl(): ZeroConfDiscoveryService {
     private val bonjour = BonjourService()
-    @Suppress("diktat")
-    actual fun makeDiscoverable() {
-        val deviceName = UIDevice.currentDevice.name
-        bonjour.startWithName(deviceName);
+
+    @OptIn(ExperimentalForeignApi::class)
+    override fun makeDiscoverable() {
+        bonjour.startWithName(UIDevice.currentDevice.name)
     }
 }

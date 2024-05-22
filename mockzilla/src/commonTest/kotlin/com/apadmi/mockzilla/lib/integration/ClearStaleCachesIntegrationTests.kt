@@ -13,6 +13,7 @@ import com.apadmi.mockzilla.lib.stopMockzilla
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.patch
@@ -45,7 +46,11 @@ class ClearStaleCachesIntegrationTests {
             appVersion = "",
             operatingSystem = "",
             mockzillaVersion = ""
-        ), fileIo = fileIoForTesting, logger = Logger(StaticConfig())
+        ), fileIo = fileIoForTesting, logger = Logger(StaticConfig()),
+        zeroConfDiscoveryService = object : ZeroConfDiscoveryService {
+            override fun makeDiscoverable() { /* No-Op */ }
+
+        }
     )
 
     @Test

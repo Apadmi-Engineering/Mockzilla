@@ -1,6 +1,8 @@
 package com.apadmi.mockzilla.lib
 
+import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.BuildKonfig
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
@@ -31,4 +33,10 @@ fun startMockzilla(
         mockzillaVersion = BuildKonfig.VERSION_NAME
     ),
     FileIo(Files.createTempDirectory("").toFile()),
+    object : ZeroConfDiscoveryService {
+        override fun makeDiscoverable() {
+            Logger.i(tag = "Mockzilla") { "ZeroConf not supported for JVM Mockzilla" }
+        }
+
+    }
 )
