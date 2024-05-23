@@ -8,6 +8,6 @@ fun MetaData.Companion.dummy() = MetaData(
     operatingSystemVersion = "primis",
     deviceModel = "erat",
     appVersion = "ante",
-    operatingSystem = "quot",
+    runTarget = "quot",
     mockzillaVersion = "dolorem"
 )

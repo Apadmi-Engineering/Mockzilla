@@ -44,7 +44,7 @@ class ClearStaleCachesIntegrationTests {
             operatingSystemVersion = "",
             deviceModel = "",
             appVersion = "",
-            operatingSystem = "",
+            runTarget = "",
             mockzillaVersion = ""
         ), fileIo = fileIoForTesting, logger = Logger(StaticConfig()),
         zeroConfDiscoveryService = object : ZeroConfDiscoveryService {

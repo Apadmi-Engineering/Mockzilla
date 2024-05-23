@@ -62,7 +62,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
                 Device.dummy(),
                 MetaData.dummy().copy(
                     appPackage = "test.package",
-                    operatingSystem = "os",
+                    runTarget = "os",
                     deviceModel = "model"
                 )
             )

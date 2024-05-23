@@ -13,7 +13,6 @@ import com.apadmi.mockzilla.lib.stopMockzilla
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
-import io.ktor.client.network.sockets.*
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -35,7 +34,7 @@ private fun MetaData.Companion.dummy() = MetaData(
     operatingSystemVersion = "",
     deviceModel = "",
     appVersion = "",
-    operatingSystem = "",
+    runTarget = "",
     mockzillaVersion = ""
 )
 

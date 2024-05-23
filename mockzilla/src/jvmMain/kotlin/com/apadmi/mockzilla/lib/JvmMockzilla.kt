@@ -29,7 +29,7 @@ fun startMockzilla(
         operatingSystemVersion = System.getProperty("os.version"),
         deviceModel = "-",  // Covered by `operatingSystem`
         appVersion = appVersion,
-        operatingSystem = System.getProperty("os.name"),
+        runTarget = System.getProperty("os.name"),
         mockzillaVersion = BuildKonfig.VERSION_NAME
     ),
     FileIo(Files.createTempDirectory("").toFile()),

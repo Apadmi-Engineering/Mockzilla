@@ -65,10 +65,15 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
         start(wait = false)
     }
 
-    di.zeroConfDiscoveryService.makeDiscoverable()
-
     val actualPort = serverEngine.resolvedConnectors().firstOrNull()?.port
         ?: throw Exception("Could not determine runtime port")
+
+    GlobalScope.launch {
+        println("make discoverabel calling")
+        di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, actualPort)
+        println("make discoverabel calling done")
+    }
+
     MockzillaRuntimeParams(
         di.config,
         "http://127.0.0.1:$actualPort/local-mock",
