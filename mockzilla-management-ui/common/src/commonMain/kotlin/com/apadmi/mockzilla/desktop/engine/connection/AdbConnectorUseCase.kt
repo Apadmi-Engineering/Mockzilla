@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.desktop.engine.adb
+package com.apadmi.mockzilla.desktop.engine.connection
 
 import com.malinskiy.adam.AndroidDebugBridgeClient
 import com.malinskiy.adam.AndroidDebugBridgeClientFactory
