@@ -24,8 +24,8 @@ internal val Context.applicationName: String? get() {
 internal fun Context.extractMetaData(): MetaData {
     val packageInfo = runCatching { packageManager.getPackageInfo(packageName, 0) }.getOrNull()
     return MetaData(
-        appName = applicationName ?: "-",
-        appPackage = packageName,
+        appName = applicationName?.take(MetaData.maxFieldLength) ?: "-",
+        appPackage = packageName.take(MetaData.maxFieldLength),
         runTarget = if (isProbablyRunningOnEmulator) RunTarget.AndroidEmulator else RunTarget.AndroidDevice,
         operatingSystemVersion = VERSION.SDK_INT.toString(),
         deviceModel = Build.MODEL,

@@ -9,8 +9,7 @@ import Network
     @objc public func start(type: String, txtRecord: [String: String], port: Int, name: String) {
         let domain = "local."
 
-        let txtRecordPointer = createTXTRecord(from: txtRecord)
-        let txtRecordLength = txtRecordPointer == nil ? 0 : UInt16(strlen(txtRecordPointer!))
+        let (txtRecordLength, txtRecordPointer) = createTXTRecord(from: txtRecord)
 
         let error = DNSServiceRegister(
             &sdRef,
@@ -32,6 +31,8 @@ import Network
             debugPrint("Failure", error)
             dispose()
         }
+
+        txtRecordPointer?.deallocate()
     }
 
     public func dispose() {
@@ -42,14 +43,14 @@ import Network
     private static let registerCallback: DNSServiceRegisterReply = { _, _, errorCode, name, _, _, context in
         let broadcast = Unmanaged<BonjourService>.fromOpaque(context!).takeUnretainedValue()
         if errorCode == kDNSServiceErr_NoError {
-            debugPrint("Registered", String(cString: name!))
+            debugPrint("BonjourService: Success", String(cString: name!))
         } else {
-            debugPrint("Error", errorCode)
+            debugPrint("BonjourService: Error", errorCode)
             broadcast.dispose()
         }
     }
 
-    func createTXTRecord(from dictionary: [String: String]) -> UnsafeMutablePointer<UInt8>? {
+    func createTXTRecord(from dictionary: [String: String]) -> (length: UInt16, pointer: UnsafeMutablePointer<UInt8>?) {
         var txtData = Data()
 
         for (key, value) in dictionary {
@@ -66,6 +67,6 @@ import Network
         let txtRecordPointer = UnsafeMutablePointer<UInt8>.allocate(capacity: txtData.count)
         txtData.copyBytes(to: txtRecordPointer, count: txtData.count)
 
-        return txtRecordPointer
+        return (length: UInt16(txtData.count), pointer: txtRecordPointer)
     }
 }

@@ -68,10 +68,8 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     val actualPort = serverEngine.resolvedConnectors().firstOrNull()?.port
         ?: throw Exception("Could not determine runtime port")
 
-    GlobalScope.launch {
-        println("make discoverabel calling")
+    CoroutineScope(job ?: coroutineContext).launch {
         di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, actualPort)
-        println("make discoverabel calling done")
     }
 
     MockzillaRuntimeParams(

@@ -15,7 +15,7 @@ class ZeroConfDiscoveryServiceImpl(private val context: Context) : ZeroConfDisco
         val serviceInfo = NsdServiceInfo().apply {
             // The name is subject to change based on conflicts
             // with other services advertised on the same network.
-            serviceName = "test1234" + UUID.randomUUID().toString();
+            serviceName = UUID.randomUUID().toString()
             serviceType = "_mockzilla._tcp."
             this.port = port
 

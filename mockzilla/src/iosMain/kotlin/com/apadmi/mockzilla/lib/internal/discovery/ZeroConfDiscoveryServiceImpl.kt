@@ -7,18 +7,17 @@ import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.nativedarwin.localdiscovery.BonjourService
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.convert
+import platform.Foundation.NSUUID
 import platform.UIKit.UIDevice
 
-class ZeroConfDiscoveryServiceImpl: ZeroConfDiscoveryService {
+class ZeroConfDiscoveryServiceImpl : ZeroConfDiscoveryService {
     private val bonjour = BonjourService()
 
     @OptIn(ExperimentalForeignApi::class)
-    override fun makeDiscoverable(metaData: MetaData, port: Int) {
-        bonjour.startWithType(
-            ZeroConfConfig.serviceType,
-            mapOf("" to ""),// metaData.toMap().map { it.key to it.value }.toMap(),
-            port.convert(),
-            UIDevice.currentDevice.name
-        )
-    }
+    override fun makeDiscoverable(metaData: MetaData, port: Int) = bonjour.startWithType(
+        ZeroConfConfig.serviceType,
+        metaData.toMap().map { it.key to it.value }.toMap(),
+        port.convert(),
+        NSUUID.UUID().UUIDString
+    )
 }

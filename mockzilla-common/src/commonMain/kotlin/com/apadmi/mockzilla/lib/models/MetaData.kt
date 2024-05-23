@@ -30,6 +30,8 @@ data class MetaData(
 ) {
     companion object {
 
+        const val maxFieldLength = 254
+
         @OptIn(ExperimentalSerializationApi::class)
         private val json = Json {
             isLenient = true
