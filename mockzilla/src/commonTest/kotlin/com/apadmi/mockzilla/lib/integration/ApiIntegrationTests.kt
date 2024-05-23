@@ -3,10 +3,11 @@ package com.apadmi.mockzilla.lib.integration
 import com.apadmi.mockzilla.lib.internal.models.*
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
+import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
-import com.apadmi.mockzilla.lib.service.MockzillaWeb
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
 import io.ktor.client.*
@@ -25,26 +26,13 @@ import kotlinx.serialization.json.Json
     "MAGIC_NUMBER",
     "TOO_MANY_LINES_IN_LAMBDA"
 )
-class WebPortalApiIntegrationTests {
-    @OptIn(MockzillaWeb::class)
+class ApiIntegrationTests {
     @Test
     fun `GET mock-data - returns as expected`() = runIntegrationTest(
         MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
             .setDelayMillis(100)
             .addEndpoint(EndpointConfiguration.Builder("my-id")
-                .setWebApiDefaultResponse(
-                    MockzillaHttpResponse(
-                        statusCode = HttpStatusCode.Created,
-                        body = "my web api body"
-                    )
-                )
-                .setWebApiErrorResponse(
-                    MockzillaHttpResponse(
-                        body = "my web api error body",
-                        statusCode = HttpStatusCode.NotAcceptable
-                    )
-                )
                 .setDefaultHandler {
                     MockzillaHttpResponse(
                         HttpStatusCode.Created,
@@ -75,13 +63,59 @@ class WebPortalApiIntegrationTests {
             JsonProvider.json.encodeToString(
                 MockDataResponseDto(
                     listOf(
-                        MockDataEntryDto.allUnset(
+                        SerializableEndpointConfig.allNulls(
                             name = "my-id",
-                            key = "my-id"
+                            key = "my-id",
+                            versionCode = Int.MIN_VALUE
                         )
                     )
-                )),
+                )
+            ),
             response.bodyAsText()
+        )
+    }
+
+    @Test
+    fun `GET dashboard-config presets - returns as expected`() = runIntegrationTest(
+        MockzillaConfig.Builder()
+            .setPort(0)  // Port determined at runtime
+            .setDelayMillis(100)
+            .addEndpoint(EndpointConfiguration.Builder("my-id")
+                .configureDashboardOverrides {
+                    addSuccessPreset(
+                        MockzillaHttpResponse(
+                            HttpStatusCode.Created,
+                            emptyMap(),
+                            "my body"
+                        ), name = "Preset name", description = "Preset description"
+                    )
+                }
+                .build()
+            )
+            .build()
+    ) { params, _ ->
+        /* Run Test */
+        val response = HttpClient(CIO).get("${params.apiBaseUrl}/mock-data/my-id/dashboard-config")
+
+        /* Verify */
+        assertEquals(
+            HttpStatusCode.OK,
+            response.status
+        )
+        assertEquals(
+            DashboardOptionsConfig(
+                successPresets = listOf(
+                    DashboardOverridePreset(
+                        response = MockzillaHttpResponse(
+                            HttpStatusCode.Created,
+                            emptyMap(),
+                            "my body"
+                        ), name = "Preset name", description = "Preset description"
+                    )
+                ),
+                errorPresets = emptyList()
+            ),
+            JsonProvider.json.decodeFromString<DashboardOptionsConfig>(response.bodyAsText())
         )
     }
 
@@ -92,16 +126,29 @@ class WebPortalApiIntegrationTests {
             .addEndpoint(EndpointConfiguration.Builder("id"))
             .build(),
         setup = { cacheService ->
-            cacheService.updateLocalCache(
-                MockDataEntryDto.allUnset("id", "name")
+            cacheService.patchLocalCaches(
+                mapOf(
+                    EndpointConfiguration.Builder("id").build() to
+                            SerializableEndpointPatchItemDto.allUnset("id")
+                )
             )
         }
     ) { params, cacheService ->
+        /* Setup */
+        cacheService.patchLocalCaches(
+            mapOf(
+                EndpointConfiguration.Builder("id").build() to SerializableEndpointPatchItemDto(
+                    EndpointConfiguration.Key("id"), delayMs = SetOrDont.Set(1442)
+                )
+            )
+        )
+        check(cacheService.getLocalCache(EndpointConfiguration.Key("id")) != null)
+
         /* Run Test */
-        val response = HttpClient(CIO).delete("${params.apiBaseUrl}/mock-data")
+        val response = HttpClient(CIO).delete("${params.apiBaseUrl}/mock-data/all")
 
         /* Verify */
-        assertNull(cacheService.getLocalCache("id"))
+        assertNull(cacheService.getLocalCache(EndpointConfiguration.Key("id")))
         assertEquals(
             HttpStatusCode.NoContent,
             response.status
@@ -109,7 +156,48 @@ class WebPortalApiIntegrationTests {
     }
 
     @Test
-    fun `POST mock-data - updates cache as expected`() =
+    fun `DELETE mock-data specific key - clears caches as expected`() = runIntegrationTest(
+        MockzillaConfig.Builder()
+            .setPort(0)  // Port determined at runtime
+            .addEndpoint(EndpointConfiguration.Builder("id"))
+            .build(),
+        setup = { cacheService ->
+            cacheService.patchLocalCaches(
+                mapOf(
+                    EndpointConfiguration.Builder("id").build() to
+                            SerializableEndpointPatchItemDto.allUnset("id")
+                )
+            )
+        }
+    ) { params, cacheService ->
+        /* Setup */
+        cacheService.patchLocalCaches(
+            mapOf(
+                EndpointConfiguration.Builder("id").build() to SerializableEndpointPatchItemDto(
+                    EndpointConfiguration.Key("id"), delayMs = SetOrDont.Set(1442)
+                )
+            )
+        )
+        check(cacheService.getLocalCache(EndpointConfiguration.Key("id")) != null)
+
+        /* Run Test */
+        val response = HttpClient(CIO).delete("${params.apiBaseUrl}/mock-data") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                Json.encodeToString(ClearCachesRequestDto(listOf(EndpointConfiguration.Key("id"))))
+            )
+        }
+
+        /* Verify */
+        assertNull(cacheService.getLocalCache(EndpointConfiguration.Key("id")))
+        assertEquals(
+            HttpStatusCode.NoContent,
+            response.status
+        )
+    }
+
+    @Test
+    fun `PATCH mock-data - updates cache as expected`() =
         runIntegrationTest(
             MockzillaConfig.Builder()
                 .setPort(0)  // Port determined at runtime
@@ -117,16 +205,18 @@ class WebPortalApiIntegrationTests {
                 .build()
         ) { params, cacheService ->
             /* Run Test */
-            val response = HttpClient(CIO).post(
-                "${params.apiBaseUrl}/mock-data/id"
+            val response = HttpClient(CIO).patch(
+                "${params.apiBaseUrl}/mock-data"
             ) {
                 contentType(ContentType.Application.Json)
                 setBody(
                     Json.encodeToString(
-                        MockDataEntryDto.allUnset("id", "id").copy(
-                            defaultBody = SetOrDont.Set("hello"),
-                            defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
-                            headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
+                        SerializableEndpointConfigPatchRequestDto(
+                            SerializableEndpointPatchItemDto.allUnset("id").copy(
+                                defaultBody = SetOrDont.Set("hello"),
+                                defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
+                                headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
+                            )
                         )
                     )
                 )
@@ -134,16 +224,16 @@ class WebPortalApiIntegrationTests {
 
             /* Verify */
             assertEquals(
-                MockDataEntryDto.allUnset("id", "id").copy(
-                    defaultBody = SetOrDont.Set("hello"),
-                    defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
-                    headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
-                ),
-                cacheService.getLocalCache("id")
+                HttpStatusCode.Created,
+                response.status
             )
             assertEquals(
-                HttpStatusCode.NoContent,
-                response.status
+                SerializableEndpointConfig.allNulls("id", "id", Int.MIN_VALUE).copy(
+                    defaultBody = "hello",
+                    defaultStatus = HttpStatusCode.NoContent,
+                    defaultHeaders = mapOf("Content-Type" to "application/json")
+                ),
+                cacheService.getLocalCache(EndpointConfiguration.Key("id"))
             )
         }
 

@@ -7,12 +7,17 @@ import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.service.toKermitLogWriter
 import com.apadmi.mockzilla.lib.service.toKermitSeverity
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
 import co.touchlab.kermit.platformLogWriter
+import kotlinx.coroutines.CoroutineScope
+
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * Stops the Mockzilla server,
@@ -44,4 +49,8 @@ internal fun prepareMockzilla(
 internal fun startMockzilla(
     config: MockzillaConfig,
     di: DependencyInjector,
-) = startServer(config.port, di)
+    scope: CoroutineScope = GlobalScope
+): MockzillaRuntimeParams {
+    scope.launch { di.localCacheService.clearStaleCaches(config.endpoints) }
+    return startServer(config.port, di)
+}

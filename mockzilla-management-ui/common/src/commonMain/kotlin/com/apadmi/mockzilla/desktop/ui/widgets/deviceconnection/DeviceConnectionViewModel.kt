@@ -48,7 +48,7 @@ class DeviceConnectionViewModel(
                     .fold(onSuccess = { State.ConnectionState.Connected },
                         onFailure = { State.ConnectionState.Connecting })
             )
-            delay(100)
+            delay(300)
         } while (state.value.connectionState != State.ConnectionState.Connected)
     }
 

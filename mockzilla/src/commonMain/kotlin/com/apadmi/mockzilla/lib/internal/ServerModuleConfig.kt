@@ -1,18 +1,17 @@
 package com.apadmi.mockzilla.lib.internal
 
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
+import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
-import com.apadmi.mockzilla.lib.internal.utils.*
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.utils.allowCors
 import com.apadmi.mockzilla.lib.internal.utils.respondMockzilla
 import com.apadmi.mockzilla.lib.internal.utils.safeResponse
 import com.apadmi.mockzilla.lib.internal.utils.toMockzillaRequest
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -62,11 +61,26 @@ internal fun Application.configureEndpoints(
                 )
             }
         }
-        post("/api/mock-data/{id}") {
+        get("/api/mock-data/{key}/dashboard-config") {
+            di.logger.v { "Handling GET mock-data presets: ${call.request.uri}" }
+            safeResponse(di.logger) {
+                call.allowCors()
+                call.respond(di.managementApiController.getDashboardConfig(call.extractKey()))
+            }
+        }
+        patch("/api/mock-data") {
             di.logger.v { "Handling POST mock-data: ${call.request.uri}" }
             safeResponse(di.logger) {
-                val id = call.parameters["id"] ?: ""
-                di.managementApiController.updateEntry(id, call.receive())
+                call.allowCors()
+                val patches = call.receive<SerializableEndpointConfigPatchRequestDto>().entries
+                di.managementApiController.patchEntries(patches)
+                call.respond(HttpStatusCode.Created)
+            }
+        }
+        delete("/api/mock-data/all") {
+            di.logger.v { "Handling DELETE mock-data: ${call.request.uri}" }
+            safeResponse(di.logger) {
+                di.managementApiController.clearAllCaches()
                 call.allowCors()
                 call.respond(HttpStatusCode.NoContent)
             }
@@ -74,7 +88,7 @@ internal fun Application.configureEndpoints(
         delete("/api/mock-data") {
             di.logger.v { "Handling DELETE mock-data: ${call.request.uri}" }
             safeResponse(di.logger) {
-                di.managementApiController.clearAllCaches()
+                di.managementApiController.clearCache(call.receive<ClearCachesRequestDto>().keys)
                 call.allowCors()
                 call.respond(HttpStatusCode.NoContent)
             }
@@ -104,3 +118,7 @@ internal fun Application.configureEndpoints(
         }
     }
 }
+
+private fun ApplicationCall.extractKey() = parameters["key"]?.takeUnless {
+    it.isBlank()
+}?.let { EndpointConfiguration.Key(it) } ?: throw Exception("No key found in URL")

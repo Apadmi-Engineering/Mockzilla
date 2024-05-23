@@ -12,7 +12,7 @@ internal val Context.applicationName: String? get() {
     val applicationInfo: ApplicationInfo = applicationInfo
     val stringId = applicationInfo.labelRes
     return if (stringId == 0) {
-        applicationInfo.nonLocalizedLabel.toString()
+        applicationInfo.nonLocalizedLabel?.toString() ?: packageName
     } else {
         getString(
             stringId

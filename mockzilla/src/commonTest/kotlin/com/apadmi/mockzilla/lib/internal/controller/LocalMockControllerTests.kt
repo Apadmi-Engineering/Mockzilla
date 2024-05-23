@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
-import com.apadmi.mockzilla.lib.internal.models.MockDataEntryDto
-import com.apadmi.mockzilla.lib.internal.models.SetOrDont
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -48,7 +47,9 @@ class LocalMockControllerTests {
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(null)
+        given(localCacheServiceMock).coroutine {
+            getLocalCache(EndpointConfiguration.Key("my-id"))
+        }.thenReturn(null)
 
         /* Run Test */
         val response = sut.handleRequest(
@@ -78,17 +79,19 @@ class LocalMockControllerTests {
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine { getLocalCache("my-id") }.thenReturn(
-            MockDataEntryDto(
-                key = "my-id",
+        given(localCacheServiceMock).coroutine { getLocalCache(EndpointConfiguration.Key("my-id")) }.thenReturn(
+            SerializableEndpointConfig(
+                key = EndpointConfiguration.Key("my-id"),
                 name = "my-id",
-                shouldFail = SetOrDont.Set(true),
-                delayMs = SetOrDont.Set(0),
-                headers = SetOrDont.Set(emptyMap()),
-                defaultBody = SetOrDont.Set(""),
-                defaultStatus = SetOrDont.Set(HttpStatusCode.OK),
-                errorBody = SetOrDont.Set(""),
-                errorStatus = SetOrDont.Set(HttpStatusCode.InternalServerError),
+                versionCode = 0,
+                shouldFail = true,
+                delayMs = 0,
+                defaultHeaders = emptyMap(),
+                defaultBody = "",
+                defaultStatus = HttpStatusCode.OK,
+                errorBody = "",
+                errorHeaders = emptyMap(),
+                errorStatus = HttpStatusCode.InternalServerError,
             )
         )
 
