@@ -7,7 +7,9 @@ import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
+import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.lib.models.MetaData.Companion.parseMetaData
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,8 +46,8 @@ class DeviceConnectionViewModel(
             override fun serviceTypeAdded(event: ServiceEvent?) {
                 println("abc serviceTypeAdded $event")
 
-                if (event?.type?.startsWith("_mockzilla._tcp.") == true) {
-                    jmdns.addServiceListener("_mockzilla._tcp.local.", object : ServiceListener {
+                if (event?.type?.startsWith(ZeroConfConfig.serviceType) == true) {
+                    jmdns.addServiceListener("${ZeroConfConfig.serviceType}.local.", object : ServiceListener {
                         override fun serviceAdded(event: ServiceEvent) {
                             println("abc adding ${format(event.info)}")
                         }
@@ -84,8 +86,11 @@ class DeviceConnectionViewModel(
 
     }
 
-    private fun format(it: ServiceInfo) =
-        "${it.name}: ${it.port} ${it.getPropertyString("isEmulator")}"
+    private fun format(info: ServiceInfo): String {
+        val map = info.propertyNames.toList().associateWith { info.getPropertyString(it) }
+
+        return "${info.name}: ${info.port} $map ${map.parseMetaData()}"
+    }
 
 
     // TODO: Replace this with better strategies of device connections

@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.testutils.dummymodels
 
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.lib.models.RunTarget
 
 fun MetaData.Companion.dummy() = MetaData(
     appName = "Jannie Bates",
@@ -8,6 +9,6 @@ fun MetaData.Companion.dummy() = MetaData(
     operatingSystemVersion = "primis",
     deviceModel = "erat",
     appVersion = "ante",
-    runTarget = "quot",
+    runTarget = RunTarget.iOSSimulator,
     mockzillaVersion = "dolorem"
 )

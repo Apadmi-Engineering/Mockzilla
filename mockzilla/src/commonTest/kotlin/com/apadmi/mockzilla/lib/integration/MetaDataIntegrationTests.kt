@@ -4,6 +4,7 @@ import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
 import io.ktor.client.*
@@ -28,7 +29,7 @@ class MetaDataIntegrationTests {
         "Os Version",
         "device model",
         "app version",
-        "os",
+        RunTarget.Jvm,
         "version"
     )
 

@@ -13,6 +13,7 @@ import com.apadmi.mockzilla.lib.stopMockzilla
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
+import com.apadmi.mockzilla.lib.models.RunTarget
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -26,7 +27,7 @@ private object Constants {
 }
 
 private val zeroConfStub = object: ZeroConfDiscoveryService {
-    override fun makeDiscoverable() = Unit
+    override fun makeDiscoverable(metaData: MetaData, port: Int) = Unit
 }
 private fun MetaData.Companion.dummy() = MetaData(
     appName = "",
@@ -34,7 +35,7 @@ private fun MetaData.Companion.dummy() = MetaData(
     operatingSystemVersion = "",
     deviceModel = "",
     appVersion = "",
-    runTarget = "",
+    runTarget = RunTarget.iOSDevice,
     mockzillaVersion = ""
 )
 

@@ -39,9 +39,9 @@ data class MetaData(
             explicitNulls = false
         }
 
-        fun Map<String, String>.parseMetaData(): ZeroConfConfig {
+        fun Map<String, String>.parseMetaData(): MetaData {
             val encoded = json.encodeToString(this)
-            return json.decodeFromString<ZeroConfConfig>(encoded)
+            return json.decodeFromString<MetaData>(encoded)
         }
     }
 

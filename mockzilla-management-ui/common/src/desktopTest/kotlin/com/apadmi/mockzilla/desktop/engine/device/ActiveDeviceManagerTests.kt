@@ -5,6 +5,7 @@ import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
+import com.apadmi.mockzilla.lib.models.RunTarget
 import io.mockative.Mock
 import io.mockative.any
 import io.mockative.classOf
@@ -62,7 +63,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
                 Device.dummy(),
                 MetaData.dummy().copy(
                     appPackage = "test.package",
-                    runTarget = "os",
+                    runTarget = RunTarget.Jvm,
                     deviceModel = "model"
                 )
             )
@@ -72,7 +73,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
                 listOf(
                     StatefulDevice(
                         device = Device.dummy(),
-                        name = "os-model",
+                        name = "Jvm-model",
                         isConnected = true,
                         connectedAppPackage = "test.package"
                     )
