@@ -14,6 +14,7 @@ import kotlin.time.Duration.Companion.seconds
  * @property releaseModeConfig
  * @property localhostOnly
  * @property additionalLogWriters
+ * @property isNetworkDiscoveryEnabled
  */
 data class MockzillaConfig(
     val port: Int,

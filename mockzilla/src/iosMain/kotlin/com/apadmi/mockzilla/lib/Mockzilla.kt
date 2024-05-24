@@ -6,7 +6,6 @@ import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.extractMetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
-import platform.Foundation.NSString
 
 /**
  * Starts the Mockzilla server,

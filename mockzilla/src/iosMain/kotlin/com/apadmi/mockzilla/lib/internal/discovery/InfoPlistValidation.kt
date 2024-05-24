@@ -1,9 +1,9 @@
 package com.apadmi.mockzilla.lib.internal.discovery
 
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
+import com.apadmi.mockzilla.lib.models.MockzillaConfig
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import platform.Foundation.NSArray
 import platform.Foundation.NSBundle
 import platform.Foundation.NSException

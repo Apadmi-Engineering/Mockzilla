@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.lib.internal
 
-import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.BuildKonfig
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.internal.plugin.SimpleAuthPlugin
@@ -10,6 +9,8 @@ import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.internal.utils.environment
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
+
+import co.touchlab.kermit.Logger
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -82,6 +83,11 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     )
 }
 
+internal fun stopServer() = runBlocking {
+    job?.cancel()
+    server?.stop()
+}
+
 private fun startNetworkDiscoveryBroadcastIfNeeded(
     job: CompletableJob,
     di: DependencyInjector,
@@ -92,9 +98,4 @@ private fun startNetworkDiscoveryBroadcastIfNeeded(
     } else {
         Logger.i { "Skipping network discovery" }
     }
-}
-
-internal fun stopServer() = runBlocking {
-    job?.cancel()
-    server?.stop()
 }
