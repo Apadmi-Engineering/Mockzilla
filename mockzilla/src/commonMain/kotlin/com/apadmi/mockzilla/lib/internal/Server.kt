@@ -42,6 +42,7 @@ private fun Application.setupReleaseMode(config: MockzillaConfig, tokensService:
 internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     stopServer()
 
+    val job = SupervisorJob().also { job = it }
     val serverEngine = embeddedServer(CIO, configure = {
         connectionIdleTimeoutSeconds = 1
         reuseAddress = true
@@ -60,7 +61,7 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
             setupReleaseMode(di.config, di.tokensService)
         }
 
-        configureEndpoints(SupervisorJob().also { job = it }, di)
+        configureEndpoints(job, di)
     }).apply {
         server = this
         start(wait = false)
@@ -69,13 +70,7 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     val actualPort = serverEngine.resolvedConnectors().firstOrNull()?.port
         ?: throw Exception("Could not determine runtime port")
 
-    CoroutineScope(job ?: coroutineContext).launch {
-        if (!di.config.isRelease && di.config.isNetworkDiscoveryEnabled) {
-            di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, actualPort)
-        } else {
-            Logger.i { "Skipping network discovery" }
-        }
-    }
+    startNetworkDiscoveryBroadcastIfNeeded(job, di, actualPort)
 
     MockzillaRuntimeParams(
         di.config,
@@ -85,6 +80,18 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
         di.authHeaderProvider,
         BuildKonfig.VERSION_NAME,
     )
+}
+
+private fun startNetworkDiscoveryBroadcastIfNeeded(
+    job: CompletableJob,
+    di: DependencyInjector,
+    port: Int
+) = CoroutineScope(job).launch {
+    if (!di.config.isRelease && di.config.isNetworkDiscoveryEnabled) {
+        di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, port)
+    } else {
+        Logger.i { "Skipping network discovery" }
+    }
 }
 
 internal fun stopServer() = runBlocking {

@@ -12,6 +12,7 @@ import io.mockative.mock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@Suppress("MAGIC_NUMBER", "TOO_LONG_FUNCTION")
 class DeviceDetectionUseCaseTests : CoroutineTest() {
 
     @Mock
