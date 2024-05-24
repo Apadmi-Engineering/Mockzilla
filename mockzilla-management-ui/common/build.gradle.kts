@@ -33,6 +33,9 @@ kotlin {
 
             /* Mockzilla Management */
             implementation(project(":mockzilla-management"))
+
+            /* ADB */
+            implementation(libs.adam)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))

@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
+import com.apadmi.mockzilla.desktop.engine.adb.AdbConnection
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionViewModel.State
 
@@ -22,13 +23,14 @@ fun DeviceConnectionWidget() {
     val viewModel = getViewModel<DeviceConnectionViewModel>()
     val state by viewModel.state.collectAsState()
 
-    DeviceConnectionContent(state, viewModel::onIpAndPortChanged)
+    DeviceConnectionContent(state, viewModel::onIpAndPortChanged, viewModel::connect8080To0)
 }
 
 @Composable
 fun DeviceConnectionContent(
     state: State,
     onIpAndPortChanged: (String) -> Unit,
+    onTapAdbDevice: (AdbConnection) -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
     Text("State: ${state.connectionState}")
@@ -42,12 +44,16 @@ fun DeviceConnectionContent(
     Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
         Text("Set to localhost:8080")
     }
-
+    state.adbDevices.forEach {
+        Button(onClick = { onTapAdbDevice(it) }, enabled = it.isActive) {
+            Text("Connect to ${it.name} (isActive: ${it.isActive})")
+        }
+    }
 }
 
 @ShowkaseComposable("DeviceConnection-Idle", "DeviceConnection")
 @Composable
 @Preview
 fun DeviceConnectionWidgetPreview() = PreviewSurface {
-    DeviceConnectionContent(State(), onIpAndPortChanged = {})
+    DeviceConnectionContent(State(), {}, {})
 }
