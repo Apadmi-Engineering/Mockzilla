@@ -9,6 +9,8 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+private const val port = 8085
+
 private val getMyCow = EndpointConfiguration
     .Builder("cow")
     .setPatternMatcher { uri.endsWith("cow") }
@@ -45,9 +47,8 @@ private val getMyCow = EndpointConfiguration
             ), headers = mapOf("Content-Type" to "application/json")
         )
     }
-
 val mockzillaConfig = MockzillaConfig.Builder()
     .addEndpoint(getMyCow)
-    .setPort(8085)
+    .setPort(port)
     .setLogLevel(MockzillaConfig.LogLevel.Verbose)
     .build()

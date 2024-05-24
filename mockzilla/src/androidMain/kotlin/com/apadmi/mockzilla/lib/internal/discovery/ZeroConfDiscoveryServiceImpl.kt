@@ -3,13 +3,31 @@ package com.apadmi.mockzilla.lib.internal.discovery
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import com.apadmi.mockzilla.lib.config.ZeroConfConfig
-import com.apadmi.mockzilla.lib.internal.utils.isProbablyRunningOnEmulator
 import com.apadmi.mockzilla.lib.models.MetaData
-import com.apadmi.mockzilla.lib.models.RunTarget
 import java.util.UUID
 
 class ZeroConfDiscoveryServiceImpl(private val context: Context) : ZeroConfDiscoveryService {
+    private val registrationListener = object : NsdManager.RegistrationListener {
+        override fun onServiceRegistered(serviceInfo: NsdServiceInfo) {
+            // Save the service name. Android may have changed it in order to
+            // resolve a conflict, so update the name you initially requested
+            // with the name Android actually used.
+            // mServiceName = serviceInfo.serviceName
+        }
+
+        override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+            // Registration failed! Put debugging code here to determine why.
+        }
+
+        override fun onServiceUnregistered(serviceInfo: NsdServiceInfo) {
+            // Service has been unregistered. This only happens when you call
+            // NsdManager.unregisterService() and pass in this listener.
+        }
+
+        override fun onUnregistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+            // Unregistration failed. Put debugging code here to determine why.
+        }
+    }
 
     override fun makeDiscoverable(metaData: MetaData, port: Int) {
         val serviceInfo = NsdServiceInfo().apply {
@@ -30,28 +48,4 @@ class ZeroConfDiscoveryServiceImpl(private val context: Context) : ZeroConfDisco
             registrationListener
         )
     }
-
-    private val registrationListener = object : NsdManager.RegistrationListener {
-
-        override fun onServiceRegistered(serviceInfo: NsdServiceInfo) {
-            // Save the service name. Android may have changed it in order to
-            // resolve a conflict, so update the name you initially requested
-            // with the name Android actually used.
-//            mServiceName = serviceInfo.serviceName
-        }
-
-        override fun onRegistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-            // Registration failed! Put debugging code here to determine why.
-        }
-
-        override fun onServiceUnregistered(serviceInfo: NsdServiceInfo) {
-            // Service has been unregistered. This only happens when you call
-            // NsdManager.unregisterService() and pass in this listener.
-        }
-
-        override fun onUnregistrationFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-            // Unregistration failed. Put debugging code here to determine why.
-        }
-    }
-
 }

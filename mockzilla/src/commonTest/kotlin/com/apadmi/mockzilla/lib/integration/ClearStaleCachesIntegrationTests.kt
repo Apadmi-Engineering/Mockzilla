@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.integration
 
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
@@ -7,14 +8,13 @@ import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.lib.prepareMockzilla
 import com.apadmi.mockzilla.lib.startMockzilla
 import com.apadmi.mockzilla.lib.stopMockzilla
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
-import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
-import com.apadmi.mockzilla.lib.models.RunTarget
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.patch
@@ -49,7 +49,9 @@ class ClearStaleCachesIntegrationTests {
             mockzillaVersion = ""
         ), fileIo = fileIoForTesting, logger = Logger(StaticConfig()),
         zeroConfDiscoveryService = object : ZeroConfDiscoveryService {
-            override fun makeDiscoverable(metaData: MetaData, port: Int) { /* No-Op */ }
+            override fun makeDiscoverable(metaData: MetaData, port: Int) {
+                /* No-Op */
+            }
         }
     )
 

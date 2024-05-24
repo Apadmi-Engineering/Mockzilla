@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.lib.internal.di
 
 import com.apadmi.mockzilla.lib.internal.controller.LocalMockController
 import com.apadmi.mockzilla.lib.internal.controller.ManagementApiController
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.service.*
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheServiceImpl
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitorImpl
@@ -11,12 +12,12 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 
 /**
  * @property logger
  * @property config
  * @property metaData
+ * @property zeroConfDiscoveryService
  */
 @Suppress("USE_DATA_CLASS")
 internal class DependencyInjector(

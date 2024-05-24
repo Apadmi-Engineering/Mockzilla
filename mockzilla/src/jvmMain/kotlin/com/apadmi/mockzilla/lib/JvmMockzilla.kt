@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.lib
 
-import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.BuildKonfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
@@ -8,6 +7,9 @@ import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.models.RunTarget
+
+import co.touchlab.kermit.Logger
+
 import java.nio.file.Files
 
 /**

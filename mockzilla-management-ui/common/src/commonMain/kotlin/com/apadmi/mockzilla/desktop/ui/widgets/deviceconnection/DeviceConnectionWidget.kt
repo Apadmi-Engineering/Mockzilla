@@ -10,11 +10,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
+import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionViewModel.State
 
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
-import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 
 @Composable
 fun DeviceConnectionWidget() {
@@ -35,13 +35,11 @@ fun DeviceConnectionContent(
     Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
         Text("Set to localhost:8080")
     }
-    state.devices.forEach {
-        Button(onClick = { onTapDevice(it) }) {
-            if (it.metaData != null) {
-                Text("${it.state} ${it.connectionName} ${it.metaData.deviceModel}: ${it.hostAddress}")
-            } else {
-                Text("${it.state} ${it.connectionName} ${it.hostAddress}:${it.port}")
-            }
+    state.devices.forEach { device ->
+        Button(onClick = { onTapDevice(device) }) {
+            device.metaData?.let {
+                Text("${device.state} ${device.connectionName} ${it.deviceModel}: ${device.hostAddress}")
+            } ?: Text("${device.state} ${device.connectionName} ${device.hostAddress}:${device.port}")
         }
     }
 }

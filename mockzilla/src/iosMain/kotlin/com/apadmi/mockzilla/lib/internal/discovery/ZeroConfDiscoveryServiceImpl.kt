@@ -5,10 +5,11 @@ package com.apadmi.mockzilla.lib.internal.discovery
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.nativedarwin.localdiscovery.BonjourService
+
+import platform.Foundation.NSUUID
+
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.convert
-import platform.Foundation.NSUUID
-import platform.UIKit.UIDevice
 
 class ZeroConfDiscoveryServiceImpl : ZeroConfDiscoveryService {
     private val bonjour = BonjourService()

@@ -1,33 +1,33 @@
 package com.apadmi.mockzilla.testutils
 
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
+import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.lib.prepareMockzilla
 import com.apadmi.mockzilla.lib.startMockzilla
 import com.apadmi.mockzilla.lib.stopMockzilla
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
-import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
-import com.apadmi.mockzilla.lib.models.RunTarget
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+
+private val zeroConfStub = object : ZeroConfDiscoveryService {
+    override fun makeDiscoverable(metaData: MetaData, port: Int) = Unit
+}
 
 internal typealias SetupBlock = suspend (cacheService: LocalCacheService) -> Unit
 internal typealias TestBlock = suspend (params: MockzillaRuntimeParams, cacheService: LocalCacheService) -> Unit
 
 private object Constants {
     const val maxRetries = 3
-}
-
-private val zeroConfStub = object: ZeroConfDiscoveryService {
-    override fun makeDiscoverable(metaData: MetaData, port: Int) = Unit
 }
 private fun MetaData.Companion.dummy() = MetaData(
     appName = "",

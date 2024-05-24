@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.lib.models
 
-import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -28,8 +27,14 @@ data class MetaData(
     val runTarget: RunTarget,
     val mockzillaVersion: String
 ) {
-    companion object {
+    val isAndroid = runTarget in listOf(RunTarget.AndroidEmulator, RunTarget.AndroidDevice)
 
+    fun toMap(): Map<String, String> {
+        val encoded = json.encodeToString(this)
+        return json.decodeFromString<Map<String, String>>(encoded)
+    }
+
+    companion object {
         const val maxFieldLength = 254
 
         @OptIn(ExperimentalSerializationApi::class)
@@ -44,17 +49,13 @@ data class MetaData(
             return json.decodeFromString<MetaData>(encoded)
         }
     }
-
-    fun toMap(): Map<String, String> {
-        val encoded = json.encodeToString(this)
-        return json.decodeFromString<Map<String, String>>(encoded)
-    }
 }
 
 enum class RunTarget {
     AndroidDevice,
     AndroidEmulator,
-    iOSDevice,
-    iOSSimulator,
-    Jvm
+    Iosdevice,
+    Iossimulator,
+    Jvm,
+    ;
 }

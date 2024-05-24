@@ -5,7 +5,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MetaDataEncodingTests {
-
     @Test
     fun `encode and decode - works correctly`() {
         /* Setup */

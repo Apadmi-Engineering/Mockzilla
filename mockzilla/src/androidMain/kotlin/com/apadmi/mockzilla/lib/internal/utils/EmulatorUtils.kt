@@ -1,3 +1,6 @@
+// There's no nice way of formatting this file, what's here is probably the best we'll get
+// and diktat hates it
+@file:Suppress("diktat")
 package com.apadmi.mockzilla.lib.internal.utils
 
 import android.os.Build
@@ -15,7 +18,8 @@ val isProbablyRunningOnEmulator: Boolean by lazy {
                     && Build.MODEL.startsWith("sdk_gphone_"))
                     //alternative
                     || (Build.FINGERPRINT.startsWith("google/sdk_gphone64_")
-                    && (Build.FINGERPRINT.endsWith(":userdebug/dev-keys") || Build.FINGERPRINT.endsWith(":user/release-keys"))
+                    && (Build.FINGERPRINT.endsWith(":userdebug/dev-keys")
+                    || Build.FINGERPRINT.endsWith(":user/release-keys"))
                     && Build.PRODUCT.startsWith("sdk_gphone64_")
                     && Build.MODEL.startsWith("sdk_gphone64_"))))
             //
@@ -25,7 +29,10 @@ val isProbablyRunningOnEmulator: Boolean by lazy {
             || Build.MODEL.contains("Emulator")
             || Build.MODEL.contains("Android SDK built for x86")
             //bluestacks
-            || "QC_Reference_Phone" == Build.BOARD && !"Xiaomi".equals(Build.MANUFACTURER, ignoreCase = true)
+            || "QC_Reference_Phone" == Build.BOARD && !"Xiaomi".equals(
+        Build.MANUFACTURER,
+        ignoreCase = true
+    )
             //bluestacks
             || Build.MANUFACTURER.contains("Genymotion")
             || Build.HOST.startsWith("Build")

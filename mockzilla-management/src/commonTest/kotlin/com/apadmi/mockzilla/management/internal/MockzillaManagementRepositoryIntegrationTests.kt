@@ -59,16 +59,15 @@ class MockzillaManagementRepositoryIntegrationTests {
             /* Verify */
             assertEquals(
 
-                    MetaData(
-                        appName = dummyAppName,
-                        appPackage = "-",
-                        operatingSystemVersion = System.getProperty("os.version"),
-                        deviceModel = "-",
-                        appVersion = dummyAppVersion,
-                        runTarget = RunTarget.iOSDevice,
-                        mockzillaVersion = runtimeParams.mockzillaVersion
-                    )
-                , result.getOrThrow().copy(runTarget = RunTarget.iOSDevice)
+                MetaData(
+                    appName = dummyAppName,
+                    appPackage = "-",
+                    operatingSystemVersion = System.getProperty("os.version"),
+                    deviceModel = "-",
+                    appVersion = dummyAppVersion,
+                    runTarget = RunTarget.iOSDevice,
+                    mockzillaVersion = runtimeParams.mockzillaVersion
+                ), result.getOrThrow().copy(runTarget = RunTarget.iOSDevice)
             )
         }
 

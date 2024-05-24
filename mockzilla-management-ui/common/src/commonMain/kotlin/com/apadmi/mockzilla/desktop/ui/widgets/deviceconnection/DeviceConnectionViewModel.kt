@@ -9,7 +9,6 @@ import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.models.MetaData
-import com.apadmi.mockzilla.lib.models.RunTarget
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
-
 
 class DeviceConnectionViewModel(
     private val metaDataUseCase: MetaDataUseCase,
@@ -27,7 +25,6 @@ class DeviceConnectionViewModel(
 ) : ViewModel() {
     val state = MutableStateFlow(State())
     private var connectionJob: Job? = null
-
 
     init {
         deviceDetectionUseCase.onChangeEvent.onEach {
@@ -58,7 +55,7 @@ class DeviceConnectionViewModel(
     fun connectToDevice(device: DetectedDevice) = viewModelScope.launch {
         // TODO: Handle error here
         val address = deviceDetectionUseCase.prepareForConnection(device).getOrNull()!!
-        onIpAndPortChanged(address)
+        onIpAndPortChanged(address.raw)
     }
 
     private fun createDeviceOrNull(ipAndPort: String): Device? {

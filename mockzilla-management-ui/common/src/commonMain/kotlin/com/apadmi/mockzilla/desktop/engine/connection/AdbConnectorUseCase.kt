@@ -23,12 +23,13 @@ import kotlinx.coroutines.withTimeout
  * @property name
  * @property deviceSerial
  * @property isActive
+ * @property ipAddresses
  */
 data class AdbConnection(
     val name: String,
     val deviceSerial: String,
     val isActive: Boolean,
-    val ipAddresses: List<String>
+    val ipAddresses: List<IpAddress>
 )
 
 /**
@@ -46,6 +47,7 @@ interface AdbConnectorUseCase {
 }
 
 object AdbConnectorUseCaseImpl : AdbConnectorUseCase {
+    private val ipParsingRegex = "addr:\\s*([^\\/\\s]*)".toRegex()
     private suspend fun prepareAdb(): AndroidDebugBridgeClient {
         StartAdbInteractor().execute()
         return AndroidDebugBridgeClientFactory().build()
@@ -77,7 +79,7 @@ object AdbConnectorUseCaseImpl : AdbConnectorUseCase {
         }
 
         val ipAddresses = if (isActive) {
-            adb.getIpAddresses(serial)
+            adb.getIpAddresses(serial).map { IpAddress(it) }
         } else {
             emptyList()
         }
@@ -85,13 +87,15 @@ object AdbConnectorUseCaseImpl : AdbConnectorUseCase {
     }
 
     private suspend fun AndroidDebugBridgeClient.getIpAddresses(serial: String): List<String> {
-        val regex = "addr:\\s*([^\\/\\s]*)".toRegex()
         val output = execute(
             request = ShellCommandRequest("ifconfig wlan0"),
             serial = serial
         ).output
 
-        return regex.findAll(output).map { it.groupValues.drop(1) }.flatten().toList()
+        return ipParsingRegex.findAll(output)
+            .map { it.groupValues.drop(1) }
+            .flatten()
+            .toList()
     }
 
     override suspend fun setupPortForwardingIfNeeded(
@@ -108,11 +112,9 @@ object AdbConnectorUseCaseImpl : AdbConnectorUseCase {
             (it.remoteSpec as? RemoteTcpPortSpec)?.port == emulatorPort
         }?.localSpec as? LocalTcpPortSpec
 
-        if (existingRule == null) {
-            adb.addPortForwardingRule(localPort, emulatorPort, emulator)
-        } else {
+        existingRule?.let {
             AdbPortForwardingResult(emulator, existingRule.port)
-        }
+        } ?: adb.addPortForwardingRule(localPort, emulatorPort, emulator)
     }
 
     private suspend fun AndroidDebugBridgeClient.addPortForwardingRule(
@@ -128,7 +130,6 @@ object AdbConnectorUseCaseImpl : AdbConnectorUseCase {
             ),
         ) ?: throw Exception("Port forwarding failed")
     )
-
 
     private suspend fun AndroidDebugBridgeClient.getHumanReadableName(
         deviceSerial: String
