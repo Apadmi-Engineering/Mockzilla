@@ -31,7 +31,7 @@ class DeviceDetectionUseCaseImpl(
         return when (device.metaData?.runTarget) {
             RunTarget.AndroidEmulator -> {
                 val adbConnection = device.adbConnection ?: findAdbConnection(device.hostAddresses)
-                ?: return Result.failure(Exception("Failed to detect emulator with adb"))
+                    ?: return Result.failure(Exception("Failed to detect emulator with adb"))
                 adbConnectorService.setupPortForwardingIfNeeded(
                     adbConnection,
                     0,

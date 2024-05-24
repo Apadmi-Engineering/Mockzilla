@@ -29,5 +29,8 @@ data class DetectedDevice(
     }
 }
 
+/**
+ * @property raw
+ */
 @JvmInline
 value class IpAddress(val raw: String)

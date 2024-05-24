@@ -30,7 +30,10 @@ val EnStrings = Strings(
             operatingSystemVersion = "Operating System Version",
             deviceModel = "Device",
             appVersion = "App Version",
-            mockzillaVersion = "Mockzilla Version"
+            mockzillaVersion = "Mockzilla Version",
+            android = "Android",
+            ios = "iOS",
+            jvm = "JVM",
         ),
         logs = Strings.Widgets.Logs(
             "Logs"

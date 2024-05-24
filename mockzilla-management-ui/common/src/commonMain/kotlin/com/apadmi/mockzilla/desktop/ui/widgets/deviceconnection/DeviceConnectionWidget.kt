@@ -10,20 +10,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
+import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionViewModel.State
 
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
-import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 
 @Composable
 fun DeviceConnectionWidget() {
     val viewModel = getViewModel<DeviceConnectionViewModel>()
     val state by viewModel.state.collectAsState()
 
-    DeviceConnectionContent(state, viewModel::onIpAndPortChanged,viewModel::connectToDevice)
+    DeviceConnectionContent(state, viewModel::onIpAndPortChanged, viewModel::connectToDevice)
 }
 
 @Composable

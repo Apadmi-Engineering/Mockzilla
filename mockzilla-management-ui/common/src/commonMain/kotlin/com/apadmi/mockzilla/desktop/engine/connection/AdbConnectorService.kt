@@ -19,7 +19,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 
 /**
- * @property name
  * @property deviceSerial
  * @property isActive
  * @property ipAddresses
@@ -125,5 +124,4 @@ object AdbConnectorServiceImpl : AdbConnectorService {
             ),
         ) ?: throw Exception("Port forwarding failed")
     )
-
 }

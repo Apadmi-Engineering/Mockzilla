@@ -20,14 +20,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
-import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
-import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel.*
-
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
+import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
+import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel.*
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
+
+import com.airbnb.android.showkase.annotation.ShowkaseComposable
+
+private fun RunTarget.label(strings: Strings) = when (this) {
+    RunTarget.AndroidDevice,
+    RunTarget.AndroidEmulator -> strings.widgets.metaData.android
+    RunTarget.IosDevice,
+    RunTarget.IosSimulator -> strings.widgets.metaData.ios
+    RunTarget.Jvm -> strings.widgets.metaData.jvm
+}
 
 @Composable
 fun MetaDataWidget() {
@@ -60,7 +68,7 @@ fun MetaDataListView(
     MetaDataRow(strings.widgets.metaData.operatingSystemVersion, metaData.operatingSystemVersion)
     MetaDataRow(strings.widgets.metaData.deviceModel, metaData.deviceModel)
     MetaDataRow(strings.widgets.metaData.appVersion, metaData.appVersion)
-    MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget.toString())
+    MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget.label(strings))
     MetaDataRow(strings.widgets.metaData.mockzillaVersion, metaData.mockzillaVersion, showDivider = false)
 }
 

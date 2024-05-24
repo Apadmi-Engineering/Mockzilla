@@ -48,6 +48,9 @@ data class Strings(
          * @property appVersion
          * @property operatingSystem
          * @property mockzillaVersion
+         * @property android
+         * @property ios
+         * @property jvm
          */
         data class MetaData(
             val title: String,
@@ -58,7 +61,10 @@ data class Strings(
             val deviceModel: String,
             val appVersion: String,
             val operatingSystem: String,
-            val mockzillaVersion: String
+            val mockzillaVersion: String,
+            val android: String,
+            val ios: String,
+            val jvm: String,
         )
 
         /**
