@@ -19,6 +19,7 @@ class ZeroConfDiscoveryServiceImpl : ZeroConfDiscoveryService {
         ZeroConfConfig.serviceType,
         metaData.toMap().map { it.key to it.value }.toMap(),
         port.convert(),
+        // TODO: Persist this to disk so that we're not generating IDs each time
         NSUUID.UUID().UUIDString
     )
 }

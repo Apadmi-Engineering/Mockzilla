@@ -31,8 +31,7 @@ class ZeroConfDiscoveryServiceImpl(private val context: Context) : ZeroConfDisco
 
     override fun makeDiscoverable(metaData: MetaData, port: Int) {
         val serviceInfo = NsdServiceInfo().apply {
-            // The name is subject to change based on conflicts
-            // with other services advertised on the same network.
+            // TODO: Persist this to disk so that we're not generating IDs each time
             serviceName = UUID.randomUUID().toString()
             serviceType = "_mockzilla._tcp."
             this.port = port
