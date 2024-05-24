@@ -54,8 +54,8 @@ data class MetaData(
 enum class RunTarget {
     AndroidDevice,
     AndroidEmulator,
-    Iosdevice,
-    Iossimulator,
+    IosDevice,
+    IosSimulator,
     Jvm,
     ;
 }

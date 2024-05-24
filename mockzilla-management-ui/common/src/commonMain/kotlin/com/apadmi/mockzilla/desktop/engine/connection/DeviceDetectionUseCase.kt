@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-
 interface DeviceDetectionUseCase {
     val onChangeEvent: Flow<Unit>
     val devices: List<DetectedDevice>
@@ -19,7 +18,7 @@ interface DeviceDetectionUseCase {
 
 class DeviceDetectionUseCaseImpl(
     private val localIpAddress: () -> String,
-    private val adbConnectorUseCase: AdbConnectorUseCase
+    private val adbConnectorService: AdbConnectorService
 ) : DeviceDetectionUseCase {
     private val deviceCache = mutableMapOf<String, DetectedDevice>()
     override val onChangeEvent = MutableSharedFlow<Unit>(replay = 1)
@@ -27,25 +26,27 @@ class DeviceDetectionUseCaseImpl(
 
     override val devices: List<DetectedDevice>
         get() = deviceCache.values.toList()
+
     override suspend fun prepareForConnection(device: DetectedDevice): Result<IpAddress> {
         return when (device.metaData?.runTarget) {
             RunTarget.AndroidEmulator -> {
                 val adbConnection = device.adbConnection ?: findAdbConnection(device.hostAddresses)
-                    ?: return Result.failure(Exception("Failed to detect emulator with adb"))
-                adbConnectorUseCase.setupPortForwardingIfNeeded(
+                ?: return Result.failure(Exception("Failed to detect emulator with adb"))
+                adbConnectorService.setupPortForwardingIfNeeded(
                     adbConnection,
                     0,
                     device.port
                 ).map { "127.0.0.1:${it.localPort}" }
             }
 
-            RunTarget.Iossimulator -> Result.success("127.0.0.1:${device.port}")
-            RunTarget.Iosdevice,
+            RunTarget.IosSimulator -> Result.success("127.0.0.1:${device.port}")
+            RunTarget.IosDevice,
             RunTarget.AndroidDevice,
             RunTarget.Jvm,
             null -> Result.success("${device.hostAddress}:${device.port}")
         }.map { IpAddress(it) }
     }
+
     internal suspend fun onChangedServiceEvent(info: ServiceInfoWrapper) = mutex.withLock {
         val metaData = runCatching { info.attributes.parseMetaData() }.getOrNull()
         val adbConnection = if (metaData?.isAndroid == true) {
@@ -89,7 +90,7 @@ class DeviceDetectionUseCaseImpl(
                 DetectedDevice.State.ReadyToConnect
             } ?: DetectedDevice.State.NotYourSimulator
 
-            RunTarget.Iossimulator -> if (info.hostAddresses.contains(localIpAddress())) {
+            RunTarget.IosSimulator -> if (info.hostAddresses.contains(localIpAddress())) {
                 DetectedDevice.State.ReadyToConnect
             } else {
                 DetectedDevice.State.NotYourSimulator
@@ -101,8 +102,19 @@ class DeviceDetectionUseCaseImpl(
         ServiceInfoWrapper.State.Removed -> DetectedDevice.State.Removed
     }
 
-    private suspend fun findAdbConnection(hostAddresses: List<IpAddress>) =
-        adbConnectorUseCase.listConnectedDevices().getOrNull()?.firstOrNull {
-            it.ipAddresses.intersect(hostAddresses.toSet()).isNotEmpty()
+    private suspend fun findAdbConnection(
+        hostAddresses: List<IpAddress>
+    ) = matchAdbDeviceFromHostAddresses(
+        adbConnectorService.listConnectedDevices().getOrNull() ?: emptyList(),
+        hostAddresses.toSet()
+    )
+
+    companion object {
+        fun matchAdbDeviceFromHostAddresses(
+            connections: List<AdbConnection>,
+            hostAddresses: Set<IpAddress>
+        ) = connections.firstOrNull {
+            it.ipAddresses.intersect(hostAddresses).isNotEmpty()
         }
+    }
 }

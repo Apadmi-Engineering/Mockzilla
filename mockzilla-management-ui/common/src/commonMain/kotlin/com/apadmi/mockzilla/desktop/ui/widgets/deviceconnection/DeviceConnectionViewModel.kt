@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection
 
 import androidx.compose.runtime.Immutable
-import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorUseCase
+import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorService
 import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.desktop.engine.connection.DeviceDetectionUseCase
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
@@ -20,7 +20,7 @@ import kotlinx.coroutines.yield
 class DeviceConnectionViewModel(
     private val metaDataUseCase: MetaDataUseCase,
     private val activeDeviceSelector: ActiveDeviceSelector,
-    private val adbConnectorUseCase: AdbConnectorUseCase,
+    private val adbConnectorService: AdbConnectorService,
     private val deviceDetectionUseCase: DeviceDetectionUseCase
 ) : ViewModel() {
     val state = MutableStateFlow(State())

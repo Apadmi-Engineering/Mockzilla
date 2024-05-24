@@ -65,9 +65,9 @@ class MockzillaManagementRepositoryIntegrationTests {
                     operatingSystemVersion = System.getProperty("os.version"),
                     deviceModel = "-",
                     appVersion = dummyAppVersion,
-                    runTarget = RunTarget.Iosdevice,
+                    runTarget = RunTarget.IosDevice,
                     mockzillaVersion = runtimeParams.mockzillaVersion
-                ), result.getOrThrow().copy(runTarget = RunTarget.Iosdevice)
+                ), result.getOrThrow().copy(runTarget = RunTarget.IosDevice)
             )
         }
 

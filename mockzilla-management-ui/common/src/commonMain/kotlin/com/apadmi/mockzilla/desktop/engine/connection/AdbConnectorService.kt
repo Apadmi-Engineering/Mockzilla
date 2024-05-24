@@ -10,7 +10,6 @@ import com.malinskiy.adam.request.forwarding.ListPortForwardsRequest
 import com.malinskiy.adam.request.forwarding.LocalTcpPortSpec
 import com.malinskiy.adam.request.forwarding.PortForwardRequest
 import com.malinskiy.adam.request.forwarding.RemoteTcpPortSpec
-import com.malinskiy.adam.request.prop.GetSinglePropRequest
 import com.malinskiy.adam.request.shell.v2.ShellCommandRequest
 
 import kotlin.time.Duration
@@ -26,18 +25,19 @@ import kotlinx.coroutines.withTimeout
  * @property ipAddresses
  */
 data class AdbConnection(
-    val name: String,
     val deviceSerial: String,
     val isActive: Boolean,
     val ipAddresses: List<IpAddress>
-)
+) {
+    companion object
+}
 
 /**
  * @property connection
  * @property localPort
  */
 data class AdbPortForwardingResult(val connection: AdbConnection, val localPort: Int)
-interface AdbConnectorUseCase {
+interface AdbConnectorService {
     suspend fun listConnectedDevices(): Result<List<AdbConnection>>
     suspend fun setupPortForwardingIfNeeded(
         emulator: AdbConnection,
@@ -46,7 +46,7 @@ interface AdbConnectorUseCase {
     ): Result<AdbPortForwardingResult>
 }
 
-object AdbConnectorUseCaseImpl : AdbConnectorUseCase {
+object AdbConnectorServiceImpl : AdbConnectorService {
     private val ipParsingRegex = "addr:\\s*([^\\/\\s]*)".toRegex()
     private suspend fun prepareAdb(): AndroidDebugBridgeClient {
         StartAdbInteractor().execute()
@@ -72,18 +72,13 @@ object AdbConnectorUseCaseImpl : AdbConnectorUseCase {
         adb: AndroidDebugBridgeClient
     ): AdbConnection {
         val isActive = state == DeviceState.DEVICE
-        val name = if (isActive) {
-            runCatching { adb.getHumanReadableName(serial) }.getOrNull() ?: serial
-        } else {
-            serial
-        }
 
         val ipAddresses = if (isActive) {
             adb.getIpAddresses(serial).map { IpAddress(it) }
         } else {
             emptyList()
         }
-        return AdbConnection(name, serial, isActive, ipAddresses)
+        return AdbConnection(deviceSerial = serial, isActive = isActive, ipAddresses = ipAddresses)
     }
 
     private suspend fun AndroidDebugBridgeClient.getIpAddresses(serial: String): List<String> {
@@ -131,28 +126,4 @@ object AdbConnectorUseCaseImpl : AdbConnectorUseCase {
         ) ?: throw Exception("Port forwarding failed")
     )
 
-    private suspend fun AndroidDebugBridgeClient.getHumanReadableName(
-        deviceSerial: String
-    ): String = getPropUnlessBlank(
-        deviceSerial = deviceSerial,
-        "ro.boot.qemu.avd_name"
-    ) ?: buildString {
-        getPropUnlessBlank(deviceSerial, "ro.product.name").also {
-            append(it)
-            append(" ")
-        }
-        getPropUnlessBlank(deviceSerial, "ro.product.model").also {
-            append(it)
-            append(" ")
-        }
-        getPropUnlessBlank(deviceSerial, "ro.product.device").also { append(it) }
-    }
-
-    private suspend fun AndroidDebugBridgeClient.getPropUnlessBlank(
-        deviceSerial: String,
-        prop: String
-    ) = execute(
-        request = GetSinglePropRequest(name = prop),
-        serial = deviceSerial
-    ).takeUnless { it.isBlank() }
 }

@@ -35,7 +35,7 @@ private fun MetaData.Companion.dummy() = MetaData(
     operatingSystemVersion = "",
     deviceModel = "",
     appVersion = "",
-    runTarget = RunTarget.Iosdevice,
+    runTarget = RunTarget.IosDevice,
     mockzillaVersion = ""
 )
 

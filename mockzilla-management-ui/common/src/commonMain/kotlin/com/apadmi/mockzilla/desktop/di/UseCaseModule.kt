@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.desktop.di
 
-import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorUseCase
-import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorUseCaseImpl
+import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorService
+import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorServiceImpl
 import com.apadmi.mockzilla.desktop.engine.connection.DeviceDetectionUseCase
 import com.apadmi.mockzilla.desktop.engine.connection.DeviceDetectionUseCaseImpl
 import com.apadmi.mockzilla.desktop.engine.connection.jmdns.JmdnsWrapper
@@ -17,7 +17,7 @@ import java.net.InetAddress
 internal fun useCaseModule(): Module = module {
     single<MetaDataUseCase> { MetaDataUseCaseImpl(get()) }
     single<MonitorLogsUseCase> { MonitorLogsUseCaseImpl(get()) }
-    single<AdbConnectorUseCase> { AdbConnectorUseCaseImpl }
+    single<AdbConnectorService> { AdbConnectorServiceImpl }
     single { JmdnsWrapper(ZeroConfConfig.serviceType + ".local.") }
     single<DeviceDetectionUseCase> {
         DeviceDetectionUseCaseImpl({ InetAddress.getLocalHost().hostAddress }, get()).also {

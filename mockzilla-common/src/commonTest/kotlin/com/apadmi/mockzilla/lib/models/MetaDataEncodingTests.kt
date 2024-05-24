@@ -14,7 +14,7 @@ class MetaDataEncodingTests {
             operatingSystemVersion = "curabitur",
             deviceModel = "scelerisque",
             appVersion = "quaestio",
-            runTarget = RunTarget.Iossimulator,
+            runTarget = RunTarget.IosSimulator,
             mockzillaVersion = "convenire"
         )
 
