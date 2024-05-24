@@ -9,6 +9,6 @@ fun MetaData.Companion.dummy() = MetaData(
     operatingSystemVersion = "primis",
     deviceModel = "erat",
     appVersion = "ante",
-    runTarget = RunTarget.iOSSimulator,
+    runTarget = RunTarget.Iossimulator,
     mockzillaVersion = "dolorem"
 )
