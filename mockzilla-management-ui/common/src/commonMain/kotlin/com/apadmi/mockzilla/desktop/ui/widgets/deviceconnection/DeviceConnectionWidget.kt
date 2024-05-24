@@ -38,9 +38,9 @@ fun DeviceConnectionContent(
     state.devices.forEach {
         Button(onClick = { onTapDevice(it) }) {
             if (it.metaData != null) {
-                Text("${it.metaData.deviceModel}: ${it.metaData.appPackage}")
+                Text("${it.state} ${it.connectionName} ${it.metaData.deviceModel}: ${it.hostAddress}")
             } else {
-                Text("${it.ipAddress}:${it.port}")
+                Text("${it.state} ${it.connectionName} ${it.hostAddress}:${it.port}")
             }
         }
     }

@@ -1,28 +1,67 @@
 package com.apadmi.mockzilla.desktop.engine.connection.jmdns
 
+import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.InetAddress
 import javax.jmdns.JmDNS
 import javax.jmdns.ServiceEvent
-import javax.jmdns.ServiceTypeListener
+import javax.jmdns.ServiceInfo
+import javax.jmdns.ServiceListener
 
-interface JmdnsWrapper {
-
-    fun registerListener(serviceType: String, listener: (ServiceInfoWrapper) -> Unit)
-}
-
-internal class JmdnsWrapperImpl: JmdnsWrapper {
+internal class JmdnsWrapper(
+    private val serviceType: String,
+    private val scope: CoroutineScope = GlobalScope
+) : ServiceListener {
     private val jmdns: JmDNS = JmDNS.create(InetAddress.getLocalHost())
+    private lateinit var listener: suspend (ServiceInfoWrapper) -> Unit
 
-    override fun registerListener(serviceType: String, listener: (ServiceInfoWrapper) -> Unit) {
-        jmdns.addServiceTypeListener(ServiceTypeAddedListener { event ->
+    fun setListener(listener: suspend (ServiceInfoWrapper) -> Unit) {
+        this.listener = listener
+        jmdns.addServiceTypeListener( ServiceTypeAddedListener { event ->
             if (event?.type?.startsWith(ZeroConfConfig.serviceType) == true) {
-                jmdns.addServiceListener(serviceType, ServiceEventResolvedListener {
-                    if (it != null) {
-                        listener(ServiceInfoWrapper(it.info))
-                    }
-                })
+                jmdns.addServiceListener(serviceType, this)
             }
         })
+    }
+
+    override fun serviceAdded(
+        event: ServiceEvent?
+    ) = serviceChanged(event, ServiceInfoWrapper.State.Found)
+
+
+    private fun serviceChanged(event: ServiceEvent?, state: ServiceInfoWrapper.State) {
+        event ?: return
+        scope.launch {
+            withContext(Dispatchers.IO) {
+                listener(event.info.parse(state))
+            }
+        }
+    }
+    override fun serviceRemoved(
+        event: ServiceEvent?
+    ) = serviceChanged(event, ServiceInfoWrapper.State.Removed)
+
+
+    override fun serviceResolved(
+        event: ServiceEvent?
+    ) = serviceChanged(event, ServiceInfoWrapper.State.Resolved)
+
+
+    private fun ServiceInfo.parse(state: ServiceInfoWrapper.State): ServiceInfoWrapper {
+        val hostAddresses = (inet6Addresses.toList() + inet4Addresses + inetAddresses).mapNotNull {
+            it.hostAddress
+        } + hostAddresses
+
+        return ServiceInfoWrapper(
+            this,
+            hostAddresses.map { it.removePrefix("[").removeSuffix("]") }.distinct(),
+            state
+        )
     }
 }

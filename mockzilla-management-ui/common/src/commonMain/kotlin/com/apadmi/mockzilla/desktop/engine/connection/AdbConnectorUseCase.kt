@@ -11,6 +11,7 @@ import com.malinskiy.adam.request.forwarding.LocalTcpPortSpec
 import com.malinskiy.adam.request.forwarding.PortForwardRequest
 import com.malinskiy.adam.request.forwarding.RemoteTcpPortSpec
 import com.malinskiy.adam.request.prop.GetSinglePropRequest
+import com.malinskiy.adam.request.shell.v2.ShellCommandRequest
 
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -26,7 +27,8 @@ import kotlinx.coroutines.withTimeout
 data class AdbConnection(
     val name: String,
     val deviceSerial: String,
-    val isActive: Boolean
+    val isActive: Boolean,
+    val ipAddresses: List<String>
 )
 
 /**
@@ -74,7 +76,22 @@ object AdbConnectorUseCaseImpl : AdbConnectorUseCase {
             serial
         }
 
-        return AdbConnection(name, serial, isActive)
+        val ipAddresses = if (isActive) {
+            adb.getIpAddresses(serial)
+        } else {
+            emptyList()
+        }
+        return AdbConnection(name, serial, isActive, ipAddresses)
+    }
+
+    private suspend fun AndroidDebugBridgeClient.getIpAddresses(serial: String): List<String> {
+        val regex = "addr:\\s*([^\\/\\s]*)".toRegex()
+        val output = execute(
+            request = ShellCommandRequest("ifconfig wlan0"),
+            serial = serial
+        ).output
+
+        return regex.findAll(output).map { it.groupValues.drop(1) }.flatten().toList()
     }
 
     override suspend fun setupPortForwardingIfNeeded(

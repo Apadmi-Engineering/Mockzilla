@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection
 
 import androidx.compose.runtime.Immutable
-import com.apadmi.mockzilla.desktop.engine.connection.AdbConnection
 import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorUseCase
 import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.desktop.engine.connection.DeviceDetectionUseCase
@@ -10,6 +9,7 @@ import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.lib.models.RunTarget
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,8 +30,8 @@ class DeviceConnectionViewModel(
 
 
     init {
-        deviceDetectionUseCase.devices.onEach {
-            state.value = state.value.copy(devices = it)
+        deviceDetectionUseCase.onChangeEvent.onEach {
+            state.value = state.value.copy(devices = deviceDetectionUseCase.devices)
         }.launchIn(viewModelScope)
     }
 
@@ -56,7 +56,18 @@ class DeviceConnectionViewModel(
     }
 
     fun connectToDevice(device: DetectedDevice) = viewModelScope.launch {
-//        if (!adbConnection.deviceSerial.startsWith("emulator")) {
+        when(device.metaData?.runTarget) {
+            RunTarget.AndroidEmulator -> {
+                println(device.hostAddresses)
+            }
+            RunTarget.iOSSimulator -> onIpAndPortChanged("127.0.0.1:${device.port}")
+            RunTarget.iOSDevice,
+            RunTarget.AndroidDevice,
+            RunTarget.Jvm,
+            null -> onIpAndPortChanged("${device.hostAddress}:${device.port}")
+        }
+
+        //        if (!adbConnection.deviceSerial.startsWith("emulator")) {
 //            throw Exception("Non emulators not supported yet")
 //        }
 //        adbConnectorUseCase.setupPortForwardingIfNeeded(adbConnection, 0, 8080).onSuccess {
