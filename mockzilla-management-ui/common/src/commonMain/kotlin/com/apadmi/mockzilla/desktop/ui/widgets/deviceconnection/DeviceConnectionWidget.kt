@@ -16,19 +16,21 @@ import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionViewModel.State
 
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
+import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 
 @Composable
 fun DeviceConnectionWidget() {
     val viewModel = getViewModel<DeviceConnectionViewModel>()
     val state by viewModel.state.collectAsState()
 
-    DeviceConnectionContent(state, viewModel::onIpAndPortChanged)
+    DeviceConnectionContent(state, viewModel::onIpAndPortChanged,viewModel::connectToDevice)
 }
 
 @Composable
 fun DeviceConnectionContent(
     state: State,
     onIpAndPortChanged: (String) -> Unit,
+    onTapDevice: (DetectedDevice) -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
     Text("State: ${state.connectionState}")
@@ -42,11 +44,18 @@ fun DeviceConnectionContent(
     Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
         Text("Set to localhost:8080")
     }
+    state.devices.forEach { device ->
+        Button(onClick = { onTapDevice(device) }) {
+            device.metaData?.let {
+                Text("${device.state} ${device.connectionName} ${it.deviceModel}: ${device.hostAddress}")
+            } ?: Text("${device.state} ${device.connectionName} ${device.hostAddress}:${device.port}")
+        }
+    }
 }
 
 @ShowkaseComposable("DeviceConnection-Idle", "DeviceConnection")
 @Composable
 @Preview
 fun DeviceConnectionWidgetPreview() = PreviewSurface {
-    DeviceConnectionContent(State(), onIpAndPortChanged = {})
+    DeviceConnectionContent(State(), {}, {})
 }
