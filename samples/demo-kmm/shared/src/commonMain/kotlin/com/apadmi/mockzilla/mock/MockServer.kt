@@ -48,5 +48,6 @@ private val getMyCow = EndpointConfiguration
 
 val mockzillaConfig = MockzillaConfig.Builder()
     .addEndpoint(getMyCow)
+    .setPort(8085)
     .setLogLevel(MockzillaConfig.LogLevel.Verbose)
     .build()

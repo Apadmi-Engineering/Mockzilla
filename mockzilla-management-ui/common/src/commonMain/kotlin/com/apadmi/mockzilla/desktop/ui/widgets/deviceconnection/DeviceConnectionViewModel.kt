@@ -56,23 +56,9 @@ class DeviceConnectionViewModel(
     }
 
     fun connectToDevice(device: DetectedDevice) = viewModelScope.launch {
-        when(device.metaData?.runTarget) {
-            RunTarget.AndroidEmulator -> {
-                println(device.hostAddresses)
-            }
-            RunTarget.iOSSimulator -> onIpAndPortChanged("127.0.0.1:${device.port}")
-            RunTarget.iOSDevice,
-            RunTarget.AndroidDevice,
-            RunTarget.Jvm,
-            null -> onIpAndPortChanged("${device.hostAddress}:${device.port}")
-        }
-
-        //        if (!adbConnection.deviceSerial.startsWith("emulator")) {
-//            throw Exception("Non emulators not supported yet")
-//        }
-//        adbConnectorUseCase.setupPortForwardingIfNeeded(adbConnection, 0, 8080).onSuccess {
-//            onIpAndPortChanged("127.0.0.1:${it.localPort}")
-//        }.onFailure { throw it }
+        // TODO: Handle error here
+        val address = deviceDetectionUseCase.prepareForConnection(device).getOrNull()!!
+        onIpAndPortChanged(address)
     }
 
     private fun createDeviceOrNull(ipAndPort: String): Device? {
