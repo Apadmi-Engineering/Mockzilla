@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.internal
 
+import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.BuildKonfig
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.internal.plugin.SimpleAuthPlugin
@@ -69,7 +70,11 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
         ?: throw Exception("Could not determine runtime port")
 
     CoroutineScope(job ?: coroutineContext).launch {
-        di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, actualPort)
+        if (!di.config.isRelease && di.config.isNetworkDiscoveryEnabled) {
+            di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, actualPort)
+        } else {
+            Logger.i { "Skipping network discovery" }
+        }
     }
 
     MockzillaRuntimeParams(
