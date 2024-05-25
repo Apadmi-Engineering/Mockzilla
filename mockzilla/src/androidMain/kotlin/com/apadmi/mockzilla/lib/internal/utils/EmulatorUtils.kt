@@ -1,5 +1,6 @@
 // There's no nice way of formatting this file, what's here is probably the best we'll get
 // and diktat hates it
+// Credit here: https://stackoverflow.com/questions/2799097/how-can-i-detect-when-an-android-application-is-running-in-the-emulator
 @file:Suppress("diktat")
 package com.apadmi.mockzilla.lib.internal.utils
 

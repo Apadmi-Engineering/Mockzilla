@@ -10,7 +10,6 @@ import com.apadmi.mockzilla.lib.internal.utils.environment
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 
-import co.touchlab.kermit.Logger
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -96,6 +95,6 @@ private fun startNetworkDiscoveryBroadcastIfNeeded(
     if (!di.config.isRelease && di.config.isNetworkDiscoveryEnabled) {
         di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, port)
     } else {
-        Logger.i { "Skipping network discovery" }
+        di.logger.i { "Skipping network discovery" }
     }
 }
