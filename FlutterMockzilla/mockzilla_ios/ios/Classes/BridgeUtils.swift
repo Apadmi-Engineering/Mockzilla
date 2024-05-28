@@ -106,7 +106,7 @@ extension BridgeEndpointConfig {
             failureProbability: failureProbability as? KotlinInt,
             delayMean: delayMean as? KotlinInt,
             delayVariance: delayVariance as? KotlinInt,
-            endpointMatcher: { request in endpointMatcher(key, request) as! KotlinBoolean },
+            endpointMatcher: { request in KotlinBoolean(value: endpointMatcher(key, request)) },
             webApiDefaultResponse: webApiErrorResponse?.toNative(),
             webApiErrorResponse: webApiErrorResponse?.toNative(),
             defaultHandler: { request in defaultHandler(key, request) },

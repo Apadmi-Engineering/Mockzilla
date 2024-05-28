@@ -3,6 +3,8 @@ import UIKit
 import mockzilla
 import SwiftMockzilla
 
+extension FlutterError: Error {}
+
 public class MockzillaIosPlugin: NSObject, FlutterPlugin, MockzillaHostApi {
     
     public static func register(with registrar: FlutterPluginRegistrar) {
