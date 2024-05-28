@@ -24,10 +24,12 @@ jobs:
           releases_created: ${{ steps.release.outputs.releases_created }}
           release_created: ${{ steps.release.outputs.release_created }}
           prs_created: ${{ steps.release.outputs.prs_created }}
+          all: ${{  toJSON(steps.release.outputs) }}
         run: |
           echo "Testing releases_created: $releases_created"
           echo "Testing release_created: $release_created"
           echo "Testing prs_created: $prs_created"
+          echo "Testing prs_created: $all"
       - name: Trigger Deploy Binaries workflow (snapshots only)
         if: ${{ !steps.release.outputs.releases_created && steps.release.outputs.prs_created }}
         run: gh workflow run action_deploy_binaries.yml --ref release-please--branches--develop--components--release-please-action
