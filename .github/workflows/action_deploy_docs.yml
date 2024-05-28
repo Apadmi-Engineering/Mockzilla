@@ -22,6 +22,7 @@ concurrency:
 jobs:
   # Build job
   build:
+    if: ${{ github.ref_type == 'branch' }} # Skip deployments on snapshot builds
     runs-on: macos-latest
     steps:
       - name: Checkout

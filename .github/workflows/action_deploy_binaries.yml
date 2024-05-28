@@ -40,9 +40,8 @@ jobs:
         run: bundle exec fastlane ios publish_spm_package is_snapshot:$is_snapshot
         env:
           IOS_DEPLOY_URL: ${{ secrets.IOS_DEPLOY_URL }}
-      - uses: google-github-actions/release-please-action@v3
+      - uses: googleapis/release-please-action@v4
         with:
           if: ${{ !env.is_snapshot }}
           release-type: simple
-          package-name: release-please-action
-          command: github-release
+          skip-github-pull-request: true
