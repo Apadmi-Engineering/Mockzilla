@@ -14,6 +14,7 @@ import kotlin.time.Duration.Companion.seconds
  * @property releaseModeConfig
  * @property localhostOnly
  * @property additionalLogWriters
+ * @property isNetworkDiscoveryEnabled
  */
 data class MockzillaConfig(
     val port: Int,
@@ -22,6 +23,7 @@ data class MockzillaConfig(
     val localhostOnly: Boolean,
     val logLevel: LogLevel,
     val releaseModeConfig: ReleaseModeConfig,
+    val isNetworkDiscoveryEnabled: Boolean,
     val additionalLogWriters: List<MockzillaLogWriter>
 ) {
     enum class LogLevel {
@@ -57,6 +59,7 @@ data class MockzillaConfig(
         private var releaseConfig: ReleaseModeConfig = ReleaseModeConfig()
         private var localhostOnly = false
         private var additionalLogWriters: List<MockzillaLogWriter> = mutableListOf()
+        private var isNetworkDiscoveryEnabled: Boolean = true
 
         /**
          * Configures the level of Mockzilla's logging.
@@ -184,6 +187,14 @@ data class MockzillaConfig(
         }
 
         /**
+         * Setting this to false will stop Mockzilla from using Bonjour to broadcast itself on the network
+         * Note: Broadcast is disabled in release mode regardless of this flag's value
+         */
+        fun setIsNetworkDiscoveryEnabled(isEnabled: Boolean) = apply {
+            this.isNetworkDiscoveryEnabled = isEnabled
+        }
+
+        /**
          * Completes the builder pattern, returning an immutable config.
          *
          * @return
@@ -192,7 +203,7 @@ data class MockzillaConfig(
             it.copy(
                 delay = it.delay ?: delay,
             )
-        }, isRelease, localhostOnly, logLevel, releaseConfig, additionalLogWriters)
+        }, isRelease, localhostOnly, logLevel, releaseConfig, isNetworkDiscoveryEnabled, additionalLogWriters)
 
         companion object {
             private const val defaultPort = 8080

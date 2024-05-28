@@ -10,9 +10,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
+import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
-import com.apadmi.mockzilla.desktop.engine.adb.AdbConnection
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionViewModel.State
 
@@ -23,14 +23,14 @@ fun DeviceConnectionWidget() {
     val viewModel = getViewModel<DeviceConnectionViewModel>()
     val state by viewModel.state.collectAsState()
 
-    DeviceConnectionContent(state, viewModel::onIpAndPortChanged, viewModel::connect8080To0)
+    DeviceConnectionContent(state, viewModel::onIpAndPortChanged, viewModel::connectToDevice)
 }
 
 @Composable
 fun DeviceConnectionContent(
     state: State,
     onIpAndPortChanged: (String) -> Unit,
-    onTapAdbDevice: (AdbConnection) -> Unit,
+    onTapDevice: (DetectedDevice) -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
     Text("State: ${state.connectionState}")
@@ -44,9 +44,11 @@ fun DeviceConnectionContent(
     Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
         Text("Set to localhost:8080")
     }
-    state.adbDevices.forEach {
-        Button(onClick = { onTapAdbDevice(it) }, enabled = it.isActive) {
-            Text("Connect to ${it.name} (isActive: ${it.isActive})")
+    state.devices.forEach { device ->
+        Button(onClick = { onTapDevice(device) }) {
+            device.metaData?.let {
+                Text("${device.state} ${device.connectionName} ${it.deviceModel}: ${device.hostAddress}")
+            } ?: Text("${device.state} ${device.connectionName} ${device.hostAddress}:${device.port}")
         }
     }
 }

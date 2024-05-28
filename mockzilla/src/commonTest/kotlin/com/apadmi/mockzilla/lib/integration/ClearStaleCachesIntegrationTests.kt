@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.integration
 
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
@@ -7,6 +8,7 @@ import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.lib.prepareMockzilla
 import com.apadmi.mockzilla.lib.startMockzilla
 import com.apadmi.mockzilla.lib.stopMockzilla
@@ -43,9 +45,14 @@ class ClearStaleCachesIntegrationTests {
             operatingSystemVersion = "",
             deviceModel = "",
             appVersion = "",
-            operatingSystem = "",
+            runTarget = RunTarget.AndroidEmulator,
             mockzillaVersion = ""
-        ), fileIo = fileIoForTesting, logger = Logger(StaticConfig())
+        ), fileIo = fileIoForTesting, logger = Logger(StaticConfig()),
+        zeroConfDiscoveryService = object : ZeroConfDiscoveryService {
+            override fun makeDiscoverable(metaData: MetaData, port: Int) {
+                /* No-Op */
+            }
+        }
     )
 
     @Test

@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.swiftklib)
     id("maven-publish")
     id("publication-convention")
 }
@@ -27,6 +28,13 @@ kotlin {
         it.binaries.framework {
             baseName = "mockzilla"
             xcf.add(this)
+        }
+        it.compilations {
+            val main by getting {
+                cinterops {
+                    create("LocalDiscovery")
+                }
+            }
         }
     }
 
@@ -68,6 +76,13 @@ kotlin {
             implementation(libs.mockative)
             implementation(libs.kotlinx.coroutines.test)
         }
+    }
+}
+
+swiftklib {
+    create("LocalDiscovery") {
+        path = file("native-darwin/LocalDiscovery")
+        packageName("com.apadmi.mockzilla.lib.nativedarwin.localdiscovery")
     }
 }
 

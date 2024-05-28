@@ -36,6 +36,11 @@ kotlin {
 
             /* ADB */
             implementation(libs.adam)
+
+            /* Zeroconf */
+            implementation(libs.jmdns.jmdns)
+            implementation("io.netty:netty-resolver-dns-native-macos:4.1.110.Final")
+
         }
         commonTest.dependencies {
             implementation(kotlin("test"))

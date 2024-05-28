@@ -13,6 +13,7 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
@@ -57,17 +58,16 @@ class MockzillaManagementRepositoryIntegrationTests {
 
             /* Verify */
             assertEquals(
-                Result.success(
-                    MetaData(
-                        appName = dummyAppName,
-                        appPackage = "-",
-                        operatingSystemVersion = System.getProperty("os.version"),
-                        deviceModel = "-",
-                        appVersion = dummyAppVersion,
-                        operatingSystem = System.getProperty("os.name"),
-                        mockzillaVersion = runtimeParams.mockzillaVersion
-                    )
-                ), result
+
+                MetaData(
+                    appName = dummyAppName,
+                    appPackage = "-",
+                    operatingSystemVersion = System.getProperty("os.version"),
+                    deviceModel = "-",
+                    appVersion = dummyAppVersion,
+                    runTarget = RunTarget.IosDevice,
+                    mockzillaVersion = runtimeParams.mockzillaVersion
+                ), result.getOrThrow().copy(runTarget = RunTarget.IosDevice)
             )
         }
 

@@ -1,22 +1,27 @@
 package com.apadmi.mockzilla.testutils
 
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
+import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.lib.prepareMockzilla
 import com.apadmi.mockzilla.lib.startMockzilla
 import com.apadmi.mockzilla.lib.stopMockzilla
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
-import io.ktor.client.network.sockets.*
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+
+private val zeroConfStub = object : ZeroConfDiscoveryService {
+    override fun makeDiscoverable(metaData: MetaData, port: Int) = Unit
+}
 
 internal typealias SetupBlock = suspend (cacheService: LocalCacheService) -> Unit
 internal typealias TestBlock = suspend (params: MockzillaRuntimeParams, cacheService: LocalCacheService) -> Unit
@@ -24,14 +29,13 @@ internal typealias TestBlock = suspend (params: MockzillaRuntimeParams, cacheSer
 private object Constants {
     const val maxRetries = 3
 }
-
 private fun MetaData.Companion.dummy() = MetaData(
     appName = "",
     appPackage = "",
     operatingSystemVersion = "",
     deviceModel = "",
     appVersion = "",
-    operatingSystem = "",
+    runTarget = RunTarget.IosDevice,
     mockzillaVersion = ""
 )
 
@@ -82,7 +86,13 @@ private suspend fun runFullIntegrationTest(
     block: TestBlock,
 ) {
     /* Setup */
-    val di = prepareMockzilla(config, metaData, fileIo, Logger(StaticConfig()))
+    val di = prepareMockzilla(
+        config,
+        metaData,
+        fileIo,
+        Logger(StaticConfig()),
+        zeroConfStub
+    )
     fileIo.deleteAllCaches()
     setup(di.localCacheService)
     val params = startMockzilla(config, di)
