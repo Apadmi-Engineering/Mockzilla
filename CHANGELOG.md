@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/1.2.0...v1.3.0) (2024-05-28)
+
+
+### Features
+
+* Fire off snapshot builds when release-please updates it's PR ([0c5d934](https://github.com/Apadmi-Engineering/Mockzilla/commit/0c5d9349374466422fbb959a68ac4aff80cfcea2))
+* Integrate bonjour and enable network discovery ([34ecf69](https://github.com/Apadmi-Engineering/Mockzilla/commit/34ecf6923db72438df826ef1593d3a946176eebc))
+
 ## [1.2.0-alpha2](https://github.com/Apadmi-Engineering/Mockzilla/compare/v1.1.0-alpha2...v1.2.0-alpha2) (2023-11-01)
 
 
