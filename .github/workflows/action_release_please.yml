@@ -19,6 +19,13 @@ jobs:
           release-type: simple
           package-name: release-please-action
           command: release-pr
+      - name: Deploy package to Maven Central
+        env:
+          releases_created: ${{ steps.release_please_step.outputs.releases_created }}
+          prs_created: ${{ steps.release_please_step.outputs.prs_created }}
+        run: |
+          echo "Testing releases_created: $releases_created"
+          echo "Testing prs_created: $prs_created"
       - name: Trigger Deploy Binaries workflow (snapshots only)
         if: ${{ !steps.release_please_step.outputs.releases_created && steps.release_please_step.outputs.prs_created }}
         run: gh workflow run 'Deploy Binaries.yml' --ref release-please--branches--develop--components--release-please-action
