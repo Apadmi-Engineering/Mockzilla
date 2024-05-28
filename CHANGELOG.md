@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/1.2.0...v2.0.0) (2024-05-28)
+
+
+### Features
+
+* add more logs ([97e01e1](https://github.com/Apadmi-Engineering/Mockzilla/commit/97e01e193fa3784854ef038e03fbd418e079ca92))
+* Attempt auto triggering snapshots ([e9b386e](https://github.com/Apadmi-Engineering/Mockzilla/commit/e9b386ef12494dcd610eed21ee3f6b602d841085))
+* Integrate bonjour and enable network discovery ([34ecf69](https://github.com/Apadmi-Engineering/Mockzilla/commit/34ecf6923db72438df826ef1593d3a946176eebc))
+* more debug logging ([61a277d](https://github.com/Apadmi-Engineering/Mockzilla/commit/61a277dd3eb07a96e88053cf8a2a1eb2a3d682b7))
+* Yet again logging ([d643292](https://github.com/Apadmi-Engineering/Mockzilla/commit/d6432929cf6392d6ff1fcf483eaa1c7f04643cb1))
+
+
+### Miscellaneous Chores
+
+* release 2.0.0 ([5682011](https://github.com/Apadmi-Engineering/Mockzilla/commit/568201144ff92192ce6211773ee800bcad139bdc))
+
 ## [1.2.0-alpha2](https://github.com/Apadmi-Engineering/Mockzilla/compare/v1.1.0-alpha2...v1.2.0-alpha2) (2023-11-01)
 
 
