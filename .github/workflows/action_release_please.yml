@@ -13,8 +13,12 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - id: release_please_step
+        uses: google-github-actions/release-please-action@v3
         with:
           release-type: simple
           package-name: release-please-action
           command: release-pr
+      - name: Trigger Deploy Binaries workflow (snapshots only)
+        if: ${{ !steps.release_please_step.outputs.releases_created && steps.release_please_step.outputs.prs_created }}
+        run: gh workflow run 'Deploy Binaries.yml' --ref release-please--branches--develop--components--release-please-action

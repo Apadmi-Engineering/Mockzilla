@@ -7,6 +7,9 @@ on:
     types:
       - completed
 
+env:
+  is_snapshot: ${{ github.ref_type == 'branch' }}
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
@@ -22,6 +25,7 @@ concurrency:
 jobs:
   # Build job
   build:
+    if: ${{ !env.is_snapshot }}
     runs-on: macos-latest
     steps:
       - name: Checkout
