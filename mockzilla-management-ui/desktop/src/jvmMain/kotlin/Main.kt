@@ -23,9 +23,6 @@ fun main() = application {
         icon = null,
         onCloseRequest = ::exitApplication,
         content = {
-            SideEffect {
-                window.minimumSize = Dimension(600, 600)
-            }
             App()
         }
     )

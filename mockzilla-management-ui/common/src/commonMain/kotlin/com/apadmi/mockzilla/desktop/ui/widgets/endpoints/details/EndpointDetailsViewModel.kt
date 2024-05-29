@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 class EndpointDetailsViewModel(
     private val endpointsService: MockzillaManagement.EndpointsService,
     private val updateService: MockzillaManagement.UpdateService,
+    private val clearingService: MockzillaManagement.CacheClearingService,
     activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
@@ -81,7 +82,7 @@ class EndpointDetailsViewModel(
 
     fun onDefaultStatusChange(value: HttpStatusCode?) = onPropertyChanged(
         { copy(defaultStatus = value) },
-        { config, device -> updateService.setDefaultStatus(device, config.key, value) }
+        { config, device -> emitErrorIfNeeded(updateService.setDefaultStatus(device, config.key, value)) }
     )
 
 
@@ -99,9 +100,14 @@ class EndpointDetailsViewModel(
             is State.Endpoint -> state.copy(error = "Something went wrong")
         }
     }
+
     fun onErrorBodyChange(value: String?) = onPropertyChanged(
         { copy(errorBody = value) },
-        TODO()
+        { config, device ->
+            errorBodyDebounceJob = withDebounce(errorBodyDebounceJob) {
+                emitErrorIfNeeded(updateService.setErrorBody(device, config.key, value))
+            }
+        }
     )
 
     private fun onPropertyChanged(
@@ -122,39 +128,63 @@ class EndpointDetailsViewModel(
 
     fun onErrorStatusChange(value: HttpStatusCode?) = onPropertyChanged(
         { copy(errorStatus = value) },
-        TODO()
+        { config, device -> emitErrorIfNeeded(updateService.setErrorStatus(device, config.key, value)) }
     )
 
     fun onFailChange(value: Boolean?) = onPropertyChanged(
         { copy(fail = value) },
-        TODO()
+        { config, device -> emitErrorIfNeeded(updateService.setShouldFail(device, listOf(config.key), value)) }
     )
 
     // Could possibly have numerical picker rather than free text field for this one
     fun onDelayChange(value: String?) = onPropertyChanged(
-        { copy(delayMillis = value) },
-        TODO()
+        { copy(delayMillis = value.takeIf { value == null || value.toIntOrNull() != null }) },
+        { config, device ->
+            delayDebounceJob = withDebounce(delayDebounceJob) {
+                emitErrorIfNeeded(updateService.setDelay(device, listOf(config.key), value?.toIntOrNull()))
+            }
+        }
     )
 
     fun onJsonDefaultEditingChange(value: Boolean) = onPropertyChanged(
         { copy(jsonEditingDefault = value) },
-        TODO()
+        { _,_ -> /* No-op */ }
     )
 
     fun onJsonErrorEditingChange(value: Boolean) = onPropertyChanged(
         { copy(jsonEditingError = value) },
-        TODO()
+        { _,_ -> /* No-op */ }
     )
 
     fun onDefaultHeadersChange(value: List<Pair<String, String>>?) = onPropertyChanged(
         { copy(defaultHeaders = value) },
-        TODO()
+        { config, device ->
+            defaultHeadersDebounceJob = withDebounce(defaultHeadersDebounceJob) {
+                emitErrorIfNeeded(updateService.setDefaultHeaders(device, config.key, value?.toMap()))
+            }
+        }
     )
 
     fun onErrorHeadersChange(value: List<Pair<String, String>>?) = onPropertyChanged(
         { copy(errorHeaders = value) },
-        TODO()
+        { config, device ->
+            errorHeadersDebounceJob = withDebounce(errorHeadersDebounceJob) {
+                emitErrorIfNeeded(updateService.setErrorHeaders(device, config.key, value?.toMap()))
+            }
+        }
     )
+
+    fun onResetAll()  = viewModelScope.launch {
+        val activeDevice = this@EndpointDetailsViewModel.activeDevice ?: return@launch
+        val state = state.value as? State.Endpoint ?: return@launch
+
+        // TODO: Loading and error states here
+        emitErrorIfNeeded(
+            clearingService.clearCaches(activeDevice, listOf(state.config.key))
+        ).onSuccess {
+            reloadData(activeDevice)
+        }
+    }
 
     sealed class State {
         data object Empty : State()

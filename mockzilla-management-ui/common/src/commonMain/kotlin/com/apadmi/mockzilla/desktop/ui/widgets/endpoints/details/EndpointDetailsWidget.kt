@@ -82,6 +82,7 @@ fun EndpointDetailsWidget() {
         viewModel::onDelayChange,
         viewModel::onDefaultHeadersChange,
         viewModel::onErrorHeadersChange,
+        viewModel::onResetAll
     )
 }
 
@@ -99,6 +100,7 @@ fun EndpointDetailsWidgetContent(
     onDelayChange: (String?) -> Unit,
     onDefaultHeadersChange: (List<Pair<String, String>>?) -> Unit,
     onErrorHeadersChange: (List<Pair<String, String>>?) -> Unit,
+    onResetAll: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
     val pagerState = rememberPagerState(initialPage = 0) { Tab.entries.size }
@@ -191,6 +193,7 @@ fun EndpointDetailsWidgetContent(
                         Tab.Settings -> Settings(
                             delayMillis = state.delayMillis,
                             onDelayChange = onDelayChange,
+                            onResetAll = onResetAll
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -216,6 +219,7 @@ fun EndpointDetailsWidgetNonePreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onResetAll = {}
     )
 }
 
@@ -253,6 +257,7 @@ fun EndpointDetailsWidgetPreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onResetAll = {}
     )
 }
 
@@ -290,6 +295,7 @@ fun EndpointDetailsWidgetUnsetPreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onResetAll = {}
     )
 }
 
@@ -425,6 +431,7 @@ private fun EndpointDetailsResponseBody(
 private fun Settings(
     delayMillis: String?,
     onDelayChange: (String?) -> Unit,
+    onResetAll: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
     var customDelay by remember { mutableStateOf("") }
@@ -481,7 +488,7 @@ private fun Settings(
     )
     Spacer(modifier = Modifier.height(16.dp))
     Button(
-        onClick = { /* TODO, maybe with popup to confirm? */ },
+        onClick = onResetAll, // TODO: Add confirmation popup
         modifier = Modifier.padding(horizontal = 8.dp),
     ) {
         Text(text = strings.widgets.endpointDetails.resetAll)
