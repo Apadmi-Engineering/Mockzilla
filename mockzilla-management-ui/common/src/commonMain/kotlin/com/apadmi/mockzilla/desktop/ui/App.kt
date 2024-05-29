@@ -21,12 +21,6 @@ import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.wrapper.MiddlePaneWrapp
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsWidget
 
-import com.airbnb.android.showkase.annotation.ShowkaseRoot
-import com.airbnb.android.showkase.annotation.ShowkaseRootModule
-
-@ShowkaseRoot
-class RootShowkaseModule : ShowkaseRootModule
-
 @Composable
 fun App(
     strings: Strings = LocalStrings.current

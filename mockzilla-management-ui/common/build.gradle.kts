@@ -29,7 +29,6 @@ kotlin {
 
             /* Coroutines */
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.showkase)
 
             /* Mockzilla Management */
             implementation(project(":mockzilla-management"))
@@ -53,6 +52,7 @@ kotlin {
             implementation(libs.androidx.lifecycleRuntimeKtx)
             implementation(libs.androidx.compose.material3)
             implementation(libs.androidx.compose.materialIconsExt)
+            implementation(libs.showkase)
 
             /* ViewModel */
             implementation(libs.androidx.lifecycleViewModelCompose)
