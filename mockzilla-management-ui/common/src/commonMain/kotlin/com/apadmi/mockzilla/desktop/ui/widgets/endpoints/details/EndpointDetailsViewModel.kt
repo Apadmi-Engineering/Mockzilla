@@ -9,9 +9,14 @@ import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.management.MockzillaManagement
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class EndpointDetailsViewModel(
     private val endpointsService: MockzillaManagement.EndpointsService,
+    private val updateService: MockzillaManagement.UpdateService,
     activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
@@ -19,6 +24,13 @@ class EndpointDetailsViewModel(
     // see https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
     // for reasons
     val state = mutableStateOf<State>(State.Empty)
+
+    private var delayDebounceJob: Job? = null
+    private var defaultHeadersDebounceJob: Job? = null
+    private var defaultBodyDebounceJob: Job? = null
+    private var errorBodyDebounceJob: Job? = null
+    private var errorHeadersDebounceJob: Job? = null
+
 
     override suspend fun reloadData(selectedDevice: Device?) {
         val device = selectedDevice ?: return run {
@@ -46,7 +58,8 @@ class EndpointDetailsViewModel(
                                 // TODO: Should auto infer based on if body is valid JSON
                                 jsonEditingDefault = true,
                                 jsonEditingError = true,
-                                presets = presets
+                                presets = presets,
+                                error = null
                             )
                         },
                         onFailure = { State.Empty }
@@ -57,76 +70,91 @@ class EndpointDetailsViewModel(
         )
     }
 
-    fun onDefaultBodyChange(value: String?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(defaultBody = value)
+    fun onDefaultBodyChange(value: String?) = onPropertyChanged(
+        { copy(defaultBody = value) },
+        { config, device ->
+            defaultBodyDebounceJob = withDebounce(defaultBodyDebounceJob) {
+                emitErrorIfNeeded(updateService.setDefaultBody(device, config.key, value))
+            }
+        }
+    )
+
+    fun onDefaultStatusChange(value: HttpStatusCode?) = onPropertyChanged(
+        { copy(defaultStatus = value) },
+        { config, device -> updateService.setDefaultStatus(device, config.key, value) }
+    )
+
+
+    private suspend fun withDebounce(job: Job?, op: suspend () -> Result<Unit>) = coroutineScope {
+        job?.cancel()
+        launch {
+            delay(250)
+            op()
         }
     }
 
-    fun onDefaultStatusChange(value: HttpStatusCode?) {
+    private fun <T> emitErrorIfNeeded(result: Result<T>) = result.onFailure {
         state.value = when (val state = state.value) {
             is State.Empty -> state
-            is State.Endpoint -> state.copy(defaultStatus = value)
+            is State.Endpoint -> state.copy(error = "Something went wrong")
+        }
+    }
+    fun onErrorBodyChange(value: String?) = onPropertyChanged(
+        { copy(errorBody = value) },
+        TODO()
+    )
+
+    private fun onPropertyChanged(
+        updateState: State.Endpoint.() -> State.Endpoint,
+        updateServer: suspend (config: SerializableEndpointConfig, device: Device) -> Unit
+    ) {
+        // TODO: Handle error
+        val activeDevice = this.activeDevice ?: return
+
+        state.value = when (val state = state.value) {
+            is State.Empty -> state
+            is State.Endpoint -> {
+                viewModelScope.launch { updateServer(state.config, activeDevice) }
+                updateState(state)
+            }
         }
     }
 
-    fun onErrorBodyChange(value: String?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(errorBody = value)
-        }
-    }
+    fun onErrorStatusChange(value: HttpStatusCode?) = onPropertyChanged(
+        { copy(errorStatus = value) },
+        TODO()
+    )
 
-    fun onErrorStatusChange(value: HttpStatusCode?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(errorStatus = value)
-        }
-    }
-
-    fun onFailChange(value: Boolean?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(fail = value)
-        }
-    }
+    fun onFailChange(value: Boolean?) = onPropertyChanged(
+        { copy(fail = value) },
+        TODO()
+    )
 
     // Could possibly have numerical picker rather than free text field for this one
-    fun onDelayChange(value: String?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(delayMillis = value)
-        }
-    }
+    fun onDelayChange(value: String?) = onPropertyChanged(
+        { copy(delayMillis = value) },
+        TODO()
+    )
 
-    fun onJsonDefaultEditingChange(value: Boolean) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(jsonEditingDefault = value)
-        }
-    }
+    fun onJsonDefaultEditingChange(value: Boolean) = onPropertyChanged(
+        { copy(jsonEditingDefault = value) },
+        TODO()
+    )
 
-    fun onJsonErrorEditingChange(value: Boolean) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(jsonEditingError = value)
-        }
-    }
+    fun onJsonErrorEditingChange(value: Boolean) = onPropertyChanged(
+        { copy(jsonEditingError = value) },
+        TODO()
+    )
 
-    fun onDefaultHeadersChange(value: List<Pair<String, String>>?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(defaultHeaders = value)
-        }
-    }
+    fun onDefaultHeadersChange(value: List<Pair<String, String>>?) = onPropertyChanged(
+        { copy(defaultHeaders = value) },
+        TODO()
+    )
 
-    fun onErrorHeadersChange(value: List<Pair<String, String>>?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(errorHeaders = value)
-        }
-    }
+    fun onErrorHeadersChange(value: List<Pair<String, String>>?) = onPropertyChanged(
+        { copy(errorHeaders = value) },
+        TODO()
+    )
 
     sealed class State {
         data object Empty : State()
@@ -147,6 +175,7 @@ class EndpointDetailsViewModel(
          */
         data class Endpoint(
             val config: SerializableEndpointConfig,
+            val error: String?, // TODO: Make this more robust
             val defaultBody: String?,
             val defaultStatus: HttpStatusCode?,
             val defaultHeaders: List<Pair<String, String>>?,

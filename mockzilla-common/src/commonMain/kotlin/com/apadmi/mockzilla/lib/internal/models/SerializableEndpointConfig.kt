@@ -152,24 +152,21 @@ sealed class SetOrDont<out T> {
 }
 
 class ServiceResultSerializer<T : Any>(
-    serializer: KSerializer<T>
-) : KSerializer<SetOrDont<T>> {
+    serializer: KSerializer<T?>
+) : KSerializer<SetOrDont<T?>> {
     private val surrogateSerializer = ServiceResultSurrogate.serializer(serializer)
     override val descriptor: SerialDescriptor = surrogateSerializer.descriptor
 
-    override fun deserialize(decoder: Decoder): SetOrDont<T> {
+    override fun deserialize(decoder: Decoder): SetOrDont<T?> {
         val surrogate = surrogateSerializer.deserialize(decoder)
         return when (surrogate.type) {
-            ServiceResultSurrogate.Type.Set ->
-                surrogate.value?.let {
-                    SetOrDont.Set(surrogate.value)
-                } ?: throw SerializationException("Missing data for set result")
+            ServiceResultSurrogate.Type.Set -> SetOrDont.Set(surrogate.value)
             ServiceResultSurrogate.Type.UnSet ->
                 SetOrDont.DoNotSet
         }
     }
 
-    override fun serialize(encoder: Encoder, value: SetOrDont<T>) {
+    override fun serialize(encoder: Encoder, value: SetOrDont<T?>) {
         val surrogate = when (value) {
             is SetOrDont.Set -> ServiceResultSurrogate(ServiceResultSurrogate.Type.Set, value.value)
             SetOrDont.DoNotSet -> ServiceResultSurrogate(ServiceResultSurrogate.Type.UnSet, null)

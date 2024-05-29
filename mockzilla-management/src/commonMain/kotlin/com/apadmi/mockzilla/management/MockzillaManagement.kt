@@ -36,7 +36,7 @@ interface MockzillaManagement {
         suspend fun setShouldFail(
             connection: MockzillaConnectionConfig,
             keys: List<EndpointConfiguration.Key>,
-            shouldFail: Boolean
+            shouldFail: Boolean?
         ): Result<Unit>
         suspend fun setDelay(
             connection: MockzillaConnectionConfig,
@@ -47,32 +47,32 @@ interface MockzillaManagement {
         suspend fun setDefaultHeaders(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            headers: Map<String, String>
+            headers: Map<String, String>?
         ): Result<Unit>
         suspend fun setDefaultBody(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            body: String
+            body: String?
         ): Result<Unit>
         suspend fun setDefaultStatus(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            statusCode: HttpStatusCode
+            statusCode: HttpStatusCode?
         ): Result<Unit>
         suspend fun setErrorBody(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            body: String
+            body: String?
         ): Result<Unit>
         suspend fun setErrorHeaders(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            headers: Map<String, String>
+            headers: Map<String, String>?
         ): Result<Unit>
         suspend fun setErrorStatus(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            statusCode: HttpStatusCode
+            statusCode: HttpStatusCode?
         ): Result<Unit>
     }
 

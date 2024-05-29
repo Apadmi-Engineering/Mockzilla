@@ -111,8 +111,8 @@ internal class LocalCacheServiceImpl(
         }.forEach { clearCacheUnlocked(it.key) }
     }
 
-    private fun <T> SetOrDont<T?>?.valueOrDefault(default: T): T = when (this) {
-        is SetOrDont.Set -> value ?: default
+    private fun <T> SetOrDont<T?>?.valueOrDefault(default: T): T? = when (this) {
+        is SetOrDont.Set -> value
         null,
         SetOrDont.DoNotSet -> default
     }

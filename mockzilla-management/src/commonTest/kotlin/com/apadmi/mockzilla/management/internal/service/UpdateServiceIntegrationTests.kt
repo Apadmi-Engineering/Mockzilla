@@ -123,6 +123,26 @@ class UpdateServiceIntegrationTests {
         }
 
     @Test
+    fun `setDefaultBody - to null - performs update`() =
+        runIntegrationTest(
+            config = MockzillaConfig.Builder().setPort(0).addEndpoint(dummyConfig)
+                .build(),
+            createSut = { UpdateServiceImpl(it) }
+        ) { sut, connection, _ ->
+            /* Setup */
+            val preUpdate = getEndpointConfig(connection)
+
+            /* Run Test */
+            val result = sut.setDefaultBody(connection, dummyConfig.key, null)
+            val postUpdate = getEndpointConfig(connection)
+
+            /* Verify */
+            assertEquals(Result.success(Unit), result)
+            assertEquals(preUpdate.copy(defaultBody = null), postUpdate)
+        }
+
+
+    @Test
     fun `setDefaultStatus - performs update`() =
         runIntegrationTest(
             config = MockzillaConfig.Builder().setPort(0).addEndpoint(dummyConfig)

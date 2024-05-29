@@ -18,12 +18,15 @@ import com.apadmi.mockzilla.management.internal.ktor.get
 import com.apadmi.mockzilla.management.internal.ktor.patch
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
+import kotlinx.serialization.encodeToString
 
 interface MockzillaManagementRepository {
     suspend fun fetchMetaData(connection: MockzillaConnectionConfig): Result<MetaData>
@@ -132,6 +135,6 @@ MockzillaManagement.CacheClearingService {
             KtorRequestRunner(KtorClientProvider.createKtorClient(logger = logger))
         )
 
-        fun create() = create(KtorLogger.DEFAULT)
+        fun create() = create(KtorLogger.SIMPLE)
     }
 }

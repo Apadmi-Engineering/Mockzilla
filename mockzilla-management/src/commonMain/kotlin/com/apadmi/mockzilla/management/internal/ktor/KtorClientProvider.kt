@@ -9,11 +9,12 @@ import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.plugins.resources.Resources
 import io.ktor.serialization.kotlinx.json.json
 
 internal object KtorClientProvider {
-    fun createKtorClient(engine: HttpClientEngine? = null, logger: Logger = Logger.DEFAULT) =
+    fun createKtorClient(engine: HttpClientEngine? = null, logger: Logger = Logger.SIMPLE) =
         engine?.let {
             HttpClient(engine) {
                 httpClientConfig(logger)

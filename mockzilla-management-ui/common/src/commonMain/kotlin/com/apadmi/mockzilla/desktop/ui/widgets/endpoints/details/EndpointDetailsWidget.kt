@@ -240,6 +240,7 @@ fun EndpointDetailsWidgetPreview() = PreviewSurface {
             delayMillis = "100",
             jsonEditingDefault = true,
             jsonEditingError = true,
+            error = null,
             presets = DashboardOptionsConfig(listOf(), listOf()),
         ),
         onDefaultBodyChange = {},
@@ -276,6 +277,7 @@ fun EndpointDetailsWidgetUnsetPreview() = PreviewSurface {
             delayMillis = null,
             jsonEditingDefault = true,
             jsonEditingError = true,
+            error = null,
             presets = DashboardOptionsConfig(listOf(), listOf()),
         ),
         onDefaultBodyChange = {},
@@ -403,7 +405,7 @@ private fun EndpointDetailsResponseBody(
             // TODO: Might want warning here before losing mock data
             onClick = {
                 // TODO: Might want this to prompt user to pick from presets if available
-                onResponseBodyChange(body?.let { null } ?: "")
+                onResponseBodyChange(if (body == null) "" else null)
             },
         ) {
             Text(

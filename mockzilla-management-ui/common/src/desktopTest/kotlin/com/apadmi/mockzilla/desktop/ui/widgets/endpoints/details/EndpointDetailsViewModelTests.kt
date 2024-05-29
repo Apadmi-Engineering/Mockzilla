@@ -20,8 +20,12 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
     @Mock
     private val endpointsServiceMock = mock(classOf<MockzillaManagement.EndpointsService>())
 
+    @Mock
+    private val updateServiceMock = mock(classOf<MockzillaManagement.UpdateService>())
+
     private fun createSut() = EndpointDetailsViewModel(
         endpointsServiceMock,
+        updateServiceMock,
         activeDeviceMonitorMock,
         testScope.backgroundScope
     )
@@ -76,6 +80,7 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
                 delayMillis = "50",
                 jsonEditingDefault = true,
                 jsonEditingError = true,
+                error = null,
                 presets = presets,
             ),
             sut.state.value
@@ -133,6 +138,7 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
                 delayMillis = null,
                 jsonEditingDefault = true,
                 jsonEditingError = true,
+                error = null,
                 presets = presets,
             ),
             initialState
@@ -150,6 +156,7 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
                 delayMillis = "100",
                 jsonEditingDefault = false,
                 jsonEditingError = false,
+                error = null,
                 presets = presets,
             ),
             sut.state.value

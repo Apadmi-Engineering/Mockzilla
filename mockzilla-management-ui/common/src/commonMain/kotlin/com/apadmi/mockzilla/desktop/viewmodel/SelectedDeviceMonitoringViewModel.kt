@@ -26,5 +26,7 @@ abstract class SelectedDeviceMonitoringViewModel(
         block: suspend (Device) -> T
     ): T = activeDeviceMonitor.selectedDevice.value?.device?.let { block(it) } ?: default
 
+    val activeDevice get() = activeDeviceMonitor.selectedDevice.value?.device
+
     abstract suspend fun reloadData(selectedDevice: Device?)
 }
