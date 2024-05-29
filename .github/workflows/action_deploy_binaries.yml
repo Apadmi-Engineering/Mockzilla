@@ -36,8 +36,8 @@ jobs:
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
           OSSRH_KEY: ${{ secrets.OSSRH_KEY }}
-      - name: Deploy package to Github for SPM
-        run: bundle exec fastlane ios publish_spm_package is_snapshot:$is_snapshot
+      - name: Deploy package to Github for SPM & Cocoapods
+        run: bundle exec fastlane ios publish_swift_package is_snapshot:$is_snapshot
         env:
           IOS_DEPLOY_URL: ${{ secrets.IOS_DEPLOY_URL }}
       - uses: googleapis/release-please-action@v4

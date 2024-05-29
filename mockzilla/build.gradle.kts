@@ -1,5 +1,6 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.extractVersion
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
@@ -12,6 +13,7 @@ plugins {
     alias(libs.plugins.swiftklib)
     id("maven-publish")
     id("publication-convention")
+    kotlin("native.cocoapods") apply true
 }
 
 kotlin {
@@ -40,6 +42,22 @@ kotlin {
 
     jvm()
     jvmToolchain(JavaConfig.toolchain)
+    cocoapods {
+        name = "SwiftMockzilla"
+        version = extractVersion()
+        summary = "A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your application."
+        homepage = "https://apadmi-engineering.github.io/Mockzilla/"
+        framework {
+            baseName = "mockzilla"
+        }
+        license = "{:type => 'MIT', :file => 'LICENSE'}"
+        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => 'v$version' }"
+        extraSpecAttributes["vendored_frameworks"] = "'Mockzilla.xcframework'"
+        extraSpecAttributes["source_files"] = "'Sources/SwiftMockzilla/SwiftMockzilla.swift'"
+        extraSpecAttributes["swift_version"] = "'5.9.2'"
+
+        ios.deploymentTarget = "13.0"
+    }
 
     sourceSets {
         all {

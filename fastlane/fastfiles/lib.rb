@@ -24,12 +24,25 @@ platform :ios do
         sh("cp -rf #{lane_context[:repo_root]}/mockzilla/build/XCFrameworks/release/mockzilla.xcframework #{lane_context[:repo_root]}/SwiftMockzilla")
     end
 
-    desc "Deploy the package to github"
-    lane :publish_spm_package do |options|
+    desc "Generate Podspec"
+    lane :generate_podspec do
+        gradle(
+            tasks: [":mockzilla:podPublishReleaseXCFramework"]
+        )
+
+        # Copy the Podspec to where the publish lane can find it
+        sh("cp -rf #{lane_context[:repo_root]}/mockzilla/build/cocoapods/publish/release/SwiftMockzilla.podspec #{lane_context[:repo_root]}/SwiftMockzilla")
+    end
+
+    desc "Deploy the package to github & push podspec"
+    lane :publish_swift_package do |options|
         prepare_for_snapshot_if_needed(options)
 
         # Create the XCFramework
         generate_xcframework
+
+        # Generate the podspec
+        generate_podspec
 
         sh("rm -rf apadmi-mockzilla-ios")
 
@@ -49,6 +62,7 @@ platform :ios do
 
             git add .;
             git add --force mockzilla.xcframework;
+            git add --force SwiftMockzilla.podspec
             git commit -m "Updating Package #{get_version_name}";
         })
 
@@ -64,6 +78,9 @@ platform :ios do
                 git tag v#{get_version_name}
                 git push --tags
             })
+
+            # Push podspec to trunk
+            sh("pod trunk push")
         end
     end
 end
