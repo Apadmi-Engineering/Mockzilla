@@ -2,13 +2,18 @@
 
 package com.apadmi.mockzilla.desktop.ui.theme
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.unit.Density
+
+
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.platform.LocalDensity
 import com.apadmi.mockzilla.desktop.i18n.ProvideLocalisableStrings
 
 private val lightColors = lightColorScheme(
@@ -92,9 +97,21 @@ fun AppTheme(
     }
 
     ProvideLocalisableStrings {
-        MaterialTheme(
-            colorScheme = colors,
-            content = content
-        )
+        ScaledDensity(scaleFactor = 0.9f) {
+            MaterialTheme(
+                colorScheme = colors,
+                content = content
+            )
+        }
     }
+}
+
+@Composable
+fun ScaledDensity(scaleFactor: Float, content: @Composable () -> Unit) {
+    val currentDensity = LocalDensity.current
+    val scaledDensity = Density(
+        density = currentDensity.density * scaleFactor,
+        fontScale = currentDensity.fontScale * scaleFactor
+    )
+    CompositionLocalProvider(LocalDensity provides scaledDensity, content = content)
 }

@@ -26,7 +26,7 @@ internal class ManagementApiController(
     }
 
     suspend fun getAllMockDataEntries() = endpoints.map { config ->
-        localCacheService.getLocalCache(config.key)
+        localCacheService.getLocalCache(config.key)?.copy(name = config.name)
             ?: SerializableEndpointConfig.allNulls(config.key, config.name, config.versionCode)
     }
 

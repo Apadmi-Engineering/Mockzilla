@@ -1,11 +1,10 @@
 package com.apadmi.mockzilla.desktop.di.utils
 
 import androidx.compose.runtime.Composable
-import org.koin.androidx.compose.koinViewModel
 
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel as InternalViewModel
 
-import org.koin.androidx.compose.getViewModel as koinGetViewModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel as koinViewModel
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module
