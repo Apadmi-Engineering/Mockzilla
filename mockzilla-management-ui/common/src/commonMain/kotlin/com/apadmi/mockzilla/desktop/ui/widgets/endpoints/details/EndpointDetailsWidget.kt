@@ -69,7 +69,7 @@ private enum class Tab {
 
 @Composable
 fun EndpointDetailsWidget(activeEndpoint: EndpointConfiguration.Key?) {
-    val viewModel = getViewModel<EndpointDetailsViewModel>() { parametersOf(activeEndpoint) }
+    val viewModel = getViewModel<EndpointDetailsViewModel>(key = activeEndpoint?.raw) { parametersOf(activeEndpoint) }
     val state by viewModel.state
 
     EndpointDetailsWidgetContent(

@@ -17,7 +17,8 @@ actual inline fun <reified T : ViewModel> Module.viewModel(
 @Composable
 actual inline fun <reified T : ViewModel> getViewModel(
     qualifier: Qualifier?,
+    key: String?,
     noinline parameters: ParametersDefinition?
-): T = remember(qualifier, parameters) {
+): T = remember(qualifier, key) {
     KoinJavaComponent.getKoin().get<T>(qualifier = qualifier, parameters = parameters)
 }

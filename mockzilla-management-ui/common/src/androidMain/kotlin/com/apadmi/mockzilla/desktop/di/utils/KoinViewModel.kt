@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.desktop.di.utils
 
 import androidx.compose.runtime.Composable
+import org.koin.androidx.compose.koinViewModel
 
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel as InternalViewModel
 
@@ -19,5 +20,6 @@ actual inline fun <reified T : InternalViewModel> Module.viewModel(
 @Composable
 actual inline fun <reified T : InternalViewModel> getViewModel(
     qualifier: Qualifier?,
+    key: String?,
     noinline parameters: ParametersDefinition?
-): T = koinGetViewModel<T>(qualifier = qualifier, parameters = parameters)
+): T = koinViewModel<T>(qualifier = qualifier, key = key, parameters = parameters)

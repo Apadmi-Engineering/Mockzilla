@@ -16,5 +16,6 @@ expect inline fun <reified T : ViewModel> Module.viewModel(
 @Composable
 expect inline fun <reified T : ViewModel> getViewModel(
     qualifier: Qualifier? = null,
+    key: String? = null,
     noinline parameters: ParametersDefinition? = null
 ): T
