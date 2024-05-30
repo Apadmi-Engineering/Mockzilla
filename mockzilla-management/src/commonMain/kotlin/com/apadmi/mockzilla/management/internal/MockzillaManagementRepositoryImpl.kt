@@ -19,8 +19,10 @@ import com.apadmi.mockzilla.management.internal.ktor.patch
 
 import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
+import com.apadmi.mockzilla.management.internal.ktor.CustomHeaders
 import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.SIMPLE
+import io.ktor.client.request.header
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -29,7 +31,7 @@ import io.ktor.http.contentType
 import kotlinx.serialization.encodeToString
 
 interface MockzillaManagementRepository {
-    suspend fun fetchMetaData(connection: MockzillaConnectionConfig): Result<MetaData>
+    suspend fun fetchMetaData(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MetaData>
     suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
     suspend fun updateMockDataEntry(
         entry: SerializableEndpointPatchItemDto,
@@ -41,7 +43,7 @@ interface MockzillaManagementRepository {
         connection: MockzillaConnectionConfig
     ): Result<Unit>
 
-    suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig): Result<MonitorLogsResponse>
+    suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MonitorLogsResponse>
     suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
     suspend fun clearCaches(connection: MockzillaConnectionConfig, keys: List<EndpointConfiguration.Key>): Result<Unit>
 }
@@ -57,9 +59,12 @@ MockzillaManagement.MetaDataService,
 MockzillaManagement.EndpointsService,
 MockzillaManagement.CacheClearingService {
     override suspend fun fetchMetaData(
-        connection: MockzillaConnectionConfig
+        connection: MockzillaConnectionConfig,
+        hideFromLogs: Boolean
     ) = runner<MetaData> {
-        get(connection, "/api/meta")
+        get(connection, "/api/meta") {
+            header(CustomHeaders.HideFromLogs, hideFromLogs)
+        }
     }.onFailure {
         Logger.v(tag = "Management", it) { "Request Failed: /api/meta" }
     }
@@ -103,9 +108,12 @@ MockzillaManagement.CacheClearingService {
     }
 
     override suspend fun fetchMonitorLogsAndClearBuffer(
-        connection: MockzillaConnectionConfig
+        connection: MockzillaConnectionConfig,
+        hideFromLogs: Boolean
     ) = runner<MonitorLogsResponse> {
-        get(connection, "/api/monitor-logs")
+        get(connection, "/api/monitor-logs") {
+            header(CustomHeaders.HideFromLogs, hideFromLogs)
+        }
     }.onFailure {
         Logger.v(tag = "Management", it) { "Request Failed: /api/monitor-logs" }
     }

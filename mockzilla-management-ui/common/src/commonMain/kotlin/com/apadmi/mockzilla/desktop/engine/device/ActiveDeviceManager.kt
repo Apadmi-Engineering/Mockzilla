@@ -50,7 +50,7 @@ class ActiveDeviceManagerImpl(
         while (true) {
             allDevicesInternal.forEach { (device, statefulDevice) ->
                 val newStatefulDevice =
-                    metaDataUseCase.getMetaData(device).fold(onSuccess = { metaData ->
+                    metaDataUseCase.getMetaData(device, isPolling = true).fold(onSuccess = { metaData ->
                         statefulDevice.copy(
                             isConnected = true,
                             connectedAppPackage = metaData.appPackage

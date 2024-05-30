@@ -13,6 +13,9 @@ import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.plugins.resources.Resources
 import io.ktor.serialization.kotlinx.json.json
 
+internal object CustomHeaders {
+    const val HideFromLogs = "hide-from-logs"
+}
 internal object KtorClientProvider {
     fun createKtorClient(engine: HttpClientEngine? = null, logger: Logger = Logger.SIMPLE) =
         engine?.let {
@@ -29,6 +32,9 @@ internal object KtorClientProvider {
         install(Logging) {
             this.logger = logger
             this.level = LogLevel.ALL
+            filter { request ->
+                request.headers[CustomHeaders.HideFromLogs]?.toBoolean() != true
+            }
         }
 
         install(Resources)

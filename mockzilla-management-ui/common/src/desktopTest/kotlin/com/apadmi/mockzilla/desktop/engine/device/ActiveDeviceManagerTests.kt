@@ -53,7 +53,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     fun `setActiveDeviceWithMetaData - updates device and notifies listeners`() = runBlockingTest {
         /* Setup */
         given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy())
+            getMetaData(Device.dummy(), true)
         }.thenReturn(Result.success(MetaData.dummy()))
         val sut = createSut()
 
@@ -108,7 +108,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     fun `monitorDeviceConnections - app package changes - notifies device change listeners`() = runBlockingTest {
         /* Setup */
         given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy())
+            getMetaData(Device.dummy(), true)
         }.thenReturn(Result.success(MetaData.dummy().copy(appPackage = "new.package")))
 
         val sut = createSut()
@@ -136,7 +136,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     fun `monitorDeviceConnections - app package the same - does not notify device change listeners`() = runBlockingTest {
         /* Setup */
         given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy())
+            getMetaData(Device.dummy(), true)
         }.thenReturn(Result.success(MetaData.dummy()))
         val sut = createSut()
 
@@ -156,7 +156,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     fun `monitorDeviceConnections - fails to get metadata - updates connection status`() = runBlockingTest {
         /* Setup */
         given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy())
+            getMetaData(Device.dummy(), true)
         }.thenReturn(Result.failure(Exception()))
         val sut = createSut()
 

@@ -17,7 +17,6 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.test.runBlockingTest
 
 class MetaDataUseCaseTests : CoroutineTest() {
     @Mock
@@ -35,7 +34,7 @@ class MetaDataUseCaseTests : CoroutineTest() {
         val sut = createSut()
 
         /* Run Test */
-        val result = sut.getMetaData(Device.dummy())
+        val result = sut.getMetaData(Device.dummy(), true)
 
         /* Verify */
         assertTrue(result.isFailure)
@@ -50,8 +49,8 @@ class MetaDataUseCaseTests : CoroutineTest() {
         val sut = createSut()
 
         /* Run Test */
-        val result = sut.getMetaData(Device.dummy())
-        val result2 = sut.getMetaData(Device.dummy())  // Should hit cache
+        val result = sut.getMetaData(Device.dummy(), true)
+        val result2 = sut.getMetaData(Device.dummy(), true)  // Should hit cache
 
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
@@ -70,11 +69,11 @@ class MetaDataUseCaseTests : CoroutineTest() {
         val sut = createSut { currentTimeStamp }
 
         /* Run Test */
-        val result = sut.getMetaData(Device.dummy())
+        val result = sut.getMetaData(Device.dummy(), true)
         // Mimic time advancing
         currentTimeStamp += 0.6.seconds.inWholeMilliseconds
 
-        val result2 = sut.getMetaData(Device.dummy())  // Should cache-miss
+        val result2 = sut.getMetaData(Device.dummy(), true)  // Should cache-miss
 
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
