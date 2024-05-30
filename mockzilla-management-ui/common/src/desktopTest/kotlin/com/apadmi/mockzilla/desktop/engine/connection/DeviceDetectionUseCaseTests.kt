@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.desktop.engine.connection
 
-import com.apadmi.mockzilla.desktop.engine.connection.jmdns.ServiceInfoWrapper
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.testutils.CoroutineTest
