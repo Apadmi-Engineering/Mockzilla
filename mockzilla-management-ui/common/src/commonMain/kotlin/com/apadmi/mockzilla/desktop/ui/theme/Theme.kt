@@ -2,6 +2,7 @@
 
 package com.apadmi.mockzilla.desktop.ui.theme
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.unit.Density
@@ -12,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalDensity
 import com.apadmi.mockzilla.desktop.i18n.ProvideLocalisableStrings
@@ -115,3 +117,12 @@ fun ScaledDensity(scaleFactor: Float, content: @Composable () -> Unit) {
     )
     CompositionLocalProvider(LocalDensity provides scaledDensity, content = content)
 }
+
+@Composable
+fun Modifier.alternatingBackground(index: Int) = background(
+    if (index % 2 == 0) {
+        MaterialTheme.colorScheme.background
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+)

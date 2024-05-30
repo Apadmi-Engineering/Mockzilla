@@ -74,4 +74,11 @@ val md_theme_dark_surfaceTint = Color(0xFFFFB689)
 val md_theme_dark_outlineVariant = Color(0xFF52443C)
 val md_theme_dark_scrim = Color(0xFF000000)
 
+val httpStatusCode_1xx = Color(0xFF0D6EFD)
+val httpStatusCode_2xx = Color(0xFF198754)
+val httpStatusCode_3xx = Color(0xFFFFFF00)
+val httpStatusCode_4xx = Color(0xFFFFA500)
+val httpStatusCode_5xx = Color(0xFFDC3545)
+
+
 val seed = Color(0xFFFF8E3D)

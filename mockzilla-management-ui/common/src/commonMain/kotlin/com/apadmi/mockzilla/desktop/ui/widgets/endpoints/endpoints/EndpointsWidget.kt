@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
+import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsViewModel.*
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
@@ -43,13 +44,7 @@ fun EndpointsWidgetContent(
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .clickable { onEndpointClicked(endpoint.key) }
-                .background(
-                    if (index % 2 == 0) {
-                        MaterialTheme.colorScheme.background
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    }
-                ),
+                .alternatingBackground(index),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
