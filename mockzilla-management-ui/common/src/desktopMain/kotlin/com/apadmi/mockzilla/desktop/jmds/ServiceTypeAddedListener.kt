@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.desktop.engine.connection.jmdns
+package com.apadmi.mockzilla.desktop.jmds
 
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceTypeListener
