@@ -1,5 +1,7 @@
-package com.apadmi.mockzilla.desktop.engine.connection.jmdns
+package com.apadmi.mockzilla.desktop.engine.connection
 
+import com.apadmi.mockzilla.desktop.jmds.ServiceTypeAddedListener
+import com.apadmi.mockzilla.desktop.jmds.create
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 
 import java.net.InetAddress
@@ -10,18 +12,17 @@ import javax.jmdns.ServiceListener
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class JmdnsWrapper(
+actual class ZeroConfSdkWrapper actual constructor(
     private val serviceType: String,
-    private val scope: CoroutineScope = GlobalScope
+    private val scope: CoroutineScope
 ) : ServiceListener {
     private val jmdns: JmDNS = JmDNS.create(InetAddress.getLocalHost())
     private lateinit var listener: suspend (ServiceInfoWrapper) -> Unit
 
-    fun setListener(listener: suspend (ServiceInfoWrapper) -> Unit) {
+    actual fun setListener(listener: suspend (ServiceInfoWrapper) -> Unit) {
         this.listener = listener
         jmdns.addServiceTypeListener(ServiceTypeAddedListener { event ->
             if (event?.type?.startsWith(ZeroConfConfig.serviceType) == true) {
@@ -55,7 +56,7 @@ internal class JmdnsWrapper(
             it.hostAddress
         } + hostAddresses
 
-        return ServiceInfoWrapper(
+        return ServiceInfoWrapper.create(
             this,
             hostAddresses.map { it.removePrefix("[").removeSuffix("]") }.distinct(),
             state

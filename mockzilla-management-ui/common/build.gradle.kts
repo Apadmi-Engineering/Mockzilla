@@ -39,7 +39,9 @@ kotlin {
 
             /* Zeroconf */
             implementation(libs.jmdns.jmdns)
-            implementation("io.netty:netty-resolver-dns-native-macos:4.1.110.Final")
+
+            /* Logging */
+            implementation(libs.kermit)
 
         }
         commonTest.dependencies {

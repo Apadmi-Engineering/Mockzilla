@@ -93,6 +93,7 @@ private fun startNetworkDiscoveryBroadcastIfNeeded(
     port: Int
 ) = CoroutineScope(job).launch {
     if (!di.config.isRelease && di.config.isNetworkDiscoveryEnabled) {
+        di.logger.i { "Starting network discovery" }
         di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, port)
     } else {
         di.logger.i { "Skipping network discovery" }
