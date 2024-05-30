@@ -52,13 +52,13 @@ import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import io.ktor.http.HttpStatusCode
+import org.koin.core.parameter.parametersOf
 
 import kotlinx.coroutines.launch
-import org.koin.core.parameter.parametersOf
 
 private enum class Tab {
     Default,
@@ -413,7 +413,9 @@ private fun EndpointDetailsResponseBody(
             // TODO: Might want warning here before losing mock data
             onClick = {
                 // TODO: Might want this to prompt user to pick from presets if available
-                onResponseBodyChange(if (body == null) "" else null)
+                onResponseBodyChange(body?.let {
+                    null
+                } ?: "")
             },
         ) {
             Text(
@@ -490,7 +492,7 @@ private fun Settings(
     )
     Spacer(modifier = Modifier.height(16.dp))
     Button(
-        onClick = onResetAll, // TODO: Add confirmation popup
+        onClick = onResetAll,  // TODO: Add confirmation popup
         modifier = Modifier.padding(horizontal = 8.dp),
     ) {
         Text(text = strings.widgets.endpointDetails.resetAll)

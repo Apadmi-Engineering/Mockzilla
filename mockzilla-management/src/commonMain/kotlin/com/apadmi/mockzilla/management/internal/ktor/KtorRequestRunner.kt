@@ -35,7 +35,7 @@ internal class KtorRequestRunner(private val client: HttpClient) {
             if (this@toResult.status.isSuccess()) {
                 kotlin.runCatching { body<SuccessType>() }
             } else {
-                Result.failure(Exception("Failed network call (${status}), see logs"))
+                Result.failure(Exception("Failed network call ($status), see logs"))
             }
         }
 }

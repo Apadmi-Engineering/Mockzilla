@@ -12,6 +12,7 @@ abstract class SelectedDeviceMonitoringViewModel(
     private val activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
+    val activeDevice get() = activeDeviceMonitor.selectedDevice.value?.device
     init {
         viewModelScope.launch {
             yield()
@@ -25,8 +26,6 @@ abstract class SelectedDeviceMonitoringViewModel(
         default: T,
         block: suspend (Device) -> T
     ): T = activeDeviceMonitor.selectedDevice.value?.device?.let { block(it) } ?: default
-
-    val activeDevice get() = activeDeviceMonitor.selectedDevice.value?.device
 
     abstract suspend fun reloadData(selectedDevice: Device?)
 }

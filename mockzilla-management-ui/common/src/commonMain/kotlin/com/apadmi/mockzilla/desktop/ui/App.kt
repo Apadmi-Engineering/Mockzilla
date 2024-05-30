@@ -2,11 +2,11 @@
 
 package com.apadmi.mockzilla.desktop.ui
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,20 +21,22 @@ import com.apadmi.mockzilla.desktop.ui.theme.AppTheme
 import com.apadmi.mockzilla.desktop.ui.utils.androidStatusBarPadding
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.devicetabs.DeviceTabsWidget
-import androidx.compose.runtime.*
+import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.wrapper.MiddlePaneWrapperWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsWidget
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import com.airbnb.android.showkase.annotation.ShowkaseRoot
 import com.airbnb.android.showkase.annotation.ShowkaseRootModule
-import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetailsWidget
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 @ShowkaseRoot
 class RootShowkaseModule : ShowkaseRootModule
 
+/**
+ * @property activeEndpoint
+ */
 private data class AppState(
     val activeEndpoint: EndpointConfiguration.Key?
 )
@@ -57,9 +59,11 @@ fun App(
             }
         }),
         middle = listOf(Widget("") {
-            MiddlePaneWrapperWidget({ EndpointsWidget {
-                appState = appState.copy(activeEndpoint = it)
-            } },
+            MiddlePaneWrapperWidget({
+                EndpointsWidget {
+                    appState = appState.copy(activeEndpoint = it)
+                }
+            },
                 { DeviceConnectionWidget() }
             )
         }),

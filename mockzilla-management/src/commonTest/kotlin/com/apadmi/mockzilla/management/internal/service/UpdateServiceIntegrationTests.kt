@@ -141,7 +141,6 @@ class UpdateServiceIntegrationTests {
             assertEquals(preUpdate.copy(defaultBody = null), postUpdate)
         }
 
-
     @Test
     fun `setDefaultStatus - performs update`() =
         runIntegrationTest(

@@ -124,6 +124,7 @@ data class Strings(
          * @property resetHeaders
          * @property noHeaders
          * @property headersUnset
+         * @property title
          */
         data class EndpointDetails(
             val title: String,

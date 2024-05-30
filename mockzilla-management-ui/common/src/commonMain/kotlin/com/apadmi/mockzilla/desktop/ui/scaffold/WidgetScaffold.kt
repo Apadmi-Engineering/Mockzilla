@@ -225,7 +225,7 @@ private fun LeftPanel(
 
     Row(modifier = Modifier.fillMaxHeight()) {
         VerticalTabList(
-            tabs = content.map { widget -> VerticalTab(title = widget.title,) },
+            tabs = content.map { widget -> VerticalTab(title = widget.title) },
             clockwise = false,
             selected = selectedWidget,
             onSelect = { widget ->
