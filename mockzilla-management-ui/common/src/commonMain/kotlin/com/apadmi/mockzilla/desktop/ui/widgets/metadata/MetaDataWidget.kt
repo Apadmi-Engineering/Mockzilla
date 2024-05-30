@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,7 +50,10 @@ fun MetaDataWidget() {
 fun MetaDataWidgetContent(
     state: State,
     strings: Strings = LocalStrings.current
-) = Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+) = Box(
+    Modifier.fillMaxSize().padding(4.dp),
+    contentAlignment = Alignment.Center
+) {
     Column {
         when (state) {
             is State.NoDeviceConnected -> Text(strings.widgets.metaData.noDeviceConnected)
@@ -65,10 +69,10 @@ fun MetaDataListView(
 ) = Column {
     MetaDataRow(strings.widgets.metaData.appName, metaData.appName)
     MetaDataRow(strings.widgets.metaData.appPackage, metaData.appPackage)
+    MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget.label(strings))
     MetaDataRow(strings.widgets.metaData.operatingSystemVersion, metaData.operatingSystemVersion)
     MetaDataRow(strings.widgets.metaData.deviceModel, metaData.deviceModel)
     MetaDataRow(strings.widgets.metaData.appVersion, metaData.appVersion)
-    MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget.label(strings))
     MetaDataRow(strings.widgets.metaData.mockzillaVersion, metaData.mockzillaVersion, showDivider = false)
 }
 
@@ -77,7 +81,7 @@ fun MetaDataRow(
     label: String,
     value: String,
     showDivider: Boolean = true
-) = Box {
+) = Box(modifier = Modifier.padding(4.dp)) {
     Row(
         modifier = Modifier.align(Alignment.TopCenter).fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,

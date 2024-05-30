@@ -3,6 +3,7 @@
 package com.apadmi.mockzilla.desktop.ui.scaffold
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -27,7 +29,7 @@ import com.airbnb.android.showkase.annotation.ShowkaseComposable
  * @property ui
  */
 data class Widget(
-    val title: String,
+    val title: String? = null,
     val ui: @Composable () -> Unit
 )
 
@@ -103,10 +105,14 @@ fun WidgetScaffold(
                         leftPanelWidth = leftPanelSettledWidth
                     }
                 )
-                Column(modifier = Modifier.verticalScroll(rememberScrollState()).weight(1f)) {
-                    middle.forEach {
-                        Text(it.title)
-                        it.ui()
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(1f)
+                ) {
+                    middle.forEach { widget ->
+                        widget.title?.let { Text(it) }
+                        widget.ui()
                     }
                 }
                 RightPanel(
@@ -221,7 +227,7 @@ private fun LeftPanel(
     defaultWidth: Dp = 100.dp
 ) {
     val density = LocalDensity.current
-    var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
+    var selectedWidget by remember { mutableStateOf<Int?>(null) }
 
     Row(modifier = Modifier.fillMaxHeight()) {
         VerticalTabList(

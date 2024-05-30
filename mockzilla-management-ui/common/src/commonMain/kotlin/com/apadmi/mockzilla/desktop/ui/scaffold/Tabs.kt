@@ -25,12 +25,12 @@ import com.apadmi.mockzilla.desktop.ui.utils.rotateVertically
 
 @Immutable
 internal data class VerticalTab(
-    val title: String,
+    val title: String?,
 )
 
 @Immutable
 internal data class HorizontalTab(
-    val title: String,
+    val title: String?,
     val icon: ImageVector? = null,
     val subtitle: String? = null,
 )
@@ -48,11 +48,7 @@ internal fun VerticalTabList(
             TabItem(
                 title = tab.title,
                 selected = selected == index,
-                onSelect = {
-                    if (selected != index) {
-                        onSelect(index)
-                    }
-                },
+                onSelect = { onSelect(index) },
                 modifier = Modifier.rotateVertically(clockwise)
             )
         }
@@ -85,7 +81,7 @@ internal fun HorizontalTabList(
 
 @Composable
 private fun TabItem(
-    title: String,
+    title: String?,
     selected: Boolean,
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
@@ -121,9 +117,7 @@ private fun TabItem(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = title,
-                )
+                title?.let { Text(text = title) }
                 subtitle?.let {
                     Text(
                         text = subtitle,
