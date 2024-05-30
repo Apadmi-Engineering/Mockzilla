@@ -54,9 +54,11 @@ import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 
 import com.airbnb.android.showkase.annotation.ShowkaseComposable
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import io.ktor.http.HttpStatusCode
 
 import kotlinx.coroutines.launch
+import org.koin.core.parameter.parametersOf
 
 private enum class Tab {
     Default,
@@ -66,8 +68,8 @@ private enum class Tab {
 }
 
 @Composable
-fun EndpointDetailsWidget() {
-    val viewModel = getViewModel<EndpointDetailsViewModel>()
+fun EndpointDetailsWidget(activeEndpoint: EndpointConfiguration.Key?) {
+    val viewModel = getViewModel<EndpointDetailsViewModel>() { parametersOf(activeEndpoint) }
     val state by viewModel.state
 
     EndpointDetailsWidgetContent(

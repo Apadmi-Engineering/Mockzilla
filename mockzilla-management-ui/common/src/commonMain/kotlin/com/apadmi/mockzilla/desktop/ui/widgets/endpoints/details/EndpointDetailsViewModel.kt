@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class EndpointDetailsViewModel(
+    private val key: EndpointConfiguration.Key?,
     private val endpointsService: MockzillaManagement.EndpointsService,
     private val updateService: MockzillaManagement.UpdateService,
     private val clearingService: MockzillaManagement.CacheClearingService,
@@ -38,10 +40,11 @@ class EndpointDetailsViewModel(
             state.value = State.Empty
         }
 
-        // TODO: Actually picking correct endpoint to view details for
-        val endpoints = endpointsService.fetchAllEndpointConfigs(device).map { it.firstOrNull() }
+        val endpoint = endpointsService.fetchAllEndpointConfigs(device).map {
+            endpoint -> endpoint.firstOrNull { it.key == key }
+        }
 
-        state.value = endpoints.fold(
+        state.value = endpoint.fold(
             onSuccess = { config ->
                 config?.let {
                     endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(

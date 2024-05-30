@@ -39,6 +39,7 @@ val EnStrings = Strings(
             "Logs"
         ),
         endpointDetails = Strings.Widgets.EndpointDetails(
+            title = "Editor",
             none = "No endpoint selected",
             useErrorResponse = "Return failure response",
             defaultDataTab = "Default Response",

@@ -47,8 +47,20 @@ private val getMyCow = EndpointConfiguration
             ), headers = mapOf("Content-Type" to "application/json")
         )
     }
+
+private val getMySheep = EndpointConfiguration
+    .Builder("sheep")
+    .setPatternMatcher { uri.endsWith("sheep") }
+    .setDefaultHandler {
+        MockzillaHttpResponse(
+            body = Json.encodeToString(SheepDto("Kevan", "BAAAAH")),
+            headers = mapOf("Content-Type" to "application/json")
+        )
+    }
+
 val mockzillaConfig = MockzillaConfig.Builder()
     .addEndpoint(getMyCow)
+    .addEndpoint(getMySheep)
     .setPort(port)
     .setLogLevel(MockzillaConfig.LogLevel.Verbose)
     .build()

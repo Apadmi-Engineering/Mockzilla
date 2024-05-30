@@ -9,7 +9,7 @@ import java.awt.Dimension
 
 fun main() = application {
     val state = rememberWindowState(
-        placement = WindowPlacement.Floating,
+        placement = WindowPlacement.Maximized,
         position = WindowPosition(Alignment.Center),
         isMinimized = false
     )

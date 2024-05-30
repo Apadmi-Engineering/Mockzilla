@@ -126,6 +126,7 @@ data class Strings(
          * @property headersUnset
          */
         data class EndpointDetails(
+            val title: String,
             val none: String,
             val useErrorResponse: String,
             val defaultDataTab: String,
@@ -157,7 +158,7 @@ data class Strings(
             val editHeaders: String,
             val resetHeaders: String,
             val noHeaders: String,
-            val headersUnset: String,
+            val headersUnset: String
         )
     }
 }

@@ -53,10 +53,10 @@ fun WidgetScaffold(
     // width/height below zero (when the user drags into the tab areas) but visually display the
     // restricted width/height that can't drop below 0. This ensures the dragged divider stays
     // with the cursor at all times.
-    var leftPanelWidth by remember { mutableStateOf(100.dp) }
-    var leftPanelSettledWidth by remember { mutableStateOf(100.dp) }
-    var rightPanelWidth by remember { mutableStateOf(300.dp) }
-    var rightPanelSettledWidth by remember { mutableStateOf(300.dp) }
+    var leftPanelWidth by remember { mutableStateOf(350.dp) }
+    var leftPanelSettledWidth by remember { mutableStateOf(350.dp) }
+    var rightPanelWidth by remember { mutableStateOf(500.dp) }
+    var rightPanelSettledWidth by remember { mutableStateOf(500.dp) }
     var bottomPanelHeight by remember { mutableStateOf(200.dp) }
     var bottomPanelSettledHeight by remember { mutableStateOf(200.dp) }
 
@@ -225,11 +225,7 @@ private fun LeftPanel(
 
     Row(modifier = Modifier.fillMaxHeight()) {
         VerticalTabList(
-            tabs = content.map { widget ->
-                VerticalTab(
-                    title = widget.title + " $settledWidth",
-                )
-            },
+            tabs = content.map { widget -> VerticalTab(title = widget.title,) },
             clockwise = false,
             selected = selectedWidget,
             onSelect = { widget ->
@@ -301,11 +297,7 @@ private fun RightPanel(
         }
 
         VerticalTabList(
-            tabs = content.map { widget ->
-                VerticalTab(
-                    title = widget.title + " $settledWidth",
-                )
-            },
+            tabs = content.map { widget -> VerticalTab(title = widget.title) },
             clockwise = true,
             selected = selectedWidget,
             onSelect = { widget ->

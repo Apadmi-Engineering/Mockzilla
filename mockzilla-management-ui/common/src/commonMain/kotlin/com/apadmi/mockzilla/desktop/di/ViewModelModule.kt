@@ -18,5 +18,5 @@ internal fun viewModelModule(): Module = module {
     viewModel { MiddlePaneWrapperViewModel(get()) }
     viewModel { MonitorLogsViewModel(get(), get()) }
     viewModel { EndpointsViewModel(get(), get()) }
-    viewModel { EndpointDetailsViewModel(get(), get(), get(), get()) }
+    viewModel { params -> EndpointDetailsViewModel(params.getOrNull(), get(), get(), get(), get()) }
 }

@@ -17,7 +17,7 @@ docs/__pycache__/
 **/.gradle/**
 **/build/**
 **/.idea/**
-
+mockzilla/SwiftMockzilla.podspec
 lib/mockzilla-management-ui/src/test/snapshots/images/
 .secret.env
 *.iml
