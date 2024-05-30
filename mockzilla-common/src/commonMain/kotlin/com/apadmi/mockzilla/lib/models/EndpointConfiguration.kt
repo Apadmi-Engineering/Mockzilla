@@ -57,6 +57,15 @@ data class EndpointConfiguration(
         )
 
         /**
+         * Sets the human readable name of the endpoint (defaults to the value of the `key`)
+         *
+         * @param name
+         */
+        fun setName(name: String) = apply {
+            config = config.copy(name = name)
+        }
+
+        /**
          * Probability of Mockzilla returning a simulated http error for this endpoint. 100 being a
          * guaranteed error .
          *
