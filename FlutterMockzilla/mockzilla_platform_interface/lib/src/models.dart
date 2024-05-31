@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 part 'models.freezed.dart';
 
@@ -112,7 +113,7 @@ class MockzillaConfig with _$MockzillaConfig {
     required int port,
 
     /// The list of available mocked endpoints.
-    required List<EndpointConfig> endpoints,
+    @Default([]) List<EndpointConfig> endpoints,
 
     /// Can be used to add rudimentary restrictions to the Mockzilla server
     /// such as rate limiting. See [https://apadmi-engineering.github.io/Mockzilla/additional_config/#release-mode]()
