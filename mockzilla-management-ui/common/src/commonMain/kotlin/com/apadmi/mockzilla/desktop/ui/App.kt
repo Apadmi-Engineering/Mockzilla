@@ -28,12 +28,6 @@ import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsWidget
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
-import com.airbnb.android.showkase.annotation.ShowkaseRoot
-import com.airbnb.android.showkase.annotation.ShowkaseRootModule
-
-@ShowkaseRoot
-class RootShowkaseModule : ShowkaseRootModule
-
 /**
  * @property activeEndpoint
  */

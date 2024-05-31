@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
+import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_1xx
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_2xx
@@ -26,7 +27,6 @@ import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_4xx
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_5xx
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import io.ktor.http.HttpStatusCode
 
 @Suppress("MAGIC_NUMBER")

@@ -11,7 +11,7 @@ platform :android do
                 ":mockzilla-management-ui:android:bundleDebug"
             ]
         )
-        update_reference_screenshots
+        # update_reference_screenshots
     end
 
     desc "Generate screenshots and upload them"

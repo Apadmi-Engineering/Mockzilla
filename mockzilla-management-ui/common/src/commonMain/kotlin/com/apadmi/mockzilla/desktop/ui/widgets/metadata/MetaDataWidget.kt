@@ -24,11 +24,10 @@ import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
+import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel.*
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
-
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
 
 private fun RunTarget.label(strings: Strings) = when (this) {
     RunTarget.AndroidDevice,

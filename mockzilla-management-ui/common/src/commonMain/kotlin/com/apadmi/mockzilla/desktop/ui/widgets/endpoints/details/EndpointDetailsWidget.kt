@@ -50,13 +50,13 @@ import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
+import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
 
