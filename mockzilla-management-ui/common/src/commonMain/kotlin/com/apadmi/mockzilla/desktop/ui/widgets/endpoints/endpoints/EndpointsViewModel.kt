@@ -8,9 +8,11 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 class EndpointsViewModel(
     private val endpointsService: MockzillaManagement.EndpointsService,
+    private val updateService: MockzillaManagement.UpdateService,
     activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
@@ -33,7 +35,7 @@ class EndpointsViewModel(
         State.EndpointConfig(
             it.key,
             it.name,
-            it.shouldFail,
+            it.shouldFail == true,
             tickedCheckboxes?.contains(it.key) == true
         )
     }
@@ -48,10 +50,44 @@ class EndpointsViewModel(
                 remove(key)
             }
         }
+        val newEndpoints = currentState.endpoints.map {
+            it.copy(isCheckboxTicked = if (it.key == key) value else it.isCheckboxTicked)
+        }
         state.value = currentState.copy(
-            endpoints = currentState.endpoints.map {
-                it.copy(isCheckboxTicked = if (it.key == key) value else it.isCheckboxTicked)
+            endpoints = newEndpoints
+        )
+    }
+
+    fun onFailChanged(key: EndpointConfiguration.Key, value: Boolean) = viewModelScope.launch {
+        val currentState = state.value as? State.EndpointsList ?: return@launch
+
+        val device = activeDevice ?: return@launch
+        val keysToChange =
+            checkboxStates[device].takeIf { it?.contains(key) == true } ?: listOf(key)
+
+        state.value = currentState.copy(endpoints = currentState.endpoints.map {
+            it.copy(
+                fail = if (keysToChange.contains(it.key)) value else it.fail,
+            )
+        })
+
+        // TODO: Handle error
+        updateService.setShouldFail(device, keysToChange, value)
+    }
+
+    fun onAllCheckboxChanged(value: Boolean) {
+        val currentState = state.value as? State.EndpointsList ?: return
+        val device = activeDevice ?: return
+        checkboxStates.getOrPut(device) { mutableListOf() }.apply {
+            if (value) {
+                addAll(currentState.endpoints.map { it.key })
+            } else {
+                clear()
             }
+        }
+
+        state.value = currentState.copy(
+            endpoints = currentState.endpoints.map { it.copy(isCheckboxTicked = value) }
         )
     }
 
@@ -59,7 +95,7 @@ class EndpointsViewModel(
         data class EndpointConfig(
             val key: EndpointConfiguration.Key,
             val name: String,
-            val fail: Boolean?,
+            val fail: Boolean,
             val isCheckboxTicked: Boolean
         )
 
@@ -68,6 +104,12 @@ class EndpointsViewModel(
         /**
          * @property endpoints
          */
-        data class EndpointsList(val endpoints: List<EndpointConfig>) : State()
+        data class EndpointsList(
+            val endpoints: List<EndpointConfig>,
+        ) : State() {
+            val allFail: Boolean get() = endpoints.all { it.fail }
+            val selectAllTicked: Boolean get() = endpoints.all { it.isCheckboxTicked }
+
+        }
     }
 }

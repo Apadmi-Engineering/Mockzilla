@@ -31,6 +31,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -116,44 +118,26 @@ fun EndpointDetailsWidgetContent(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 style = MaterialTheme.typography.displaySmall
             )
-            Text(
-                text = strings.widgets.endpointDetails.failOptionsLabel,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-            SingleChoiceSegmentedButtonRow(
-                modifier = Modifier.padding(horizontal = 8.dp),
-            ) {
-                val options = listOf(null, false, true)
-                options.forEachIndexed { index, option ->
-                    SegmentedButton(
-                        selected = state.fail == option,
-                        onClick = { onFailChange(option) },
-                        label = {
-                            Text(
-                                text = strings.widgets.endpointDetails.failLabel(option),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        },
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = options.size
-                        ),
-                        // Remove icon as we don't have much horizontal space to work with
-                        // due to three options here and sometimes very minimal horizontal area
-                        icon = {},
-                    )
-                }
+
+            Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = strings.widgets.endpointDetails.failOptionsLabel,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                Switch(
+                    checked = state.fail == true,
+                    onCheckedChange = onFailChange
+                )
             }
             HorizontalTabList(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
                 tabs = Tab.entries.map { tabLabel ->
                     HorizontalTab(
                         when (tabLabel) {
                             Tab.Default -> strings.widgets.endpointDetails.defaultDataTab
                             Tab.Error -> strings.widgets.endpointDetails.errorDataTab
                             Tab.Settings -> strings.widgets.endpointDetails.generalTab
-                        }
+                        },
                     )
                 },
                 selected = pagerState.currentPage,
@@ -171,6 +155,7 @@ fun EndpointDetailsWidgetContent(
                 Column {
                     when (tab) {
                         Tab.Default -> EndpointDetailsResponseBody(
+                            modifier = Modifier.alpha(if(state.fail == true) 0.9f else 1f),
                             statusCode = state.defaultStatus,
                             onStatusCodeChange = onDefaultStatusCodeChange,
                             body = state.defaultBody,
@@ -304,6 +289,7 @@ fun EndpointDetailsWidgetUnsetPreview() = PreviewSurface {
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun EndpointDetailsResponseBody(
+    modifier: Modifier = Modifier,
     statusCode: HttpStatusCode?,
     onStatusCodeChange: (HttpStatusCode?) -> Unit,
     body: String?,
@@ -313,7 +299,7 @@ private fun EndpointDetailsResponseBody(
     headers: List<Pair<String, String>>?,
     onHeadersChange: (List<Pair<String, String>>?) -> Unit,
     strings: Strings = LocalStrings.current,
-) = Column {
+) = Column(modifier = modifier) {
     Spacer(Modifier.height(4.dp))
     var pickingStatusCode by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(

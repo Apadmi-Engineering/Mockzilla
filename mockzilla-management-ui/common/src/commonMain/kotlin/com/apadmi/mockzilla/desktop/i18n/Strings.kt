@@ -32,6 +32,7 @@ data class Strings(
         val metaData: MetaData,
         val logs: Logs,
         val endpointDetails: EndpointDetails,
+        val endpoints: Endpoints,
     ) {
         /**
          * @property title
@@ -91,6 +92,9 @@ data class Strings(
             val devices: (number: Int) -> String,
         )
 
+        data class Endpoints(
+            val selectAllTooltip: String
+        )
         /**
          * @property none
          * @property useErrorResponse

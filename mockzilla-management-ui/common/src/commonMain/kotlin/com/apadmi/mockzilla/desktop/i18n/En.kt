@@ -38,6 +38,9 @@ val EnStrings = Strings(
         logs = Strings.Widgets.Logs(
             "Logs"
         ),
+        endpoints = Strings.Widgets.Endpoints(
+            selectAllTooltip = "Select all"
+        ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",
             none = "No endpoint selected",
@@ -63,7 +66,7 @@ val EnStrings = Strings(
                     "Text"
                 }
             },
-            failOptionsLabel = "Response to use:",
+            failOptionsLabel = "User Error Response:",
             failLabel = { shouldFail: Boolean? ->
                 when (shouldFail) {
                     null -> "Unset"
