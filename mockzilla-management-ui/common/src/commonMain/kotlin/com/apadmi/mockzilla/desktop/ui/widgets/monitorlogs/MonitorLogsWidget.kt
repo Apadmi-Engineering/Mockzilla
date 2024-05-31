@@ -9,9 +9,8 @@ import androidx.compose.runtime.getValue
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
+import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
 
 @Composable
 fun MonitorLogsWidget() {

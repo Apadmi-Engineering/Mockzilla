@@ -53,6 +53,9 @@ testParamInjector = "1.12" # https://github.com/google/TestParameterInjector
 showkase = "1.0.2" # https://github.com/airbnb/Showkase
 paparazzi = "1.3.1" # https://github.com/cashapp/paparazzi
 
+# Conveyor
+conveyor = "1.10" # https://github.com/hydraulic-software/conveyor
+
 # Swiftklib
 swiftklib = "0.5.1" # https://github.com/ttypic/swift-klib-plugin
 
@@ -131,3 +134,4 @@ compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 swiftklib = { id = "io.github.ttypic.swiftklib", version.ref = "swiftklib" }
+conveyor = { id = "dev.hydraulic.conveyor", version.ref = "conveyor" }

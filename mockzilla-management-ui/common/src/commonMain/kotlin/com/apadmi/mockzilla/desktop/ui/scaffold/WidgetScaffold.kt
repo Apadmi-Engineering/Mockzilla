@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.min
 
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
+import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 
 /**
  * @property title
