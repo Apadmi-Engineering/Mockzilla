@@ -25,6 +25,7 @@ import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetails
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.wrapper.MiddlePaneWrapperWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
+import com.apadmi.mockzilla.desktop.ui.widgets.misccontrols.MiscControlsWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsWidget
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
@@ -44,7 +45,10 @@ fun App(
     WidgetScaffold(
         modifier = Modifier.androidStatusBarPadding().fillMaxSize(),
         top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
-        left = listOf(Widget(strings.widgets.metaData.title) { MetaDataWidget() }),
+        left = listOf(
+            Widget(strings.widgets.metaData.title) { MetaDataWidget() },
+            Widget(strings.widgets.miscControls.title) { MiscControlsWidget() }
+        ),
         right = listOf(Widget(strings.widgets.endpointDetails.title) {
             Crossfade(
                 targetState = appState.activeEndpoint,

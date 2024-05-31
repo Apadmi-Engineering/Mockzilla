@@ -44,11 +44,9 @@ class EndpointDetailsViewModel(
 
     init {
         eventBus.events.filter {
-            it is EventBus.Event.FullRefresh || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(
-                key
-            ) == true
-        }
-            .onEach { reloadData(activeDevice) }
+            it is EventBus.Event.FullRefresh
+                    || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(key) == true
+        }.onEach { reloadData(activeDevice) }
             .launchIn(viewModelScope)
     }
 

@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -226,15 +227,19 @@ private fun LeftPanel(
     defaultWidth: Dp = 100.dp
 ) {
     val density = LocalDensity.current
-    var selectedWidget by remember { mutableStateOf<Int?>(null) }
+    var selectedWidgets by remember { mutableStateOf<Set<Int>>(setOf()) }
 
     Row(modifier = Modifier.fillMaxHeight()) {
         VerticalTabList(
             tabs = content.map { widget -> VerticalTab(title = widget.title) },
             clockwise = false,
-            selected = selectedWidget,
+            selected = selectedWidgets,
             onSelect = { widget ->
-                selectedWidget = widget.takeUnless { widget == selectedWidget }
+                selectedWidgets = if (selectedWidgets.contains(widget)) {
+                    selectedWidgets.minus(widget)
+                } else {
+                    selectedWidgets.plus(widget)
+                }
                 if (width < 20.dp) {
                     onWidthChange(defaultWidth)
                 }
@@ -245,14 +250,28 @@ private fun LeftPanel(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .fillMaxHeight()
-                .width(selectedWidget?.let { settledWidth } ?: 0.dp)
+                .width(
+                    if (selectedWidgets.isEmpty()) {
+                        0.dp
+                    } else {
+                        settledWidth
+                    }
+                )
         ) {
-            selectedWidget?.let {
-                content[it].ui()
+
+            if (selectedWidgets.isNotEmpty()) {
+                Column {
+                    selectedWidgets.sorted().forEachIndexed { index, widget ->
+                        if (index != 0) {
+                            HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                        }
+                        content[widget].ui()
+                    }
+                }
             }
         }
 
-        selectedWidget?.let {
+        if (selectedWidgets.isNotEmpty()) {
             HorizontalDraggableDivider(
                 onDrag = { offset ->
                     with(density) {
@@ -304,7 +323,7 @@ private fun RightPanel(
         VerticalTabList(
             tabs = content.map { widget -> VerticalTab(title = widget.title) },
             clockwise = true,
-            selected = selectedWidget,
+            selected = setOfNotNull(selectedWidget),
             onSelect = { widget ->
                 selectedWidget = widget.takeUnless { widget == selectedWidget }
                 if (width < 20.dp) {

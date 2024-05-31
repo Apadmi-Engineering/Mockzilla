@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -39,15 +40,15 @@ internal data class HorizontalTab(
 internal fun VerticalTabList(
     tabs: List<VerticalTab>,
     clockwise: Boolean,
-    selected: Int?,
+    selected: Set<Int>,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+    Column(modifier = modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         tabs.forEachIndexed { index, tab ->
             TabItem(
                 title = tab.title,
-                selected = selected == index,
+                selected = selected.contains(index),
                 onSelect = { onSelect(index) },
                 modifier = Modifier.rotateVertically(clockwise)
             )

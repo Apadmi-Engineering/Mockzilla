@@ -34,11 +34,18 @@ data class Strings(
         val logs: Logs,
         val endpointDetails: EndpointDetails,
         val endpoints: Endpoints,
+        val miscControls: MiscControls
     ) {
         /**
          * @property title
          */
         data class Logs(val title: String)
+
+        data class MiscControls(
+            val refreshAll: String,
+            val clearOverrides: String,
+            val title: String
+        )
 
         /**
          * @property title

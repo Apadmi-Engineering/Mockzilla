@@ -91,6 +91,11 @@ val EnStrings = Strings(
             resetHeaders = "Reset all headers",
             noHeaders = "Headers set to an empty list",
             headersUnset = "Headers unset",
+        ),
+        miscControls = Strings.Widgets.MiscControls(
+            refreshAll = "Re-sync all",
+            clearOverrides = "Reset all overrides",
+            title = "Tools"
         )
     )
 )

@@ -7,6 +7,7 @@ import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetails
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.wrapper.MiddlePaneWrapperViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel
+import com.apadmi.mockzilla.desktop.ui.widgets.misccontrols.MiscControlsViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsViewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -19,4 +20,5 @@ internal fun viewModelModule(): Module = module {
     viewModel { MonitorLogsViewModel(get(), get()) }
     viewModel { EndpointsViewModel(get(), get(), get(), get()) }
     viewModel { params -> EndpointDetailsViewModel(params.getOrNull(), get(), get(), get(), get(), get()) }
+    viewModel { MiscControlsViewModel(get(), get()) }
 }
