@@ -33,6 +33,7 @@ class ApiIntegrationTests {
             .setPort(0)  // Port determined at runtime
             .setDelayMillis(100)
             .addEndpoint(EndpointConfiguration.Builder("my-id")
+                .setName("My first endpoint")
                 .setDefaultHandler {
                     MockzillaHttpResponse(
                         HttpStatusCode.Created,
@@ -64,7 +65,7 @@ class ApiIntegrationTests {
                 MockDataResponseDto(
                     listOf(
                         SerializableEndpointConfig.allNulls(
-                            name = "my-id",
+                            name = "My first endpoint",
                             key = "my-id",
                             versionCode = Int.MIN_VALUE
                         )
