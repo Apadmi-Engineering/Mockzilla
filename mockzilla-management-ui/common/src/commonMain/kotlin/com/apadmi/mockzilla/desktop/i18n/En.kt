@@ -39,7 +39,9 @@ val EnStrings = Strings(
             "Logs"
         ),
         endpoints = Strings.Widgets.Endpoints(
-            selectAllTooltip = "Select all"
+            selectAllTooltip = "Select all",
+            errorSwitchLabel = "Use Error Response",
+            valuesOverriddenIndicatorTooltip = "Some or all of the properties of this response are being overridden"
         ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",

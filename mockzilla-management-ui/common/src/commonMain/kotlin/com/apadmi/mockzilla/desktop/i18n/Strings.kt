@@ -93,7 +93,9 @@ data class Strings(
         )
 
         data class Endpoints(
-            val selectAllTooltip: String
+            val selectAllTooltip: String,
+            val errorSwitchLabel: String,
+            val valuesOverriddenIndicatorTooltip: String
         )
         /**
          * @property none

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberBasicTooltipState
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +34,8 @@ import com.apadmi.mockzilla.desktop.ui.components.StandardTextTooltip
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsViewModel.*
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import androidx.compose.material.icons.filled.DriveFileRenameOutline
+import androidx.compose.material3.Icon
 
 @Composable
 fun EndpointsWidget(
@@ -92,12 +95,14 @@ private fun EndpointsList(
             )
         }
         Spacer(Modifier.weight(1f))
+        Text(modifier = Modifier.padding(end = 8.dp), text = strings.widgets.endpoints.errorSwitchLabel)
     }
     HorizontalDivider()
     state.endpoints.forEachIndexed { index, endpoint ->
         Row(modifier = Modifier
             .fillMaxWidth()
             .clickable { onEndpointClicked(endpoint.key) }
+            .padding(end = 8.dp)
             .alternatingBackground(index),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -107,6 +112,15 @@ private fun EndpointsList(
             )
             Text(endpoint.name)
             Spacer(Modifier.weight(1f))
+            if (endpoint.hasValuesOverridden) {
+                StandardTextTooltip(text = strings.widgets.endpoints.valuesOverriddenIndicatorTooltip) {
+                    Icon(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        imageVector = Icons.Filled.DriveFileRenameOutline,
+                        contentDescription = strings.widgets.endpoints.valuesOverriddenIndicatorTooltip
+                    )
+                }
+            }
             Switch(
                 checked = endpoint.fail,
                 onCheckedChange = { onFailChanged(endpoint.key, it) }

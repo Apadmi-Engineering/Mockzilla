@@ -33,10 +33,11 @@ class EndpointsViewModel(
         tickedCheckboxes: List<EndpointConfiguration.Key>?
     ) = map {
         State.EndpointConfig(
-            it.key,
-            it.name,
-            it.shouldFail == true,
-            tickedCheckboxes?.contains(it.key) == true
+            key = it.key,
+            name = it.name,
+            fail = it.shouldFail == true,
+            isCheckboxTicked = tickedCheckboxes?.contains(it.key) == true,
+            hasValuesOverridden = it.hasValuesOverridden()
         )
     }
 
@@ -96,8 +97,10 @@ class EndpointsViewModel(
             val key: EndpointConfiguration.Key,
             val name: String,
             val fail: Boolean,
-            val isCheckboxTicked: Boolean
-        )
+            val isCheckboxTicked: Boolean,
+            val hasValuesOverridden: Boolean
+        ) {
+        }
 
         data object Empty : State()
 
@@ -107,9 +110,16 @@ class EndpointsViewModel(
         data class EndpointsList(
             val endpoints: List<EndpointConfig>,
         ) : State() {
-            val allFail: Boolean get() = endpoints.all { it.fail }
             val selectAllTicked: Boolean get() = endpoints.all { it.isCheckboxTicked }
 
         }
     }
 }
+
+private fun SerializableEndpointConfig.hasValuesOverridden() = delayMs != null ||
+        defaultBody != null ||
+        defaultStatus != null ||
+        defaultHeaders != null ||
+        errorStatus != null ||
+        errorBody != null ||
+        errorHeaders != null
