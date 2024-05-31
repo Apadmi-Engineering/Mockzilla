@@ -93,16 +93,21 @@ class EndpointsViewModel(
     }
 
     sealed class State {
+        data object Empty : State()
+        /**
+         * @property key
+         * @property name
+         * @property fail
+         * @property isCheckboxTicked
+         * @property hasValuesOverridden
+         */
         data class EndpointConfig(
             val key: EndpointConfiguration.Key,
             val name: String,
             val fail: Boolean,
             val isCheckboxTicked: Boolean,
             val hasValuesOverridden: Boolean
-        ) {
-        }
-
-        data object Empty : State()
+        )
 
         /**
          * @property endpoints
@@ -111,7 +116,6 @@ class EndpointsViewModel(
             val endpoints: List<EndpointConfig>,
         ) : State() {
             val selectAllTicked: Boolean get() = endpoints.all { it.isCheckboxTicked }
-
         }
     }
 }

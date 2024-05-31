@@ -1,45 +1,38 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints
 
-import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RichTooltip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.StandardTextTooltip
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsViewModel.*
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import androidx.compose.material.icons.filled.DriveFileRenameOutline
-import androidx.compose.material3.Icon
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration.*
 
 @Composable
 fun EndpointsWidget(
-    onEndpointClicked: (EndpointConfiguration.Key) -> Unit
+    onEndpointClicked: (Key) -> Unit
 ) {
     val viewModel = getViewModel<EndpointsViewModel>()
     val state by viewModel.state.collectAsState()
@@ -57,9 +50,9 @@ fun EndpointsWidget(
 fun EndpointsWidgetContent(
     state: State,
     onAllCheckboxChanged: (value: Boolean) -> Unit,
-    onCheckboxChanged: (EndpointConfiguration.Key, value: Boolean) -> Unit,
-    onFailChanged: (EndpointConfiguration.Key, value: Boolean) -> Unit,
-    onEndpointClicked: (EndpointConfiguration.Key) -> Unit
+    onCheckboxChanged: (Key, value: Boolean) -> Unit,
+    onFailChanged: (Key, value: Boolean) -> Unit,
+    onEndpointClicked: (Key) -> Unit
 ) = Column {
     when (state) {
         State.Empty -> Text("Empty")
@@ -78,9 +71,9 @@ fun EndpointsWidgetContent(
 private fun EndpointsList(
     state: State.EndpointsList,
     onAllCheckboxChanged: (value: Boolean) -> Unit,
-    onEndpointClicked: (EndpointConfiguration.Key) -> Unit,
-    onCheckboxChanged: (EndpointConfiguration.Key, value: Boolean) -> Unit,
-    onFailChanged: (EndpointConfiguration.Key, value: Boolean) -> Unit,
+    onEndpointClicked: (Key) -> Unit,
+    onCheckboxChanged: (Key, value: Boolean) -> Unit,
+    onFailChanged: (Key, value: Boolean) -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
     Row(

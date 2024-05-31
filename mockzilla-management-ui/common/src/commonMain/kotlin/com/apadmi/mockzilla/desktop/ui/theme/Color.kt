@@ -80,5 +80,4 @@ val httpStatusCode_3xx = Color(0xFFFFFF00)
 val httpStatusCode_4xx = Color(0xFFFFA500)
 val httpStatusCode_5xx = Color(0xFFDC3545)
 
-
 val seed = Color(0xFFFF8E3D)

@@ -18,16 +18,26 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
-import com.apadmi.mockzilla.lib.internal.models.LogEvent
-
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_1xx
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_2xx
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_3xx
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_4xx
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_5xx
+import com.apadmi.mockzilla.lib.internal.models.LogEvent
+
+import com.airbnb.android.showkase.annotation.ShowkaseComposable
 import io.ktor.http.HttpStatusCode
+
+@Suppress("MAGIC_NUMBER")
+private fun HttpStatusCode.color() = when (this.value) {
+    in 100..199 -> httpStatusCode_1xx
+    in 200..299 -> httpStatusCode_2xx
+    in 300..399 -> httpStatusCode_3xx
+    in 400..499 -> httpStatusCode_4xx
+    in 500..599 -> httpStatusCode_5xx
+    else -> Color.Black
+}
 
 @Composable
 fun MonitorLogsWidget() {
@@ -70,13 +80,4 @@ private fun MonitorLogsList(entries: Sequence<LogEvent>) = LazyColumn {
             LogRow(Modifier.fillMaxWidth().alternatingBackground(index), logEvent)
         }
     }
-}
-
-private fun HttpStatusCode.color() = when (this.value) {
-    in 100..199 -> httpStatusCode_1xx
-    in 200..299 -> httpStatusCode_2xx
-    in 300..399 -> httpStatusCode_3xx
-    in 400..499 -> httpStatusCode_4xx
-    in 500..599 -> httpStatusCode_5xx
-    else -> Color.Black
 }

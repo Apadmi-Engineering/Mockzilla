@@ -25,6 +25,7 @@ data class Strings(
      * @property metaData
      * @property logs
      * @property endpointDetails
+     * @property endpoints
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -92,6 +93,11 @@ data class Strings(
             val devices: (number: Int) -> String,
         )
 
+        /**
+         * @property selectAllTooltip
+         * @property errorSwitchLabel
+         * @property valuesOverriddenIndicatorTooltip
+         */
         data class Endpoints(
             val selectAllTooltip: String,
             val errorSwitchLabel: String,

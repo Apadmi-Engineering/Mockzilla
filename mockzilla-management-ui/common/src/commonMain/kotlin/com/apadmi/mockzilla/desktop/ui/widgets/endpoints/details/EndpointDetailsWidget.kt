@@ -155,7 +155,7 @@ fun EndpointDetailsWidgetContent(
                 Column {
                     when (tab) {
                         Tab.Default -> EndpointDetailsResponseBody(
-                            modifier = Modifier.alpha(if(state.fail == true) 0.9f else 1f),
+                            modifier = Modifier.alpha(if (state.fail == true) 0.9f else 1f),
                             statusCode = state.defaultStatus,
                             onStatusCodeChange = onDefaultStatusCodeChange,
                             body = state.defaultBody,
