@@ -54,7 +54,7 @@ class MockzillaManagementRepositoryIntegrationTests {
             createSut = { it }
         ) { sut, connection, runtimeParams ->
             /* Run Test */
-            val result = sut.fetchMetaData(connection)
+            val result = sut.fetchMetaData(connection, false)
 
             /* Verify */
             assertEquals(
@@ -78,7 +78,7 @@ class MockzillaManagementRepositoryIntegrationTests {
             dummyAppVersion,
             createSut = { it }) { sut, connection, _ ->
             /* Run Test */
-            val result = sut.fetchMonitorLogsAndClearBuffer(connection)
+            val result = sut.fetchMonitorLogsAndClearBuffer(connection, false)
 
             /* Verify */
             assertEquals(
@@ -166,7 +166,7 @@ class MockzillaManagementRepositoryIntegrationTests {
             val expectedLogs = MonitorLogsResponse(appPackage = "-", listOf(mockLog))
 
             /* Run Test */
-            val actualLogs = sut.fetchMonitorLogsAndClearBuffer(connection).getOrNull()!!
+            val actualLogs = sut.fetchMonitorLogsAndClearBuffer(connection, false).getOrNull()!!
 
             /* Verify */
             assertEquals(

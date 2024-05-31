@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
 import com.apadmi.mockzilla.desktop.engine.device.Device
+import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -23,9 +24,14 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
     @Mock
     private val updateServiceMock = mock(classOf<MockzillaManagement.UpdateService>())
 
+    @Mock
+    private val clearingServiceMock = mock(classOf<MockzillaManagement.CacheClearingService>())
+
     private fun createSut() = EndpointDetailsViewModel(
+        key = EndpointConfiguration.Key("key"),
         endpointsServiceMock,
         updateServiceMock,
+        clearingServiceMock,
         activeDeviceMonitorMock,
         testScope.backgroundScope
     )
@@ -90,7 +96,7 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
     @Test
     fun `state is updated piecemeal by methods`() = runBlockingTest {
         /* Setup */
-        val dummyActiveDevice = Device.dummy().copy(ip = "device1")
+        selectedDeviceMock.value = StatefulDevice(Device.dummy(), "", true, "")
         val dummyKey = "key"
         val dummyName = "foo"
         val dummyVersion = 1
@@ -101,17 +107,17 @@ class EndpointDetailsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest(
         )
         val presets = DashboardOptionsConfig.Builder().build()
         given(endpointsServiceMock)
-            .coroutine { fetchAllEndpointConfigs(dummyActiveDevice) }
+            .coroutine { fetchAllEndpointConfigs(selectedDeviceMock.value!!.device) }
             .thenReturn(Result.success(listOf(config)))
         given(endpointsServiceMock)
             .coroutine {
-                fetchDashboardOptionsConfig(dummyActiveDevice, EndpointConfiguration.Key(dummyKey))
+                fetchDashboardOptionsConfig(selectedDeviceMock.value!!.device, EndpointConfiguration.Key(dummyKey))
             }
             .thenReturn(Result.success(presets))
 
         /* Run Test */
         val sut = createSut()
-        sut.reloadData(dummyActiveDevice)
+        sut.reloadData(selectedDeviceMock.value!!.device)
         val initialState = sut.state.value
         sut.onDefaultBodyChange("not json")
         sut.onDefaultStatusChange(HttpStatusCode.Accepted)

@@ -38,7 +38,7 @@ class MetaDataViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
         /* Setup */
         selectedDeviceMock.value = StatefulDevice.dummy()
         given(metaDataUseCaseMock).coroutine {
-            getMetaData(StatefulDevice.dummy().device, true)
+            getMetaData(StatefulDevice.dummy().device, false)
         }.thenReturn(Result.success(MetaData.dummy()))
         val sut = MetaDataWidgetViewModel(metaDataUseCaseMock, activeDeviceMonitorMock, backgroundScope)
 
