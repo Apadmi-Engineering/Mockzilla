@@ -2,22 +2,35 @@ package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints
 
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.Device
+import com.apadmi.mockzilla.desktop.engine.events.EventBus
 import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class EndpointsViewModel(
     private val endpointsService: MockzillaManagement.EndpointsService,
     private val updateService: MockzillaManagement.UpdateService,
+    private val eventBus: EventBus,
     activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
     val state = MutableStateFlow<State>(State.Empty)
     private val checkboxStates = mutableMapOf<Device, MutableList<EndpointConfiguration.Key>>()
+
+    init {
+        eventBus.events.filter { it is EventBus.Event.EndpointDataChanged || it is EventBus.Event.FullRefresh }
+            .onEach { reloadData(activeDevice) }
+            .launchIn(viewModelScope)
+    }
+
     override suspend fun reloadData(selectedDevice: Device?) {
         val device = selectedDevice ?: return run {
             state.value = State.Empty
@@ -73,7 +86,9 @@ class EndpointsViewModel(
         })
 
         // TODO: Handle error
-        updateService.setShouldFail(device, keysToChange, value)
+        updateService.setShouldFail(device, keysToChange, value).onSuccess {
+            eventBus.send(EventBus.Event.EndpointDataChanged(keysToChange))
+        }
     }
 
     fun onAllCheckboxChanged(value: Boolean) {

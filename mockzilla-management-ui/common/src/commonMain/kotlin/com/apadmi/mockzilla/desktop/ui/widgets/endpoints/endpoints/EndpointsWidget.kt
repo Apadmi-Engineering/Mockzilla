@@ -66,7 +66,6 @@ fun EndpointsWidgetContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun EndpointsList(
     state: State.EndpointsList,
