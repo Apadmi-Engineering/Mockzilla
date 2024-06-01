@@ -16,7 +16,7 @@ interface EventBus {
         /**
          * @property keys
          */
-        data class EndpointDataChanged(val keys: List<EndpointConfiguration.Key>) : Event
+        data class EndpointDataChanged(val keys: Collection<EndpointConfiguration.Key>) : Event
     }
 }
 

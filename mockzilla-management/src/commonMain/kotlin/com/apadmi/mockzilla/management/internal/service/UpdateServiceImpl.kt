@@ -13,7 +13,7 @@ internal class UpdateServiceImpl(
 ) : MockzillaManagement.UpdateService {
     override suspend fun setShouldFail(
         connection: MockzillaConnectionConfig,
-        keys: List<EndpointConfiguration.Key>,
+        keys: Collection<EndpointConfiguration.Key>,
         shouldFail: Boolean?
     ) = repo.updateMockDataEntries(
         keys.map { key ->
@@ -26,7 +26,7 @@ internal class UpdateServiceImpl(
 
     override suspend fun setDelay(
         connection: MockzillaConnectionConfig,
-        keys: List<EndpointConfiguration.Key>,
+        keys: Collection<EndpointConfiguration.Key>,
         delayMs: Int?
     ) = repo.updateMockDataEntries(
         keys.map { key ->

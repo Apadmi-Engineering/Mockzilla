@@ -21,7 +21,7 @@ class EndpointsViewModel(
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
     val state = MutableStateFlow<State>(State.Loading)
-    private val checkboxStates = mutableMapOf<Device, MutableList<EndpointConfiguration.Key>>()
+    private val checkboxStates = mutableSetOf<EndpointConfiguration.Key>()
 
     init {
         eventBus.events.filter { it is EventBus.Event.EndpointDataChanged || it is EventBus.Event.FullRefresh }
@@ -33,13 +33,13 @@ class EndpointsViewModel(
 
     private suspend fun reloadData() {
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
-            onSuccess = { State.EndpointsList(it.toConfig(checkboxStates[device])) },
+            onSuccess = { State.EndpointsList(it.toConfig(checkboxStates)) },
             onFailure = { State.Loading }
         )
     }
 
     private fun List<SerializableEndpointConfig>.toConfig(
-        tickedCheckboxes: List<EndpointConfiguration.Key>?
+        tickedCheckboxes: Set<EndpointConfiguration.Key>?
     ) = map {
         State.EndpointConfig(
             key = it.key,
@@ -53,13 +53,12 @@ class EndpointsViewModel(
     fun onCheckboxChanged(key: EndpointConfiguration.Key, value: Boolean) {
         val currentState = state.value as? State.EndpointsList ?: return
 
-        checkboxStates.getOrPut(device) { mutableListOf() }.apply {
-            if (value) {
-                add(key)
-            } else {
-                remove(key)
-            }
+        if (value) {
+            checkboxStates.add(key)
+        } else {
+            checkboxStates.remove(key)
         }
+
         val newEndpoints = currentState.endpoints.map {
             it.copy(isCheckboxTicked = if (it.key == key) value else it.isCheckboxTicked)
         }
@@ -71,8 +70,7 @@ class EndpointsViewModel(
     fun onFailChanged(key: EndpointConfiguration.Key, value: Boolean) = viewModelScope.launch {
         val currentState = state.value as? State.EndpointsList ?: return@launch
 
-        val keysToChange =
-            checkboxStates[device].takeIf { it?.contains(key) == true } ?: listOf(key)
+        val keysToChange = checkboxStates.takeIf { it.contains(key) } ?: listOf(key)
 
         state.value = currentState.copy(endpoints = currentState.endpoints.map {
             it.copy(
@@ -89,12 +87,10 @@ class EndpointsViewModel(
     fun onAllCheckboxChanged(value: Boolean) {
         val currentState = state.value as? State.EndpointsList ?: return
 
-        checkboxStates.getOrPut(device) { mutableListOf() }.apply {
-            if (value) {
-                addAll(currentState.endpoints.map { it.key })
-            } else {
-                clear()
-            }
+        if (value) {
+            checkboxStates.addAll(currentState.endpoints.map { it.key })
+        } else {
+            checkboxStates.clear()
         }
 
         state.value = currentState.copy(
@@ -104,6 +100,7 @@ class EndpointsViewModel(
 
     sealed class State {
         data object Loading : State()
+
         /**
          * @property key
          * @property name
