@@ -42,6 +42,8 @@ kotlin {
             /* Logging */
             implementation(libs.kermit)
 
+            /* Version Handling */
+            implementation(libs.semver4j)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))

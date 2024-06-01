@@ -199,7 +199,7 @@ private fun BottomPanel(
                 .height(selectedWidget?.let { settledHeight } ?: 0.dp)
         ) {
             selectedWidget?.let {
-                content[it].ui()
+                content.getOrNull(it)?.ui?.invoke()
             }
         }
 
@@ -227,7 +227,7 @@ private fun LeftPanel(
     defaultWidth: Dp = 100.dp
 ) {
     val density = LocalDensity.current
-    var selectedWidgets by remember { mutableStateOf<Set<Int>>(setOf()) }
+    var selectedWidgets by remember(content) { mutableStateOf<Set<Int>>(setOf()) }
 
     Row(modifier = Modifier.fillMaxHeight()) {
         VerticalTabList(
@@ -264,7 +264,7 @@ private fun LeftPanel(
                         if (index != 0) {
                             HorizontalDivider(Modifier.padding(vertical = 8.dp))
                         }
-                        content[widget].ui()
+                        content.getOrNull(widget)?.ui?.invoke()
                     }
                 }
             }
@@ -315,7 +315,7 @@ private fun RightPanel(
                 .width(selectedWidget?.let { settledWidth } ?: 0.dp)
         ) {
             selectedWidget?.let {
-                content[it].ui()
+                content.getOrNull(it)?.ui?.invoke()
             }
         }
 

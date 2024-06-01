@@ -77,13 +77,15 @@ class DeviceTabsViewModelTests : CoroutineTest() {
                     dummyActiveDevice,
                     "Device Name 1",
                     isConnected = false,
-                    connectedAppPackage = "package"
+                    connectedAppPackage = "package",
+                    true
                 ),
                 StatefulDevice(
                     Device.dummy(),
                     "Device Name 2",
                     isConnected = true,
-                    connectedAppPackage = "package"
+                    connectedAppPackage = "package",
+                    true
                 ),
             )
         )

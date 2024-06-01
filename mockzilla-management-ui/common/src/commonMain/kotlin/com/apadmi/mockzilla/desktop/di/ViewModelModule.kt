@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.desktop.di
 
 import com.apadmi.mockzilla.desktop.di.utils.viewModel
+import com.apadmi.mockzilla.desktop.ui.AppRootViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.devicetabs.DeviceTabsViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetailsViewModel
@@ -19,4 +20,5 @@ internal fun viewModelModule(): Module = module {
     viewModel { params -> EndpointsViewModel(params.get(), get(), get(), get()) }
     viewModel { params -> EndpointDetailsViewModel(params.getOrNull(), params.get(), get(), get(), get(), get()) }
     viewModel { params -> MiscControlsViewModel(params.getOrNull(), get(), get()) }
+    viewModel { AppRootViewModel(get()) }
 }

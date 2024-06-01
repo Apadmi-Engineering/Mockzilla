@@ -72,7 +72,7 @@ fun MetaDataListView(
 ) = Column {
     MetaDataRow(strings.widgets.metaData.appName, metaData.appName)
     MetaDataRow(strings.widgets.metaData.appPackage, metaData.appPackage)
-    MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget.label(strings))
+    MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget?.label(strings) ?: "-")
     MetaDataRow(strings.widgets.metaData.operatingSystemVersion, metaData.operatingSystemVersion)
     MetaDataRow(strings.widgets.metaData.deviceModel, metaData.deviceModel)
     MetaDataRow(strings.widgets.metaData.appVersion, metaData.appVersion)

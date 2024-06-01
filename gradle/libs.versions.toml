@@ -40,6 +40,7 @@ material3 = "1.2.1" # https://developer.android.com/jetpack/androidx/releases/co
 compose-activity = "1.9.0" # https://developer.android.com/jetpack/androidx/releases/activity
 
 # Code Formatting
+semver4j = "3.1.0" # https://github.com/vdurmont/semver4j
 spotless = "6.25.0" # https://github.com/diffplug/spotless
 
 # Testing
@@ -110,6 +111,7 @@ koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = 
 # Testing
 mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
 mockative-processor = { module = "io.mockative:mockative-processor", version.ref = "mockative" }
+semver4j = { module = "com.vdurmont:semver4j", version.ref = "semver4j" }
 showkase = { module = "com.airbnb.android:showkase", version.ref = "showkase" }
 showkase-processor = { module = "com.airbnb.android:showkase-processor", version.ref = "showkase" }
 androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }

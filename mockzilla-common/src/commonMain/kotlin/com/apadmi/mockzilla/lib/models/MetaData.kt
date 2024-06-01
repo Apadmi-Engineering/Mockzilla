@@ -24,7 +24,7 @@ data class MetaData(
     val operatingSystemVersion: String,
     val deviceModel: String,
     val appVersion: String,
-    val runTarget: RunTarget,
+    val runTarget: RunTarget? = null,
     val mockzillaVersion: String
 ) {
     val isAndroid = runTarget in listOf(RunTarget.AndroidEmulator, RunTarget.AndroidDevice)

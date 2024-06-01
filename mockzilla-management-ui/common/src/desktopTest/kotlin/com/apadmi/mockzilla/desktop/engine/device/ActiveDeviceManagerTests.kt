@@ -75,7 +75,8 @@ class ActiveDeviceManagerTests : CoroutineTest() {
                         device = Device.dummy(),
                         name = "Jvm-model",
                         isConnected = true,
-                        connectedAppPackage = "test.package"
+                        connectedAppPackage = "test.package",
+                        isCompatibleMockzillaVersion = true
                     )
                 ),
                 sut.allDevices.toList()
