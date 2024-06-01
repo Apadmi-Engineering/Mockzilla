@@ -1,14 +1,18 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
 import androidx.compose.runtime.mutableStateOf
+
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.events.EventBus
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetailsViewModel.*
+import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
+
 import io.ktor.http.HttpStatusCode
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -17,7 +21,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 
 private typealias UpdateServerBlock = suspend (config: SerializableEndpointConfig, device: Device) -> Unit
 private typealias UpdateStateBlock = State.Endpoint.() -> State.Endpoint
@@ -43,9 +46,9 @@ class EndpointDetailsViewModel(
 
     init {
         eventBus.events.filter {
-            it is EventBus.Event.FullRefresh
-                    || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(key) == true
-        }.onEach { reloadData() }
+            it is EventBus.Event.FullRefresh || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(key) == true
+        }
+            .onEach { reloadData() }
             .launchIn(viewModelScope)
 
         viewModelScope.launch { reloadData() }

@@ -258,7 +258,6 @@ private fun LeftPanel(
                     }
                 )
         ) {
-
             if (selectedWidgets.isNotEmpty()) {
                 Column {
                     selectedWidgets.sorted().forEachIndexed { index, widget ->

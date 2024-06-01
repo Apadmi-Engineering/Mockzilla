@@ -26,6 +26,7 @@ data class Strings(
      * @property logs
      * @property endpointDetails
      * @property endpoints
+     * @property miscControls
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -41,6 +42,11 @@ data class Strings(
          */
         data class Logs(val title: String)
 
+        /**
+         * @property refreshAll
+         * @property clearOverrides
+         * @property title
+         */
         data class MiscControls(
             val refreshAll: String,
             val clearOverrides: String,

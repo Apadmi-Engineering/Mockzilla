@@ -1,13 +1,18 @@
 package com.apadmi.mockzilla.desktop.utils
 
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.newCoroutineContext
 import kotlinx.coroutines.yield
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
+
+public fun CoroutineScope.launchUnit(
+    context: CoroutineContext = EmptyCoroutineContext,
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = launch(context, start, block).let { Unit }
 
 /**
  * This ensures that any active coroutines finish running before the given state is emitted.
@@ -29,9 +34,3 @@ internal fun <T> MutableStateFlow<T>.setStateWithYield(vmScope: CoroutineScope, 
         }
     }
 }
-
-public fun CoroutineScope.launchUnit(
-    context: CoroutineContext = EmptyCoroutineContext,
-    start: CoroutineStart = CoroutineStart.DEFAULT,
-    block: suspend CoroutineScope.() -> Unit
-) = launch(context, start, block).let { Unit }

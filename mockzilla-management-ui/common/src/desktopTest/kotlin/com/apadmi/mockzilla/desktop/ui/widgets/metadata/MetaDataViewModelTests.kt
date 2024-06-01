@@ -1,19 +1,18 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.metadata
 
+import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel.*
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
-import com.apadmi.mockzilla.desktop.engine.device.Device
-import com.apadmi.mockzilla.testutils.CoroutineTest
 import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
 import io.mockative.mock
-import kotlinx.coroutines.delay
 import org.junit.Test
 
 import kotlin.test.assertEquals
@@ -22,7 +21,6 @@ import kotlinx.coroutines.yield
 class MetaDataViewModelTests : CoroutineTest() {
     @Mock
     private val metaDataUseCaseMock = mock(classOf<MetaDataUseCase>())
-
 
     @Test
     fun `getMetaData - state=DisplayMetaData`() = runBlockingTest {

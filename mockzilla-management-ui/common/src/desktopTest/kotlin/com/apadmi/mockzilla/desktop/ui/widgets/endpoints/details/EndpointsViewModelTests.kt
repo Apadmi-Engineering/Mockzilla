@@ -1,27 +1,26 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
 import com.apadmi.mockzilla.desktop.engine.device.Device
-import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
+import com.apadmi.mockzilla.desktop.engine.events.EventBus
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsViewModel.*
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
+import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
-import com.apadmi.mockzilla.desktop.engine.events.EventBus
-import com.apadmi.mockzilla.testutils.CoroutineTest
 import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
 import io.mockative.mock
 import junit.framework.TestCase.assertFalse
-import kotlinx.coroutines.flow.emptyFlow
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.yield
 
 @Suppress("TOO_LONG_FUNCTION")
@@ -91,7 +90,6 @@ class EndpointsViewModelTests : CoroutineTest() {
                 ), awaitItem()
             )
         }
-
     }
 
     @Test

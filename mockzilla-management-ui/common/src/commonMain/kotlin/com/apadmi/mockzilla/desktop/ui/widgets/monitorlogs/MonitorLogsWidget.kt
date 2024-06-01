@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,8 +18,6 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.engine.device.Device
-import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
-import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_1xx
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_2xx

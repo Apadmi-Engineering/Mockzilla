@@ -9,21 +9,23 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 interface EventBus {
     val events: Flow<Event>
 
-    sealed interface Event {
-        data class EndpointDataChanged(val keys: List<EndpointConfiguration.Key>): Event
-        data object FullRefresh: Event
-    }
-
     fun send(event: Event)
+
+    sealed interface Event {
+        data object FullRefresh : Event
+        /**
+         * @property keys
+         */
+        data class EndpointDataChanged(val keys: List<EndpointConfiguration.Key>) : Event
+    }
 }
 
 class EventBusImpl(
     private val coroutineScope: CoroutineScope
-): EventBus {
+) : EventBus {
     override val events = MutableSharedFlow<EventBus.Event>()
 
     override fun send(event: EventBus.Event) = coroutineScope.launchUnit {
         events.emit(event)
     }
 }
-

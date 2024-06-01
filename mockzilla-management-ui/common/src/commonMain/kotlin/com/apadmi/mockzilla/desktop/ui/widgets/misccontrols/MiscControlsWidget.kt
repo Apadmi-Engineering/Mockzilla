@@ -9,7 +9,6 @@ import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import org.koin.core.parameter.parametersOf
-import kotlin.reflect.KFunction0
 
 @Composable
 fun MiscControlsWidget(
@@ -26,7 +25,8 @@ fun MiscControlsWidget(
 fun MiscControlsWidgetContent(
     onRefreshAll: () -> Unit,
     onClearAllOverrides: () -> Unit,
-    strings: Strings = LocalStrings.current) = Column {
+    strings: Strings = LocalStrings.current
+) = Column {
     Button(onClick = onRefreshAll) {
         Text(strings.widgets.miscControls.refreshAll)
     }

@@ -13,9 +13,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
-
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
@@ -30,9 +30,11 @@ import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.misccontrols.MiscControlsWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsWidget
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+
+import org.koin.java.KoinJavaComponent
+
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.java.KoinJavaComponent
 
 /**
  * @property activeEndpoint
@@ -46,12 +48,17 @@ fun App(
     strings: Strings = LocalStrings.current
 ) = AppTheme {
     val scope = rememberCoroutineScope()
-    var appState by remember { mutableStateOf(AppState(activeEndpoint = null)) }
     var activeDevice by remember { mutableStateOf<StatefulDevice?>(null) }
 
-    KoinJavaComponent.getKoin().get<ActiveDeviceMonitor>().selectedDevice.onEach {
-        activeDevice = it
-    }.launchIn(scope)
+    KoinJavaComponent.getKoin()
+        .get<ActiveDeviceMonitor>()
+        .selectedDevice
+        .onEach {
+            activeDevice = it
+        }
+        .launchIn(scope)
+
+    var appState by remember { mutableStateOf(AppState(activeEndpoint = null)) }
 
     WidgetScaffold(
         modifier = Modifier.androidStatusBarPadding().fillMaxSize(),

@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
 import com.apadmi.mockzilla.desktop.engine.device.Device
-import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
 import com.apadmi.mockzilla.desktop.engine.events.EventBus
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
@@ -9,15 +8,17 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
+
 import io.ktor.http.HttpStatusCode
 import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.given
 import io.mockative.mock
+import org.junit.Test
+
+import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.yield
-import org.junit.Test
-import kotlin.test.assertEquals
 
 @Suppress("TOO_LONG_FUNCTION", "MAGIC_NUMBER")
 class EndpointDetailsViewModelTests : CoroutineTest() {
@@ -157,16 +158,26 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
         val initialState = sut.state.value
         repeat(10) { yield() }
 
-        sut.onDefaultBodyChange("not json");yield()
-        sut.onDefaultStatusChange(HttpStatusCode.Accepted);yield()
-        sut.onDelayChange("100");yield()
-        sut.onErrorBodyChange("unauthorized");yield()
-        sut.onErrorStatusChange(HttpStatusCode.Unauthorized);yield()
-        sut.onFailChange(true);yield()
-        sut.onJsonDefaultEditingChange(false);yield()
-        sut.onJsonErrorEditingChange(false);yield()
-        sut.onDefaultHeadersChange(listOf("" to ""));yield()
-        sut.onErrorHeadersChange(listOf());yield()
+        sut.onDefaultBodyChange("not json")
+        yield()
+        sut.onDefaultStatusChange(HttpStatusCode.Accepted)
+        yield()
+        sut.onDelayChange("100")
+        yield()
+        sut.onErrorBodyChange("unauthorized")
+        yield()
+        sut.onErrorStatusChange(HttpStatusCode.Unauthorized)
+        yield()
+        sut.onFailChange(true)
+        yield()
+        sut.onJsonDefaultEditingChange(false)
+        yield()
+        sut.onJsonErrorEditingChange(false)
+        yield()
+        sut.onDefaultHeadersChange(listOf("" to ""))
+        yield()
+        sut.onErrorHeadersChange(listOf())
+        yield()
 
         /* Verify */
         assertEquals(
