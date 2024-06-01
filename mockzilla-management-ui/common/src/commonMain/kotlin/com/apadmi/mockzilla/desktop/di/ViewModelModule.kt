@@ -20,5 +20,5 @@ internal fun viewModelModule(): Module = module {
     viewModel { MonitorLogsViewModel(get(), get()) }
     viewModel { EndpointsViewModel(get(), get(), get(), get()) }
     viewModel { params -> EndpointDetailsViewModel(params.getOrNull(), get(), get(), get(), get(), get()) }
-    viewModel { MiscControlsViewModel(get(), get()) }
+    viewModel { MiscControlsViewModel(get(), get(), get()) }
 }

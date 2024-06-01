@@ -56,7 +56,7 @@ fun App(
                 EndpointDetailsWidget(endpoint)
             }
         }),
-        middle = listOf(Widget() {
+        middle = listOf(Widget {
             MiddlePaneWrapperWidget({
                 EndpointsWidget {
                     appState = appState.copy(activeEndpoint = it)
