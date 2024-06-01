@@ -28,13 +28,13 @@ extension BridgeHttpMethod {
     
     static func fromNative(_ httpMethod: Ktor_httpHttpMethod) throws -> BridgeHttpMethod {
         return switch(httpMethod.value) {
-        case "get": BridgeHttpMethod.get
-        case "head": BridgeHttpMethod.head
-        case "delete": BridgeHttpMethod.delete
-        case "options": BridgeHttpMethod.options
-        case "patch": BridgeHttpMethod.patch
-        case "post": BridgeHttpMethod.post
-        case "put": BridgeHttpMethod.put
+        case "GET": BridgeHttpMethod.get
+        case "HEAD": BridgeHttpMethod.head
+        case "DELETE": BridgeHttpMethod.delete
+        case "OPTIONS": BridgeHttpMethod.options
+        case "PATCH": BridgeHttpMethod.patch
+        case "POST": BridgeHttpMethod.post
+        case "PUT": BridgeHttpMethod.put
         default: throw MockzillaError.argumentError
         }
     }
@@ -70,7 +70,7 @@ extension BridgeMockzillaHttpRequest {
         return try BridgeMockzillaHttpRequest(
             uri: request.uri,
             headers: request.headers,
-            body: request.body,
+            body: request.bodyAsString(),
             method: BridgeHttpMethod.fromNative(request.method)
         )
     }
@@ -100,13 +100,25 @@ extension BridgeEndpointConfig {
         defaultHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse,
         errorHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse
     ) -> EndpointConfiguration {
+        var kotlinFailureProbability: KotlinInt?
+        var kotlinDelayMean: KotlinInt?
+        var kotlinDelayVariance: KotlinInt?
+        if let _failureProbability = failureProbability {
+            kotlinFailureProbability = KotlinInt(int: Int32(truncatingIfNeeded: _failureProbability))
+        }
+        if let _delayMean = delayMean {
+            kotlinDelayMean = KotlinInt(int: Int32(truncatingIfNeeded: _delayMean))
+        }
+        if let _delayVariance = delayVariance {
+            kotlinDelayVariance = KotlinInt(int: Int32(truncatingIfNeeded: _delayVariance))
+        }
         return EndpointConfiguration(
             name: name,
             key: key,
-            failureProbability: failureProbability as? KotlinInt,
-            delayMean: delayMean as? KotlinInt,
-            delayVariance: delayVariance as? KotlinInt,
-            endpointMatcher: { request in KotlinBoolean(value: endpointMatcher(key, request)) },
+            failureProbability: kotlinFailureProbability,
+            delayMean: kotlinDelayMean,
+            delayVariance: kotlinDelayVariance,
+            endpointMatcher: { request in KotlinBoolean(value: endpointMatcher(key, request))},
             webApiDefaultResponse: webApiErrorResponse?.toNative(),
             webApiErrorResponse: webApiErrorResponse?.toNative(),
             defaultHandler: { request in defaultHandler(key, request) },
@@ -118,9 +130,9 @@ extension BridgeEndpointConfig {
         return BridgeEndpointConfig(
             name: endpoint.name,
             key: endpoint.key,
-            failureProbability: 0,
-            delayMean: endpoint.delayMean as? Int64,
-            delayVariance: 0,
+            failureProbability: endpoint.failureProbability?.int64Value,
+            delayMean: endpoint.delayMean?.int64Value,
+            delayVariance: endpoint.delayVariance?.int64Value,
             webApiDefaultResponse: endpoint.webApiDefaultResponse.map {
                 response in BridgeMockzillaHttpResponse.fromNative(response)
             },
