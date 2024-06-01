@@ -3,28 +3,18 @@ import UIKit
 import mockzilla
 import SwiftMockzilla
 
-extension FlutterError: Error {}
-
-public class MockzillaIosPlugin: NSObject, FlutterPlugin, MockzillaHostApi {
+public class MockzillaIosPlugin: NSObject, FlutterPlugin {
+    
+    let handler: MockzillaFlutterApi
+    
+    init(binaryMessenger: FlutterBinaryMessenger) {
+        handler = MockzillaFlutterApi(binaryMessenger: binaryMessenger)
+    }
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let plugin = MockzillaIosPlugin()
-            MockzillaHostApiSetup.setUp(binaryMessenger: registrar.messenger(), api: plugin)
-            registrar.publish(plugin)
-    }
-    
-    func startServer(config: BridgeMockzillaConfig) throws -> BridgeMockzillaRuntimeParams {
-        print("Received call to start Mockzilla server")
-        let params = MockzillaKt.startMockzilla(
-            config: config.toNative(endpointMatcher: { key, request in request.uri.contains("packages") },
-                                    defaultHandler: { key, request in MockzillaHttpResponse(statusCode: HttpStatusCode.OK, headers: [:], body: "")},
-                                    errorHandler: { key, request in MockzillaHttpResponse(statusCode: HttpStatusCode.InternalServerError, headers: [:], body: "")}
-                                   )
-        )
-        return try BridgeMockzillaRuntimeParams.fromNative(params)
-    }
-
-    func stopServer() throws {
-        MockzillaKt.stopMockzilla()
+        let plugin = MockzillaIosPlugin(binaryMessenger: registrar.messenger())
+        let mockzilla = MockzillaIos(handler: plugin.handler)
+        MockzillaHostApiSetup.setUp(binaryMessenger: registrar.messenger(), api: mockzilla)
+        registrar.publish(plugin)
     }
 }
