@@ -7,7 +7,7 @@ import 'package:mockzilla/mockzilla.dart';
 import 'engine/config/mockzilla_config.dart';
 
 void main() async {
-  await WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Mockzilla.startMockzilla(mockzillaConfig);
   runApp(const MyApp());
 }
