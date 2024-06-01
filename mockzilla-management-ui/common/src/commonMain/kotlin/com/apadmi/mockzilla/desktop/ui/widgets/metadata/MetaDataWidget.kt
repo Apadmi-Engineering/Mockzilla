@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
+import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
@@ -28,6 +30,7 @@ import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel.*
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
+import org.koin.core.parameter.parametersOf
 
 private fun RunTarget.label(strings: Strings) = when (this) {
     RunTarget.AndroidDevice,
@@ -38,8 +41,8 @@ private fun RunTarget.label(strings: Strings) = when (this) {
 }
 
 @Composable
-fun MetaDataWidget() {
-    val viewModel = getViewModel<MetaDataWidgetViewModel>()
+fun MetaDataWidget(device: Device) {
+    val viewModel = getViewModel<MetaDataWidgetViewModel>(key = device.toString()) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     MetaDataWidgetContent(state)
@@ -55,8 +58,9 @@ fun MetaDataWidgetContent(
 ) {
     Column {
         when (state) {
-            is State.NoDeviceConnected -> Text(strings.widgets.metaData.noDeviceConnected)
             is State.DisplayMetaData -> MetaDataListView(state.metaData, strings)
+            State.Error -> Text("Error")
+            State.Loading -> CircularProgressIndicator()
         }
     }
 }
@@ -100,11 +104,18 @@ fun MetaDataRow(
     }
 }
 
-@ShowkaseComposable("MetaDataWidget-NoDeviceConnected", "MetaDataWidget")
+@ShowkaseComposable("MetaDataWidget-Loading", "MetaDataWidget")
 @Composable
 @Preview
-fun MetaDataWidgetNoDeviceContentPreview() = PreviewSurface {
-    MetaDataWidgetContent(State.NoDeviceConnected)
+fun MetaDataWidgetLoadingContentPreview() = PreviewSurface {
+    MetaDataWidgetContent(State.Loading)
+}
+
+@ShowkaseComposable("MetaDataWidget-Error", "MetaDataWidget")
+@Composable
+@Preview
+fun MetaDataWidgetErrorContentPreview() = PreviewSurface {
+    MetaDataWidgetContent(State.Error)
 }
 
 @ShowkaseComposable("MetaDataWidget-DeviceConnected", "MetaDataWidget")

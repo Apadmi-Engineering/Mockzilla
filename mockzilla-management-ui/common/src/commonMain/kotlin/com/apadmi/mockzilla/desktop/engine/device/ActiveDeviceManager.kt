@@ -33,7 +33,7 @@ class ActiveDeviceManagerImpl(
     scope: CoroutineScope
 ) : ActiveDeviceMonitor, ActiveDeviceSelector {
     override val selectedDevice = MutableStateFlow<StatefulDevice?>(null)
-    override val onDeviceConnectionStateChange = MutableSharedFlow<Unit>()
+    override val onDeviceConnectionStateChange = MutableSharedFlow<Unit>(replay = 1)
     private val allDevicesInternal = mutableMapOf<Device, StatefulDevice>()
     override val allDevices get() = allDevicesInternal.values
 
@@ -66,6 +66,10 @@ class ActiveDeviceManagerImpl(
                     }
                 }
                 allDevicesInternal[device] = newStatefulDevice
+            }
+
+            if (onDeviceConnectionStateChange.replayCache.isEmpty()) {
+                onDeviceConnectionStateChange.emit(Unit)
             }
 
             delay(0.5.seconds)

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
+import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
@@ -70,8 +72,13 @@ private enum class Tab {
 }
 
 @Composable
-fun EndpointDetailsWidget(activeEndpoint: EndpointConfiguration.Key?) {
-    val viewModel = getViewModel<EndpointDetailsViewModel>(key = activeEndpoint?.raw) { parametersOf(activeEndpoint) }
+fun EndpointDetailsWidget(
+    device: Device,
+    activeEndpoint: EndpointConfiguration.Key?
+) {
+    val viewModel = getViewModel<EndpointDetailsViewModel>(
+        key = "${activeEndpoint?.raw}-$device"
+    ) { parametersOf(activeEndpoint, device) }
     val state by viewModel.state
 
     EndpointDetailsWidgetContent(

@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
@@ -23,18 +21,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
+import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.StandardTextTooltip
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsViewModel.*
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration.*
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun EndpointsWidget(
+    device: Device,
     onEndpointClicked: (Key) -> Unit
 ) {
-    val viewModel = getViewModel<EndpointsViewModel>()
+    val viewModel = getViewModel<EndpointsViewModel>(key = device.toString()) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     EndpointsWidgetContent(
@@ -55,7 +56,7 @@ fun EndpointsWidgetContent(
     onEndpointClicked: (Key) -> Unit
 ) = Column {
     when (state) {
-        State.Empty -> Text("Empty")
+        State.Loading -> Text("Empty")
         is State.EndpointsList -> EndpointsList(
             state,
             onAllCheckboxChanged,

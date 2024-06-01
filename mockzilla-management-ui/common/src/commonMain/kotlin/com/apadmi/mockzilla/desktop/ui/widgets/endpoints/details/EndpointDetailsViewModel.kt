@@ -1,11 +1,9 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
 import androidx.compose.runtime.mutableStateOf
-import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.events.EventBus
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetailsViewModel.*
-import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -19,19 +17,20 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 
 private typealias UpdateServerBlock = suspend (config: SerializableEndpointConfig, device: Device) -> Unit
 private typealias UpdateStateBlock = State.Endpoint.() -> State.Endpoint
 
 class EndpointDetailsViewModel(
     private val key: EndpointConfiguration.Key?,
+    private val device: Device,
     private val endpointsService: MockzillaManagement.EndpointsService,
     private val updateService: MockzillaManagement.UpdateService,
     private val clearingService: MockzillaManagement.CacheClearingService,
-    activeDeviceMonitor: ActiveDeviceMonitor,
     private val eventBus: EventBus,
     scope: CoroutineScope? = null
-) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
+) : ViewModel(scope) {
     // using mutableStateOf here to avoid latency issues with text input
     // see https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
     // for reasons
@@ -46,15 +45,13 @@ class EndpointDetailsViewModel(
         eventBus.events.filter {
             it is EventBus.Event.FullRefresh
                     || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(key) == true
-        }.onEach { reloadData(activeDevice) }
+        }.onEach { reloadData() }
             .launchIn(viewModelScope)
+
+        viewModelScope.launch { reloadData() }
     }
 
-    override suspend fun reloadData(selectedDevice: Device?) {
-        val device = selectedDevice ?: return run {
-            state.value = State.Empty
-        }
-
+    private suspend fun reloadData() {
         val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
             endpoint.firstOrNull { it.key == key }
         }
@@ -140,12 +137,10 @@ class EndpointDetailsViewModel(
         updateServer: UpdateServerBlock
     ) {
         // TODO: Handle error
-        val activeDevice = this.activeDevice ?: return
-
         state.value = when (val state = state.value) {
             is State.Empty -> state
             is State.Endpoint -> {
-                viewModelScope.launch { updateServer(state.config, activeDevice) }
+                viewModelScope.launch { updateServer(state.config, device) }
                 updateState(state)
             }
         }
@@ -233,15 +228,12 @@ class EndpointDetailsViewModel(
         )
 
     fun onResetAll() = viewModelScope.launch {
-        val activeDevice = this@EndpointDetailsViewModel.activeDevice ?: return@launch
         val state = state.value as? State.Endpoint ?: return@launch
 
         // TODO: Loading and error states here
         emitErrorAndEventIfNeeded(
-            clearingService.clearCaches(activeDevice, listOf(state.config.key))
-        ).onSuccess {
-            reloadData(activeDevice)
-        }
+            clearingService.clearCaches(device, listOf(state.config.key))
+        ).onSuccess { reloadData() }
     }
 
     sealed class State {

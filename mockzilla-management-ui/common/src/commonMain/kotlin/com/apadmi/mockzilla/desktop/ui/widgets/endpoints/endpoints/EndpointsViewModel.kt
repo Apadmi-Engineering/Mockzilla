@@ -1,44 +1,40 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints
 
-import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.events.EventBus
-import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
+import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class EndpointsViewModel(
+    private val device: Device,
     private val endpointsService: MockzillaManagement.EndpointsService,
     private val updateService: MockzillaManagement.UpdateService,
     private val eventBus: EventBus,
-    activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
-) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
-    val state = MutableStateFlow<State>(State.Empty)
+) : ViewModel(scope) {
+    val state = MutableStateFlow<State>(State.Loading)
     private val checkboxStates = mutableMapOf<Device, MutableList<EndpointConfiguration.Key>>()
 
     init {
         eventBus.events.filter { it is EventBus.Event.EndpointDataChanged || it is EventBus.Event.FullRefresh }
-            .onEach { reloadData(activeDevice) }
+            .onEach { reloadData() }
             .launchIn(viewModelScope)
+
+        viewModelScope.launch { reloadData() }
     }
 
-    override suspend fun reloadData(selectedDevice: Device?) {
-        val device = selectedDevice ?: return run {
-            state.value = State.Empty
-        }
-
+    private suspend fun reloadData() {
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
             onSuccess = { State.EndpointsList(it.toConfig(checkboxStates[device])) },
-            onFailure = { State.Empty }
+            onFailure = { State.Loading }
         )
     }
 
@@ -56,7 +52,7 @@ class EndpointsViewModel(
 
     fun onCheckboxChanged(key: EndpointConfiguration.Key, value: Boolean) {
         val currentState = state.value as? State.EndpointsList ?: return
-        val device = activeDevice ?: return
+
         checkboxStates.getOrPut(device) { mutableListOf() }.apply {
             if (value) {
                 add(key)
@@ -75,7 +71,6 @@ class EndpointsViewModel(
     fun onFailChanged(key: EndpointConfiguration.Key, value: Boolean) = viewModelScope.launch {
         val currentState = state.value as? State.EndpointsList ?: return@launch
 
-        val device = activeDevice ?: return@launch
         val keysToChange =
             checkboxStates[device].takeIf { it?.contains(key) == true } ?: listOf(key)
 
@@ -93,7 +88,7 @@ class EndpointsViewModel(
 
     fun onAllCheckboxChanged(value: Boolean) {
         val currentState = state.value as? State.EndpointsList ?: return
-        val device = activeDevice ?: return
+
         checkboxStates.getOrPut(device) { mutableListOf() }.apply {
             if (value) {
                 addAll(currentState.endpoints.map { it.key })
@@ -108,7 +103,7 @@ class EndpointsViewModel(
     }
 
     sealed class State {
-        data object Empty : State()
+        data object Loading : State()
         /**
          * @property key
          * @property name
