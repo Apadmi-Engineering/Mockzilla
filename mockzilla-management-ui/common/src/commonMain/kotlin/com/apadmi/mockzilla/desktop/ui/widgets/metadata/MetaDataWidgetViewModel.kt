@@ -34,7 +34,7 @@ class MetaDataWidgetViewModel(
 
     @Immutable
     sealed class State {
-        object NoDeviceConnected : State()
+        data object NoDeviceConnected : State()
         data class DisplayMetaData(val metaData: MetaData) : State()
     }
 }

@@ -1,24 +1,34 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection
 
 import androidx.compose.runtime.Immutable
+import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
+import com.apadmi.mockzilla.desktop.engine.connection.DeviceDetectionUseCase
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.models.MetaData
-import com.apadmi.mockzilla.management.MockzillaManagement.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
 class DeviceConnectionViewModel(
     private val metaDataUseCase: MetaDataUseCase,
-    private val activeDeviceSelector: ActiveDeviceSelector
+    private val activeDeviceSelector: ActiveDeviceSelector,
+    private val deviceDetectionUseCase: DeviceDetectionUseCase
 ) : ViewModel() {
     val state = MutableStateFlow(State())
     private var connectionJob: Job? = null
+
+    init {
+        deviceDetectionUseCase.onChangeEvent.onEach {
+            state.value = state.value.copy(devices = deviceDetectionUseCase.devices)
+        }.launchIn(viewModelScope)
+    }
 
     // TODO: Replace this with better strategies of device connections
     // This is just a rough and ready way to get the UI to be testable
@@ -26,12 +36,24 @@ class DeviceConnectionViewModel(
         connectionJob?.cancel()
         val device = createDeviceOrNull(newValue)
         device ?: run {
-            state.value = State(ipAndPort = newValue, State.ConnectionState.Disconnected)
+            state.value = state.value.copy(
+                ipAndPort = newValue,
+                connectionState = State.ConnectionState.Disconnected
+            )
             return
         }
 
-        state.value = State(ipAndPort = newValue, State.ConnectionState.Connecting)
+        state.value = state.value.copy(
+            ipAndPort = newValue,
+            connectionState = State.ConnectionState.Connecting
+        )
         connectionJob = awaitConnectionAndSetState(device)
+    }
+
+    fun connectToDevice(device: DetectedDevice) = viewModelScope.launch {
+        // TODO: Handle error here
+        val address = deviceDetectionUseCase.prepareForConnection(device).getOrNull()!!
+        onIpAndPortChanged(address.raw)
     }
 
     private fun createDeviceOrNull(ipAndPort: String): Device? {
@@ -48,7 +70,7 @@ class DeviceConnectionViewModel(
                     .fold(onSuccess = { State.ConnectionState.Connected },
                         onFailure = { State.ConnectionState.Connecting })
             )
-            delay(100)
+            delay(300)
         } while (state.value.connectionState != State.ConnectionState.Connected)
     }
 
@@ -59,7 +81,8 @@ class DeviceConnectionViewModel(
     @Immutable
     data class State(
         val ipAndPort: String = "",
-        val connectionState: ConnectionState = ConnectionState.Disconnected
+        val connectionState: ConnectionState = ConnectionState.Disconnected,
+        val devices: List<DetectedDevice> = emptyList()
     ) {
         enum class ConnectionState {
             Connected,

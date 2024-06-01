@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.internal.service.DelayAndFailureDecision
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.internal.utils.epochMillis
@@ -20,7 +19,6 @@ import kotlinx.coroutines.delay
 internal class LocalMockController(
     private val localCacheService: LocalCacheService,
     private val mockServerMonitor: MockServerMonitor,
-    private val delayAndFailureDecision: DelayAndFailureDecision,
     private val endpoints: List<EndpointConfiguration>,
     private val logger: Logger,
 ) {
@@ -32,44 +30,54 @@ internal class LocalMockController(
             HttpStatusCode.InternalServerError,
             body = "Could not find endpoint for request ${request.uri}"
         )
-        val globalOverrides = localCacheService.getGlobalOverrides()
+
         val cachedResponse = localCacheService.getLocalCache(endpoint.key)
-
-        val shouldFail = delayAndFailureDecision.shouldFail(
-            globalOverrides?.failProbability ?: cachedResponse?.failProbability ?: endpoint.failureProbability ?: 0
-        )
-
-        val computedDelay = delayAndFailureDecision.generateDelayMillis(
-            globalOverrides?.delayMean ?: cachedResponse?.delayMean ?: endpoint.delayMean ?: 0,
-            globalOverrides?.delayVariance ?: cachedResponse?.delayVariance
-                ?: endpoint.delayVariance ?: 0
-        )
-        logger.d {
-            "Endpoint = ${endpoint.key}: Responding with a delay: $computedDelay, ${
-                "Mockzilla will fail this request".takeIf { shouldFail }
-            }"
-        }
-        cachedResponse?.let {
-            logger.d {
-                "Endpoint = ${endpoint.key}: Cached response found - returning cache $cachedResponse"
-            }
-        } ?: logger.d {
-            "Endpoint = ${endpoint.key}: No cache response found, calling request handler"
-        }
+        val shouldFail = cachedResponse?.shouldFail ?: endpoint.shouldFail
 
         // Delay the response for the correct amount of time
-        delay(computedDelay)
+        val delay = (cachedResponse?.delayMs ?: endpoint.delay)?.toLong() ?: 0
+        delay(delay)
 
         // Use the cached response by default, i.e. if a user has specified data via the web portal
         // then we return that, otherwise we call the appropriate handler.
         return if (shouldFail) {
-            cachedResponse?.toErrorMockzillaResponse() ?: endpoint.errorHandler(request)
+            logger.v { "Call to ${endpoint.key} should fail, returning error response" }
+            val response = if (listOf(
+                cachedResponse?.errorStatus,
+                cachedResponse?.errorHeaders,
+                cachedResponse?.errorBody
+            ).any { it == null }
+            ) {
+                endpoint.errorHandler(request)
+            } else {
+                null
+            }
+            MockzillaHttpResponse(
+                statusCode = cachedResponse?.errorStatus ?: response?.statusCode ?: HttpStatusCode.InternalServerError,
+                headers = cachedResponse?.errorHeaders ?: response?.headers ?: emptyMap(),
+                body = cachedResponse?.errorBody ?: response?.body ?: ""
+            )
         } else {
-            cachedResponse?.toDefaultMockzillaResponse() ?: endpoint.defaultHandler(request)
+            val response = if (listOf(
+                cachedResponse?.defaultStatus,
+                cachedResponse?.defaultHeaders,
+                cachedResponse?.defaultBody
+            ).any { it == null }
+            ) {
+                endpoint.defaultHandler(request)
+            } else {
+                null
+            }
+
+            MockzillaHttpResponse(
+                statusCode = cachedResponse?.defaultStatus ?: response?.statusCode ?: HttpStatusCode.InternalServerError,
+                headers = cachedResponse?.defaultHeaders ?: response?.headers ?: emptyMap(),
+                body = cachedResponse?.defaultBody ?: response?.body ?: ""
+            )
         }.also { response ->
             mockServerMonitor.log(
-                epochMillis() - computedDelay,
-                computedDelay,
+                epochMillis() - delay,
+                delay,
                 shouldFail,
                 request,
                 response
@@ -84,15 +92,17 @@ internal suspend fun MockServerMonitor.log(
     isIntendedFailure: Boolean,
     request: MockzillaHttpRequest,
     response: MockzillaHttpResponse,
-) = log(LogEvent(
-    timestamp = timeStamp,
-    url = request.uri,
-    requestBody = runCatching { request.bodyAsString() }.getOrDefault("<Could not read request body>"),
-    requestHeaders = request.headers,
-    responseHeaders = response.headers,
-    responseBody = response.body,
-    status = response.statusCode,
-    delay = delay,
-    method = request.method.value,
-    isIntendedFailure = isIntendedFailure
-))
+) = log(
+    LogEvent(
+        timestamp = timeStamp,
+        url = request.uri,
+        requestBody = runCatching { request.bodyAsString() }.getOrDefault("<Could not read request body>"),
+        requestHeaders = request.headers,
+        responseHeaders = response.headers,
+        responseBody = response.body,
+        status = response.statusCode,
+        delay = delay,
+        method = request.method.value,
+        isIntendedFailure = isIntendedFailure
+    )
+)

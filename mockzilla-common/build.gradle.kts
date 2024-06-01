@@ -1,4 +1,3 @@
-
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
@@ -29,6 +28,7 @@ kotlin {
     }
 
     jvm()
+    jvmToolchain(JavaConfig.toolchain)
 
     sourceSets {
         all {
@@ -36,60 +36,28 @@ kotlin {
             languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
         }
 
-        jvmToolchain(JavaConfig.toolchain)
+        commonMain.dependencies {
+            /* Kotlin */
+            implementation(libs.kotlinx.coroutines.core)
 
-        val commonMain by getting {
-            dependencies {
-                /* Kotlin */
-                implementation(libs.kotlinx.coroutines.core)
+            /* Ktor */
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.server.core)
 
-                /* Ktor */
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.server.core)
+            /* Serialization */
+            implementation(libs.kotlinx.serialization.json)
 
-                /* Serialization */
-                implementation(libs.kotlinx.serialization.json)
+            /* Date Time */
+            implementation(libs.kotlinx.datetime)
 
-                /* Date Time */
-                implementation(libs.kotlinx.datetime)
-
-                /* Logging */
-                implementation(libs.kermit)
-            }
+            /* Logging */
+            implementation(libs.kermit)
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
+        commonTest.dependencies {
+            implementation(kotlin("test"))
 
-                implementation(libs.mockative)
-                implementation(libs.kotlinx.coroutines.test)
-            }
-        }
-        val androidMain by getting
-        val androidUnitTest by getting
-        val jvmMain by getting {
-            dependsOn(commonMain)
-        }
-        val jvmTest by getting {
-            dependsOn(commonTest)
-        }
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-        }
-        val iosX64Test by getting
-        val iosArm64Test by getting
-        val iosSimulatorArm64Test by getting
-        val iosTest by creating {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(this)
-            iosArm64Test.dependsOn(this)
-            iosSimulatorArm64Test.dependsOn(this)
+            implementation(libs.mockative)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }
@@ -110,3 +78,15 @@ android {
     }
 }
 
+publishing {
+    publications.withType<MavenPublication> {
+        pom {
+            name.set("mockzilla-common")
+            description.set(
+                """
+                A utility module containing common utilities and models used by multiple different mockzilla libraries.
+            """.trimIndent()
+            )
+        }
+    }
+}

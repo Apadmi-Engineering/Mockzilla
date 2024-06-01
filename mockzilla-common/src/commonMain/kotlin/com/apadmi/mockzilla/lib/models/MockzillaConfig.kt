@@ -14,6 +14,7 @@ import kotlin.time.Duration.Companion.seconds
  * @property releaseModeConfig
  * @property localhostOnly
  * @property additionalLogWriters
+ * @property isNetworkDiscoveryEnabled
  */
 data class MockzillaConfig(
     val port: Int,
@@ -22,6 +23,7 @@ data class MockzillaConfig(
     val localhostOnly: Boolean,
     val logLevel: LogLevel,
     val releaseModeConfig: ReleaseModeConfig,
+    val isNetworkDiscoveryEnabled: Boolean,
     val additionalLogWriters: List<MockzillaLogWriter>
 ) {
     enum class LogLevel {
@@ -52,13 +54,12 @@ data class MockzillaConfig(
         private var logLevel: LogLevel = LogLevel.Info
         private var port = defaultPort
         private var endpoints: MutableList<EndpointConfiguration> = mutableListOf()
-        private var defaultFailureProbability = 0
-        private var defaultDelayMean = 100
-        private var defaultDelayVariance = 20
+        private var delay = 100
         private var isRelease = false
         private var releaseConfig: ReleaseModeConfig = ReleaseModeConfig()
         private var localhostOnly = false
         private var additionalLogWriters: List<MockzillaLogWriter> = mutableListOf()
+        private var isNetworkDiscoveryEnabled: Boolean = true
 
         /**
          * Configures the level of Mockzilla's logging.
@@ -80,27 +81,35 @@ data class MockzillaConfig(
         }
 
         /**
-         * Probability of Mockzilla returning a simulated http error for this endpoint. 100 being a
-         * guaranteed error .
+         * No-Op
          *
-         * Value set on individual endpoints takes priority over this value
-         *
-         * @param percentage (0 -> 100 inclusive)
+         * @param percentage Not supported
          */
+        @Deprecated("Configuring failure on top level config is now not supported")
         fun setFailureProbabilityPercentage(percentage: Int) = apply {
-            defaultFailureProbability = percentage
+            // No op
         }
 
         /**
          * Used to simulate latency: The artificial mean delay Mockzilla with add to a network request.
-         * Used alongside [setMeanDelayMillis] to calculate the actual artificial delay on each invocation.
          *
          * Value set on individual endpoints takes priority over this value
          *
          * @param delay delay in milliseconds
          */
+        @Deprecated("Delay is now constant with no variance", replaceWith = ReplaceWith("setDelayMillis"))
         fun setMeanDelayMillis(delay: Int) = apply {
-            defaultDelayMean = delay
+            this.delay = delay
+        }
+
+        /**
+         * Used to simulate latency: The artificial delay Mockzilla with add to a network request.
+         * Value set on individual endpoints takes priority over this value
+         *
+         * @param delay delay in milliseconds
+         */
+        fun setDelayMillis(delay: Int) = apply {
+            this.delay = delay
         }
 
         /**
@@ -112,8 +121,9 @@ data class MockzillaConfig(
          *
          * @param delay delay in milliseconds
          */
+        @Deprecated("No longer supported, now does nothing")
         fun setDelayVarianceMillis(variance: Int) = apply {
-            defaultDelayVariance = variance
+            // No-Op
         }
 
         /**
@@ -177,17 +187,23 @@ data class MockzillaConfig(
         }
 
         /**
+         * Setting this to false will stop Mockzilla from using Bonjour to broadcast itself on the network
+         * Note: Broadcast is disabled in release mode regardless of this flag's value
+         */
+        fun setIsNetworkDiscoveryEnabled(isEnabled: Boolean) = apply {
+            this.isNetworkDiscoveryEnabled = isEnabled
+        }
+
+        /**
          * Completes the builder pattern, returning an immutable config.
          *
          * @return
          */
         fun build() = MockzillaConfig(port, endpoints.map {
             it.copy(
-                failureProbability = it.failureProbability ?: defaultFailureProbability,
-                delayMean = it.delayMean ?: defaultDelayMean,
-                delayVariance = it.delayVariance ?: defaultDelayVariance
+                delay = it.delay ?: delay,
             )
-        }, isRelease, localhostOnly, logLevel, releaseConfig, additionalLogWriters)
+        }, isRelease, localhostOnly, logLevel, releaseConfig, isNetworkDiscoveryEnabled, additionalLogWriters)
 
         companion object {
             private const val defaultPort = 8080

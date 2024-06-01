@@ -3,16 +3,16 @@ import com.apadmi.mockzilla.AndroidConfig
 plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.android.app)
-    kotlin("android")
+    alias(libs.plugins.kotlin.android)
 }
 
 dependencies {
     implementation(project(":mockzilla-management-ui:common"))
+    implementation(project(":mockzilla"))
     implementation(libs.androidx.compose.activity)
 }
 
 android {
-
     compileSdk = AndroidConfig.targetSdk
     namespace = group.toString()
     defaultConfig {
@@ -25,10 +25,15 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.asProvider().get()
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+    android {
+        packaging {
+            exclude("META-INF/*")
+        }
     }
 }

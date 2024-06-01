@@ -2,7 +2,7 @@ import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
 
 plugins {
-    kotlin("multiplatform")
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.library)
     alias(libs.plugins.paparazzi)
@@ -11,52 +11,61 @@ plugins {
 }
 
 kotlin {
-    android()
-    jvm("desktop") {
-        jvmToolchain(JavaConfig.toolchain)
-    }
+    androidTarget()
+    jvmToolchain(JavaConfig.toolchain)
+    jvm("desktop")
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                /* Compose */
-                implementation(compose.runtime)
-                implementation(compose.material3)
-                implementation(compose.preview)
+        commonMain.dependencies {
+            /* Compose */
+            implementation(compose.runtime)
+            implementation(compose.material3)
+            implementation(compose.preview)
 
-                /* Localisable Strings */
-                implementation(libs.lyricist.library)
+            /* Localisable Strings */
+            implementation(libs.lyricist.library)
 
-                /* DI */
-                implementation(libs.koin.core)
+            /* DI */
+            implementation(libs.koin.core)
 
-                /* Coroutines */
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.showkase)
+            /* Coroutines */
+            implementation(libs.kotlinx.coroutines.core)
 
-                /* Mockzilla Management */
-                implementation(project(":mockzilla-management"))
-            }
+            /* Mockzilla Management */
+            implementation(project(":mockzilla-management"))
+
+            /* ADB */
+            implementation(libs.adam)
+
+            /* Zeroconf */
+            implementation(libs.jmdns.jmdns)
+
+            /* Logging */
+            implementation(libs.kermit)
+
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
-        val androidMain by getting {
-            dependencies {
-                /* Compose */
-                implementation(libs.androidx.compose.ui)
-                implementation(libs.androidx.compose.activity)
-                implementation(libs.androidx.compose.uiToolingPreview)
-                implementation(libs.androidx.lifecycleRuntimeKtx)
-                implementation(libs.androidx.compose.material3)
-                implementation(libs.androidx.compose.materialIconsExt)
+        androidMain.dependencies {
+            /* Compose */
+            implementation(libs.androidx.compose.ui)
+            implementation(libs.androidx.compose.activity)
+            implementation(libs.androidx.compose.uiToolingPreview)
+            implementation(libs.androidx.lifecycleRuntimeKtx)
+            implementation(libs.androidx.compose.material3)
+            implementation(libs.androidx.compose.materialIconsExt)
+            implementation(libs.showkase)
 
-                /* ViewModel */
-                implementation(libs.androidx.lifecycleViewModelCompose)
-                implementation(libs.koin.android)
-                implementation(libs.koin.compose)
-            }
+            /* ViewModel */
+            implementation(libs.androidx.lifecycleViewModelCompose)
+            implementation(libs.koin.android)
+            implementation(libs.koin.compose)
+
+            /* Mockzilla */
+            // Android target is only used for development since it's a better dev experience than desktop
+            // So using mockzilla to have a "Mock app" to connect to
+            implementation(project(":mockzilla"))
+            implementation(libs.ktor.client.core)
         }
         val androidUnitTest by getting {
             dependencies {
@@ -76,7 +85,6 @@ kotlin {
 
                 /* Coroutines */
                 implementation(libs.kotlinx.coroutines.swing)
-
             }
         }
         val desktopTest by getting {
@@ -95,8 +103,24 @@ dependencies {
     configurations
         .filter { it.name.startsWith("ksp") && it.name.contains("Test") }
         .forEach {
-            add(it.name, "io.mockative:mockative-processor:2.0.1")
+            add(it.name, libs.mockative.processor)
         }
+}
+
+// TODO Remove when https://github.com/google/guava/issues/6567 is fixed.
+// See also: https://github.com/google/guava/issues/6801.
+// Paparazzi issue here: https://github.com/cashapp/paparazzi/issues/1231
+dependencies.constraints {
+    testImplementation("com.google.guava:guava") {
+        attributes {
+            attribute(
+                TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
+                objects.named(TargetJvmEnvironment::class.java, TargetJvmEnvironment.STANDARD_JVM)
+            )
+        }
+        because("Paparazzi's layoutlib and sdk-common depend on Guava's -jre published variant." +
+                "See https://github.com/cashapp/paparazzi/issues/906.")
+    }
 }
 
 android {

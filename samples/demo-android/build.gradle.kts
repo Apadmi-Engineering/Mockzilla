@@ -3,7 +3,7 @@ import com.apadmi.mockzilla.JavaConfig
 
 plugins {
     alias(libs.plugins.compose)
-    kotlin("android")
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.app)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -50,9 +50,9 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.asProvider().get()
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
@@ -76,4 +76,5 @@ dependencies {
     /* Networking */
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.okhttp)
 }

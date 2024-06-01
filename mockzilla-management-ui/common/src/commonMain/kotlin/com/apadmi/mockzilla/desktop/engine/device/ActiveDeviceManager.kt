@@ -75,7 +75,7 @@ class ActiveDeviceManagerImpl(
     override fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData) {
         allDevicesInternal[device] = StatefulDevice(
             device = device,
-            name = "${metadata.operatingSystem}-${metadata.deviceModel}",
+            name = "${metadata.runTarget}-${metadata.deviceModel}",
             isConnected = true,
             connectedAppPackage = metadata.appPackage
         ).also {

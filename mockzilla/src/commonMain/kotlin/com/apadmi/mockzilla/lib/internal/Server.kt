@@ -9,6 +9,7 @@ import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.internal.utils.environment
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
+
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -16,6 +17,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.routing.*
+
 import kotlinx.coroutines.*
 
 private var server: ApplicationEngine? = null
@@ -40,6 +42,7 @@ private fun Application.setupReleaseMode(config: MockzillaConfig, tokensService:
 internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     stopServer()
 
+    val job = SupervisorJob().also { job = it }
     val serverEngine = embeddedServer(CIO, configure = {
         connectionIdleTimeoutSeconds = 1
         reuseAddress = true
@@ -58,7 +61,7 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
             setupReleaseMode(di.config, di.tokensService)
         }
 
-        configureEndpoints(SupervisorJob().also { job = it }, di)
+        configureEndpoints(job, di)
     }).apply {
         server = this
         start(wait = false)
@@ -66,6 +69,9 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
 
     val actualPort = serverEngine.resolvedConnectors().firstOrNull()?.port
         ?: throw Exception("Could not determine runtime port")
+
+    startNetworkDiscoveryBroadcastIfNeeded(job, di, actualPort)
+
     MockzillaRuntimeParams(
         di.config,
         "http://127.0.0.1:$actualPort/local-mock",
@@ -79,4 +85,17 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
 internal fun stopServer() = runBlocking {
     job?.cancel()
     server?.stop()
+}
+
+private fun startNetworkDiscoveryBroadcastIfNeeded(
+    job: CompletableJob,
+    di: DependencyInjector,
+    port: Int
+) = CoroutineScope(job).launch {
+    if (!di.config.isRelease && di.config.isNetworkDiscoveryEnabled) {
+        di.logger.i { "Starting network discovery" }
+        di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, port)
+    } else {
+        di.logger.i { "Skipping network discovery" }
+    }
 }

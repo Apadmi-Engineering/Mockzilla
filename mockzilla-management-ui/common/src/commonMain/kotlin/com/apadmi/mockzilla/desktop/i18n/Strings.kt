@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
+import io.ktor.http.HttpStatusCode
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalStrings = staticCompositionLocalOf { EnStrings }
@@ -23,12 +24,14 @@ data class Strings(
      * @property deviceTabs
      * @property metaData
      * @property logs
+     * @property endpointDetails
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
         val deviceTabs: DeviceTabs,
         val metaData: MetaData,
-        val logs: Logs
+        val logs: Logs,
+        val endpointDetails: EndpointDetails,
     ) {
         /**
          * @property title
@@ -37,14 +40,40 @@ data class Strings(
 
         /**
          * @property title
+         * @property noDeviceConnected
+         * @property appName
+         * @property appPackage
+         * @property operatingSystemVersion
+         * @property deviceModel
+         * @property appVersion
+         * @property operatingSystem
+         * @property mockzillaVersion
+         * @property android
+         * @property ios
+         * @property jvm
          */
-        data class MetaData(val title: String)
+        data class MetaData(
+            val title: String,
+            val noDeviceConnected: String,
+            val appName: String,
+            val appPackage: String,
+            val operatingSystemVersion: String,
+            val deviceModel: String,
+            val appVersion: String,
+            val operatingSystem: String,
+            val mockzillaVersion: String,
+            val android: String,
+            val ios: String,
+            val jvm: String,
+        )
 
         /**
          * @property tabTitle
+         * @property ipInputLabel
          */
         data class DeviceConnection(
-            val tabTitle: String
+            val tabTitle: String,
+            val ipInputLabel: String,
         )
 
         /**
@@ -60,6 +89,75 @@ data class Strings(
             val connected: String,
             val disconnected: String,
             val devices: (number: Int) -> String,
+        )
+
+        /**
+         * @property none
+         * @property useErrorResponse
+         * @property defaultDataTab
+         * @property errorDataTab
+         * @property generalTab
+         * @property noOverrideStatusCode
+         * @property statusCodeLabel
+         * @property statusCode
+         * @property edit
+         * @property reset
+         * @property resetUseErrorResponse
+         * @property bodyLabel
+         * @property bodyUnset
+         * @property delayLabel
+         * @property jsonEditingLabel
+         * @property failOptionsLabel
+         * @property failLabel
+         * @property responseDelay
+         * @property noOverrideResponseDelay
+         * @property customResponseDelay
+         * @property responseDelayUnits
+         * @property responseDelayLabel
+         * @property resetAll
+         * @property headersLabel
+         * @property headerKeyLabel
+         * @property headerValueLabel
+         * @property headerDeleteContentDescription
+         * @property addHeader
+         * @property editHeaders
+         * @property resetHeaders
+         * @property noHeaders
+         * @property headersUnset
+         */
+        data class EndpointDetails(
+            val none: String,
+            val useErrorResponse: String,
+            val defaultDataTab: String,
+            val errorDataTab: String,
+            val generalTab: String,
+            val noOverrideStatusCode: String,
+            val statusCodeLabel: (HttpStatusCode) -> String,
+            val statusCode: String,
+            val edit: String,
+            val reset: String,
+            val resetUseErrorResponse: String,
+            val bodyLabel: String,
+            val bodyUnset: String,
+            val delayLabel: String,
+            val jsonEditingLabel: (Boolean) -> String,
+            val failOptionsLabel: String,
+            val failLabel: (Boolean?) -> String,
+            val responseDelay: String,
+            val noOverrideResponseDelay: String,
+            val customResponseDelay: String,
+            val responseDelayUnits: String,
+            val responseDelayLabel: String,
+            val resetAll: String,
+            val headersLabel: String,
+            val headerKeyLabel: String,
+            val headerValueLabel: String,
+            val headerDeleteContentDescription: String,
+            val addHeader: String,
+            val editHeaders: String,
+            val resetHeaders: String,
+            val noHeaders: String,
+            val headersUnset: String,
         )
     }
 }

@@ -27,8 +27,7 @@ class LocalMockIntegrationTests {
     fun `GET local-mock - no endpoint match - returns as expected`() = runIntegrationTest(
         MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
-            .setMeanDelayMillis(0)
-            .setDelayVarianceMillis(0)
+            .setDelayMillis(0)
             .addEndpoint(EndpointConfiguration.Builder("id"))
             .build()
     ) { params, _ ->
@@ -46,8 +45,7 @@ class LocalMockIntegrationTests {
     fun `GET local-mock - trailing slash - returns as expected`() =
         runIntegrationTest(MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
-            .setMeanDelayMillis(0)
-            .setDelayVarianceMillis(0)
+            .setDelayMillis(0)
             .addEndpoint(EndpointConfiguration.Builder("my-id")
                 .setPatternMatcher { uri.endsWith("test/my-id/") }
                 .setDefaultHandler {
@@ -77,15 +75,14 @@ class LocalMockIntegrationTests {
     fun `GET local-mock - endpoint match - returns as expected`() =
         runIntegrationTest(MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
-            .setMeanDelayMillis(0)
-            .setDelayVarianceMillis(0)
+            .setDelayMillis(0)
             .addEndpoint(EndpointConfiguration.Builder("my-id")
                 .setPatternMatcher { uri.endsWith("test/my-id") }
                 .setDefaultHandler {
                     MockzillaHttpResponse(
                         statusCode = HttpStatusCode.Created,
                         headers = mapOf("test-header" to "test-value"),
-                        body = body
+                        body = bodyAsString()
                     )
                 }
             )
@@ -119,8 +116,7 @@ class LocalMockIntegrationTests {
     fun `GET local-mock - GET with Content-Type header but no body - returns as expected`() =
         runIntegrationTest(MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
-            .setMeanDelayMillis(0)
-            .setDelayVarianceMillis(0)
+            .setDelayMillis(0)
             .addEndpoint(EndpointConfiguration.Builder("my-id")
                 .setPatternMatcher { uri.endsWith("test/my-id") }
                 .setDefaultHandler {
@@ -148,8 +144,7 @@ class LocalMockIntegrationTests {
     fun `POST - local-mock - uploading binary data - returns success`() =
         runIntegrationTest(MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime
-            .setMeanDelayMillis(0)
-            .setDelayVarianceMillis(0)
+            .setDelayMillis(0)
             .addEndpoint(EndpointConfiguration.Builder("my-id")
                 .setPatternMatcher { uri.endsWith("test/my-id") }
                 .setDefaultHandler { MockzillaHttpResponse() }

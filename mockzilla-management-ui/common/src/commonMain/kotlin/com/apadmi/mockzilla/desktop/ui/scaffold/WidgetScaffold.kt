@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.min
 
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 
-import com.airbnb.android.showkase.annotation.ShowkaseComposable
+import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 
 /**
  * @property title
@@ -55,8 +55,8 @@ fun WidgetScaffold(
     // with the cursor at all times.
     var leftPanelWidth by remember { mutableStateOf(100.dp) }
     var leftPanelSettledWidth by remember { mutableStateOf(100.dp) }
-    var rightPanelWidth by remember { mutableStateOf(100.dp) }
-    var rightPanelSettledWidth by remember { mutableStateOf(100.dp) }
+    var rightPanelWidth by remember { mutableStateOf(300.dp) }
+    var rightPanelSettledWidth by remember { mutableStateOf(300.dp) }
     var bottomPanelHeight by remember { mutableStateOf(200.dp) }
     var bottomPanelSettledHeight by remember { mutableStateOf(200.dp) }
 

@@ -3,23 +3,36 @@ package com.apadmi.mockzilla.mock
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
-import com.apadmi.mockzilla.lib.service.MockzillaWeb
 
 import io.ktor.server.application.hooks.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-@OptIn(MockzillaWeb::class)
+private const val port = 8085
+
 private val getMyCow = EndpointConfiguration
     .Builder("cow")
     .setPatternMatcher { uri.endsWith("cow") }
-    .setWebApiDefaultResponse(
-        MockzillaHttpResponse(
-            body = Json.encodeToString(CowDto.empty),
-            headers = mapOf("Content-Type" to "application/json")
+    .configureDashboardOverrides {
+        addSuccessPreset(
+            MockzillaHttpResponse(
+                body = Json.encodeToString(CowDto.empty),
+                headers = mapOf("Content-Type" to "application/json")
+            ), name = "Cow preset 1", description = "A simple cow preset"
         )
-    )
+        addSuccessPreset(
+            MockzillaHttpResponse(
+                body = Json.encodeToString(CowDto.empty.copy(mooSample = "A VERY BIG MOO")),
+                headers = mapOf("Content-Type" to "application/json")
+            ), name = "Cow preset 2", description = "A cow preset with a big moo"
+        )
+        addErrorPreset(
+            MockzillaHttpResponse(
+                body = "Moooo something's gone mooosively wrong",
+            ), description = "A cow error"
+        )
+    }
     .setDefaultHandler {
         MockzillaHttpResponse(
             body = Json.encodeToString(
@@ -34,8 +47,8 @@ private val getMyCow = EndpointConfiguration
             ), headers = mapOf("Content-Type" to "application/json")
         )
     }
-
 val mockzillaConfig = MockzillaConfig.Builder()
     .addEndpoint(getMyCow)
+    .setPort(port)
     .setLogLevel(MockzillaConfig.LogLevel.Verbose)
     .build()

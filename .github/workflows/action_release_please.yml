@@ -1,11 +1,12 @@
 on:
   push:
     branches:
-      - main
+      - develop
 
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 name: Release-Please
 
@@ -13,8 +14,13 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - uses: googleapis/release-please-action@v4
+        id: release
         with:
           release-type: simple
-          package-name: release-please-action
-          command: release-pr
+      - name: Trigger Deploy Binaries workflow (snapshots only)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        if: ${{ steps.release.outputs.releases_created == 'false' && steps.release.outputs.prs_created == 'true' }}
+        run: gh workflow run action_deploy_binaries.yml --ref release-please--branches--develop

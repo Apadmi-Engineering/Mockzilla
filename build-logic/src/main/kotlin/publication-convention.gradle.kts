@@ -1,3 +1,4 @@
+import com.apadmi.mockzilla.extractVersion
 import java.util.Base64
 
 plugins {
@@ -5,7 +6,7 @@ plugins {
 }
 
 publishing {
-    repositories.maven("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+    repositories.maven(mavenUrl()) {
         name = "OSSRH"
 
         credentials {
@@ -15,10 +16,8 @@ publishing {
     }
 
     publications.withType<MavenPublication> {
-        // Provide artifacts information requited by Maven Central
+        // Provide artifacts information required by Maven Central
         pom {
-            name.set("Mockzilla")
-            description.set("Solution for running and configuring a local HTTP server on mobile.")
             url.set("https://github.com/Apadmi-Engineering/Mockzilla")
             licenses {
                 license {
@@ -64,4 +63,10 @@ if (hasKey) {
     tasks.withType<AbstractPublishToMaven>().configureEach {
         dependsOn(signingTasks)
     }
+}
+
+fun mavenUrl() = if (extractVersion().endsWith("-SNAPSHOT")) {
+    "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+} else {
+    "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
 }

@@ -7,12 +7,13 @@ import android.os.Build.VERSION
 
 import com.apadmi.mockzilla.BuildKonfig
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.lib.models.RunTarget
 
 internal val Context.applicationName: String? get() {
     val applicationInfo: ApplicationInfo = applicationInfo
     val stringId = applicationInfo.labelRes
     return if (stringId == 0) {
-        applicationInfo.nonLocalizedLabel.toString()
+        applicationInfo.nonLocalizedLabel?.toString() ?: packageName
     } else {
         getString(
             stringId
@@ -23,9 +24,9 @@ internal val Context.applicationName: String? get() {
 internal fun Context.extractMetaData(): MetaData {
     val packageInfo = runCatching { packageManager.getPackageInfo(packageName, 0) }.getOrNull()
     return MetaData(
-        appName = applicationName ?: "-",
-        appPackage = packageName,
-        operatingSystem = Platform.platformName(),
+        appName = applicationName?.take(MetaData.maxFieldLength) ?: "-",
+        appPackage = packageName.take(MetaData.maxFieldLength),
+        runTarget = if (isProbablyRunningOnEmulator) RunTarget.AndroidEmulator else RunTarget.AndroidDevice,
         operatingSystemVersion = VERSION.SDK_INT.toString(),
         deviceModel = Build.MODEL,
         appVersion = packageInfo?.let { "${it.versionName}-${it.versionCode}" } ?: "-",

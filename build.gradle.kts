@@ -5,15 +5,18 @@ plugins {
     alias(libs.plugins.android.app) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.spotless) apply true
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.dokka) apply true
-    id("org.jetbrains.compose").version("1.5.3") apply false
+    alias(libs.plugins.compose) apply false
+    alias(libs.plugins.paparazzi) apply false
+    alias(libs.plugins.buildKonfig) apply false
+    alias(libs.plugins.swiftklib) apply false
 }
 
 buildscript {
     dependencies {
-        classpath(libs.buildkonfig.gradle.plugin)
         classpath(":build-logic")
     }
 }
@@ -21,7 +24,6 @@ buildscript {
 allprojects {
     group = "com.apadmi"
     version = extractVersion()
-
 
     repositories {
         google()
