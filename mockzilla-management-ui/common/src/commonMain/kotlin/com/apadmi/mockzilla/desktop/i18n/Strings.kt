@@ -37,8 +37,15 @@ data class Strings(
         val endpointDetails: EndpointDetails,
         val endpoints: Endpoints,
         val miscControls: MiscControls,
-        val unsupportedMockzilla: UnsupportedMockzillaVersion
+        val unsupportedMockzilla: UnsupportedMockzillaVersion,
+        val errorBanner: ErrorBanner
     ) {
+        data class ErrorBanner(
+            val connectionLost: String,
+            val unknownError: String,
+            val refreshButton: String
+        )
+
         /**
          * @property title
          */

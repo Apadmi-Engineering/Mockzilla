@@ -113,6 +113,11 @@ val EnStrings = Strings(
             heading = "Unsupported SDK",
             subtitle = "This app doesn't support the version of Mockzilla running on your device",
             footer = "Please update to the latest version of Mockzilla",
+        ),
+        errorBanner = Strings.Widgets.ErrorBanner(
+            connectionLost = "Connection Lost: Please check your app is in the foreground",
+            unknownError = "Something went wrong, try refreshing everything \uD83D\uDC49",
+            refreshButton = "Refresh"
         )
     )
 )
