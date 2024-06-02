@@ -23,7 +23,8 @@ lyricist = "1.4.2" # https://github.com/adrielcafe/lyricist
 ktor = "2.3.11" # https://github.com/ktorio/ktor
 
 # Compose
-compose = "1.6.1" # https://github.com/JetBrains/compose-multiplatform
+compose = "1.6.10" # https://github.com/JetBrains/compose-multiplatform
+androidCompose = "1.6.7" # https://github.com/JetBrains/compose-multiplatform
 compose-compiler = "1.5.13" # https://developer.android.com/jetpack/androidx/releases/compose-compiler
 
 # DI
@@ -65,14 +66,14 @@ swiftklib = "0.5.1" # https://github.com/ttypic/swift-klib-plugin
 # Compose & Material
 adam = { module = "com.malinskiy.adam:adam", version.ref = "adam" }
 androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity"  }
-androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
-androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidCompose" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidCompose" }
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 desktop-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3-desktop", version.ref = "compose" }
 androidx-compose-materialIconsExt = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
 desktop-compose-material-icons = { module = "org.jetbrains.compose.material:material-icons-extended-desktop", version.ref = "compose" }
-androidx-compose-uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+androidx-compose-uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidCompose" }
 
 # Android Lifecycle
 androidx-lifecycleViewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }

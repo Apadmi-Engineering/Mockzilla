@@ -39,7 +39,7 @@ internal data class HorizontalTab(
 internal fun VerticalTabList(
     tabs: List<VerticalTab>,
     clockwise: Boolean,
-    selected: Set<Int>,
+    selected: Collection<Int>,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {

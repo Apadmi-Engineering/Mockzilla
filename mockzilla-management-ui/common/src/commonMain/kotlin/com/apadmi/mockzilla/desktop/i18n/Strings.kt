@@ -27,6 +27,7 @@ data class Strings(
      * @property endpointDetails
      * @property endpoints
      * @property miscControls
+     * @property unsupportedMockzilla
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -35,7 +36,8 @@ data class Strings(
         val logs: Logs,
         val endpointDetails: EndpointDetails,
         val endpoints: Endpoints,
-        val miscControls: MiscControls
+        val miscControls: MiscControls,
+        val unsupportedMockzilla: UnsupportedMockzillaVersion
     ) {
         /**
          * @property title
@@ -185,6 +187,17 @@ data class Strings(
             val resetHeaders: String,
             val noHeaders: String,
             val headersUnset: String
+        )
+
+        /**
+         * @property heading
+         * @property subtitle
+         * @property footer
+         */
+        data class UnsupportedMockzillaVersion(
+            val heading: String,
+            val subtitle: String,
+            val footer: String
         )
     }
 }

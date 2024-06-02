@@ -15,16 +15,23 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) = BasicTooltipBox(
-    positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
-    tooltip = {
-        Text(
-            modifier = Modifier.padding(2.dp)
-                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                .padding(vertical = 2.dp, horizontal = 6.dp),
-            text = text
-        )
-    },
-    state = rememberBasicTooltipState(),
-    content = content
-)
+actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) {
+    if (text.isBlank()) {
+        content()
+        return
+    }
+
+    BasicTooltipBox(
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = {
+            Text(
+                modifier = Modifier.padding(2.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                    .padding(vertical = 2.dp, horizontal = 6.dp),
+                text = text
+            )
+        },
+        state = rememberBasicTooltipState(),
+        content = content
+    )
+}

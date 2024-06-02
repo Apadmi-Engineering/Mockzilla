@@ -64,6 +64,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
                 MetaData.dummy().copy(
                     appPackage = "test.package",
                     runTarget = RunTarget.Jvm,
+                    mockzillaVersion = "99.99.99",
                     deviceModel = "model"
                 )
             )
@@ -85,6 +86,28 @@ class ActiveDeviceManagerTests : CoroutineTest() {
             assertEquals(Device.dummy(), awaitItem()?.device)
 
             ensureAllEventsConsumed()
+            sut.cancelPolling()
+        }
+    }
+
+    @Test
+    fun `setActiveDeviceWithMetaData - incompatible version`() = runBlockingTest {
+        /* Setup */
+        given(metaDataUseCaseMock).coroutine {
+            getMetaData(Device.dummy(), true)
+        }.thenReturn(Result.success(MetaData.dummy()))
+        val sut = createSut()
+
+        sut.selectedDevice.test {
+            /* Run Test */
+            sut.setActiveDeviceWithMetaData(
+                Device.dummy(),
+                MetaData.dummy().copy(mockzillaVersion = "0.0.0")
+            )
+
+            /* Verify */
+            assertFalse(sut.allDevices.first().isCompatibleMockzillaVersion)
+            cancelAndIgnoreRemainingEvents()
             sut.cancelPolling()
         }
     }

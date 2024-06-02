@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material3.Checkbox
@@ -54,7 +56,10 @@ fun EndpointsWidgetContent(
     onCheckboxChanged: (Key, value: Boolean) -> Unit,
     onFailChanged: (Key, value: Boolean) -> Unit,
     onEndpointClicked: (Key) -> Unit
-) = Column {
+) = Column(
+    modifier = Modifier
+        .verticalScroll(rememberScrollState())
+) {
     when (state) {
         State.Loading -> Text("Empty")
         is State.EndpointsList -> EndpointsList(
@@ -95,8 +100,8 @@ private fun EndpointsList(
         Row(modifier = Modifier
             .fillMaxWidth()
             .clickable { onEndpointClicked(endpoint.key) }
-            .padding(end = 8.dp)
-            .alternatingBackground(index),
+            .alternatingBackground(index)
+            .padding(end = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(

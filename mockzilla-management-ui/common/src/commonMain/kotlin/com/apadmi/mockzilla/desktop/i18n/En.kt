@@ -8,7 +8,7 @@ val EnStrings = Strings(
     widgets = Strings.Widgets(
         Strings.Widgets.DeviceConnection(
             tabTitle = "Connect Device",
-            ipInputLabel = "IP address to connect to"
+            ipInputLabel = "e.g 127.0.0.1:8080"
         ),
         deviceTabs = Strings.Widgets.DeviceTabs(
             tabTitle = { "Device $it" },
@@ -96,6 +96,11 @@ val EnStrings = Strings(
             refreshAll = "Re-sync all",
             clearOverrides = "Reset all overrides",
             title = "Tools"
+        ),
+        unsupportedMockzilla = Strings.Widgets.UnsupportedMockzillaVersion(
+            heading = "Unsupported SDK",
+            subtitle = "This app doesn't support the version of Mockzilla running on your device",
+            footer = "Please update to the latest version of Mockzilla",
         )
     )
 )

@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.metadata
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,10 @@ import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel.*
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
+
+import com.apadmi.common.generated.resources.Res
+import com.apadmi.common.generated.resources.mockzilla_logo
+import org.jetbrains.compose.resources.painterResource
 import org.koin.core.parameter.parametersOf
 
 private fun RunTarget.label(strings: Strings) = when (this) {
@@ -70,6 +75,14 @@ fun MetaDataListView(
     metaData: MetaData,
     strings: Strings = LocalStrings.current
 ) = Column {
+    Image(
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(vertical = 16.dp)
+            .height(50.dp),
+        painter = painterResource(Res.drawable.mockzilla_logo),
+        contentDescription = null
+    )
     MetaDataRow(strings.widgets.metaData.appName, metaData.appName)
     MetaDataRow(strings.widgets.metaData.appPackage, metaData.appPackage)
     MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget?.label(strings) ?: "-")

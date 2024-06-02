@@ -1,8 +1,6 @@
 package com.apadmi.mockzilla.desktop.ui
 
-import androidx.compose.runtime.MutableState
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
-import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -12,7 +10,7 @@ import kotlinx.coroutines.flow.onEach
 
 class AppRootViewModel(
     activeDeviceMonitor: ActiveDeviceMonitor
-): ViewModel() {
+) : ViewModel() {
     val state = MutableStateFlow<State>(State.NewDeviceConnection)
 
     init {
@@ -31,7 +29,11 @@ class AppRootViewModel(
     }
     sealed class State {
         data object NewDeviceConnection : State()
+        data object UnsupportedDeviceMockzillaVersion : State()
+        /**
+         * @property activeDevice
+         * @property selectedEndpoint
+         */
         data class Connected(val activeDevice: StatefulDevice, val selectedEndpoint: EndpointConfiguration.Key?) : State()
-        data object UnsupportedDeviceMockzillaVersion: State()
     }
 }

@@ -13,6 +13,7 @@ data class Device(override val ip: String, override val port: String) : Mockzill
  * @property name
  * @property isConnected
  * @property connectedAppPackage
+ * @property isCompatibleMockzillaVersion
  */
 data class StatefulDevice(
     val device: Device,
