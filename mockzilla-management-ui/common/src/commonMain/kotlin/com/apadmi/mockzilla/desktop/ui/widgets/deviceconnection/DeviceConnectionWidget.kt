@@ -36,11 +36,11 @@ import com.apadmi.common.generated.resources.Res
 import com.apadmi.common.generated.resources.mockzilla_logo
 import org.jetbrains.compose.resources.painterResource
 
-private fun DetectedDevice.State.toolTipText() = when (this) {
-    DetectedDevice.State.NotYourSimulator -> "We don't think this is your simulator, but you can try to connect! (Probably won't work)"
-    DetectedDevice.State.ReadyToConnect -> ""
-    DetectedDevice.State.Removed -> "This device seems to have disconnected"
-    DetectedDevice.State.Resolving -> "We're still for this device to come online"
+private fun DetectedDevice.State.toolTipText(strings: Strings) = when (this) {
+    DetectedDevice.State.NotYourSimulator -> strings.widgets.deviceConnection.tooltips.notYourSimulator
+    DetectedDevice.State.ReadyToConnect -> strings.widgets.deviceConnection.tooltips.readyToConnect
+    DetectedDevice.State.Removed -> strings.widgets.deviceConnection.tooltips.removed
+    DetectedDevice.State.Resolving -> strings.widgets.deviceConnection.tooltips.resolving
 }
 
 private fun DetectedDevice.State.color() = when (this) {
@@ -82,7 +82,7 @@ fun DeviceConnectionContent(
         )
 
         Text(
-            text = "Enter IP and port to connect to a device",
+            text = strings.widgets.deviceConnection.heading,
             style = MaterialTheme.typography.headlineLarge
         )
         TextField(
@@ -95,7 +95,7 @@ fun DeviceConnectionContent(
         Spacer(Modifier.height(4.dp))
         if (Platform.current == Platform.Android) {
             Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
-                Text("Set to localhost:8080")
+                Text(strings.widgets.deviceConnection.androidDevConnectButton)
             }
         }
 
@@ -122,18 +122,19 @@ fun DeviceConnectionWidgetPreview() = PreviewSurface {
 @Composable
 private fun DevicesList(
     devices: List<DetectedDevice>,
-    onTapDevice: (DetectedDevice) -> Unit
+    onTapDevice: (DetectedDevice) -> Unit,
+    strings: Strings = LocalStrings.current,
 ) = LazyColumn {
     item {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Or..",
+                text = strings.widgets.deviceConnection.autoConnectHeading,
                 style = MaterialTheme.typography.headlineLarge
             )
             Text(
-                text = "Choose a device to connect automatically",
+                text = strings.widgets.deviceConnection.autoConnectSubHeading,
                 style = MaterialTheme.typography.bodySmall
             )
             Spacer(Modifier.height(8.dp))
@@ -146,7 +147,7 @@ private fun DevicesList(
                 .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            StandardTextTooltip(text = device.state.toolTipText()) {
+            StandardTextTooltip(text = device.state.toolTipText(strings)) {
                 Canvas(
                     modifier = Modifier.padding(end = 16.dp).size(12.dp),
                     onDraw = { drawCircle(color = device.state.color()) })
@@ -167,7 +168,7 @@ private fun DevicesList(
                 CircularProgressIndicator(Modifier.padding(end = 8.dp).size(20.dp))
             } else {
                 Button(onClick = { onTapDevice(device) }) {
-                    Text("Connect")
+                    Text(strings.widgets.deviceConnection.autoConnectButton)
                 }
             }
         }

@@ -8,7 +8,19 @@ val EnStrings = Strings(
     widgets = Strings.Widgets(
         Strings.Widgets.DeviceConnection(
             tabTitle = "Connect Device",
-            ipInputLabel = "e.g 127.0.0.1:8080"
+            heading = "Enter IP and port to connect to a device",
+            autoConnectHeading = "Or…",
+            autoConnectSubHeading = "Choose a device to connect automatically",
+            autoConnectButton = "Connect",
+            ipInputLabel = "e.g 127.0.0.1:8080",
+            androidDevConnectButton = "Connect to development Mockzilla",
+            tooltips = Strings.Widgets.DeviceConnection.ToolTips(
+                notYourSimulator = "We don't think this is your simulator, but you can try to connect! (Probably won't work)",
+                readyToConnect = "",
+                removed = "This device seems to have disconnected",
+                resolving = "We're still for this device to come online"
+
+            )
         ),
         deviceTabs = Strings.Widgets.DeviceTabs(
             tabTitle = { "Device $it" },

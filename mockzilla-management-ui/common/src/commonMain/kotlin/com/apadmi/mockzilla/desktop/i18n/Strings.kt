@@ -87,11 +87,36 @@ data class Strings(
         /**
          * @property tabTitle
          * @property ipInputLabel
+         * @property tooltips
+         * @property heading
+         * @property autoConnectHeading
+         * @property autoConnectSubHeading
+         * @property autoConnectButton
+         * @property androidDevConnectButton
          */
         data class DeviceConnection(
             val tabTitle: String,
             val ipInputLabel: String,
-        )
+            val tooltips: ToolTips,
+            val heading: String,
+            val autoConnectHeading: String,
+            val autoConnectSubHeading: String,
+            val autoConnectButton: String,
+            val androidDevConnectButton: String,
+        ) {
+            /**
+             * @property notYourSimulator
+             * @property readyToConnect
+             * @property removed
+             * @property resolving
+             */
+            data class ToolTips(
+                val notYourSimulator: String,
+                val readyToConnect: String,
+                val removed: String,
+                val resolving: String
+            )
+        }
 
         /**
          * @property tabTitle
