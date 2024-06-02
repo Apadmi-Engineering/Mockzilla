@@ -91,14 +91,20 @@ fun DeviceConnectionContent(
             onValueChange = onIpAndPortChanged,
             label = { Text(strings.widgets.deviceConnection.ipInputLabel) }
         )
+
         Spacer(Modifier.height(4.dp))
+        if (Platform.current == Platform.Android) {
+            Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
+                Text("Set to localhost:8080")
+            }
+        }
+
         AnimatedContent(
             targetState = state.hasDevices
         ) {
             if (it) {
                 DevicesList(
                     devices = state.devices,
-                    onIpAndPortChanged = onIpAndPortChanged,
                     onTapDevice = onTapDevice
                 )
             }
@@ -116,7 +122,6 @@ fun DeviceConnectionWidgetPreview() = PreviewSurface {
 @Composable
 private fun DevicesList(
     devices: List<DetectedDevice>,
-    onIpAndPortChanged: (String) -> Unit,
     onTapDevice: (DetectedDevice) -> Unit
 ) = LazyColumn {
     item {
@@ -131,11 +136,6 @@ private fun DevicesList(
                 text = "Choose a device to connect automatically",
                 style = MaterialTheme.typography.bodySmall
             )
-            if (Platform.current == Platform.Android) {
-                Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
-                    Text("Set to localhost:8080")
-                }
-            }
             Spacer(Modifier.height(8.dp))
         }
     }
