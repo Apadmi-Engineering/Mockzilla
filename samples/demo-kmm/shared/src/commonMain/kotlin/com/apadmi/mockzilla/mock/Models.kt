@@ -5,6 +5,12 @@ package com.apadmi.mockzilla.mock
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class SheepDto(
+    val name: String,
+    val bahSample: String
+)
+
+@Serializable
 data class CowDto(
     val name: String,
     val age: Int,

@@ -25,6 +25,7 @@ data class Strings(
      * @property metaData
      * @property logs
      * @property endpointDetails
+     * @property endpoints
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -32,6 +33,7 @@ data class Strings(
         val metaData: MetaData,
         val logs: Logs,
         val endpointDetails: EndpointDetails,
+        val endpoints: Endpoints,
     ) {
         /**
          * @property title
@@ -92,6 +94,16 @@ data class Strings(
         )
 
         /**
+         * @property selectAllTooltip
+         * @property errorSwitchLabel
+         * @property valuesOverriddenIndicatorTooltip
+         */
+        data class Endpoints(
+            val selectAllTooltip: String,
+            val errorSwitchLabel: String,
+            val valuesOverriddenIndicatorTooltip: String
+        )
+        /**
          * @property none
          * @property useErrorResponse
          * @property defaultDataTab
@@ -124,8 +136,10 @@ data class Strings(
          * @property resetHeaders
          * @property noHeaders
          * @property headersUnset
+         * @property title
          */
         data class EndpointDetails(
+            val title: String,
             val none: String,
             val useErrorResponse: String,
             val defaultDataTab: String,
@@ -157,7 +171,7 @@ data class Strings(
             val editHeaders: String,
             val resetHeaders: String,
             val noHeaders: String,
-            val headersUnset: String,
+            val headersUnset: String
         )
     }
 }

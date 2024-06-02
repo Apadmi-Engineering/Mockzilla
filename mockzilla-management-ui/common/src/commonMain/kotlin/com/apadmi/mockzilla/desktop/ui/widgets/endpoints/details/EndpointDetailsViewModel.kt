@@ -3,15 +3,26 @@ package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 import androidx.compose.runtime.mutableStateOf
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.Device
+import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetailsViewModel.*
 import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+private typealias UpdateServerBlock = suspend (config: SerializableEndpointConfig, device: Device) -> Unit
+private typealias UpdateStateBlock = State.Endpoint.() -> State.Endpoint
 class EndpointDetailsViewModel(
+    private val key: EndpointConfiguration.Key?,
     private val endpointsService: MockzillaManagement.EndpointsService,
+    private val updateService: MockzillaManagement.UpdateService,
+    private val clearingService: MockzillaManagement.CacheClearingService,
     activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
@@ -19,16 +30,22 @@ class EndpointDetailsViewModel(
     // see https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
     // for reasons
     val state = mutableStateOf<State>(State.Empty)
+    private var delayDebounceJob: Job? = null
+    private var defaultHeadersDebounceJob: Job? = null
+    private var defaultBodyDebounceJob: Job? = null
+    private var errorBodyDebounceJob: Job? = null
+    private var errorHeadersDebounceJob: Job? = null
 
     override suspend fun reloadData(selectedDevice: Device?) {
         val device = selectedDevice ?: return run {
             state.value = State.Empty
         }
 
-        // TODO: Actually picking correct endpoint to view details for
-        val endpoints = endpointsService.fetchAllEndpointConfigs(device).map { it.firstOrNull() }
+        val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
+            endpoint.firstOrNull { it.key == key }
+        }
 
-        state.value = endpoints.fold(
+        state.value = endpoint.fold(
             onSuccess = { config ->
                 config?.let {
                     endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
@@ -46,7 +63,8 @@ class EndpointDetailsViewModel(
                                 // TODO: Should auto infer based on if body is valid JSON
                                 jsonEditingDefault = true,
                                 jsonEditingError = true,
-                                presets = presets
+                                presets = presets,
+                                error = null
                             )
                         },
                         onFailure = { State.Empty }
@@ -57,74 +75,107 @@ class EndpointDetailsViewModel(
         )
     }
 
-    fun onDefaultBodyChange(value: String?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(defaultBody = value)
+    fun onDefaultBodyChange(value: String?) = onPropertyChanged({ copy(defaultBody = value) },
+        { config, device ->
+            defaultBodyDebounceJob = withDebounce(defaultBodyDebounceJob) {
+                emitErrorIfNeeded(updateService.setDefaultBody(device, config.key, value))
+            }
+        }
+    )
+
+    fun onDefaultStatusChange(value: HttpStatusCode?) = onPropertyChanged({ copy(defaultStatus = value) },
+        { config, device -> emitErrorIfNeeded(updateService.setDefaultStatus(device, config.key, value)) }
+    )
+
+    private suspend fun withDebounce(job: Job?, op: suspend () -> Result<Unit>) = coroutineScope {
+        job?.cancel()
+        launch {
+            delay(250)
+            op()
         }
     }
 
-    fun onDefaultStatusChange(value: HttpStatusCode?) {
+    private fun <T> emitErrorIfNeeded(result: Result<T>) = result.onFailure {
         state.value = when (val state = state.value) {
             is State.Empty -> state
-            is State.Endpoint -> state.copy(defaultStatus = value)
+            is State.Endpoint -> state.copy(error = "Something went wrong")
         }
     }
 
-    fun onErrorBodyChange(value: String?) {
+    fun onErrorBodyChange(value: String?) = onPropertyChanged({ copy(errorBody = value) },
+        { config, device ->
+            errorBodyDebounceJob = withDebounce(errorBodyDebounceJob) {
+                emitErrorIfNeeded(updateService.setErrorBody(device, config.key, value))
+            }
+        }
+    )
+
+    private fun onPropertyChanged(
+        updateState: UpdateStateBlock,
+        updateServer: UpdateServerBlock
+    ) {
+        // TODO: Handle error
+        val activeDevice = this.activeDevice ?: return
+
         state.value = when (val state = state.value) {
             is State.Empty -> state
-            is State.Endpoint -> state.copy(errorBody = value)
+            is State.Endpoint -> {
+                viewModelScope.launch { updateServer(state.config, activeDevice) }
+                updateState(state)
+            }
         }
     }
 
-    fun onErrorStatusChange(value: HttpStatusCode?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(errorStatus = value)
-        }
-    }
+    fun onErrorStatusChange(value: HttpStatusCode?) = onPropertyChanged({ copy(errorStatus = value) },
+        { config, device -> emitErrorIfNeeded(updateService.setErrorStatus(device, config.key, value)) }
+    )
 
-    fun onFailChange(value: Boolean?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(fail = value)
-        }
-    }
+    fun onFailChange(value: Boolean?) = onPropertyChanged({ copy(fail = value) },
+        { config, device -> emitErrorIfNeeded(updateService.setShouldFail(device, listOf(config.key), value)) }
+    )
 
     // Could possibly have numerical picker rather than free text field for this one
-    fun onDelayChange(value: String?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(delayMillis = value)
+    fun onDelayChange(value: String?) = onPropertyChanged({ copy(delayMillis = value.takeIf { value == null || value.toIntOrNull() != null }) },
+        { config, device ->
+            delayDebounceJob = withDebounce(delayDebounceJob) {
+                emitErrorIfNeeded(updateService.setDelay(device, listOf(config.key), value?.toIntOrNull()))
+            }
         }
-    }
+    )
 
-    fun onJsonDefaultEditingChange(value: Boolean) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(jsonEditingDefault = value)
+    fun onJsonDefaultEditingChange(value: Boolean) = onPropertyChanged({ copy(jsonEditingDefault = value) },
+        { _, _ -> /* No-op */ }
+    )
+
+    fun onJsonErrorEditingChange(value: Boolean) = onPropertyChanged({ copy(jsonEditingError = value) },
+        { _, _ -> /* No-op */ }
+    )
+
+    fun onDefaultHeadersChange(value: List<Pair<String, String>>?) = onPropertyChanged({ copy(defaultHeaders = value) },
+        { config, device ->
+            defaultHeadersDebounceJob = withDebounce(defaultHeadersDebounceJob) {
+                emitErrorIfNeeded(updateService.setDefaultHeaders(device, config.key, value?.toMap()))
+            }
         }
-    }
+    )
 
-    fun onJsonErrorEditingChange(value: Boolean) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(jsonEditingError = value)
+    fun onErrorHeadersChange(value: List<Pair<String, String>>?) = onPropertyChanged({ copy(errorHeaders = value) },
+        { config, device ->
+            errorHeadersDebounceJob = withDebounce(errorHeadersDebounceJob) {
+                emitErrorIfNeeded(updateService.setErrorHeaders(device, config.key, value?.toMap()))
+            }
         }
-    }
+    )
 
-    fun onDefaultHeadersChange(value: List<Pair<String, String>>?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(defaultHeaders = value)
-        }
-    }
+    fun onResetAll() = viewModelScope.launch {
+        val activeDevice = this@EndpointDetailsViewModel.activeDevice ?: return@launch
+        val state = state.value as? State.Endpoint ?: return@launch
 
-    fun onErrorHeadersChange(value: List<Pair<String, String>>?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(errorHeaders = value)
+        // TODO: Loading and error states here
+        emitErrorIfNeeded(
+            clearingService.clearCaches(activeDevice, listOf(state.config.key))
+        ).onSuccess {
+            reloadData(activeDevice)
         }
     }
 
@@ -133,7 +184,7 @@ class EndpointDetailsViewModel(
 
         /**
          * @property config
-         * @property defaultBody
+         * @property defaultBody// TODO: Make this more robust
          * @property defaultStatus
          * @property errorBody
          * @property errorStatus
@@ -144,9 +195,11 @@ class EndpointDetailsViewModel(
          * @property presets
          * @property defaultHeaders
          * @property errorHeaders
+         * @property error
          */
         data class Endpoint(
             val config: SerializableEndpointConfig,
+            val error: String?,
             val defaultBody: String?,
             val defaultStatus: HttpStatusCode?,
             val defaultHeaders: List<Pair<String, String>>?,

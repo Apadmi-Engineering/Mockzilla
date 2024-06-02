@@ -12,6 +12,7 @@ abstract class SelectedDeviceMonitoringViewModel(
     private val activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
+    val activeDevice get() = activeDeviceMonitor.selectedDevice.value?.device
     init {
         viewModelScope.launch {
             yield()

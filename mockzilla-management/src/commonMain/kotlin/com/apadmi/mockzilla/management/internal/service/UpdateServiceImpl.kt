@@ -13,7 +13,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setShouldFail(
         connection: MockzillaConnectionConfig,
         keys: List<EndpointConfiguration.Key>,
-        shouldFail: Boolean
+        shouldFail: Boolean?
     ) = repo.updateMockDataEntries(
         keys.map { key ->
             SerializableEndpointPatchItemDto(
@@ -39,7 +39,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setDefaultHeaders(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        headers: Map<String, String>
+        headers: Map<String, String>?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
@@ -50,7 +50,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setDefaultBody(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        body: String
+        body: String?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
@@ -61,7 +61,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setDefaultStatus(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        statusCode: HttpStatusCode
+        statusCode: HttpStatusCode?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
@@ -72,7 +72,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setErrorBody(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        body: String
+        body: String?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
@@ -83,7 +83,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setErrorHeaders(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        headers: Map<String, String>
+        headers: Map<String, String>?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
@@ -94,7 +94,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setErrorStatus(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        statusCode: HttpStatusCode
+        statusCode: HttpStatusCode?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,

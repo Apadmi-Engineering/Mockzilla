@@ -16,7 +16,7 @@ class MonitorLogsUseCaseImpl(
     private val cache = mutableMapOf<CacheKey, Sequence<LogEvent>>()
 
     override suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>> = mutex.withLock {
-        managementLogsService.fetchMonitorLogsAndClearBuffer(device).map { response ->
+        managementLogsService.fetchMonitorLogsAndClearBuffer(device, hideFromLogs = true).map { response ->
             val cacheKey = CacheKey(device, response.appPackage)
             val existingLogs = cache.getOrDefault(cacheKey, sequenceOf())
             (existingLogs + response.logs).also {

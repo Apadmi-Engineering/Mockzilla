@@ -17,7 +17,6 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.test.runBlockingTest
 
 class MetaDataUseCaseTests : CoroutineTest() {
     @Mock
@@ -30,12 +29,12 @@ class MetaDataUseCaseTests : CoroutineTest() {
     fun `getMetaData - fails - returns failure`() = runBlockingTest {
         /* Setup */
         given(serviceMock).coroutine {
-            fetchMetaData(Device.dummy())
+            fetchMetaData(Device.dummy(), hideFromLogs = true)
         }.thenReturn(Result.failure(Exception()))
         val sut = createSut()
 
         /* Run Test */
-        val result = sut.getMetaData(Device.dummy())
+        val result = sut.getMetaData(Device.dummy(), true)
 
         /* Verify */
         assertTrue(result.isFailure)
@@ -45,18 +44,18 @@ class MetaDataUseCaseTests : CoroutineTest() {
     fun `getMetaData - succeeds - returns and sets cache`() = runBlockingTest {
         /* Setup */
         given(serviceMock).coroutine {
-            fetchMetaData(Device.dummy())
+            fetchMetaData(Device.dummy(), hideFromLogs = true)
         }.thenReturn(Result.success(MetaData.dummy()))
         val sut = createSut()
 
         /* Run Test */
-        val result = sut.getMetaData(Device.dummy())
-        val result2 = sut.getMetaData(Device.dummy())  // Should hit cache
+        val result = sut.getMetaData(Device.dummy(), true)
+        val result2 = sut.getMetaData(Device.dummy(), true)  // Should hit cache
 
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
         assertEquals(result, result2)
-        verify(serviceMock).coroutine { fetchMetaData(Device.dummy()) }
+        verify(serviceMock).coroutine { fetchMetaData(Device.dummy(), true) }
             .wasInvoked(1.time)
     }
 
@@ -64,22 +63,22 @@ class MetaDataUseCaseTests : CoroutineTest() {
     fun `getMetaData - refreshes after cache expires`() = runBlockingTest {
         /* Setup */
         given(serviceMock).coroutine {
-            fetchMetaData(Device.dummy())
+            fetchMetaData(Device.dummy(), hideFromLogs = false)
         }.thenReturn(Result.success(MetaData.dummy()))
         var currentTimeStamp = System.currentTimeMillis()
         val sut = createSut { currentTimeStamp }
 
         /* Run Test */
-        val result = sut.getMetaData(Device.dummy())
+        val result = sut.getMetaData(Device.dummy(), false)
         // Mimic time advancing
         currentTimeStamp += 0.6.seconds.inWholeMilliseconds
 
-        val result2 = sut.getMetaData(Device.dummy())  // Should cache-miss
+        val result2 = sut.getMetaData(Device.dummy(), false)  // Should cache-miss
 
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
         assertEquals(result, result2)
-        verify(serviceMock).coroutine { fetchMetaData(Device.dummy()) }
+        verify(serviceMock).coroutine { fetchMetaData(Device.dummy(), false) }
             .wasInvoked(2.time)
     }
 }

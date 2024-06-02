@@ -1,0 +1,196 @@
+package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
+
+import com.apadmi.mockzilla.desktop.engine.device.Device
+import com.apadmi.mockzilla.desktop.engine.device.StatefulDevice
+import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsViewModel
+import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsViewModel.*
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import com.apadmi.mockzilla.management.MockzillaManagement
+import com.apadmi.mockzilla.testutils.SelectedDeviceMonitoringViewModelBaseTest
+import com.apadmi.mockzilla.testutils.dummymodels.dummy
+
+import app.cash.turbine.test
+import io.mockative.Mock
+import io.mockative.classOf
+import io.mockative.given
+import io.mockative.mock
+import junit.framework.TestCase.assertFalse
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlinx.coroutines.yield
+
+@Suppress("TOO_LONG_FUNCTION")
+class EndpointsViewModelTests : SelectedDeviceMonitoringViewModelBaseTest() {
+    @Mock
+    private val endpointsServiceMock = mock(classOf<MockzillaManagement.EndpointsService>())
+
+    @Mock
+    private val updateServiceMock = mock(classOf<MockzillaManagement.UpdateService>())
+
+    private fun createSut() = EndpointsViewModel(
+        endpointsServiceMock,
+        updateServiceMock,
+        activeDeviceMonitorMock,
+        testScope.backgroundScope
+    )
+
+    @Test
+    fun `reloadData - populates correctly`() = runBlockingTest {
+        /* Setup */
+        given(endpointsServiceMock).coroutine { fetchAllEndpointConfigs(Device.dummy()) }
+            .thenReturn(
+                Result.success(
+                    listOf(
+                        SerializableEndpointConfig.allNulls("Key1", "Name1", 1),
+                        SerializableEndpointConfig.allNulls("Key2", "Name2", 1)
+                            .copy(shouldFail = true),
+                        SerializableEndpointConfig.allNulls("Key3", "Name3", 1)
+                            .copy(shouldFail = true, delayMs = 10),
+                    )
+                )
+            )
+        val sut = createSut()
+
+        /* Run Test */
+        sut.reloadData(Device.dummy())
+
+        assertEquals(
+            State.EndpointsList(
+                listOf(
+                    State.EndpointConfig(
+                        key = EndpointConfiguration.Key("Key1"),
+                        name = "Name1",
+                        fail = false,
+                        isCheckboxTicked = false,
+                        hasValuesOverridden = false
+                    ),
+                    State.EndpointConfig(
+                        key = EndpointConfiguration.Key("Key2"),
+                        name = "Name2",
+                        fail = true,
+                        isCheckboxTicked = false,
+                        hasValuesOverridden = false
+                    ),
+                    State.EndpointConfig(
+                        key = EndpointConfiguration.Key("Key3"),
+                        name = "Name3",
+                        fail = true,
+                        isCheckboxTicked = false,
+                        hasValuesOverridden = true
+                    )
+                )
+            ), sut.state.value
+        )
+    }
+
+    @Test
+    fun `onCheckboxChanged - updates correctly`() = runBlockingTest {
+        /* Setup */
+        selectedDeviceMock.value = StatefulDevice(Device.dummy(), "", true, "")
+        given(endpointsServiceMock).coroutine { fetchAllEndpointConfigs(Device.dummy()) }
+            .thenReturn(
+                Result.success(
+                    listOf(
+                        SerializableEndpointConfig.allNulls("Key1", "Name1", 1),
+                        SerializableEndpointConfig.allNulls("Key2", "Name2", 1)
+                            .copy(shouldFail = true),
+                        SerializableEndpointConfig.allNulls("Key3", "Name3", 1)
+                            .copy(shouldFail = true, delayMs = 10),
+                    )
+                )
+            )
+        val sut = createSut()
+        sut.state.test {
+            sut.reloadData(Device.dummy())
+            skipItems(2)
+            yield()
+
+            /* Run Test */
+            sut.onCheckboxChanged(EndpointConfiguration.Key("Key1"), true)
+            val result1 = awaitItem()
+            sut.onCheckboxChanged(EndpointConfiguration.Key("Key1"), false)
+            val result2 = awaitItem()
+
+            /* Verify */
+            assertTrue((result1 as State.EndpointsList).endpoints.first { it.key.raw == "Key1" }.isCheckboxTicked)
+            assertFalse((result2 as State.EndpointsList).endpoints.first { it.key.raw == "Key1" }.isCheckboxTicked)
+        }
+    }
+
+    @Test
+    fun `onAllCheckboxChanged - updates correctly`() = runBlockingTest {
+        /* Setup */
+        selectedDeviceMock.value = StatefulDevice(Device.dummy(), "", true, "")
+        given(endpointsServiceMock).coroutine { fetchAllEndpointConfigs(Device.dummy()) }
+            .thenReturn(
+                Result.success(
+                    listOf(
+                        SerializableEndpointConfig.allNulls("Key1", "Name1", 1),
+                        SerializableEndpointConfig.allNulls("Key2", "Name2", 1)
+                            .copy(shouldFail = true),
+                        SerializableEndpointConfig.allNulls("Key3", "Name3", 1)
+                            .copy(shouldFail = true, delayMs = 10),
+                    )
+                )
+            )
+        val sut = createSut()
+        sut.state.test {
+            sut.reloadData(Device.dummy())
+            skipItems(2)
+            yield()
+
+            /* Run Test */
+            sut.onAllCheckboxChanged(true)
+            val result1 = awaitItem()
+            sut.onAllCheckboxChanged(false)
+            val result2 = awaitItem()
+
+            /* Verify */
+            assertTrue((result1 as State.EndpointsList).endpoints.all { it.isCheckboxTicked })
+            assertFalse((result2 as State.EndpointsList).endpoints.all { it.isCheckboxTicked })
+        }
+    }
+
+    @Test
+    fun `onFailChanged - updates correctly`() = runBlockingTest {
+        /* Setup */
+        selectedDeviceMock.value = StatefulDevice(Device.dummy(), "", true, "")
+        given(updateServiceMock).coroutine {
+            setShouldFail(Device.dummy(), listOf(EndpointConfiguration.Key("Key1")), true)
+        }.thenReturn(Result.success(Unit))
+        given(updateServiceMock).coroutine {
+            setShouldFail(Device.dummy(), listOf(EndpointConfiguration.Key("Key1")), false)
+        }.thenReturn(Result.success(Unit))
+        given(endpointsServiceMock).coroutine { fetchAllEndpointConfigs(Device.dummy()) }
+            .thenReturn(
+                Result.success(
+                    listOf(
+                        SerializableEndpointConfig.allNulls("Key1", "Name1", 1),
+                        SerializableEndpointConfig.allNulls("Key2", "Name2", 1)
+                            .copy(shouldFail = true),
+                        SerializableEndpointConfig.allNulls("Key3", "Name3", 1)
+                            .copy(shouldFail = true, delayMs = 10),
+                    )
+                )
+            )
+        val sut = createSut()
+        sut.state.test {
+            sut.reloadData(Device.dummy())
+            skipItems(2)
+            yield()
+
+            /* Run Test */
+            sut.onFailChanged(EndpointConfiguration.Key("Key1"), true)
+            val result1 = awaitItem()
+            sut.onFailChanged(EndpointConfiguration.Key("Key1"), false)
+            val result2 = awaitItem()
+
+            /* Verify */
+            assertTrue((result1 as State.EndpointsList).endpoints.first { it.key.raw == "Key1" }.fail)
+            assertFalse((result2 as State.EndpointsList).endpoints.first { it.key.raw == "Key1" }.fail)
+        }
+    }
+}

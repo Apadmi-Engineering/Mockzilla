@@ -25,6 +25,7 @@ class ManagementApiControllerTests {
     private val mockServerMonitorMock = mock(classOf<MockServerMonitor>())
     private val dummyEndpoints = listOf(EndpointConfiguration.Builder("my-id")
         .setPatternMatcher { uri.endsWith("my-id") }
+        .setName("id")
         .setDefaultHandler {
             MockzillaHttpResponse(
                 statusCode = HttpStatusCode.Created,

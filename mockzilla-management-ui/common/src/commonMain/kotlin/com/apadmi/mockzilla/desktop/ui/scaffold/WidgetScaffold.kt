@@ -3,6 +3,7 @@
 package com.apadmi.mockzilla.desktop.ui.scaffold
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,7 +28,7 @@ import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
  * @property ui
  */
 data class Widget(
-    val title: String,
+    val title: String? = null,
     val ui: @Composable () -> Unit
 )
 
@@ -53,10 +54,10 @@ fun WidgetScaffold(
     // width/height below zero (when the user drags into the tab areas) but visually display the
     // restricted width/height that can't drop below 0. This ensures the dragged divider stays
     // with the cursor at all times.
-    var leftPanelWidth by remember { mutableStateOf(100.dp) }
-    var leftPanelSettledWidth by remember { mutableStateOf(100.dp) }
-    var rightPanelWidth by remember { mutableStateOf(300.dp) }
-    var rightPanelSettledWidth by remember { mutableStateOf(300.dp) }
+    var leftPanelWidth by remember { mutableStateOf(350.dp) }
+    var leftPanelSettledWidth by remember { mutableStateOf(350.dp) }
+    var rightPanelWidth by remember { mutableStateOf(500.dp) }
+    var rightPanelSettledWidth by remember { mutableStateOf(500.dp) }
     var bottomPanelHeight by remember { mutableStateOf(200.dp) }
     var bottomPanelSettledHeight by remember { mutableStateOf(200.dp) }
 
@@ -103,10 +104,14 @@ fun WidgetScaffold(
                         leftPanelWidth = leftPanelSettledWidth
                     }
                 )
-                Column(modifier = Modifier.verticalScroll(rememberScrollState()).weight(1f)) {
-                    middle.forEach {
-                        Text(it.title)
-                        it.ui()
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(1f)
+                ) {
+                    middle.forEach { widget ->
+                        widget.title?.let { Text(it) }
+                        widget.ui()
                     }
                 }
                 RightPanel(
@@ -221,15 +226,11 @@ private fun LeftPanel(
     defaultWidth: Dp = 100.dp
 ) {
     val density = LocalDensity.current
-    var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
+    var selectedWidget by remember { mutableStateOf<Int?>(null) }
 
     Row(modifier = Modifier.fillMaxHeight()) {
         VerticalTabList(
-            tabs = content.map { widget ->
-                VerticalTab(
-                    title = widget.title + " $settledWidth",
-                )
-            },
+            tabs = content.map { widget -> VerticalTab(title = widget.title) },
             clockwise = false,
             selected = selectedWidget,
             onSelect = { widget ->
@@ -301,11 +302,7 @@ private fun RightPanel(
         }
 
         VerticalTabList(
-            tabs = content.map { widget ->
-                VerticalTab(
-                    title = widget.title + " $settledWidth",
-                )
-            },
+            tabs = content.map { widget -> VerticalTab(title = widget.title) },
             clockwise = true,
             selected = selectedWidget,
             onSelect = { widget ->

@@ -26,8 +26,8 @@ val EnStrings = Strings(
             noDeviceConnected = "No device connected",
             appName = "App Name",
             appPackage = "App Package",
-            operatingSystem = "Operating System",
-            operatingSystemVersion = "Operating System Version",
+            operatingSystem = "OS",
+            operatingSystemVersion = "OS Version",
             deviceModel = "Device",
             appVersion = "App Version",
             mockzillaVersion = "Mockzilla Version",
@@ -38,7 +38,13 @@ val EnStrings = Strings(
         logs = Strings.Widgets.Logs(
             "Logs"
         ),
+        endpoints = Strings.Widgets.Endpoints(
+            selectAllTooltip = "Select all",
+            errorSwitchLabel = "Use Error Response",
+            valuesOverriddenIndicatorTooltip = "Some or all of the properties of this response are being overridden"
+        ),
         endpointDetails = Strings.Widgets.EndpointDetails(
+            title = "Editor",
             none = "No endpoint selected",
             useErrorResponse = "Return failure response",
             defaultDataTab = "Default Response",
@@ -62,7 +68,7 @@ val EnStrings = Strings(
                     "Text"
                 }
             },
-            failOptionsLabel = "Response to use:",
+            failOptionsLabel = "User Error Response:",
             failLabel = { shouldFail: Boolean? ->
                 when (shouldFail) {
                     null -> "Unset"

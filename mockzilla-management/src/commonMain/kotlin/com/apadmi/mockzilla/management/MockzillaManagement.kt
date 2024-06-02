@@ -24,20 +24,27 @@ interface MockzillaManagement {
 
     interface CacheClearingService {
         suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
-        suspend fun clearCaches(connection: MockzillaConnectionConfig, keys: List<EndpointConfiguration.Key>): Result<Unit>
+        suspend fun clearCaches(
+            connection: MockzillaConnectionConfig,
+            keys: List<EndpointConfiguration.Key>
+        ): Result<Unit>
     }
 
     interface EndpointsService {
         suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
-        suspend fun fetchDashboardOptionsConfig(connection: MockzillaConnectionConfig, key: EndpointConfiguration.Key): Result<DashboardOptionsConfig>
+        suspend fun fetchDashboardOptionsConfig(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key
+        ): Result<DashboardOptionsConfig>
     }
 
     interface UpdateService {
         suspend fun setShouldFail(
             connection: MockzillaConnectionConfig,
             keys: List<EndpointConfiguration.Key>,
-            shouldFail: Boolean
+            shouldFail: Boolean?
         ): Result<Unit>
+
         suspend fun setDelay(
             connection: MockzillaConnectionConfig,
             keys: List<EndpointConfiguration.Key>,
@@ -47,41 +54,52 @@ interface MockzillaManagement {
         suspend fun setDefaultHeaders(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            headers: Map<String, String>
+            headers: Map<String, String>?
         ): Result<Unit>
+
         suspend fun setDefaultBody(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            body: String
+            body: String?
         ): Result<Unit>
+
         suspend fun setDefaultStatus(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            statusCode: HttpStatusCode
+            statusCode: HttpStatusCode?
         ): Result<Unit>
+
         suspend fun setErrorBody(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            body: String
+            body: String?
         ): Result<Unit>
+
         suspend fun setErrorHeaders(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            headers: Map<String, String>
+            headers: Map<String, String>?
         ): Result<Unit>
+
         suspend fun setErrorStatus(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
-            statusCode: HttpStatusCode
+            statusCode: HttpStatusCode?
         ): Result<Unit>
     }
 
     interface MetaDataService {
-        suspend fun fetchMetaData(connection: MockzillaConnectionConfig): Result<MetaData>
+        suspend fun fetchMetaData(
+            connection: MockzillaConnectionConfig,
+            hideFromLogs: Boolean
+        ): Result<MetaData>
     }
 
     interface LogsService {
-        suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig): Result<MonitorLogsResponse>
+        suspend fun fetchMonitorLogsAndClearBuffer(
+            connection: MockzillaConnectionConfig,
+            hideFromLogs: Boolean
+        ): Result<MonitorLogsResponse>
     }
 
     private data class Instance(
