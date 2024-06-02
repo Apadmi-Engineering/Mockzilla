@@ -77,15 +77,17 @@ class EndpointDetailsViewModel(
                                 // TODO: Should auto infer based on if body is valid JSON
                                 jsonEditingDefault = true,
                                 jsonEditingError = true,
-                                presets = presets,
-                                error = null
+                                presets = presets
                             )
                         },
                         onFailure = { State.Empty }
                     )
                 } ?: State.Empty
             },
-            onFailure = { State.Empty }
+            onFailure = {
+                eventBus.send(EventBus.Event.GenericError)
+                State.Empty
+            }
         )
     }
 
@@ -121,10 +123,7 @@ class EndpointDetailsViewModel(
     private fun <T> emitErrorAndEventIfNeeded(result: Result<T>) = result.onSuccess {
         key?.let { eventBus.send(EventBus.Event.EndpointDataChanged(listOf(it))) }
     }.onFailure {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(error = "Something went wrong")
-        }
+        eventBus.send(EventBus.Event.GenericError)
     }
 
     fun onErrorBodyChange(value: String?) = onPropertyChanged({ copy(errorBody = value) },
@@ -139,7 +138,6 @@ class EndpointDetailsViewModel(
         updateState: UpdateStateBlock,
         updateServer: UpdateServerBlock
     ) {
-        // TODO: Handle error
         state.value = when (val state = state.value) {
             is State.Empty -> state
             is State.Endpoint -> {
@@ -255,11 +253,9 @@ class EndpointDetailsViewModel(
          * @property presets
          * @property defaultHeaders
          * @property errorHeaders
-         * @property error
          */
         data class Endpoint(
             val config: SerializableEndpointConfig,
-            val error: String?,
             val defaultBody: String?,
             val defaultStatus: HttpStatusCode?,
             val defaultHeaders: List<Pair<String, String>>?,
