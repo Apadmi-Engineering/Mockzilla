@@ -89,6 +89,7 @@ fun DeviceConnectionContent(
             modifier = Modifier.fillMaxWidth(),
             value = state.ipAndPort,
             onValueChange = onIpAndPortChanged,
+            singleLine = true,
             label = { Text(strings.widgets.deviceConnection.ipInputLabel) }
         )
 

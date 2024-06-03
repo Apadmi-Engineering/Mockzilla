@@ -74,7 +74,7 @@ class ActiveDeviceManagerImpl(
                 onDeviceConnectionStateChange.emit(Unit)
             }
 
-            delay(0.5.seconds)
+            delay(1.seconds)
             yield()
         }
     }

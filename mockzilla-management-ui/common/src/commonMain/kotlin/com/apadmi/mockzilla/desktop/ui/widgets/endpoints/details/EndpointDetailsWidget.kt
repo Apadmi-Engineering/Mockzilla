@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -25,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -56,8 +59,10 @@ import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
+import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import io.ktor.http.HttpStatusCode
@@ -94,6 +99,8 @@ fun EndpointDetailsWidget(
         viewModel::onDelayChange,
         viewModel::onDefaultHeadersChange,
         viewModel::onErrorHeadersChange,
+        viewModel::onDefaultPresetSelected,
+        viewModel::onErrorPresetSelected,
         viewModel::onResetAll
     )
 }
@@ -112,6 +119,8 @@ fun EndpointDetailsWidgetContent(
     onDelayChange: (String?) -> Unit,
     onDefaultHeadersChange: (List<Pair<String, String>>?) -> Unit,
     onErrorHeadersChange: (List<Pair<String, String>>?) -> Unit,
+    onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
+    onErrorPresetSelected: (DashboardOverridePreset) -> Unit,
     onResetAll: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
@@ -170,8 +179,10 @@ fun EndpointDetailsWidgetContent(
                             onResponseBodyChange = onDefaultBodyChange,
                             jsonEditing = state.jsonEditingDefault,
                             onJsonEditingChange = onJsonDefaultEditingChange,
+                            onPresetSelected = onDefaultPresetSelected,
                             headers = state.defaultHeaders,
                             onHeadersChange = onDefaultHeadersChange,
+                            presets = state.presets.successPresets
                         )
 
                         Tab.Error -> EndpointDetailsResponseBody(
@@ -181,8 +192,10 @@ fun EndpointDetailsWidgetContent(
                             onResponseBodyChange = onErrorBodyChange,
                             jsonEditing = state.jsonEditingError,
                             onJsonEditingChange = onJsonErrorEditingChange,
+                            onPresetSelected = onErrorPresetSelected,
                             headers = state.errorHeaders,
                             onHeadersChange = onErrorHeadersChange,
+                            presets = state.presets.errorPresets
                         )
 
                         Tab.Settings -> Settings(
@@ -214,6 +227,8 @@ fun EndpointDetailsWidgetNonePreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onErrorPresetSelected = {},
+        onDefaultPresetSelected = {},
         onResetAll = {}
     )
 }
@@ -251,6 +266,8 @@ fun EndpointDetailsWidgetPreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onErrorPresetSelected = {},
+        onDefaultPresetSelected = {},
         onResetAll = {}
     )
 }
@@ -288,6 +305,8 @@ fun EndpointDetailsWidgetUnsetPreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onErrorPresetSelected = {},
+        onDefaultPresetSelected = {},
         onResetAll = {}
     )
 }
@@ -323,10 +342,33 @@ private fun EndpointDetailsResponseBody(
     onJsonEditingChange: (Boolean) -> Unit,
     headers: List<Pair<String, String>>?,
     onHeadersChange: (List<Pair<String, String>>?) -> Unit,
+    onPresetSelected: (DashboardOverridePreset) -> Unit,
     strings: Strings = LocalStrings.current,
+    presets: List<DashboardOverridePreset>,
 ) = Column(modifier = modifier) {
     Spacer(Modifier.height(4.dp))
     var pickingStatusCode by remember { mutableStateOf(false) }
+    var pickingPresets by remember { mutableStateOf(false) }
+
+    if (presets.isNotEmpty()) {
+        Button(
+            modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp),
+            onClick = { pickingPresets = !pickingPresets }) {
+            Text(if (pickingPresets) "Hide Presets" else "Show Presets")
+        }
+    }
+
+    if (pickingPresets) {
+        HorizontalDivider(Modifier.fillMaxWidth())
+        PresetsSelector(
+            presets = presets,
+            onPresetSelected = {
+                pickingPresets = false
+                onPresetSelected(it)
+            }
+        )
+    }
+
     ExposedDropdownMenuBox(
         expanded = pickingStatusCode,
         onExpandedChange = { pickingStatusCode = it },
@@ -424,9 +466,9 @@ private fun EndpointDetailsResponseBody(
             // TODO: Might want warning here before losing mock data
             onClick = {
                 // TODO: Might want this to prompt user to pick from presets if available
-                onResponseBodyChange(body?.let {
-                    null
-                } ?: "")
+                body?.let {
+                    onResponseBodyChange(null)
+                } ?: onResponseBodyChange("")
             },
         ) {
             Text(
@@ -440,8 +482,32 @@ private fun EndpointDetailsResponseBody(
     HeadersEditor(headers, onHeadersChange)
 }
 
+@Composable
+private fun PresetsSelector(
+    presets: List<DashboardOverridePreset>,
+    onPresetSelected: (DashboardOverridePreset) -> Unit
+) = LazyColumn(Modifier.heightIn(max = 200.dp)) {
+    itemsIndexed(presets) { index, preset ->
+        Row(Modifier.fillMaxWidth().alternatingBackground(index).padding(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(preset.name)
+                Text(
+                    modifier = Modifier.alpha(0.5f),
+                    text = preset.description ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            Button(onClick = { onPresetSelected(preset) }) {
+                Text("Apply Preset")
+            }
+        }
+    }
+}
+
 @Suppress("LOCAL_VARIABLE_EARLY_DECLARATION")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Settings(
     delayMillis: String?,
@@ -449,58 +515,27 @@ private fun Settings(
     onResetAll: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
-    var customDelay by remember { mutableStateOf("") }
+    val regex = remember { Regex("[^0-9 ]") }
+    var customDelay by remember(delayMillis != null) { mutableStateOf(delayMillis) }
     Spacer(Modifier.height(4.dp))
-    Text(
-        text = strings.widgets.endpointDetails.responseDelay,
-        modifier = Modifier.padding(horizontal = 8.dp),
-    )
-    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-        val options = listOf(
-            strings.widgets.endpointDetails.noOverrideResponseDelay,
-            strings.widgets.endpointDetails.customResponseDelay
+
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = strings.widgets.endpointDetails.responseDelay,
+            modifier = Modifier.padding(horizontal = 8.dp),
         )
-        options.forEachIndexed { index, label ->
-            SegmentedButton(
-                selected = if (index == 0) {
-                    delayMillis == null
-                } else {
-                    delayMillis != null
-                },
-                onClick = {
-                    if (index == 0) {
-                        onDelayChange(null)
-                    } else {
-                        onDelayChange(customDelay)
-                    }
-                },
-                label = {
-                    Text(
-                        text = label,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
-                shape = SegmentedButtonDefaults.itemShape(
-                    index = index,
-                    count = options.size,
-                ),
-                icon = {},
-            )
-        }
+        TextField(
+            value = customDelay ?: "",
+            onValueChange = { newValue ->
+                customDelay = regex.replace(newValue.take(6), "")
+                onDelayChange(customDelay?.takeUnless { it.isBlank() })
+            },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            singleLine = true,
+            label = { Text(text = strings.widgets.endpointDetails.responseDelayLabel) },
+            suffix = { Text(text = strings.widgets.endpointDetails.responseDelayUnits) },
+        )
     }
-    TextField(
-        value = customDelay,
-        onValueChange = {
-            customDelay = it
-            onDelayChange(it)
-        },
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        enabled = delayMillis != null,
-        singleLine = true,
-        label = { Text(text = strings.widgets.endpointDetails.responseDelayLabel) },
-        suffix = { Text(text = strings.widgets.endpointDetails.responseDelayUnits) },
-    )
     Spacer(modifier = Modifier.height(16.dp))
     Button(
         onClick = onResetAll,  // TODO: Add confirmation popup

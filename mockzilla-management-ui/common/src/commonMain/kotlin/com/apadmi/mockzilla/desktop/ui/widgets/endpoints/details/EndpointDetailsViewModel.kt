@@ -8,19 +8,21 @@ import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetails
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 
 import io.ktor.http.HttpStatusCode
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 private typealias UpdateServerBlock = suspend (config: SerializableEndpointConfig, device: Device) -> Unit
 private typealias UpdateStateBlock = State.Endpoint.() -> State.Endpoint
@@ -46,7 +48,9 @@ class EndpointDetailsViewModel(
 
     init {
         eventBus.events.filter {
-            it is EventBus.Event.FullRefresh || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(key) == true
+            it is EventBus.Event.FullRefresh || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(
+                key
+            ) == true
         }
             .onEach { reloadData() }
             .launchIn(viewModelScope)
@@ -91,13 +95,21 @@ class EndpointDetailsViewModel(
         )
     }
 
-    fun onDefaultBodyChange(value: String?) = onPropertyChanged({ copy(defaultBody = value) },
-        { config, device ->
-            defaultBodyDebounceJob = withDebounce(defaultBodyDebounceJob) {
-                emitErrorAndEventIfNeeded(updateService.setDefaultBody(device, config.key, value))
+    fun onDefaultBodyChange(value: String?) {
+        onPropertyChanged({ copy(defaultBody = value) },
+            { config, device ->
+                defaultBodyDebounceJob = withDebounce(defaultBodyDebounceJob) {
+                    emitErrorAndEventIfNeeded(
+                        updateService.setDefaultBody(
+                            device,
+                            config.key,
+                            value
+                        )
+                    )
+                }
             }
-        }
-    )
+        )
+    }
 
     fun onDefaultStatusChange(value: HttpStatusCode?) =
         onPropertyChanged({ copy(defaultStatus = value) },
@@ -112,10 +124,11 @@ class EndpointDetailsViewModel(
             }
         )
 
-    private suspend fun withDebounce(job: Job?, op: suspend () -> Result<Unit>) = coroutineScope {
+    private suspend fun withDebounce(job: Job?, op: suspend () -> Result<Unit>): Job {
         job?.cancel()
-        launch {
-            delay(250)
+        return viewModelScope.launch(Dispatchers.IO) {
+            delay(600)
+            yield()
             op()
         }
     }
@@ -236,6 +249,42 @@ class EndpointDetailsViewModel(
             clearingService.clearCaches(device, listOf(state.config.key))
         ).onSuccess { reloadData() }
     }
+
+    fun onDefaultPresetSelected(
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = onPropertyChanged({
+        copy(
+            defaultHeaders = dashboardOverridePreset.response.headers.toList(),
+            defaultStatus = dashboardOverridePreset.response.statusCode,
+            defaultBody = dashboardOverridePreset.response.body
+        )
+    }, { config, device ->
+        emitErrorAndEventIfNeeded(
+            updateService.setDefaultPreset(
+                device,
+                config.key,
+                dashboardOverridePreset
+            )
+        )
+    })
+
+    fun onErrorPresetSelected(
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = onPropertyChanged({
+        copy(
+            errorHeaders = dashboardOverridePreset.response.headers.toList(),
+            errorStatus = dashboardOverridePreset.response.statusCode,
+            errorBody = dashboardOverridePreset.response.body
+        )
+    }, { config, device ->
+        emitErrorAndEventIfNeeded(
+            updateService.setErrorPreset(
+                device,
+                config.key,
+                dashboardOverridePreset
+            )
+        )
+    })
 
     sealed class State {
         data object Empty : State()
