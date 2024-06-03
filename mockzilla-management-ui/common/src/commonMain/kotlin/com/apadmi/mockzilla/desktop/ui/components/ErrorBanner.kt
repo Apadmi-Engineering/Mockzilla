@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,8 +27,19 @@ import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.AppRootViewModel
-import androidx.compose.material.icons.filled.LinkOff
-import androidx.compose.material3.Icon
+import com.apadmi.mockzilla.desktop.ui.theme.theme_warning_background
+
+private fun AppRootViewModel.State.Connected.ErrorBannerState.bannerText(strings: Strings): String = when (this) {
+    AppRootViewModel.State.Connected.ErrorBannerState.ConnectionLost -> strings.widgets.errorBanner.connectionLost
+    AppRootViewModel.State.Connected.ErrorBannerState.UnknownError -> strings.widgets.errorBanner.unknownError
+}
+
+@Suppress("MAGIC_NUMBER")
+@Composable
+private fun AppRootViewModel.State.Connected.ErrorBannerState.backgroundColor() = when (this) {
+    AppRootViewModel.State.Connected.ErrorBannerState.ConnectionLost -> theme_warning_background
+    AppRootViewModel.State.Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.errorContainer
+}
 
 @Composable
 fun AnimatedErrorBanner(
@@ -55,7 +65,7 @@ fun AnimatedErrorBanner(
         }.using(SizeTransform(clip = false))
     }
 ) { errorBannerState ->
-    if (errorBannerState != null) {
+    errorBannerState?.let {
         ErrorBanner(errorBannerState, onRefreshAll = onRefreshAll)
     }
 }
@@ -94,16 +104,3 @@ private fun ErrorBanner(
         }
     }
 }
-
-private fun AppRootViewModel.State.Connected.ErrorBannerState.bannerText(strings: Strings): String = when (this) {
-    AppRootViewModel.State.Connected.ErrorBannerState.ConnectionLost -> strings.widgets.errorBanner.connectionLost
-    AppRootViewModel.State.Connected.ErrorBannerState.UnknownError -> strings.widgets.errorBanner.unknownError
-}
-
-@Suppress("MAGIC_NUMBER")
-@Composable
-private fun AppRootViewModel.State.Connected.ErrorBannerState.backgroundColor() = when (this) {
-    AppRootViewModel.State.Connected.ErrorBannerState.ConnectionLost -> Color(0XFFFFD129)
-    AppRootViewModel.State.Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.errorContainer
-}
-
