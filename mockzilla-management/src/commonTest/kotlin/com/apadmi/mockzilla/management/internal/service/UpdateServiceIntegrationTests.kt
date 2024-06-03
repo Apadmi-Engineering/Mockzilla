@@ -2,8 +2,10 @@
 
 package com.apadmi.mockzilla.management.internal.service
 
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepositoryImpl
 import com.apadmi.mockzilla.testutils.runIntegrationTest
@@ -76,12 +78,19 @@ class UpdateServiceIntegrationTests {
             val preUpdate = getEndpointConfig(connection)
 
             /* Run Test */
-            val result = sut.setDefaultHeaders(connection, dummyConfig.key, mapOf("my test header" to "a test value"))
+            val result = sut.setDefaultHeaders(
+                connection,
+                dummyConfig.key,
+                mapOf("my test header" to "a test value")
+            )
             val postUpdate = getEndpointConfig(connection)
 
             /* Verify */
             assertEquals(Result.success(Unit), result)
-            assertEquals(preUpdate.copy(defaultHeaders = mapOf("my test header" to "a test value")), postUpdate)
+            assertEquals(
+                preUpdate.copy(defaultHeaders = mapOf("my test header" to "a test value")),
+                postUpdate
+            )
         }
 
     @Test
@@ -95,12 +104,19 @@ class UpdateServiceIntegrationTests {
             val preUpdate = getEndpointConfig(connection)
 
             /* Run Test */
-            val result = sut.setErrorHeaders(connection, dummyConfig.key, mapOf("my test header" to "a test value"))
+            val result = sut.setErrorHeaders(
+                connection,
+                dummyConfig.key,
+                mapOf("my test header" to "a test value")
+            )
             val postUpdate = getEndpointConfig(connection)
 
             /* Verify */
             assertEquals(Result.success(Unit), result)
-            assertEquals(preUpdate.copy(errorHeaders = mapOf("my test header" to "a test value")), postUpdate)
+            assertEquals(
+                preUpdate.copy(errorHeaders = mapOf("my test header" to "a test value")),
+                postUpdate
+            )
         }
 
     @Test
@@ -196,5 +212,75 @@ class UpdateServiceIntegrationTests {
             /* Verify */
             assertEquals(Result.success(Unit), result)
             assertEquals(preUpdate.copy(errorStatus = HttpStatusCode.Conflict), postUpdate)
+        }
+
+    @Test
+    fun `setDefaultPreset - performs update`() =
+        runIntegrationTest(
+            config = MockzillaConfig.Builder().setPort(0).addEndpoint(dummyConfig)
+                .build(),
+            createSut = { UpdateServiceImpl(it) }
+        ) { sut, connection, _ ->
+            /* Setup */
+            val preUpdate = getEndpointConfig(connection)
+
+            /* Run Test */
+            val result = sut.setDefaultPreset(
+                connection, dummyConfig.key, DashboardOverridePreset(
+                    name = "name",
+                    description = "description",
+                    response = MockzillaHttpResponse(
+                        HttpStatusCode.Conflict,
+                        mapOf("key" to "value"),
+                        body = "body"
+                    )
+                )
+            )
+            val postUpdate = getEndpointConfig(connection)
+
+            /* Verify */
+            assertEquals(Result.success(Unit), result)
+            assertEquals(
+                preUpdate.copy(
+                    defaultStatus = HttpStatusCode.Conflict,
+                    defaultHeaders = mapOf("key" to "value"),
+                    defaultBody = "body"
+                ), postUpdate
+            )
+        }
+
+    @Test
+    fun `setErrorPreset - performs update`() =
+        runIntegrationTest(
+            config = MockzillaConfig.Builder().setPort(0).addEndpoint(dummyConfig)
+                .build(),
+            createSut = { UpdateServiceImpl(it) }
+        ) { sut, connection, _ ->
+            /* Setup */
+            val preUpdate = getEndpointConfig(connection)
+
+            /* Run Test */
+            val result = sut.setErrorPreset(
+                connection, dummyConfig.key, DashboardOverridePreset(
+                    name = "name",
+                    description = "description",
+                    response = MockzillaHttpResponse(
+                        HttpStatusCode.Conflict,
+                        mapOf("key" to "value"),
+                        body = "body"
+                    )
+                )
+            )
+            val postUpdate = getEndpointConfig(connection)
+
+            /* Verify */
+            assertEquals(Result.success(Unit), result)
+            assertEquals(
+                preUpdate.copy(
+                    errorStatus = HttpStatusCode.Conflict,
+                    errorHeaders = mapOf("key" to "value"),
+                    errorBody = "body"
+                ), postUpdate
+            )
         }
 }

@@ -30,7 +30,7 @@ internal object KtorClientProvider {
 
         install(Logging) {
             this.logger = logger
-            this.level = LogLevel.ALL
+            this.level = LogLevel.INFO
             filter { request ->
                 request.headers[CustomHeaders.HideFromLogs]?.toBoolean() != true
             }

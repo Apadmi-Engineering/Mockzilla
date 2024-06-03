@@ -4,6 +4,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.window.*
 import com.apadmi.mockzilla.desktop.di.utils.startMockzillaKoin
 import com.apadmi.mockzilla.desktop.ui.App
+import com.apadmi.mockzilla.desktop.utils.rememberAppIcon
 
 fun main() = application {
     val state = rememberWindowState(
@@ -18,7 +19,7 @@ fun main() = application {
         title = "Mockzilla",
         resizable = true,
         state = state,
-        icon = null,
+        icon = rememberAppIcon(),
         onCloseRequest = ::exitApplication,
         content = {
             App()

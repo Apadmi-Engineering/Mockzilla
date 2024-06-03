@@ -15,13 +15,14 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import io.ktor.http.HttpStatusCode
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 
 private typealias UpdateServerBlock = suspend (config: SerializableEndpointConfig, device: Device) -> Unit
 private typealias UpdateStateBlock = State.Endpoint.() -> State.Endpoint
@@ -94,13 +95,21 @@ class EndpointDetailsViewModel(
         )
     }
 
-    fun onDefaultBodyChange(value: String?) = onPropertyChanged({ copy(defaultBody = value) },
-        { config, device ->
-            defaultBodyDebounceJob = withDebounce(defaultBodyDebounceJob) {
-                emitErrorAndEventIfNeeded(updateService.setDefaultBody(device, config.key, value))
+    fun onDefaultBodyChange(value: String?) {
+        onPropertyChanged({ copy(defaultBody = value) },
+            { config, device ->
+                defaultBodyDebounceJob = withDebounce(defaultBodyDebounceJob) {
+                    emitErrorAndEventIfNeeded(
+                        updateService.setDefaultBody(
+                            device,
+                            config.key,
+                            value
+                        )
+                    )
+                }
             }
-        }
-    )
+        )
+    }
 
     fun onDefaultStatusChange(value: HttpStatusCode?) =
         onPropertyChanged({ copy(defaultStatus = value) },
@@ -115,10 +124,11 @@ class EndpointDetailsViewModel(
             }
         )
 
-    private suspend fun withDebounce(job: Job?, op: suspend () -> Result<Unit>) = coroutineScope {
+    private suspend fun withDebounce(job: Job?, op: suspend () -> Result<Unit>): Job {
         job?.cancel()
-        launch {
-            delay(250)
+        return viewModelScope.launch(Dispatchers.IO) {
+            delay(600)
+            yield()
             op()
         }
     }
@@ -257,7 +267,6 @@ class EndpointDetailsViewModel(
             )
         )
     })
-
 
     fun onErrorPresetSelected(
         dashboardOverridePreset: DashboardOverridePreset
