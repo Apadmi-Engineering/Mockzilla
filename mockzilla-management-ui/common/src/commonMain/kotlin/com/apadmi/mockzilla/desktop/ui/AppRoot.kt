@@ -1,4 +1,3 @@
-@file:Suppress("diktat") // For some reason Diktat fails to parse this file ¯\_(ツ)_/¯
 
 package com.apadmi.mockzilla.desktop.ui
 
@@ -81,6 +80,7 @@ private fun bottomPanelWidgets(
     )
 } ?: emptyList()
 
+@Suppress("diktat") // Diktat generates an invalid else block for some reason
 private fun middleWidgets(
     state: AppRootViewModel.State,
     onEndpointClicked: (EndpointConfiguration.Key) -> Unit
