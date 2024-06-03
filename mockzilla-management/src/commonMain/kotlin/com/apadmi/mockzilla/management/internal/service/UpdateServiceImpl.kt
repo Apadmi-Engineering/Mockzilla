@@ -8,11 +8,12 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
 import io.ktor.http.HttpStatusCode
 
-internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository) :
-    MockzillaManagement.UpdateService {
+internal class UpdateServiceImpl(
+    private val repo: MockzillaManagementRepository
+) : MockzillaManagement.UpdateService {
     override suspend fun setShouldFail(
         connection: MockzillaConnectionConfig,
-        keys: List<EndpointConfiguration.Key>,
+        keys: Collection<EndpointConfiguration.Key>,
         shouldFail: Boolean?
     ) = repo.updateMockDataEntries(
         keys.map { key ->
@@ -25,7 +26,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
 
     override suspend fun setDelay(
         connection: MockzillaConnectionConfig,
-        keys: List<EndpointConfiguration.Key>,
+        keys: Collection<EndpointConfiguration.Key>,
         delayMs: Int?
     ) = repo.updateMockDataEntries(
         keys.map { key ->

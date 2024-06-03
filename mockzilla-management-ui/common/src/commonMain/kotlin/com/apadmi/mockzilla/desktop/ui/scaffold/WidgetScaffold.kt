@@ -3,10 +3,10 @@
 package com.apadmi.mockzilla.desktop.ui.scaffold
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,8 +26,10 @@ import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 /**
  * @property title
  * @property ui
+ * @property id
  */
 data class Widget(
+    val id: String,
     val title: String? = null,
     val ui: @Composable () -> Unit
 )
@@ -40,10 +42,12 @@ data class Widget(
 @Composable
 fun WidgetScaffold(
     modifier: Modifier,
+    openWidgets: Set<String>,
     left: List<Widget>,
     middle: List<Widget>,
     right: List<Widget>,
     bottom: List<Widget>,
+    onSelected: (String) -> Unit,
     top: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current
@@ -94,6 +98,7 @@ fun WidgetScaffold(
             Row(modifier = Modifier.fillMaxWidth().weight(1f)) {
                 LeftPanel(
                     content = left,
+                    openWidgets = openWidgets,
                     width = leftPanelWidth,
                     settledWidth = leftPanelSettledWidth,
                     onWidthChange = {
@@ -102,11 +107,12 @@ fun WidgetScaffold(
                     },
                     onDragStopped = {
                         leftPanelWidth = leftPanelSettledWidth
-                    }
+                    },
+                    onSelected = onSelected
                 )
                 Column(
                     modifier = Modifier
-                        .verticalScroll(rememberScrollState())
+                        .fillMaxHeight()
                         .weight(1f)
                 ) {
                     middle.forEach { widget ->
@@ -116,6 +122,7 @@ fun WidgetScaffold(
                 }
                 RightPanel(
                     content = right,
+                    openWidgets = openWidgets,
                     width = rightPanelWidth,
                     settledWidth = rightPanelSettledWidth,
                     onWidthChange = {
@@ -124,7 +131,8 @@ fun WidgetScaffold(
                     },
                     onDragStopped = {
                         rightPanelWidth = rightPanelSettledWidth
-                    }
+                    },
+                    onSelected = onSelected
                 )
             }
             BottomPanel(
@@ -149,16 +157,18 @@ fun WidgetScaffold(
 fun WidgetScaffoldPreview() = PreviewSurface {
     WidgetScaffold(
         modifier = Modifier.fillMaxSize(),
+        openWidgets = emptySet(),
         top = { Text("Top") },
         left = listOf(
-            Widget("Left One") { Text("Left One") },
-            Widget("Left Two") { Text("Left Two") }),
+            Widget(id = "1", "Left One") { Text("Left One") },
+            Widget(id = "2", "Left Two") { Text("Left Two") }),
         right = listOf(Widget("Right") { Text("Right") }),
         middle = listOf(Widget("Middle One") { Text("Middle One") }),
         bottom = listOf(
-            Widget("Bottom One") { Text("Bottom One") },
-            Widget("Bottom Two", { Text("Bottom Two") })
+            Widget(id = "1", "Bottom One") { Text("Bottom One") },
+            Widget(id = "2", "Bottom Two", { Text("Bottom Two") })
         ),
+        onSelected = {}
     )
 }
 
@@ -198,7 +208,7 @@ private fun BottomPanel(
                 .height(selectedWidget?.let { settledHeight } ?: 0.dp)
         ) {
             selectedWidget?.let {
-                content[it].ui()
+                content.getOrNull(it)?.ui?.invoke()
             }
         }
 
@@ -219,22 +229,26 @@ private fun BottomPanel(
 @Composable
 private fun LeftPanel(
     content: List<Widget>,
+    openWidgets: Set<String>,
     width: Dp,
     settledWidth: Dp,
     onWidthChange: (Dp) -> Unit,
     onDragStopped: () -> Unit,
+    onSelected: (String) -> Unit,
     defaultWidth: Dp = 100.dp
 ) {
     val density = LocalDensity.current
-    var selectedWidget by remember { mutableStateOf<Int?>(null) }
+    val selectedWidgets = remember(openWidgets) {
+        content.indices.filter { openWidgets.contains(content[it].id) }
+    }
 
     Row(modifier = Modifier.fillMaxHeight()) {
         VerticalTabList(
             tabs = content.map { widget -> VerticalTab(title = widget.title) },
             clockwise = false,
-            selected = selectedWidget,
+            selected = selectedWidgets,
             onSelect = { widget ->
-                selectedWidget = widget.takeUnless { widget == selectedWidget }
+                onSelected(content[widget].id)
                 if (width < 20.dp) {
                     onWidthChange(defaultWidth)
                 }
@@ -245,14 +259,27 @@ private fun LeftPanel(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .fillMaxHeight()
-                .width(selectedWidget?.let { settledWidth } ?: 0.dp)
+                .width(
+                    if (selectedWidgets.isEmpty()) {
+                        0.dp
+                    } else {
+                        settledWidth
+                    }
+                )
         ) {
-            selectedWidget?.let {
-                content[it].ui()
+            if (selectedWidgets.isNotEmpty()) {
+                Column {
+                    selectedWidgets.sorted().forEachIndexed { index, widget ->
+                        if (index != 0) {
+                            HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                        }
+                        content.getOrNull(widget)?.ui?.invoke()
+                    }
+                }
             }
         }
 
-        selectedWidget?.let {
+        if (selectedWidgets.isNotEmpty()) {
             HorizontalDraggableDivider(
                 onDrag = { offset ->
                     with(density) {
@@ -269,17 +296,21 @@ private fun LeftPanel(
 @Composable
 private fun RightPanel(
     content: List<Widget>,
+    openWidgets: Set<String>,
     width: Dp,
     settledWidth: Dp,
     onWidthChange: (Dp) -> Unit,
     onDragStopped: () -> Unit,
-    defaultWidth: Dp = 100.dp
+    defaultWidth: Dp = 100.dp,
+    onSelected: (String) -> Unit
 ) {
     val density = LocalDensity.current
-    var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
+    val selectedWidgets = remember(openWidgets) {
+        content.indices.filter { openWidgets.contains(content[it].id) }
+    }
 
     Row(modifier = Modifier.fillMaxHeight()) {
-        selectedWidget?.let {
+        if (selectedWidgets.isNotEmpty()) {
             HorizontalDraggableDivider(
                 onDrag = { offset ->
                     with(density) {
@@ -294,19 +325,30 @@ private fun RightPanel(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .fillMaxHeight()
-                .width(selectedWidget?.let { settledWidth } ?: 0.dp)
+                .width(if (selectedWidgets.isEmpty()) {
+                    0.dp
+                } else {
+                    settledWidth
+                })
         ) {
-            selectedWidget?.let {
-                content[it].ui()
+            if (selectedWidgets.isNotEmpty()) {
+                Column {
+                    selectedWidgets.sorted().forEachIndexed { index, widget ->
+                        if (index != 0) {
+                            HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                        }
+                        content.getOrNull(widget)?.ui?.invoke()
+                    }
+                }
             }
         }
 
         VerticalTabList(
             tabs = content.map { widget -> VerticalTab(title = widget.title) },
             clockwise = true,
-            selected = selectedWidget,
+            selected = selectedWidgets,
             onSelect = { widget ->
-                selectedWidget = widget.takeUnless { widget == selectedWidget }
+                onSelected(content[widget].id)
                 if (width < 20.dp) {
                     onWidthChange(defaultWidth)
                 }

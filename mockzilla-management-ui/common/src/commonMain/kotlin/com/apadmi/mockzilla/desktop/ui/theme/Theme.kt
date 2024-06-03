@@ -89,9 +89,9 @@ val LocalForceDarkMode = compositionLocalOf { false }
 @Composable
 fun Modifier.alternatingBackground(index: Int) = background(
     if (index % 2 == 0) {
-        MaterialTheme.colorScheme.background
-    } else {
         MaterialTheme.colorScheme.surface
+    } else {
+        MaterialTheme.colorScheme.background
     }
 )
 

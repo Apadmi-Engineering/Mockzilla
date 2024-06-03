@@ -39,15 +39,15 @@ internal data class HorizontalTab(
 internal fun VerticalTabList(
     tabs: List<VerticalTab>,
     clockwise: Boolean,
-    selected: Int?,
+    selected: Collection<Int>,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+    Column(modifier = modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         tabs.forEachIndexed { index, tab ->
             TabItem(
                 title = tab.title,
-                selected = selected == index,
+                selected = selected.contains(index),
                 onSelect = { onSelect(index) },
                 modifier = Modifier.rotateVertically(clockwise)
             )

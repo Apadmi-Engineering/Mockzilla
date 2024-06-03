@@ -26,6 +26,8 @@ data class Strings(
      * @property logs
      * @property endpointDetails
      * @property endpoints
+     * @property miscControls
+     * @property unsupportedMockzilla
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -34,11 +36,24 @@ data class Strings(
         val logs: Logs,
         val endpointDetails: EndpointDetails,
         val endpoints: Endpoints,
+        val miscControls: MiscControls,
+        val unsupportedMockzilla: UnsupportedMockzillaVersion
     ) {
         /**
          * @property title
          */
         data class Logs(val title: String)
+
+        /**
+         * @property refreshAll
+         * @property clearOverrides
+         * @property title
+         */
+        data class MiscControls(
+            val refreshAll: String,
+            val clearOverrides: String,
+            val title: String
+        )
 
         /**
          * @property title
@@ -72,11 +87,36 @@ data class Strings(
         /**
          * @property tabTitle
          * @property ipInputLabel
+         * @property tooltips
+         * @property heading
+         * @property autoConnectHeading
+         * @property autoConnectSubHeading
+         * @property autoConnectButton
+         * @property androidDevConnectButton
          */
         data class DeviceConnection(
             val tabTitle: String,
             val ipInputLabel: String,
-        )
+            val tooltips: ToolTips,
+            val heading: String,
+            val autoConnectHeading: String,
+            val autoConnectSubHeading: String,
+            val autoConnectButton: String,
+            val androidDevConnectButton: String,
+        ) {
+            /**
+             * @property notYourSimulator
+             * @property readyToConnect
+             * @property removed
+             * @property resolving
+             */
+            data class ToolTips(
+                val notYourSimulator: String,
+                val readyToConnect: String,
+                val removed: String,
+                val resolving: String
+            )
+        }
 
         /**
          * @property tabTitle
@@ -172,6 +212,17 @@ data class Strings(
             val resetHeaders: String,
             val noHeaders: String,
             val headersUnset: String
+        )
+
+        /**
+         * @property heading
+         * @property subtitle
+         * @property footer
+         */
+        data class UnsupportedMockzillaVersion(
+            val heading: String,
+            val subtitle: String,
+            val footer: String
         )
     }
 }

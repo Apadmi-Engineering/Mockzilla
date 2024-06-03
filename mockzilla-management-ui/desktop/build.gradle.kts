@@ -27,6 +27,8 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "mockzilla-management-ui"
             packageVersion = rootProject.version.toString().split("-").first()
+
+            jvmArgs("-Dapple.awt.application.appearance=system")
         }
     }
 }

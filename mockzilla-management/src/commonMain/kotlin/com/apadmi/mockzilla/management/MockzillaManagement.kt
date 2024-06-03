@@ -41,13 +41,13 @@ interface MockzillaManagement {
     interface UpdateService {
         suspend fun setShouldFail(
             connection: MockzillaConnectionConfig,
-            keys: List<EndpointConfiguration.Key>,
+            keys: Collection<EndpointConfiguration.Key>,
             shouldFail: Boolean?
         ): Result<Unit>
 
         suspend fun setDelay(
             connection: MockzillaConnectionConfig,
-            keys: List<EndpointConfiguration.Key>,
+            keys: Collection<EndpointConfiguration.Key>,
             delayMs: Int?
         ): Result<Unit>
 

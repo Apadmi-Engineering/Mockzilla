@@ -20,6 +20,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.material3)
             implementation(compose.preview)
+            implementation(compose.components.resources)
 
             /* Localisable Strings */
             implementation(libs.lyricist.library)
@@ -42,17 +43,14 @@ kotlin {
             /* Logging */
             implementation(libs.kermit)
 
+            /* Version Handling */
+            implementation(libs.semver4j)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
         androidMain.dependencies {
             /* Compose */
-            implementation(libs.androidx.compose.ui)
-            implementation(libs.androidx.compose.activity)
-            implementation(libs.androidx.compose.uiToolingPreview)
-            implementation(libs.androidx.lifecycleRuntimeKtx)
-            implementation(libs.androidx.compose.material3)
             implementation(libs.androidx.compose.materialIconsExt)
             implementation(libs.showkase)
 

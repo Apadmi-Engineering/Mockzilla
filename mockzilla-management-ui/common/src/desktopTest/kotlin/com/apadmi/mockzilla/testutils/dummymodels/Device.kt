@@ -15,7 +15,13 @@ fun DeviceTabsViewModel.State.DeviceTabEntry.Companion.dummy() =
         underlyingDevice = Device.dummy()
     )
 
-fun StatefulDevice.Companion.dummy() = StatefulDevice(Device.dummy(), "name", false, "package")
+fun StatefulDevice.Companion.dummy() = StatefulDevice(
+    Device.dummy(),
+    "name",
+    false,
+    "package",
+    true
+)
 
 fun AdbConnection.Companion.dummy(ipAddresses: List<String> = emptyList()) = AdbConnection(
     deviceSerial = "serial",
