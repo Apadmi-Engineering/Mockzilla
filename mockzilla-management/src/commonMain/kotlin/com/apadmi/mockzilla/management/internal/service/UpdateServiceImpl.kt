@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.management.internal.service
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.MockzillaManagement
@@ -44,7 +45,7 @@ internal class UpdateServiceImpl(
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
-            headers = SetOrDont.Set(headers)
+            defaultHeaders = SetOrDont.Set(headers)
         ), connection
     )
 
@@ -100,6 +101,32 @@ internal class UpdateServiceImpl(
         SerializableEndpointPatchItemDto(
             key = key,
             errorStatus = SetOrDont.Set(statusCode)
+        ), connection
+    )
+
+    override suspend fun setDefaultPreset(
+        connection: MockzillaConnectionConfig,
+        key: EndpointConfiguration.Key,
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointPatchItemDto(
+            key = key,
+            defaultBody = SetOrDont.Set(dashboardOverridePreset.response.body),
+            defaultStatus = SetOrDont.Set(dashboardOverridePreset.response.statusCode),
+            defaultHeaders = SetOrDont.Set(dashboardOverridePreset.response.headers)
+        ), connection
+    )
+
+    override suspend fun setErrorPreset(
+        connection: MockzillaConnectionConfig,
+        key: EndpointConfiguration.Key,
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointPatchItemDto(
+            key = key,
+            errorBody = SetOrDont.Set(dashboardOverridePreset.response.body),
+            errorStatus = SetOrDont.Set(dashboardOverridePreset.response.statusCode),
+            errorHeaders = SetOrDont.Set(dashboardOverridePreset.response.headers)
         ), connection
     )
 }

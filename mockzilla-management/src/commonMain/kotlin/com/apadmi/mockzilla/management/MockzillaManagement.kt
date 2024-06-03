@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.management
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
@@ -85,6 +86,18 @@ interface MockzillaManagement {
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
             statusCode: HttpStatusCode?
+        ): Result<Unit>
+
+        suspend fun setDefaultPreset(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key,
+            dashboardOverridePreset: DashboardOverridePreset
+        ): Result<Unit>
+
+        suspend fun setErrorPreset(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key,
+            dashboardOverridePreset: DashboardOverridePreset
         ): Result<Unit>
     }
 

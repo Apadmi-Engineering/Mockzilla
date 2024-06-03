@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetails
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 
@@ -46,7 +47,9 @@ class EndpointDetailsViewModel(
 
     init {
         eventBus.events.filter {
-            it is EventBus.Event.FullRefresh || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(key) == true
+            it is EventBus.Event.FullRefresh || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(
+                key
+            ) == true
         }
             .onEach { reloadData() }
             .launchIn(viewModelScope)
@@ -236,6 +239,43 @@ class EndpointDetailsViewModel(
             clearingService.clearCaches(device, listOf(state.config.key))
         ).onSuccess { reloadData() }
     }
+
+    fun onDefaultPresetSelected(
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = onPropertyChanged({
+        copy(
+            defaultHeaders = dashboardOverridePreset.response.headers.toList(),
+            defaultStatus = dashboardOverridePreset.response.statusCode,
+            defaultBody = dashboardOverridePreset.response.body
+        )
+    }, { config, device ->
+        emitErrorAndEventIfNeeded(
+            updateService.setDefaultPreset(
+                device,
+                config.key,
+                dashboardOverridePreset
+            )
+        )
+    })
+
+
+    fun onErrorPresetSelected(
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = onPropertyChanged({
+        copy(
+            errorHeaders = dashboardOverridePreset.response.headers.toList(),
+            errorStatus = dashboardOverridePreset.response.statusCode,
+            errorBody = dashboardOverridePreset.response.body
+        )
+    }, { config, device ->
+        emitErrorAndEventIfNeeded(
+            updateService.setErrorPreset(
+                device,
+                config.key,
+                dashboardOverridePreset
+            )
+        )
+    })
 
     sealed class State {
         data object Empty : State()

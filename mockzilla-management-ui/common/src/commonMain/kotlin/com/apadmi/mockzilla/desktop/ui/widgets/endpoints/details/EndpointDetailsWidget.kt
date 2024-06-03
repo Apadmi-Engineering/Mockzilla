@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -25,6 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -56,8 +61,10 @@ import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
+import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import io.ktor.http.HttpStatusCode
@@ -94,6 +101,8 @@ fun EndpointDetailsWidget(
         viewModel::onDelayChange,
         viewModel::onDefaultHeadersChange,
         viewModel::onErrorHeadersChange,
+        viewModel::onDefaultPresetSelected,
+        viewModel::onErrorPresetSelected,
         viewModel::onResetAll
     )
 }
@@ -112,6 +121,8 @@ fun EndpointDetailsWidgetContent(
     onDelayChange: (String?) -> Unit,
     onDefaultHeadersChange: (List<Pair<String, String>>?) -> Unit,
     onErrorHeadersChange: (List<Pair<String, String>>?) -> Unit,
+    onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
+    onErrorPresetSelected: (DashboardOverridePreset) -> Unit,
     onResetAll: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
@@ -170,8 +181,10 @@ fun EndpointDetailsWidgetContent(
                             onResponseBodyChange = onDefaultBodyChange,
                             jsonEditing = state.jsonEditingDefault,
                             onJsonEditingChange = onJsonDefaultEditingChange,
+                            onPresetSelected = onDefaultPresetSelected,
                             headers = state.defaultHeaders,
                             onHeadersChange = onDefaultHeadersChange,
+                            presets = state.presets.successPresets
                         )
 
                         Tab.Error -> EndpointDetailsResponseBody(
@@ -181,8 +194,10 @@ fun EndpointDetailsWidgetContent(
                             onResponseBodyChange = onErrorBodyChange,
                             jsonEditing = state.jsonEditingError,
                             onJsonEditingChange = onJsonErrorEditingChange,
+                            onPresetSelected = onErrorPresetSelected,
                             headers = state.errorHeaders,
                             onHeadersChange = onErrorHeadersChange,
+                            presets = state.presets.errorPresets
                         )
 
                         Tab.Settings -> Settings(
@@ -214,6 +229,8 @@ fun EndpointDetailsWidgetNonePreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onErrorPresetSelected = {},
+        onDefaultPresetSelected = {},
         onResetAll = {}
     )
 }
@@ -251,6 +268,8 @@ fun EndpointDetailsWidgetPreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onErrorPresetSelected = {},
+        onDefaultPresetSelected = {},
         onResetAll = {}
     )
 }
@@ -288,6 +307,8 @@ fun EndpointDetailsWidgetUnsetPreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onErrorPresetSelected = {},
+        onDefaultPresetSelected = {},
         onResetAll = {}
     )
 }
@@ -323,10 +344,28 @@ private fun EndpointDetailsResponseBody(
     onJsonEditingChange: (Boolean) -> Unit,
     headers: List<Pair<String, String>>?,
     onHeadersChange: (List<Pair<String, String>>?) -> Unit,
+    onPresetSelected: (DashboardOverridePreset) -> Unit,
     strings: Strings = LocalStrings.current,
+    presets: List<DashboardOverridePreset>,
 ) = Column(modifier = modifier) {
     Spacer(Modifier.height(4.dp))
     var pickingStatusCode by remember { mutableStateOf(false) }
+    var pickingPresets by remember { mutableStateOf(false) }
+
+    Button(modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp),onClick = { pickingPresets = !pickingPresets }) {
+        Text(if (pickingPresets) "Hide Presets" else "Show Presets")
+    }
+    if (pickingPresets) {
+        HorizontalDivider(Modifier.fillMaxWidth())
+        PresetsSelector(
+            presets = presets,
+            onPresetSelected = {
+                pickingPresets = false
+                onPresetSelected(it)
+            }
+        )
+    }
+
     ExposedDropdownMenuBox(
         expanded = pickingStatusCode,
         onExpandedChange = { pickingStatusCode = it },
@@ -438,6 +477,33 @@ private fun EndpointDetailsResponseBody(
     }
     Spacer(modifier = Modifier.heightIn(8.dp))
     HeadersEditor(headers, onHeadersChange)
+}
+
+@Composable
+private fun PresetsSelector(
+    presets: List<DashboardOverridePreset>,
+    onPresetSelected: (DashboardOverridePreset) -> Unit
+) = LazyColumn(Modifier.heightIn(max = 200.dp)) {
+    itemsIndexed(presets) { index, preset ->
+        Row(Modifier.fillMaxWidth().alternatingBackground(index).padding(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(preset.name)
+                Text(
+                    modifier = Modifier.alpha(0.5f),
+                    text = preset.description ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            Button(onClick = { onPresetSelected(preset) }) {
+                Text("Apply Preset")
+            }
+        }
+    }
+
+
 }
 
 @Suppress("LOCAL_VARIABLE_EARLY_DECLARATION")

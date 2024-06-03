@@ -70,7 +70,7 @@ data class SerializableEndpointConfig(
  * @property key
  * @property shouldFail
  * @property delayMs
- * @property headers
+ * @property defaultHeaders
  * @property defaultBody
  * @property errorBody
  * @property errorStatus
@@ -83,7 +83,7 @@ data class SerializableEndpointPatchItemDto(
     val key: EndpointConfiguration.Key,
     val shouldFail: SetOrDont<Boolean?> = SetOrDont.DoNotSet,
     val delayMs: SetOrDont<Int?> = SetOrDont.DoNotSet,
-    val headers: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
+    val defaultHeaders: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
     val defaultBody: SetOrDont<String?> = SetOrDont.DoNotSet,
     val defaultStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
     val errorBody: SetOrDont<String?> = SetOrDont.DoNotSet,
@@ -97,7 +97,7 @@ data class SerializableEndpointPatchItemDto(
             key = key,
             shouldFail = SetOrDont.DoNotSet,
             delayMs = SetOrDont.DoNotSet,
-            headers = SetOrDont.DoNotSet,
+            defaultHeaders = SetOrDont.DoNotSet,
             defaultBody = SetOrDont.DoNotSet,
             defaultStatus = SetOrDont.DoNotSet,
             errorBody = SetOrDont.DoNotSet,
@@ -108,7 +108,7 @@ data class SerializableEndpointPatchItemDto(
             key = config.key,
             shouldFail = SetOrDont.Set(config.shouldFail),
             delayMs = SetOrDont.Set(config.delayMs),
-            headers = SetOrDont.Set(config.defaultHeaders),
+            defaultHeaders = SetOrDont.Set(config.defaultHeaders),
             defaultBody = SetOrDont.Set(config.defaultBody),
             defaultStatus = SetOrDont.Set(config.defaultStatus),
             errorBody = SetOrDont.Set(config.errorBody),

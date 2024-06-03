@@ -87,7 +87,7 @@ internal class LocalCacheServiceImpl(
             versionCode = endpoint.versionCode,
             shouldFail = patch.shouldFail.valueOrDefault(currentCache.shouldFail),
             delayMs = patch.delayMs.valueOrDefault(currentCache.delayMs),
-            defaultHeaders = patch.headers.valueOrDefault(currentCache.defaultHeaders),
+            defaultHeaders = patch.defaultHeaders.valueOrDefault(currentCache.defaultHeaders),
             defaultBody = patch.defaultBody.valueOrDefault(currentCache.defaultBody),
             defaultStatus = patch.defaultStatus.valueOrDefault(currentCache.defaultStatus),
             errorBody = patch.errorBody.valueOrDefault(currentCache.errorBody),

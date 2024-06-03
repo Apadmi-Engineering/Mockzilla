@@ -216,7 +216,7 @@ class ApiIntegrationTests {
                             SerializableEndpointPatchItemDto.allUnset("id").copy(
                                 defaultBody = SetOrDont.Set("hello"),
                                 defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
-                                headers = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
+                                defaultHeaders = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
                             )
                         )
                     )
