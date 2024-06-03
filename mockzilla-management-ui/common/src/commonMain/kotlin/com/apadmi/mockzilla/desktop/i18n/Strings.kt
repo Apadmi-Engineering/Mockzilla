@@ -28,6 +28,7 @@ data class Strings(
      * @property endpoints
      * @property miscControls
      * @property unsupportedMockzilla
+     * @property errorBanner
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -37,8 +38,20 @@ data class Strings(
         val endpointDetails: EndpointDetails,
         val endpoints: Endpoints,
         val miscControls: MiscControls,
-        val unsupportedMockzilla: UnsupportedMockzillaVersion
+        val unsupportedMockzilla: UnsupportedMockzillaVersion,
+        val errorBanner: ErrorBanner
     ) {
+        /**
+         * @property connectionLost
+         * @property unknownError
+         * @property refreshButton
+         */
+        data class ErrorBanner(
+            val connectionLost: String,
+            val unknownError: String,
+            val refreshButton: String
+        )
+
         /**
          * @property title
          */

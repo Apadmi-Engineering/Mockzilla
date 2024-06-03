@@ -34,7 +34,10 @@ class EndpointsViewModel(
     private suspend fun reloadData() {
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
             onSuccess = { State.EndpointsList(it.toConfig(checkboxStates)) },
-            onFailure = { State.Loading }
+            onFailure = {
+                eventBus.send(EventBus.Event.GenericError)
+                State.Loading
+            }
         )
     }
 
@@ -78,9 +81,10 @@ class EndpointsViewModel(
             )
         })
 
-        // TODO: Handle error
         updateService.setShouldFail(device, keysToChange, value).onSuccess {
             eventBus.send(EventBus.Event.EndpointDataChanged(keysToChange))
+        }.onFailure {
+            eventBus.send(EventBus.Event.GenericError)
         }
     }
 

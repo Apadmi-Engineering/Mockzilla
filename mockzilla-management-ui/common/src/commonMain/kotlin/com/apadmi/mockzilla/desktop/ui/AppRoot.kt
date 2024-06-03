@@ -1,4 +1,4 @@
-@file:Suppress("FILE_NAME_MATCH_CLASS")
+@file:Suppress("diktat") // For some reason Diktat fails to parse this file ¯\_(ツ)_/¯
 
 package com.apadmi.mockzilla.desktop.ui
 
@@ -6,14 +6,17 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
-
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
+import com.apadmi.mockzilla.desktop.ui.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
 import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
 import com.apadmi.mockzilla.desktop.ui.theme.AppTheme
@@ -59,6 +62,11 @@ fun App(
                 }
             }
         )
+
+        AnimatedErrorBanner(
+            (state as? AppRootViewModel.State.Connected)?.error,
+            viewModel::refreshAll
+        )
     }
 }
 
@@ -73,7 +81,6 @@ private fun bottomPanelWidgets(
     )
 } ?: emptyList()
 
-@Suppress("diktat")// For some reason diktat generates an else block that doesn't compile here
 private fun middleWidgets(
     state: AppRootViewModel.State,
     onEndpointClicked: (EndpointConfiguration.Key) -> Unit

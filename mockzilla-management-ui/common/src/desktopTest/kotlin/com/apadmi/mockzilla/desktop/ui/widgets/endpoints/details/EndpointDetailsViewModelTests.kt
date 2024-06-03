@@ -95,7 +95,6 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 delayMillis = "50",
                 jsonEditingDefault = true,
                 jsonEditingError = true,
-                error = null,
                 presets = presets,
             ),
             sut.state.value
@@ -193,7 +192,6 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 delayMillis = null,
                 jsonEditingDefault = true,
                 jsonEditingError = true,
-                error = null,
                 presets = presets,
             ),
             initialState
@@ -211,7 +209,6 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 delayMillis = "100",
                 jsonEditingDefault = false,
                 jsonEditingError = false,
-                error = null,
                 presets = presets,
             ),
             sut.state.value

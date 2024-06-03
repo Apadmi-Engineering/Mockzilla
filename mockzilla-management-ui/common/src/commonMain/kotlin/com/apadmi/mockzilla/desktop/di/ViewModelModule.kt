@@ -20,5 +20,5 @@ internal fun viewModelModule(): Module = module {
     viewModel { params -> EndpointsViewModel(params.get(), get(), get(), get()) }
     viewModel { params -> EndpointDetailsViewModel(params.getOrNull(), params.get(), get(), get(), get(), get()) }
     viewModel { params -> MiscControlsViewModel(params.getOrNull(), get(), get()) }
-    viewModel { AppRootViewModel(get()) }
+    viewModel { AppRootViewModel(get(), get()) }
 }
