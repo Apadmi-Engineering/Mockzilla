@@ -66,9 +66,7 @@ swiftklib = "0.5.1" # https://github.com/ttypic/swift-klib-plugin
 # Compose & Material
 adam = { module = "com.malinskiy.adam:adam", version.ref = "adam" }
 androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity"  }
-androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "androidCompose" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidCompose" }
-androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 desktop-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3-desktop", version.ref = "compose" }
 androidx-compose-materialIconsExt = { module = "androidx.compose.material:material-icons-extended", version.ref = "androidCompose" }
@@ -77,8 +75,6 @@ androidx-compose-uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-p
 
 # Android Lifecycle
 androidx-lifecycleViewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
-androidx-lifecycleRuntimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
-androidx-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
 # Logging
 jmdns-jmdns = { module = "org.jmdns:jmdns", version.ref = "jmdns" }

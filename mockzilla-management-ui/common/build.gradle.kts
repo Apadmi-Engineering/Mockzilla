@@ -51,11 +51,6 @@ kotlin {
         }
         androidMain.dependencies {
             /* Compose */
-            implementation(libs.androidx.compose.ui)
-            implementation(libs.androidx.compose.activity)
-            implementation(libs.androidx.compose.uiToolingPreview)
-            implementation(libs.androidx.lifecycleRuntimeKtx)
-            implementation(libs.androidx.compose.material3)
             implementation(libs.androidx.compose.materialIconsExt)
             implementation(libs.showkase)
 
