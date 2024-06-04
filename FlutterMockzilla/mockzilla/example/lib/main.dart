@@ -7,8 +7,29 @@ import 'package:mockzilla/mockzilla.dart';
 import 'engine/config/mockzilla_config.dart';
 
 void main() async {
-  await WidgetsFlutterBinding.ensureInitialized();
-  await Mockzilla.startMockzilla(mockzillaConfig);
+  WidgetsFlutterBinding.ensureInitialized();
+  final config = MockzillaConfig(
+    port: 8080,
+    isRelease: false,
+    localHostOnly: false,
+    logLevel: LogLevel.debug,
+    releaseModeConfig: const ReleaseModeConfig(),
+    additionalLogWriters: [],
+  )..addEndpoint(
+      () => EndpointConfig(
+        name: "Fetch Packages",
+        key: "fetch-packages",
+        endpointMatcher: (request) =>
+            RegExp(r"/packages").hasMatch(request.uri) &&
+            request.method == HttpMethod.get,
+        defaultHandler: (_) => defaultResponse,
+        errorHandler: (_) => errorResponse,
+        failureProbability: 0,
+        delayMean: 100,
+        delayVariance: 0,
+      ),
+    );
+  await Mockzilla.startMockzilla(config);
   runApp(const MyApp());
 }
 
