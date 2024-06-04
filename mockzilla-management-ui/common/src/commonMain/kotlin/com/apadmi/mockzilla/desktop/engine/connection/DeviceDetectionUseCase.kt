@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.desktop.engine.connection
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MetaData.Companion.parseMetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
+import kotlinx.coroutines.channels.BufferOverflow
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,11 +17,14 @@ interface DeviceDetectionUseCase {
 }
 
 class DeviceDetectionUseCaseImpl(
-    private val localIpAddress: () -> String,
+    private val isLocalIpAddress: (String) -> Boolean,
     private val adbConnectorService: AdbConnectorService
 ) : DeviceDetectionUseCase {
     private val deviceCache = mutableMapOf<String, DetectedDevice>()
-    override val onChangeEvent = MutableSharedFlow<Unit>(replay = 1)
+    override val onChangeEvent = MutableSharedFlow<Unit>(
+        replay = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     private val mutex = Mutex()
 
     override val devices: List<DetectedDevice>
@@ -48,7 +52,7 @@ class DeviceDetectionUseCaseImpl(
 
     internal suspend fun onChangedServiceEvent(info: ServiceInfoWrapper) = mutex.withLock {
         val metaData = runCatching { info.attributes.parseMetaData() }.getOrNull()
-        val adbConnection = if (metaData?.isAndroid == true) {
+        val adbConnection = if (metaData?.runTarget == RunTarget.AndroidEmulator) {
             findAdbConnection(info.hostAddresses.map { IpAddress(it) })
         } else {
             null
@@ -57,16 +61,18 @@ class DeviceDetectionUseCaseImpl(
 
         val existingDevice = deviceCache[info.connectionName]
         val device = when {
-            state == DetectedDevice.State.Removed -> existingDevice?.copy(
+            existingDevice != null && state == DetectedDevice.State.Removed -> existingDevice.copy(
                 state = DetectedDevice.State.Removed
             )
             // For some reason sometimes the "Resolving" callback comes in after the "Ready to connect"
             // callback so ignore this event
-            existingDevice?.state == DetectedDevice.State.ReadyToConnect && state == DetectedDevice.State.Resolving -> existingDevice
-            else -> null
-        }
+            existingDevice != null && existingDevice.state in listOf(
+                DetectedDevice.State.ReadyToConnect,
+                DetectedDevice.State.NotYourSimulator
+            ) && state == DetectedDevice.State.Resolving -> existingDevice
 
-        deviceCache[info.connectionName] = (device ?: DetectedDevice(
+            else -> null
+        } ?: DetectedDevice(
             info.connectionName,
             metaData,
             info.hostAddress,
@@ -74,7 +80,9 @@ class DeviceDetectionUseCaseImpl(
             info.port,
             adbConnection,
             state
-        ))
+        )
+
+        deviceCache[info.connectionName] = device
         onChangeEvent.emit(Unit)
     }
 
@@ -89,7 +97,7 @@ class DeviceDetectionUseCaseImpl(
                 DetectedDevice.State.ReadyToConnect
             } ?: DetectedDevice.State.NotYourSimulator
 
-            RunTarget.IosSimulator -> if (info.hostAddresses.contains(localIpAddress())) {
+            RunTarget.IosSimulator -> if (info.hostAddresses.any(isLocalIpAddress)) {
                 DetectedDevice.State.ReadyToConnect
             } else {
                 DetectedDevice.State.NotYourSimulator

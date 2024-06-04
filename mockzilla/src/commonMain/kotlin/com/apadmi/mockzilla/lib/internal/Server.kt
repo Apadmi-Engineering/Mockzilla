@@ -91,7 +91,7 @@ private fun startNetworkDiscoveryBroadcastIfNeeded(
     job: CompletableJob,
     di: DependencyInjector,
     port: Int
-) = CoroutineScope(job).launch {
+) = CoroutineScope(job).launch(Dispatchers.IO) {
     if (!di.config.isRelease && di.config.isNetworkDiscoveryEnabled) {
         di.logger.i { "Starting network discovery" }
         di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, port)

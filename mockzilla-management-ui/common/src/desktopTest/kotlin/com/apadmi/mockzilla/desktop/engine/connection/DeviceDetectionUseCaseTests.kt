@@ -89,7 +89,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     8_087_854,
                     ServiceInfoWrapper.State.Resolved
                 ),
-                localIpAddress = "my local machine ip address",
+                isLocalIpAddress = true,
                 expectedResult = DetectedDevice(
                     connectionName = "connection name",
                     hostAddress = "host",
@@ -113,7 +113,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     1_111_111,
                     ServiceInfoWrapper.State.Resolved
                 ),
-                localIpAddress = "my local machine ip address",
+                isLocalIpAddress = false,
                 expectedResult = DetectedDevice(
                     connectionName = "connection name",
                     hostAddress = "host",
@@ -187,7 +187,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                 .coroutine { listConnectedDevices() }
                 .thenReturn(Result.success(listOfNotNull(testCase.mockAdbConnection)))
 
-            val sut = DeviceDetectionUseCaseImpl({ testCase.localIpAddress },
+            val sut = DeviceDetectionUseCaseImpl({ testCase.isLocalIpAddress },
                 adbConnectorServiceMock
             )
 
@@ -218,7 +218,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             13_111_111,
             ServiceInfoWrapper.State.Resolved
         )
-        val sut = DeviceDetectionUseCaseImpl({ "" }, adbConnectorServiceMock)
+        val sut = DeviceDetectionUseCaseImpl({ true }, adbConnectorServiceMock)
 
         /* Run Test */
         sut.onChangedServiceEvent(dummy)
@@ -272,7 +272,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             13_111_111,
             ServiceInfoWrapper.State.Resolved
         )
-        val sut = DeviceDetectionUseCaseImpl({ "" }, adbConnectorServiceMock)
+        val sut = DeviceDetectionUseCaseImpl({ true }, adbConnectorServiceMock)
 
         /* Run Test */
         sut.onChangedServiceEvent(dummy)
@@ -347,14 +347,14 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
      * @property caseDescription
      * @property info
      * @property mockAdbConnection
-     * @property localIpAddress
+     * @property isLocalIpAddress
      * @property expectedResult
      */
     data class ChangedServiceEventTestCase(
         val caseDescription: String,
         val info: ServiceInfoWrapper,
         val mockAdbConnection: AdbConnection? = null,
-        val localIpAddress: String = "",
+        val isLocalIpAddress: Boolean = true,
         val expectedResult: DetectedDevice
     )
 }

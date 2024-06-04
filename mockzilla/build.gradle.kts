@@ -65,6 +65,10 @@ kotlin {
             languageSettings.optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
         }
 
+        androidMain.dependencies {
+            implementation(libs.play.services.ads.identifier)
+        }
+
         commonMain.dependencies {
             /* Kotlin */
             implementation(libs.kotlinx.coroutines.core)
@@ -113,6 +117,8 @@ android {
 
         consumerProguardFiles("mockzilla-proguard-rules.pro")
     }
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+
 
     compileOptions {
         sourceCompatibility = JavaConfig.version

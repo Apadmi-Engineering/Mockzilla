@@ -31,13 +31,16 @@ internal fun startMockzilla(
     config: MockzillaConfig,
     metaData: MetaData,
     fileIo: FileIo,
-    zeroConfDiscoveryService: ZeroConfDiscoveryService
-) = startMockzilla(config, prepareMockzilla(config, metaData, fileIo, Logger(
-    StaticConfig(
-        config.logLevel.toKermitSeverity(),
-        listOf(platformLogWriter()) + config.additionalLogWriters.map { it.toKermitLogWriter() }
-    ), "Mockzilla"
-), zeroConfDiscoveryService))
+    zeroConfDiscoveryService: (Logger) -> ZeroConfDiscoveryService
+): MockzillaRuntimeParams {
+    val logger = Logger(
+        StaticConfig(
+            config.logLevel.toKermitSeverity(),
+            listOf(platformLogWriter()) + config.additionalLogWriters.map { it.toKermitLogWriter() }
+        ), "Mockzilla"
+    )
+    return startMockzilla(config, prepareMockzilla(config, metaData, fileIo, logger, zeroConfDiscoveryService(logger)))
+}
 
 internal fun prepareMockzilla(
     config: MockzillaConfig,

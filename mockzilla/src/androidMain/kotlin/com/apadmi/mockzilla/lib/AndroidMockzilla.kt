@@ -21,5 +21,5 @@ fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeP
     fileIo = FileIo(
         context.cacheDir
     ),
-    zeroConfDiscoveryService = ZeroConfDiscoveryServiceImpl(context)
+    zeroConfDiscoveryService = { logger -> ZeroConfDiscoveryServiceImpl(logger, context) }
 )

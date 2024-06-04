@@ -35,10 +35,11 @@ fun startMockzilla(
         runTarget = RunTarget.Jvm,
         mockzillaVersion = BuildKonfig.VERSION_NAME
     ),
-    FileIo(Files.createTempDirectory("").toFile()),
+    FileIo(Files.createTempDirectory("").toFile())
+) {
     object : ZeroConfDiscoveryService {
-        override fun makeDiscoverable(metaData: MetaData, port: Int) {
+        override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
             Logger.i(tag = "Mockzilla") { "ZeroConf not supported for JVM Mockzilla" }
         }
     }
-)
+}
