@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -120,6 +121,7 @@ fun DeviceConnectionWidgetPreview() = PreviewSurface {
     DeviceConnectionContent(State(), {}, {})
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DevicesList(
     devices: List<DetectedDevice>,
@@ -142,9 +144,9 @@ private fun DevicesList(
         }
     }
 
-    itemsIndexed(devices) { index, device ->
+    itemsIndexed(devices, key = { _, device -> device.connectionName }) { index, device ->
         Row(
-            modifier = Modifier.alternatingBackground(index).fillMaxWidth()
+            modifier = Modifier.animateItemPlacement().alternatingBackground(index).fillMaxWidth()
                 .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
