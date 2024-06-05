@@ -111,37 +111,33 @@ private fun EndpointsList(
         )
     }
     HorizontalDivider()
-    var displayed = 0
-    state.endpoints.forEach { endpoint ->
-        if (endpoint.display) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onEndpointClicked(endpoint.key) }
-                .alternatingBackground(displayed)
-                .padding(end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = endpoint.isCheckboxTicked,
-                    onCheckedChange = { onCheckboxChanged(endpoint.key, it) }
-                )
-                Text(endpoint.name)
-                Spacer(Modifier.weight(1f))
-                if (endpoint.hasValuesOverridden) {
-                    StandardTextTooltip(text = strings.widgets.endpoints.valuesOverriddenIndicatorTooltip) {
-                        Icon(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            imageVector = Icons.Filled.DriveFileRenameOutline,
-                            contentDescription = strings.widgets.endpoints.valuesOverriddenIndicatorTooltip
-                        )
-                    }
+    state.endpoints.filter { it.display }.forEachIndexed { index, endpoint ->
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onEndpointClicked(endpoint.key) }
+            .alternatingBackground(index)
+            .padding(end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = endpoint.isCheckboxTicked,
+                onCheckedChange = { onCheckboxChanged(endpoint.key, it) }
+            )
+            Text(endpoint.name)
+            Spacer(Modifier.weight(1f))
+            if (endpoint.hasValuesOverridden) {
+                StandardTextTooltip(text = strings.widgets.endpoints.valuesOverriddenIndicatorTooltip) {
+                    Icon(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        imageVector = Icons.Filled.DriveFileRenameOutline,
+                        contentDescription = strings.widgets.endpoints.valuesOverriddenIndicatorTooltip
+                    )
                 }
-                Switch(
-                    checked = endpoint.fail,
-                    onCheckedChange = { onFailChanged(endpoint.key, it) }
-                )
             }
-            displayed++
+            Switch(
+                checked = endpoint.fail,
+                onCheckedChange = { onFailChanged(endpoint.key, it) }
+            )
         }
     }
 }
