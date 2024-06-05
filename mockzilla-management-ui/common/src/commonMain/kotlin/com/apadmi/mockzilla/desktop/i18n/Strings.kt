@@ -150,11 +150,15 @@ data class Strings(
          * @property selectAllTooltip
          * @property errorSwitchLabel
          * @property valuesOverriddenIndicatorTooltip
+         * @property filterLabel
+         * @property filterClear
          */
         data class Endpoints(
             val selectAllTooltip: String,
             val errorSwitchLabel: String,
-            val valuesOverriddenIndicatorTooltip: String
+            val valuesOverriddenIndicatorTooltip: String,
+            val filterLabel: String,
+            val filterClear: String
         )
         /**
          * @property none
