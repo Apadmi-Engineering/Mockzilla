@@ -15,8 +15,6 @@ final mockzillaConfig = MockzillaConfig(
       defaultHandler: (_) => defaultResponse,
       errorHandler: (_) => errorResponse,
       failureProbability: 0,
-      delayMean: 100,
-      delayVariance: 0,
     ),
   ],
   isRelease: false,
@@ -28,9 +26,7 @@ final mockzillaConfig = MockzillaConfig(
 
 final defaultResponse = MockzillaHttpResponse(
   statusCode: 200,
-  headers: {
-    "Content-type": "application/json"
-  },
+  headers: {"Content-type": "application/json"},
   body: jsonEncode(
     const FetchPackagesResponse(
       packages: [
