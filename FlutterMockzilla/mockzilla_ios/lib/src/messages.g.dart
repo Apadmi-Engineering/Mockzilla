@@ -107,9 +107,9 @@ class BridgeEndpointConfig {
   BridgeEndpointConfig({
     required this.name,
     required this.key,
-    this.failureProbability,
-    this.delayMean,
-    this.delayVariance,
+    required this.failureProbability,
+    required this.delayMean,
+    required this.delayVariance,
     this.webApiDefaultResponse,
     this.webApiErrorResponse,
   });
@@ -118,11 +118,11 @@ class BridgeEndpointConfig {
 
   String key;
 
-  int? failureProbability;
+  int failureProbability;
 
-  int? delayMean;
+  int delayMean;
 
-  int? delayVariance;
+  int delayVariance;
 
   BridgeMockzillaHttpResponse? webApiDefaultResponse;
 
@@ -145,9 +145,9 @@ class BridgeEndpointConfig {
     return BridgeEndpointConfig(
       name: result[0]! as String,
       key: result[1]! as String,
-      failureProbability: result[2] as int?,
-      delayMean: result[3] as int?,
-      delayVariance: result[4] as int?,
+      failureProbability: result[2]! as int,
+      delayMean: result[3]! as int,
+      delayVariance: result[4]! as int,
       webApiDefaultResponse: result[5] != null
           ? BridgeMockzillaHttpResponse.decode(result[5]! as List<Object?>)
           : null,

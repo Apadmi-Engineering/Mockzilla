@@ -117,18 +117,18 @@ struct BridgeMockzillaHttpResponse {
 struct BridgeEndpointConfig {
   var name: String
   var key: String
-  var failureProbability: Int64? = nil
-  var delayMean: Int64? = nil
-  var delayVariance: Int64? = nil
+  var failureProbability: Int64
+  var delayMean: Int64
+  var delayVariance: Int64
   var webApiDefaultResponse: BridgeMockzillaHttpResponse? = nil
   var webApiErrorResponse: BridgeMockzillaHttpResponse? = nil
 
   static func fromList(_ list: [Any?]) -> BridgeEndpointConfig? {
     let name = list[0] as! String
     let key = list[1] as! String
-    let failureProbability: Int64? = isNullish(list[2]) ? nil : (list[2] is Int64? ? list[2] as! Int64? : Int64(list[2] as! Int32))
-    let delayMean: Int64? = isNullish(list[3]) ? nil : (list[3] is Int64? ? list[3] as! Int64? : Int64(list[3] as! Int32))
-    let delayVariance: Int64? = isNullish(list[4]) ? nil : (list[4] is Int64? ? list[4] as! Int64? : Int64(list[4] as! Int32))
+    let failureProbability = list[2] is Int64 ? list[2] as! Int64 : Int64(list[2] as! Int32)
+    let delayMean = list[3] is Int64 ? list[3] as! Int64 : Int64(list[3] as! Int32)
+    let delayVariance = list[4] is Int64 ? list[4] as! Int64 : Int64(list[4] as! Int32)
     var webApiDefaultResponse: BridgeMockzillaHttpResponse? = nil
     if let webApiDefaultResponseList: [Any?] = nilOrValue(list[5]) {
       webApiDefaultResponse = BridgeMockzillaHttpResponse.fromList(webApiDefaultResponseList)

@@ -9,6 +9,7 @@ import 'package:pigeon/pigeon.dart';
     swiftOptions: SwiftOptions(),
   ),
 )
+@TaskQueue(type: TaskQueueType.serialBackgroundThread)
 enum BridgeHttpMethod {
   get,
   head,
@@ -57,18 +58,18 @@ class BridgeMockzillaHttpResponse {
 class BridgeEndpointConfig {
   final String name;
   final String key;
-  final int? failureProbability;
-  final int? delayMean;
-  final int? delayVariance;
+  final int failureProbability;
+  final int delayMean;
+  final int delayVariance;
   final BridgeMockzillaHttpResponse? webApiDefaultResponse;
   final BridgeMockzillaHttpResponse? webApiErrorResponse;
 
   const BridgeEndpointConfig(
     this.name,
-    this.key, [
+    this.key,
     this.failureProbability,
     this.delayMean,
-    this.delayVariance,
+    this.delayVariance, [
     this.webApiDefaultResponse,
     this.webApiErrorResponse,
   ]);
