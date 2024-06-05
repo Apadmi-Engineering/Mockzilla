@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/2.0.0...v2.1.0) (2024-06-05)
+
+
+### Features
+
+* Update iOS SDK to use persisted device IDs ([fbd907e](https://github.com/Apadmi-Engineering/Mockzilla/commit/fbd907e97e7cf104404d1e0ae12e3778bbd974eb))
+* Use android advertising ID as a persistant device identifier ([fbd907e](https://github.com/Apadmi-Engineering/Mockzilla/commit/fbd907e97e7cf104404d1e0ae12e3778bbd974eb))
+
+
+### Bug Fixes
+
+* Attempt to fix discovery ([fbd907e](https://github.com/Apadmi-Engineering/Mockzilla/commit/fbd907e97e7cf104404d1e0ae12e3778bbd974eb))
+* Replace Swift bonjour service with direct C interop ([d4ca3f4](https://github.com/Apadmi-Engineering/Mockzilla/commit/d4ca3f4e6b6963ba8657145d28f1887aef013d6a))
+
 ## [1.2.0-alpha2](https://github.com/Apadmi-Engineering/Mockzilla/compare/v1.1.0-alpha2...v1.2.0-alpha2) (2023-11-01)
 
 
