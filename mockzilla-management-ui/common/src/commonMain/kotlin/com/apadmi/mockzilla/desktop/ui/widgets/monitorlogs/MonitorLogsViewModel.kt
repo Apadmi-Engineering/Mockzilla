@@ -1,9 +1,8 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs
 
-import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MonitorLogsUseCase
-import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
+import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -12,17 +11,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class MonitorLogsViewModel(
+    device: Device,
     private val monitorLogsUseCase: MonitorLogsUseCase,
-    activeDeviceMonitor: ActiveDeviceMonitor,
     scope: CoroutineScope? = null
-) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
-    val state = MutableStateFlow<State>(State.Empty)
+) : ViewModel(scope) {
+    val state = MutableStateFlow<State>(State.DisplayLogs(emptySequence()))
     private var pollingJob: Job? = null
 
-    override suspend fun reloadData(selectedDevice: Device?) {
-        val device = selectedDevice ?: return run {
-            state.value = State.Empty
-        }
+    init {
         pollForLogs(device)
     }
 
@@ -31,11 +27,7 @@ class MonitorLogsViewModel(
         pollingJob = viewModelScope.launch {
             while (true) {
                 monitorLogsUseCase.getMonitorLogs(device).onSuccess { logs ->
-                    state.value = if (logs.none()) {
-                        State.Empty
-                    } else {
-                        State.DisplayLogs(logs)
-                    }
+                    state.value = State.DisplayLogs(logs)
                 }
 
                 delay(200)
@@ -44,7 +36,6 @@ class MonitorLogsViewModel(
     }
 
     sealed class State {
-        object Empty : State()
         /**
          * @property entries
          */

@@ -56,10 +56,14 @@ object AdbConnectorServiceImpl : AdbConnectorService {
         timeout: Duration = 1.seconds,
         block: suspend (adb: AndroidDebugBridgeClient) -> T
     ) = withContext(Dispatchers.IO) {
-        withTimeout(timeout) {
-            runCatching {
-                block(prepareAdb())
+        try {
+            withTimeout(timeout) {
+                runCatching {
+                    block(prepareAdb())
+                }
             }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 

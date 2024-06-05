@@ -5,6 +5,8 @@ import com.apadmi.mockzilla.desktop.di.viewModelModule
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceManagerImpl
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceSelector
+import com.apadmi.mockzilla.desktop.engine.events.EventBus
+import com.apadmi.mockzilla.desktop.engine.events.EventBusImpl
 import com.apadmi.mockzilla.management.MockzillaManagement
 
 import org.koin.core.context.startKoin
@@ -21,6 +23,9 @@ fun startMockzillaKoin() = startKoin {
             single { MockzillaManagement.instance.metaDataService }
             single { MockzillaManagement.instance.logsService }
             single { MockzillaManagement.instance.endpointsService }
+            single { MockzillaManagement.instance.updateService }
+            single { MockzillaManagement.instance.cacheClearingService }
+            single<EventBus> { EventBusImpl(GlobalScope) }
             single { ActiveDeviceManagerImpl(get(), GlobalScope) } binds arrayOf(
                 ActiveDeviceMonitor::class,
                 ActiveDeviceSelector::class

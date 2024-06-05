@@ -42,5 +42,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           command: make copied-site
+          extra_flags: -f ci.conveyor.conf
           signing_key: ${{ secrets.CONVEYOR_ROOT_KEY }}
           agree_to_license: 1

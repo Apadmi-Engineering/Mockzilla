@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -24,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +35,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -41,20 +46,27 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
+import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
 import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
+import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 import io.ktor.http.HttpStatusCode
+import org.koin.core.parameter.parametersOf
 
 import kotlinx.coroutines.launch
 
@@ -66,8 +78,13 @@ private enum class Tab {
 }
 
 @Composable
-fun EndpointDetailsWidget() {
-    val viewModel = getViewModel<EndpointDetailsViewModel>()
+fun EndpointDetailsWidget(
+    device: Device,
+    activeEndpoint: EndpointConfiguration.Key?
+) {
+    val viewModel = getViewModel<EndpointDetailsViewModel>(
+        key = "${activeEndpoint?.raw}-$device"
+    ) { parametersOf(activeEndpoint, device) }
     val state by viewModel.state
 
     EndpointDetailsWidgetContent(
@@ -82,6 +99,9 @@ fun EndpointDetailsWidget() {
         viewModel::onDelayChange,
         viewModel::onDefaultHeadersChange,
         viewModel::onErrorHeadersChange,
+        viewModel::onDefaultPresetSelected,
+        viewModel::onErrorPresetSelected,
+        viewModel::onResetAll
     )
 }
 
@@ -99,57 +119,42 @@ fun EndpointDetailsWidgetContent(
     onDelayChange: (String?) -> Unit,
     onDefaultHeadersChange: (List<Pair<String, String>>?) -> Unit,
     onErrorHeadersChange: (List<Pair<String, String>>?) -> Unit,
+    onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
+    onErrorPresetSelected: (DashboardOverridePreset) -> Unit,
+    onResetAll: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
     val pagerState = rememberPagerState(initialPage = 0) { Tab.entries.size }
     val coroutineScope = rememberCoroutineScope()
 
     when (state) {
-        is EndpointDetailsViewModel.State.Empty -> Text(text = strings.widgets.endpointDetails.none)
+        is EndpointDetailsViewModel.State.Empty -> EmptyState()
         is EndpointDetailsViewModel.State.Endpoint -> {
             Text(
                 text = state.config.name,
                 modifier = Modifier.padding(horizontal = 8.dp),
                 style = MaterialTheme.typography.displaySmall
             )
-            Text(
-                text = strings.widgets.endpointDetails.failOptionsLabel,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-            SingleChoiceSegmentedButtonRow(
-                modifier = Modifier.padding(horizontal = 8.dp),
-            ) {
-                val options = listOf(null, false, true)
-                options.forEachIndexed { index, option ->
-                    SegmentedButton(
-                        selected = state.fail == option,
-                        onClick = { onFailChange(option) },
-                        label = {
-                            Text(
-                                text = strings.widgets.endpointDetails.failLabel(option),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        },
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = options.size
-                        ),
-                        // Remove icon as we don't have much horizontal space to work with
-                        // due to three options here and sometimes very minimal horizontal area
-                        icon = {},
-                    )
-                }
+
+            Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = strings.widgets.endpointDetails.failOptionsLabel,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                Switch(
+                    checked = state.fail == true,
+                    onCheckedChange = onFailChange
+                )
             }
             HorizontalTabList(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
                 tabs = Tab.entries.map { tabLabel ->
                     HorizontalTab(
                         when (tabLabel) {
                             Tab.Default -> strings.widgets.endpointDetails.defaultDataTab
                             Tab.Error -> strings.widgets.endpointDetails.errorDataTab
                             Tab.Settings -> strings.widgets.endpointDetails.generalTab
-                        }
+                        },
                     )
                 },
                 selected = pagerState.currentPage,
@@ -167,14 +172,17 @@ fun EndpointDetailsWidgetContent(
                 Column {
                     when (tab) {
                         Tab.Default -> EndpointDetailsResponseBody(
+                            modifier = Modifier.alpha(if (state.fail == true) 0.9f else 1f),
                             statusCode = state.defaultStatus,
                             onStatusCodeChange = onDefaultStatusCodeChange,
                             body = state.defaultBody,
                             onResponseBodyChange = onDefaultBodyChange,
                             jsonEditing = state.jsonEditingDefault,
                             onJsonEditingChange = onJsonDefaultEditingChange,
+                            onPresetSelected = onDefaultPresetSelected,
                             headers = state.defaultHeaders,
                             onHeadersChange = onDefaultHeadersChange,
+                            presets = state.presets.successPresets
                         )
 
                         Tab.Error -> EndpointDetailsResponseBody(
@@ -184,13 +192,16 @@ fun EndpointDetailsWidgetContent(
                             onResponseBodyChange = onErrorBodyChange,
                             jsonEditing = state.jsonEditingError,
                             onJsonEditingChange = onJsonErrorEditingChange,
+                            onPresetSelected = onErrorPresetSelected,
                             headers = state.errorHeaders,
                             onHeadersChange = onErrorHeadersChange,
+                            presets = state.presets.errorPresets
                         )
 
                         Tab.Settings -> Settings(
                             delayMillis = state.delayMillis,
                             onDelayChange = onDelayChange,
+                            onResetAll = onResetAll
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -216,6 +227,9 @@ fun EndpointDetailsWidgetNonePreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onErrorPresetSelected = {},
+        onDefaultPresetSelected = {},
+        onResetAll = {}
     )
 }
 
@@ -252,6 +266,9 @@ fun EndpointDetailsWidgetPreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onErrorPresetSelected = {},
+        onDefaultPresetSelected = {},
+        onResetAll = {}
     )
 }
 
@@ -288,12 +305,35 @@ fun EndpointDetailsWidgetUnsetPreview() = PreviewSurface {
         onDelayChange = {},
         onDefaultHeadersChange = {},
         onErrorHeadersChange = {},
+        onErrorPresetSelected = {},
+        onDefaultPresetSelected = {},
+        onResetAll = {}
+    )
+}
+
+@Composable
+private fun EmptyState() = Column(
+    Modifier.fillMaxSize().padding(16.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically)
+) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = "\uD83D\uDC48",
+        style = MaterialTheme.typography.displayLarge,
+        textAlign = TextAlign.Center
+    )
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = "Choose an Endpoint to start editing",
+        style = MaterialTheme.typography.titleMedium,
+        textAlign = TextAlign.Center
     )
 }
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun EndpointDetailsResponseBody(
+    modifier: Modifier = Modifier,
     statusCode: HttpStatusCode?,
     onStatusCodeChange: (HttpStatusCode?) -> Unit,
     body: String?,
@@ -302,10 +342,33 @@ private fun EndpointDetailsResponseBody(
     onJsonEditingChange: (Boolean) -> Unit,
     headers: List<Pair<String, String>>?,
     onHeadersChange: (List<Pair<String, String>>?) -> Unit,
+    onPresetSelected: (DashboardOverridePreset) -> Unit,
     strings: Strings = LocalStrings.current,
-) = Column {
+    presets: List<DashboardOverridePreset>,
+) = Column(modifier = modifier) {
     Spacer(Modifier.height(4.dp))
     var pickingStatusCode by remember { mutableStateOf(false) }
+    var pickingPresets by remember { mutableStateOf(false) }
+
+    if (presets.isNotEmpty()) {
+        Button(
+            modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp),
+            onClick = { pickingPresets = !pickingPresets }) {
+            Text(if (pickingPresets) "Hide Presets" else "Show Presets")
+        }
+    }
+
+    if (pickingPresets) {
+        HorizontalDivider(Modifier.fillMaxWidth())
+        PresetsSelector(
+            presets = presets,
+            onPresetSelected = {
+                pickingPresets = false
+                onPresetSelected(it)
+            }
+        )
+    }
+
     ExposedDropdownMenuBox(
         expanded = pickingStatusCode,
         onExpandedChange = { pickingStatusCode = it },
@@ -403,7 +466,9 @@ private fun EndpointDetailsResponseBody(
             // TODO: Might want warning here before losing mock data
             onClick = {
                 // TODO: Might want this to prompt user to pick from presets if available
-                onResponseBodyChange(body?.let { null } ?: "")
+                body?.let {
+                    onResponseBodyChange(null)
+                } ?: onResponseBodyChange("")
             },
         ) {
             Text(
@@ -417,69 +482,63 @@ private fun EndpointDetailsResponseBody(
     HeadersEditor(headers, onHeadersChange)
 }
 
+@Composable
+private fun PresetsSelector(
+    presets: List<DashboardOverridePreset>,
+    onPresetSelected: (DashboardOverridePreset) -> Unit
+) = LazyColumn(Modifier.heightIn(max = 200.dp)) {
+    itemsIndexed(presets) { index, preset ->
+        Row(Modifier.fillMaxWidth().alternatingBackground(index).padding(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(preset.name)
+                Text(
+                    modifier = Modifier.alpha(0.5f),
+                    text = preset.description ?: "",
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            Button(onClick = { onPresetSelected(preset) }) {
+                Text("Apply Preset")
+            }
+        }
+    }
+}
+
 @Suppress("LOCAL_VARIABLE_EARLY_DECLARATION")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Settings(
     delayMillis: String?,
     onDelayChange: (String?) -> Unit,
+    onResetAll: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
-    var customDelay by remember { mutableStateOf("") }
+    val regex = remember { Regex("[^0-9 ]") }
+    var customDelay by remember(delayMillis != null) { mutableStateOf(delayMillis) }
     Spacer(Modifier.height(4.dp))
-    Text(
-        text = strings.widgets.endpointDetails.responseDelay,
-        modifier = Modifier.padding(horizontal = 8.dp),
-    )
-    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-        val options = listOf(
-            strings.widgets.endpointDetails.noOverrideResponseDelay,
-            strings.widgets.endpointDetails.customResponseDelay
+
+    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = strings.widgets.endpointDetails.responseDelay,
+            modifier = Modifier.padding(horizontal = 8.dp),
         )
-        options.forEachIndexed { index, label ->
-            SegmentedButton(
-                selected = if (index == 0) {
-                    delayMillis == null
-                } else {
-                    delayMillis != null
-                },
-                onClick = {
-                    if (index == 0) {
-                        onDelayChange(null)
-                    } else {
-                        onDelayChange(customDelay)
-                    }
-                },
-                label = {
-                    Text(
-                        text = label,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
-                shape = SegmentedButtonDefaults.itemShape(
-                    index = index,
-                    count = options.size,
-                ),
-                icon = {},
-            )
-        }
+        TextField(
+            value = customDelay ?: "",
+            onValueChange = { newValue ->
+                customDelay = regex.replace(newValue.take(6), "")
+                onDelayChange(customDelay?.takeUnless { it.isBlank() })
+            },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            singleLine = true,
+            label = { Text(text = strings.widgets.endpointDetails.responseDelayLabel) },
+            suffix = { Text(text = strings.widgets.endpointDetails.responseDelayUnits) },
+        )
     }
-    TextField(
-        value = customDelay,
-        onValueChange = {
-            customDelay = it
-            onDelayChange(it)
-        },
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        enabled = delayMillis != null,
-        singleLine = true,
-        label = { Text(text = strings.widgets.endpointDetails.responseDelayLabel) },
-        suffix = { Text(text = strings.widgets.endpointDetails.responseDelayUnits) },
-    )
     Spacer(modifier = Modifier.height(16.dp))
     Button(
-        onClick = { /* TODO, maybe with popup to confirm? */ },
+        onClick = onResetAll,  // TODO: Add confirmation popup
         modifier = Modifier.padding(horizontal = 8.dp),
     ) {
         Text(text = strings.widgets.endpointDetails.resetAll)

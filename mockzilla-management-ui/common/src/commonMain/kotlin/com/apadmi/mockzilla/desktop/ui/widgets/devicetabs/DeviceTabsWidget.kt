@@ -51,6 +51,7 @@ fun DeviceTabsWidgetContent(
     } else {
         selectedDevice
     }
+
     Surface(modifier = modifier) {
         HorizontalTabList(
             tabs = state.devices.map { device ->

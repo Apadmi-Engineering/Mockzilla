@@ -163,7 +163,7 @@ class _$MockzillaHttpRequestImpl implements _MockzillaHttpRequest {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MockzillaHttpRequestImpl &&
@@ -338,7 +338,7 @@ class _$MockzillaHttpResponseImpl implements _MockzillaHttpResponse {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MockzillaHttpResponseImpl &&
@@ -693,7 +693,7 @@ class _$EndpointConfigImpl implements _EndpointConfig {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EndpointConfigImpl &&
@@ -923,7 +923,7 @@ class _$ReleaseModeConfigImpl implements _ReleaseModeConfig {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ReleaseModeConfigImpl &&
@@ -980,8 +980,17 @@ mixin _$MockzillaConfig {
 
   /// Whether Mockzilla server should only be available on the host device.
   bool get localHostOnly => throw _privateConstructorUsedError;
+
+  /// The level of logging that should be used by Mockzilla.
   LogLevel get logLevel => throw _privateConstructorUsedError;
+
+  /// The configuration for rate limiting.
+  /// Rate limiting uses Ktor's implementation, please see
+  /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
+  /// info.
   ReleaseModeConfig get releaseModeConfig => throw _privateConstructorUsedError;
+
+  /// The list of additional log writers that should be used by Mockzilla.
   List<MockzillaLogger> get additionalLogWriters =>
       throw _privateConstructorUsedError;
 
@@ -1148,7 +1157,7 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
 class _$MockzillaConfigImpl implements _MockzillaConfig {
   const _$MockzillaConfigImpl(
       {required this.port,
-      required final List<EndpointConfig> endpoints,
+      final List<EndpointConfig> endpoints = const [],
       required this.isRelease,
       required this.localHostOnly,
       required this.logLevel,
@@ -1166,6 +1175,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
 
   /// The list of available mocked endpoints.
   @override
+  @JsonKey()
   List<EndpointConfig> get endpoints {
     if (_endpoints is EqualUnmodifiableListView) return _endpoints;
     // ignore: implicit_dynamic_type
@@ -1181,11 +1191,22 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   /// Whether Mockzilla server should only be available on the host device.
   @override
   final bool localHostOnly;
+
+  /// The level of logging that should be used by Mockzilla.
   @override
   final LogLevel logLevel;
+
+  /// The configuration for rate limiting.
+  /// Rate limiting uses Ktor's implementation, please see
+  /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
+  /// info.
   @override
   final ReleaseModeConfig releaseModeConfig;
+
+  /// The list of additional log writers that should be used by Mockzilla.
   final List<MockzillaLogger> _additionalLogWriters;
+
+  /// The list of additional log writers that should be used by Mockzilla.
   @override
   List<MockzillaLogger> get additionalLogWriters {
     if (_additionalLogWriters is EqualUnmodifiableListView)
@@ -1200,7 +1221,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MockzillaConfigImpl &&
@@ -1241,7 +1262,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
 abstract class _MockzillaConfig implements MockzillaConfig {
   const factory _MockzillaConfig(
           {required final int port,
-          required final List<EndpointConfig> endpoints,
+          final List<EndpointConfig> endpoints,
           required final bool isRelease,
           required final bool localHostOnly,
           required final LogLevel logLevel,
@@ -1268,10 +1289,19 @@ abstract class _MockzillaConfig implements MockzillaConfig {
   /// Whether Mockzilla server should only be available on the host device.
   bool get localHostOnly;
   @override
+
+  /// The level of logging that should be used by Mockzilla.
   LogLevel get logLevel;
   @override
+
+  /// The configuration for rate limiting.
+  /// Rate limiting uses Ktor's implementation, please see
+  /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
+  /// info.
   ReleaseModeConfig get releaseModeConfig;
   @override
+
+  /// The list of additional log writers that should be used by Mockzilla.
   List<MockzillaLogger> get additionalLogWriters;
   @override
   @JsonKey(ignore: true)
@@ -1453,7 +1483,7 @@ class _$MockzillaRuntimeParamsImpl implements _MockzillaRuntimeParams {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MockzillaRuntimeParamsImpl &&
@@ -1606,7 +1636,7 @@ class _$AuthHeaderImpl implements _AuthHeader {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AuthHeaderImpl &&

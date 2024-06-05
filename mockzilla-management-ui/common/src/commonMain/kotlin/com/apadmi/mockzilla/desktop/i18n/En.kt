@@ -8,7 +8,19 @@ val EnStrings = Strings(
     widgets = Strings.Widgets(
         Strings.Widgets.DeviceConnection(
             tabTitle = "Connect Device",
-            ipInputLabel = "IP address to connect to"
+            heading = "Enter IP and port to connect to a device",
+            autoConnectHeading = "Or…",
+            autoConnectSubHeading = "Choose a device to connect automatically",
+            autoConnectButton = "Connect",
+            ipInputLabel = "e.g 127.0.0.1:8080",
+            androidDevConnectButton = "Connect to development Mockzilla",
+            tooltips = Strings.Widgets.DeviceConnection.ToolTips(
+                notYourSimulator = "We don't think this is your simulator, but you can try to connect! (Probably won't work)",
+                readyToConnect = "",
+                removed = "This device seems to have disconnected",
+                resolving = "We're still for this device to come online"
+
+            )
         ),
         deviceTabs = Strings.Widgets.DeviceTabs(
             tabTitle = { "Device $it" },
@@ -26,8 +38,8 @@ val EnStrings = Strings(
             noDeviceConnected = "No device connected",
             appName = "App Name",
             appPackage = "App Package",
-            operatingSystem = "Operating System",
-            operatingSystemVersion = "Operating System Version",
+            operatingSystem = "OS",
+            operatingSystemVersion = "OS Version",
             deviceModel = "Device",
             appVersion = "App Version",
             mockzillaVersion = "Mockzilla Version",
@@ -38,7 +50,13 @@ val EnStrings = Strings(
         logs = Strings.Widgets.Logs(
             "Logs"
         ),
+        endpoints = Strings.Widgets.Endpoints(
+            selectAllTooltip = "Select all",
+            errorSwitchLabel = "Use Error Response",
+            valuesOverriddenIndicatorTooltip = "Some or all of the properties of this response are being overridden"
+        ),
         endpointDetails = Strings.Widgets.EndpointDetails(
+            title = "Editor",
             none = "No endpoint selected",
             useErrorResponse = "Return failure response",
             defaultDataTab = "Default Response",
@@ -62,7 +80,7 @@ val EnStrings = Strings(
                     "Text"
                 }
             },
-            failOptionsLabel = "Response to use:",
+            failOptionsLabel = "User Error Response:",
             failLabel = { shouldFail: Boolean? ->
                 when (shouldFail) {
                     null -> "Unset"
@@ -85,6 +103,21 @@ val EnStrings = Strings(
             resetHeaders = "Reset all headers",
             noHeaders = "Headers set to an empty list",
             headersUnset = "Headers unset",
+        ),
+        miscControls = Strings.Widgets.MiscControls(
+            refreshAll = "Re-sync all",
+            clearOverrides = "Reset all overrides",
+            title = "Tools"
+        ),
+        unsupportedMockzilla = Strings.Widgets.UnsupportedMockzillaVersion(
+            heading = "Unsupported SDK",
+            subtitle = "This app doesn't support the version of Mockzilla running on your device",
+            footer = "Please update to the latest version of Mockzilla",
+        ),
+        errorBanner = Strings.Widgets.ErrorBanner(
+            connectionLost = "Connection Lost: Please check your app is in the foreground",
+            unknownError = "Something went wrong, try refreshing everything \uD83D\uDC49",
+            refreshButton = "Refresh"
         )
     )
 )

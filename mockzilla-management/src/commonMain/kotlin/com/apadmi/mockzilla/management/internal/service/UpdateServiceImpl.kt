@@ -2,18 +2,20 @@ package com.apadmi.mockzilla.management.internal.service
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
 import io.ktor.http.HttpStatusCode
 
-internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository) :
-    MockzillaManagement.UpdateService {
+internal class UpdateServiceImpl(
+    private val repo: MockzillaManagementRepository
+) : MockzillaManagement.UpdateService {
     override suspend fun setShouldFail(
         connection: MockzillaConnectionConfig,
-        keys: List<EndpointConfiguration.Key>,
-        shouldFail: Boolean
+        keys: Collection<EndpointConfiguration.Key>,
+        shouldFail: Boolean?
     ) = repo.updateMockDataEntries(
         keys.map { key ->
             SerializableEndpointPatchItemDto(
@@ -25,7 +27,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
 
     override suspend fun setDelay(
         connection: MockzillaConnectionConfig,
-        keys: List<EndpointConfiguration.Key>,
+        keys: Collection<EndpointConfiguration.Key>,
         delayMs: Int?
     ) = repo.updateMockDataEntries(
         keys.map { key ->
@@ -39,18 +41,18 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setDefaultHeaders(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        headers: Map<String, String>
+        headers: Map<String, String>?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
-            headers = SetOrDont.Set(headers)
+            defaultHeaders = SetOrDont.Set(headers)
         ), connection
     )
 
     override suspend fun setDefaultBody(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        body: String
+        body: String?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
@@ -61,7 +63,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setDefaultStatus(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        statusCode: HttpStatusCode
+        statusCode: HttpStatusCode?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
@@ -72,7 +74,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setErrorBody(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        body: String
+        body: String?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
@@ -83,7 +85,7 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setErrorHeaders(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        headers: Map<String, String>
+        headers: Map<String, String>?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
@@ -94,11 +96,37 @@ internal class UpdateServiceImpl(private val repo: MockzillaManagementRepository
     override suspend fun setErrorStatus(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
-        statusCode: HttpStatusCode
+        statusCode: HttpStatusCode?
     ) = repo.updateMockDataEntry(
         SerializableEndpointPatchItemDto(
             key = key,
             errorStatus = SetOrDont.Set(statusCode)
+        ), connection
+    )
+
+    override suspend fun setDefaultPreset(
+        connection: MockzillaConnectionConfig,
+        key: EndpointConfiguration.Key,
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointPatchItemDto(
+            key = key,
+            defaultBody = SetOrDont.Set(dashboardOverridePreset.response.body),
+            defaultStatus = SetOrDont.Set(dashboardOverridePreset.response.statusCode),
+            defaultHeaders = SetOrDont.Set(dashboardOverridePreset.response.headers)
+        ), connection
+    )
+
+    override suspend fun setErrorPreset(
+        connection: MockzillaConnectionConfig,
+        key: EndpointConfiguration.Key,
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = repo.updateMockDataEntry(
+        SerializableEndpointPatchItemDto(
+            key = key,
+            errorBody = SetOrDont.Set(dashboardOverridePreset.response.body),
+            errorStatus = SetOrDont.Set(dashboardOverridePreset.response.statusCode),
+            errorHeaders = SetOrDont.Set(dashboardOverridePreset.response.headers)
         ), connection
     )
 }

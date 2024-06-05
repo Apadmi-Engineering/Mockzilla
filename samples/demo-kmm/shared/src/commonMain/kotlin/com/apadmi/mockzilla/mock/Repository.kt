@@ -42,10 +42,11 @@ class Repository(private val baseUrl: String) {
             setBody(Json.encodeToString(GetCowRequestDto(someRequestValue)))
         }
 
-        return if (response.status.isSuccess()) {
-            DataResult.Success(Json.decodeFromString(response.bodyAsText()))
+        val parsed = runCatching { Json.decodeFromString<CowDto>(response.bodyAsText()) }
+        return if (response.status.isSuccess() && parsed.isSuccess) {
+            DataResult.Success(parsed.getOrThrow())
         } else {
-            DataResult.Failure("${response.status} - ${response.bodyAsText()}")
+            DataResult.Failure("${response.status} - ${parsed.exceptionOrNull() ?: response.bodyAsText()}")
         }
     }
 }

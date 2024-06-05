@@ -25,6 +25,10 @@ data class Strings(
      * @property metaData
      * @property logs
      * @property endpointDetails
+     * @property endpoints
+     * @property miscControls
+     * @property unsupportedMockzilla
+     * @property errorBanner
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -32,11 +36,37 @@ data class Strings(
         val metaData: MetaData,
         val logs: Logs,
         val endpointDetails: EndpointDetails,
+        val endpoints: Endpoints,
+        val miscControls: MiscControls,
+        val unsupportedMockzilla: UnsupportedMockzillaVersion,
+        val errorBanner: ErrorBanner
     ) {
+        /**
+         * @property connectionLost
+         * @property unknownError
+         * @property refreshButton
+         */
+        data class ErrorBanner(
+            val connectionLost: String,
+            val unknownError: String,
+            val refreshButton: String
+        )
+
         /**
          * @property title
          */
         data class Logs(val title: String)
+
+        /**
+         * @property refreshAll
+         * @property clearOverrides
+         * @property title
+         */
+        data class MiscControls(
+            val refreshAll: String,
+            val clearOverrides: String,
+            val title: String
+        )
 
         /**
          * @property title
@@ -70,11 +100,36 @@ data class Strings(
         /**
          * @property tabTitle
          * @property ipInputLabel
+         * @property tooltips
+         * @property heading
+         * @property autoConnectHeading
+         * @property autoConnectSubHeading
+         * @property autoConnectButton
+         * @property androidDevConnectButton
          */
         data class DeviceConnection(
             val tabTitle: String,
             val ipInputLabel: String,
-        )
+            val tooltips: ToolTips,
+            val heading: String,
+            val autoConnectHeading: String,
+            val autoConnectSubHeading: String,
+            val autoConnectButton: String,
+            val androidDevConnectButton: String,
+        ) {
+            /**
+             * @property notYourSimulator
+             * @property readyToConnect
+             * @property removed
+             * @property resolving
+             */
+            data class ToolTips(
+                val notYourSimulator: String,
+                val readyToConnect: String,
+                val removed: String,
+                val resolving: String
+            )
+        }
 
         /**
          * @property tabTitle
@@ -91,6 +146,16 @@ data class Strings(
             val devices: (number: Int) -> String,
         )
 
+        /**
+         * @property selectAllTooltip
+         * @property errorSwitchLabel
+         * @property valuesOverriddenIndicatorTooltip
+         */
+        data class Endpoints(
+            val selectAllTooltip: String,
+            val errorSwitchLabel: String,
+            val valuesOverriddenIndicatorTooltip: String
+        )
         /**
          * @property none
          * @property useErrorResponse
@@ -124,8 +189,10 @@ data class Strings(
          * @property resetHeaders
          * @property noHeaders
          * @property headersUnset
+         * @property title
          */
         data class EndpointDetails(
+            val title: String,
             val none: String,
             val useErrorResponse: String,
             val defaultDataTab: String,
@@ -157,7 +224,18 @@ data class Strings(
             val editHeaders: String,
             val resetHeaders: String,
             val noHeaders: String,
-            val headersUnset: String,
+            val headersUnset: String
+        )
+
+        /**
+         * @property heading
+         * @property subtitle
+         * @property footer
+         */
+        data class UnsupportedMockzillaVersion(
+            val heading: String,
+            val subtitle: String,
+            val footer: String
         )
     }
 }

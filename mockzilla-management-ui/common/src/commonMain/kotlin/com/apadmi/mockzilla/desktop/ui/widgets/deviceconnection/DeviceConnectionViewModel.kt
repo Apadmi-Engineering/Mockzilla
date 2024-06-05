@@ -25,13 +25,22 @@ class DeviceConnectionViewModel(
     private var connectionJob: Job? = null
 
     init {
+        val stateOrder = listOf(
+            DetectedDevice.State.ReadyToConnect,
+            DetectedDevice.State.Resolving,
+            DetectedDevice.State.Removed,
+            DetectedDevice.State.NotYourSimulator
+        )
+
         deviceDetectionUseCase.onChangeEvent.onEach {
-            state.value = state.value.copy(devices = deviceDetectionUseCase.devices)
+            state.value = state.value.copy(
+                devices = deviceDetectionUseCase.devices.sortedWith(compareBy {
+                    stateOrder.indexOf(it.state)
+                })
+            )
         }.launchIn(viewModelScope)
     }
 
-    // TODO: Replace this with better strategies of device connections
-    // This is just a rough and ready way to get the UI to be testable
     fun onIpAndPortChanged(newValue: String) {
         connectionJob?.cancel()
         val device = createDeviceOrNull(newValue)
@@ -84,6 +93,8 @@ class DeviceConnectionViewModel(
         val connectionState: ConnectionState = ConnectionState.Disconnected,
         val devices: List<DetectedDevice> = emptyList()
     ) {
+        val hasDevices get() = devices.isNotEmpty()
+
         enum class ConnectionState {
             Connected,
             Connecting,
@@ -92,3 +103,7 @@ class DeviceConnectionViewModel(
         }
     }
 }
+
+fun DetectedDevice.prettyName() = metaData?.let {
+    "${metaData.deviceModel}-${metaData.operatingSystemVersion}"
+} ?: connectionName

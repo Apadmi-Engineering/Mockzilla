@@ -1,6 +1,8 @@
 package com.apadmi.mockzilla.desktop.engine.device
 
+import com.apadmi.mockzilla.desktop.engine.Config
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.vdurmont.semver4j.Semver
 
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +35,7 @@ class ActiveDeviceManagerImpl(
     scope: CoroutineScope
 ) : ActiveDeviceMonitor, ActiveDeviceSelector {
     override val selectedDevice = MutableStateFlow<StatefulDevice?>(null)
-    override val onDeviceConnectionStateChange = MutableSharedFlow<Unit>()
+    override val onDeviceConnectionStateChange = MutableSharedFlow<Unit>(replay = 1)
     private val allDevicesInternal = mutableMapOf<Device, StatefulDevice>()
     override val allDevices get() = allDevicesInternal.values
 
@@ -50,7 +52,7 @@ class ActiveDeviceManagerImpl(
         while (true) {
             allDevicesInternal.forEach { (device, statefulDevice) ->
                 val newStatefulDevice =
-                    metaDataUseCase.getMetaData(device).fold(onSuccess = { metaData ->
+                    metaDataUseCase.getMetaData(device, isPolling = true).fold(onSuccess = { metaData ->
                         statefulDevice.copy(
                             isConnected = true,
                             connectedAppPackage = metaData.appPackage
@@ -68,16 +70,21 @@ class ActiveDeviceManagerImpl(
                 allDevicesInternal[device] = newStatefulDevice
             }
 
-            delay(0.5.seconds)
+            if (onDeviceConnectionStateChange.replayCache.isEmpty()) {
+                onDeviceConnectionStateChange.emit(Unit)
+            }
+
+            delay(1.seconds)
             yield()
         }
     }
     override fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData) {
         allDevicesInternal[device] = StatefulDevice(
             device = device,
-            name = "${metadata.runTarget}-${metadata.deviceModel}",
+            name = "${metadata.runTarget ?: metadata.appPackage}-${metadata.deviceModel}",
             isConnected = true,
-            connectedAppPackage = metadata.appPackage
+            connectedAppPackage = metadata.appPackage,
+            isCompatibleMockzillaVersion = Semver(metadata.mockzillaVersion).isGreaterThanOrEqualTo(Config.minSupportedMockzillaVersion)
         ).also {
             selectedDevice.value = it
         }

@@ -20,7 +20,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 
 private val zeroConfStub = object : ZeroConfDiscoveryService {
-    override fun makeDiscoverable(metaData: MetaData, port: Int) = Unit
+    override suspend fun makeDiscoverable(metaData: MetaData, port: Int) = Unit
 }
 
 internal typealias SetupBlock = suspend (cacheService: LocalCacheService) -> Unit

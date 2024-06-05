@@ -2,7 +2,7 @@
 
 # Kotlin
 adam = "0.5.7" # https://github.com/Malinskiy/adam
-jmdns = "3.5.1" # https://github.com/jmdns/jmdns
+jmdns = "3.5.9" # https://github.com/jmdns/jmdns
 kotlin = "1.9.23" # https://github.com/JetBrains/kotlin
 agp = "8.4.0" # https://developer.android.com/build/releases/gradle-plugin
 ksp = "1.9.23-1.0.20" # https://github.com/google/ksp
@@ -23,7 +23,8 @@ lyricist = "1.4.2" # https://github.com/adrielcafe/lyricist
 ktor = "2.3.11" # https://github.com/ktorio/ktor
 
 # Compose
-compose = "1.6.1" # https://github.com/JetBrains/compose-multiplatform
+compose = "1.6.10" # https://github.com/JetBrains/compose-multiplatform
+androidCompose = "1.6.7" # https://github.com/JetBrains/compose-multiplatform
 compose-compiler = "1.5.13" # https://developer.android.com/jetpack/androidx/releases/compose-compiler
 
 # DI
@@ -40,6 +41,8 @@ material3 = "1.2.1" # https://developer.android.com/jetpack/androidx/releases/co
 compose-activity = "1.9.0" # https://developer.android.com/jetpack/androidx/releases/activity
 
 # Code Formatting
+playServicesAdsIdentifier = "18.1.0"
+semver4j = "3.1.0" # https://github.com/vdurmont/semver4j
 spotless = "6.25.0" # https://github.com/diffplug/spotless
 
 # Testing
@@ -64,19 +67,15 @@ swiftklib = "0.5.1" # https://github.com/ttypic/swift-klib-plugin
 # Compose & Material
 adam = { module = "com.malinskiy.adam:adam", version.ref = "adam" }
 androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity"  }
-androidx-compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
-androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidCompose" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 desktop-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3-desktop", version.ref = "compose" }
-androidx-compose-materialIconsExt = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
+androidx-compose-materialIconsExt = { module = "androidx.compose.material:material-icons-extended", version.ref = "androidCompose" }
 desktop-compose-material-icons = { module = "org.jetbrains.compose.material:material-icons-extended-desktop", version.ref = "compose" }
-androidx-compose-uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
+androidx-compose-uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidCompose" }
 
 # Android Lifecycle
 androidx-lifecycleViewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
-androidx-lifecycleRuntimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
-androidx-lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
 # Logging
 jmdns-jmdns = { module = "org.jmdns:jmdns", version.ref = "jmdns" }
@@ -110,6 +109,8 @@ koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = 
 # Testing
 mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
 mockative-processor = { module = "io.mockative:mockative-processor", version.ref = "mockative" }
+play-services-ads-identifier = { module = "com.google.android.gms:play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
+semver4j = { module = "com.vdurmont:semver4j", version.ref = "semver4j" }
 showkase = { module = "com.airbnb.android:showkase", version.ref = "showkase" }
 showkase-processor = { module = "com.airbnb.android:showkase-processor", version.ref = "showkase" }
 androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }

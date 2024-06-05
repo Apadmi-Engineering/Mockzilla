@@ -19,11 +19,18 @@ import kotlinx.coroutines.withContext
 val endpointWithPresets = EndpointConfiguration.Builder(
     "endpoint-with-presets"
 )
+    .setName("Endpoint With Presets")
     .setDefaultHandler {
         MockzillaHttpResponse(headers = mapOf("Content-Type" to "application/json"), body = "{}")
     }
     .configureDashboardOverrides {
-        addSuccessPreset(MockzillaHttpResponse(HttpStatusCode.Created, headers = emptyMap(), body = ""))
+        addSuccessPreset(
+            MockzillaHttpResponse(
+                HttpStatusCode.Created,
+                headers = emptyMap(),
+                body = ""
+            )
+        )
         addSuccessPreset(MockzillaHttpResponse(body = """{ "hello": "world" }"""))
 
         addErrorPreset(MockzillaHttpResponse(HttpStatusCode.ServiceUnavailable, body = "Go away"))
@@ -44,14 +51,18 @@ val responseCodesToCycleThrough = listOf(
 )
 val endpointThatCyclesThroughResponseCodes = EndpointConfiguration.Builder(
     "endpoint-that-cycles-through-response-codes"
-).setDefaultHandler {
-    val code = responseCodesToCycleThrough[currentResponseCode++ % responseCodesToCycleThrough.size]
-    MockzillaHttpResponse(
-        statusCode = code,
-        headers = mapOf("Content-Type" to "application/json"),
-        body = code.description
-    )
-}.build()
+)
+    .setName("Endpoint cycling through codes")
+    .setDefaultHandler {
+        val code =
+            responseCodesToCycleThrough[currentResponseCode++ % responseCodesToCycleThrough.size]
+        MockzillaHttpResponse(
+            statusCode = code,
+            headers = mapOf("Content-Type" to "application/json"),
+            body = code.description
+        )
+    }
+    .build()
 var currentResponseCode = 0
 
 private suspend fun HttpClient.get(

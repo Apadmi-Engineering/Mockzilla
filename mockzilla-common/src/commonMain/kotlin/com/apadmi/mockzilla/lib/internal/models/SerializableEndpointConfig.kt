@@ -7,7 +7,6 @@ import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
@@ -71,7 +70,7 @@ data class SerializableEndpointConfig(
  * @property key
  * @property shouldFail
  * @property delayMs
- * @property headers
+ * @property defaultHeaders
  * @property defaultBody
  * @property errorBody
  * @property errorStatus
@@ -84,7 +83,7 @@ data class SerializableEndpointPatchItemDto(
     val key: EndpointConfiguration.Key,
     val shouldFail: SetOrDont<Boolean?> = SetOrDont.DoNotSet,
     val delayMs: SetOrDont<Int?> = SetOrDont.DoNotSet,
-    val headers: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
+    val defaultHeaders: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
     val defaultBody: SetOrDont<String?> = SetOrDont.DoNotSet,
     val defaultStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
     val errorBody: SetOrDont<String?> = SetOrDont.DoNotSet,
@@ -98,7 +97,7 @@ data class SerializableEndpointPatchItemDto(
             key = key,
             shouldFail = SetOrDont.DoNotSet,
             delayMs = SetOrDont.DoNotSet,
-            headers = SetOrDont.DoNotSet,
+            defaultHeaders = SetOrDont.DoNotSet,
             defaultBody = SetOrDont.DoNotSet,
             defaultStatus = SetOrDont.DoNotSet,
             errorBody = SetOrDont.DoNotSet,
@@ -109,7 +108,7 @@ data class SerializableEndpointPatchItemDto(
             key = config.key,
             shouldFail = SetOrDont.Set(config.shouldFail),
             delayMs = SetOrDont.Set(config.delayMs),
-            headers = SetOrDont.Set(config.defaultHeaders),
+            defaultHeaders = SetOrDont.Set(config.defaultHeaders),
             defaultBody = SetOrDont.Set(config.defaultBody),
             defaultStatus = SetOrDont.Set(config.defaultStatus),
             errorBody = SetOrDont.Set(config.errorBody),
@@ -152,24 +151,21 @@ sealed class SetOrDont<out T> {
 }
 
 class ServiceResultSerializer<T : Any>(
-    serializer: KSerializer<T>
-) : KSerializer<SetOrDont<T>> {
+    serializer: KSerializer<T?>
+) : KSerializer<SetOrDont<T?>> {
     private val surrogateSerializer = ServiceResultSurrogate.serializer(serializer)
     override val descriptor: SerialDescriptor = surrogateSerializer.descriptor
 
-    override fun deserialize(decoder: Decoder): SetOrDont<T> {
+    override fun deserialize(decoder: Decoder): SetOrDont<T?> {
         val surrogate = surrogateSerializer.deserialize(decoder)
         return when (surrogate.type) {
-            ServiceResultSurrogate.Type.Set ->
-                surrogate.value?.let {
-                    SetOrDont.Set(surrogate.value)
-                } ?: throw SerializationException("Missing data for set result")
+            ServiceResultSurrogate.Type.Set -> SetOrDont.Set(surrogate.value)
             ServiceResultSurrogate.Type.UnSet ->
                 SetOrDont.DoNotSet
         }
     }
 
-    override fun serialize(encoder: Encoder, value: SetOrDont<T>) {
+    override fun serialize(encoder: Encoder, value: SetOrDont<T?>) {
         val surrogate = when (value) {
             is SetOrDont.Set -> ServiceResultSurrogate(ServiceResultSurrogate.Type.Set, value.value)
             SetOrDont.DoNotSet -> ServiceResultSurrogate(ServiceResultSurrogate.Type.UnSet, null)

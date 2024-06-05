@@ -1,34 +1,69 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
 import androidx.compose.runtime.mutableStateOf
-import com.apadmi.mockzilla.desktop.engine.device.ActiveDeviceMonitor
+
 import com.apadmi.mockzilla.desktop.engine.device.Device
-import com.apadmi.mockzilla.desktop.viewmodel.SelectedDeviceMonitoringViewModel
+import com.apadmi.mockzilla.desktop.engine.events.EventBus
+import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetailsViewModel.*
+import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
+
 import io.ktor.http.HttpStatusCode
+
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
+
+private typealias UpdateServerBlock = suspend (config: SerializableEndpointConfig, device: Device) -> Unit
+private typealias UpdateStateBlock = State.Endpoint.() -> State.Endpoint
 
 class EndpointDetailsViewModel(
+    private val key: EndpointConfiguration.Key?,
+    private val device: Device,
     private val endpointsService: MockzillaManagement.EndpointsService,
-    activeDeviceMonitor: ActiveDeviceMonitor,
+    private val updateService: MockzillaManagement.UpdateService,
+    private val clearingService: MockzillaManagement.CacheClearingService,
+    private val eventBus: EventBus,
     scope: CoroutineScope? = null
-) : SelectedDeviceMonitoringViewModel(activeDeviceMonitor, scope) {
+) : ViewModel(scope) {
     // using mutableStateOf here to avoid latency issues with text input
     // see https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
     // for reasons
     val state = mutableStateOf<State>(State.Empty)
+    private var delayDebounceJob: Job? = null
+    private var defaultHeadersDebounceJob: Job? = null
+    private var defaultBodyDebounceJob: Job? = null
+    private var errorBodyDebounceJob: Job? = null
+    private var errorHeadersDebounceJob: Job? = null
 
-    override suspend fun reloadData(selectedDevice: Device?) {
-        val device = selectedDevice ?: return run {
-            state.value = State.Empty
+    init {
+        eventBus.events.filter {
+            it is EventBus.Event.FullRefresh || (it as? EventBus.Event.EndpointDataChanged)?.keys?.contains(
+                key
+            ) == true
+        }
+            .onEach { reloadData() }
+            .launchIn(viewModelScope)
+
+        viewModelScope.launch { reloadData() }
+    }
+
+    private suspend fun reloadData() {
+        val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
+            endpoint.firstOrNull { it.key == key }
         }
 
-        // TODO: Actually picking correct endpoint to view details for
-        val endpoints = endpointsService.fetchAllEndpointConfigs(device).map { it.firstOrNull() }
-
-        state.value = endpoints.fold(
+        state.value = endpoint.fold(
             onSuccess = { config ->
                 config?.let {
                     endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
@@ -53,87 +88,210 @@ class EndpointDetailsViewModel(
                     )
                 } ?: State.Empty
             },
-            onFailure = { State.Empty }
+            onFailure = {
+                eventBus.send(EventBus.Event.GenericError)
+                State.Empty
+            }
         )
     }
 
     fun onDefaultBodyChange(value: String?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(defaultBody = value)
+        onPropertyChanged({ copy(defaultBody = value) },
+            { config, device ->
+                defaultBodyDebounceJob = withDebounce(defaultBodyDebounceJob) {
+                    emitErrorAndEventIfNeeded(
+                        updateService.setDefaultBody(
+                            device,
+                            config.key,
+                            value
+                        )
+                    )
+                }
+            }
+        )
+    }
+
+    fun onDefaultStatusChange(value: HttpStatusCode?) =
+        onPropertyChanged({ copy(defaultStatus = value) },
+            { config, device ->
+                emitErrorAndEventIfNeeded(
+                    updateService.setDefaultStatus(
+                        device,
+                        config.key,
+                        value
+                    )
+                )
+            }
+        )
+
+    private suspend fun withDebounce(job: Job?, op: suspend () -> Result<Unit>): Job {
+        job?.cancel()
+        return viewModelScope.launch(Dispatchers.IO) {
+            delay(600)
+            yield()
+            op()
         }
     }
 
-    fun onDefaultStatusChange(value: HttpStatusCode?) {
+    private fun <T> emitErrorAndEventIfNeeded(result: Result<T>) = result.onSuccess {
+        key?.let { eventBus.send(EventBus.Event.EndpointDataChanged(listOf(it))) }
+    }.onFailure {
+        eventBus.send(EventBus.Event.GenericError)
+    }
+
+    fun onErrorBodyChange(value: String?) = onPropertyChanged({ copy(errorBody = value) },
+        { config, device ->
+            errorBodyDebounceJob = withDebounce(errorBodyDebounceJob) {
+                emitErrorAndEventIfNeeded(updateService.setErrorBody(device, config.key, value))
+            }
+        }
+    )
+
+    private fun onPropertyChanged(
+        updateState: UpdateStateBlock,
+        updateServer: UpdateServerBlock
+    ) {
         state.value = when (val state = state.value) {
             is State.Empty -> state
-            is State.Endpoint -> state.copy(defaultStatus = value)
+            is State.Endpoint -> {
+                viewModelScope.launch { updateServer(state.config, device) }
+                updateState(state)
+            }
         }
     }
 
-    fun onErrorBodyChange(value: String?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(errorBody = value)
-        }
-    }
+    fun onErrorStatusChange(value: HttpStatusCode?) =
+        onPropertyChanged({ copy(errorStatus = value) },
+            { config, device ->
+                emitErrorAndEventIfNeeded(
+                    updateService.setErrorStatus(
+                        device,
+                        config.key,
+                        value
+                    )
+                )
+            }
+        )
 
-    fun onErrorStatusChange(value: HttpStatusCode?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(errorStatus = value)
+    fun onFailChange(value: Boolean?) = onPropertyChanged({ copy(fail = value) },
+        { config, device ->
+            emitErrorAndEventIfNeeded(
+                updateService.setShouldFail(
+                    device,
+                    listOf(config.key),
+                    value
+                )
+            )
         }
-    }
-
-    fun onFailChange(value: Boolean?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(fail = value)
-        }
-    }
+    )
 
     // Could possibly have numerical picker rather than free text field for this one
-    fun onDelayChange(value: String?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(delayMillis = value)
-        }
+    fun onDelayChange(value: String?) =
+        onPropertyChanged({ copy(delayMillis = value.takeIf { value == null || value.toIntOrNull() != null }) },
+            { config, device ->
+                delayDebounceJob = withDebounce(delayDebounceJob) {
+                    emitErrorAndEventIfNeeded(
+                        updateService.setDelay(
+                            device,
+                            listOf(config.key),
+                            value?.toIntOrNull()
+                        )
+                    )
+                }
+            }
+        )
+
+    fun onJsonDefaultEditingChange(value: Boolean) =
+        onPropertyChanged({ copy(jsonEditingDefault = value) },
+            { _, _ -> /* No-op */ }
+        )
+
+    fun onJsonErrorEditingChange(value: Boolean) =
+        onPropertyChanged({ copy(jsonEditingError = value) },
+            { _, _ -> /* No-op */ }
+        )
+
+    fun onDefaultHeadersChange(value: List<Pair<String, String>>?) =
+        onPropertyChanged({ copy(defaultHeaders = value) },
+            { config, device ->
+                defaultHeadersDebounceJob = withDebounce(defaultHeadersDebounceJob) {
+                    emitErrorAndEventIfNeeded(
+                        updateService.setDefaultHeaders(
+                            device,
+                            config.key,
+                            value?.toMap()
+                        )
+                    )
+                }
+            }
+        )
+
+    fun onErrorHeadersChange(value: List<Pair<String, String>>?) =
+        onPropertyChanged({ copy(errorHeaders = value) },
+            { config, device ->
+                errorHeadersDebounceJob = withDebounce(errorHeadersDebounceJob) {
+                    emitErrorAndEventIfNeeded(
+                        updateService.setErrorHeaders(
+                            device,
+                            config.key,
+                            value?.toMap()
+                        )
+                    )
+                }
+            }
+        )
+
+    fun onResetAll() = viewModelScope.launch {
+        val state = state.value as? State.Endpoint ?: return@launch
+
+        // TODO: Loading and error states here
+        emitErrorAndEventIfNeeded(
+            clearingService.clearCaches(device, listOf(state.config.key))
+        ).onSuccess { reloadData() }
     }
 
-    fun onJsonDefaultEditingChange(value: Boolean) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(jsonEditingDefault = value)
-        }
-    }
+    fun onDefaultPresetSelected(
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = onPropertyChanged({
+        copy(
+            defaultHeaders = dashboardOverridePreset.response.headers.toList(),
+            defaultStatus = dashboardOverridePreset.response.statusCode,
+            defaultBody = dashboardOverridePreset.response.body
+        )
+    }, { config, device ->
+        emitErrorAndEventIfNeeded(
+            updateService.setDefaultPreset(
+                device,
+                config.key,
+                dashboardOverridePreset
+            )
+        )
+    })
 
-    fun onJsonErrorEditingChange(value: Boolean) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(jsonEditingError = value)
-        }
-    }
-
-    fun onDefaultHeadersChange(value: List<Pair<String, String>>?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(defaultHeaders = value)
-        }
-    }
-
-    fun onErrorHeadersChange(value: List<Pair<String, String>>?) {
-        state.value = when (val state = state.value) {
-            is State.Empty -> state
-            is State.Endpoint -> state.copy(errorHeaders = value)
-        }
-    }
+    fun onErrorPresetSelected(
+        dashboardOverridePreset: DashboardOverridePreset
+    ) = onPropertyChanged({
+        copy(
+            errorHeaders = dashboardOverridePreset.response.headers.toList(),
+            errorStatus = dashboardOverridePreset.response.statusCode,
+            errorBody = dashboardOverridePreset.response.body
+        )
+    }, { config, device ->
+        emitErrorAndEventIfNeeded(
+            updateService.setErrorPreset(
+                device,
+                config.key,
+                dashboardOverridePreset
+            )
+        )
+    })
 
     sealed class State {
         data object Empty : State()
 
         /**
          * @property config
-         * @property defaultBody
+         * @property defaultBody// TODO: Make this more robust
          * @property defaultStatus
          * @property errorBody
          * @property errorStatus

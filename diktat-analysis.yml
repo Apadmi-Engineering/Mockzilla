@@ -37,7 +37,7 @@
 - name: FUNCTION_BOOLEAN_PREFIX
   enabled: true
   configuration:
-    allowedPrefixes: "" # A list of functions that return boolean and are allowed to use. Input is in a form "foo, bar".
+    allowedPrefixes: "getBoolean" # A list of functions that return boolean and are allowed to use. Input is in a form "foo, bar".
 # Checks that function/method name is in lowerCamelCase
 - name: FUNCTION_NAME_INCORRECT_CASE
   enabled: true
@@ -359,6 +359,7 @@
 # Inspection that checks if local variables are declared close to the first usage site
 - name: LOCAL_VARIABLE_EARLY_DECLARATION
   enabled: true
+  ignoreAnnotated: [ Composable ]
 # Try to avoid initialize val by null (e.g. val a: Int? = null -> val a: Int = 0)
 - name: NULLABLE_PROPERTY_TYPE
   enabled: true

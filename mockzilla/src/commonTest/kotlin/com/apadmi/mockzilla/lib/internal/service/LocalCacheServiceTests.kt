@@ -38,7 +38,7 @@ class LocalCacheServiceTests {
     fun `patchLocalCaches and getLocalCache - returns value`() = runTest {
         /* Setup */
         val entryDummy = SerializableEndpointPatchItemDto.allUnset("id1").copy(
-            headers = SetOrDont.Set(mapOf("my" to "header"))
+            defaultHeaders = SetOrDont.Set(mapOf("my" to "header"))
         )
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
