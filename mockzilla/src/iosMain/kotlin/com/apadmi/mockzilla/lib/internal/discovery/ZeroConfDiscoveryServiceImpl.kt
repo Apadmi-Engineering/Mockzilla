@@ -2,25 +2,13 @@
 
 package com.apadmi.mockzilla.lib.internal.discovery
 
-import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.lib.internal.persistance.KeychainSettings
 import com.apadmi.mockzilla.lib.models.MetaData
-import kotlinx.cinterop.COpaquePointer
-import kotlinx.cinterop.CPointer
 
-import platform.Foundation.NSUUID
-
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.alloc
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.nativeHeap
-import kotlinx.cinterop.pointed
-import kotlinx.cinterop.ptr
-import kotlinx.cinterop.refTo
-import kotlinx.cinterop.value
+import co.touchlab.kermit.Logger
 import platform.CoreFoundation.CFSwapInt16HostToBig
+import platform.Foundation.NSUUID
 import platform.darwin.DNSServiceRefDeallocate
 import platform.darwin.DNSServiceRefVar
 import platform.darwin.DNSServiceRegister
@@ -32,10 +20,23 @@ import platform.darwin.TXTRecordSetValue
 import platform.darwin.kDNSServiceErr_NoError
 import platform.posix.uint16_t
 
+import kotlinx.cinterop.COpaquePointer
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.nativeHeap
+import kotlinx.cinterop.pointed
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.refTo
+import kotlinx.cinterop.value
+
 class ZeroConfDiscoveryServiceImpl(
     private val logger: Logger,
     private val keychainSettings: KeychainSettings
 ) : ZeroConfDiscoveryService {
+    private var serviceRef: CPointer<DNSServiceRefVar>? = null
 
     override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
         startBonjourService(
@@ -53,8 +54,6 @@ class ZeroConfDiscoveryServiceImpl(
         putString(deviceIdentifierKey, newId)
         newId
     }
-
-    private var serviceRef: CPointer<DNSServiceRefVar>? = null
 
     @OptIn(ExperimentalForeignApi::class)
     private fun startBonjourService(
@@ -109,7 +108,7 @@ class ZeroConfDiscoveryServiceImpl(
 
     fun stopBonjourService() = serviceRef?.let {
         DNSServiceRefDeallocate(it.pointed.value)
-        println("Service stopped.")
+        logger.i { "Service stopped." }
     }
 
     companion object {

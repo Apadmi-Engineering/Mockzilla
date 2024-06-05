@@ -161,7 +161,7 @@ private fun DevicesList(
                 Text(
                     modifier = Modifier.alpha(0.5f),
                     text = buildString {
-                        if (device.metaData?.appPackage != null) {
+                        device.metaData?.appName?.also {
                             append(device.metaData.appName)
                             append(" | ")
                         }

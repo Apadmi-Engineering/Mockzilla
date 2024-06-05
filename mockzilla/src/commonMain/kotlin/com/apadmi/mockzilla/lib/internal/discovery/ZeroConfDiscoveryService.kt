@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.discovery
 
+import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
 
@@ -14,6 +15,6 @@ internal fun MetaData.bonjourServiceName(deviceIdentifier: String) = """${
         RunTarget.IosDevice -> "ID"
         RunTarget.IosSimulator -> "IS"
         RunTarget.Jvm -> "JVM"
-        null -> "[]"
+        else -> "[]"
     }
-}-$appPackage-$deviceIdentifier""".take(62)
+}-$appPackage-$deviceIdentifier""".take(ZeroConfConfig.serviceNameByteLimit)

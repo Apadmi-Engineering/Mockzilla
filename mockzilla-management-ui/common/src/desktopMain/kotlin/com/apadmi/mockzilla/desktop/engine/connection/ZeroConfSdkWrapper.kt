@@ -1,7 +1,8 @@
 package com.apadmi.mockzilla.desktop.engine.connection
 
-import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.desktop.jmds.create
+
+import co.touchlab.kermit.Logger
 
 import java.net.InetAddress
 import java.net.NetworkInterface
