@@ -25,8 +25,19 @@ class DeviceConnectionViewModel(
     private var connectionJob: Job? = null
 
     init {
+        val stateOrder = listOf(
+            DetectedDevice.State.ReadyToConnect,
+            DetectedDevice.State.Resolving,
+            DetectedDevice.State.Removed,
+            DetectedDevice.State.NotYourSimulator
+        )
+
         deviceDetectionUseCase.onChangeEvent.onEach {
-            state.value = state.value.copy(devices = deviceDetectionUseCase.devices)
+            state.value = state.value.copy(
+                devices = deviceDetectionUseCase.devices.sortedWith(compareBy {
+                    stateOrder.indexOf(it.state)
+                })
+            )
         }.launchIn(viewModelScope)
     }
 

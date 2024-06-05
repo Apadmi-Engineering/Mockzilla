@@ -9,7 +9,7 @@ internal fun ServiceInfoWrapper.Companion.create(
     state: ServiceInfoWrapper.State
 ) = ServiceInfoWrapper(
     connectionName = info.name,
-    hostAddress = info.hostAddress,
+    hostAddress = info.inet4Addresses.firstOrNull()?.hostAddress ?: info.hostAddress,
     hostAddresses = hostAddresses,
     attributes = info.propertyNames.toList().associateWith { info.getPropertyString(it) },
     port = info.port,

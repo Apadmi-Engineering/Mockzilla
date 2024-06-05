@@ -28,7 +28,7 @@ compose.desktop {
             packageName = "mockzilla-management-ui"
             packageVersion = rootProject.version.toString().split("-").first()
 
-            jvmArgs("-Dapple.awt.application.appearance=system")
+            jvmArgs("-Dapple.awt.application.appearance=system", "-Djava.net.preferIPv4Stack=true")
         }
     }
 }

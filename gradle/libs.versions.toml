@@ -2,7 +2,7 @@
 
 # Kotlin
 adam = "0.5.7" # https://github.com/Malinskiy/adam
-jmdns = "3.5.1" # https://github.com/jmdns/jmdns
+jmdns = "3.5.9" # https://github.com/jmdns/jmdns
 kotlin = "1.9.23" # https://github.com/JetBrains/kotlin
 agp = "8.4.0" # https://developer.android.com/build/releases/gradle-plugin
 ksp = "1.9.23-1.0.20" # https://github.com/google/ksp
@@ -41,6 +41,7 @@ material3 = "1.2.1" # https://developer.android.com/jetpack/androidx/releases/co
 compose-activity = "1.9.0" # https://developer.android.com/jetpack/androidx/releases/activity
 
 # Code Formatting
+playServicesAdsIdentifier = "18.1.0"
 semver4j = "3.1.0" # https://github.com/vdurmont/semver4j
 spotless = "6.25.0" # https://github.com/diffplug/spotless
 
@@ -108,6 +109,7 @@ koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = 
 # Testing
 mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
 mockative-processor = { module = "io.mockative:mockative-processor", version.ref = "mockative" }
+play-services-ads-identifier = { module = "com.google.android.gms:play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
 semver4j = { module = "com.vdurmont:semver4j", version.ref = "semver4j" }
 showkase = { module = "com.airbnb.android:showkase", version.ref = "showkase" }
 showkase-processor = { module = "com.airbnb.android:showkase-processor", version.ref = "showkase" }

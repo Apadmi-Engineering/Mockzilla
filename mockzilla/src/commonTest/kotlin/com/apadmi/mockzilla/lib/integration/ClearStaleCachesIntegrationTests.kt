@@ -49,7 +49,7 @@ class ClearStaleCachesIntegrationTests {
             mockzillaVersion = ""
         ), fileIo = fileIoForTesting, logger = Logger(StaticConfig()),
         zeroConfDiscoveryService = object : ZeroConfDiscoveryService {
-            override fun makeDiscoverable(metaData: MetaData, port: Int) {
+            override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
                 /* No-Op */
             }
         }
