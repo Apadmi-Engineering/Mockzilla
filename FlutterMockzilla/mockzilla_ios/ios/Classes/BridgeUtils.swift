@@ -100,24 +100,13 @@ extension BridgeEndpointConfig {
         defaultHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse,
         errorHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse
     ) -> EndpointConfiguration {
-        var kotlinFailureProbability: KotlinInt?
-        var kotlinDelayMean: KotlinInt?
-        var kotlinDelayVariance: KotlinInt?
-        if let _failureProbability = failureProbability {
-            kotlinFailureProbability = KotlinInt(int: Int32(truncatingIfNeeded: _failureProbability))
-        }
-        if let _delayMean = delayMean {
-            kotlinDelayMean = KotlinInt(int: Int32(truncatingIfNeeded: _delayMean))
-        }
-        if let _delayVariance = delayVariance {
-            kotlinDelayVariance = KotlinInt(int: Int32(truncatingIfNeeded: _delayVariance))
-        }
+
         return EndpointConfiguration(
             name: name,
             key: key,
-            failureProbability: kotlinFailureProbability,
-            delayMean: kotlinDelayMean,
-            delayVariance: kotlinDelayVariance,
+            failureProbability: KotlinInt(int: Int32(truncatingIfNeeded: failureProbability)),
+            delayMean: KotlinInt(int: Int32(truncatingIfNeeded: delayMean)),
+            delayVariance: KotlinInt(int: Int32(truncatingIfNeeded: delayVariance)),
             endpointMatcher: { request in KotlinBoolean(value: endpointMatcher(key, request))},
             webApiDefaultResponse: webApiErrorResponse?.toNative(),
             webApiErrorResponse: webApiErrorResponse?.toNative(),
@@ -130,9 +119,9 @@ extension BridgeEndpointConfig {
         return BridgeEndpointConfig(
             name: endpoint.name,
             key: endpoint.key,
-            failureProbability: endpoint.failureProbability?.int64Value,
-            delayMean: endpoint.delayMean?.int64Value,
-            delayVariance: endpoint.delayVariance?.int64Value,
+            failureProbability: endpoint.failureProbability?.int64Value ?? 0,
+            delayMean: endpoint.delayMean?.int64Value ?? 100,
+            delayVariance: endpoint.delayVariance?.int64Value ?? 20,
             webApiDefaultResponse: endpoint.webApiDefaultResponse.map {
                 response in BridgeMockzillaHttpResponse.fromNative(response)
             },

@@ -130,9 +130,9 @@ data class BridgeMockzillaHttpResponse (
 data class BridgeEndpointConfig (
   val name: String,
   val key: String,
-  val failureProbability: Long? = null,
-  val delayMean: Long? = null,
-  val delayVariance: Long? = null,
+  val failureProbability: Long,
+  val delayMean: Long,
+  val delayVariance: Long,
   val webApiDefaultResponse: BridgeMockzillaHttpResponse? = null,
   val webApiErrorResponse: BridgeMockzillaHttpResponse? = null
 
@@ -142,9 +142,9 @@ data class BridgeEndpointConfig (
     fun fromList(list: List<Any?>): BridgeEndpointConfig {
       val name = list[0] as String
       val key = list[1] as String
-      val failureProbability = list[2].let { if (it is Int) it.toLong() else it as Long? }
-      val delayMean = list[3].let { if (it is Int) it.toLong() else it as Long? }
-      val delayVariance = list[4].let { if (it is Int) it.toLong() else it as Long? }
+      val failureProbability = list[2].let { if (it is Int) it.toLong() else it as Long }
+      val delayMean = list[3].let { if (it is Int) it.toLong() else it as Long }
+      val delayVariance = list[4].let { if (it is Int) it.toLong() else it as Long }
       val webApiDefaultResponse: BridgeMockzillaHttpResponse? = (list[5] as List<Any?>?)?.let {
         BridgeMockzillaHttpResponse.fromList(it)
       }

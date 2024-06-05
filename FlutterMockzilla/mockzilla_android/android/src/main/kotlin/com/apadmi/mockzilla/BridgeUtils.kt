@@ -118,9 +118,9 @@ fun BridgeEndpointConfig.Companion.fromNative(
 ) = BridgeEndpointConfig(
     data.name,
     data.key,
-    data.failureProbability?.toLong(),
-    data.delayMean?.toLong(),
-    data.delayVariance?.toLong(),
+    data.failureProbability?.toLong() ?: 0,
+    data.delayMean?.toLong() ?: 100,
+    data.delayVariance?.toLong() ?: 20,
     data.webApiDefaultResponse?.let { BridgeMockzillaHttpResponse.fromNative(it) },
     data.webApiErrorResponse?.let { BridgeMockzillaHttpResponse.fromNative(it) },
 )
