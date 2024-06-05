@@ -38,7 +38,7 @@ class ZeroConfDiscoveryServiceImpl(
 
     override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
         val serviceInfo = NsdServiceInfo().apply {
-            serviceName = getOrPutDeviceIdentifier()
+            serviceName = metaData.bonjourServiceName(getOrPutDeviceIdentifier())
             serviceType = ZeroConfConfig.serviceType
             this.port = port
 

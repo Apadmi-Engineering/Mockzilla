@@ -2,6 +2,8 @@ package com.apadmi.mockzilla.desktop.engine.connection
 
 import com.apadmi.mockzilla.desktop.jmds.create
 
+import co.touchlab.kermit.Logger
+
 import java.net.InetAddress
 import java.net.NetworkInterface
 import javax.jmdns.JmDNS
@@ -42,6 +44,8 @@ actual class ZeroConfSdkWrapper actual constructor(
 
     private fun serviceChanged(event: ServiceEvent?, state: ServiceInfoWrapper.State) {
         event ?: return
+        Logger.i { "Service changed: ${event.name} ${state.name}" }
+
         scope.launch {
             // If there's no ipv4 addresses there's no way we can connect to it so ignore the Resolved event in this case
             val shouldCallListener = state == ServiceInfoWrapper.State.Found ||

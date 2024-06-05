@@ -20,8 +20,9 @@ fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams {
         config = config,
         metaData = extractMetaData(),
         fileIo = FileIo(),
-        zeroConfDiscoveryService = { _ ->
+        zeroConfDiscoveryService = { logger ->
             ZeroConfDiscoveryServiceImpl(
+                logger,
                 KeychainSettings("mockzilla_keychain_settings")
             )
         }
