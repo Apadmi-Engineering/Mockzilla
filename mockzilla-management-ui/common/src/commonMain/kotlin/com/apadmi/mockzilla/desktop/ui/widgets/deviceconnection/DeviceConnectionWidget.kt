@@ -160,7 +160,13 @@ private fun DevicesList(
                 Text(device.prettyName())
                 Text(
                     modifier = Modifier.alpha(0.5f),
-                    text = "${device.hostAddress}:${device.port}",
+                    text = buildString {
+                        if (device.metaData?.appPackage != null) {
+                            append(device.metaData.appName)
+                            append(" | ")
+                        }
+                        append("${device.hostAddress}:${device.port}")
+                    },
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
