@@ -12,7 +12,7 @@ part of 'models.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$MockzillaHttpRequest {
@@ -385,16 +385,16 @@ mixin _$EndpointConfig {
 
   /// Probability as a percentage that the Mockzilla server should return an
   /// error for any single request to this endpoint.
-  int? get failureProbability => throw _privateConstructorUsedError;
+  int get failureProbability => throw _privateConstructorUsedError;
 
   /// Optional, the artificial delay in milliseconds that Mockzilla should use to
   /// simulate latency.
-  int? get delayMean => throw _privateConstructorUsedError;
+  int get delayMean => throw _privateConstructorUsedError;
 
   /// Optional, the variance in milliseconds of the artificial delay applied
   /// by Mockzilla to a response to simulate latency. If not provided, then a
   /// default of 0ms is used to eliminate randomness.
-  int? get delayVariance => throw _privateConstructorUsedError;
+  int get delayVariance => throw _privateConstructorUsedError;
 
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
@@ -430,9 +430,9 @@ abstract class $EndpointConfigCopyWith<$Res> {
   $Res call(
       {String name,
       String key,
-      int? failureProbability,
-      int? delayMean,
-      int? delayVariance,
+      int failureProbability,
+      int delayMean,
+      int delayVariance,
       bool Function(MockzillaHttpRequest) endpointMatcher,
       MockzillaHttpResponse? webApiDefaultResponse,
       MockzillaHttpResponse? webApiErrorResponse,
@@ -458,9 +458,9 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
   $Res call({
     Object? name = null,
     Object? key = null,
-    Object? failureProbability = freezed,
-    Object? delayMean = freezed,
-    Object? delayVariance = freezed,
+    Object? failureProbability = null,
+    Object? delayMean = null,
+    Object? delayVariance = null,
     Object? endpointMatcher = null,
     Object? webApiDefaultResponse = freezed,
     Object? webApiErrorResponse = freezed,
@@ -476,18 +476,18 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
               as String,
-      failureProbability: freezed == failureProbability
+      failureProbability: null == failureProbability
           ? _value.failureProbability
           : failureProbability // ignore: cast_nullable_to_non_nullable
-              as int?,
-      delayMean: freezed == delayMean
+              as int,
+      delayMean: null == delayMean
           ? _value.delayMean
           : delayMean // ignore: cast_nullable_to_non_nullable
-              as int?,
-      delayVariance: freezed == delayVariance
+              as int,
+      delayVariance: null == delayVariance
           ? _value.delayVariance
           : delayVariance // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       endpointMatcher: null == endpointMatcher
           ? _value.endpointMatcher
           : endpointMatcher // ignore: cast_nullable_to_non_nullable
@@ -549,9 +549,9 @@ abstract class _$$EndpointConfigImplCopyWith<$Res>
   $Res call(
       {String name,
       String key,
-      int? failureProbability,
-      int? delayMean,
-      int? delayVariance,
+      int failureProbability,
+      int delayMean,
+      int delayVariance,
       bool Function(MockzillaHttpRequest) endpointMatcher,
       MockzillaHttpResponse? webApiDefaultResponse,
       MockzillaHttpResponse? webApiErrorResponse,
@@ -577,9 +577,9 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
   $Res call({
     Object? name = null,
     Object? key = null,
-    Object? failureProbability = freezed,
-    Object? delayMean = freezed,
-    Object? delayVariance = freezed,
+    Object? failureProbability = null,
+    Object? delayMean = null,
+    Object? delayVariance = null,
     Object? endpointMatcher = null,
     Object? webApiDefaultResponse = freezed,
     Object? webApiErrorResponse = freezed,
@@ -595,18 +595,18 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
           ? _value.key
           : key // ignore: cast_nullable_to_non_nullable
               as String,
-      failureProbability: freezed == failureProbability
+      failureProbability: null == failureProbability
           ? _value.failureProbability
           : failureProbability // ignore: cast_nullable_to_non_nullable
-              as int?,
-      delayMean: freezed == delayMean
+              as int,
+      delayMean: null == delayMean
           ? _value.delayMean
           : delayMean // ignore: cast_nullable_to_non_nullable
-              as int?,
-      delayVariance: freezed == delayVariance
+              as int,
+      delayVariance: null == delayVariance
           ? _value.delayVariance
           : delayVariance // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       endpointMatcher: null == endpointMatcher
           ? _value.endpointMatcher
           : endpointMatcher // ignore: cast_nullable_to_non_nullable
@@ -637,9 +637,9 @@ class _$EndpointConfigImpl implements _EndpointConfig {
   const _$EndpointConfigImpl(
       {required this.name,
       required this.key,
-      this.failureProbability,
-      this.delayMean,
-      this.delayVariance,
+      this.failureProbability = 0,
+      this.delayMean = 100,
+      this.delayVariance = 20,
       required this.endpointMatcher,
       this.webApiDefaultResponse,
       this.webApiErrorResponse,
@@ -654,18 +654,21 @@ class _$EndpointConfigImpl implements _EndpointConfig {
   /// Probability as a percentage that the Mockzilla server should return an
   /// error for any single request to this endpoint.
   @override
-  final int? failureProbability;
+  @JsonKey()
+  final int failureProbability;
 
   /// Optional, the artificial delay in milliseconds that Mockzilla should use to
   /// simulate latency.
   @override
-  final int? delayMean;
+  @JsonKey()
+  final int delayMean;
 
   /// Optional, the variance in milliseconds of the artificial delay applied
   /// by Mockzilla to a response to simulate latency. If not provided, then a
   /// default of 0ms is used to eliminate randomness.
   @override
-  final int? delayVariance;
+  @JsonKey()
+  final int delayVariance;
 
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
@@ -743,9 +746,9 @@ abstract class _EndpointConfig implements EndpointConfig {
   const factory _EndpointConfig(
       {required final String name,
       required final String key,
-      final int? failureProbability,
-      final int? delayMean,
-      final int? delayVariance,
+      final int failureProbability,
+      final int delayMean,
+      final int delayVariance,
       required final bool Function(MockzillaHttpRequest) endpointMatcher,
       final MockzillaHttpResponse? webApiDefaultResponse,
       final MockzillaHttpResponse? webApiErrorResponse,
@@ -762,18 +765,18 @@ abstract class _EndpointConfig implements EndpointConfig {
 
   /// Probability as a percentage that the Mockzilla server should return an
   /// error for any single request to this endpoint.
-  int? get failureProbability;
+  int get failureProbability;
   @override
 
   /// Optional, the artificial delay in milliseconds that Mockzilla should use to
   /// simulate latency.
-  int? get delayMean;
+  int get delayMean;
   @override
 
   /// Optional, the variance in milliseconds of the artificial delay applied
   /// by Mockzilla to a response to simulate latency. If not provided, then a
   /// default of 0ms is used to eliminate randomness.
-  int? get delayVariance;
+  int get delayVariance;
   @override
 
   /// Used to determine whether a particular `request` should be evaluated by
