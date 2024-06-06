@@ -1,4 +1,8 @@
-# Web Portal
+# Web Portal - Deprecated
+
+!!! warn
+	The web portal is **deprecated** and will soon be removed. Please update to Mockzilla 2.x.x and 
+	switch over to the desktop app.
 
 !!! warn
 	The web portal is a little flaky, our next priority is a complete rewrite. 

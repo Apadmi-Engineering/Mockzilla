@@ -22,9 +22,12 @@ nav:
     - browser_stack.md
     - snapshots.md
     - Web:
-        - Web Interface: web_interface.md
+        - Web Interface (Deprecated): web_interface.md
+    - Mockzilla Desktop:
+        - Overview: desktop/overview.md
   - Contributing:
       - contributing.md
+      - Desktop App: desktop_contributing.md
       - Documentation: documentation.md
   - Api Reference:
       ./dokka/index.html
