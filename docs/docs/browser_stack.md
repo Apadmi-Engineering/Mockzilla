@@ -17,4 +17,4 @@ OkHttpClient.Builder()
 
 ### Ktor Example:
 
-See demo app example [here](https://github.com/Apadmi-Engineering/Mockzilla/blob/develop/samples/demo-android/src/main/java/com/apadmi/mockzilla/demo/Repository.kt)
+See demo app example [here](https://github.com/Apadmi-Engineering/Mockzilla/blob/develop/samples/demo-android/src/main/java/com/apadmi/mockzilla/demo/Repository.kt).

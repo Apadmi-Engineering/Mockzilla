@@ -20,6 +20,7 @@ nav:
     - endpoints.md
     - additional_config.md
     - browser_stack.md
+    - snapshots.md
     - Web:
         - Web Interface: web_interface.md
   - Contributing:
