@@ -53,7 +53,9 @@ val EnStrings = Strings(
         endpoints = Strings.Widgets.Endpoints(
             selectAllTooltip = "Select all",
             errorSwitchLabel = "Use Error Response",
-            valuesOverriddenIndicatorTooltip = "Some or all of the properties of this response are being overridden"
+            valuesOverriddenIndicatorTooltip = "Some or all of the properties of this response are being overridden",
+            filterLabel = "Filter",
+            filterClear = "Clear"
         ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",

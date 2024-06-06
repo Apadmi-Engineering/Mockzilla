@@ -18,7 +18,7 @@ class EndpointsViewModel(
     private val endpointsService: MockzillaManagement.EndpointsService,
     private val updateService: MockzillaManagement.UpdateService,
     private val eventBus: EventBus,
-    scope: CoroutineScope? = null
+    scope: CoroutineScope? = null,
 ) : ViewModel(scope) {
     val state = MutableStateFlow<State>(State.Loading)
     private val checkboxStates = mutableSetOf<EndpointConfiguration.Key>()
@@ -33,7 +33,10 @@ class EndpointsViewModel(
 
     private suspend fun reloadData() {
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
-            onSuccess = { State.EndpointsList(it.toConfig(checkboxStates)) },
+            onSuccess = {
+                val currentState = state.value as? State.EndpointsList
+                State.EndpointsList(it.toConfig(checkboxStates), currentState?.filter ?: "")
+            },
             onFailure = {
                 eventBus.send(EventBus.Event.GenericError)
                 State.Loading
@@ -42,15 +45,20 @@ class EndpointsViewModel(
     }
 
     private fun List<SerializableEndpointConfig>.toConfig(
-        tickedCheckboxes: Set<EndpointConfiguration.Key>?
-    ) = map {
-        State.EndpointConfig(
-            key = it.key,
-            name = it.name,
-            fail = it.shouldFail == true,
-            isCheckboxTicked = tickedCheckboxes?.contains(it.key) == true,
-            hasValuesOverridden = it.hasValuesOverridden()
-        )
+        tickedCheckboxes: Set<EndpointConfiguration.Key>?,
+    ): List<State.EndpointConfig> {
+        val currentState = state.value as? State.EndpointsList
+
+        return map {
+            State.EndpointConfig(
+                key = it.key,
+                name = it.name,
+                fail = it.shouldFail == true,
+                isCheckboxTicked = tickedCheckboxes?.contains(it.key) == true,
+                hasValuesOverridden = it.hasValuesOverridden(),
+                display = filter(currentState?.filter ?: "", it.name)
+            )
+        }
     }
 
     fun onCheckboxChanged(key: EndpointConfiguration.Key, value: Boolean) {
@@ -102,6 +110,19 @@ class EndpointsViewModel(
         )
     }
 
+    fun onFilterChanged(value: String) {
+        val currentState = state.value as? State.EndpointsList ?: return
+
+        state.value = currentState.copy(
+            endpoints = currentState.endpoints.map {
+                it.copy(display = filter(value, it.name))
+            },
+            filter = value
+        )
+    }
+
+    private fun filter(value: String, name: String) = name.lowercase().contains(value.lowercase())
+
     sealed class State {
         data object Loading : State()
 
@@ -111,20 +132,24 @@ class EndpointsViewModel(
          * @property fail
          * @property isCheckboxTicked
          * @property hasValuesOverridden
+         * @property display
          */
         data class EndpointConfig(
             val key: EndpointConfiguration.Key,
             val name: String,
             val fail: Boolean,
             val isCheckboxTicked: Boolean,
-            val hasValuesOverridden: Boolean
+            val hasValuesOverridden: Boolean,
+            val display: Boolean,
         )
 
         /**
          * @property endpoints
+         * @property filter
          */
         data class EndpointsList(
             val endpoints: List<EndpointConfig>,
+            val filter: String,
         ) : State() {
             val selectAllTicked: Boolean get() = endpoints.all { it.isCheckboxTicked }
         }
