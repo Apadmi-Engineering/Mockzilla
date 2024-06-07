@@ -46,7 +46,7 @@ interface MockzillaTokenProvider {
     suspend fun getTokenHeader(): AuthHeaderProvider.Header
 }
 class Repository(private val baseUrl: String, private val tokenProvider: MockzillaTokenProvider) {
-    suspend fun getCow(someRequestValue: String): DataResult<CowDto, String> {
+    suspend fun getCow(someRequestValue: String): DataResult<CowDto, String> = try {
         val response = HttpClient(OkHttp) {
             engine {
                 preconfigured = OkHttpClient.Builder()
@@ -63,10 +63,12 @@ class Repository(private val baseUrl: String, private val tokenProvider: Mockzil
             headers.append(header.key, header.value)
         }
 
-        return if (response.status.isSuccess()) {
+        if (response.status.isSuccess()) {
             DataResult.Success(Json.decodeFromString(response.bodyAsText()))
         } else {
             DataResult.Failure("${response.status} - ${response.bodyAsText()}")
         }
+    } catch (error: Throwable) {
+        DataResult.Failure(error.toString())
     }
 }
