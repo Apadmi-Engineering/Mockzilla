@@ -57,18 +57,18 @@ class BridgeMockzillaHttpResponse {
 class BridgeEndpointConfig {
   final String name;
   final String key;
-  final int? failureProbability;
-  final int? delayMean;
-  final int? delayVariance;
+  final int failureProbability;
+  final int delayMean;
+  final int delayVariance;
   final BridgeMockzillaHttpResponse? webApiDefaultResponse;
   final BridgeMockzillaHttpResponse? webApiErrorResponse;
 
   const BridgeEndpointConfig(
     this.name,
-    this.key, [
+    this.key,
     this.failureProbability,
     this.delayMean,
-    this.delayVariance,
+    this.delayVariance, [
     this.webApiDefaultResponse,
     this.webApiErrorResponse,
   ]);
@@ -139,9 +139,11 @@ abstract class MockzillaHostApi {
 abstract class MockzillaFlutterApi {
   bool endpointMatcher(BridgeMockzillaHttpRequest request, String key);
 
-  BridgeMockzillaHttpResponse defaultHandler(BridgeMockzillaHttpRequest request, String key);
+  BridgeMockzillaHttpResponse defaultHandler(
+      BridgeMockzillaHttpRequest request, String key);
 
-  BridgeMockzillaHttpResponse errorHandler(BridgeMockzillaHttpRequest request, String key);
+  BridgeMockzillaHttpResponse errorHandler(
+      BridgeMockzillaHttpRequest request, String key);
 
   @async
   BridgeAuthHeader generateAuthHeader();

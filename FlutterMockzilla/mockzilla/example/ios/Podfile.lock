@@ -1,0 +1,29 @@
+PODS:
+  - Flutter (1.0.0)
+  - mockzilla_ios (0.0.1):
+    - Flutter
+    - SwiftMockzilla (= 1.2.1-alpha2)
+  - SwiftMockzilla (1.2.1-alpha2)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - mockzilla_ios (from `.symlinks/plugins/mockzilla_ios/ios`)
+
+SPEC REPOS:
+  trunk:
+    - SwiftMockzilla
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  mockzilla_ios:
+    :path: ".symlinks/plugins/mockzilla_ios/ios"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  mockzilla_ios: 861ff8ca56d2e1c3d5441061438d58114a713811
+  SwiftMockzilla: 2060ecb438431487b38afad14629211cf3c24713
+
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+
+COCOAPODS: 1.15.2

@@ -182,7 +182,7 @@ internal class BridgeUtilsTest {
                 { _: String -> MockzillaHttpResponse() }
         val bridgeToNative = mapOf(
             BridgeMockzillaConfig(
-                8080L, listOf(BridgeEndpointConfig("name", "key")),
+                8080L, listOf(BridgeEndpointConfig("name", "key", 0, 100, 20)),
                 isRelease = false, localHostOnly = false, BridgeLogLevel.INFO,
                 BridgeReleaseModeConfig(2000, 60_000, 86_400_000)
             ) to MockzillaConfig(

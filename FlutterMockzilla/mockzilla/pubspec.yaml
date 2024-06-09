@@ -1,6 +1,6 @@
 name: mockzilla
 description: A solution for configuring and running a local HTTP server as part of a Flutter app.
-version: 1.0.0-dev
+version: 0.1.0
 homepage: https://apadmi-engineering.github.io/Mockzilla/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
 issue_tracker: https://github.com/Apadmi-Engineering/Mockzilla/issues
@@ -24,6 +24,8 @@ dependencies:
     path: ../mockzilla_platform_interface
   mockzilla_android:
     path: ../mockzilla_android
+  mockzilla_ios:
+    path: ../mockzilla_ios
 
 dev_dependencies:
   flutter_test:
@@ -35,3 +37,5 @@ flutter:
     platforms:
       android:
         default_package: mockzilla_android
+      ios:
+        default_package: mockzilla_ios

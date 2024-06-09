@@ -60,16 +60,16 @@ class EndpointConfig with _$EndpointConfig {
 
     /// Probability as a percentage that the Mockzilla server should return an
     /// error for any single request to this endpoint.
-    int? failureProbability,
+    @Default(0) int failureProbability,
 
     /// Optional, the artificial delay in milliseconds that Mockzilla should use to
     /// simulate latency.
-    int? delayMean,
+    @Default(100) int delayMean,
 
     /// Optional, the variance in milliseconds of the artificial delay applied
     /// by Mockzilla to a response to simulate latency. If not provided, then a
     /// default of 0ms is used to eliminate randomness.
-    int? delayVariance,
+    @Default(20) int delayVariance,
 
     /// Used to determine whether a particular `request` should be evaluated by
     /// this endpoint.

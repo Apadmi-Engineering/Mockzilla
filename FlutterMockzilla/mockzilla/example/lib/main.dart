@@ -8,27 +8,24 @@ import 'engine/config/mockzilla_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final config = MockzillaConfig(
+  final config = const MockzillaConfig(
     port: 8080,
     isRelease: false,
     localHostOnly: false,
     logLevel: LogLevel.debug,
-    releaseModeConfig: const ReleaseModeConfig(),
+    releaseModeConfig: ReleaseModeConfig(),
     additionalLogWriters: [],
-  )..addEndpoint(
-      () => EndpointConfig(
-        name: "Fetch Packages",
-        key: "fetch-packages",
-        endpointMatcher: (request) =>
-            RegExp(r"/packages").hasMatch(request.uri) &&
-            request.method == HttpMethod.get,
-        defaultHandler: (_) => defaultResponse,
-        errorHandler: (_) => errorResponse,
-        failureProbability: 0,
-        delayMean: 100,
-        delayVariance: 0,
-      ),
-    );
+  ).addEndpoint(
+    () => EndpointConfig(
+      name: "Fetch Packages",
+      key: "fetch-packages",
+      endpointMatcher: (request) =>
+          RegExp(r"/packages").hasMatch(request.uri) &&
+          request.method == HttpMethod.get,
+      defaultHandler: (_) => defaultResponse,
+      errorHandler: (_) => errorResponse,
+    ),
+  );
   await Mockzilla.startMockzilla(config);
   runApp(const MyApp());
 }
