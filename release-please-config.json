@@ -1,17 +1,18 @@
 {
   "packages": {
     "mockzilla": {
-      "release-type": "simple",
+      "release-type": "java",
       "release-as": "2.0.0",
       "component": "mockzilla",
       "extra-files": ["build.gradle.kts"]
     },
     "mockzilla-common": {
-      "release-type": "simple",
+      "release-type": "java",
       "component": "mockzilla-common",
       "extra-files": ["build.gradle.kts"]
     },
     "mockzilla-management": {
+      "release-type": "java",
       "component": "mockzilla-management",
       "extra-files": ["build.gradle.kts"]
     },
