@@ -36,8 +36,6 @@ platform :ios do
 
     desc "Deploy the package to github & push podspec"
     lane :publish_swift_package do |options|
-        prepare_for_snapshot_if_needed(options)
-
         # Create the XCFramework
         generate_xcframework
 
@@ -102,8 +100,6 @@ end
 
 desc "Publish to maven remote"
 lane :publish_to_maven do |options|
-    prepare_for_snapshot_if_needed(options)
-
     # Dry run
     publish_to_maven_local
     FastlaneCore::UI.success("Published to maven local")
@@ -135,7 +131,7 @@ platform :android do
         )
     end
 end
- 
+
 lane :get_version_name do
     build_gradle_text = IO.read("#{lane_context[:repo_root]}/mockzilla/build.gradle.kts")
     version_pattern = /version\s*=\s*"(.*?)".*/
