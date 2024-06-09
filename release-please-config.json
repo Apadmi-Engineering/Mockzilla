@@ -3,25 +3,29 @@
   "packages": {
     "mockzilla": {
       "release-as": "2.0.0",
-      "component": "mockzilla"
+      "component": "mockzilla",
+      "extra-files": ["build.gradle.kts"]
     },
     "mockzilla-common": {
-      "component": "mockzilla-common"
+      "component": "mockzilla-common",
+      "extra-files": ["build.gradle.kts"]
     },
     "mockzilla-management": {
-      "component": "mockzilla-management"
+      "component": "mockzilla-management",
+      "extra-files": ["build.gradle.kts"]
     },
     "FlutterMockzilla": {
       "component": "flutter-mockzilla",
       "extra-files": [
-        "FlutterMockzilla/mockzilla/pubspec.yaml",
-        "FlutterMockzilla/mockzilla_android/pubspec.yaml",
-        "FlutterMockzilla/mockzilla_ios/pubspec.yaml",
-        "FlutterMockzilla/mockzilla_platform_interface/pubspec.yaml"
+        "mockzilla/pubspec.yaml",
+        "mockzilla_android/pubspec.yaml",
+        "mockzilla_ios/pubspec.yaml",
+        "mockzilla_platform_interface/pubspec.yaml"
       ]
     },
     "mockzilla-management-ui": {
-      "component": "mockzilla-management-ui"
+      "component": "mockzilla-management-ui",
+      "extra-files": ["desktop/build.gradle.kts"]
     }
   },
   "plugins": [
