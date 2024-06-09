@@ -16,8 +16,6 @@ jobs:
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
-        with:
-          release-type: simple
       - name: Trigger Deploy Binaries workflow (snapshots only)
         env:
           GH_TOKEN: ${{ github.token }}

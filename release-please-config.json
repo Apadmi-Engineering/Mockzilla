@@ -1,0 +1,32 @@
+{
+  "release-type": "simple",
+  "packages": {
+    "mockzilla": {
+      "release-as": "2.0.0",
+      "component": "mockzilla"
+    },
+    "mockzilla-common": {
+      "component": "mockzilla-common"
+    },
+    "mockzilla-management": {
+      "component": "mockzilla-management"
+    },
+    "FlutterMockzilla": {
+      "component": "flutter-mockzilla"
+    },
+    "mockzilla-management-ui": {
+      "component": "mockzilla-management-ui"
+    }
+  },
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "Kmp libs",
+      "components": [
+        "mockzilla",
+        "mockzilla-common",
+        "mockzilla-management"
+      ]
+    }
+  ]
+}
