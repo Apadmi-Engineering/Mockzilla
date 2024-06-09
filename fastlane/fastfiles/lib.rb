@@ -120,7 +120,6 @@ lane :publish_to_maven do |options|
             "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
         }
     )
-    sh("git checkout -- #{lane_context[:version_file]}")
 end
 
 platform :android do 
@@ -137,26 +136,9 @@ platform :android do
     end
 end
  
-lane :get_version_name do
-    str = IO.read(lane_context[:version_file])
-
-    if str.nil?
-        raise "Failed to extract version from gradle file"
-    end
-
-    str.strip
-end
-
-private_lane :prepare_for_snapshot_if_needed do |options|
-    is_snapshot = options[:is_snapshot]
-    if is_snapshot
-        version = get_version_name
-        if !version.ends_with? "SNAPSHOT"
-            File.open(lane_context[:version_file], "w") do |file|
-              file.puts "#{version}-SNAPSHOT"
-            end
-        end
-    end
+private_lane :get_version_name do
+     # Managed automatically by release-please PRs
+    "1.2.1" # x-release-please-version
 end
 
 desc "Flutter target for the lib"

@@ -18,7 +18,8 @@ def define_env(env):
 
   @env.macro
   def get_version():
-      return print_source_file("version.txt")
+      # Managed automatically by release-please PRs
+      return "1.2.1" # x-release-please-version
 
   @env.macro
   def get_python_version():

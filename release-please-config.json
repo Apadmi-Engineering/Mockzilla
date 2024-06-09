@@ -4,7 +4,7 @@
     "mockzilla": {
       "release-as": "2.0.0",
       "component": "mockzilla",
-      "extra-files": ["build.gradle.kts"]
+      "extra-files": ["build.gradle.kts", "../docs/main.py", "../fastlane/fastfiles/lib.rb"]
     },
     "mockzilla-common": {
       "component": "mockzilla-common",

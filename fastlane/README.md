@@ -79,14 +79,6 @@ Publish to maven local
 
 Publish to maven remote
 
-### get_version_name
-
-```sh
-[bundle exec] fastlane get_version_name
-```
-
-
-
 ### flutter_lib_pull_request
 
 ```sh
