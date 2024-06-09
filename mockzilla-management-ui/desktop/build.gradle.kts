@@ -9,7 +9,7 @@ plugins {
 
 kotlin {
     // Managed automatically by release-please PRs
-    version = "0.0.1" // x-release-please-version
+    version = "1.0.0" // x-release-please-version
 
     jvmToolchain(JavaConfig.toolchain)
     jvm {
@@ -29,7 +29,6 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "mockzilla-management-ui"
-            packageVersion = rootProject.version.toString().split("-").first()
 
             jvmArgs("-Dapple.awt.application.appearance=system", "-Djava.net.preferIPv4Stack=true")
         }
