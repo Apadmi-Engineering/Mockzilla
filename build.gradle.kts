@@ -1,4 +1,3 @@
-import com.apadmi.mockzilla.extractVersion
 
 plugins {
     alias(libs.plugins.android.library) apply false
@@ -22,7 +21,6 @@ buildscript {
 
 allprojects {
     group = "com.apadmi"
-    version = extractVersion()
 
     repositories {
         google()

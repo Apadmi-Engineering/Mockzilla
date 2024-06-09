@@ -13,6 +13,8 @@ dependencies {
 }
 
 android {
+    // Managed automatically by release-please PRs
+    version = "0.0.1" // x-release-please-version
     compileSdk = AndroidConfig.targetSdk
     namespace = group.toString()
     defaultConfig {

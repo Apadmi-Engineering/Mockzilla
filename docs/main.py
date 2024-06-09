@@ -18,7 +18,13 @@ def define_env(env):
 
   @env.macro
   def get_version():
-      return print_source_file("version.txt")
+      build_gradle_text = print_source_file("mockzilla/build.gradle.kts")
+      version_pattern = r'version\s*=\s*"(.*?)".*'
+      match = re.search(version_pattern, build_gradle_text)
+      if match:
+          return match.group(1)
+      else:
+          return None
 
   @env.macro
   def get_python_version():

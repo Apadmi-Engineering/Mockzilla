@@ -31,14 +31,6 @@ Returns whether Flutter lanes should run due to either the Flutter
 
 source changing or Fastlane config changing
 
-### flutter_setup
-
-```sh
-[bundle exec] fastlane flutter_setup
-```
-
-Installs Flutter SDK and project dependencies
-
 ### flutter_dart_test
 
 ```sh
@@ -108,14 +100,6 @@ Flutter target for the lib
 
 ## iOS
 
-### ios demo_ios_pull_request
-
-```sh
-[bundle exec] fastlane ios demo_ios_pull_request
-```
-
-iOS target for the pure iOS demo
-
 ### ios demo_kmm_pull_request
 
 ```sh
@@ -140,26 +124,34 @@ iOS target for the lib
 
 Generate XCFramework
 
-### ios publish_spm_package
+### ios generate_podspec
 
 ```sh
-[bundle exec] fastlane ios publish_spm_package
+[bundle exec] fastlane ios generate_podspec
 ```
 
-Deploy the package to github
+Generate Podspec
+
+### ios publish_swift_package
+
+```sh
+[bundle exec] fastlane ios publish_swift_package
+```
+
+Deploy the package to github & push podspec
+
+### ios demo_ios_pull_request
+
+```sh
+[bundle exec] fastlane ios demo_ios_pull_request
+```
+
+iOS target for the pure iOS demo
 
 ----
 
 
 ## Android
-
-### android demo_android_pull_request
-
-```sh
-[bundle exec] fastlane android demo_android_pull_request
-```
-
-Android target for the pure android demo
 
 ### android demo_kmm_pull_request
 
@@ -192,6 +184,14 @@ Android target for the lib
 ```
 
 Generate screenshots and upload them
+
+### android demo_android_pull_request
+
+```sh
+[bundle exec] fastlane android demo_android_pull_request
+```
+
+Android target for the pure android demo
 
 ----
 

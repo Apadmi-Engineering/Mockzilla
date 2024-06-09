@@ -1,0 +1,59 @@
+{
+  "packages": {
+    "mockzilla": {
+      "release-type": "java",
+      "release-as": "2.0.0",
+      "component": "mockzilla",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "mockzilla-common": {
+      "release-type": "java",
+      "component": "mockzilla-common",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "mockzilla-management": {
+      "release-type": "java",
+      "component": "mockzilla-management",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "FlutterMockzilla": {
+      "release-type": "simple",
+      "component": "flutter-mockzilla",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "mockzilla/pubspec.yaml"
+        },
+        {
+          "type": "generic",
+          "path": "mockzilla_android/pubspec.yaml"
+        },
+        {
+          "type": "generic",
+          "path": "mockzilla_ios/pubspec.yaml"
+        },
+        {
+          "type": "generic",
+          "path": "mockzilla_platform_interface/pubspec.yaml"
+        }
+      ]
+    },
+    "mockzilla-management-ui": {
+      "release-type": "simple",
+      "release-as": "1.0.0",
+      "component": "mockzilla-management-ui",
+      "extra-files": ["desktop/build.gradle.kts"]
+    }
+  },
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "Kmp libs",
+      "components": [
+        "mockzilla",
+        "mockzilla-common",
+        "mockzilla-management"
+      ]
+    }
+  ]
+}
