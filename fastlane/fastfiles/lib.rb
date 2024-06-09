@@ -136,9 +136,10 @@ platform :android do
     end
 end
  
-private_lane :get_version_name do
-     # Managed automatically by release-please PRs
-    "1.2.1" # x-release-please-version
+lane :get_version_name do
+    build_gradle_text = IO.read("#{lane_context[:repo_root]}/mockzilla/build.gradle.kts")
+    version_pattern = /version\s*=\s*"(.*?)".*/
+    build_gradle_text.match(version_pattern)[1]
 end
 
 desc "Flutter target for the lib"
