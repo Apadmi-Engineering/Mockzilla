@@ -10,6 +10,10 @@ repositories {
 }
 
 kotlin {
+
+    // Managed automatically by release-please PRs
+    version = "1.2.1" // x-release-please-version
+
     jvm {
         withJava()
         testRuns["test"].executionTask.configure {

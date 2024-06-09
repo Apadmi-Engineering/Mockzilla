@@ -8,6 +8,9 @@ plugins {
 }
 
 kotlin {
+    // Managed automatically by release-please PRs
+    version = "0.0.1" // x-release-please-version
+
     jvmToolchain(JavaConfig.toolchain)
     jvm {
         withJava()

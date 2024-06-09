@@ -15,7 +15,10 @@ kotlin {
         publishAllLibraryVariants()
     }
 
+    // Managed automatically by release-please PRs
+    version = "1.2.1" // x-release-please-version
     val xcf = XCFramework()
+
     listOf(
         iosX64(),
         iosArm64(),

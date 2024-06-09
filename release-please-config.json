@@ -12,7 +12,13 @@
       "component": "mockzilla-management"
     },
     "FlutterMockzilla": {
-      "component": "flutter-mockzilla"
+      "component": "flutter-mockzilla",
+      "extra-files": [
+        "FlutterMockzilla/mockzilla/pubspec.yaml",
+        "FlutterMockzilla/mockzilla_android/pubspec.yaml",
+        "FlutterMockzilla/mockzilla_ios/pubspec.yaml",
+        "FlutterMockzilla/mockzilla_platform_interface/pubspec.yaml"
+      ]
     },
     "mockzilla-management-ui": {
       "component": "mockzilla-management-ui"

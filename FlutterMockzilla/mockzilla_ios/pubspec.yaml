@@ -1,6 +1,6 @@
 name: mockzilla_ios
 description: The Android implementation for the mockzilla plugin.
-version: 0.1.0
+version: 0.0.1 # x-release-please-version
 homepage: https://apadmi-engineering.github.io/Mockzilla/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
 issue_tracker: https://github.com/Apadmi-Engineering/Mockzilla/issues

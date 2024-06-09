@@ -1,1 +1,7 @@
-{}
+{
+  "FlutterMockzilla": "0.0.1",
+  "mockzilla-management-ui": "0.0.1",
+  "mockzilla": "1.2.1",
+  "mockzilla-common": "1.2.1",
+  "mockzilla-management": "1.2.1"
+}

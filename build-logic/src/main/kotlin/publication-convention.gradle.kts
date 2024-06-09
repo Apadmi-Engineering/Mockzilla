@@ -1,4 +1,4 @@
-import com.apadmi.mockzilla.extractVersion
+
 import java.util.Base64
 
 plugins {
@@ -65,7 +65,7 @@ if (hasKey) {
     }
 }
 
-fun mavenUrl() = if (extractVersion().endsWith("-SNAPSHOT")) {
+fun mavenUrl() = if (version.toString().endsWith("-SNAPSHOT")) {
     "https://s01.oss.sonatype.org/content/repositories/snapshots/"
 } else {
     "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
