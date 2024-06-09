@@ -16,7 +16,7 @@ kotlin {
     }
 
     // Managed automatically by release-please PRs
-    version = "1.2.1" // x-release-please-version
+    version = "1.2.2-SNAPSHOT" // x-release-please-version
     val xcf = XCFramework()
 
     listOf(
