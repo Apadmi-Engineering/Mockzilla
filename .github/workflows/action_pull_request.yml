@@ -15,7 +15,7 @@ jobs:
       - name: Fetch develop branch so screenshotbot can access it
         run: |
           git fetch origin develop
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.x
       - run: |
