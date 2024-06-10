@@ -48,7 +48,7 @@ spotless = "6.25.0" # https://github.com/diffplug/spotless
 # Testing
 kover = "0.7.6" # https://github.com/Kotlin/kotlinx-kover
 turbine = "1.1.0" # https://github.com/cashapp/turbine
-mockative = "1.4.1" # https://github.com/mockative/mockative
+mockative = "2.2.2" # https://github.com/mockative/mockative
 junit = "1.1.5" # https://developer.android.com/jetpack/androidx/releases/test
 testParamInjector = "1.12" # https://github.com/google/TestParameterInjector
 
