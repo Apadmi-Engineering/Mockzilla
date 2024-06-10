@@ -18,6 +18,7 @@
     },
     "FlutterMockzilla": {
       "release-type": "simple",
+      "release-as": "1.0.0",
       "component": "flutter-mockzilla",
       "extra-files": [
         {
