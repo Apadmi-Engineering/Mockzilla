@@ -31,7 +31,7 @@ compose-compiler = "1.5.13" # https://developer.android.com/jetpack/androidx/rel
 koin = "3.5.6" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
-kotlinx-coroutines = "1.8.0" # https://github.com/Kotlin/kotlinx.coroutines
+kotlinx-coroutines = "1.8.1" # https://github.com/Kotlin/kotlinx.coroutines
 kotlinx-datetime = "0.5.0" # https://github.com/Kotlin/kotlinx-datetime
 kotlinx-serialization = "1.6.3" # https://github.com/Kotlin/kotlinx.serialization
 
