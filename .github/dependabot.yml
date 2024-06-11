@@ -28,8 +28,8 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
-    ruby-patches:
-      angular:
+    groups:
+      ruby-patches:
         applies-to: version-updates
         patterns:
           - "*"
