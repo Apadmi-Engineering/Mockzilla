@@ -6,6 +6,13 @@ plugins {
 
 publishing {
     afterEvaluate {
+        if (isSnapshot()) {
+            version = "$version-SNAPSHOT"
+            logger.warn("Publishing to snapshot repository ($version)")
+        } else {
+            logger.warn("Publishing to live repository ($version)")
+        }
+
         repositories.maven(mavenUrl()) {
             name = "OSSRH"
 
@@ -66,8 +73,10 @@ if (hasKey) {
     }
 }
 
-fun mavenUrl() = if (version.toString().endsWith("-SNAPSHOT")) {
+fun mavenUrl() = if (isSnapshot()) {
     "https://s01.oss.sonatype.org/content/repositories/snapshots/"
 } else {
     "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
 }
+
+private fun isSnapshot() = project.properties["is_snapshot"].toString().toBoolean()

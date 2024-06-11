@@ -2,10 +2,9 @@ name: Deploy Desktop app
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: [ Deploy Binaries ]
-    types:
-      - completed
+  push:
+    tags:
+      - mockzilla-management-ui-v**
 
 env:
   MAC_CERTIFICATE_PATH: "./osx_build_certificate.p12"
