@@ -9,6 +9,17 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    groups:
+      kotlin:
+        applies-to: version-updates
+        patterns:
+          - "kotlin"
+          - "com.google.devtools.ksp"
+          - "kotlinx-*"
+      compose:
+        applies-to: version-updates
+        patterns:
+          - "compose*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -17,6 +28,13 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    ruby-patches:
+      angular:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
   - package-ecosystem: 'pub'
     directory: '/FlutterMockzilla'
     schedule:

@@ -21,6 +21,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.preview)
             implementation(compose.components.resources)
+            implementation(compose.materialIconsExtended)
 
             /* Localisable Strings */
             implementation(libs.lyricist.library)
@@ -51,7 +52,6 @@ kotlin {
         }
         androidMain.dependencies {
             /* Compose */
-            implementation(libs.androidx.compose.materialIconsExt)
             implementation(libs.showkase)
 
             /* ViewModel */
@@ -77,9 +77,6 @@ kotlin {
                 implementation(compose.desktop.currentOs) {
                     exclude("org.jetbrains.compose.material")
                 }
-
-                implementation(libs.desktop.compose.material.icons)
-                implementation(libs.desktop.compose.material3)
 
                 /* Coroutines */
                 implementation(libs.kotlinx.coroutines.swing)
