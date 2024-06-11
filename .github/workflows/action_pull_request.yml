@@ -9,7 +9,7 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '15.0.1' 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
             fetch-depth: 0
       - name: Fetch develop branch so screenshotbot can access it
