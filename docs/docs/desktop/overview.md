@@ -16,7 +16,7 @@ Your device should be automatically discovered by Mockzilla (you may need to res
 ![alt text](img/device_connection.png "Device connection")
 
 !!! note
-    If network discovery does find your device you can manually type in the IP address of your device. (Don't forget the port!)
+    If network discovery does not find your device you can manually type in the IP address of your device. (Don't forget the port!)
 
 ### (2): Edit the mock data
 
