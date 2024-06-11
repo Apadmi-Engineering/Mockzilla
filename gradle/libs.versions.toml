@@ -32,7 +32,7 @@ koin = "3.5.6" # https://github.com/InsertKoinIO/koin
 # KotlinX
 kotlinx-coroutines = "1.8.1" # https://github.com/Kotlin/kotlinx.coroutines
 kotlinx-datetime = "0.5.0" # https://github.com/Kotlin/kotlinx-datetime
-kotlinx-serialization = "1.6.3" # https://github.com/Kotlin/kotlinx.serialization
+kotlinx-serialization = "1.7.0" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
 lifecycle = "2.8.1" # https://developer.android.com/jetpack/androidx/releases/lifecycle
