@@ -94,12 +94,12 @@ jobs:
           bundle exec fastlane android lib_mockzilla_pull_request
           bundle exec fastlane ios lib_mockzilla_pull_request
           bundle exec fastlane publish_to_maven_local
+      - name: Management Library
+        if: steps.filter.outputs.mockzilla-management == 'true'
+        run: bundle exec fastlane lib_mockzilla_management_pull_request
       - name: Management UI (desktop app)
         if: steps.filter.outputs.mockzilla-management-ui == 'true'
         run: bundle exec fastlane android management_ui_pull_request
-      - name: Management Library
-        if: steps.filter.outputs.mockzilla-management == 'true'
-        run: bundle exec fastlane android lib_mockzilla_management_pull_request
       - name: SwiftMockzilla
         if: steps.filter.outputs.swift-mockzilla == 'true'
         run: bundle exec fastlane ios lib_swift_mockzilla
@@ -108,7 +108,7 @@ jobs:
         run: bundle exec fastlane android demo_android_pull_request
       - name: Samples - iOS
         if: steps.filter.outputs.samples-ios == 'true'
-        run: bundle exec fastlane android demo_ios_pull_request
+        run: bundle exec fastlane ios demo_ios_pull_request
       - name: Samples - KMM
         if: steps.filter.outputs.samples-kmm == 'true'
         run: |
