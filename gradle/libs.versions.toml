@@ -24,7 +24,6 @@ ktor = "2.3.11" # https://github.com/ktorio/ktor
 
 # Compose
 compose = "1.6.10" # https://github.com/JetBrains/compose-multiplatform
-androidCompose = "1.6.7" # https://github.com/JetBrains/compose-multiplatform
 compose-compiler = "1.5.13" # https://developer.android.com/jetpack/androidx/releases/compose-compiler
 
 # DI
@@ -37,7 +36,6 @@ kotlinx-serialization = "1.6.3" # https://github.com/Kotlin/kotlinx.serializatio
 
 # AndroidX
 lifecycle = "2.8.1" # https://developer.android.com/jetpack/androidx/releases/lifecycle
-material3 = "1.2.1" # https://developer.android.com/jetpack/androidx/releases/compose-material3
 compose-activity = "1.9.0" # https://developer.android.com/jetpack/androidx/releases/activity
 
 # Code Formatting
@@ -64,12 +62,6 @@ conveyor = "1.10" # https://github.com/hydraulic-software/conveyor
 # Compose & Material
 adam = { module = "com.malinskiy.adam:adam", version.ref = "adam" }
 androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity"  }
-androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidCompose" }
-androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
-desktop-compose-material3 = { group = "org.jetbrains.compose.material3", name = "material3-desktop", version.ref = "compose" }
-androidx-compose-materialIconsExt = { module = "androidx.compose.material:material-icons-extended", version.ref = "androidCompose" }
-desktop-compose-material-icons = { module = "org.jetbrains.compose.material:material-icons-extended-desktop", version.ref = "compose" }
-androidx-compose-uiToolingPreview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "androidCompose" }
 
 # Android Lifecycle
 androidx-lifecycleViewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }

@@ -62,9 +62,10 @@ android {
 dependencies {
 
     /* Android */
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.uiToolingPreview)
-    implementation(libs.androidx.compose.material3)
+    implementation(compose.runtime)
+    implementation(compose.material3)
+    implementation(compose.preview)
+    implementation(compose.components.resources)
     implementation(libs.androidx.compose.activity)
 
     /* Mockzilla */
