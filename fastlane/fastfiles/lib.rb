@@ -1,11 +1,14 @@
 platform :ios do 
 
     desc "iOS target for the lib"
-    lane :lib_pull_request do
+    lane :lib_mockzilla_pull_request do
         gradle(
-            tasks: [":mockzilla-common:iosX64Test", ":mockzilla:iosX64Test", ":mockzilla-management:jvmTest"]
+            tasks: [":mockzilla-common:iosX64Test", ":mockzilla:iosX64Test"]
         )
+    end
 
+    desc "Build and test SwiftMockzilla"
+    lane :lib_swift_mockzilla do
         # Create the XCFramework
         generate_xcframework
 
@@ -123,12 +126,11 @@ end
 platform :android do 
 
     desc "Android target for the lib"
-    lane :lib_pull_request do
+    lane :lib_mockzilla_pull_request do
         gradle(
             tasks: [
                 ":mockzilla-common:testDebugUnitTest",
-                ":mockzilla:testDebugUnitTest", 
-                ":mockzilla-management:jvmTest"
+                ":mockzilla:testDebugUnitTest"
             ]
         )
     end
@@ -148,8 +150,9 @@ private_lane :get_version_name do |options|
     options[:is_snapshot] ? "#{version}-SNAPSHOT" : version
 end
 
-desc "Flutter target for the lib"
-lane :flutter_lib_pull_request do
-    flutter_dart_test
-    flutter_android_test
+desc "Run tests for management module"
+lane :lib_mockzilla_management_pull_request do
+    gradle(
+        tasks: [":mockzilla-management:jvmTest"]
+    )
 end

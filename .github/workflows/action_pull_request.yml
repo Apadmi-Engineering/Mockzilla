@@ -15,24 +15,107 @@ jobs:
       - name: Fetch develop branch so screenshotbot can access it
         run: |
           git fetch origin develop
-      - uses: actions/setup-python@v5
+      - uses: dorny/paths-filter@v3
+        id: filter
         with:
-          python-version: 3.x
-      - run: |
-          pip install --upgrade setuptools 
-          pip install -r docs/requirements.txt
+          filters: |
+            common-fastlane: &common-fastlane
+              - fastlane/Appfile
+              - Gemfile
+              - Gemfile.lock
+            common-kotlin: &common-kotlin
+              - *common-fastlane
+              - build-logic/**
+              - settings.gradle.kts
+              - gradle.properties
+              - build.gradle.kts
+              - mockzilla-common/**
+              - gradle/**
+            flutter:
+              - FlutterMockzilla/**
+              - fastlane/fastfiles/flutter.rb
+            docs:
+              - docs/**
+              - fastlane/fastfiles/docs.rb
+            mockzilla-server: &mockzilla-server
+              - *common-kotlin
+              - mockzilla/**
+              - fastlane/fastfiles/lib.rb
+            mockzilla-management: &mockzilla-management
+              - *mockzilla-server
+              - mockzilla-management/**
+              - fastlane/fastfiles/lib.rb
+            mockzilla-management-ui:
+              - *mockzilla-management
+              - fastlane/fastfiles/management-ui.rb
+              - mockzilla-management-ui/**
+            swift-mockzilla:
+              - *mockzilla-server
+              - SwiftMockzilla/**
+            sample-ios:
+              - samples/demo-ios/**
+            sample-android:
+              - *mockzilla-server
+              - samples/demo-android/**
+            sample-kmm:
+              - *mockzilla-server
+              - samples/demo-kmm/**
+            swagger:
+              - webapi.yml
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
+      - uses: actions/setup-python@v5
+        if: steps.filter.outputs.docs == 'true'
+        with:
+          python-version: 3.x
+      - name: Setup fastlane
+        run: bundle install
+      - name: Docs
+        if: steps.filter.outputs.docs == 'true'
+        run: |
+          pip install --upgrade setuptools 
+          pip install -r docs/requirements.txt
+          bundle exec fastlane generate_docs
       - uses: subosito/flutter-action@v2
+        if: steps.filter.outputs.flutter == 'true'
         with:
           flutter-version: '3.19.2'
           channel: 'stable'
-      - run: |
-          bundle install
-          bundle exec fastlane combined_pull_request
+      - name: Flutter
+        if: steps.filter.outputs.flutter == 'true'
+        run: |
+          bundle exec fastlane flutter_lib_pull_request
+          bundle exec fastlane demo_flutter_pull_request
+      - name: Mockzilla Server (core)
+        if: steps.filter.outputs.mockzilla-server == 'true'
+        run: |
+          bundle exec fastlane android lib_mockzilla_pull_request
+          bundle exec fastlane ios lib_mockzilla_pull_request
+          bundle exec fastlane publish_to_maven_local
+      - name: Management UI (desktop app)
+        if: steps.filter.outputs.mockzilla-management-ui == 'true'
+        run: bundle exec fastlane android management_ui_pull_request
+      - name: Management Library
+        if: steps.filter.outputs.mockzilla-management == 'true'
+        run: bundle exec fastlane android lib_mockzilla_management_pull_request
+      - name: SwiftMockzilla
+        if: steps.filter.outputs.swift-mockzilla == 'true'
+        run: bundle exec fastlane ios lib_swift_mockzilla
+      - name: Samples - Android
+        if: steps.filter.outputs.samples-android == 'true'
+        run: bundle exec fastlane android demo_android_pull_request
+      - name: Samples - iOS
+        if: steps.filter.outputs.samples-ios == 'true'
+        run: bundle exec fastlane android demo_ios_pull_request
+      - name: Samples - KMM
+        if: steps.filter.outputs.samples-kmm == 'true'
+        run: |
+          bundle exec fastlane android demo_kmm_pull_request
+          bundle exec fastlane ios demo_kmm_pull_request
       - name: Validate Swagger and OpenAPI using Swagger CLI
+        if: steps.filter.outputs.swagger == 'true'
         uses: mbowman100/swagger-validator-action@2.0
         with:
           files: webapi.yaml
