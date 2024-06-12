@@ -10,10 +10,8 @@ import io.mockative.Mock
 import io.mockative.classOf
 import io.mockative.coEvery
 import io.mockative.coVerify
-import io.mockative.given
 import io.mockative.mock
 import io.mockative.time
-import io.mockative.verify
 import org.junit.Test
 
 import kotlin.test.assertEquals
