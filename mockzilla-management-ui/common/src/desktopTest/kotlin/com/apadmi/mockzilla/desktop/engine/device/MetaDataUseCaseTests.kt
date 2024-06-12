@@ -8,6 +8,8 @@ import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import io.mockative.Mock
 import io.mockative.classOf
+import io.mockative.coEvery
+import io.mockative.coVerify
 import io.mockative.given
 import io.mockative.mock
 import io.mockative.time
@@ -28,9 +30,9 @@ class MetaDataUseCaseTests : CoroutineTest() {
     @Test
     fun `getMetaData - fails - returns failure`() = runBlockingTest {
         /* Setup */
-        given(serviceMock).coroutine {
-            fetchMetaData(Device.dummy(), hideFromLogs = true)
-        }.thenReturn(Result.failure(Exception()))
+        coEvery { serviceMock.fetchMetaData(Device.dummy(), hideFromLogs = true) }.returns(
+            Result.failure(Exception())
+        )
         val sut = createSut()
 
         /* Run Test */
@@ -43,9 +45,9 @@ class MetaDataUseCaseTests : CoroutineTest() {
     @Test
     fun `getMetaData - succeeds - returns and sets cache`() = runBlockingTest {
         /* Setup */
-        given(serviceMock).coroutine {
-            fetchMetaData(Device.dummy(), hideFromLogs = true)
-        }.thenReturn(Result.success(MetaData.dummy()))
+        coEvery { serviceMock.fetchMetaData(Device.dummy(), hideFromLogs = true) }.returns(
+            Result.success(MetaData.dummy())
+        )
         val sut = createSut()
 
         /* Run Test */
@@ -55,16 +57,16 @@ class MetaDataUseCaseTests : CoroutineTest() {
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
         assertEquals(result, result2)
-        verify(serviceMock).coroutine { fetchMetaData(Device.dummy(), true) }
+        coVerify { serviceMock.fetchMetaData(Device.dummy(), true) }
             .wasInvoked(1.time)
     }
 
     @Test
     fun `getMetaData - refreshes after cache expires`() = runBlockingTest {
         /* Setup */
-        given(serviceMock).coroutine {
-            fetchMetaData(Device.dummy(), hideFromLogs = false)
-        }.thenReturn(Result.success(MetaData.dummy()))
+        coEvery { serviceMock.fetchMetaData(Device.dummy(), hideFromLogs = false) }.returns(
+            Result.success(MetaData.dummy())
+        )
         var currentTimeStamp = System.currentTimeMillis()
         val sut = createSut { currentTimeStamp }
 
@@ -78,7 +80,7 @@ class MetaDataUseCaseTests : CoroutineTest() {
         /* Verify */
         assertEquals(Result.success(MetaData.dummy()), result)
         assertEquals(result, result2)
-        verify(serviceMock).coroutine { fetchMetaData(Device.dummy(), false) }
+        coVerify { serviceMock.fetchMetaData(Device.dummy(), false) }
             .wasInvoked(2.time)
     }
 }
