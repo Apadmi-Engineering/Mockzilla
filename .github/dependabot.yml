@@ -13,7 +13,7 @@ updates:
       kotlin:
         applies-to: version-updates
         patterns:
-          - "kotlin"
+          - "*kotlin*"
           - "com.google.devtools.ksp"
           - "*kotlinx*"
       compose:
