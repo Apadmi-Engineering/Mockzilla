@@ -32,9 +32,11 @@ jobs:
               - mockzilla-common/**
               - gradle/**
             flutter:
+              - *common-fastlane
               - FlutterMockzilla/**
               - fastlane/fastfiles/flutter.rb
             docs:
+              - *common-fastlane
               - docs/**
               - fastlane/fastfiles/docs.rb
             mockzilla-server: &mockzilla-server
