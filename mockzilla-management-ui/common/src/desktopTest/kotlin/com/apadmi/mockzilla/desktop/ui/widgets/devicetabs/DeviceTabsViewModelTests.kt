@@ -11,9 +11,9 @@ import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import app.cash.turbine.test
 import io.mockative.Mock
 import io.mockative.classOf
-import io.mockative.given
+import io.mockative.doesNothing
+import io.mockative.every
 import io.mockative.mock
-import io.mockative.thenDoNothing
 import io.mockative.verify
 import org.junit.Test
 
@@ -29,23 +29,22 @@ class DeviceTabsViewModelTests : CoroutineTest() {
     private val activeDeviceMonitorMock = mock(classOf<ActiveDeviceMonitor>())
 
     private fun createSut() = DeviceTabsViewModel(activeDeviceMonitorMock.also {
-        given(it).invocation { onDeviceConnectionStateChange }.thenReturn(flowOf())
+        every { it.onDeviceConnectionStateChange }.returns(flowOf())
     }, activeDeviceSelectorMock, testScope.backgroundScope)
 
     @Test
     fun `onChangeDevice - calls through`() = runBlockingTest {
         /* Setup */
-        given(activeDeviceMonitorMock).invocation { selectedDevice }.thenReturn(MutableStateFlow(null))
-        given(activeDeviceMonitorMock).invocation { allDevices }.thenReturn(emptyList())
-        given(activeDeviceSelectorMock).invocation { updateSelectedDevice(Device.dummy()) }.thenDoNothing()
+        every { activeDeviceMonitorMock.selectedDevice }.returns(MutableStateFlow(null))
+        every { activeDeviceMonitorMock.allDevices }.returns(emptyList())
+        every { activeDeviceSelectorMock.updateSelectedDevice(Device.dummy()) }.doesNothing()
         val sut = createSut()
         sut.state.test {
             /* Run Test */
             sut.onChangeDevice(State.DeviceTabEntry.dummy().copy(underlyingDevice = Device.dummy()))
 
             /* Verify */
-            verify(activeDeviceSelectorMock).invocation { updateSelectedDevice(Device.dummy()) }
-                .wasInvoked()
+            verify { activeDeviceSelectorMock.updateSelectedDevice(Device.dummy()) }.wasInvoked()
             assertEquals(State(emptyList()), awaitItem())
         }
     }
@@ -53,16 +52,16 @@ class DeviceTabsViewModelTests : CoroutineTest() {
     @Test
     fun `addNewDevice - clears active device`() = runBlockingTest {
         /* Setup */
-        given(activeDeviceMonitorMock).invocation { selectedDevice }.thenReturn(MutableStateFlow(null))
-        given(activeDeviceMonitorMock).invocation { allDevices }.thenReturn(emptyList())
-        given(activeDeviceSelectorMock).invocation { clearSelectedDevice() }.thenDoNothing()
+        every { activeDeviceMonitorMock.selectedDevice }.returns(MutableStateFlow(null))
+        every { activeDeviceMonitorMock.allDevices }.returns(emptyList())
+        every { activeDeviceSelectorMock.clearSelectedDevice() }.doesNothing()
         val sut = createSut()
 
         /* Run Test */
         sut.addNewDevice()
 
         /* Verify */
-        verify(activeDeviceSelectorMock).invocation { clearSelectedDevice() }.wasInvoked()
+        verify { activeDeviceSelectorMock.clearSelectedDevice() }.wasInvoked()
     }
 
     @Suppress("TOO_LONG_FUNCTION")
@@ -70,8 +69,8 @@ class DeviceTabsViewModelTests : CoroutineTest() {
     fun `init - pulls latest data from monitor - updates state`() = runBlockingTest {
         /* Setup */
         val dummyActiveDevice = Device.dummy().copy(ip = "device1")
-        given(activeDeviceMonitorMock).invocation { selectedDevice }.thenReturn(MutableStateFlow(null))
-        given(activeDeviceMonitorMock).invocation { allDevices }.thenReturn(
+        every { activeDeviceMonitorMock.selectedDevice }.returns(MutableStateFlow(null))
+        every { activeDeviceMonitorMock.allDevices }.returns(
             listOf(
                 StatefulDevice(
                     dummyActiveDevice,

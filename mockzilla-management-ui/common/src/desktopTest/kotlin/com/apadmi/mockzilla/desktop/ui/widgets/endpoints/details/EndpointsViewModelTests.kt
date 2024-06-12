@@ -13,7 +13,8 @@ import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import app.cash.turbine.test
 import io.mockative.Mock
 import io.mockative.classOf
-import io.mockative.given
+import io.mockative.coEvery
+import io.mockative.every
 import io.mockative.mock
 import junit.framework.TestCase.assertFalse
 
@@ -74,9 +75,9 @@ class EndpointsViewModelTests : CoroutineTest() {
     @Test
     fun `reloadData - populates correctly`() = runBlockingTest {
         /* Setup */
-        given(eventBusMock).invocation { events }.thenReturn(emptyFlow())
-        given(endpointsServiceMock).coroutine { fetchAllEndpointConfigs(Device.dummy()) }
-            .thenReturn(
+        every { eventBusMock.events }.returns(emptyFlow())
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) }
+            .returns(
                 Result.success(
                     listOf(
                         SerializableEndpointConfig.allNulls("Key1", "Name1", 1),
@@ -100,9 +101,9 @@ class EndpointsViewModelTests : CoroutineTest() {
     @Test
     fun `onCheckboxChanged - updates correctly`() = runBlockingTest {
         /* Setup */
-        given(eventBusMock).invocation { events }.thenReturn(emptyFlow())
-        given(endpointsServiceMock).coroutine { fetchAllEndpointConfigs(Device.dummy()) }
-            .thenReturn(
+        every { eventBusMock.events }.returns(emptyFlow())
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) }
+            .returns(
                 Result.success(
                     listOf(
                         SerializableEndpointConfig.allNulls("Key1", "Name1", 1),
@@ -133,9 +134,9 @@ class EndpointsViewModelTests : CoroutineTest() {
     @Test
     fun `onAllCheckboxChanged - updates correctly`() = runBlockingTest {
         /* Setup */
-        given(eventBusMock).invocation { events }.thenReturn(emptyFlow())
-        given(endpointsServiceMock).coroutine { fetchAllEndpointConfigs(Device.dummy()) }
-            .thenReturn(
+        every { eventBusMock.events }.returns(emptyFlow())
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) }
+            .returns(
                 Result.success(
                     listOf(
                         SerializableEndpointConfig.allNulls("Key1", "Name1", 1),
@@ -166,18 +167,15 @@ class EndpointsViewModelTests : CoroutineTest() {
     @Test
     fun `onFailChanged - updates correctly`() = runBlockingTest {
         /* Setup */
-        given(eventBusMock).invocation {
-            send(EventBus.Event.EndpointDataChanged(listOf(EndpointConfiguration.Key(raw = "Key1"))))
-        }.thenReturn(Unit)
-        given(eventBusMock).invocation { events }.thenReturn(emptyFlow())
-        given(updateServiceMock).coroutine {
-            setShouldFail(Device.dummy(), listOf(EndpointConfiguration.Key("Key1")), true)
-        }.thenReturn(Result.success(Unit))
-        given(updateServiceMock).coroutine {
-            setShouldFail(Device.dummy(), listOf(EndpointConfiguration.Key("Key1")), false)
-        }.thenReturn(Result.success(Unit))
-        given(endpointsServiceMock).coroutine { fetchAllEndpointConfigs(Device.dummy()) }
-            .thenReturn(
+        every { eventBusMock.send(EventBus.Event.EndpointDataChanged(listOf(EndpointConfiguration.Key(raw = "Key1")))) }
+            .returns(Unit)
+        every { eventBusMock.events }.returns(emptyFlow())
+        coEvery { updateServiceMock.setShouldFail(Device.dummy(), listOf(EndpointConfiguration.Key("Key1")), true) }
+            .returns(Result.success(Unit))
+        coEvery { updateServiceMock.setShouldFail(Device.dummy(), listOf(EndpointConfiguration.Key("Key1")), false) }
+            .returns(Result.success(Unit))
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) }
+            .returns(
                 Result.success(
                     listOf(
                         SerializableEndpointConfig.allNulls("Key1", "Name1", 1),
@@ -208,9 +206,9 @@ class EndpointsViewModelTests : CoroutineTest() {
     @Test
     fun `onFilterChanged - updates correctly`() = runBlockingTest {
         /* Setup */
-        given(eventBusMock).invocation { events }.thenReturn(emptyFlow())
-        given(endpointsServiceMock).coroutine { fetchAllEndpointConfigs(Device.dummy()) }
-            .thenReturn(
+        every { eventBusMock.events }.returns(emptyFlow())
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) }
+            .returns(
                 Result.success(
                     listOf(
                         SerializableEndpointConfig.allNulls("Key1", "Name1", 1),

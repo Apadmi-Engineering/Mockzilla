@@ -12,7 +12,8 @@ import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import io.ktor.http.HttpStatusCode
 import io.mockative.Mock
 import io.mockative.classOf
-import io.mockative.given
+import io.mockative.coEvery
+import io.mockative.every
 import io.mockative.mock
 import org.junit.Test
 
@@ -65,15 +66,11 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
             errorStatus = HttpStatusCode.BadRequest,
         )
         val presets = DashboardOptionsConfig.Builder().build()
-        given(eventBusMock).invocation { events }.thenReturn(emptyFlow())
-        given(endpointsServiceMock)
-            .coroutine { fetchAllEndpointConfigs(dummyActiveDevice) }
-            .thenReturn(Result.success(listOf(config)))
-        given(endpointsServiceMock)
-            .coroutine {
-                fetchDashboardOptionsConfig(dummyActiveDevice, dummyKey)
-            }
-            .thenReturn(Result.success(presets))
+        every { eventBusMock.events }.returns(emptyFlow())
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice) }
+            .returns(Result.success(listOf(config)))
+        coEvery { endpointsServiceMock.fetchDashboardOptionsConfig(dummyActiveDevice, dummyKey) }
+            .returns(Result.success(presets))
 
         /* Run Test */
         val sut = createSut()
@@ -113,43 +110,32 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
             versionCode = dummyVersion
         )
         val presets = DashboardOptionsConfig.Builder().build()
-        given(updateServiceMock).coroutine {
-            setDefaultBody(
+        coEvery {
+            updateServiceMock.setDefaultBody(
                 dummyActiveDevice,
                 config.key,
                 "not json"
             )
-        }.thenReturn(Result.success(Unit))
-        given(eventBusMock).invocation {
-            send(EventBus.Event.EndpointDataChanged(listOf(EndpointConfiguration.Key(raw = "key"))))
-        }.thenReturn(Unit)
-        given(updateServiceMock).coroutine {
-            setErrorStatus(dummyActiveDevice, config.key, HttpStatusCode.Unauthorized)
-        }.thenReturn(Result.success(Unit))
-        given(updateServiceMock).coroutine {
-            setShouldFail(dummyActiveDevice, listOf(config.key), true)
-        }.thenReturn(Result.success(Unit))
-        given(updateServiceMock).coroutine {
-            setDefaultStatus(dummyActiveDevice, config.key, HttpStatusCode.Accepted)
-        }.thenReturn(Result.success(Unit))
-        given(updateServiceMock).coroutine {
-            setErrorBody(dummyActiveDevice, config.key, "unauthorized")
-        }.thenReturn(Result.success(Unit))
-        given(updateServiceMock).coroutine {
-            setDefaultHeaders(dummyActiveDevice, config.key, listOf("" to "").toMap())
-        }.thenReturn(Result.success(Unit))
-        given(updateServiceMock).coroutine {
-            setErrorHeaders(dummyActiveDevice, config.key, listOf("" to "").toMap())
-        }.thenReturn(Result.success(Unit))
-        given(eventBusMock).invocation { events }.thenReturn(emptyFlow())
-        given(endpointsServiceMock)
-            .coroutine { fetchAllEndpointConfigs(dummyActiveDevice) }
-            .thenReturn(Result.success(listOf(config)))
-        given(endpointsServiceMock)
-            .coroutine {
-                fetchDashboardOptionsConfig(dummyActiveDevice, EndpointConfiguration.Key(dummyKey))
-            }
-            .thenReturn(Result.success(presets))
+        }.returns(Result.success(Unit))
+        every { eventBusMock.send(EventBus.Event.EndpointDataChanged(listOf(EndpointConfiguration.Key(raw = "key")))) }
+            .returns(Unit)
+        coEvery { updateServiceMock.setErrorStatus(dummyActiveDevice, config.key, HttpStatusCode.Unauthorized) }
+            .returns(Result.success(Unit))
+        coEvery { updateServiceMock.setShouldFail(dummyActiveDevice, listOf(config.key), true) }
+            .returns(Result.success(Unit))
+        coEvery { updateServiceMock.setDefaultStatus(dummyActiveDevice, config.key, HttpStatusCode.Accepted) }
+            .returns(Result.success(Unit))
+        coEvery { updateServiceMock.setErrorBody(dummyActiveDevice, config.key, "unauthorized") }
+            .returns(Result.success(Unit))
+        coEvery { updateServiceMock.setDefaultHeaders(dummyActiveDevice, config.key, listOf("" to "").toMap()) }
+            .returns(Result.success(Unit))
+        coEvery { updateServiceMock.setErrorHeaders(dummyActiveDevice, config.key, listOf("" to "").toMap()) }
+            .returns(Result.success(Unit))
+        every { eventBusMock.events }.returns(emptyFlow())
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice) }
+            .returns(Result.success(listOf(config)))
+        coEvery { endpointsServiceMock.fetchDashboardOptionsConfig(dummyActiveDevice, EndpointConfiguration.Key(dummyKey)) }
+            .returns(Result.success(presets))
 
         /* Run Test */
         val sut = createSut()
