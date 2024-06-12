@@ -9,7 +9,7 @@ import app.cash.turbine.test
 import io.mockative.Mock
 import io.mockative.any
 import io.mockative.classOf
-import io.mockative.given
+import io.mockative.coEvery
 import io.mockative.mock
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
@@ -29,9 +29,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `updateActiveDevice - updates device and notifies listeners`() = runBlockingTest {
         /* Setup */
-        given(metaDataUseCaseMock).suspendFunction(metaDataUseCaseMock::getMetaData)
-            .whenInvokedWith(any())
-            .thenReturn(Result.success(MetaData.dummy()))
+        coEvery { metaDataUseCaseMock.getMetaData(any()) }.returns(Result.success(MetaData.dummy()))
 
         val sut = createSut()
 
@@ -52,9 +50,9 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `setActiveDeviceWithMetaData - updates device and notifies listeners`() = runBlockingTest {
         /* Setup */
-        given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy(), true)
-        }.thenReturn(Result.success(MetaData.dummy()))
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+            Result.success(MetaData.dummy())
+        )
         val sut = createSut()
 
         sut.selectedDevice.test {
@@ -93,9 +91,9 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `setActiveDeviceWithMetaData - incompatible version`() = runBlockingTest {
         /* Setup */
-        given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy(), true)
-        }.thenReturn(Result.success(MetaData.dummy()))
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+            Result.success(MetaData.dummy())
+        )
         val sut = createSut()
 
         sut.selectedDevice.test {
@@ -131,9 +129,9 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `monitorDeviceConnections - app package changes - notifies device change listeners`() = runBlockingTest {
         /* Setup */
-        given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy(), true)
-        }.thenReturn(Result.success(MetaData.dummy().copy(appPackage = "new.package")))
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+            Result.success(MetaData.dummy().copy(appPackage = "new.package"))
+        )
 
         val sut = createSut()
 
@@ -159,9 +157,9 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `monitorDeviceConnections - app package the same - does not notify device change listeners`() = runBlockingTest {
         /* Setup */
-        given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy(), true)
-        }.thenReturn(Result.success(MetaData.dummy()))
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+            Result.success(MetaData.dummy())
+        )
         val sut = createSut()
 
         sut.selectedDevice.test {
@@ -179,9 +177,9 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `monitorDeviceConnections - fails to get metadata - updates connection status`() = runBlockingTest {
         /* Setup */
-        given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy(), true)
-        }.thenReturn(Result.failure(Exception()))
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+            Result.failure(Exception())
+        )
         val sut = createSut()
 
         sut.onDeviceConnectionStateChange.test {
