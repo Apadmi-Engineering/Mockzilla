@@ -1,19 +1,4 @@
-platform :ios do 
-
-    desc "iOS target for the lib"
-    lane :lib_pull_request do
-        gradle(
-            tasks: [":mockzilla-common:iosX64Test", ":mockzilla:iosX64Test", ":mockzilla-management:jvmTest"]
-        )
-
-        # Create the XCFramework
-        generate_xcframework
-
-        # If running this locally check the simulator in the command exists locally, if it doesn't, change it
-        # to one that does but remember to change it back before committing changes.
-        sh("cd #{lane_context[:repo_root]}/SwiftMockzilla; xcodebuild -scheme SwiftMockzilla test -destination 'platform=iOS Simulator,name=iPhone 15 Pro Max,OS=17.5'")
-    end
-    
+platform :ios do
     desc "Generate XCFramework"
     lane :generate_xcframework do |options|
         gradle(
@@ -120,20 +105,6 @@ lane :publish_to_maven do |options|
     )
 end
 
-platform :android do 
-
-    desc "Android target for the lib"
-    lane :lib_pull_request do
-        gradle(
-            tasks: [
-                ":mockzilla-common:testDebugUnitTest",
-                ":mockzilla:testDebugUnitTest", 
-                ":mockzilla-management:jvmTest"
-            ]
-        )
-    end
-end
-
 def createSnapshotProp(is_snapshot)
     {
         "is_snapshot" => is_snapshot
@@ -146,10 +117,4 @@ private_lane :get_version_name do |options|
     version = build_gradle_text.match(version_pattern)[1]
 
     options[:is_snapshot] ? "#{version}-SNAPSHOT" : version
-end
-
-desc "Flutter target for the lib"
-lane :flutter_lib_pull_request do
-    flutter_dart_test
-    flutter_android_test
 end
