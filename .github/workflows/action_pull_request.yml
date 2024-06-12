@@ -40,7 +40,7 @@ jobs:
             mockzilla-server: &mockzilla-server
               - *common-kotlin
               - mockzilla/**
-              - fastlane/fastfiles/lib.rb
+              - fastlane/fastfiles/lib_pull_request.rb
             mockzilla-management: &mockzilla-management
               - *mockzilla-server
               - mockzilla-management/**
@@ -102,15 +102,15 @@ jobs:
         run: bundle exec fastlane android management_ui_pull_request
       - name: SwiftMockzilla
         if: steps.filter.outputs.swift-mockzilla == 'true'
-        run: bundle exec fastlane ios lib_swift_mockzilla
+        run: bundle exec fastlane ios lib_swift_mockzilla_pull_request
       - name: Samples - Android
-        if: steps.filter.outputs.samples-android == 'true'
+        if: steps.filter.outputs.sample-android == 'true'
         run: bundle exec fastlane android demo_android_pull_request
       - name: Samples - iOS
-        if: steps.filter.outputs.samples-ios == 'true'
+        if: steps.filter.outputs.sample-ios == 'true'
         run: bundle exec fastlane ios demo_ios_pull_request
       - name: Samples - KMM
-        if: steps.filter.outputs.samples-kmm == 'true'
+        if: steps.filter.outputs.sample-kmm == 'true'
         run: |
           bundle exec fastlane android demo_kmm_pull_request
           bundle exec fastlane ios demo_kmm_pull_request
