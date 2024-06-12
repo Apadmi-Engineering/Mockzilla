@@ -12,7 +12,7 @@ import co.touchlab.kermit.StaticConfig
 import io.ktor.http.*
 import io.mockative.Mock
 import io.mockative.classOf
-import io.mockative.given
+import io.mockative.coEvery
 import io.mockative.mock
 
 import kotlin.test.Test
@@ -47,9 +47,7 @@ class LocalMockControllerTests {
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine {
-            getLocalCache(EndpointConfiguration.Key("my-id"))
-        }.thenReturn(null)
+        coEvery { localCacheServiceMock.getLocalCache(EndpointConfiguration.Key("my-id")) }.returns(null)
 
         /* Run Test */
         val response = sut.handleRequest(
@@ -79,7 +77,7 @@ class LocalMockControllerTests {
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        given(localCacheServiceMock).coroutine { getLocalCache(EndpointConfiguration.Key("my-id")) }.thenReturn(
+        coEvery { localCacheServiceMock.getLocalCache(EndpointConfiguration.Key("my-id")) }.returns(
             SerializableEndpointConfig(
                 key = EndpointConfiguration.Key("my-id"),
                 name = "my-id",
