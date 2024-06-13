@@ -17,7 +17,7 @@ buildKonfig = "0.15.1" # https://github.com/yshrsmz/BuildKonfig
 dokka = "1.9.20" # https://github.com/Kotlin/dokka
 
 # Localization
-lyricist = "1.4.2" # https://github.com/adrielcafe/lyricist
+lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
 ktor = "2.3.11" # https://github.com/ktorio/ktor
