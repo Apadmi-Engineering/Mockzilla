@@ -29,7 +29,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `updateActiveDevice - updates device and notifies listeners`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(any()) }.returns(Result.success(MetaData.dummy()))
+        coEvery { metaDataUseCaseMock.getMetaData(any(), any()) }.returns(Result.success(MetaData.dummy()))
 
         val sut = createSut()
 
