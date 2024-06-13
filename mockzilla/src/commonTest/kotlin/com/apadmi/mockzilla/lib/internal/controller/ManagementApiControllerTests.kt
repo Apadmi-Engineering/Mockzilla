@@ -77,9 +77,7 @@ class ManagementApiControllerTests {
         sut.clearAllCaches()
 
         /* Verify */
-        verify(localCacheServiceMock).coroutine {
-            clearAllCaches()
-        }.wasInvoked(1.time)
+        coVerify { localCacheServiceMock.clearAllCaches() }.wasInvoked(1.time)
     }
 
     @Test
@@ -88,12 +86,10 @@ class ManagementApiControllerTests {
         val dummyCacheEntry = SerializableEndpointConfig.allNulls("my-id", "id", 0).copy(
             defaultBody = "my cached value"
         )
-        given(localCacheServiceMock).coroutine {
-            getLocalCache(dummyCacheEntry.key)
-        }.thenReturn(dummyCacheEntry)
-        given(localCacheServiceMock).coroutine {
-            getLocalCache(EndpointConfiguration.Key("my-second-id"))
-        }.thenReturn(null)
+        coEvery { localCacheServiceMock.getLocalCache(dummyCacheEntry.key) }.returns(dummyCacheEntry)
+        coEvery { localCacheServiceMock.getLocalCache(EndpointConfiguration.Key("my-second-id")) }.returns(
+            null
+        )
 
         val sut =
             ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
@@ -129,18 +125,19 @@ class ManagementApiControllerTests {
         /* Setup */
         val sut =
             ManagementApiController(dummyEndpoints, localCacheServiceMock, mockServerMonitorMock)
-        given(localCacheServiceMock).suspendFunction(localCacheServiceMock::patchLocalCaches)
-            .whenInvokedWith(any()).thenReturn(Unit)
+        coEvery { localCacheServiceMock.patchLocalCaches(any()) }.returns(Unit)
         /* Run Test */
         sut.patchEntries(
             listOf(SerializableEndpointPatchItemDto.allUnset(dummyEndpoints.first().key))
         )
 
         /* Verify */
-        verify(localCacheServiceMock).coroutine {
-            patchLocalCaches(
-                mapOf(dummyEndpoints.first() to
-                        SerializableEndpointPatchItemDto.allUnset(dummyEndpoints.first().key))
+        coVerify {
+            localCacheServiceMock.patchLocalCaches(
+                mapOf(
+                    dummyEndpoints.first() to
+                            SerializableEndpointPatchItemDto.allUnset(dummyEndpoints.first().key)
+                )
             )
         }.wasInvoked(1.time)
     }
@@ -160,9 +157,7 @@ class ManagementApiControllerTests {
             method = "method",
             isIntendedFailure = false
         )
-        given(mockServerMonitorMock).coroutine {
-            consumeCurrentLogs()
-        }.thenReturn(listOf(dummyEvent))
+        coEvery { mockServerMonitorMock.consumeCurrentLogs() }.returns(listOf(dummyEvent))
         val sut = ManagementApiController(
             dummyEndpoints,
             localCacheServiceMock,

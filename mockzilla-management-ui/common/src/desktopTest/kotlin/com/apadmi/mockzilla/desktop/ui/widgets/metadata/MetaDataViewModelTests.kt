@@ -11,7 +11,7 @@ import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import app.cash.turbine.test
 import io.mockative.Mock
 import io.mockative.classOf
-import io.mockative.given
+import io.mockative.coEvery
 import io.mockative.mock
 import org.junit.Test
 
@@ -25,9 +25,8 @@ class MetaDataViewModelTests : CoroutineTest() {
     @Test
     fun `getMetaData - state=DisplayMetaData`() = runBlockingTest {
         /* Setup */
-        given(metaDataUseCaseMock).coroutine {
-            getMetaData(StatefulDevice.dummy().device, false)
-        }.thenReturn(Result.success(MetaData.dummy()))
+        coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device, false) }
+            .returns(Result.success(MetaData.dummy()))
         val sut = MetaDataWidgetViewModel(Device.dummy(), metaDataUseCaseMock, backgroundScope)
 
         /* Run Test */
@@ -41,9 +40,7 @@ class MetaDataViewModelTests : CoroutineTest() {
     @Test
     fun `getMetaData - network call fails - state=NoDeviceConnected`() = runBlockingTest {
         /* Setup */
-        given(metaDataUseCaseMock).coroutine {
-            getMetaData(Device.dummy())
-        }.thenReturn(Result.failure(Exception()))
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(Result.failure(Exception()))
 
         val sut = MetaDataWidgetViewModel(Device.dummy(), metaDataUseCaseMock, backgroundScope)
 

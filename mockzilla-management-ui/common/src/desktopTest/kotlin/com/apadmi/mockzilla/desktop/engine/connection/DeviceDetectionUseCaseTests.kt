@@ -6,7 +6,7 @@ import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import io.mockative.Mock
 import io.mockative.classOf
-import io.mockative.given
+import io.mockative.coEvery
 import io.mockative.mock
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -183,9 +183,8 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             )
         ).forEach { testCase ->
             /* Setup */
-            given(adbConnectorServiceMock)
-                .coroutine { listConnectedDevices() }
-                .thenReturn(Result.success(listOfNotNull(testCase.mockAdbConnection)))
+            coEvery { adbConnectorServiceMock.listConnectedDevices() }
+                .returns(Result.success(listOfNotNull(testCase.mockAdbConnection)))
 
             val sut = DeviceDetectionUseCaseImpl({ testCase.isLocalIpAddress },
                 adbConnectorServiceMock
@@ -206,9 +205,8 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
     @Test
     fun `onChangedServiceEvent Resolved to Removed - updates correctly`() = runBlockingTest {
         /* Setup */
-        given(adbConnectorServiceMock)
-            .coroutine { listConnectedDevices() }
-            .thenReturn(Result.success(emptyList()))
+        coEvery { adbConnectorServiceMock.listConnectedDevices() }
+            .returns(Result.success(emptyList()))
 
         val dummy = ServiceInfoWrapper(
             connectionName = "connection name",
@@ -260,9 +258,8 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
     @Test
     fun `onChangedServiceEvent Resolved to Found - update ignored`() = runBlockingTest {
         /* Setup */
-        given(adbConnectorServiceMock)
-            .coroutine { listConnectedDevices() }
-            .thenReturn(Result.success(emptyList()))
+        coEvery { adbConnectorServiceMock.listConnectedDevices() }
+            .returns(Result.success(emptyList()))
 
         val dummy = ServiceInfoWrapper(
             connectionName = "connection name",
