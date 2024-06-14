@@ -1,6 +1,6 @@
 # Mockzilla Desktop
 
-The Mockzilla desktop app can be downloaded [here](https://mockzilla-test.pages.dev/).
+The Mockzilla desktop app can be downloaded [here]({{ get_download_site_url() }}).
 
 It allows manipulation of the mock data being returned by Mockzilla on your device.
 
