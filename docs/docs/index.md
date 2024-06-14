@@ -32,6 +32,18 @@ A solution for running and configuring a local HTTP server to mimic REST API end
         Note: This is not for KMM projects (for those, the gradle dependecy should be added to `shared` source set). 
         This SPM dependency is for purely native iOS apps only.
 
+=== "Flutter"
+    Flutter support is currently in development, as such installing via command-line is unavailable. If you wish to 
+    try the Flutter package in the meantime, please manually add `mockzilla` to your pubspec file as follows:
+
+    ```yaml
+    mockzilla:
+        git:
+            ref: develop
+            path: FlutterMockzilla/mockzilla
+            url: https://github.com/Apadmi-Engineering/Mockzilla
+    ```
+
 ## Starting The Server
 
 Mockzilla is entirely driven by a config object which is used to start the server.
@@ -57,6 +69,25 @@ Mockzilla is entirely driven by a config object which is used to start the serve
                 MockzillaHttpResponse(body: "Hello world")
             }.build()
         ).build()
+    ```
+=== "Flutter"
+    ```dart
+    final mockzillaConfig = MockzillaConfig(
+        port: 8080,
+        isRelease: false,
+        localHostOnly: false,
+        logLevel: LogLevel.debug,
+        releaseModeConfig: ReleaseModeConfig(),
+        additionalLogWriters: [],
+    ).addEndpoint(
+        () => EndpointConfig(
+            name: "Hello world",
+            key: "Hello world",
+            endpointMatcher: (request) => request.uri.endsWith("/hello-world"),
+            defaultHandler: (request) => MockzillaHttpResponse(body: "Hello world"),
+            errorHandler: (request) => const MockzillaHttpResponse(statusCode: 418),
+        ),
+    );
     ```
 See [here](./endpoints/) for more information on configuring your endpoints. (Including compile-time safety!)
 
@@ -96,6 +127,13 @@ See [here](./endpoints/) for more information on configuring your endpoints. (In
             return true
         }
     }
+    ```
+=== "Flutter"
+    ```dart
+        // Make sure to call this before starting Mockzilla!
+        WidgetsFlutterBinding.ensureInitialized();
+        
+        await Mockzilla.startMockzilla(mockzillaConfig);
     ```
 
 ### (3): Call the server from your client code
