@@ -28,13 +28,13 @@ extension BridgeHttpMethod {
     
     static func fromNative(_ httpMethod: Ktor_httpHttpMethod) throws -> BridgeHttpMethod {
         return switch(httpMethod.value) {
-        case "GET": BridgeHttpMethod.get
-        case "HEAD": BridgeHttpMethod.head
-        case "DELETE": BridgeHttpMethod.delete
-        case "OPTIONS": BridgeHttpMethod.options
-        case "PATCH": BridgeHttpMethod.patch
-        case "POST": BridgeHttpMethod.post
-        case "PUT": BridgeHttpMethod.put
+        case "get": BridgeHttpMethod.get
+        case "head": BridgeHttpMethod.head
+        case "delete": BridgeHttpMethod.delete
+        case "options": BridgeHttpMethod.options
+        case "patch": BridgeHttpMethod.patch
+        case "post": BridgeHttpMethod.post
+        case "put": BridgeHttpMethod.put
         default: throw MockzillaError.argumentError
         }
     }
@@ -108,7 +108,7 @@ extension BridgeEndpointConfig {
             delayMean: KotlinInt(int: Int32(truncatingIfNeeded: delayMean)),
             delayVariance: KotlinInt(int: Int32(truncatingIfNeeded: delayVariance)),
             endpointMatcher: { request in KotlinBoolean(value: endpointMatcher(key, request))},
-            webApiDefaultResponse: webApiErrorResponse?.toNative(),
+            webApiDefaultResponse: webApiDefaultResponse?.toNative(),
             webApiErrorResponse: webApiErrorResponse?.toNative(),
             defaultHandler: { request in defaultHandler(key, request) },
             errorHandler: { request in errorHandler(key, request) }
