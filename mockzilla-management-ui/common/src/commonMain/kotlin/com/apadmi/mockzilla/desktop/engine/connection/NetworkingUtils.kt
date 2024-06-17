@@ -2,6 +2,7 @@
 package com.apadmi.mockzilla.desktop.engine.connection
 
 import java.net.DatagramSocket
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
 import java.util.Enumeration
@@ -15,7 +16,7 @@ fun Enumeration<NetworkInterface>.isLocalIpAddress(
     networkInterface.inetAddresses.toList().any { it.hostAddress == address }
 }
 
-suspend fun Enumeration<NetworkInterface>.findMdnsAddresses() = toList()
+suspend fun Enumeration<NetworkInterface>.findMdnsAddresses(): List<InetAddress> = toList()
     .filterNot { networkInterface ->
         !networkInterface.isUp ||  // a down interface is not useful for us, isn't it
         !networkInterface.supportsMulticast() ||  // MC is required for mDNS
