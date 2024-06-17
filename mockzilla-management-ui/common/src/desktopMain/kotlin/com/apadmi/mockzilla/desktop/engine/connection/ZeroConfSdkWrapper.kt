@@ -4,7 +4,6 @@ import com.apadmi.mockzilla.desktop.jmds.create
 
 import co.touchlab.kermit.Logger
 
-import java.net.InetAddress
 import java.net.NetworkInterface
 import javax.jmdns.JmDNS
 import javax.jmdns.ServiceEvent
@@ -14,27 +13,59 @@ import javax.jmdns.ServiceListener
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private val tag = "ZeroConfSdkWrapper"
 actual class ZeroConfSdkWrapper actual constructor(
     private val serviceType: String,
     private val scope: CoroutineScope
 ) : ServiceListener {
-    private var jmDns: JmDNS? = null
+    private var jmDnsInstances = mutableMapOf<String, JmDNS>()
+    private var listenerJob: Job? = null
     private lateinit var listener: suspend (ServiceInfoWrapper) -> Unit
+
     actual fun setListener(listener: suspend (ServiceInfoWrapper) -> Unit) {
+        jmDnsInstances.forEach { it.value.removeServiceListener(serviceType, this) }
         this.listener = listener
 
-        scope.launch {
+        listenerJob?.cancel()
+        listenerJob = scope.launch {
             withContext(Dispatchers.IO) {
-                val jmDns = JmDNS.create(awaitLocalIpForMdns()).also {
-                    this@ZeroConfSdkWrapper.jmDns = it
+                while (listenerJob == null || listenerJob?.isCancelled == false) {
+                    attachListenersIfNeeded()
+                    delay(4.seconds)
                 }
-                jmDns.registerServiceType(serviceType)
-                jmDns.addServiceListener(serviceType, this@ZeroConfSdkWrapper)
             }
+        }
+    }
+
+    private suspend fun attachListenersIfNeeded() {
+        val newIps = withContext(Dispatchers.IO) {
+            NetworkInterface.getNetworkInterfaces()
+        }.findMdnsAddresses()
+
+        // Remove stale listeners
+        jmDnsInstances.filterNot { (hostAddress, _) ->
+            newIps.any { it.hostAddress == hostAddress }
+        }.forEach { (hostAddress, jmDns) ->
+            jmDns.removeServiceListener(serviceType, this)
+            jmDnsInstances.remove(hostAddress)
+            Logger.d(tag = tag) { "Removing stale listener for $hostAddress" }
+        }
+
+        // Add new listeners
+        newIps.filterNot {
+            jmDnsInstances.keys.contains(it.hostAddress)
+        }.forEach { inetAddress ->
+            val jmDns = JmDNS.create(inetAddress)
+
+            jmDns.registerServiceType(serviceType)
+            jmDns.addServiceListener(serviceType, this@ZeroConfSdkWrapper)
+            jmDnsInstances[inetAddress.hostAddress] = jmDns
+            Logger.i(tag = tag) { "Listening on ${inetAddress.hostAddress}" }
         }
     }
 
@@ -44,7 +75,7 @@ actual class ZeroConfSdkWrapper actual constructor(
 
     private fun serviceChanged(event: ServiceEvent?, state: ServiceInfoWrapper.State) {
         event ?: return
-        Logger.i { "Service changed: ${event.name} ${state.name}" }
+        Logger.d { "Service changed: ${event.name} ${state.name}" }
 
         scope.launch {
             // If there's no ipv4 addresses there's no way we can connect to it so ignore the Resolved event in this case
@@ -67,18 +98,6 @@ actual class ZeroConfSdkWrapper actual constructor(
     override fun serviceResolved(
         event: ServiceEvent?
     ) = serviceChanged(event, ServiceInfoWrapper.State.Resolved)
-
-    private suspend fun awaitLocalIpForMdns(): InetAddress {
-        while (true) {
-            withContext(Dispatchers.IO) {
-                NetworkInterface.getNetworkInterfaces().findMdnsAddress()
-            }?.let {
-                return it
-            }
-
-            delay(1.5.seconds)
-        }
-    }
 
     private fun ServiceInfo.parse(state: ServiceInfoWrapper.State): ServiceInfoWrapper {
         val hostAddresses = (inet6Addresses.toList() + inet4Addresses + inetAddresses).mapNotNull {
