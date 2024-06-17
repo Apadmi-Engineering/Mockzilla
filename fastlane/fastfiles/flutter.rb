@@ -14,12 +14,13 @@ desc "Flutter target for the lib"
 lane :flutter_lib_pull_request do
     flutter_dart_test
     flutter_android_test
+    flutter_ios_test
 end
 
 desc "Executes Dart unit tests"
 private_lane :flutter_dart_test do
-    # Currently, unit tests are only present in `mockzilla_android`.
     sh("cd #{flutter_root}/mockzilla_android; flutter test")
+    sh("cd #{flutter_root}/mockzilla_ios; flutter test")
 end
 
 desc "Executes Android unit tests"
@@ -28,6 +29,15 @@ private_lane :flutter_android_test do
     gradle(
         project_dir: "#{flutter_root}/mockzilla_android/example/android",
         task: "testDebugUnitTest"
+    )
+end
+
+desc "Executes iOS unit tests"
+private_lane :flutter_ios_test do
+    scan(
+        workspace: "#{flutter_root}/mockzilla_ios/example/ios/Runner.xcworkspace",
+        scheme: "Runner",
+        configuration: "Debug"
     )
 end
 
