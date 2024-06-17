@@ -42,7 +42,7 @@ jobs:
       - run: bundle install
       - run: bundle exec fastlane generate_docs
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './generated_docs'
 
