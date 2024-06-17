@@ -34,7 +34,6 @@ end
 
 desc "Executes iOS unit tests"
 private_lane :flutter_ios_test do
-    sh("cd #{flutter_root}/mockzilla_ios/example/ios; pod install")
     sh("cd #{flutter_root}/mockzilla_ios/example; flutter build ios --config-only --no-codesign")
     scan(
         workspace: "#{flutter_root}/mockzilla_ios/example/ios/Runner.xcworkspace",
