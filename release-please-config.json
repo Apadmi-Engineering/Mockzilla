@@ -37,7 +37,7 @@
       ]
     },
     "mockzilla-management-ui": {
-      "release-as": "1.0.1",
+      "release-as": "1.0.2",
       "component": "mockzilla-management-ui",
       "extra-files": ["desktop/build.gradle.kts"]
     }

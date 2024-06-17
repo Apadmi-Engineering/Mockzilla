@@ -42,16 +42,14 @@ actual class ZeroConfSdkWrapper actual constructor(
         }
     }
 
-    private suspend fun attachListenersIfNeeded() {
-        val newIps = withContext(Dispatchers.IO) {
-            NetworkInterface.getNetworkInterfaces()
-        }.findMdnsAddresses()
+    private suspend fun attachListenersIfNeeded() = withContext(Dispatchers.IO) {
+        val newIps = NetworkInterface.getNetworkInterfaces().findMdnsAddresses()
 
         // Remove stale listeners
         jmDnsInstances.filterNot { (hostAddress, _) ->
             newIps.any { it.hostAddress == hostAddress }
         }.forEach { (hostAddress, jmDns) ->
-            jmDns.removeServiceListener(serviceType, this)
+            jmDns.removeServiceListener(serviceType, this@ZeroConfSdkWrapper)
             jmDnsInstances.remove(hostAddress)
             Logger.d(tag = tag) { "Removing stale listener for $hostAddress" }
         }
