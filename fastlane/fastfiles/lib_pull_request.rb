@@ -12,9 +12,15 @@ platform :ios do
         # Create the XCFramework
         generate_xcframework
 
-        # If running this locally check the simulator in the command exists locally, if it doesn't, change it
-        # to one that does but remember to change it back before committing changes.
-        sh("cd #{lane_context[:repo_root]}/SwiftMockzilla; xcodebuild -scheme SwiftMockzilla test -destination 'platform=iOS Simulator,name=iPhone 15 Pro Max,OS=17.5'")
+        # Scan fails to find .xcresult unless output dir explicitly defined.
+        # See: https://github.com/fastlane/fastlane/issues/20012
+        scan(
+            package_path: "#{lane_context[:repo_root]}/SwiftMockzilla",
+            scheme: "SwiftMockzilla",
+            destination: "platform=iOS Simulator,name=iPhone 15 Pro Max,OS=17.5",
+            result_bundle: true,
+            output_directory: "#{lane_context[:repo_root]}/fastlane/test_output"
+        )
     end
 end
 

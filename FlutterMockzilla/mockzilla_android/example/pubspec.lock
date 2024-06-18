@@ -153,14 +153,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.0.1"
   mockzilla_platform_interface:
     dependency: transitive
     description:
       path: "../../mockzilla_platform_interface"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.0.1"
   path:
     dependency: transitive
     description:
