@@ -72,7 +72,7 @@ class MockzillaIos: Thread, MockzillaHostApi {
                 do {
                     var result: Result<BridgeMockzillaHttpResponse, FlutterError> = Result.failure(FlutterError())
                     let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
-                    self.handler.defaultHandler(
+                    self.handler.errorHandler(
                         request: nativeRequest,
                         key: key,
                         completion: { localResult in
