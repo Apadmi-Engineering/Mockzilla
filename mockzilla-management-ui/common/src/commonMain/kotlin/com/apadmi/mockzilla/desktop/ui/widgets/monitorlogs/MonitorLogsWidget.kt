@@ -70,7 +70,7 @@ fun LogRow(modifier: Modifier, event: LogEvent) =
 @Composable
 private fun MonitorLogsList(entries: Sequence<LogEvent>) = LazyColumn {
     entries.forEachIndexed { index, logEvent ->
-        item(logEvent.timestamp) {
+        item {
             LogRow(Modifier.fillMaxWidth().alternatingBackground(index), logEvent)
         }
     }

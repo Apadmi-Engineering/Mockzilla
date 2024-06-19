@@ -16,7 +16,7 @@ fun Enumeration<NetworkInterface>.isLocalIpAddress(
     networkInterface.inetAddresses.toList().any { it.hostAddress == address }
 }
 
-suspend fun Enumeration<NetworkInterface>.findMdnsAddress(): InetAddress? = toList()
+suspend fun Enumeration<NetworkInterface>.findMdnsAddresses(): List<InetAddress> = toList()
     .filterNot { networkInterface ->
         !networkInterface.isUp ||  // a down interface is not useful for us, isn't it
         !networkInterface.supportsMulticast() ||  // MC is required for mDNS
@@ -25,7 +25,7 @@ suspend fun Enumeration<NetworkInterface>.findMdnsAddress(): InetAddress? = toLi
     }.firstNotNullOfOrNull { networkInterface ->
         networkInterface.inetAddresses.toList()
             .filterNot { it.isLinkLocalAddress }
-            .firstOrNull {
+            .filter {
                 runCatching {
                     DatagramSocket(0, it).use { datagramSocket ->
                         // try to connect to *somewhere*
@@ -33,4 +33,4 @@ suspend fun Enumeration<NetworkInterface>.findMdnsAddress(): InetAddress? = toLi
                     }
                 }.getOrNull() != null
             }
-    }
+    } ?: emptyList()
