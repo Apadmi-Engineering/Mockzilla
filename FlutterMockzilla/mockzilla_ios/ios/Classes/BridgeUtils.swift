@@ -16,25 +16,25 @@ enum MockzillaError: Error {
 extension BridgeHttpMethod {
     func toNative() -> Ktor_httpHttpMethod {
         return switch self {
-        case BridgeHttpMethod.get: Ktor_httpHttpMethod(value: "get")
-        case BridgeHttpMethod.head: Ktor_httpHttpMethod(value: "head")
-        case BridgeHttpMethod.delete: Ktor_httpHttpMethod(value: "delete")
-        case BridgeHttpMethod.options: Ktor_httpHttpMethod(value: "options")
-        case BridgeHttpMethod.patch: Ktor_httpHttpMethod(value: "patch")
-        case BridgeHttpMethod.post: Ktor_httpHttpMethod(value: "post")
-        case BridgeHttpMethod.put: Ktor_httpHttpMethod(value: "put")
+        case BridgeHttpMethod.get: Ktor_httpHttpMethod(value: "GET")
+        case BridgeHttpMethod.head: Ktor_httpHttpMethod(value: "HEAD")
+        case BridgeHttpMethod.delete: Ktor_httpHttpMethod(value: "DELETE")
+        case BridgeHttpMethod.options: Ktor_httpHttpMethod(value: "OPTIONS")
+        case BridgeHttpMethod.patch: Ktor_httpHttpMethod(value: "PATCH")
+        case BridgeHttpMethod.post: Ktor_httpHttpMethod(value: "POST")
+        case BridgeHttpMethod.put: Ktor_httpHttpMethod(value: "PUT")
         }
     }
     
     static func fromNative(_ httpMethod: Ktor_httpHttpMethod) throws -> BridgeHttpMethod {
         return switch(httpMethod.value) {
-        case "get": BridgeHttpMethod.get
-        case "head": BridgeHttpMethod.head
-        case "delete": BridgeHttpMethod.delete
-        case "options": BridgeHttpMethod.options
-        case "patch": BridgeHttpMethod.patch
-        case "post": BridgeHttpMethod.post
-        case "put": BridgeHttpMethod.put
+        case "GET": BridgeHttpMethod.get
+        case "HEAD": BridgeHttpMethod.head
+        case "DELETE": BridgeHttpMethod.delete
+        case "OPTIONS": BridgeHttpMethod.options
+        case "PATCH": BridgeHttpMethod.patch
+        case "POST": BridgeHttpMethod.post
+        case "PUT": BridgeHttpMethod.put
         default: throw MockzillaError.argumentError
         }
     }
