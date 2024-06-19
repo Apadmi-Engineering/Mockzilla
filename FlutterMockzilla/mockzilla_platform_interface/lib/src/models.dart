@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 part 'models.freezed.dart';
 
@@ -48,6 +47,8 @@ class MockzillaHttpResponse with _$MockzillaHttpResponse {
 
 @freezed
 class EndpointConfig with _$EndpointConfig {
+  const EndpointConfig._();
+
   /// This configuration defines how Mockzilla should deal with a subset of
   /// requests such as configuring the response and meta-data such as the
   /// latency and failure rate.
@@ -56,7 +57,7 @@ class EndpointConfig with _$EndpointConfig {
   /// for more information.
   const factory EndpointConfig({
     required String name,
-    required String key,
+    String? customKey,
 
     /// Probability as a percentage that the Mockzilla server should return an
     /// error for any single request to this endpoint.
@@ -88,6 +89,8 @@ class EndpointConfig with _$EndpointConfig {
     required MockzillaHttpResponse Function(MockzillaHttpRequest request)
         errorHandler,
   }) = _EndpointConfig;
+
+  String get key => customKey ?? name;
 }
 
 @freezed
