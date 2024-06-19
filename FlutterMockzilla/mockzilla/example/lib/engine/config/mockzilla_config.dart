@@ -3,25 +3,14 @@ import 'dart:convert';
 import 'package:example/engine/feature/packages/models.dart';
 import 'package:mockzilla/mockzilla.dart';
 
-final mockzillaConfig = MockzillaConfig(
-  port: 8080,
-  endpoints: [
-    EndpointConfig(
-      name: "Fetch Packages",
-      key: "fetch-packages",
-      endpointMatcher: (request) =>
-          RegExp(r"/packages").hasMatch(request.uri) &&
-          request.method == HttpMethod.get,
-      defaultHandler: (_) => defaultResponse,
-      errorHandler: (_) => errorResponse,
-      failureProbability: 0,
-    ),
-  ],
-  isRelease: false,
-  localHostOnly: false,
-  logLevel: LogLevel.debug,
-  releaseModeConfig: const ReleaseModeConfig(),
-  additionalLogWriters: [],
+final mockzillaConfig = const MockzillaConfig().addEndpoint(
+  () => EndpointConfig(
+    name: "Fetch Packages",
+    endpointMatcher: (request) =>
+        request.uri.endsWith("packages") && request.method == HttpMethod.get,
+    defaultHandler: (_) => defaultResponse,
+    errorHandler: (_) => errorResponse,
+  ),
 );
 
 final defaultResponse = MockzillaHttpResponse(
