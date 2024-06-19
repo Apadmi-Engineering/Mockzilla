@@ -110,7 +110,7 @@ abstract class MockzillaLogger {
 class MockzillaConfig with _$MockzillaConfig {
   const factory MockzillaConfig({
     /// The port that the Mockzilla should be available through.
-    required int port,
+    @Default(8080) int port,
 
     /// The list of available mocked endpoints.
     @Default([]) List<EndpointConfig> endpoints,
@@ -118,19 +118,19 @@ class MockzillaConfig with _$MockzillaConfig {
     /// Can be used to add rudimentary restrictions to the Mockzilla server
     /// such as rate limiting. See [https://apadmi-engineering.github.io/Mockzilla/additional_config/#release-mode]()
     /// for more information.
-    required bool isRelease,
+    @Default(false) bool isRelease,
 
     /// Whether Mockzilla server should only be available on the host device.
-    required bool localHostOnly,
+    @Default(false) bool localHostOnly,
 
     /// The level of logging that should be used by Mockzilla.
-    required LogLevel logLevel,
+    @Default(LogLevel.info) LogLevel logLevel,
 
     /// The configuration for rate limiting.
     /// Rate limiting uses Ktor's implementation, please see
     /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
     /// info.
-    required ReleaseModeConfig releaseModeConfig,
+    @Default(ReleaseModeConfig()) ReleaseModeConfig releaseModeConfig,
 
     /// The list of additional log writers that should be used by Mockzilla.
     required List<MockzillaLogger> additionalLogWriters,

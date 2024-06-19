@@ -1159,18 +1159,19 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
 
 class _$MockzillaConfigImpl implements _MockzillaConfig {
   const _$MockzillaConfigImpl(
-      {required this.port,
+      {this.port = 8080,
       final List<EndpointConfig> endpoints = const [],
-      required this.isRelease,
-      required this.localHostOnly,
-      required this.logLevel,
-      required this.releaseModeConfig,
+      this.isRelease = false,
+      this.localHostOnly = false,
+      this.logLevel = LogLevel.info,
+      this.releaseModeConfig = const ReleaseModeConfig(),
       required final List<MockzillaLogger> additionalLogWriters})
       : _endpoints = endpoints,
         _additionalLogWriters = additionalLogWriters;
 
   /// The port that the Mockzilla should be available through.
   @override
+  @JsonKey()
   final int port;
 
   /// The list of available mocked endpoints.
@@ -1189,14 +1190,17 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   /// such as rate limiting. See [https://apadmi-engineering.github.io/Mockzilla/additional_config/#release-mode]()
   /// for more information.
   @override
+  @JsonKey()
   final bool isRelease;
 
   /// Whether Mockzilla server should only be available on the host device.
   @override
+  @JsonKey()
   final bool localHostOnly;
 
   /// The level of logging that should be used by Mockzilla.
   @override
+  @JsonKey()
   final LogLevel logLevel;
 
   /// The configuration for rate limiting.
@@ -1204,6 +1208,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
   /// info.
   @override
+  @JsonKey()
   final ReleaseModeConfig releaseModeConfig;
 
   /// The list of additional log writers that should be used by Mockzilla.
@@ -1264,12 +1269,12 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
 
 abstract class _MockzillaConfig implements MockzillaConfig {
   const factory _MockzillaConfig(
-          {required final int port,
+          {final int port,
           final List<EndpointConfig> endpoints,
-          required final bool isRelease,
-          required final bool localHostOnly,
-          required final LogLevel logLevel,
-          required final ReleaseModeConfig releaseModeConfig,
+          final bool isRelease,
+          final bool localHostOnly,
+          final LogLevel logLevel,
+          final ReleaseModeConfig releaseModeConfig,
           required final List<MockzillaLogger> additionalLogWriters}) =
       _$MockzillaConfigImpl;
 
