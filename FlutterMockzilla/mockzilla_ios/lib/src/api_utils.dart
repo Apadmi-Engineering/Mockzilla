@@ -70,7 +70,7 @@ extension BridgeEndpointConfigBridge on BridgeEndpointConfig {
   ) =>
       EndpointConfig(
         name: name,
-        key: key,
+        customKey: key,
         endpointMatcher: endpointMatcher,
         defaultHandler: defaultHandler,
         errorHandler: errorHandler,
