@@ -1168,7 +1168,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
       this.localHostOnly = false,
       this.logLevel = LogLevel.info,
       this.releaseModeConfig = const ReleaseModeConfig(),
-      required final List<MockzillaLogger> additionalLogWriters})
+      final List<MockzillaLogger> additionalLogWriters = const []})
       : _endpoints = endpoints,
         _additionalLogWriters = additionalLogWriters;
 
@@ -1219,6 +1219,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
 
   /// The list of additional log writers that should be used by Mockzilla.
   @override
+  @JsonKey()
   List<MockzillaLogger> get additionalLogWriters {
     if (_additionalLogWriters is EqualUnmodifiableListView)
       return _additionalLogWriters;
@@ -1278,7 +1279,7 @@ abstract class _MockzillaConfig implements MockzillaConfig {
           final bool localHostOnly,
           final LogLevel logLevel,
           final ReleaseModeConfig releaseModeConfig,
-          required final List<MockzillaLogger> additionalLogWriters}) =
+          final List<MockzillaLogger> additionalLogWriters}) =
       _$MockzillaConfigImpl;
 
   @override

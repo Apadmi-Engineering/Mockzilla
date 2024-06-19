@@ -19,7 +19,8 @@ enum LogLevel {
   error,
   info,
   verbose,
-  warn;
+  warn,
+  assertion;
 }
 
 @freezed
@@ -136,7 +137,7 @@ class MockzillaConfig with _$MockzillaConfig {
     @Default(ReleaseModeConfig()) ReleaseModeConfig releaseModeConfig,
 
     /// The list of additional log writers that should be used by Mockzilla.
-    required List<MockzillaLogger> additionalLogWriters,
+    @Default([]) List<MockzillaLogger> additionalLogWriters,
   }) = _MockzillaConfig;
 }
 
