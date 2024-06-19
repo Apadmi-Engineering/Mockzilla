@@ -28,6 +28,18 @@
             $0.uri.hasSuffix("greeting")
         }.build()
     ```
+=== "Flutter"
+    ```dart
+    final endpoint = EndpointConfig(
+        name: "Greeting",
+        endpointMatcher: (request) => request.uri.endsWith("greeting"),
+        defaultHandler: (request) => const MockzillaHttpResponse(
+            headers: {"key": "value"},
+            body: "Hello world",
+        ),
+        errorHandler: (request) => const MockzillaHttpResponse(statusCode: 500),
+    );
+    ```
 
 We can then call this endpoint as follows:
 ```bash
@@ -57,14 +69,32 @@ This relies on a simple concept: **Use the same set of model classes for deseria
 
 Example:
 
-```kotlin
+=== "Kotlin"
+    ```kotlin
 
-.setDefaultHandler {
+    .setDefaultHandler {
+        MockzillaHttpResponse(
+            body = Json.encodeToString(MyDtoResponseClass("my value"))
+        )
+    })
+    ```
+=== "Flutter"
+    It is recommended to use a JSON serialization library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` method for you.
+    ```dart
     MockzillaHttpResponse(
-        body = Json.encodeToString(MyDtoResponseClass("my value"))
-    )
-})
-```
+      body: jsonEncode(
+        FetchDeparturesResponse(
+          departures: [
+            Departure(
+              arrival: DateTime.now().add(const Duration(minutes: 2)),
+              destination: "East Didsbury",
+              tramType: TramType.single,
+            )
+          ],
+        ),
+      ),
+    );
+    ```
 
 ## Advanced Usage
 
@@ -108,6 +138,15 @@ Request data is accessible as follows:
                 // $0: MockzillaHttpRequest
             }
     ```
+=== "Flutter"
+    ```dart
+    EndpointConfig(
+        name: "Hello world",
+        endpointMatcher: (request) =>
+            request.method == HttpMethod.get && request.uri.endsWith("/departures"),
+        /* Handlers */
+    )
+    ```
 
 Where `MockzillaHttpRequest` is defined as follows.
 
@@ -139,6 +178,18 @@ either across all endpoints on the top level config, or on individual endpoints 
           .setMeanDelayMillis(delay: 100)
           .setDelayVarianceMillis(variance: 20)
     ```
+=== "Flutter"
+    ```dart
+    EndpointConfig(
+        name: "Fetch departures",
+        endpointMatcher: (request) => request.uri.endsWith("/departures"),
+        defaultHandler: (request) => MockzillaHttpResponse(
+        body: jsonEncode(const FetchDeparturesResponse(departures: []))),
+        errorHandler: (request) => const MockzillaHttpResponse(statusCode: 418),
+        delayMean: 100,
+        delayVariance: 20,
+    )
+    ```
 
 !!! note
 
@@ -168,6 +219,17 @@ For each individual request invocation, the decision on whether the request shou
     ```swift
     EndpointConfigurationBuilder(id: "Hello world")
     .setFailureProbability(percentage: 0)
+    ```
+=== "Flutter"
+    ```dart
+    EndpointConfig(
+        name: "Fetch departures",
+        endpointMatcher: (request) => request.uri.endsWith("/departures"),
+        defaultHandler: (request) => MockzillaHttpResponse(
+        body: jsonEncode(const FetchDeparturesResponse(departures: []))),
+        errorHandler: (request) => const MockzillaHttpResponse(statusCode: 418),
+        failureProbability: 0
+    )
     ```
 
 **The default failure probability is 0**.
