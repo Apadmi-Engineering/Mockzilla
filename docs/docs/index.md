@@ -33,15 +33,16 @@ A solution for running and configuring a local HTTP server to mimic REST API end
         This SPM dependency is for purely native iOS apps only.
 
 === "Flutter"
-    Flutter support is currently in development, as such installing via command-line is unavailable. If you wish to 
-    try the Flutter package in the meantime, please manually add `mockzilla` to your pubspec file as follows:
+    Either install the package using:
+
+    ```shell
+    flutter pub add mockzilla
+    ```
+
+    Or add the dependency in your pubspec.yaml file directly:
 
     ```yaml
-    mockzilla:
-        git:
-            ref: develop
-            path: FlutterMockzilla/mockzilla
-            url: https://github.com/Apadmi-Engineering/Mockzilla
+    mockzilla: <version>
     ```
 
 ## Starting The Server
@@ -72,20 +73,16 @@ Mockzilla is entirely driven by a config object which is used to start the serve
     ```
 === "Flutter"
     ```dart
-    final mockzillaConfig = MockzillaConfig(
-        port: 8080,
-        isRelease: false,
-        localHostOnly: false,
-        logLevel: LogLevel.debug,
-        releaseModeConfig: ReleaseModeConfig(),
-        additionalLogWriters: [],
-    ).addEndpoint(
+    final mockzillaConfig = MockzillaConfig().addEndpoint(
         () => EndpointConfig(
             name: "Hello world",
-            key: "Hello world",
             endpointMatcher: (request) => request.uri.endsWith("/hello-world"),
-            defaultHandler: (request) => MockzillaHttpResponse(body: "Hello world"),
-            errorHandler: (request) => const MockzillaHttpResponse(statusCode: 418),
+            defaultHandler: (request) => const MockzillaHttpResponse(
+                body: "Hello world",
+            ),
+            errorHandler: (request) => const MockzillaHttpResponse(
+                statusCode: 418,
+            ),
         ),
     );
     ```
