@@ -348,26 +348,6 @@ private fun EndpointDetailsResponseBody(
 ) = Column(modifier = modifier) {
     Spacer(Modifier.height(4.dp))
     var pickingStatusCode by remember { mutableStateOf(false) }
-    var pickingPresets by remember { mutableStateOf(false) }
-
-    if (presets.isNotEmpty()) {
-        Button(
-            modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp),
-            onClick = { pickingPresets = !pickingPresets }) {
-            Text(if (pickingPresets) "Hide Presets" else "Show Presets")
-        }
-    }
-
-    if (pickingPresets) {
-        HorizontalDivider(Modifier.fillMaxWidth())
-        PresetsSelector(
-            presets = presets,
-            onPresetSelected = {
-                pickingPresets = false
-                onPresetSelected(it)
-            }
-        )
-    }
 
     ExposedDropdownMenuBox(
         expanded = pickingStatusCode,
@@ -480,29 +460,46 @@ private fun EndpointDetailsResponseBody(
     }
     Spacer(modifier = Modifier.heightIn(8.dp))
     HeadersEditor(headers, onHeadersChange)
+    Spacer(modifier = Modifier.heightIn(8.dp))
+    PresetsSelector(
+        presets = presets,
+        onPresetSelected = onPresetSelected,
+    )
 }
 
 @Composable
 private fun PresetsSelector(
     presets: List<DashboardOverridePreset>,
     onPresetSelected: (DashboardOverridePreset) -> Unit
-) = LazyColumn(Modifier.heightIn(max = 200.dp)) {
-    itemsIndexed(presets) { index, preset ->
-        Row(Modifier.fillMaxWidth().alternatingBackground(index).padding(8.dp)) {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(preset.name)
-                Text(
-                    modifier = Modifier.alpha(0.5f),
-                    text = preset.description ?: "",
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+) = Column {
+    presets.forEachIndexed { index, preset ->
+        Column(
+            modifier = Modifier.fillMaxWidth().alternatingBackground(index).padding(8.dp),
+        ) {
+            Row {
+                Column(
+                    modifier = Modifier.weight(1F),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Text(preset.name)
+                    Text(
+                        modifier = Modifier.alpha(0.75f),
+                        text = preset.description ?: "",
+                        style = MaterialTheme.typography.bodySmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Button(onClick = { onPresetSelected(preset) }) {
+                    Text("Apply Preset")
+                }
             }
-            Spacer(Modifier.weight(1f))
-            Button(onClick = { onPresetSelected(preset) }) {
-                Text("Apply Preset")
-            }
+            Text(
+                modifier = Modifier.alpha(0.5f),
+                text = preset.response.body,
+                maxLines = 15,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
     }
 }
