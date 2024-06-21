@@ -393,28 +393,28 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.1.0"
   mockzilla_android:
     dependency: transitive
     description:
       path: "../../mockzilla_android"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.1.0"
   mockzilla_ios:
     dependency: transitive
     description:
       path: "../../mockzilla_ios"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.1.0"
   mockzilla_platform_interface:
     dependency: transitive
     description:
       path: "../../mockzilla_platform_interface"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.1.0"
   package_config:
     dependency: transitive
     description:
