@@ -1,15 +1,9 @@
-# mockzilla_ios
+The iOS implementation of the `mockzilla` package.
 
-A new Flutter plugin project.
+## Usage
 
-## Getting Started
+This platform-specific implementation of `mockzilla` is endorsed. This means that when targeting iOS in your Flutter application, this package is automatically used and you do not need to 
+manually add it to your `pubspec.yaml`.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+That said, if you do use any APIs defined in this package directly, it is good practice to add this 
+package as a dependency.
