@@ -1,22 +1,47 @@
-A plugin for configuring and running a local HTTP server that mimics a REST API consumed by your Flutter mobile app.
+<center>
+    <img src="../../icon.svg" height=200>
+</center>
 
-> This plugin is currently under development, the API is unstable and it's implementation may contain bugs.
+A Flutter plugin for running and configuring a local, mock HTTP server that allows your mobile app to simulate calls to a REST API.
 
-## Features
+**Full documentation available at [here!](https://apadmi-engineering.github.io/Mockzilla/)**
 
-* Compile safe mock endpoint definitions.
-* HTTP Client agnostic.
-* Works completely offline.
-* Entirely self-contained within your application's codebase.
+## Why use Mockzilla?
 
-## Getting started
+✅ Compile safe mock endpoint definitions.
 
-TODO: Update online documentation with Flutter usage instructions and include a link here.
+✅ HTTP client agnostic.
 
-## Important note
+✅ Works completely offline.
 
-Mockzilla is designed as a development and test tool **only**.
+✅ Entirely self-contained in your application's codebase.
 
-Mockzilla should **never be used in production**. Its traffic is unprotected and by nature of running a server on device, it can introduce security issues.
+## To hit the ground running
 
-**Do not ship it to production**.
+ >**Before we begin:** Mockzilla is a development tool only. Do not use it in production! Advice on how to do this using different Dart entrypoints can be found [here](https://apadmi-engineering.github.io/Mockzilla/#recommendation).
+
+**(1)** Create your Mockzilla server config and add mocked endpoints.
+
+```dart
+final mockzillaConfig = MockzillaConfig().addEndpoint(
+    () => EndpointConfig(
+        name: "Hello world",
+        endpointMatcher: (request) => request.uri.endsWith("/hello-world"),
+        defaultHandler: (request) => const MockzillaHttpResponse(
+            body: jsonEncode(const HelloWorldResponse())),
+        ),
+        errorHandler: (request) => const MockzillaHttpResponse(
+            statusCode: 418,
+        ),
+    ),
+);
+```
+
+**(2)** Start the mock server!
+
+```dart
+// Make sure to call this before starting Mockzilla!
+WidgetsFlutterBinding.ensureInitialized();
+
+await Mockzilla.startMockzilla(mockzillaConfig);
+```
