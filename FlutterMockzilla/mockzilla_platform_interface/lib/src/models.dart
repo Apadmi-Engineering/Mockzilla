@@ -129,19 +129,9 @@ class MockzillaConfig with _$MockzillaConfig {
 
     /// The level of logging that should be used by Mockzilla.
     @Default(LogLevel.info) LogLevel logLevel,
-
-    /// The configuration for rate limiting.
-    /// Rate limiting uses Ktor's implementation, please see
-    /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
-    /// info.
-    @Default(ReleaseModeConfig()) ReleaseModeConfig releaseModeConfig,
-
-    /// The list of additional log writers that should be used by Mockzilla.
-    @Default([]) List<MockzillaLogger> additionalLogWriters,
   }) = _MockzillaConfig;
 }
 
-// TODO: Implement returning this class from `startMockzilla`.
 @freezed
 class MockzillaRuntimeParams with _$MockzillaRuntimeParams {
   const factory MockzillaRuntimeParams({
