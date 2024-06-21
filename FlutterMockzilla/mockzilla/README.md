@@ -1,6 +1,6 @@
-<center>
+<p align="center">
     <img src="../../icon.svg" height=200>
-</center>
+</p>
 
 A Flutter plugin for running and configuring a local, mock HTTP server that allows your mobile app to simulate calls to a REST API.
 
