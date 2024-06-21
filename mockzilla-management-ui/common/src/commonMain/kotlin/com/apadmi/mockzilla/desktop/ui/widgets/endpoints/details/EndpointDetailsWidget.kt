@@ -494,10 +494,15 @@ private fun PresetsSelector(
                     Text("Apply Preset")
                 }
             }
+            val maxLines = if (index == 0) {
+                20
+            } else {
+                3
+            }
             Text(
                 modifier = Modifier.alpha(0.5f),
                 text = preset.response.body,
-                maxLines = 15,
+                maxLines = maxLines,
                 overflow = TextOverflow.Ellipsis,
             )
         }
