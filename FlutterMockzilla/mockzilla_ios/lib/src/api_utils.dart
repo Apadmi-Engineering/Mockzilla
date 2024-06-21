@@ -160,7 +160,5 @@ extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
         isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toDart(),
-        releaseModeConfig: releaseModeConfig.toDart(),
-        additionalLogWriters: [],
       );
 }
