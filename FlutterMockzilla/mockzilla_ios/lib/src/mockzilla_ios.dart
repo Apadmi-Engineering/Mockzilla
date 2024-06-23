@@ -15,7 +15,7 @@ class MockzillaIos extends MockzillaPlatform {
       ),
       config.additionalLogWriters,
     );
-    MockzillaFlutterApi.setup(callbackProvider);
+    MockzillaFlutterApi.setUp(callbackProvider);
     return mockzillaHostBridge.startServer(config.toBridge());
   }
 
