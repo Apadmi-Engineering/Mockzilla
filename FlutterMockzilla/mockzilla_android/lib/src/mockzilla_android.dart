@@ -10,10 +10,11 @@ class MockzillaAndroid extends MockzillaPlatform {
   Future<void> startMockzilla(MockzillaConfig config) {
     final callbackProvider = CallbackProvider(
       config.endpoints,
-      () => Future.value(BridgeAuthHeader(key: "Authorization", value: "Bearer")),
+      () =>
+          Future.value(BridgeAuthHeader(key: "Authorization", value: "Bearer")),
       config.additionalLogWriters,
     );
-    MockzillaFlutterApi.setup(callbackProvider);
+    MockzillaFlutterApi.setUp(callbackProvider);
     return mockzillaHostBridge.startServer(config.toBridge());
   }
 
