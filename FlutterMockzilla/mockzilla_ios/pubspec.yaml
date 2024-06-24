@@ -18,10 +18,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # TODO: Local dependencies used for ease of development, these should be regular dependencies
-  # once this plugin is hosted.
-  mockzilla_platform_interface:
-    path: ../mockzilla_platform_interface
+  mockzilla_platform_interface: ^0.1.0
 
 dev_dependencies:
   flutter_test:
