@@ -15,13 +15,13 @@ class BridgeUtilsTests: XCTestCase {
     
     func testHttpMethodMarshalling() throws {
         let bridgeToNative = [
-            BridgeHttpMethod.delete: Ktor_httpHttpMethod(value: "delete"),
-            BridgeHttpMethod.get: Ktor_httpHttpMethod(value: "get"),
-            BridgeHttpMethod.head: Ktor_httpHttpMethod(value: "head"),
-            BridgeHttpMethod.options: Ktor_httpHttpMethod(value: "options"),
-            BridgeHttpMethod.patch: Ktor_httpHttpMethod(value: "patch"),
-            BridgeHttpMethod.post: Ktor_httpHttpMethod(value: "post"),
-            BridgeHttpMethod.put: Ktor_httpHttpMethod(value: "put")
+            BridgeHttpMethod.delete: Ktor_httpHttpMethod(value: "DELETE"),
+            BridgeHttpMethod.get: Ktor_httpHttpMethod(value: "GET"),
+            BridgeHttpMethod.head: Ktor_httpHttpMethod(value: "HEAD"),
+            BridgeHttpMethod.options: Ktor_httpHttpMethod(value: "OPTIONS"),
+            BridgeHttpMethod.patch: Ktor_httpHttpMethod(value: "PATCH"),
+            BridgeHttpMethod.post: Ktor_httpHttpMethod(value: "POST"),
+            BridgeHttpMethod.put: Ktor_httpHttpMethod(value: "PUT")
         ]
         
         try bridgeToNative.forEach { (bridge, native) in

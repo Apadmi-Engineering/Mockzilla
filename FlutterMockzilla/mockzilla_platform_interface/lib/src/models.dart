@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 part 'models.freezed.dart';
 
@@ -20,7 +19,8 @@ enum LogLevel {
   error,
   info,
   verbose,
-  warn;
+  warn,
+  assertion;
 }
 
 @freezed
@@ -48,6 +48,8 @@ class MockzillaHttpResponse with _$MockzillaHttpResponse {
 
 @freezed
 class EndpointConfig with _$EndpointConfig {
+  const EndpointConfig._();
+
   /// This configuration defines how Mockzilla should deal with a subset of
   /// requests such as configuring the response and meta-data such as the
   /// latency and failure rate.
@@ -56,7 +58,7 @@ class EndpointConfig with _$EndpointConfig {
   /// for more information.
   const factory EndpointConfig({
     required String name,
-    required String key,
+    String? customKey,
 
     /// Probability as a percentage that the Mockzilla server should return an
     /// error for any single request to this endpoint.
@@ -88,6 +90,8 @@ class EndpointConfig with _$EndpointConfig {
     required MockzillaHttpResponse Function(MockzillaHttpRequest request)
         errorHandler,
   }) = _EndpointConfig;
+
+  String get key => customKey ?? name;
 }
 
 @freezed
@@ -110,7 +114,7 @@ abstract class MockzillaLogger {
 class MockzillaConfig with _$MockzillaConfig {
   const factory MockzillaConfig({
     /// The port that the Mockzilla should be available through.
-    required int port,
+    @Default(8080) int port,
 
     /// The list of available mocked endpoints.
     @Default([]) List<EndpointConfig> endpoints,
@@ -118,26 +122,16 @@ class MockzillaConfig with _$MockzillaConfig {
     /// Can be used to add rudimentary restrictions to the Mockzilla server
     /// such as rate limiting. See [https://apadmi-engineering.github.io/Mockzilla/additional_config/#release-mode]()
     /// for more information.
-    required bool isRelease,
+    @Default(false) bool isRelease,
 
     /// Whether Mockzilla server should only be available on the host device.
-    required bool localHostOnly,
+    @Default(false) bool localHostOnly,
 
     /// The level of logging that should be used by Mockzilla.
-    required LogLevel logLevel,
-
-    /// The configuration for rate limiting.
-    /// Rate limiting uses Ktor's implementation, please see
-    /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
-    /// info.
-    required ReleaseModeConfig releaseModeConfig,
-
-    /// The list of additional log writers that should be used by Mockzilla.
-    required List<MockzillaLogger> additionalLogWriters,
+    @Default(LogLevel.info) LogLevel logLevel,
   }) = _MockzillaConfig;
 }
 
-// TODO: Implement returning this class from `startMockzilla`.
 @freezed
 class MockzillaRuntimeParams with _$MockzillaRuntimeParams {
   const factory MockzillaRuntimeParams({

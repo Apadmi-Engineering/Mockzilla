@@ -70,7 +70,7 @@ extension BridgeEndpointConfigBridge on BridgeEndpointConfig {
   ) =>
       EndpointConfig(
         name: name,
-        key: key,
+        customKey: key,
         endpointMatcher: endpointMatcher,
         defaultHandler: defaultHandler,
         errorHandler: errorHandler,
@@ -160,7 +160,5 @@ extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
         isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toDart(),
-        releaseModeConfig: releaseModeConfig.toDart(),
-        additionalLogWriters: [],
       );
 }

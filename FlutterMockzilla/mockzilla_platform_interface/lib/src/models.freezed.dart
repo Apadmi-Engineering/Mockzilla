@@ -381,7 +381,7 @@ abstract class _MockzillaHttpResponse implements MockzillaHttpResponse {
 /// @nodoc
 mixin _$EndpointConfig {
   String get name => throw _privateConstructorUsedError;
-  String get key => throw _privateConstructorUsedError;
+  String? get customKey => throw _privateConstructorUsedError;
 
   /// Probability as a percentage that the Mockzilla server should return an
   /// error for any single request to this endpoint.
@@ -429,7 +429,7 @@ abstract class $EndpointConfigCopyWith<$Res> {
   @useResult
   $Res call(
       {String name,
-      String key,
+      String? customKey,
       int failureProbability,
       int delayMean,
       int delayVariance,
@@ -457,7 +457,7 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
   @override
   $Res call({
     Object? name = null,
-    Object? key = null,
+    Object? customKey = freezed,
     Object? failureProbability = null,
     Object? delayMean = null,
     Object? delayVariance = null,
@@ -472,10 +472,10 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
+      customKey: freezed == customKey
+          ? _value.customKey
+          : customKey // ignore: cast_nullable_to_non_nullable
+              as String?,
       failureProbability: null == failureProbability
           ? _value.failureProbability
           : failureProbability // ignore: cast_nullable_to_non_nullable
@@ -548,7 +548,7 @@ abstract class _$$EndpointConfigImplCopyWith<$Res>
   @useResult
   $Res call(
       {String name,
-      String key,
+      String? customKey,
       int failureProbability,
       int delayMean,
       int delayVariance,
@@ -576,7 +576,7 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? name = null,
-    Object? key = null,
+    Object? customKey = freezed,
     Object? failureProbability = null,
     Object? delayMean = null,
     Object? delayVariance = null,
@@ -591,10 +591,10 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
+      customKey: freezed == customKey
+          ? _value.customKey
+          : customKey // ignore: cast_nullable_to_non_nullable
+              as String?,
       failureProbability: null == failureProbability
           ? _value.failureProbability
           : failureProbability // ignore: cast_nullable_to_non_nullable
@@ -633,10 +633,10 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$EndpointConfigImpl implements _EndpointConfig {
+class _$EndpointConfigImpl extends _EndpointConfig {
   const _$EndpointConfigImpl(
       {required this.name,
-      required this.key,
+      this.customKey,
       this.failureProbability = 0,
       this.delayMean = 100,
       this.delayVariance = 20,
@@ -644,12 +644,13 @@ class _$EndpointConfigImpl implements _EndpointConfig {
       this.webApiDefaultResponse,
       this.webApiErrorResponse,
       required this.defaultHandler,
-      required this.errorHandler});
+      required this.errorHandler})
+      : super._();
 
   @override
   final String name;
   @override
-  final String key;
+  final String? customKey;
 
   /// Probability as a percentage that the Mockzilla server should return an
   /// error for any single request to this endpoint.
@@ -692,7 +693,7 @@ class _$EndpointConfigImpl implements _EndpointConfig {
 
   @override
   String toString() {
-    return 'EndpointConfig(name: $name, key: $key, failureProbability: $failureProbability, delayMean: $delayMean, delayVariance: $delayVariance, endpointMatcher: $endpointMatcher, webApiDefaultResponse: $webApiDefaultResponse, webApiErrorResponse: $webApiErrorResponse, defaultHandler: $defaultHandler, errorHandler: $errorHandler)';
+    return 'EndpointConfig(name: $name, customKey: $customKey, failureProbability: $failureProbability, delayMean: $delayMean, delayVariance: $delayVariance, endpointMatcher: $endpointMatcher, webApiDefaultResponse: $webApiDefaultResponse, webApiErrorResponse: $webApiErrorResponse, defaultHandler: $defaultHandler, errorHandler: $errorHandler)';
   }
 
   @override
@@ -701,7 +702,8 @@ class _$EndpointConfigImpl implements _EndpointConfig {
         (other.runtimeType == runtimeType &&
             other is _$EndpointConfigImpl &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.key, key) || other.key == key) &&
+            (identical(other.customKey, customKey) ||
+                other.customKey == customKey) &&
             (identical(other.failureProbability, failureProbability) ||
                 other.failureProbability == failureProbability) &&
             (identical(other.delayMean, delayMean) ||
@@ -724,7 +726,7 @@ class _$EndpointConfigImpl implements _EndpointConfig {
   int get hashCode => Object.hash(
       runtimeType,
       name,
-      key,
+      customKey,
       failureProbability,
       delayMean,
       delayVariance,
@@ -742,10 +744,10 @@ class _$EndpointConfigImpl implements _EndpointConfig {
           this, _$identity);
 }
 
-abstract class _EndpointConfig implements EndpointConfig {
+abstract class _EndpointConfig extends EndpointConfig {
   const factory _EndpointConfig(
       {required final String name,
-      required final String key,
+      final String? customKey,
       final int failureProbability,
       final int delayMean,
       final int delayVariance,
@@ -756,11 +758,12 @@ abstract class _EndpointConfig implements EndpointConfig {
           defaultHandler,
       required final MockzillaHttpResponse Function(MockzillaHttpRequest)
           errorHandler}) = _$EndpointConfigImpl;
+  const _EndpointConfig._() : super._();
 
   @override
   String get name;
   @override
-  String get key;
+  String? get customKey;
   @override
 
   /// Probability as a percentage that the Mockzilla server should return an
@@ -1159,18 +1162,19 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
 
 class _$MockzillaConfigImpl implements _MockzillaConfig {
   const _$MockzillaConfigImpl(
-      {required this.port,
+      {this.port = 8080,
       final List<EndpointConfig> endpoints = const [],
-      required this.isRelease,
-      required this.localHostOnly,
-      required this.logLevel,
-      required this.releaseModeConfig,
-      required final List<MockzillaLogger> additionalLogWriters})
+      this.isRelease = false,
+      this.localHostOnly = false,
+      this.logLevel = LogLevel.info,
+      this.releaseModeConfig = const ReleaseModeConfig(),
+      final List<MockzillaLogger> additionalLogWriters = const []})
       : _endpoints = endpoints,
         _additionalLogWriters = additionalLogWriters;
 
   /// The port that the Mockzilla should be available through.
   @override
+  @JsonKey()
   final int port;
 
   /// The list of available mocked endpoints.
@@ -1189,14 +1193,17 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   /// such as rate limiting. See [https://apadmi-engineering.github.io/Mockzilla/additional_config/#release-mode]()
   /// for more information.
   @override
+  @JsonKey()
   final bool isRelease;
 
   /// Whether Mockzilla server should only be available on the host device.
   @override
+  @JsonKey()
   final bool localHostOnly;
 
   /// The level of logging that should be used by Mockzilla.
   @override
+  @JsonKey()
   final LogLevel logLevel;
 
   /// The configuration for rate limiting.
@@ -1204,6 +1211,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
   /// info.
   @override
+  @JsonKey()
   final ReleaseModeConfig releaseModeConfig;
 
   /// The list of additional log writers that should be used by Mockzilla.
@@ -1211,6 +1219,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
 
   /// The list of additional log writers that should be used by Mockzilla.
   @override
+  @JsonKey()
   List<MockzillaLogger> get additionalLogWriters {
     if (_additionalLogWriters is EqualUnmodifiableListView)
       return _additionalLogWriters;
@@ -1264,13 +1273,13 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
 
 abstract class _MockzillaConfig implements MockzillaConfig {
   const factory _MockzillaConfig(
-          {required final int port,
+          {final int port,
           final List<EndpointConfig> endpoints,
-          required final bool isRelease,
-          required final bool localHostOnly,
-          required final LogLevel logLevel,
-          required final ReleaseModeConfig releaseModeConfig,
-          required final List<MockzillaLogger> additionalLogWriters}) =
+          final bool isRelease,
+          final bool localHostOnly,
+          final LogLevel logLevel,
+          final ReleaseModeConfig releaseModeConfig,
+          final List<MockzillaLogger> additionalLogWriters}) =
       _$MockzillaConfigImpl;
 
   @override

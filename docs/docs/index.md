@@ -32,6 +32,19 @@ A solution for running and configuring a local HTTP server to mimic REST API end
         Note: This is not for KMM projects (for those, the gradle dependecy should be added to `shared` source set). 
         This SPM dependency is for purely native iOS apps only.
 
+=== "Flutter"
+    Either install the package using:
+
+    ```shell
+    flutter pub add mockzilla
+    ```
+
+    Or add the dependency in your pubspec.yaml file directly:
+
+    ```yaml
+    mockzilla: <version>
+    ```
+
 ## Starting The Server
 
 Mockzilla is entirely driven by a config object which is used to start the server.
@@ -57,6 +70,21 @@ Mockzilla is entirely driven by a config object which is used to start the serve
                 MockzillaHttpResponse(body: "Hello world")
             }.build()
         ).build()
+    ```
+=== "Flutter"
+    ```dart
+    final mockzillaConfig = MockzillaConfig().addEndpoint(
+        () => EndpointConfig(
+            name: "Hello world",
+            endpointMatcher: (request) => request.uri.endsWith("/hello-world"),
+            defaultHandler: (request) => const MockzillaHttpResponse(
+                body: "Hello world",
+            ),
+            errorHandler: (request) => const MockzillaHttpResponse(
+                statusCode: 418,
+            ),
+        ),
+    );
     ```
 See [here](./endpoints/) for more information on configuring your endpoints. (Including compile-time safety!)
 
@@ -97,6 +125,13 @@ See [here](./endpoints/) for more information on configuring your endpoints. (In
         }
     }
     ```
+=== "Flutter"
+    ```dart
+        // Make sure to call this before starting Mockzilla!
+        WidgetsFlutterBinding.ensureInitialized();
+        
+        await Mockzilla.startMockzilla(mockzillaConfig);
+    ```
 
 ### (3): Call the server from your client code
 
@@ -109,7 +144,33 @@ To configure the port see [here](../dokka/mockzilla-common/com.apadmi.mockzilla.
 Since Mockzilla shouldn't be included in production binaries, we recommend creating a new product flavour specifically 
 for the mock and only including this dependency for this variant.
 
-For KMM projects this will require creating a new KMM module in your project specifically for the mock.
+=== "KMM"
+    For KMM projects this will require creating a new KMM module in your project specifically for the mock.
+
+=== "Flutter"
+    Flutter itself doesn't support product flavours in the same way as Android or iOS, however we can use different Dart 
+    entrypoints into your application and Dart's tree-shaking to achieve a similar effect.
+
+    1. Before integrating Mockzilla, duplicate your `main.dart` file and rename it to create `main_mock.dart`.
+
+        ```
+        |-lib
+          |-main.dart
+          |-main_mock.dart
+        ```
+    
+    2. In `main_mock.dart`, follow the instructions above to configure and start the Mockzilla server and perform any 
+    additional configuration on your HTTP client to use the `localhost` base URL above.
+
+    3. We can now use the newly created `main_mock.dart` as a different entrypoint to your Flutter app to enable 
+    Mockzilla while leaving the standard `main.dart` as your production entrypoint!
+
+        ```shell
+        flutter run -t lib/main_mock.dart
+        ```
+
+    4. Optionally, feel free to move the Mockzilla config to an auxiliary file. Just make sure that the declarations 
+    aren't used in your production app.
 
 ## Tips
 
