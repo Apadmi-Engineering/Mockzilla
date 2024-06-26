@@ -2,7 +2,7 @@
   "release-type": "simple",
   "packages": {
     "mockzilla": {
-      "release-as": "2.0.0",
+      "release-as": "2.1.1",
       "component": "mockzilla",
       "extra-files": ["build.gradle.kts"]
     },
