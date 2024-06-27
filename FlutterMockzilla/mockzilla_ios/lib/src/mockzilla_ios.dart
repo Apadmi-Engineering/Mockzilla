@@ -13,7 +13,6 @@ class MockzillaIos extends MockzillaPlatform {
       () => Future.value(
         BridgeAuthHeader(key: "Authorization", value: "Bearer"),
       ),
-      config.additionalLogWriters,
     );
     MockzillaFlutterApi.setup(callbackProvider);
     return mockzillaHostBridge.startServer(config.toBridge());
@@ -30,12 +29,10 @@ class MockzillaIos extends MockzillaPlatform {
 class CallbackProvider extends MockzillaFlutterApi {
   final List<EndpointConfig> endpoints;
   final Future<BridgeAuthHeader> Function() _generateAuthHeader;
-  final List<MockzillaLogger> _additionalLoggers;
 
   CallbackProvider(
     this.endpoints,
     this._generateAuthHeader,
-    this._additionalLoggers,
   );
 
   /// Used to resolve the endpoint matching the specified key.
@@ -76,13 +73,6 @@ class CallbackProvider extends MockzillaFlutterApi {
     String tag,
     String? exception,
   ) {
-    for (final logger in _additionalLoggers) {
-      logger.log(
-        logLevel.toDart(),
-        message,
-        tag,
-        exception != null ? Exception(exception) : null,
-      );
-    }
+    /* TODO: Implement */
   }
 }
