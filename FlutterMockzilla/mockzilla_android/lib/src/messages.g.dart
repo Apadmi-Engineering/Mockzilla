@@ -7,7 +7,9 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
-List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
+
+List<Object?> wrapResponse(
+    {Object? result, PlatformException? error, bool empty = false}) {
   if (empty) {
     return <Object?>[];
   }
@@ -196,7 +198,6 @@ class BridgeMockzillaConfig {
     required this.isRelease,
     required this.localHostOnly,
     required this.logLevel,
-    required this.releaseModeConfig,
   });
 
   int port;
@@ -209,8 +210,6 @@ class BridgeMockzillaConfig {
 
   BridgeLogLevel logLevel;
 
-  BridgeReleaseModeConfig releaseModeConfig;
-
   Object encode() {
     return <Object?>[
       port,
@@ -218,7 +217,6 @@ class BridgeMockzillaConfig {
       isRelease,
       localHostOnly,
       logLevel.index,
-      releaseModeConfig.encode(),
     ];
   }
 
@@ -230,7 +228,6 @@ class BridgeMockzillaConfig {
       isRelease: result[2]! as bool,
       localHostOnly: result[3]! as bool,
       logLevel: BridgeLogLevel.values[result[4]! as int],
-      releaseModeConfig: BridgeReleaseModeConfig.decode(result[5]! as List<Object?>),
     );
   }
 }
@@ -324,15 +321,15 @@ class _MockzillaHostApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return BridgeEndpointConfig.decode(readValue(buffer)!);
-      case 129: 
+      case 129:
         return BridgeMockzillaConfig.decode(readValue(buffer)!);
-      case 130: 
+      case 130:
         return BridgeMockzillaHttpResponse.decode(readValue(buffer)!);
-      case 131: 
+      case 131:
         return BridgeMockzillaRuntimeParams.decode(readValue(buffer)!);
-      case 132: 
+      case 132:
         return BridgeReleaseModeConfig.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -350,9 +347,11 @@ class MockzillaHostApi {
 
   static const MessageCodec<Object?> codec = _MockzillaHostApiCodec();
 
-  Future<BridgeMockzillaRuntimeParams> startServer(BridgeMockzillaConfig arg_config) async {
+  Future<BridgeMockzillaRuntimeParams> startServer(
+      BridgeMockzillaConfig arg_config) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.mockzilla_android.MockzillaHostApi.startServer', codec,
+        'dev.flutter.pigeon.mockzilla_android.MockzillaHostApi.startServer',
+        codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(<Object?>[arg_config]) as List<Object?>?;
@@ -379,10 +378,10 @@ class MockzillaHostApi {
 
   Future<void> stopServer() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.mockzilla_android.MockzillaHostApi.stopServer', codec,
+        'dev.flutter.pigeon.mockzilla_android.MockzillaHostApi.stopServer',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -421,11 +420,11 @@ class _MockzillaFlutterApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return BridgeAuthHeader.decode(readValue(buffer)!);
-      case 129: 
+      case 129:
         return BridgeMockzillaHttpRequest.decode(readValue(buffer)!);
-      case 130: 
+      case 130:
         return BridgeMockzillaHttpResponse.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -438,27 +437,33 @@ abstract class MockzillaFlutterApi {
 
   bool endpointMatcher(BridgeMockzillaHttpRequest request, String key);
 
-  BridgeMockzillaHttpResponse defaultHandler(BridgeMockzillaHttpRequest request, String key);
+  BridgeMockzillaHttpResponse defaultHandler(
+      BridgeMockzillaHttpRequest request, String key);
 
-  BridgeMockzillaHttpResponse errorHandler(BridgeMockzillaHttpRequest request, String key);
+  BridgeMockzillaHttpResponse errorHandler(
+      BridgeMockzillaHttpRequest request, String key);
 
   Future<BridgeAuthHeader> generateAuthHeader();
 
-  void log(BridgeLogLevel logLevel, String message, String tag, String? exception);
+  void log(
+      BridgeLogLevel logLevel, String message, String tag, String? exception);
 
-  static void setup(MockzillaFlutterApi? api, {BinaryMessenger? binaryMessenger}) {
+  static void setup(MockzillaFlutterApi? api,
+      {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.endpointMatcher', codec,
+          'dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.endpointMatcher',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.endpointMatcher was null.');
+              'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.endpointMatcher was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final BridgeMockzillaHttpRequest? arg_request = (args[0] as BridgeMockzillaHttpRequest?);
+          final BridgeMockzillaHttpRequest? arg_request =
+              (args[0] as BridgeMockzillaHttpRequest?);
           assert(arg_request != null,
               'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.endpointMatcher was null, expected non-null BridgeMockzillaHttpRequest.');
           final String? arg_key = (args[1] as String?);
@@ -469,71 +474,81 @@ abstract class MockzillaFlutterApi {
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.defaultHandler', codec,
+          'dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.defaultHandler',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.defaultHandler was null.');
+              'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.defaultHandler was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final BridgeMockzillaHttpRequest? arg_request = (args[0] as BridgeMockzillaHttpRequest?);
+          final BridgeMockzillaHttpRequest? arg_request =
+              (args[0] as BridgeMockzillaHttpRequest?);
           assert(arg_request != null,
               'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.defaultHandler was null, expected non-null BridgeMockzillaHttpRequest.');
           final String? arg_key = (args[1] as String?);
           assert(arg_key != null,
               'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.defaultHandler was null, expected non-null String.');
           try {
-            final BridgeMockzillaHttpResponse output = api.defaultHandler(arg_request!, arg_key!);
+            final BridgeMockzillaHttpResponse output =
+                api.defaultHandler(arg_request!, arg_key!);
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.errorHandler', codec,
+          'dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.errorHandler',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.errorHandler was null.');
+              'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.errorHandler was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final BridgeMockzillaHttpRequest? arg_request = (args[0] as BridgeMockzillaHttpRequest?);
+          final BridgeMockzillaHttpRequest? arg_request =
+              (args[0] as BridgeMockzillaHttpRequest?);
           assert(arg_request != null,
               'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.errorHandler was null, expected non-null BridgeMockzillaHttpRequest.');
           final String? arg_key = (args[1] as String?);
           assert(arg_key != null,
               'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.errorHandler was null, expected non-null String.');
           try {
-            final BridgeMockzillaHttpResponse output = api.errorHandler(arg_request!, arg_key!);
+            final BridgeMockzillaHttpResponse output =
+                api.errorHandler(arg_request!, arg_key!);
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.generateAuthHeader', codec,
+          'dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.generateAuthHeader',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
@@ -544,8 +559,9 @@ abstract class MockzillaFlutterApi {
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
@@ -559,9 +575,10 @@ abstract class MockzillaFlutterApi {
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.log was null.');
+              'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.log was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final BridgeLogLevel? arg_logLevel = args[0] == null ? null : BridgeLogLevel.values[args[0]! as int];
+          final BridgeLogLevel? arg_logLevel =
+              args[0] == null ? null : BridgeLogLevel.values[args[0]! as int];
           assert(arg_logLevel != null,
               'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.log was null, expected non-null BridgeLogLevel.');
           final String? arg_message = (args[1] as String?);
@@ -576,8 +593,9 @@ abstract class MockzillaFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
