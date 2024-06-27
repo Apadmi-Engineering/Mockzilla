@@ -81,7 +81,7 @@ lane :publish_to_maven_local do |options|
         properties: {
             "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
             "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
-        }.merge(createSnapshotProp(options[:is_snapshot]))
+        }.merge(createSnapshotProp(options[:is_snapshot], get_version_name(options)))
     )
 end
 
@@ -101,19 +101,20 @@ lane :publish_to_maven do |options|
         properties: {
             "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
             "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
-        }.merge(createSnapshotProp(options[:is_snapshot]))
+        }.merge(createSnapshotProp(options[:is_snapshot], get_version_name(options)))
     )
 end
 
-def createSnapshotProp(is_snapshot)
+def createSnapshotProp(is_snapshot, version)
     {
-        "is_snapshot" => is_snapshot
+        "is_snapshot" => is_snapshot,
+        "version" => version
     }
 end
 
 private_lane :get_version_name do |options|
     build_gradle_text = IO.read("#{lane_context[:repo_root]}/mockzilla/build.gradle.kts")
-    version_pattern = /version\s*=\s*"(.*?)".*/
+    version_pattern = /.*"(.*?)" \/\/ x-release-please-version/
     version = build_gradle_text.match(version_pattern)[1]
 
     options[:is_snapshot] ? "#{version}-SNAPSHOT" : version

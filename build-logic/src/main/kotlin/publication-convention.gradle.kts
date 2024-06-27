@@ -4,57 +4,55 @@ plugins {
     id("org.gradle.maven-publish")
 }
 
+if (isSnapshot()) {
+    logger.warn("Snapshot Build ($version) [${mavenUrl()}]")
+} else {
+    logger.warn("Live Build ($version) [${mavenUrl()}]")
+}
+
 publishing {
-    afterEvaluate {
-        if (isSnapshot()) {
-            version = "$version-SNAPSHOT"
-            logger.warn("Publishing to snapshot repository ($version)")
-        } else {
-            logger.warn("Publishing to live repository ($version)")
+    repositories.maven(mavenUrl()) {
+        name = "OSSRH"
+
+        credentials {
+            username = System.getenv("OSSRH_USERNAME")
+            password = System.getenv("OSSRH_PASSWORD")
         }
+    }
 
-        repositories.maven(mavenUrl()) {
-            name = "OSSRH"
-
-            credentials {
-                username = System.getenv("OSSRH_USER")
-                password = System.getenv("OSSRH_KEY")
+    publications.withType<MavenPublication> {
+        // Provide artifacts information required by Maven Central
+        pom {
+            url.set("https://github.com/Apadmi-Engineering/Mockzilla")
+            licenses {
+                license {
+                    name.set("MIT")
+                    distribution.set("repo")
+                    url.set("https://opensource.org/licenses/MIT")
+                }
             }
-        }
 
-        publications.withType<MavenPublication> {
-            // Provide artifacts information required by Maven Central
-            pom {
+            developers {
+                developer {
+                    id.set("samdc")
+                    name.set("Sam DC")
+                    email.set("samdc@apadmi.com")
+                }
+                developer {
+                    id.set("mattm")
+                    name.set("Matt M")
+                    email.set("mattm@apadmi.com")
+                }
+            }
+
+            scm {
+                connection.set("scm:git:ssh://github.com/Apadmi-Engineering/Mockzilla.git")
+                developerConnection.set("scm:git:ssh://github.com/Apadmi-Engineering/Mockzilla.git")
                 url.set("https://github.com/Apadmi-Engineering/Mockzilla")
-                licenses {
-                    license {
-                        name.set("MIT")
-                        distribution.set("repo")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-
-                developers {
-                    developer {
-                        id.set("samdc")
-                        name.set("Sam DC")
-                        email.set("samdc@apadmi.com")
-                    }
-                    developer {
-                        id.set("mattm")
-                        name.set("Matt M")
-                        email.set("mattm@apadmi.com")
-                    }
-                }
-
-                scm {
-                    connection.set("scm:git:ssh://github.com/Apadmi-Engineering/Mockzilla.git")
-                    developerConnection.set("scm:git:ssh://github.com/Apadmi-Engineering/Mockzilla.git")
-                    url.set("https://github.com/Apadmi-Engineering/Mockzilla")
-                }
             }
         }
     }
+
 }
 
 val hasKey = System.getenv("GPG_KEY_ID") != null

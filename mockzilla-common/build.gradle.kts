@@ -1,5 +1,6 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.injectedVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
@@ -12,7 +13,7 @@ plugins {
 
 kotlin {
     // Managed automatically by release-please PRs
-    version = "1.2.1" // x-release-please-version
+    version = project.injectedVersion() ?: "1.2.1" // x-release-please-version
     androidTarget {
         publishAllLibraryVariants()
     }
