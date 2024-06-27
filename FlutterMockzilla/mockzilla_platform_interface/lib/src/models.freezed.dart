@@ -136,7 +136,9 @@ class __$$MockzillaHttpRequestImplCopyWithImpl<$Res>
 class _$MockzillaHttpRequestImpl implements _MockzillaHttpRequest {
   const _$MockzillaHttpRequestImpl(
       {required this.uri,
-      required final Map<String, String> headers,
+      final Map<String, String> headers = const {
+        "Content-Type": "application/json"
+      },
       this.body = "",
       required this.method})
       : _headers = headers;
@@ -145,6 +147,7 @@ class _$MockzillaHttpRequestImpl implements _MockzillaHttpRequest {
   final String uri;
   final Map<String, String> _headers;
   @override
+  @JsonKey()
   Map<String, String> get headers {
     if (_headers is EqualUnmodifiableMapView) return _headers;
     // ignore: implicit_dynamic_type
@@ -189,7 +192,7 @@ class _$MockzillaHttpRequestImpl implements _MockzillaHttpRequest {
 abstract class _MockzillaHttpRequest implements MockzillaHttpRequest {
   const factory _MockzillaHttpRequest(
       {required final String uri,
-      required final Map<String, String> headers,
+      final Map<String, String> headers,
       final String body,
       required final HttpMethod method}) = _$MockzillaHttpRequestImpl;
 
@@ -990,16 +993,6 @@ mixin _$MockzillaConfig {
   /// The level of logging that should be used by Mockzilla.
   LogLevel get logLevel => throw _privateConstructorUsedError;
 
-  /// The configuration for rate limiting.
-  /// Rate limiting uses Ktor's implementation, please see
-  /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
-  /// info.
-  ReleaseModeConfig get releaseModeConfig => throw _privateConstructorUsedError;
-
-  /// The list of additional log writers that should be used by Mockzilla.
-  List<MockzillaLogger> get additionalLogWriters =>
-      throw _privateConstructorUsedError;
-
   @JsonKey(ignore: true)
   $MockzillaConfigCopyWith<MockzillaConfig> get copyWith =>
       throw _privateConstructorUsedError;
@@ -1016,11 +1009,7 @@ abstract class $MockzillaConfigCopyWith<$Res> {
       List<EndpointConfig> endpoints,
       bool isRelease,
       bool localHostOnly,
-      LogLevel logLevel,
-      ReleaseModeConfig releaseModeConfig,
-      List<MockzillaLogger> additionalLogWriters});
-
-  $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig;
+      LogLevel logLevel});
 }
 
 /// @nodoc
@@ -1041,8 +1030,6 @@ class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
     Object? isRelease = null,
     Object? localHostOnly = null,
     Object? logLevel = null,
-    Object? releaseModeConfig = null,
-    Object? additionalLogWriters = null,
   }) {
     return _then(_value.copyWith(
       port: null == port
@@ -1065,23 +1052,7 @@ class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
           ? _value.logLevel
           : logLevel // ignore: cast_nullable_to_non_nullable
               as LogLevel,
-      releaseModeConfig: null == releaseModeConfig
-          ? _value.releaseModeConfig
-          : releaseModeConfig // ignore: cast_nullable_to_non_nullable
-              as ReleaseModeConfig,
-      additionalLogWriters: null == additionalLogWriters
-          ? _value.additionalLogWriters
-          : additionalLogWriters // ignore: cast_nullable_to_non_nullable
-              as List<MockzillaLogger>,
     ) as $Val);
-  }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig {
-    return $ReleaseModeConfigCopyWith<$Res>(_value.releaseModeConfig, (value) {
-      return _then(_value.copyWith(releaseModeConfig: value) as $Val);
-    });
   }
 }
 
@@ -1098,12 +1069,7 @@ abstract class _$$MockzillaConfigImplCopyWith<$Res>
       List<EndpointConfig> endpoints,
       bool isRelease,
       bool localHostOnly,
-      LogLevel logLevel,
-      ReleaseModeConfig releaseModeConfig,
-      List<MockzillaLogger> additionalLogWriters});
-
-  @override
-  $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig;
+      LogLevel logLevel});
 }
 
 /// @nodoc
@@ -1122,8 +1088,6 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
     Object? isRelease = null,
     Object? localHostOnly = null,
     Object? logLevel = null,
-    Object? releaseModeConfig = null,
-    Object? additionalLogWriters = null,
   }) {
     return _then(_$MockzillaConfigImpl(
       port: null == port
@@ -1146,14 +1110,6 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
           ? _value.logLevel
           : logLevel // ignore: cast_nullable_to_non_nullable
               as LogLevel,
-      releaseModeConfig: null == releaseModeConfig
-          ? _value.releaseModeConfig
-          : releaseModeConfig // ignore: cast_nullable_to_non_nullable
-              as ReleaseModeConfig,
-      additionalLogWriters: null == additionalLogWriters
-          ? _value._additionalLogWriters
-          : additionalLogWriters // ignore: cast_nullable_to_non_nullable
-              as List<MockzillaLogger>,
     ));
   }
 }
@@ -1166,11 +1122,8 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
       final List<EndpointConfig> endpoints = const [],
       this.isRelease = false,
       this.localHostOnly = false,
-      this.logLevel = LogLevel.info,
-      this.releaseModeConfig = const ReleaseModeConfig(),
-      final List<MockzillaLogger> additionalLogWriters = const []})
-      : _endpoints = endpoints,
-        _additionalLogWriters = additionalLogWriters;
+      this.logLevel = LogLevel.info})
+      : _endpoints = endpoints;
 
   /// The port that the Mockzilla should be available through.
   @override
@@ -1206,30 +1159,9 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   @JsonKey()
   final LogLevel logLevel;
 
-  /// The configuration for rate limiting.
-  /// Rate limiting uses Ktor's implementation, please see
-  /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
-  /// info.
-  @override
-  @JsonKey()
-  final ReleaseModeConfig releaseModeConfig;
-
-  /// The list of additional log writers that should be used by Mockzilla.
-  final List<MockzillaLogger> _additionalLogWriters;
-
-  /// The list of additional log writers that should be used by Mockzilla.
-  @override
-  @JsonKey()
-  List<MockzillaLogger> get additionalLogWriters {
-    if (_additionalLogWriters is EqualUnmodifiableListView)
-      return _additionalLogWriters;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_additionalLogWriters);
-  }
-
   @override
   String toString() {
-    return 'MockzillaConfig(port: $port, endpoints: $endpoints, isRelease: $isRelease, localHostOnly: $localHostOnly, logLevel: $logLevel, releaseModeConfig: $releaseModeConfig, additionalLogWriters: $additionalLogWriters)';
+    return 'MockzillaConfig(port: $port, endpoints: $endpoints, isRelease: $isRelease, localHostOnly: $localHostOnly, logLevel: $logLevel)';
   }
 
   @override
@@ -1245,11 +1177,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
             (identical(other.localHostOnly, localHostOnly) ||
                 other.localHostOnly == localHostOnly) &&
             (identical(other.logLevel, logLevel) ||
-                other.logLevel == logLevel) &&
-            (identical(other.releaseModeConfig, releaseModeConfig) ||
-                other.releaseModeConfig == releaseModeConfig) &&
-            const DeepCollectionEquality()
-                .equals(other._additionalLogWriters, _additionalLogWriters));
+                other.logLevel == logLevel));
   }
 
   @override
@@ -1259,9 +1187,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
       const DeepCollectionEquality().hash(_endpoints),
       isRelease,
       localHostOnly,
-      logLevel,
-      releaseModeConfig,
-      const DeepCollectionEquality().hash(_additionalLogWriters));
+      logLevel);
 
   @JsonKey(ignore: true)
   @override
@@ -1273,14 +1199,11 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
 
 abstract class _MockzillaConfig implements MockzillaConfig {
   const factory _MockzillaConfig(
-          {final int port,
-          final List<EndpointConfig> endpoints,
-          final bool isRelease,
-          final bool localHostOnly,
-          final LogLevel logLevel,
-          final ReleaseModeConfig releaseModeConfig,
-          final List<MockzillaLogger> additionalLogWriters}) =
-      _$MockzillaConfigImpl;
+      {final int port,
+      final List<EndpointConfig> endpoints,
+      final bool isRelease,
+      final bool localHostOnly,
+      final LogLevel logLevel}) = _$MockzillaConfigImpl;
 
   @override
 
@@ -1304,17 +1227,6 @@ abstract class _MockzillaConfig implements MockzillaConfig {
 
   /// The level of logging that should be used by Mockzilla.
   LogLevel get logLevel;
-  @override
-
-  /// The configuration for rate limiting.
-  /// Rate limiting uses Ktor's implementation, please see
-  /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
-  /// info.
-  ReleaseModeConfig get releaseModeConfig;
-  @override
-
-  /// The list of additional log writers that should be used by Mockzilla.
-  List<MockzillaLogger> get additionalLogWriters;
   @override
   @JsonKey(ignore: true)
   _$$MockzillaConfigImplCopyWith<_$MockzillaConfigImpl> get copyWith =>

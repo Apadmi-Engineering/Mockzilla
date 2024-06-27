@@ -29,7 +29,7 @@ class MockzillaHttpRequest with _$MockzillaHttpRequest {
   /// an endpoint handler in order to generate an appropriate response.
   const factory MockzillaHttpRequest({
     required String uri,
-    required Map<String, String> headers,
+    @Default({}) Map<String, String> headers,
     @Default("") String body,
     required HttpMethod method,
   }) = _MockzillaHttpRequest;
@@ -41,7 +41,7 @@ class MockzillaHttpResponse with _$MockzillaHttpResponse {
   /// HTTP request.
   const factory MockzillaHttpResponse({
     @Default(HttpStatus.ok) int statusCode,
-    @Default({}) Map<String, String> headers,
+    @Default({"Content-Type": "application/json"}) Map<String, String> headers,
     @Default("") String body,
   }) = _MockzillaHttpResponse;
 }
