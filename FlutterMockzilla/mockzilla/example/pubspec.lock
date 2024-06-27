@@ -397,23 +397,26 @@ packages:
   mockzilla_android:
     dependency: transitive
     description:
-      path: "../../mockzilla_android"
-      relative: true
-    source: path
+      name: mockzilla_android
+      sha256: "797b4382629c5ea4542f8ed5ce62355d95aa6f0cc23772f8e1fd322bb3ef221a"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   mockzilla_ios:
     dependency: transitive
     description:
-      path: "../../mockzilla_ios"
-      relative: true
-    source: path
+      name: mockzilla_ios
+      sha256: ff85ff677977d88acd7011475489b106413d209f7a83938e23d911d53d96f7a0
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   mockzilla_platform_interface:
     dependency: transitive
     description:
-      path: "../../mockzilla_platform_interface"
-      relative: true
-    source: path
+      name: mockzilla_platform_interface
+      sha256: cd78c78137af887f019ec6b223fa565306df7c27278fff2a47d39efea884f5fc
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   package_config:
     dependency: transitive
