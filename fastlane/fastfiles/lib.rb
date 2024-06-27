@@ -3,7 +3,7 @@ platform :ios do
     lane :generate_xcframework do |options|
         gradle(
             tasks: [":mockzilla:assembleXCFramework"],
-            properties: createSnapshotProp(options[:is_snapshot])
+            properties: createSnapshotProp(options[:is_snapshot], get_version_name(options))
         )
 
         # Copy the XCFramework to where the SPM package can find it
@@ -14,7 +14,7 @@ platform :ios do
     lane :generate_podspec do |options|
         gradle(
             tasks: [":mockzilla:podPublishReleaseXCFramework"],
-            properties: createSnapshotProp(options[:is_snapshot])
+            properties: createSnapshotProp(options[:is_snapshot], get_version_name(options))
         )
 
         # Copy the Podspec to where the publish lane can find it
