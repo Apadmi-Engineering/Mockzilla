@@ -31,13 +31,11 @@ platform :ios do
 
         sh("rm -rf apadmi-mockzilla-ios")
 
-        sh("git clone #{ENV["IOS_DEPLOY_URL"]} apadmi-mockzilla-ios")
 
         if options[:is_snapshot]
-            sh(%{
-                cd apadmi-mockzilla-ios;
-                git checkout -b deployment/new-snapshot
-            })
+            sh("git clone #{ENV["IOS_DEPLOY_URL"]} apadmi-mockzilla-ios")
+        else
+            sh("git clone -b deployment/snapshot #{ENV["IOS_DEPLOY_URL"]} apadmi-mockzilla-ios")
         end
 
         sh(%{
@@ -47,16 +45,12 @@ platform :ios do
 
             git add .;
             git add --force mockzilla.xcframework;
-            git add --force SwiftMockzilla.podspec
+            git add --force SwiftMockzilla.podspec;
             git commit -m "Updating Package #{get_version_name(options)}";
+            git push;
         })
 
-        if options[:is_snapshot]
-            sh(%{
-                cd apadmi-mockzilla-ios;
-                git push --force origin deployment/new-snapshot:deployment/snapshot
-            })
-        else
+        if !options[:is_snapshot]
             sh(%{
                 cd apadmi-mockzilla-ios;
                 git push
