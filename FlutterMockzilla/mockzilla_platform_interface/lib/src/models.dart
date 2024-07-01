@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 part 'models.freezed.dart';
 
@@ -129,6 +130,9 @@ class MockzillaConfig with _$MockzillaConfig {
 
     /// The level of logging that should be used by Mockzilla.
     @Default(LogLevel.info) LogLevel logLevel,
+
+    /// Used for additional configuration when [isRelease] is [true].
+    @Default(ReleaseModeConfig()) ReleaseModeConfig releaseModeConfig,
   }) = _MockzillaConfig;
 }
 

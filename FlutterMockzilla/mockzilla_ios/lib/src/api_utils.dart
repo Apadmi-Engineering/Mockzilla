@@ -135,6 +135,7 @@ extension MockzillaConfigBridge on MockzillaConfig {
         isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toBridge(),
+        releaseModeConfig: releaseModeConfig.toBridge(),
       );
 }
 
