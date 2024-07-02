@@ -45,7 +45,7 @@ kotlin {
             baseName = "mockzilla"
         }
         license = "{:type => 'MIT', :file => 'LICENSE'}"
-        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => 'v$version' }"
+        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => 'v${getVersion()}' }"
         extraSpecAttributes["vendored_frameworks"] = "'Mockzilla.xcframework'"
         extraSpecAttributes["source_files"] = "'Sources/SwiftMockzilla/SwiftMockzilla.swift'"
         extraSpecAttributes["swift_version"] = "'5.9.2'"
