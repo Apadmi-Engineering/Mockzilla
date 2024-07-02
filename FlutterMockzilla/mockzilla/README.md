@@ -1,10 +1,10 @@
 <p align="center">
-    <img src="../../icon.svg" height=200>
+    <img src="https://raw.githubusercontent.com/Apadmi-Engineering/Mockzilla/develop/icon.svg" height=200>
 </p>
 
 A Flutter plugin for running and configuring a local, mock HTTP server that allows your mobile app to simulate calls to a REST API.
 
-**Full documentation available at [here!](https://apadmi-engineering.github.io/Mockzilla/)**
+**Full documentation available [here!](https://apadmi-engineering.github.io/Mockzilla/)**
 
 ## Why use Mockzilla?
 

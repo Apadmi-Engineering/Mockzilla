@@ -1,4 +1,5 @@
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.injectedVersion
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -10,9 +11,8 @@ repositories {
 }
 
 kotlin {
-
     // Managed automatically by release-please PRs
-    version = "1.2.1" // x-release-please-version
+    version = project.injectedVersion() ?: "2.0.0" // x-release-please-version
 
     jvm {
         withJava()

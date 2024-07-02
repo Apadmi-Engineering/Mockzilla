@@ -3,7 +3,7 @@ platform :ios do
     lane :generate_xcframework do |options|
         gradle(
             tasks: [":mockzilla:assembleXCFramework"],
-            properties: createSnapshotProp(options[:is_snapshot])
+            properties: createSnapshotProp(options[:is_snapshot], get_version_name(options))
         )
 
         # Copy the XCFramework to where the SPM package can find it
@@ -14,7 +14,7 @@ platform :ios do
     lane :generate_podspec do |options|
         gradle(
             tasks: [":mockzilla:podPublishReleaseXCFramework"],
-            properties: createSnapshotProp(options[:is_snapshot])
+            properties: createSnapshotProp(options[:is_snapshot], get_version_name(options))
         )
 
         # Copy the Podspec to where the publish lane can find it
@@ -31,13 +31,11 @@ platform :ios do
 
         sh("rm -rf apadmi-mockzilla-ios")
 
-        sh("git clone #{ENV["IOS_DEPLOY_URL"]} apadmi-mockzilla-ios")
 
         if options[:is_snapshot]
-            sh(%{
-                cd apadmi-mockzilla-ios;
-                git checkout -b deployment/new-snapshot
-            })
+            sh("git clone #{ENV["IOS_DEPLOY_URL"]} apadmi-mockzilla-ios")
+        else
+            sh("git clone -b deployment/snapshot #{ENV["IOS_DEPLOY_URL"]} apadmi-mockzilla-ios")
         end
 
         sh(%{
@@ -47,16 +45,12 @@ platform :ios do
 
             git add .;
             git add --force mockzilla.xcframework;
-            git add --force SwiftMockzilla.podspec
+            git add --force SwiftMockzilla.podspec;
             git commit -m "Updating Package #{get_version_name(options)}";
+            git push;
         })
 
-        if options[:is_snapshot]
-            sh(%{
-                cd apadmi-mockzilla-ios;
-                git push --force origin deployment/new-snapshot:deployment/snapshot
-            })
-        else
+        if !options[:is_snapshot]
             sh(%{
                 cd apadmi-mockzilla-ios;
                 git push
@@ -65,7 +59,10 @@ platform :ios do
             })
 
             # Push podspec to trunk
-            sh("pod trunk push")
+            sh(%{
+                cd apadmi-mockzilla-ios
+                pod trunk push
+            })
         end
     end
 end
@@ -81,7 +78,7 @@ lane :publish_to_maven_local do |options|
         properties: {
             "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
             "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
-        }.merge(createSnapshotProp(options[:is_snapshot]))
+        }.merge(createSnapshotProp(options[:is_snapshot], get_version_name(options)))
     )
 end
 
@@ -101,19 +98,20 @@ lane :publish_to_maven do |options|
         properties: {
             "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
             "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
-        }.merge(createSnapshotProp(options[:is_snapshot]))
+        }.merge(createSnapshotProp(options[:is_snapshot], get_version_name(options)))
     )
 end
 
-def createSnapshotProp(is_snapshot)
+def createSnapshotProp(is_snapshot, version)
     {
-        "is_snapshot" => is_snapshot
+        "is_snapshot" => is_snapshot,
+        "version" => version
     }
 end
 
 private_lane :get_version_name do |options|
     build_gradle_text = IO.read("#{lane_context[:repo_root]}/mockzilla/build.gradle.kts")
-    version_pattern = /version\s*=\s*"(.*?)".*/
+    version_pattern = /.*"(.*?)" \/\/ x-release-please-version/
     version = build_gradle_text.match(version_pattern)[1]
 
     options[:is_snapshot] ? "#{version}-SNAPSHOT" : version

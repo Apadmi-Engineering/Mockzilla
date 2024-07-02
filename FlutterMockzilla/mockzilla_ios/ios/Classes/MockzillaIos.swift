@@ -36,14 +36,16 @@ class MockzillaIos: Thread, MockzillaHostApi {
                 do {
                     var result: Result<Bool, FlutterError> = Result.failure(FlutterError())
                     let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
-                    self.handler.endpointMatcher(
-                        request: nativeRequest,
-                        key: key,
-                        completion: { localResult in
-                            result = localResult
-                            self.matcherSemaphore.signal()
-                        }
-                    )
+                    DispatchQueue.main.async {
+                        self.handler.endpointMatcher(
+                            request: nativeRequest,
+                            key: key,
+                            completion: { localResult in
+                                result = localResult
+                                self.matcherSemaphore.signal()
+                            }
+                        )
+                    }
                     self.matcherSemaphore.wait()
                     return try result.get()
                 } catch {
@@ -54,14 +56,16 @@ class MockzillaIos: Thread, MockzillaHostApi {
                 do {
                     var result: Result<BridgeMockzillaHttpResponse, FlutterError> = Result.failure(FlutterError())
                     let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
-                    self.handler.defaultHandler(
-                        request: nativeRequest,
-                        key: key,
-                        completion: { localResult in
-                            result = localResult
-                            self.handlerSemaphore.signal()
-                        }
-                    )
+                    DispatchQueue.main.async {
+                        self.handler.defaultHandler(
+                            request: nativeRequest,
+                            key: key,
+                            completion: { localResult in
+                                result = localResult
+                                self.handlerSemaphore.signal()
+                            }
+                        )
+                    }
                     self.handlerSemaphore.wait()
                     return try result.map { response in response.toNative() }.get()
                 } catch {
@@ -72,14 +76,16 @@ class MockzillaIos: Thread, MockzillaHostApi {
                 do {
                     var result: Result<BridgeMockzillaHttpResponse, FlutterError> = Result.failure(FlutterError())
                     let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
-                    self.handler.errorHandler(
-                        request: nativeRequest,
-                        key: key,
-                        completion: { localResult in
-                            result = localResult
-                            self.errorHandlerSemaphore.signal()
-                        }
-                    )
+                    DispatchQueue.main.async {
+                        self.handler.errorHandler(
+                            request: nativeRequest,
+                            key: key,
+                            completion: { localResult in
+                                result = localResult
+                                self.errorHandlerSemaphore.signal()
+                            }
+                        )
+                    }
                     self.errorHandlerSemaphore.wait()
                     return try result.map { response in response.toNative() }.get()
                 } catch {

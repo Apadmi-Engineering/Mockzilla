@@ -4,5 +4,6 @@ abstract class Mockzilla {
   static Future<void> startMockzilla(MockzillaConfig config) =>
       MockzillaPlatform.instance.startMockzilla(config);
 
-  static Future<void> stopMockzilla() => MockzillaPlatform.instance.stopMockzilla();
+  static Future<void> stopMockzilla() =>
+      MockzillaPlatform.instance.stopMockzilla();
 }

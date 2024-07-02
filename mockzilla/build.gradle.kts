@@ -1,5 +1,6 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.injectedVersion
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
@@ -20,7 +21,7 @@ kotlin {
     }
 
     // Managed automatically by release-please PRs
-    version = "1.2.1" // x-release-please-version
+    version = project.injectedVersion() ?: "2.0.0" // x-release-please-version
 
     val xcf = XCFramework()
     listOf(
