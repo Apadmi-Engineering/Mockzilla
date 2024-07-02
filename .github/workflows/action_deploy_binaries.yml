@@ -34,8 +34,8 @@ jobs:
         env:
           GPG_PASSPHRASE:  ${{ secrets.GPG_PASSWORD }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-          OSSRH_USER: ${{ secrets.OSSRH_USER }}
-          OSSRH_KEY: ${{ secrets.OSSRH_KEY }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
       - name: Deploy package to Github for SPM & Cocoapods
         run: bundle exec fastlane ios publish_swift_package is_snapshot:$is_snapshot
         env:
