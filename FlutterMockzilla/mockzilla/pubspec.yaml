@@ -13,19 +13,14 @@ topics:
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
-  flutter: ">=1.17.0"
+  flutter: '>=3.3.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  # TODO: Local dependencies used for ease of development, these should be regular dependencies
-  # once this plugin is hosted.
-  mockzilla_platform_interface:
-    path: ../mockzilla_platform_interface
-  mockzilla_android:
-    path: ../mockzilla_android
-  mockzilla_ios:
-    path: ../mockzilla_ios
+  mockzilla_platform_interface: ^0.1.0
+  mockzilla_android: ^0.1.0
+  mockzilla_ios: ^0.1.0
 
 dev_dependencies:
   flutter_test:

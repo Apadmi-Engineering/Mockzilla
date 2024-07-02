@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:mockzilla_ios/mockzilla_ios.dart';
-import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,8 +14,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _mockzillaIosPlugin = MockzillaIos();
-
   @override
   void initState() {
     super.initState();
