@@ -2,7 +2,6 @@
   "release-type": "simple",
   "packages": {
     "mockzilla": {
-      "release-as": "2.0.0",
       "component": "mockzilla",
       "extra-files": ["build.gradle.kts"]
     },
@@ -15,7 +14,6 @@
       "extra-files": ["build.gradle.kts"]
     },
     "FlutterMockzilla": {
-      "release-as": "1.0.0",
       "component": "flutter-mockzilla",
       "extra-files": [
         {
@@ -37,7 +35,6 @@
       ]
     },
     "mockzilla-management-ui": {
-      "release-as": "1.0.3",
       "component": "mockzilla-management-ui",
       "extra-files": ["desktop/build.gradle.kts"]
     }
