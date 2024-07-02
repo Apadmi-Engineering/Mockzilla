@@ -59,7 +59,10 @@ platform :ios do
             })
 
             # Push podspec to trunk
-            sh("pod trunk push")
+            sh(%{
+                cd apadmi-mockzilla-ios
+                pod trunk push
+            })
         end
     end
 end
