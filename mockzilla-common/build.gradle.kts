@@ -13,7 +13,7 @@ plugins {
 
 kotlin {
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "1.2.1" // x-release-please-version
+    version = project.injectedVersion() ?: "2.0.0" // x-release-please-version
     androidTarget {
         publishAllLibraryVariants()
     }
