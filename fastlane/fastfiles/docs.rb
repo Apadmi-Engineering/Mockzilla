@@ -9,10 +9,9 @@ lane :generate_docs do
 
     # Generate Kotlin documentation
     gradle(
-        tasks: ["dokkaHtml"],
+        tasks: [":dokkaHtmlMultiModule"],
         system_properties: {
             "docsOutputDirectory" => "#{output_dir}/dokka"
         }
     )
 end
-
