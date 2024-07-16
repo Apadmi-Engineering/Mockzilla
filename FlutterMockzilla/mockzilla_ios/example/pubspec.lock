@@ -176,7 +176,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.0"
+    version: "1.0.0"
   mockzilla_platform_interface:
     dependency: transitive
     description:
