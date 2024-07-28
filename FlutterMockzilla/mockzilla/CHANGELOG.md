@@ -1,3 +1,7 @@
+## 0.1.2
+
+* Updates example app to include request body in fetch packages request.
+
 ## 0.1.1
 
 * Adds default value of `{"Content-Type": "application/json"}` for parameter `headers` in
