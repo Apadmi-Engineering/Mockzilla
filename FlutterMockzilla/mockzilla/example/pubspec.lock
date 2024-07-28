@@ -393,31 +393,31 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.1.2"
   mockzilla_android:
     dependency: transitive
     description:
       name: mockzilla_android
-      sha256: "797b4382629c5ea4542f8ed5ce62355d95aa6f0cc23772f8e1fd322bb3ef221a"
+      sha256: "278866fb050030d6d6e6d62d11aafaa0acdc772c3fa6e68d93e0575db0f0261e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   mockzilla_ios:
     dependency: transitive
     description:
       name: mockzilla_ios
-      sha256: ff85ff677977d88acd7011475489b106413d209f7a83938e23d911d53d96f7a0
+      sha256: "4148f43ac933d2485268130c61fd0a6e726b816424a9a31441260cc659b181cf"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   mockzilla_platform_interface:
     dependency: transitive
     description:
       name: mockzilla_platform_interface
-      sha256: cd78c78137af887f019ec6b223fa565306df7c27278fff2a47d39efea884f5fc
+      sha256: "64157655d3a97cfdfcccd26b84ae4a17bf4d11e999c9547c1b484ce181949d3d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.2.0"
   package_config:
     dependency: transitive
     description:

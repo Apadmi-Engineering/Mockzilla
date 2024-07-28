@@ -24,8 +24,16 @@ final defaultResponse = MockzillaHttpResponse(
           description: "A pretty cool network mocking library.",
         ),
         Package(
-          name: "freezed",
-          description: "Code generation for immutable classes.",
+          name: "mockzilla_platform_interface",
+          description: "A common interface for the mockzilla plugin.",
+        ),
+        Package(
+          name: "mockzilla_android",
+          description: "The Android implementation for the mockzilla plugin.",
+        ),
+        Package(
+          name: "mockzilla_ios",
+          description: "The iOS implementation for the mockzilla plugin.",
         ),
       ],
     ).toJson(),
