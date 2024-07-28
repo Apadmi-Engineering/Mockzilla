@@ -153,15 +153,15 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.1"
+    version: "0.1.2"
   mockzilla_platform_interface:
     dependency: transitive
     description:
       name: mockzilla_platform_interface
-      sha256: cd78c78137af887f019ec6b223fa565306df7c27278fff2a47d39efea884f5fc
+      sha256: "64157655d3a97cfdfcccd26b84ae4a17bf4d11e999c9547c1b484ce181949d3d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.2.0"
   path:
     dependency: transitive
     description:
