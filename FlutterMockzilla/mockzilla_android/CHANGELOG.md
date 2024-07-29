@@ -1,3 +1,8 @@
+## 0.1.2
+
+* Fixes an issue where HTTP request body was not passed from native models to Dart 
+[#172](https://github.com/Apadmi-Engineering/Mockzilla/issues/172).
+
 ## 0.1.1
 
 * Removes `package` attribute from AndroidManifest that was incompatible with AGP 8.

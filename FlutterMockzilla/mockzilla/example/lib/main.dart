@@ -37,7 +37,9 @@ class PackagesList extends StatefulWidget {
 }
 
 class _PackagesListState extends State<PackagesList> {
-  final _packagesClient = PackagesClient(Dio());
+  final _packagesClient = PackagesClient(
+    Dio(BaseOptions(contentType: "application/json")),
+  );
   late Future<FetchPackagesResponse> _future;
 
   @override
@@ -48,7 +50,9 @@ class _PackagesListState extends State<PackagesList> {
 
   fetchPackages() {
     setState(() {
-      _future = _packagesClient.fetchPackages();
+      _future = _packagesClient.fetchPackages(
+        const FetchPackagesRequest(query: "mockzilla"),
+      );
     });
   }
 
