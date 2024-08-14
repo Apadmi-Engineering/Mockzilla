@@ -44,6 +44,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -176,6 +180,7 @@ fun EndpointDetailsWidgetContent(
                             onResponseBodyChange = onDefaultBodyChange,
                             jsonEditing = state.jsonEditingDefault,
                             onJsonEditingChange = onJsonDefaultEditingChange,
+                            bodyJsonError = state.defaultBodyJsonError,
                             onPresetSelected = onDefaultPresetSelected,
                             headers = state.defaultHeaders,
                             onHeadersChange = onDefaultHeadersChange,
@@ -189,6 +194,7 @@ fun EndpointDetailsWidgetContent(
                             onResponseBodyChange = onErrorBodyChange,
                             jsonEditing = state.jsonEditingError,
                             onJsonEditingChange = onJsonErrorEditingChange,
+                            bodyJsonError = state.errorBodyJsonError,
                             onPresetSelected = onErrorPresetSelected,
                             headers = state.errorHeaders,
                             onHeadersChange = onErrorHeadersChange,
@@ -337,6 +343,7 @@ private fun EndpointDetailsResponseBody(
     onResponseBodyChange: (String?) -> Unit,
     jsonEditing: Boolean,
     onJsonEditingChange: (Boolean) -> Unit,
+    bodyJsonError: String?,
     headers: List<Pair<String, String>>?,
     onHeadersChange: (List<Pair<String, String>>?) -> Unit,
     onPresetSelected: (DashboardOverridePreset) -> Unit,
@@ -386,6 +393,7 @@ private fun EndpointDetailsResponseBody(
             }
         }
     }
+    val inError = jsonEditing && bodyJsonError != null
     TextField(
         // TODO: Might want to show what the response body defaults to for reference purposes
         // so users can get an idea of what mockzilla is returning by default especially to
@@ -399,7 +407,14 @@ private fun EndpointDetailsResponseBody(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 200.dp, max = 500.dp)
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 8.dp)
+            .then(
+                if (inError) {
+                    Modifier.semantics { error(strings.widgets.endpointDetails.invalidJson) }
+                } else {
+                    Modifier
+                }
+            ),
         enabled = body != null,
         label = {
             Text(
@@ -408,8 +423,35 @@ private fun EndpointDetailsResponseBody(
                     ?: strings.widgets.endpointDetails.bodyUnset
             )
         },
+        supportingText = {
+            if (inError) {
+                // This text is decorative so we don't double up on the invalid JSON text
+                // with it already applied to the text field semantics
+                Text(
+                    text = strings.widgets.endpointDetails.invalidJson,
+                    modifier = Modifier.clearAndSetSemantics {
+                        // Don't need to set any new semantics
+                    },
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        },
+        isError = jsonEditing && bodyJsonError != null,
         singleLine = false,
     )
+    if (inError && !bodyJsonError.isNullOrEmpty()) {
+        // We don't have control over how large the json error text is, most of the time it's only
+        // a few lines but in extreme cases it can be quite a lot so this error message lives
+        // outside the text field to avoid issues if it wouldn't fit.
+        Text(
+            text = bodyJsonError,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            color = MaterialTheme.colorScheme.error,
+            // Monospace the error text to match the text input field
+            style = MaterialTheme.typography.bodySmall.copy(fontFeatureSettings = "tnum"),
+        )
+    }
     FlowRow(
         modifier = Modifier.align(Alignment.End).padding(horizontal = 8.dp),
         horizontalArrangement = Arrangement.End,

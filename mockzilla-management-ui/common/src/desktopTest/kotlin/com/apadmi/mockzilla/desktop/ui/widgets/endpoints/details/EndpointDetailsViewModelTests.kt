@@ -176,8 +176,8 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 errorHeaders = null,
                 fail = null,
                 delayMillis = null,
-                jsonEditingDefault = true,
-                jsonEditingError = true,
+                jsonEditingDefault = false,
+                jsonEditingError = false,
                 presets = presets,
             ),
             initialState
