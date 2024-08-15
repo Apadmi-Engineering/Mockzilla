@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.0.0...mockzilla-common-v2.0.0) (2024-08-15)
+
+
+### Miscellaneous Chores
+
+* **mockzilla-common:** Synchronize Kmp libs versions
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v1.2.1-alpha2...mockzilla-common-v2.0.0) (2024-07-02)
 
 

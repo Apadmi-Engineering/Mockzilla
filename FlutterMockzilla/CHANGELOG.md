@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter-mockzilla-v1.0.0...flutter-mockzilla-v1.0.1) (2024-08-15)
+
+
+### Bug Fixes
+
+* Add missing parameter in HTTP request marshalling. ([fa762f1](https://github.com/Apadmi-Engineering/Mockzilla/commit/fa762f148425475b342f71fdb40960ae7d984cf7))
+* HTTP request mapping in `mockzilla_android` + `mockzilla_ios` ([#172](https://github.com/Apadmi-Engineering/Mockzilla/issues/172)) ([9644a10](https://github.com/Apadmi-Engineering/Mockzilla/commit/9644a102b4af40c63ea3caa56db838eba04fb648))
+
 ## [1.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter-mockzilla-v0.1.0...flutter-mockzilla-v1.0.0) (2024-07-02)
 
 
