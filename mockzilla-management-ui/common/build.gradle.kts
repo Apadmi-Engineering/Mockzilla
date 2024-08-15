@@ -32,6 +32,9 @@ kotlin {
             /* Coroutines */
             implementation(libs.kotlinx.coroutines.core)
 
+            /* JSON */
+            implementation(libs.kotlinx.serialization.json)
+
             /* Mockzilla Management */
             implementation(project(":mockzilla-management"))
 
