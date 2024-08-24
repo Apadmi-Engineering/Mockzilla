@@ -1,0 +1,7 @@
+name: flutter_mockzilla
+
+packages:
+  - mockzilla
+  - mockzilla_android
+  - mockzilla_ios
+  - mockzilla_platform_interface
