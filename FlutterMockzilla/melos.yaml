@@ -1,0 +1,41 @@
+name: flutter_mockzilla
+
+packages:
+  - mockzilla
+  - mockzilla_android
+  - mockzilla_ios
+  - mockzilla_platform_interface
+
+scripts:
+  buildExample:
+    description: "Build example apps"
+    run: >
+      melos exec -c 1 "cd example &&
+      flutter pub get &&
+      dart run build_runner build &&
+      flutter build apk &&
+      flutter build ipa --no-codesign"
+    packageFilters:
+      scope: "mockzilla"
+  buildConfig:android:
+    description: "Builds config of Android example"
+    run: >
+      melos exec -c 1 "cd example && flutter build apk --config-only"
+    packageFilters:
+      dirExists:
+        - example/android
+  buildConfig:ios:
+    description: "Builds config of Ios example"
+    run: >
+      melos exec -c 1 "cd example && flutter build ios --config-only --no-codesign"
+    packageFilters:
+      dirExists:
+        - example/ios
+  test:all:
+    run: "melos run test:dart --no-select"
+  test:dart:
+    description: "Run Dart tests in a package"
+    run: melos exec -c 1 "flutter test"
+    packageFilters:
+      dirExists:
+        - test
