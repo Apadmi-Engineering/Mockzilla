@@ -1,0 +1,16 @@
+name: Publish to `mockzilla_ios` pub.dev
+
+on:
+  push:
+    tags:
+    - 'flutter_mockzilla_ios-v[0-9]+.[0-9]+.[0-9]+*'
+
+# Publish using the reusable workflow from dart-lang.
+jobs:
+  publish:
+    permissions:
+      id-token: write
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: FlutterMockzilla/mockzilla_ios
+      environment: pub.dev

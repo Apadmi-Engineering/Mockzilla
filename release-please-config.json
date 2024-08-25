@@ -1,5 +1,6 @@
 {
   "release-type": "simple",
+  "separate-pull-requests": true,
   "packages": {
     "mockzilla": {
       "component": "mockzilla",
@@ -13,26 +14,21 @@
       "component": "mockzilla-management",
       "extra-files": ["build.gradle.kts"]
     },
-    "FlutterMockzilla": {
-      "component": "flutter-mockzilla",
-      "extra-files": [
-        {
-          "type": "generic",
-          "path": "mockzilla/pubspec.yaml"
-        },
-        {
-          "type": "generic",
-          "path": "mockzilla_android/pubspec.yaml"
-        },
-        {
-          "type": "generic",
-          "path": "mockzilla_ios/pubspec.yaml"
-        },
-        {
-          "type": "generic",
-          "path": "mockzilla_platform_interface/pubspec.yaml"
-        }
-      ]
+    "FlutterMockzilla/mockzilla": {
+      "component": "flutter_mockzilla",
+      "release-type": "dart"
+    },
+    "FlutterMockzilla/mockzilla_platform_interface": {
+      "component": "flutter_mockzilla_platform_interface",
+      "release-type": "dart"
+    },
+    "FlutterMockzilla/mockzilla_android": {
+      "component": "flutter_mockzilla_android",
+      "release-type": "dart"
+    },
+    "FlutterMockzilla/mockzilla_ios": {
+      "component": "flutter_mockzilla_ios",
+      "release-type": "dart"
     },
     "mockzilla-management-ui": {
       "component": "mockzilla-management-ui",
