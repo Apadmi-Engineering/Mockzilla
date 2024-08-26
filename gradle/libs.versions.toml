@@ -3,9 +3,9 @@
 # Kotlin
 adam = "0.5.7" # https://github.com/Malinskiy/adam
 jmdns = "3.5.9" # https://github.com/jmdns/jmdns
-kotlin = "1.9.23" # https://github.com/JetBrains/kotlin
+kotlin = "2.0.20" # https://github.com/JetBrains/kotlin
 agp = "8.5.0" # https://developer.android.com/build/releases/gradle-plugin
-ksp = "1.9.23-1.0.20" # https://github.com/google/ksp
+ksp = "2.0.20-1.0.24" # https://github.com/google/ksp
 
 # Logging
 kermit = "1.2.2" # https://github.com/touchlab/Kermit
@@ -20,7 +20,7 @@ dokka = "1.9.20" # https://github.com/Kotlin/dokka
 lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "2.3.11" # https://github.com/ktorio/ktor
+ktor = "2.3.12" # https://github.com/ktorio/ktor
 
 # Compose
 compose = "1.6.11" # https://github.com/JetBrains/compose-multiplatform
@@ -31,8 +31,8 @@ koin = "3.5.6" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
 kotlinx-coroutines = "1.8.1" # https://github.com/Kotlin/kotlinx.coroutines
-kotlinx-datetime = "0.5.0" # https://github.com/Kotlin/kotlinx-datetime
-kotlinx-serialization = "1.6.3" # https://github.com/Kotlin/kotlinx.serialization
+kotlinx-datetime = "0.6.1" # https://github.com/Kotlin/kotlinx-datetime
+kotlinx-serialization = "1.7.1" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
 lifecycle = "2.8.2" # https://developer.android.com/jetpack/androidx/releases/lifecycle
@@ -44,7 +44,7 @@ semver4j = "3.1.0" # https://github.com/vdurmont/semver4j
 spotless = "6.25.0" # https://github.com/diffplug/spotless
 
 # Testing
-kover = "0.7.6" # https://github.com/Kotlin/kotlinx-kover
+kover = "0.8.3" # https://github.com/Kotlin/kotlinx-kover
 turbine = "1.1.0" # https://github.com/cashapp/turbine
 mockative = "2.2.2" # https://github.com/mockative/mockative
 junit = "1.1.5" # https://developer.android.com/jetpack/androidx/releases/test
