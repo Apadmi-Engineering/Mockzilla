@@ -13,4 +13,4 @@ jobs:
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
     with:
       working-directory: FlutterMockzilla/mockzilla
-      environment: pub.dev
+      environment: production
