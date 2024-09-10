@@ -1,5 +1,10 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
+/**
+ * @property startIndex First index of token in json
+ * @property endIndex Last index of token in json
+ * @property token Token type
+ */
 data class TokenIndex(
     val startIndex: Int,
     val endIndex: Int,
@@ -7,25 +12,26 @@ data class TokenIndex(
 )
 
 enum class Token {
-    OpenObject, // {
-    CloseObject, // }
-    OpenArray, // [
-    CloseArray, // ]
-    BlockComment, // /* .... */
-    LineComment, // //
-    String, // "foo"
-    Boolean, // true
-    Null, // null
-    Number, // 123.45
-    ValueSeparator, // ,
-    KeySeparator // :
+    BlockComment,  // /* .... */
+    Boolean,  // true or false
+    CloseArray,  // ]
+    CloseObject,  // }
+    @Suppress("COMMENT_WHITE_SPACE")
+    KeySeparator, // :
+    LineComment,  // //
+    Null,  // null
+    Number,  // 123.45
+    OpenArray,  // [
+    OpenObject,  // {
+    String,  // "foo"
+    ValueSeparator,  // ,
+    ;
 }
 
 object JsonTokens {
     private val startOfNumberTokens = listOf(
         "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "+"
     )
-
     private val mainTokens = listOf(
         "{",
         "}",
@@ -40,17 +46,16 @@ object JsonTokens {
         "false",
         "null"
     )
-
     private val numberCharacters = startOfNumberTokens + listOf(".", "E", "e")
-
     private val nextTokenList = mainTokens + startOfNumberTokens
 
+    @Suppress("NESTED_BLOCK", "TOO_LONG_FUNCTION")
     fun nextToken(body: String, startIndex: Int): TokenIndex {
         val match = body.findAnyOf(
             strings = nextTokenList,
             startIndex = startIndex
         )
-        if (match != null) {
+        match?.let {
             val (index, token) = match
             when (token) {
                 "{" -> return TokenIndex(
@@ -88,45 +93,46 @@ object JsonTokens {
                     endIndex = index + 1,
                     token = Token.KeySeparator
                 )
+                else -> Unit  // Continue
             }
             if (token == "//") {
                 // return entire line comment as the token so we don't see tokens in commented
                 // characters
                 val endOfLine = body.findAnyOf(strings = listOf("\n", "\r"), startIndex = index)
-                if (endOfLine != null) {
-                    val (endOfLineIndex, _) = endOfLine
-                    return TokenIndex(
-                        startIndex = index,
-                        endIndex = endOfLineIndex + 1,
-                        token = Token.LineComment
-                    )
-                } else {
-                    return TokenIndex(
+                endOfLine
+                    ?.let {
+                        val (endOfLineIndex, _) = endOfLine
+                        return TokenIndex(
+                            startIndex = index,
+                            endIndex = endOfLineIndex + 1,
+                            token = Token.LineComment
+                        )
+                    }
+                    ?: return TokenIndex(
                         startIndex = index,
                         endIndex = body.lastIndex,
                         token = Token.LineComment
                     )
-                }
             }
             if (token == "/*") {
                 // return entire block comment as the token so we don't see tokens in commented
                 // characters
                 val endOfBlockComment = body
                     .findAnyOf(strings = listOf("*/"), startIndex = index + 2)
-                if (endOfBlockComment != null) {
-                    val (blockEndIndex, _) = endOfBlockComment
-                    return TokenIndex(
-                        startIndex = index,
-                        endIndex = blockEndIndex + 2,
-                        token = Token.BlockComment
-                    )
-                } else {
-                    return TokenIndex(
+                endOfBlockComment
+                    ?.let {
+                        val (blockEndIndex, _) = endOfBlockComment
+                        return TokenIndex(
+                            startIndex = index,
+                            endIndex = blockEndIndex + 2,
+                            token = Token.BlockComment
+                        )
+                    }
+                    ?: return TokenIndex(
                         startIndex = index,
                         endIndex = body.lastIndex,
                         token = Token.BlockComment
                     )
-                }
             }
             if (token == "\"") {
                 // go to end of string so we don't see tokens inside the quotes
@@ -179,4 +185,3 @@ object JsonTokens {
         )
     }
 }
-

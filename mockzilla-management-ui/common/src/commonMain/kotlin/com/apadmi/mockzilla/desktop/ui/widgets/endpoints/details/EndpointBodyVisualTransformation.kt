@@ -21,7 +21,7 @@ class EndpointBodyVisualTransformation(
     private val number: SpanStyle,
     private val default: SpanStyle,
 ) : VisualTransformation {
-
+    @Suppress("TOO_LONG_FUNCTION")
     override fun filter(text: AnnotatedString): TransformedText {
         val textLength = text.length
         return TransformedText(
@@ -69,13 +69,15 @@ class EndpointBodyVisualTransformation(
                     }
                 }
             },
-            offsetMapping = object : OffsetMapping {
-                override fun originalToTransformed(offset: Int): Int =
-                    min(max(0, offset), textLength)
-
-                override fun transformedToOriginal(offset: Int): Int =
-                    min(max(0, offset), textLength)
-            }
+            offsetMapping = ClipOffsetMapping(textLength)
         )
+    }
+
+    private class ClipOffsetMapping(private val textLength: Int) : OffsetMapping {
+        override fun originalToTransformed(offset: Int): Int =
+            min(max(0, offset), textLength)
+
+        override fun transformedToOriginal(offset: Int): Int =
+            min(max(0, offset), textLength)
     }
 }
