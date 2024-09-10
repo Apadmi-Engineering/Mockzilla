@@ -27,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -47,7 +48,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -394,10 +397,8 @@ private fun EndpointDetailsResponseBody(
         }
     }
     val inError = jsonEditing && bodyJsonError != null
+    val localContentColor = LocalContentColor.current
     TextField(
-        // TODO: Might want to show what the response body defaults to for reference purposes
-        // so users can get an idea of what mockzilla is returning by default especially to
-        // later edit
         value = body ?: "",
         onValueChange = onResponseBodyChange,
         // Might not have enough screen real estate for a weight here, but don't particularly
@@ -438,6 +439,16 @@ private fun EndpointDetailsResponseBody(
             }
         },
         isError = jsonEditing && bodyJsonError != null,
+        visualTransformation = EndpointBodyVisualTransformation(
+            comment = SpanStyle(color = localContentColor.copy(alpha = 0.5F)),
+            brace = SpanStyle(localContentColor.copy(alpha = 0.7F)),
+            comma = SpanStyle(localContentColor.copy(alpha = 0.7F)),
+            colon = SpanStyle(localContentColor.copy(alpha = 0.7F)),
+            string = SpanStyle(),
+            keyword = SpanStyle(),
+            number = SpanStyle(),
+            default = SpanStyle(localContentColor.copy(alpha = 0.7F)),
+        ).takeIf { jsonEditing } ?: VisualTransformation.None,
         singleLine = false,
     )
     if (inError && !bodyJsonError.isNullOrEmpty()) {
