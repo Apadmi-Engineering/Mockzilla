@@ -133,11 +133,20 @@ dependencies {
         }
 }
 
+private val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+    from(tasks.dokkaHtml)
+}
+
 publishing {
     publications.withType<MavenPublication> {
         pom {
             name.set("Mockzilla")
             description.set("Solution for running and configuring a local HTTP server on mobile.")
         }
+    }
+
+    publications.filterIsInstance<MavenPublication>().forEach {
+        it.artifact(javadocJar);
     }
 }

@@ -82,6 +82,11 @@ android {
     }
 }
 
+private val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+    from(tasks.dokkaHtml)
+}
+
 publishing {
     publications.withType<MavenPublication> {
         pom {
@@ -92,5 +97,9 @@ publishing {
             """.trimIndent()
             )
         }
+    }
+
+    publications.filterIsInstance<MavenPublication>().forEach {
+        it.artifact(javadocJar);
     }
 }
