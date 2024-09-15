@@ -2,6 +2,7 @@ import com.apadmi.mockzilla.AndroidConfig
 
 plugins {
     alias(libs.plugins.compose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.android.app)
     alias(libs.plugins.kotlin.android)
 }
@@ -26,9 +27,7 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
