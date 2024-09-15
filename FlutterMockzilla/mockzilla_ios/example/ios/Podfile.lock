@@ -26,7 +26,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  integration_test: ce0a3ffa1de96d1a89ca0ac26fca7ea18a749ef4
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
   mockzilla_ios: 861ff8ca56d2e1c3d5441061438d58114a713811
   SwiftMockzilla: 2060ecb438431487b38afad14629211cf3c24713
 

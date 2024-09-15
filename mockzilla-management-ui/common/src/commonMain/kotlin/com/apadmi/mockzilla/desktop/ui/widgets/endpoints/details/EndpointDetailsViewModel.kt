@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.events.EventBus
+import com.apadmi.mockzilla.desktop.engine.jsoneditor.JsonEditor
 import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details.EndpointDetailsViewModel.*
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
@@ -58,11 +59,13 @@ class EndpointDetailsViewModel(
         viewModelScope.launch { reloadData() }
     }
 
+    @Suppress("TOO_LONG_FUNCTION")
     private suspend fun reloadData() {
         val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
             endpoint.firstOrNull { it.key == key }
         }
 
+        val currentState = state.value
         state.value = endpoint.fold(
             onSuccess = { config ->
                 config?.let {
@@ -78,9 +81,16 @@ class EndpointDetailsViewModel(
                                 errorHeaders = config.errorHeaders?.toList(),
                                 fail = config.shouldFail,
                                 delayMillis = config.delayMs?.toString(),
-                                // TODO: Should auto infer based on if body is valid JSON
-                                jsonEditingDefault = true,
-                                jsonEditingError = true,
+                                // Retain existing value for jsonEditing booleans so we don't
+                                // swap states as the user is typing into the text field,
+                                // but infer what the starting value should be on the first
+                                // reload so we start with a reasonable default per endpoint.
+                                jsonEditingDefault = (currentState as? State.Endpoint)
+                                    ?.jsonEditingDefault
+                                    ?: JsonEditor(config.defaultBody ?: "").isValidJson(),
+                                jsonEditingError = (currentState as? State.Endpoint)
+                                    ?.jsonEditingError
+                                    ?: JsonEditor(config.errorBody ?: "").isValidJson(),
                                 presets = presets
                             )
                         },
@@ -256,7 +266,8 @@ class EndpointDetailsViewModel(
         copy(
             defaultHeaders = dashboardOverridePreset.response.headers.toList(),
             defaultStatus = dashboardOverridePreset.response.statusCode,
-            defaultBody = dashboardOverridePreset.response.body
+            defaultBody = dashboardOverridePreset.response.body,
+            jsonEditingDefault = JsonEditor(dashboardOverridePreset.response.body).isValidJson()
         )
     }, { config, device ->
         emitErrorAndEventIfNeeded(
@@ -274,7 +285,8 @@ class EndpointDetailsViewModel(
         copy(
             errorHeaders = dashboardOverridePreset.response.headers.toList(),
             errorStatus = dashboardOverridePreset.response.statusCode,
-            errorBody = dashboardOverridePreset.response.body
+            errorBody = dashboardOverridePreset.response.body,
+            jsonEditingError = JsonEditor(dashboardOverridePreset.response.body).isValidJson()
         )
     }, { config, device ->
         emitErrorAndEventIfNeeded(
@@ -316,6 +328,9 @@ class EndpointDetailsViewModel(
             val jsonEditingDefault: Boolean,
             val jsonEditingError: Boolean,
             val presets: DashboardOptionsConfig
-        ) : State()
+        ) : State() {
+            val defaultBodyJsonError: String? = defaultBody?.let { JsonEditor(it).parseError() }
+            val errorBodyJsonError: String? = errorBody?.let { JsonEditor(it).parseError() }
+        }
     }
 }

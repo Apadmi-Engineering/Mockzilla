@@ -176,6 +176,7 @@ data class Strings(
          * @property bodyUnset
          * @property delayLabel
          * @property jsonEditingLabel
+         * @property invalidJson
          * @property failOptionsLabel
          * @property failLabel
          * @property responseDelay
@@ -212,6 +213,7 @@ data class Strings(
             val bodyUnset: String,
             val delayLabel: String,
             val jsonEditingLabel: (Boolean) -> String,
+            val invalidJson: String,
             val failOptionsLabel: String,
             val failLabel: (Boolean?) -> String,
             val responseDelay: String,

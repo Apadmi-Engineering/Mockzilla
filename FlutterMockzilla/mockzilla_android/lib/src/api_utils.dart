@@ -31,6 +31,7 @@ extension BridgeMockzillaHttpRequestBridge on BridgeMockzillaHttpRequest {
         headers: Map.fromEntries(
           headers.entries.whereType<MapEntry<String, String>>(),
         ),
+        body: body,
         method: method.toDart(),
       );
 }
@@ -135,6 +136,7 @@ extension MockzillaConfigBridge on MockzillaConfig {
         isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toBridge(),
+        releaseModeConfig: releaseModeConfig.toBridge(),
       );
 }
 

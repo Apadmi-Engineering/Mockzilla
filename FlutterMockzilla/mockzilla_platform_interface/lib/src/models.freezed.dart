@@ -136,9 +136,7 @@ class __$$MockzillaHttpRequestImplCopyWithImpl<$Res>
 class _$MockzillaHttpRequestImpl implements _MockzillaHttpRequest {
   const _$MockzillaHttpRequestImpl(
       {required this.uri,
-      final Map<String, String> headers = const {
-        "Content-Type": "application/json"
-      },
+      final Map<String, String> headers = const {},
       this.body = "",
       required this.method})
       : _headers = headers;
@@ -315,7 +313,9 @@ class __$$MockzillaHttpResponseImplCopyWithImpl<$Res>
 class _$MockzillaHttpResponseImpl implements _MockzillaHttpResponse {
   const _$MockzillaHttpResponseImpl(
       {this.statusCode = HttpStatus.ok,
-      final Map<String, String> headers = const {},
+      final Map<String, String> headers = const {
+        "Content-Type": "application/json"
+      },
       this.body = ""})
       : _headers = headers;
 
@@ -993,6 +993,9 @@ mixin _$MockzillaConfig {
   /// The level of logging that should be used by Mockzilla.
   LogLevel get logLevel => throw _privateConstructorUsedError;
 
+  /// Used for additional configuration when [isRelease] is [true].
+  ReleaseModeConfig get releaseModeConfig => throw _privateConstructorUsedError;
+
   @JsonKey(ignore: true)
   $MockzillaConfigCopyWith<MockzillaConfig> get copyWith =>
       throw _privateConstructorUsedError;
@@ -1009,7 +1012,10 @@ abstract class $MockzillaConfigCopyWith<$Res> {
       List<EndpointConfig> endpoints,
       bool isRelease,
       bool localHostOnly,
-      LogLevel logLevel});
+      LogLevel logLevel,
+      ReleaseModeConfig releaseModeConfig});
+
+  $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig;
 }
 
 /// @nodoc
@@ -1030,6 +1036,7 @@ class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
     Object? isRelease = null,
     Object? localHostOnly = null,
     Object? logLevel = null,
+    Object? releaseModeConfig = null,
   }) {
     return _then(_value.copyWith(
       port: null == port
@@ -1052,7 +1059,19 @@ class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
           ? _value.logLevel
           : logLevel // ignore: cast_nullable_to_non_nullable
               as LogLevel,
+      releaseModeConfig: null == releaseModeConfig
+          ? _value.releaseModeConfig
+          : releaseModeConfig // ignore: cast_nullable_to_non_nullable
+              as ReleaseModeConfig,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig {
+    return $ReleaseModeConfigCopyWith<$Res>(_value.releaseModeConfig, (value) {
+      return _then(_value.copyWith(releaseModeConfig: value) as $Val);
+    });
   }
 }
 
@@ -1069,7 +1088,11 @@ abstract class _$$MockzillaConfigImplCopyWith<$Res>
       List<EndpointConfig> endpoints,
       bool isRelease,
       bool localHostOnly,
-      LogLevel logLevel});
+      LogLevel logLevel,
+      ReleaseModeConfig releaseModeConfig});
+
+  @override
+  $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig;
 }
 
 /// @nodoc
@@ -1088,6 +1111,7 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
     Object? isRelease = null,
     Object? localHostOnly = null,
     Object? logLevel = null,
+    Object? releaseModeConfig = null,
   }) {
     return _then(_$MockzillaConfigImpl(
       port: null == port
@@ -1110,6 +1134,10 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
           ? _value.logLevel
           : logLevel // ignore: cast_nullable_to_non_nullable
               as LogLevel,
+      releaseModeConfig: null == releaseModeConfig
+          ? _value.releaseModeConfig
+          : releaseModeConfig // ignore: cast_nullable_to_non_nullable
+              as ReleaseModeConfig,
     ));
   }
 }
@@ -1122,7 +1150,8 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
       final List<EndpointConfig> endpoints = const [],
       this.isRelease = false,
       this.localHostOnly = false,
-      this.logLevel = LogLevel.info})
+      this.logLevel = LogLevel.info,
+      this.releaseModeConfig = const ReleaseModeConfig()})
       : _endpoints = endpoints;
 
   /// The port that the Mockzilla should be available through.
@@ -1159,9 +1188,14 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   @JsonKey()
   final LogLevel logLevel;
 
+  /// Used for additional configuration when [isRelease] is [true].
+  @override
+  @JsonKey()
+  final ReleaseModeConfig releaseModeConfig;
+
   @override
   String toString() {
-    return 'MockzillaConfig(port: $port, endpoints: $endpoints, isRelease: $isRelease, localHostOnly: $localHostOnly, logLevel: $logLevel)';
+    return 'MockzillaConfig(port: $port, endpoints: $endpoints, isRelease: $isRelease, localHostOnly: $localHostOnly, logLevel: $logLevel, releaseModeConfig: $releaseModeConfig)';
   }
 
   @override
@@ -1177,7 +1211,9 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
             (identical(other.localHostOnly, localHostOnly) ||
                 other.localHostOnly == localHostOnly) &&
             (identical(other.logLevel, logLevel) ||
-                other.logLevel == logLevel));
+                other.logLevel == logLevel) &&
+            (identical(other.releaseModeConfig, releaseModeConfig) ||
+                other.releaseModeConfig == releaseModeConfig));
   }
 
   @override
@@ -1187,7 +1223,8 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
       const DeepCollectionEquality().hash(_endpoints),
       isRelease,
       localHostOnly,
-      logLevel);
+      logLevel,
+      releaseModeConfig);
 
   @JsonKey(ignore: true)
   @override
@@ -1203,7 +1240,8 @@ abstract class _MockzillaConfig implements MockzillaConfig {
       final List<EndpointConfig> endpoints,
       final bool isRelease,
       final bool localHostOnly,
-      final LogLevel logLevel}) = _$MockzillaConfigImpl;
+      final LogLevel logLevel,
+      final ReleaseModeConfig releaseModeConfig}) = _$MockzillaConfigImpl;
 
   @override
 
@@ -1227,6 +1265,10 @@ abstract class _MockzillaConfig implements MockzillaConfig {
 
   /// The level of logging that should be used by Mockzilla.
   LogLevel get logLevel;
+  @override
+
+  /// Used for additional configuration when [isRelease] is [true].
+  ReleaseModeConfig get releaseModeConfig;
   @override
   @JsonKey(ignore: true)
   _$$MockzillaConfigImplCopyWith<_$MockzillaConfigImpl> get copyWith =>

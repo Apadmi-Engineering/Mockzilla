@@ -82,6 +82,7 @@ val EnStrings = Strings(
                     "Text"
                 }
             },
+            invalidJson = "Invalid JSON",
             failOptionsLabel = "User Error Response:",
             failLabel = { shouldFail: Boolean? ->
                 when (shouldFail) {

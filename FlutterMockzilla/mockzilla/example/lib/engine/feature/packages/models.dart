@@ -5,6 +5,16 @@ part 'models.freezed.dart';
 part 'models.g.dart';
 
 @freezed
+class FetchPackagesRequest with _$FetchPackagesRequest {
+  const factory FetchPackagesRequest({
+    required String query,
+  }) = _FetchPackagesRequest;
+
+  factory FetchPackagesRequest.fromJson(Map<String, dynamic> json) =>
+      _$FetchPackagesRequestFromJson(json);
+}
+
+@freezed
 class FetchPackagesResponse with _$FetchPackagesResponse {
   const factory FetchPackagesResponse({
     required List<Package> packages,
