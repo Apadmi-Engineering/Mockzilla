@@ -170,13 +170,11 @@ either across all endpoints on the top level config, or on individual endpoints 
     ```kotlin
         EndpointConfiguration.Builder("Hello world")
           .setMeanDelayMillis(100)
-          .setDelayVarianceMillis(20)
     ```
 === "Swift"
     ```swift
         EndpointConfigurationBuilder(id: "Hello world")
           .setMeanDelayMillis(delay: 100)
-          .setDelayVarianceMillis(variance: 20)
     ```
 === "Flutter"
     ```dart
@@ -196,11 +194,8 @@ either across all endpoints on the top level config, or on individual endpoints 
     | Default values |       |
     |----------------|-------|
     | Delay Mean     | 100ms |
-    | Delay Variance | 20ms  |
 
 For each individual request invocation, an artificial delay is added.
-
-The delay will be randomised and sit somewhere between $delayMean - delayVariance$ and $delayMean + delayVariance$
 
 ### (3) - Artificial Errors
 
@@ -208,17 +203,15 @@ The following can be configured globally across all endpoints [here](../dokka/mo
 
 Mockzilla supports artificially causing network requests to fail.
 
-For each individual request invocation, the decision on whether the request should fail is made based on the failure probability.
-
 === "Kotlin"
     ```kotlin
     EndpointConfiguration.Builder("Hello world")
-    .setFailureProbability(0)
+    .setShouldFail(true)
     ```
 === "Swift"
     ```swift
     EndpointConfigurationBuilder(id: "Hello world")
-    .setFailureProbability(percentage: 0)
+    .setShouldFail(shouldFail: true)
     ```
 === "Flutter"
     ```dart
@@ -231,5 +224,4 @@ For each individual request invocation, the decision on whether the request shou
         failureProbability: 0
     )
     ```
-
-**The default failure probability is 0**.
+    **The default failure probability is 0**.
