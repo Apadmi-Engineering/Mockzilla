@@ -4,7 +4,7 @@
 adam = "0.5.7" # https://github.com/Malinskiy/adam
 jmdns = "3.5.9" # https://github.com/jmdns/jmdns
 kotlin = "1.9.23" # https://github.com/JetBrains/kotlin
-agp = "8.5.0" # https://developer.android.com/build/releases/gradle-plugin
+agp = "8.5.1" # https://developer.android.com/build/releases/gradle-plugin
 ksp = "1.9.23-1.0.20" # https://github.com/google/ksp
 
 # Logging
