@@ -22,7 +22,7 @@ concurrency:
 jobs:
   # Build job
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref_type == 'branch' }} # Skip deployments on snapshot builds
+#    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref_type != 'branch' }} # Skip deployments on snapshot builds
     runs-on: macos-latest
     steps:
       - name: Checkout
