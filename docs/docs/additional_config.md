@@ -1,8 +1,7 @@
 
 # Additional Configuration
 
-Most Mockzilla configuration is relatively self-explanatory and documented [here]
-(../dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/index.html).
+Most Mockzilla configuration is relatively self-explanatory and documented [here](../dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/index.html).
 
 ## Logging
 

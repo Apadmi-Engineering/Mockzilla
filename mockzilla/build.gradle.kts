@@ -21,7 +21,7 @@ kotlin {
     }
 
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "2.0.0" // x-release-please-version
+    version = project.injectedVersion() ?: "2.0.1" // x-release-please-version
 
     val xcf = XCFramework()
     listOf(
@@ -133,11 +133,20 @@ dependencies {
         }
 }
 
+private val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+    from(tasks.dokkaHtml)
+}
+
 publishing {
     publications.withType<MavenPublication> {
         pom {
             name.set("Mockzilla")
             description.set("Solution for running and configuring a local HTTP server on mobile.")
         }
+    }
+
+    publications.filterIsInstance<MavenPublication>().forEach {
+        it.artifact(javadocJar);
     }
 }
