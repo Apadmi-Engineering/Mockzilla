@@ -89,7 +89,6 @@ kotlin {
         val desktopTest by getting {
             dependencies {
                 implementation(libs.turbine)
-                implementation(libs.mockative)
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
@@ -98,12 +97,6 @@ kotlin {
 
 dependencies {
     "kspAndroid"(libs.showkase.processor)
-
-    configurations
-        .filter { it.name.startsWith("ksp") && it.name.contains("Test") }
-        .forEach {
-            add(it.name, libs.mockative.processor)
-        }
 }
 
 // TODO Remove when https://github.com/google/guava/issues/6567 is fixed.
