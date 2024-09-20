@@ -84,7 +84,9 @@ class EndpointConfig with _$EndpointConfig {
 
     /// Optional, the artificial delay in milliseconds that Mockzilla should use to
     /// simulate latency.
-    @Default(100) int delay,
+    int? delay,
+
+    @Default(1) int versionCode,
 
     /// Used to determine whether a particular `request` should be evaluated by
     /// this endpoint.

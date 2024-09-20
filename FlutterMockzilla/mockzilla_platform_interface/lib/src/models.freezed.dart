@@ -781,7 +781,8 @@ mixin _$EndpointConfig {
 
   /// Optional, the artificial delay in milliseconds that Mockzilla should use to
   /// simulate latency.
-  int get delay => throw _privateConstructorUsedError;
+  int? get delay => throw _privateConstructorUsedError;
+  int get versionCode => throw _privateConstructorUsedError;
 
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
@@ -821,7 +822,8 @@ abstract class $EndpointConfigCopyWith<$Res> {
       {String name,
       String? customKey,
       bool shouldFail,
-      int delay,
+      int? delay,
+      int versionCode,
       bool Function(MockzillaHttpRequest) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
       MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler,
@@ -848,7 +850,8 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
     Object? name = null,
     Object? customKey = freezed,
     Object? shouldFail = null,
-    Object? delay = null,
+    Object? delay = freezed,
+    Object? versionCode = null,
     Object? endpointMatcher = null,
     Object? dashboardOptionsConfig = null,
     Object? defaultHandler = null,
@@ -867,9 +870,13 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
           ? _value.shouldFail
           : shouldFail // ignore: cast_nullable_to_non_nullable
               as bool,
-      delay: null == delay
+      delay: freezed == delay
           ? _value.delay
           : delay // ignore: cast_nullable_to_non_nullable
+              as int?,
+      versionCode: null == versionCode
+          ? _value.versionCode
+          : versionCode // ignore: cast_nullable_to_non_nullable
               as int,
       endpointMatcher: null == endpointMatcher
           ? _value.endpointMatcher
@@ -914,7 +921,8 @@ abstract class _$$EndpointConfigImplCopyWith<$Res>
       {String name,
       String? customKey,
       bool shouldFail,
-      int delay,
+      int? delay,
+      int versionCode,
       bool Function(MockzillaHttpRequest) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
       MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler,
@@ -940,7 +948,8 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
     Object? name = null,
     Object? customKey = freezed,
     Object? shouldFail = null,
-    Object? delay = null,
+    Object? delay = freezed,
+    Object? versionCode = null,
     Object? endpointMatcher = null,
     Object? dashboardOptionsConfig = null,
     Object? defaultHandler = null,
@@ -959,9 +968,13 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
           ? _value.shouldFail
           : shouldFail // ignore: cast_nullable_to_non_nullable
               as bool,
-      delay: null == delay
+      delay: freezed == delay
           ? _value.delay
           : delay // ignore: cast_nullable_to_non_nullable
+              as int?,
+      versionCode: null == versionCode
+          ? _value.versionCode
+          : versionCode // ignore: cast_nullable_to_non_nullable
               as int,
       endpointMatcher: null == endpointMatcher
           ? _value.endpointMatcher
@@ -990,7 +1003,8 @@ class _$EndpointConfigImpl extends _EndpointConfig {
       {required this.name,
       this.customKey,
       this.shouldFail = false,
-      this.delay = 100,
+      this.delay,
+      this.versionCode = 1,
       required this.endpointMatcher,
       this.dashboardOptionsConfig = const DashboardOptionsConfig(),
       required this.defaultHandler,
@@ -1011,8 +1025,10 @@ class _$EndpointConfigImpl extends _EndpointConfig {
   /// Optional, the artificial delay in milliseconds that Mockzilla should use to
   /// simulate latency.
   @override
+  final int? delay;
+  @override
   @JsonKey()
-  final int delay;
+  final int versionCode;
 
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
@@ -1038,7 +1054,7 @@ class _$EndpointConfigImpl extends _EndpointConfig {
 
   @override
   String toString() {
-    return 'EndpointConfig(name: $name, customKey: $customKey, shouldFail: $shouldFail, delay: $delay, endpointMatcher: $endpointMatcher, dashboardOptionsConfig: $dashboardOptionsConfig, defaultHandler: $defaultHandler, errorHandler: $errorHandler)';
+    return 'EndpointConfig(name: $name, customKey: $customKey, shouldFail: $shouldFail, delay: $delay, versionCode: $versionCode, endpointMatcher: $endpointMatcher, dashboardOptionsConfig: $dashboardOptionsConfig, defaultHandler: $defaultHandler, errorHandler: $errorHandler)';
   }
 
   @override
@@ -1052,6 +1068,8 @@ class _$EndpointConfigImpl extends _EndpointConfig {
             (identical(other.shouldFail, shouldFail) ||
                 other.shouldFail == shouldFail) &&
             (identical(other.delay, delay) || other.delay == delay) &&
+            (identical(other.versionCode, versionCode) ||
+                other.versionCode == versionCode) &&
             (identical(other.endpointMatcher, endpointMatcher) ||
                 other.endpointMatcher == endpointMatcher) &&
             (identical(other.dashboardOptionsConfig, dashboardOptionsConfig) ||
@@ -1069,6 +1087,7 @@ class _$EndpointConfigImpl extends _EndpointConfig {
       customKey,
       shouldFail,
       delay,
+      versionCode,
       endpointMatcher,
       dashboardOptionsConfig,
       defaultHandler,
@@ -1089,7 +1108,8 @@ abstract class _EndpointConfig extends EndpointConfig {
       {required final String name,
       final String? customKey,
       final bool shouldFail,
-      final int delay,
+      final int? delay,
+      final int versionCode,
       required final bool Function(MockzillaHttpRequest) endpointMatcher,
       final DashboardOptionsConfig dashboardOptionsConfig,
       required final MockzillaHttpResponse Function(MockzillaHttpRequest)
@@ -1111,7 +1131,9 @@ abstract class _EndpointConfig extends EndpointConfig {
   /// Optional, the artificial delay in milliseconds that Mockzilla should use to
   /// simulate latency.
   @override
-  int get delay;
+  int? get delay;
+  @override
+  int get versionCode;
 
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
