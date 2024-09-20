@@ -94,6 +94,52 @@ extension BridgeMockzillaHttpResponse {
     }
 }
 
+extension BridgeDashboardOverridePreset {
+    func toNative() -> Mockzilla_commonDashboardOverridePreset {
+        return Mockzilla_commonDashboardOverridePreset(
+            name: name,
+            description: description,
+            response: response.toNative()
+        )
+    }
+    
+    static func fromNative(_ data: Mockzilla_commonDashboardOverridePreset) -> BridgeDashboardOverridePreset {
+        return BridgeDashboardOverridePreset(
+            name: data.name,
+            description: data.description_,
+            response: BridgeMockzillaHttpResponse.fromNative(data.response)
+        )
+    }
+}
+
+extension BridgeDashboardOptionsConfig {
+    func toNative() -> Mockzilla_commonDashboardOptionsConfig {
+        return Mockzilla_commonDashboardOptionsConfig(
+            errorPresets: errorPresets.map {
+                preset in preset?.toNative()
+            }.filter {
+                preset in preset != nil
+            } as! Array<Mockzilla_commonDashboardOverridePreset>,
+            successPresets: successPresets.map {
+                preset in preset?.toNative()
+            }.filter {
+                preset in preset != nil
+            } as! Array<Mockzilla_commonDashboardOverridePreset>
+        )
+    }
+    
+    static func fromNative(_ data: Mockzilla_commonDashboardOptionsConfig) -> BridgeDashboardOptionsConfig {
+        return BridgeDashboardOptionsConfig(
+            successPresets: data.successPresets.map {
+                it in BridgeDashboardOverridePreset.fromNative(it)
+            },
+            errorPresets: data.errorPresets.map {
+                it in BridgeDashboardOverridePreset.fromNative(it)
+            }
+        )
+    }
+}
+
 extension BridgeEndpointConfig {
     func toNative(
         endpointMatcher: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> Bool,
@@ -104,12 +150,11 @@ extension BridgeEndpointConfig {
         return EndpointConfiguration(
             name: name,
             key: key,
-            failureProbability: KotlinInt(int: Int32(truncatingIfNeeded: failureProbability)),
-            delayMean: KotlinInt(int: Int32(truncatingIfNeeded: delayMean)),
-            delayVariance: KotlinInt(int: Int32(truncatingIfNeeded: delayVariance)),
+            shouldFail: shouldFail,
+            delay: 0,
+            dashboardOptionsConfig: config.toNative(),
+            versionCode: Int32(truncatingIfNeeded: versionCode),
             endpointMatcher: { request in KotlinBoolean(value: endpointMatcher(key, request))},
-            webApiDefaultResponse: webApiDefaultResponse?.toNative(),
-            webApiErrorResponse: webApiErrorResponse?.toNative(),
             defaultHandler: { request in defaultHandler(key, request) },
             errorHandler: { request in errorHandler(key, request) }
         )
@@ -118,16 +163,11 @@ extension BridgeEndpointConfig {
     static func fromNative(_ endpoint: EndpointConfiguration) -> BridgeEndpointConfig {
         return BridgeEndpointConfig(
             name: endpoint.name,
-            key: endpoint.key,
-            failureProbability: endpoint.failureProbability?.int64Value ?? 0,
-            delayMean: endpoint.delayMean?.int64Value ?? 100,
-            delayVariance: endpoint.delayVariance?.int64Value ?? 20,
-            webApiDefaultResponse: endpoint.webApiDefaultResponse.map {
-                response in BridgeMockzillaHttpResponse.fromNative(response)
-            },
-            webApiErrorResponse: endpoint.webApiErrorResponse.map {
-                response in BridgeMockzillaHttpResponse.fromNative(response)
-            }
+            key: endpoint.key as! String,
+            shouldFail: endpoint.shouldFail,
+            delay: endpoint.delay?.int64Value,
+            versionCode: Int64(endpoint.versionCode),
+            config: BridgeDashboardOptionsConfig.fromNative(endpoint.dashboardOptionsConfig)
         )
     }
 }
@@ -166,6 +206,7 @@ extension BridgeMockzillaConfig {
             isRelease: isRelease,
             localhostOnly: false, logLevel: logLevel.toNative(),
             releaseModeConfig: releaseModeConfig.toNative(),
+            isNetworkDiscoveryEnabled: false,
             additionalLogWriters: []
         )
     }

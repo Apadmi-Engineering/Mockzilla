@@ -114,49 +114,87 @@ struct BridgeMockzillaHttpResponse {
 }
 
 /// Generated class from Pigeon that represents data sent in messages.
+struct BridgeDashboardOverridePreset {
+  var name: String
+  var description: String? = nil
+  var response: BridgeMockzillaHttpResponse
+
+  static func fromList(_ list: [Any?]) -> BridgeDashboardOverridePreset? {
+    let name = list[0] as! String
+    let description: String? = nilOrValue(list[1])
+    let response = BridgeMockzillaHttpResponse.fromList(list[2] as! [Any?])!
+
+    return BridgeDashboardOverridePreset(
+      name: name,
+      description: description,
+      response: response
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      name,
+      description,
+      response.toList(),
+    ]
+  }
+}
+
+/// Generated class from Pigeon that represents data sent in messages.
+struct BridgeDashboardOptionsConfig {
+  var successPresets: [BridgeDashboardOverridePreset?]
+  var errorPresets: [BridgeDashboardOverridePreset?]
+
+  static func fromList(_ list: [Any?]) -> BridgeDashboardOptionsConfig? {
+    let successPresets = list[0] as! [BridgeDashboardOverridePreset?]
+    let errorPresets = list[1] as! [BridgeDashboardOverridePreset?]
+
+    return BridgeDashboardOptionsConfig(
+      successPresets: successPresets,
+      errorPresets: errorPresets
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      successPresets,
+      errorPresets,
+    ]
+  }
+}
+
+/// Generated class from Pigeon that represents data sent in messages.
 struct BridgeEndpointConfig {
   var name: String
   var key: String
-  var failureProbability: Int64
-  var delayMean: Int64
-  var delayVariance: Int64
-  var webApiDefaultResponse: BridgeMockzillaHttpResponse? = nil
-  var webApiErrorResponse: BridgeMockzillaHttpResponse? = nil
+  var shouldFail: Bool
+  var delay: Int64? = nil
+  var versionCode: Int64
+  var config: BridgeDashboardOptionsConfig
 
   static func fromList(_ list: [Any?]) -> BridgeEndpointConfig? {
     let name = list[0] as! String
     let key = list[1] as! String
-    let failureProbability = list[2] is Int64 ? list[2] as! Int64 : Int64(list[2] as! Int32)
-    let delayMean = list[3] is Int64 ? list[3] as! Int64 : Int64(list[3] as! Int32)
-    let delayVariance = list[4] is Int64 ? list[4] as! Int64 : Int64(list[4] as! Int32)
-    var webApiDefaultResponse: BridgeMockzillaHttpResponse? = nil
-    if let webApiDefaultResponseList: [Any?] = nilOrValue(list[5]) {
-      webApiDefaultResponse = BridgeMockzillaHttpResponse.fromList(webApiDefaultResponseList)
-    }
-    var webApiErrorResponse: BridgeMockzillaHttpResponse? = nil
-    if let webApiErrorResponseList: [Any?] = nilOrValue(list[6]) {
-      webApiErrorResponse = BridgeMockzillaHttpResponse.fromList(webApiErrorResponseList)
-    }
+    let shouldFail = list[2] as! Bool
+    let delay: Int64? = isNullish(list[3]) ? nil : (list[3] is Int64? ? list[3] as! Int64? : Int64(list[3] as! Int32))
+    let versionCode = list[4] is Int64 ? list[4] as! Int64 : Int64(list[4] as! Int32)
+    let config = BridgeDashboardOptionsConfig.fromList(list[5] as! [Any?])!
 
     return BridgeEndpointConfig(
       name: name,
       key: key,
-      failureProbability: failureProbability,
-      delayMean: delayMean,
-      delayVariance: delayVariance,
-      webApiDefaultResponse: webApiDefaultResponse,
-      webApiErrorResponse: webApiErrorResponse
+      shouldFail: shouldFail,
+      delay: delay,
+      versionCode: versionCode,
+      config: config
     )
   }
   func toList() -> [Any?] {
     return [
       name,
       key,
-      failureProbability,
-      delayMean,
-      delayVariance,
-      webApiDefaultResponse?.toList(),
-      webApiErrorResponse?.toList(),
+      shouldFail,
+      delay,
+      versionCode,
+      config.toList(),
     ]
   }
 }
@@ -280,14 +318,18 @@ private class MockzillaHostApiCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
       case 128:
-        return BridgeEndpointConfig.fromList(self.readValue() as! [Any?])
+        return BridgeDashboardOptionsConfig.fromList(self.readValue() as! [Any?])
       case 129:
-        return BridgeMockzillaConfig.fromList(self.readValue() as! [Any?])
+        return BridgeDashboardOverridePreset.fromList(self.readValue() as! [Any?])
       case 130:
-        return BridgeMockzillaHttpResponse.fromList(self.readValue() as! [Any?])
+        return BridgeEndpointConfig.fromList(self.readValue() as! [Any?])
       case 131:
-        return BridgeMockzillaRuntimeParams.fromList(self.readValue() as! [Any?])
+        return BridgeMockzillaConfig.fromList(self.readValue() as! [Any?])
       case 132:
+        return BridgeMockzillaHttpResponse.fromList(self.readValue() as! [Any?])
+      case 133:
+        return BridgeMockzillaRuntimeParams.fromList(self.readValue() as! [Any?])
+      case 134:
         return BridgeReleaseModeConfig.fromList(self.readValue() as! [Any?])
       default:
         return super.readValue(ofType: type)
@@ -297,20 +339,26 @@ private class MockzillaHostApiCodecReader: FlutterStandardReader {
 
 private class MockzillaHostApiCodecWriter: FlutterStandardWriter {
   override func writeValue(_ value: Any) {
-    if let value = value as? BridgeEndpointConfig {
+    if let value = value as? BridgeDashboardOptionsConfig {
       super.writeByte(128)
       super.writeValue(value.toList())
-    } else if let value = value as? BridgeMockzillaConfig {
+    } else if let value = value as? BridgeDashboardOverridePreset {
       super.writeByte(129)
       super.writeValue(value.toList())
-    } else if let value = value as? BridgeMockzillaHttpResponse {
+    } else if let value = value as? BridgeEndpointConfig {
       super.writeByte(130)
       super.writeValue(value.toList())
-    } else if let value = value as? BridgeMockzillaRuntimeParams {
+    } else if let value = value as? BridgeMockzillaConfig {
       super.writeByte(131)
       super.writeValue(value.toList())
-    } else if let value = value as? BridgeReleaseModeConfig {
+    } else if let value = value as? BridgeMockzillaHttpResponse {
       super.writeByte(132)
+      super.writeValue(value.toList())
+    } else if let value = value as? BridgeMockzillaRuntimeParams {
+      super.writeByte(133)
+      super.writeValue(value.toList())
+    } else if let value = value as? BridgeReleaseModeConfig {
+      super.writeByte(134)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
