@@ -48,6 +48,23 @@ class MockzillaHttpResponse with _$MockzillaHttpResponse {
 }
 
 @freezed
+class DashboardOverridePreset with _$DashboardOverridePreset {
+  const factory DashboardOverridePreset({
+    required String name,
+    required String? description,
+    required MockzillaHttpResponse response,
+  }) = _DashboardOverridePreset;
+}
+
+@freezed
+class DashboardOptionsConfig with _$DashboardOptionsConfig {
+  const factory DashboardOptionsConfig({
+    @Default([]) List<DashboardOverridePreset> successPresets,
+    @Default([]) List<DashboardOverridePreset> errorPresets,
+}) = _DashboardOptionsConfig;
+}
+
+@freezed
 class EndpointConfig with _$EndpointConfig {
   const EndpointConfig._();
 
@@ -61,24 +78,21 @@ class EndpointConfig with _$EndpointConfig {
     required String name,
     String? customKey,
 
-    /// Probability as a percentage that the Mockzilla server should return an
-    /// error for any single request to this endpoint.
-    @Default(0) int failureProbability,
+    /// Whether the Mockzilla server should return an artificial error for a
+    /// request to this endpoint.
+    @Default(false) bool shouldFail,
 
     /// Optional, the artificial delay in milliseconds that Mockzilla should use to
     /// simulate latency.
-    @Default(100) int delayMean,
-
-    /// Optional, the variance in milliseconds of the artificial delay applied
-    /// by Mockzilla to a response to simulate latency. If not provided, then a
-    /// default of 0ms is used to eliminate randomness.
-    @Default(20) int delayVariance,
+    @Default(100) int delay,
 
     /// Used to determine whether a particular `request` should be evaluated by
     /// this endpoint.
     required bool Function(MockzillaHttpRequest request) endpointMatcher,
-    MockzillaHttpResponse? webApiDefaultResponse,
-    MockzillaHttpResponse? webApiErrorResponse,
+
+    /// Optional, configures the preset responses for the endpoint in the
+    /// Mockzilla dashboard.
+    @Default(DashboardOptionsConfig()) DashboardOptionsConfig dashboardOptionsConfig,
 
     /// This function is called when a network request is made to this endpoint,
     /// note that if an error is being returned due to `failureProbability`
