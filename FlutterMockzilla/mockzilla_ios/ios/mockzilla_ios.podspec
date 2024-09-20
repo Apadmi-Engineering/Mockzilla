@@ -21,5 +21,5 @@ A new Flutter plugin project.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
 
-  s.dependency 'SwiftMockzilla', '1.2.1-alpha2'
+  s.dependency 'SwiftMockzilla', '2.0.0'
 end
