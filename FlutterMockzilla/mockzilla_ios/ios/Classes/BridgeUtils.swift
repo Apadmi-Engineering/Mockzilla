@@ -151,7 +151,7 @@ extension BridgeEndpointConfig {
             name: name,
             key: key,
             shouldFail: shouldFail,
-            delay: 0,
+            delay: KotlinInt(int: Int32(delay)),
             dashboardOptionsConfig: config.toNative(),
             versionCode: Int32(truncatingIfNeeded: versionCode),
             endpointMatcher: { request in KotlinBoolean(value: endpointMatcher(key, request))},
@@ -165,7 +165,7 @@ extension BridgeEndpointConfig {
             name: endpoint.name,
             key: endpoint.key as! String,
             shouldFail: endpoint.shouldFail,
-            delay: endpoint.delay?.int64Value,
+            delay: endpoint.delay?.int64Value ?? 100,
             versionCode: Int64(endpoint.versionCode),
             config: BridgeDashboardOptionsConfig.fromNative(endpoint.dashboardOptionsConfig)
         )

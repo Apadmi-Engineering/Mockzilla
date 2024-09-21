@@ -80,7 +80,7 @@ class BridgeEndpointConfig {
   final String name;
   final String key;
   final bool shouldFail;
-  final int? delay;
+  final int delay;
   final int versionCode;
   final BridgeDashboardOptionsConfig config;
 

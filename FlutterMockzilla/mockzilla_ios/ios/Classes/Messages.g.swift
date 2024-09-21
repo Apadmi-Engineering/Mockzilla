@@ -166,7 +166,7 @@ struct BridgeEndpointConfig {
   var name: String
   var key: String
   var shouldFail: Bool
-  var delay: Int64? = nil
+  var delay: Int64
   var versionCode: Int64
   var config: BridgeDashboardOptionsConfig
 
@@ -174,7 +174,7 @@ struct BridgeEndpointConfig {
     let name = list[0] as! String
     let key = list[1] as! String
     let shouldFail = list[2] as! Bool
-    let delay: Int64? = isNullish(list[3]) ? nil : (list[3] is Int64? ? list[3] as! Int64? : Int64(list[3] as! Int32))
+    let delay = list[3] is Int64 ? list[3] as! Int64 : Int64(list[3] as! Int32)
     let versionCode = list[4] is Int64 ? list[4] as! Int64 : Int64(list[4] as! Int32)
     let config = BridgeDashboardOptionsConfig.fromList(list[5] as! [Any?])!
 
