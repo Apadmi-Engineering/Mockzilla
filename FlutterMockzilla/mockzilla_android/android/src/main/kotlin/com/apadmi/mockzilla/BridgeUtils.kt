@@ -121,7 +121,7 @@ fun BridgeEndpointConfig.toNative(
     this.name,
     EndpointConfiguration.Key(this.key),
     this.shouldFail,
-    0,
+    this.delay.toInt(),
     this.config.toNative(),
     this.versionCode.toInt(),
     { endpointMatcher(this, key) },
@@ -135,7 +135,7 @@ fun BridgeEndpointConfig.Companion.fromNative(
     data.name,
     data.key.raw,
     data.shouldFail,
-    data.delay?.toLong(),
+    data.delay?.toLong() ?: 100,
     data.versionCode.toLong(),
     BridgeDashboardOptionsConfig.fromNative(data.dashboardOptionsConfig)
 )

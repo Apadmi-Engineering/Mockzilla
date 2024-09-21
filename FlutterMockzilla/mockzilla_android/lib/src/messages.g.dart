@@ -165,7 +165,7 @@ class BridgeEndpointConfig {
     required this.name,
     required this.key,
     required this.shouldFail,
-    this.delay,
+    required this.delay,
     required this.versionCode,
     required this.config,
   });
@@ -176,7 +176,7 @@ class BridgeEndpointConfig {
 
   bool shouldFail;
 
-  int? delay;
+  int delay;
 
   int versionCode;
 
@@ -199,7 +199,7 @@ class BridgeEndpointConfig {
       name: result[0]! as String,
       key: result[1]! as String,
       shouldFail: result[2]! as bool,
-      delay: result[3] as int?,
+      delay: result[3]! as int,
       versionCode: result[4]! as int,
       config: BridgeDashboardOptionsConfig.decode(result[5]! as List<Object?>),
     );

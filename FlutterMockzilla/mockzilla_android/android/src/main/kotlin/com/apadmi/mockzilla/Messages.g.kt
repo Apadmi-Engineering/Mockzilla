@@ -178,7 +178,7 @@ data class BridgeEndpointConfig (
   val name: String,
   val key: String,
   val shouldFail: Boolean,
-  val delay: Long? = null,
+  val delay: Long,
   val versionCode: Long,
   val config: BridgeDashboardOptionsConfig
 
@@ -189,7 +189,7 @@ data class BridgeEndpointConfig (
       val name = list[0] as String
       val key = list[1] as String
       val shouldFail = list[2] as Boolean
-      val delay = list[3].let { if (it is Int) it.toLong() else it as Long? }
+      val delay = list[3].let { if (it is Int) it.toLong() else it as Long }
       val versionCode = list[4].let { if (it is Int) it.toLong() else it as Long }
       val config = BridgeDashboardOptionsConfig.fromList(list[5] as List<Any?>)
       return BridgeEndpointConfig(name, key, shouldFail, delay, versionCode, config)
