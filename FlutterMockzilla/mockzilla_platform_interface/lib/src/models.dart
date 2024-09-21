@@ -84,7 +84,7 @@ class EndpointConfig with _$EndpointConfig {
 
     /// Optional, the artificial delay in milliseconds that Mockzilla should use to
     /// simulate latency.
-    int? delay,
+    @Default(100) int delay,
 
     @Default(1) int versionCode,
 

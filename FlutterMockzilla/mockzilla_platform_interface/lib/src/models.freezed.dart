@@ -781,7 +781,7 @@ mixin _$EndpointConfig {
 
   /// Optional, the artificial delay in milliseconds that Mockzilla should use to
   /// simulate latency.
-  int? get delay => throw _privateConstructorUsedError;
+  int get delay => throw _privateConstructorUsedError;
   int get versionCode => throw _privateConstructorUsedError;
 
   /// Used to determine whether a particular `request` should be evaluated by
@@ -822,7 +822,7 @@ abstract class $EndpointConfigCopyWith<$Res> {
       {String name,
       String? customKey,
       bool shouldFail,
-      int? delay,
+      int delay,
       int versionCode,
       bool Function(MockzillaHttpRequest) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
@@ -850,7 +850,7 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
     Object? name = null,
     Object? customKey = freezed,
     Object? shouldFail = null,
-    Object? delay = freezed,
+    Object? delay = null,
     Object? versionCode = null,
     Object? endpointMatcher = null,
     Object? dashboardOptionsConfig = null,
@@ -870,10 +870,10 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
           ? _value.shouldFail
           : shouldFail // ignore: cast_nullable_to_non_nullable
               as bool,
-      delay: freezed == delay
+      delay: null == delay
           ? _value.delay
           : delay // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       versionCode: null == versionCode
           ? _value.versionCode
           : versionCode // ignore: cast_nullable_to_non_nullable
@@ -921,7 +921,7 @@ abstract class _$$EndpointConfigImplCopyWith<$Res>
       {String name,
       String? customKey,
       bool shouldFail,
-      int? delay,
+      int delay,
       int versionCode,
       bool Function(MockzillaHttpRequest) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
@@ -948,7 +948,7 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
     Object? name = null,
     Object? customKey = freezed,
     Object? shouldFail = null,
-    Object? delay = freezed,
+    Object? delay = null,
     Object? versionCode = null,
     Object? endpointMatcher = null,
     Object? dashboardOptionsConfig = null,
@@ -968,10 +968,10 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
           ? _value.shouldFail
           : shouldFail // ignore: cast_nullable_to_non_nullable
               as bool,
-      delay: freezed == delay
+      delay: null == delay
           ? _value.delay
           : delay // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
       versionCode: null == versionCode
           ? _value.versionCode
           : versionCode // ignore: cast_nullable_to_non_nullable
@@ -1003,7 +1003,7 @@ class _$EndpointConfigImpl extends _EndpointConfig {
       {required this.name,
       this.customKey,
       this.shouldFail = false,
-      this.delay,
+      this.delay = 100,
       this.versionCode = 1,
       required this.endpointMatcher,
       this.dashboardOptionsConfig = const DashboardOptionsConfig(),
@@ -1025,7 +1025,8 @@ class _$EndpointConfigImpl extends _EndpointConfig {
   /// Optional, the artificial delay in milliseconds that Mockzilla should use to
   /// simulate latency.
   @override
-  final int? delay;
+  @JsonKey()
+  final int delay;
   @override
   @JsonKey()
   final int versionCode;
@@ -1108,7 +1109,7 @@ abstract class _EndpointConfig extends EndpointConfig {
       {required final String name,
       final String? customKey,
       final bool shouldFail,
-      final int? delay,
+      final int delay,
       final int versionCode,
       required final bool Function(MockzillaHttpRequest) endpointMatcher,
       final DashboardOptionsConfig dashboardOptionsConfig,
@@ -1131,7 +1132,7 @@ abstract class _EndpointConfig extends EndpointConfig {
   /// Optional, the artificial delay in milliseconds that Mockzilla should use to
   /// simulate latency.
   @override
-  int? get delay;
+  int get delay;
   @override
   int get versionCode;
 
