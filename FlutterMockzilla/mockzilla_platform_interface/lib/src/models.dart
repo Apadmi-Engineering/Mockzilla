@@ -82,9 +82,9 @@ class EndpointConfig with _$EndpointConfig {
     /// request to this endpoint.
     @Default(false) bool shouldFail,
 
-    /// Optional, the artificial delay in milliseconds that Mockzilla should use to
-    /// simulate latency.
-    @Default(100) int delay,
+    /// Optional, the artificial delay that Mockzilla should apply to responses
+    /// to simulate latency.
+    @Default(Duration(milliseconds: 100)) Duration delay,
 
     @Default(1) int versionCode,
 
@@ -149,6 +149,10 @@ class MockzillaConfig with _$MockzillaConfig {
 
     /// Used for additional configuration when [isRelease] is [true].
     @Default(ReleaseModeConfig()) ReleaseModeConfig releaseModeConfig,
+
+    /// Whether devices running Mockzilla are discoverable through the desktop
+    /// management UI.
+    @Default(true) bool isNetworkDiscoveryEnabled,
   }) = _MockzillaConfig;
 }
 

@@ -779,9 +779,9 @@ mixin _$EndpointConfig {
   /// request to this endpoint.
   bool get shouldFail => throw _privateConstructorUsedError;
 
-  /// Optional, the artificial delay in milliseconds that Mockzilla should use to
-  /// simulate latency.
-  int get delay => throw _privateConstructorUsedError;
+  /// Optional, the artificial delay that Mockzilla should apply to responses
+  /// to simulate latency.
+  Duration get delay => throw _privateConstructorUsedError;
   int get versionCode => throw _privateConstructorUsedError;
 
   /// Used to determine whether a particular `request` should be evaluated by
@@ -822,7 +822,7 @@ abstract class $EndpointConfigCopyWith<$Res> {
       {String name,
       String? customKey,
       bool shouldFail,
-      int delay,
+      Duration delay,
       int versionCode,
       bool Function(MockzillaHttpRequest) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
@@ -873,7 +873,7 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
       delay: null == delay
           ? _value.delay
           : delay // ignore: cast_nullable_to_non_nullable
-              as int,
+              as Duration,
       versionCode: null == versionCode
           ? _value.versionCode
           : versionCode // ignore: cast_nullable_to_non_nullable
@@ -921,7 +921,7 @@ abstract class _$$EndpointConfigImplCopyWith<$Res>
       {String name,
       String? customKey,
       bool shouldFail,
-      int delay,
+      Duration delay,
       int versionCode,
       bool Function(MockzillaHttpRequest) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
@@ -971,7 +971,7 @@ class __$$EndpointConfigImplCopyWithImpl<$Res>
       delay: null == delay
           ? _value.delay
           : delay // ignore: cast_nullable_to_non_nullable
-              as int,
+              as Duration,
       versionCode: null == versionCode
           ? _value.versionCode
           : versionCode // ignore: cast_nullable_to_non_nullable
@@ -1003,7 +1003,7 @@ class _$EndpointConfigImpl extends _EndpointConfig {
       {required this.name,
       this.customKey,
       this.shouldFail = false,
-      this.delay = 100,
+      this.delay = const Duration(milliseconds: 100),
       this.versionCode = 1,
       required this.endpointMatcher,
       this.dashboardOptionsConfig = const DashboardOptionsConfig(),
@@ -1022,11 +1022,11 @@ class _$EndpointConfigImpl extends _EndpointConfig {
   @JsonKey()
   final bool shouldFail;
 
-  /// Optional, the artificial delay in milliseconds that Mockzilla should use to
-  /// simulate latency.
+  /// Optional, the artificial delay that Mockzilla should apply to responses
+  /// to simulate latency.
   @override
   @JsonKey()
-  final int delay;
+  final Duration delay;
   @override
   @JsonKey()
   final int versionCode;
@@ -1109,7 +1109,7 @@ abstract class _EndpointConfig extends EndpointConfig {
       {required final String name,
       final String? customKey,
       final bool shouldFail,
-      final int delay,
+      final Duration delay,
       final int versionCode,
       required final bool Function(MockzillaHttpRequest) endpointMatcher,
       final DashboardOptionsConfig dashboardOptionsConfig,
@@ -1129,10 +1129,10 @@ abstract class _EndpointConfig extends EndpointConfig {
   @override
   bool get shouldFail;
 
-  /// Optional, the artificial delay in milliseconds that Mockzilla should use to
-  /// simulate latency.
+  /// Optional, the artificial delay that Mockzilla should apply to responses
+  /// to simulate latency.
   @override
-  int get delay;
+  Duration get delay;
   @override
   int get versionCode;
 
@@ -1363,6 +1363,10 @@ mixin _$MockzillaConfig {
   /// Used for additional configuration when [isRelease] is [true].
   ReleaseModeConfig get releaseModeConfig => throw _privateConstructorUsedError;
 
+  /// Whether devices running Mockzilla are discoverable through the desktop
+  /// management UI.
+  bool get isNetworkDiscoveryEnabled => throw _privateConstructorUsedError;
+
   /// Create a copy of MockzillaConfig
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1382,7 +1386,8 @@ abstract class $MockzillaConfigCopyWith<$Res> {
       bool isRelease,
       bool localHostOnly,
       LogLevel logLevel,
-      ReleaseModeConfig releaseModeConfig});
+      ReleaseModeConfig releaseModeConfig,
+      bool isNetworkDiscoveryEnabled});
 
   $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig;
 }
@@ -1408,6 +1413,7 @@ class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
     Object? localHostOnly = null,
     Object? logLevel = null,
     Object? releaseModeConfig = null,
+    Object? isNetworkDiscoveryEnabled = null,
   }) {
     return _then(_value.copyWith(
       port: null == port
@@ -1434,6 +1440,10 @@ class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
           ? _value.releaseModeConfig
           : releaseModeConfig // ignore: cast_nullable_to_non_nullable
               as ReleaseModeConfig,
+      isNetworkDiscoveryEnabled: null == isNetworkDiscoveryEnabled
+          ? _value.isNetworkDiscoveryEnabled
+          : isNetworkDiscoveryEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -1462,7 +1472,8 @@ abstract class _$$MockzillaConfigImplCopyWith<$Res>
       bool isRelease,
       bool localHostOnly,
       LogLevel logLevel,
-      ReleaseModeConfig releaseModeConfig});
+      ReleaseModeConfig releaseModeConfig,
+      bool isNetworkDiscoveryEnabled});
 
   @override
   $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig;
@@ -1487,6 +1498,7 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
     Object? localHostOnly = null,
     Object? logLevel = null,
     Object? releaseModeConfig = null,
+    Object? isNetworkDiscoveryEnabled = null,
   }) {
     return _then(_$MockzillaConfigImpl(
       port: null == port
@@ -1513,6 +1525,10 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
           ? _value.releaseModeConfig
           : releaseModeConfig // ignore: cast_nullable_to_non_nullable
               as ReleaseModeConfig,
+      isNetworkDiscoveryEnabled: null == isNetworkDiscoveryEnabled
+          ? _value.isNetworkDiscoveryEnabled
+          : isNetworkDiscoveryEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -1526,7 +1542,8 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
       this.isRelease = false,
       this.localHostOnly = false,
       this.logLevel = LogLevel.info,
-      this.releaseModeConfig = const ReleaseModeConfig()})
+      this.releaseModeConfig = const ReleaseModeConfig(),
+      this.isNetworkDiscoveryEnabled = true})
       : _endpoints = endpoints;
 
   /// The port that the Mockzilla should be available through.
@@ -1568,9 +1585,15 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   @JsonKey()
   final ReleaseModeConfig releaseModeConfig;
 
+  /// Whether devices running Mockzilla are discoverable through the desktop
+  /// management UI.
+  @override
+  @JsonKey()
+  final bool isNetworkDiscoveryEnabled;
+
   @override
   String toString() {
-    return 'MockzillaConfig(port: $port, endpoints: $endpoints, isRelease: $isRelease, localHostOnly: $localHostOnly, logLevel: $logLevel, releaseModeConfig: $releaseModeConfig)';
+    return 'MockzillaConfig(port: $port, endpoints: $endpoints, isRelease: $isRelease, localHostOnly: $localHostOnly, logLevel: $logLevel, releaseModeConfig: $releaseModeConfig, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled)';
   }
 
   @override
@@ -1588,7 +1611,10 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
             (identical(other.logLevel, logLevel) ||
                 other.logLevel == logLevel) &&
             (identical(other.releaseModeConfig, releaseModeConfig) ||
-                other.releaseModeConfig == releaseModeConfig));
+                other.releaseModeConfig == releaseModeConfig) &&
+            (identical(other.isNetworkDiscoveryEnabled,
+                    isNetworkDiscoveryEnabled) ||
+                other.isNetworkDiscoveryEnabled == isNetworkDiscoveryEnabled));
   }
 
   @override
@@ -1599,7 +1625,8 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
       isRelease,
       localHostOnly,
       logLevel,
-      releaseModeConfig);
+      releaseModeConfig,
+      isNetworkDiscoveryEnabled);
 
   /// Create a copy of MockzillaConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -1618,7 +1645,8 @@ abstract class _MockzillaConfig implements MockzillaConfig {
       final bool isRelease,
       final bool localHostOnly,
       final LogLevel logLevel,
-      final ReleaseModeConfig releaseModeConfig}) = _$MockzillaConfigImpl;
+      final ReleaseModeConfig releaseModeConfig,
+      final bool isNetworkDiscoveryEnabled}) = _$MockzillaConfigImpl;
 
   /// The port that the Mockzilla should be available through.
   @override
@@ -1645,6 +1673,11 @@ abstract class _MockzillaConfig implements MockzillaConfig {
   /// Used for additional configuration when [isRelease] is [true].
   @override
   ReleaseModeConfig get releaseModeConfig;
+
+  /// Whether devices running Mockzilla are discoverable through the desktop
+  /// management UI.
+  @override
+  bool get isNetworkDiscoveryEnabled;
 
   /// Create a copy of MockzillaConfig
   /// with the given fields replaced by the non-null parameter values.
