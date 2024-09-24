@@ -135,7 +135,7 @@ fun BridgeEndpointConfig.Companion.fromNative(
     data.name,
     data.key.raw,
     data.shouldFail,
-    data.delayMs?.toLong() ?: 100,
+    data.delay?.toLong() ?: 100,
     data.versionCode.toLong(),
     BridgeDashboardOptionsConfig.fromNative(data.dashboardOptionsConfig)
 )
@@ -167,7 +167,7 @@ fun BridgeMockzillaConfig.toNative(
     this.localHostOnly,
     this.logLevel.toNative(),
     this.releaseModeConfig.toNative(),
-    true,
+    this.isNetworkDiscoveryEnabled,
     emptyList()
 )
 
@@ -180,6 +180,7 @@ fun BridgeMockzillaConfig.Companion.fromNative(
     data.localhostOnly,
     BridgeLogLevel.fromNative(data.logLevel),
     BridgeReleaseModeConfig.fromNative(data.releaseModeConfig),
+    data.isNetworkDiscoveryEnabled,
 )
 
 fun BridgeMockzillaRuntimeParams.Companion.fromNative(
