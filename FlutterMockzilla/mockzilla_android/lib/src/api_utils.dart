@@ -112,7 +112,7 @@ extension BridgeEndpointConfigBridge on BridgeEndpointConfig {
         defaultHandler: defaultHandler,
         errorHandler: errorHandler,
         versionCode: versionCode,
-        delay: delay,
+        delay: Duration(milliseconds: delayMs),
         shouldFail: shouldFail,
         dashboardOptionsConfig: config.toDart(),
       );
@@ -123,7 +123,7 @@ extension EndpointConfigBridge on EndpointConfig {
         name: name,
         key: key,
         shouldFail: shouldFail,
-        delay: delay,
+        delayMs: delay.inMilliseconds,
         versionCode: versionCode,
         config: dashboardOptionsConfig.toBridge(),
       );
@@ -172,6 +172,7 @@ extension MockzillaConfigBridge on MockzillaConfig {
         localHostOnly: localHostOnly,
         logLevel: logLevel.toBridge(),
         releaseModeConfig: releaseModeConfig.toBridge(),
+        isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
       );
 }
 
@@ -196,5 +197,6 @@ extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
         isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toDart(),
+        isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
       );
 }

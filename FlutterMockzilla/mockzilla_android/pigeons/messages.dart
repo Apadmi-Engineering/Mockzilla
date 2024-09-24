@@ -80,7 +80,7 @@ class BridgeEndpointConfig {
   final String name;
   final String key;
   final bool shouldFail;
-  final int delay;
+  final int delayMs;
   final int versionCode;
   final BridgeDashboardOptionsConfig config;
 
@@ -88,7 +88,7 @@ class BridgeEndpointConfig {
     required this.name,
     required this.key,
     required this.shouldFail,
-    required this.delay,
+    required this.delayMs,
     required this.versionCode,
     required this.config,
   });
@@ -113,6 +113,7 @@ class BridgeMockzillaConfig {
   final bool localHostOnly;
   final BridgeLogLevel logLevel;
   final BridgeReleaseModeConfig releaseModeConfig;
+  final bool isNetworkDiscoveryEnabled;
 
   const BridgeMockzillaConfig(
     this.port,
@@ -121,6 +122,7 @@ class BridgeMockzillaConfig {
     this.localHostOnly,
     this.logLevel,
     this.releaseModeConfig,
+    this.isNetworkDiscoveryEnabled,
   );
 }
 

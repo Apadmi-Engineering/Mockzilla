@@ -178,7 +178,7 @@ data class BridgeEndpointConfig (
   val name: String,
   val key: String,
   val shouldFail: Boolean,
-  val delay: Long,
+  val delayMs: Long,
   val versionCode: Long,
   val config: BridgeDashboardOptionsConfig
 
@@ -189,10 +189,10 @@ data class BridgeEndpointConfig (
       val name = list[0] as String
       val key = list[1] as String
       val shouldFail = list[2] as Boolean
-      val delay = list[3].let { if (it is Int) it.toLong() else it as Long }
+      val delayMs = list[3].let { if (it is Int) it.toLong() else it as Long }
       val versionCode = list[4].let { if (it is Int) it.toLong() else it as Long }
       val config = BridgeDashboardOptionsConfig.fromList(list[5] as List<Any?>)
-      return BridgeEndpointConfig(name, key, shouldFail, delay, versionCode, config)
+      return BridgeEndpointConfig(name, key, shouldFail, delayMs, versionCode, config)
     }
   }
   fun toList(): List<Any?> {
@@ -200,7 +200,7 @@ data class BridgeEndpointConfig (
       name,
       key,
       shouldFail,
-      delay,
+      delayMs,
       versionCode,
       config.toList(),
     )
@@ -239,7 +239,8 @@ data class BridgeMockzillaConfig (
   val isRelease: Boolean,
   val localHostOnly: Boolean,
   val logLevel: BridgeLogLevel,
-  val releaseModeConfig: BridgeReleaseModeConfig
+  val releaseModeConfig: BridgeReleaseModeConfig,
+  val isNetworkDiscoveryEnabled: Boolean
 
 ) {
   companion object {
@@ -251,7 +252,8 @@ data class BridgeMockzillaConfig (
       val localHostOnly = list[3] as Boolean
       val logLevel = BridgeLogLevel.ofRaw(list[4] as Int)!!
       val releaseModeConfig = BridgeReleaseModeConfig.fromList(list[5] as List<Any?>)
-      return BridgeMockzillaConfig(port, endpoints, isRelease, localHostOnly, logLevel, releaseModeConfig)
+      val isNetworkDiscoveryEnabled = list[6] as Boolean
+      return BridgeMockzillaConfig(port, endpoints, isRelease, localHostOnly, logLevel, releaseModeConfig, isNetworkDiscoveryEnabled)
     }
   }
   fun toList(): List<Any?> {
@@ -262,6 +264,7 @@ data class BridgeMockzillaConfig (
       localHostOnly,
       logLevel.raw,
       releaseModeConfig.toList(),
+      isNetworkDiscoveryEnabled,
     )
   }
 }
