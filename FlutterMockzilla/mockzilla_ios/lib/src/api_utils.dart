@@ -113,7 +113,7 @@ extension BridgeEndpointConfigBridge on BridgeEndpointConfig {
         defaultHandler: defaultHandler,
         errorHandler: errorHandler,
         versionCode: versionCode,
-        delay: delay,
+        delay: Duration(milliseconds: delayMs),
         shouldFail: shouldFail,
         dashboardOptionsConfig: config.toDart(),
       );
@@ -124,7 +124,7 @@ extension EndpointConfigBridge on EndpointConfig {
     name: name,
     key: key,
     shouldFail: shouldFail,
-    delay: delay,
+    delayMs: delay.inMilliseconds,
     versionCode: versionCode,
     config: dashboardOptionsConfig.toBridge(),
   );
@@ -163,39 +163,42 @@ extension AuthHeaderBridge on AuthHeader {
 
 extension MockzillaConfigBridge on MockzillaConfig {
   toBridge() => BridgeMockzillaConfig(
-        port: port,
-        endpoints: endpoints
-            .map(
-              (endpoint) => endpoint.toBridge(),
-            )
-            .toList(),
-        isRelease: isRelease,
-        localHostOnly: localHostOnly,
-        logLevel: logLevel.toBridge(),
-        releaseModeConfig: releaseModeConfig.toBridge(),
-      );
+    port: port,
+    endpoints: endpoints
+        .map(
+          (endpoint) => endpoint.toBridge(),
+    )
+        .toList(),
+    isRelease: isRelease,
+    localHostOnly: localHostOnly,
+    logLevel: logLevel.toBridge(),
+    releaseModeConfig: releaseModeConfig.toBridge(),
+    isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
+  );
 }
 
 extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
   toDart(
-    bool Function(MockzillaHttpRequest request) endpointMatcher,
-    MockzillaHttpResponse Function(MockzillaHttpRequest request) defaultHandler,
-    MockzillaHttpResponse Function(MockzillaHttpRequest request) errorHandler,
-  ) =>
+      bool Function(MockzillaHttpRequest request) endpointMatcher,
+      MockzillaHttpResponse Function(MockzillaHttpRequest request) defaultHandler,
+      MockzillaHttpResponse Function(MockzillaHttpRequest request) errorHandler,
+      ) =>
       MockzillaConfig(
         port: port,
         endpoints: endpoints
             .map(
               (endpoint) => endpoint?.toDart(
-                endpointMatcher,
-                defaultHandler,
-                errorHandler,
-              ),
-            )
+            endpointMatcher,
+            defaultHandler,
+            errorHandler,
+          ),
+        )
             .whereType<EndpointConfig>()
             .toList(),
         isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toDart(),
+        isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
       );
 }
+

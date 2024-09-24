@@ -165,7 +165,7 @@ class BridgeEndpointConfig {
     required this.name,
     required this.key,
     required this.shouldFail,
-    required this.delay,
+    required this.delayMs,
     required this.versionCode,
     required this.config,
   });
@@ -176,7 +176,7 @@ class BridgeEndpointConfig {
 
   bool shouldFail;
 
-  int delay;
+  int delayMs;
 
   int versionCode;
 
@@ -187,7 +187,7 @@ class BridgeEndpointConfig {
       name,
       key,
       shouldFail,
-      delay,
+      delayMs,
       versionCode,
       config.encode(),
     ];
@@ -199,7 +199,7 @@ class BridgeEndpointConfig {
       name: result[0]! as String,
       key: result[1]! as String,
       shouldFail: result[2]! as bool,
-      delay: result[3]! as int,
+      delayMs: result[3]! as int,
       versionCode: result[4]! as int,
       config: BridgeDashboardOptionsConfig.decode(result[5]! as List<Object?>),
     );
@@ -245,6 +245,7 @@ class BridgeMockzillaConfig {
     required this.localHostOnly,
     required this.logLevel,
     required this.releaseModeConfig,
+    required this.isNetworkDiscoveryEnabled,
   });
 
   int port;
@@ -259,6 +260,8 @@ class BridgeMockzillaConfig {
 
   BridgeReleaseModeConfig releaseModeConfig;
 
+  bool isNetworkDiscoveryEnabled;
+
   Object encode() {
     return <Object?>[
       port,
@@ -267,6 +270,7 @@ class BridgeMockzillaConfig {
       localHostOnly,
       logLevel.index,
       releaseModeConfig.encode(),
+      isNetworkDiscoveryEnabled,
     ];
   }
 
@@ -279,6 +283,7 @@ class BridgeMockzillaConfig {
       localHostOnly: result[3]! as bool,
       logLevel: BridgeLogLevel.values[result[4]! as int],
       releaseModeConfig: BridgeReleaseModeConfig.decode(result[5]! as List<Object?>),
+      isNetworkDiscoveryEnabled: result[6]! as bool,
     );
   }
 }

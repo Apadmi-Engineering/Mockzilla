@@ -151,7 +151,7 @@ extension BridgeEndpointConfig {
             name: name,
             key: key,
             shouldFail: shouldFail,
-            delay: KotlinInt(int: Int32(delay)),
+            delay: KotlinInt(int: Int32(delayMs)),
             dashboardOptionsConfig: config.toNative(),
             versionCode: Int32(truncatingIfNeeded: versionCode),
             endpointMatcher: { request in KotlinBoolean(value: endpointMatcher(key, request))},
@@ -165,7 +165,7 @@ extension BridgeEndpointConfig {
             name: endpoint.name,
             key: endpoint.key as! String,
             shouldFail: endpoint.shouldFail,
-            delay: endpoint.delay?.int64Value ?? 100,
+            delayMs: endpoint.delay?.int64Value ?? 100,
             versionCode: Int64(endpoint.versionCode),
             config: BridgeDashboardOptionsConfig.fromNative(endpoint.dashboardOptionsConfig)
         )
@@ -206,7 +206,7 @@ extension BridgeMockzillaConfig {
             isRelease: isRelease,
             localhostOnly: false, logLevel: logLevel.toNative(),
             releaseModeConfig: releaseModeConfig.toNative(),
-            isNetworkDiscoveryEnabled: false,
+            isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
             additionalLogWriters: []
         )
     }
@@ -220,7 +220,8 @@ extension BridgeMockzillaConfig {
             isRelease: config.isRelease,
             localHostOnly: config.isRelease,
             logLevel: try BridgeLogLevel.fromNative(config.logLevel),
-            releaseModeConfig: BridgeReleaseModeConfig.fromNative(config.releaseModeConfig)
+            releaseModeConfig: BridgeReleaseModeConfig.fromNative(config.releaseModeConfig),
+            isNetworkDiscoveryEnabled: config.isNetworkDiscoveryEnabled
         )
     }
 }

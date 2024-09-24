@@ -166,7 +166,7 @@ struct BridgeEndpointConfig {
   var name: String
   var key: String
   var shouldFail: Bool
-  var delay: Int64
+  var delayMs: Int64
   var versionCode: Int64
   var config: BridgeDashboardOptionsConfig
 
@@ -174,7 +174,7 @@ struct BridgeEndpointConfig {
     let name = list[0] as! String
     let key = list[1] as! String
     let shouldFail = list[2] as! Bool
-    let delay = list[3] is Int64 ? list[3] as! Int64 : Int64(list[3] as! Int32)
+    let delayMs = list[3] is Int64 ? list[3] as! Int64 : Int64(list[3] as! Int32)
     let versionCode = list[4] is Int64 ? list[4] as! Int64 : Int64(list[4] as! Int32)
     let config = BridgeDashboardOptionsConfig.fromList(list[5] as! [Any?])!
 
@@ -182,7 +182,7 @@ struct BridgeEndpointConfig {
       name: name,
       key: key,
       shouldFail: shouldFail,
-      delay: delay,
+      delayMs: delayMs,
       versionCode: versionCode,
       config: config
     )
@@ -192,7 +192,7 @@ struct BridgeEndpointConfig {
       name,
       key,
       shouldFail,
-      delay,
+      delayMs,
       versionCode,
       config.toList(),
     ]
@@ -233,6 +233,7 @@ struct BridgeMockzillaConfig {
   var localHostOnly: Bool
   var logLevel: BridgeLogLevel
   var releaseModeConfig: BridgeReleaseModeConfig
+  var isNetworkDiscoveryEnabled: Bool
 
   static func fromList(_ list: [Any?]) -> BridgeMockzillaConfig? {
     let port = list[0] is Int64 ? list[0] as! Int64 : Int64(list[0] as! Int32)
@@ -241,6 +242,7 @@ struct BridgeMockzillaConfig {
     let localHostOnly = list[3] as! Bool
     let logLevel = BridgeLogLevel(rawValue: list[4] as! Int)!
     let releaseModeConfig = BridgeReleaseModeConfig.fromList(list[5] as! [Any?])!
+    let isNetworkDiscoveryEnabled = list[6] as! Bool
 
     return BridgeMockzillaConfig(
       port: port,
@@ -248,7 +250,8 @@ struct BridgeMockzillaConfig {
       isRelease: isRelease,
       localHostOnly: localHostOnly,
       logLevel: logLevel,
-      releaseModeConfig: releaseModeConfig
+      releaseModeConfig: releaseModeConfig,
+      isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled
     )
   }
   func toList() -> [Any?] {
@@ -259,6 +262,7 @@ struct BridgeMockzillaConfig {
       localHostOnly,
       logLevel.rawValue,
       releaseModeConfig.toList(),
+      isNetworkDiscoveryEnabled,
     ]
   }
 }
