@@ -155,13 +155,12 @@ packages:
     source: path
     version: "0.1.2"
   mockzilla_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: mockzilla_platform_interface
-      sha256: "64157655d3a97cfdfcccd26b84ae4a17bf4d11e999c9547c1b484ce181949d3d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0"
+      path: "../../mockzilla_platform_interface"
+      relative: true
+    source: path
+    version: "1.0.0"
   path:
     dependency: transitive
     description:
