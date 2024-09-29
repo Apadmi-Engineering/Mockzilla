@@ -81,30 +81,22 @@ class BridgeUtilsTests: XCTestCase {
             EndpointConfiguration(
                 name: "Endpoint",
                 key: "endpoint",
-                failureProbability: KotlinInt(int: 50),
-                delayMean: KotlinInt(int: 1000),
-                delayVariance: KotlinInt(int: 20),
+                shouldFail: false,
+                delay: KotlinInt(int: 1000),
+                dashboardOptionsConfig: Mockzilla_commonDashboardOptionsConfig(
+                    errorPresets: [], successPresets: []
+                ),
+                versionCode: 1,
                 endpointMatcher: endpointMatcher,
-                webApiDefaultResponse: MockzillaHttpResponse(status: HttpStatusCode.OK),
-                webApiErrorResponse: MockzillaHttpResponse(status: HttpStatusCode.BadRequest),
                 defaultHandler: defaultHandler,
                 errorHandler: errorHandler
             ) : BridgeEndpointConfig(
                 name: "Endpoint",
                 key: "endpoint",
-                failureProbability: 50,
-                delayMean: 1000,
-                delayVariance: 20,
-                webApiDefaultResponse: BridgeMockzillaHttpResponse(
-                    statusCode: 200,
-                    headers: [:],
-                    body: ""
-                ),
-                webApiErrorResponse: BridgeMockzillaHttpResponse(
-                    statusCode: 400,
-                    headers: [:],
-                    body: ""
-                )
+                shouldFail: false,
+                delayMs: 1000,
+                versionCode: 1,
+                config: BridgeDashboardOptionsConfig(successPresets: [], errorPresets: [])
             )
         ]
         
@@ -115,24 +107,22 @@ class BridgeUtilsTests: XCTestCase {
                 defaultHandler: { (key, request) in MockzillaHttpResponse() },
                 errorHandler: { (key, request) in errorHandler(request)}
             )
-            XCTAssertEqual(actualNative.key, native.key)
+            XCTAssertEqual(actualNative.key as! String, native.key as! String)
             XCTAssertEqual(actualNative.name, native.name)
-            XCTAssertEqual(actualNative.failureProbability, native.failureProbability)
-            XCTAssertEqual(actualNative.delayMean, native.delayMean)
-            XCTAssertEqual(actualNative.delayVariance, native.delayVariance)
-            XCTAssertEqual(actualNative.webApiDefaultResponse, native.webApiDefaultResponse)
-            XCTAssertEqual(actualNative.webApiErrorResponse, native.webApiErrorResponse)
+            XCTAssertEqual(actualNative.shouldFail, native.shouldFail)
+            XCTAssertEqual(actualNative.delay, native.delay)
+            XCTAssertEqual(actualNative.dashboardOptionsConfig, native.dashboardOptionsConfig)
+            XCTAssertEqual(actualNative.versionCode, native.versionCode)
           
             // From native to bridge
             let actualBridge = BridgeEndpointConfig.fromNative(native)
             XCTAssertEqual(actualBridge.name, bridge.name)
             XCTAssertEqual(actualBridge.key, bridge.key)
-            XCTAssertEqual(actualBridge.failureProbability, bridge.failureProbability)
-            XCTAssertEqual(actualBridge.delayMean, bridge.delayMean)
-            XCTAssertEqual(actualBridge.delayVariance, bridge.delayVariance)
-            // Full test of response marshalling above
-            XCTAssertEqual(actualBridge.webApiDefaultResponse?.statusCode, bridge.webApiDefaultResponse?.statusCode)
-            XCTAssertEqual(actualBridge.webApiErrorResponse?.statusCode, bridge.webApiErrorResponse?.statusCode)
+            XCTAssertEqual(actualBridge.shouldFail, bridge.shouldFail)
+            XCTAssertEqual(actualBridge.delayMs, bridge.delayMs)
+            XCTAssertEqual(actualBridge.versionCode, bridge.versionCode)
+            XCTAssertEqual(actualBridge.config.successPresets.first??.name, bridge.config.successPresets.first??.name)
+            XCTAssertEqual(actualBridge.config.errorPresets.first??.name, bridge.config.errorPresets.first??.name)
         }
     }
     
@@ -171,12 +161,11 @@ class BridgeUtilsTests: XCTestCase {
                 EndpointConfiguration(
                     name: "Endpoint",
                     key: "endpoint",
-                    failureProbability: KotlinInt(int: 0),
-                    delayMean: KotlinInt(int: 100),
-                    delayVariance: KotlinInt(int: 20),
+                    shouldFail: false,
+                    delay: KotlinInt(int: 100),
+                    dashboardOptionsConfig: Mockzilla_commonDashboardOptionsConfig(errorPresets: [], successPresets: []),
+                    versionCode: 1,
                     endpointMatcher: { (request) in true },
-                    webApiDefaultResponse: MockzillaHttpResponse(),
-                    webApiErrorResponse: MockzillaHttpResponse(),
                     defaultHandler: { (request) in MockzillaHttpResponse()},
                     errorHandler: { (request) in MockzillaHttpResponse()}
                 )
@@ -189,6 +178,7 @@ class BridgeUtilsTests: XCTestCase {
                 rateLimitRefillPeriod: 3600,
                 tokenLifeSpan: 7200
             ),
+            isNetworkDiscoveryEnabled: false,
             additionalLogWriters: []
         )
         
@@ -198,9 +188,10 @@ class BridgeUtilsTests: XCTestCase {
                 BridgeEndpointConfig(
                     name: "Endpoint",
                     key: "endpoint",
-                    failureProbability: 0,
-                    delayMean: 100,
-                    delayVariance: 20
+                    shouldFail: false,
+                    delayMs: 1000,
+                    versionCode: 1,
+                    config: BridgeDashboardOptionsConfig(successPresets: [], errorPresets: [])
                 )
             ],
             isRelease: false,
@@ -210,7 +201,8 @@ class BridgeUtilsTests: XCTestCase {
                 rateLimit: 500,
                 rateLimitRefillPeriodMillis: 3600,
                 tokenLifeSpanMillis: 7200
-            )
+            ),
+            isNetworkDiscoveryEnabled: false
         )
         
         let actualNative = bridge.toNative(
@@ -223,7 +215,7 @@ class BridgeUtilsTests: XCTestCase {
         
         // Verify from bridge to native
         XCTAssertEqual(actualNative.port, native.port)
-        XCTAssertEqual(actualNative.endpoints.first?.key, native.endpoints.first?.key)
+        XCTAssertEqual(actualNative.endpoints.first?.key as! String, native.endpoints.first?.key as! String)
         XCTAssertEqual(actualNative.isRelease, native.isRelease)
         XCTAssertEqual(actualNative.localhostOnly, native.localhostOnly)
         XCTAssertEqual(actualNative.logLevel, native.logLevel)
