@@ -15,6 +15,7 @@ import BridgeMockzillaHttpRequest
 import BridgeMockzillaHttpResponse
 import BridgeReleaseModeConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 
@@ -83,6 +84,102 @@ internal class BridgeUtilsTest {
         bridgeToNative.forEach { (bridge, native) ->
             assertEquals(bridge.toNative(), native)
             assertEquals(BridgeMockzillaHttpResponse.fromNative(native), bridge)
+        }
+    }
+
+    @Test
+    fun dashboardOverridePresetMarshallingReturnsExpectedValue() {
+        // Setup
+        val bridgeToNative = mapOf(
+            BridgeDashboardOverridePreset(
+                "Default response",
+                null,
+                BridgeMockzillaHttpResponse(
+                    200,
+                    emptyMap(),
+                    "",
+                )
+            ) to DashboardOverridePreset(
+                "Default response",
+                null,
+                MockzillaHttpResponse(
+                    HttpStatusCode.OK,
+                    emptyMap(),
+                    ""
+                )
+            ),
+            BridgeDashboardOverridePreset(
+                "Error response",
+                "Unauthorized response",
+                BridgeMockzillaHttpResponse(
+                    401,
+                    emptyMap(),
+                    ""
+                )
+            ) to DashboardOverridePreset(
+                "Error response",
+                "Unauthorized response",
+                MockzillaHttpResponse(
+                    HttpStatusCode.Unauthorized,
+                    emptyMap(),
+                    ""
+                )
+            )
+        )
+
+        // Run test & verify
+        bridgeToNative.forEach { (bridge, native) ->
+            assertEquals(bridge.toNative(), native)
+            assertEquals(BridgeDashboardOverridePreset.fromNative(native), bridge)
+        }
+    }
+
+    @Test
+    fun dashboardOptionsConfigMarshallingReturnsExpectedValue() {
+        // Setup
+        val bridgeToNative = mapOf(
+            BridgeDashboardOptionsConfig(
+                emptyList(), emptyList()
+            ) to DashboardOptionsConfig(
+                emptyList(), emptyList()
+            ),
+            BridgeDashboardOptionsConfig(
+                listOf(
+                    BridgeDashboardOverridePreset(
+                        "Default response",
+                        null,
+                        BridgeMockzillaHttpResponse(200, emptyMap(), "")
+                    )
+                ),
+                listOf(
+                    BridgeDashboardOverridePreset(
+                        "Error response",
+                        null,
+                        BridgeMockzillaHttpResponse(500, emptyMap(), "")
+                    )
+                )
+            ) to DashboardOptionsConfig(
+                successPresets = listOf(
+                    DashboardOverridePreset(
+                        "Default response",
+                        null,
+                        MockzillaHttpResponse(HttpStatusCode.OK, emptyMap(), "")
+                    )
+                ),
+                errorPresets = listOf(
+                    DashboardOverridePreset(
+                        "Error response",
+                        null,
+                        MockzillaHttpResponse(HttpStatusCode.InternalServerError, emptyMap(), "")
+                    )
+                )
+            )
+        )
+
+        // Run test & verify
+        bridgeToNative.forEach { (bridge, native) ->
+            assertEquals(bridge.toNative(), native)
+            assertEquals(BridgeDashboardOptionsConfig.fromNative(native), bridge)
         }
     }
 
