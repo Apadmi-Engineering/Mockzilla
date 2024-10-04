@@ -71,6 +71,114 @@ class BridgeUtilsTests: XCTestCase {
         }
     }
     
+    func testDashboardOverridePresetMarshalling() throws {
+        let nativeToBridge = [
+            Mockzilla_commonDashboardOverridePreset(
+                name: "Default response",
+                description: nil,
+                response: MockzillaHttpResponse(
+                    statusCode: HttpStatusCode.OK,
+                    headers: ["content-type": "text/plain"],
+                    body: "Hello world"
+                )
+            ): BridgeDashboardOverridePreset(
+                name: "Default response",
+                response: BridgeMockzillaHttpResponse(
+                    statusCode: 200,
+                    headers: ["content-type": "text/plain"],
+                    body: "Hello world"
+                )
+            ),
+            Mockzilla_commonDashboardOverridePreset(
+                name: "Error response",
+                description: "Unauthorized response",
+                response: MockzillaHttpResponse(
+                    statusCode: HttpStatusCode.Unauthorized,
+                    headers: ["content-type":"application/json"],
+                    body: ""
+                )
+            ): BridgeDashboardOverridePreset(
+                name: "Error response",
+                description: "Unauthorized response",
+                response: BridgeMockzillaHttpResponse(
+                    statusCode: 401,
+                    headers: ["content-type":"application/json"],
+                    body: ""
+                )
+            )
+        ]
+        
+        nativeToBridge.forEach { (native, bridge) in
+            XCTAssertEqual(bridge.toNative(), native)
+            
+            let actualBridge = BridgeDashboardOverridePreset.fromNative(native)
+            XCTAssertEqual(actualBridge.name, bridge.name)
+            XCTAssertEqual(actualBridge.description, bridge.description)
+            XCTAssertEqual(actualBridge.response.statusCode, bridge.response.statusCode)
+            XCTAssertEqual(actualBridge.response.body, bridge.response.body)
+        }
+    }
+    
+    func testDashboardOptionsConfigMarshalling() throws {
+        let nativeToBridge = [
+            Mockzilla_commonDashboardOptionsConfig(
+                errorPresets: [
+                    Mockzilla_commonDashboardOverridePreset(
+                        name: "Error response",
+                        description: nil,
+                        response: MockzillaHttpResponse(
+                            status: HttpStatusCode.InternalServerError,
+                            body: ""
+                        )
+                    )
+                ],
+                successPresets: [
+                    Mockzilla_commonDashboardOverridePreset(
+                        name: "Default response",
+                        description: "Description",
+                        response: MockzillaHttpResponse(
+                            status: HttpStatusCode.OK,
+                            body: ""
+                        )
+                    )
+                ]
+            ): BridgeDashboardOptionsConfig(
+                successPresets: [
+                    BridgeDashboardOverridePreset(
+                        name: "Default response",
+                        description: "Description",
+                        response: BridgeMockzillaHttpResponse(
+                            statusCode: 200,
+                            headers: [:],
+                            body: ""
+                        )
+                    )
+                ],
+                errorPresets: [
+                    BridgeDashboardOverridePreset(
+                        name: "Error response",
+                        description: nil,
+                        response: BridgeMockzillaHttpResponse(
+                            statusCode: 500,
+                            headers: [:],
+                            body: ""
+                        )
+                    )
+                ]
+            )
+        ]
+        
+        nativeToBridge.forEach { (native, bridge) in
+            XCTAssertEqual(bridge.toNative(), native)
+            
+            let actualBridge = BridgeDashboardOptionsConfig.fromNative(native)
+            XCTAssertEqual(actualBridge.successPresets.count, bridge.successPresets.count)
+            XCTAssertEqual(actualBridge.successPresets.first??.name, bridge.successPresets.first??.name)
+            XCTAssertEqual(actualBridge.errorPresets.count, bridge.errorPresets.count)
+            XCTAssertEqual(actualBridge.errorPresets.first??.name, bridge.errorPresets.first??.name)
+        }
+    }
+    
     func testEndpointConfigMarshalling() throws {
         
         let endpointMatcher = { (request: MockzillaHttpRequest) in KotlinBoolean(bool: true)}
