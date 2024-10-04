@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:example/engine/feature/packages/models.dart';
 import 'package:mockzilla/mockzilla.dart';
+import 'package:mockzilla_example/engine/feature/packages/models.dart';
 
 final mockzillaConfig = const MockzillaConfig().addEndpoint(
   () => EndpointConfig(
