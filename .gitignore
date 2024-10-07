@@ -12,7 +12,7 @@ demo-android/.idea
 demo-android/build
 .idea/*
 generated_docs/*
-
+.kotlin
 docs/__pycache__/
 **/.gradle/**
 **/build/**

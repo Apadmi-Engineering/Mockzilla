@@ -3,9 +3,9 @@
 # Kotlin
 adam = "0.5.7" # https://github.com/Malinskiy/adam
 jmdns = "3.5.9" # https://github.com/jmdns/jmdns
-kotlin = "2.0.20" # https://github.com/JetBrains/kotlin
-agp = "8.5.1" # https://developer.android.com/build/releases/gradle-plugin
-ksp = "2.0.20-1.0.25" # https://github.com/google/ksp
+kotlin = "2.0.21-RC" # https://github.com/JetBrains/kotlin
+agp = "8.7.0" # https://developer.android.com/build/releases/gradle-plugin
+ksp = "2.0.21-RC-1.0.25" # https://github.com/google/ksp
 
 # Logging
 kermit = "1.2.2" # https://github.com/touchlab/Kermit
@@ -36,6 +36,7 @@ kotlinx-serialization = "1.7.2" # https://github.com/Kotlin/kotlinx.serializatio
 # AndroidX
 lifecycle = "2.8.5" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 compose-activity = "1.9.0" # https://developer.android.com/jetpack/androidx/releases/activity
+mockk = "1.13.12"
 playServicesAdsIdentifier = "18.1.0"
 
 # Semantic Versioning
@@ -96,6 +97,7 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
 # Testing
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 play-services-ads-identifier = { module = "com.google.android.gms:play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
 semver4j = { module = "com.vdurmont:semver4j", version.ref = "semver4j" }
 showkase = { module = "com.airbnb.android:showkase", version.ref = "showkase" }

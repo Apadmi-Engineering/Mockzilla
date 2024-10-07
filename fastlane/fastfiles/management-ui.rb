@@ -7,8 +7,8 @@ platform :android do
     lane :management_ui_pull_request do
         gradle(
             tasks: [
-                ":mockzilla-management-ui:common:desktopTest",
-                ":mockzilla-management-ui:android:bundleDebug"
+                ":mockzilla-management-ui:desktopTest",
+                ":mockzilla-management-ui:bundleDebug"
             ]
         )
         # update_reference_screenshots
@@ -17,8 +17,8 @@ platform :android do
     desc "Generate screenshots and upload them"
     lane :update_reference_screenshots do
         # Compile and Test
-        gradle(tasks: [":mockzilla-management-ui:common:recordPaparazziDebug"])
-        upload_screenshots
+#         gradle(tasks: [":mockzilla-management-ui:recordPaparazziDebug"])
+#         upload_screenshots
     end
 
     private_lane :upload_screenshots do
