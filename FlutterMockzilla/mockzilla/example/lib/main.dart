@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:example/engine/feature/packages/models.dart';
-import 'package:example/engine/feature/packages/packages_client.dart';
 import 'package:flutter/material.dart';
 import 'package:mockzilla/mockzilla.dart';
+import 'package:mockzilla_example/engine/feature/packages/models.dart';
+import 'package:mockzilla_example/engine/feature/packages/packages_client.dart';
 
 import 'engine/config/mockzilla_config.dart';
 

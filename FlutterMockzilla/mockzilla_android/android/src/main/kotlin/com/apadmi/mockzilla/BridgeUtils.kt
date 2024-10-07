@@ -1,5 +1,7 @@
 package com.apadmi.mockzilla
 
+import BridgeDashboardOptionsConfig
+import BridgeDashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
@@ -14,6 +16,8 @@ import BridgeMockzillaHttpRequest
 import BridgeMockzillaHttpResponse
 import BridgeMockzillaRuntimeParams
 import BridgeReleaseModeConfig
+import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 
@@ -62,16 +66,6 @@ fun BridgeLogLevel.Companion.fromNative(
     MockzillaConfig.LogLevel.Assert -> BridgeLogLevel.ASSERTION
 }
 
-fun BridgeMockzillaHttpRequest.toNative() = MockzillaHttpRequest(
-    this.uri,
-    this.headers.filter { entry ->
-        entry.key != null && entry.value != null
-    } as? Map<String, String>
-        ?: emptyMap(),
-    this.body,
-    this.method.toNative(),
-)
-
 fun BridgeMockzillaHttpRequest.Companion.fromNative(
     data: MockzillaHttpRequest
 ) = BridgeMockzillaHttpRequest(
@@ -96,33 +90,54 @@ fun BridgeMockzillaHttpResponse.Companion.fromNative(
     data.body,
 )
 
+fun BridgeDashboardOverridePreset.Companion.fromNative(data: DashboardOverridePreset) =
+    BridgeDashboardOverridePreset(
+        data.name,
+        data.description,
+        BridgeMockzillaHttpResponse.fromNative(data.response),
+    )
+
+fun BridgeDashboardOverridePreset.toNative() = DashboardOverridePreset(
+    this.name,
+    this.description,
+    this.response.toNative(),
+)
+
+fun BridgeDashboardOptionsConfig.toNative() = DashboardOptionsConfig(
+    successPresets = successPresets.mapNotNull { it?.toNative() },
+    errorPresets = errorPresets.mapNotNull { it?.toNative() }
+)
+
+fun BridgeDashboardOptionsConfig.Companion.fromNative(data: DashboardOptionsConfig) = BridgeDashboardOptionsConfig(
+    successPresets = data.successPresets.map { BridgeDashboardOverridePreset.fromNative(it) },
+    errorPresets = data.errorPresets.map { BridgeDashboardOverridePreset.fromNative(it) }
+)
+
 fun BridgeEndpointConfig.toNative(
     endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
     defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
     errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
-) = EndpointConfiguration(
+): EndpointConfiguration = EndpointConfiguration(
     this.name,
-    this.key,
-    this.failureProbability?.toInt(),
-    this.delayMean?.toInt(),
-    this.delayVariance?.toInt(),
+    EndpointConfiguration.Key(this.key),
+    this.shouldFail,
+    this.delayMs.toInt(),
+    this.config.toNative(),
+    this.versionCode.toInt(),
     { endpointMatcher(this, key) },
-    this.webApiDefaultResponse?.toNative(),
-    this.webApiErrorResponse?.toNative(),
     { defaultHandler(this, key) },
     { errorHandler(this, key) },
 )
 
 fun BridgeEndpointConfig.Companion.fromNative(
     data: EndpointConfiguration
-) = BridgeEndpointConfig(
+): BridgeEndpointConfig = BridgeEndpointConfig(
     data.name,
-    data.key,
-    data.failureProbability?.toLong() ?: 0,
-    data.delayMean?.toLong() ?: 100,
-    data.delayVariance?.toLong() ?: 20,
-    data.webApiDefaultResponse?.let { BridgeMockzillaHttpResponse.fromNative(it) },
-    data.webApiErrorResponse?.let { BridgeMockzillaHttpResponse.fromNative(it) },
+    data.key.raw,
+    data.shouldFail,
+    data.delay?.toLong() ?: 100,
+    data.versionCode.toLong(),
+    BridgeDashboardOptionsConfig.fromNative(data.dashboardOptionsConfig)
 )
 
 fun BridgeReleaseModeConfig.toNative() = MockzillaConfig.ReleaseModeConfig(
@@ -152,6 +167,7 @@ fun BridgeMockzillaConfig.toNative(
     this.localHostOnly,
     this.logLevel.toNative(),
     this.releaseModeConfig.toNative(),
+    this.isNetworkDiscoveryEnabled,
     emptyList()
 )
 
@@ -164,6 +180,7 @@ fun BridgeMockzillaConfig.Companion.fromNative(
     data.localhostOnly,
     BridgeLogLevel.fromNative(data.logLevel),
     BridgeReleaseModeConfig.fromNative(data.releaseModeConfig),
+    data.isNetworkDiscoveryEnabled,
 )
 
 fun BridgeMockzillaRuntimeParams.Companion.fromNative(

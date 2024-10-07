@@ -103,40 +103,93 @@ class BridgeMockzillaHttpResponse {
   }
 }
 
+class BridgeDashboardOverridePreset {
+  BridgeDashboardOverridePreset({
+    required this.name,
+    this.description,
+    required this.response,
+  });
+
+  String name;
+
+  String? description;
+
+  BridgeMockzillaHttpResponse response;
+
+  Object encode() {
+    return <Object?>[
+      name,
+      description,
+      response.encode(),
+    ];
+  }
+
+  static BridgeDashboardOverridePreset decode(Object result) {
+    result as List<Object?>;
+    return BridgeDashboardOverridePreset(
+      name: result[0]! as String,
+      description: result[1] as String?,
+      response: BridgeMockzillaHttpResponse.decode(result[2]! as List<Object?>),
+    );
+  }
+}
+
+class BridgeDashboardOptionsConfig {
+  BridgeDashboardOptionsConfig({
+    required this.successPresets,
+    required this.errorPresets,
+  });
+
+  List<BridgeDashboardOverridePreset?> successPresets;
+
+  List<BridgeDashboardOverridePreset?> errorPresets;
+
+  Object encode() {
+    return <Object?>[
+      successPresets,
+      errorPresets,
+    ];
+  }
+
+  static BridgeDashboardOptionsConfig decode(Object result) {
+    result as List<Object?>;
+    return BridgeDashboardOptionsConfig(
+      successPresets: (result[0] as List<Object?>?)!.cast<BridgeDashboardOverridePreset?>(),
+      errorPresets: (result[1] as List<Object?>?)!.cast<BridgeDashboardOverridePreset?>(),
+    );
+  }
+}
+
 class BridgeEndpointConfig {
   BridgeEndpointConfig({
     required this.name,
     required this.key,
-    required this.failureProbability,
-    required this.delayMean,
-    required this.delayVariance,
-    this.webApiDefaultResponse,
-    this.webApiErrorResponse,
+    required this.shouldFail,
+    required this.delayMs,
+    required this.versionCode,
+    required this.config,
   });
 
   String name;
 
   String key;
 
-  int failureProbability;
+  bool shouldFail;
 
-  int delayMean;
+  int delayMs;
 
-  int delayVariance;
+  int versionCode;
 
-  BridgeMockzillaHttpResponse? webApiDefaultResponse;
-
-  BridgeMockzillaHttpResponse? webApiErrorResponse;
+  BridgeDashboardOptionsConfig config;
 
   Object encode() {
     return <Object?>[
       name,
       key,
-      failureProbability,
-      delayMean,
-      delayVariance,
-      webApiDefaultResponse?.encode(),
-      webApiErrorResponse?.encode(),
+      shouldFail,
+      delayMs,
+      versionCode,
+      config.encode(),
     ];
   }
 
@@ -145,15 +198,10 @@ class BridgeEndpointConfig {
     return BridgeEndpointConfig(
       name: result[0]! as String,
       key: result[1]! as String,
-      failureProbability: result[2]! as int,
-      delayMean: result[3]! as int,
-      delayVariance: result[4]! as int,
-      webApiDefaultResponse: result[5] != null
-          ? BridgeMockzillaHttpResponse.decode(result[5]! as List<Object?>)
-          : null,
-      webApiErrorResponse: result[6] != null
-          ? BridgeMockzillaHttpResponse.decode(result[6]! as List<Object?>)
-          : null,
+      shouldFail: result[2]! as bool,
+      delayMs: result[3]! as int,
+      versionCode: result[4]! as int,
+      config: BridgeDashboardOptionsConfig.decode(result[5]! as List<Object?>),
     );
   }
 }
@@ -197,6 +245,7 @@ class BridgeMockzillaConfig {
     required this.localHostOnly,
     required this.logLevel,
     required this.releaseModeConfig,
+    required this.isNetworkDiscoveryEnabled,
   });
 
   int port;
@@ -211,6 +260,8 @@ class BridgeMockzillaConfig {
 
   BridgeReleaseModeConfig releaseModeConfig;
 
+  bool isNetworkDiscoveryEnabled;
+
   Object encode() {
     return <Object?>[
       port,
@@ -219,6 +270,7 @@ class BridgeMockzillaConfig {
       localHostOnly,
       logLevel.index,
       releaseModeConfig.encode(),
+      isNetworkDiscoveryEnabled,
     ];
   }
 
@@ -231,6 +283,7 @@ class BridgeMockzillaConfig {
       localHostOnly: result[3]! as bool,
       logLevel: BridgeLogLevel.values[result[4]! as int],
       releaseModeConfig: BridgeReleaseModeConfig.decode(result[5]! as List<Object?>),
+      isNetworkDiscoveryEnabled: result[6]! as bool,
     );
   }
 }
@@ -301,20 +354,26 @@ class _MockzillaHostApiCodec extends StandardMessageCodec {
   const _MockzillaHostApiCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is BridgeEndpointConfig) {
+    if (value is BridgeDashboardOptionsConfig) {
       buffer.putUint8(128);
       writeValue(buffer, value.encode());
-    } else if (value is BridgeMockzillaConfig) {
+    } else if (value is BridgeDashboardOverridePreset) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
-    } else if (value is BridgeMockzillaHttpResponse) {
+    } else if (value is BridgeEndpointConfig) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
-    } else if (value is BridgeMockzillaRuntimeParams) {
+    } else if (value is BridgeMockzillaConfig) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
-    } else if (value is BridgeReleaseModeConfig) {
+    } else if (value is BridgeMockzillaHttpResponse) {
       buffer.putUint8(132);
+      writeValue(buffer, value.encode());
+    } else if (value is BridgeMockzillaRuntimeParams) {
+      buffer.putUint8(133);
+      writeValue(buffer, value.encode());
+    } else if (value is BridgeReleaseModeConfig) {
+      buffer.putUint8(134);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -325,14 +384,18 @@ class _MockzillaHostApiCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128: 
-        return BridgeEndpointConfig.decode(readValue(buffer)!);
+        return BridgeDashboardOptionsConfig.decode(readValue(buffer)!);
       case 129: 
-        return BridgeMockzillaConfig.decode(readValue(buffer)!);
+        return BridgeDashboardOverridePreset.decode(readValue(buffer)!);
       case 130: 
-        return BridgeMockzillaHttpResponse.decode(readValue(buffer)!);
+        return BridgeEndpointConfig.decode(readValue(buffer)!);
       case 131: 
-        return BridgeMockzillaRuntimeParams.decode(readValue(buffer)!);
+        return BridgeMockzillaConfig.decode(readValue(buffer)!);
       case 132: 
+        return BridgeMockzillaHttpResponse.decode(readValue(buffer)!);
+      case 133: 
+        return BridgeMockzillaRuntimeParams.decode(readValue(buffer)!);
+      case 134: 
         return BridgeReleaseModeConfig.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);

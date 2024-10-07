@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.android.tools.build:gradle:8.5.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -47,11 +47,11 @@ android {
 
     defaultConfig {
         minSdkVersion 21
+        multiDexEnabled true
     }
 
     dependencies {
-        implementation "com.apadmi:mockzilla:1.1.0-alpha2"
-
+        implementation "com.apadmi:mockzilla:2.0.1"
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
     }

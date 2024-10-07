@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSBonjourServices</key>
+    <array>
+      <string>_mockzilla._tcp</string>
+    </array>
 </dict>
 </plist>

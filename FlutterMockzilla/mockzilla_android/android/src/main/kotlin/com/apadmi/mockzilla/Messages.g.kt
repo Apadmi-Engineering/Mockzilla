@@ -127,14 +127,60 @@ data class BridgeMockzillaHttpResponse (
 }
 
 /** Generated class from Pigeon that represents data sent in messages. */
+data class BridgeDashboardOverridePreset (
+  val name: String,
+  val description: String? = null,
+  val response: BridgeMockzillaHttpResponse
+
+) {
+  companion object {
+    @Suppress("UNCHECKED_CAST")
+    fun fromList(list: List<Any?>): BridgeDashboardOverridePreset {
+      val name = list[0] as String
+      val description = list[1] as String?
+      val response = BridgeMockzillaHttpResponse.fromList(list[2] as List<Any?>)
+      return BridgeDashboardOverridePreset(name, description, response)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf<Any?>(
+      name,
+      description,
+      response.toList(),
+    )
+  }
+}
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class BridgeDashboardOptionsConfig (
+  val successPresets: List<BridgeDashboardOverridePreset?>,
+  val errorPresets: List<BridgeDashboardOverridePreset?>
+
+) {
+  companion object {
+    @Suppress("UNCHECKED_CAST")
+    fun fromList(list: List<Any?>): BridgeDashboardOptionsConfig {
+      val successPresets = list[0] as List<BridgeDashboardOverridePreset?>
+      val errorPresets = list[1] as List<BridgeDashboardOverridePreset?>
+      return BridgeDashboardOptionsConfig(successPresets, errorPresets)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf<Any?>(
+      successPresets,
+      errorPresets,
+    )
+  }
+}
+
+/** Generated class from Pigeon that represents data sent in messages. */
 data class BridgeEndpointConfig (
   val name: String,
   val key: String,
-  val failureProbability: Long,
-  val delayMean: Long,
-  val delayVariance: Long,
-  val webApiDefaultResponse: BridgeMockzillaHttpResponse? = null,
-  val webApiErrorResponse: BridgeMockzillaHttpResponse? = null
+  val shouldFail: Boolean,
+  val delayMs: Long,
+  val versionCode: Long,
+  val config: BridgeDashboardOptionsConfig
 
 ) {
   companion object {
@@ -142,27 +188,21 @@ data class BridgeEndpointConfig (
     fun fromList(list: List<Any?>): BridgeEndpointConfig {
       val name = list[0] as String
       val key = list[1] as String
-      val failureProbability = list[2].let { if (it is Int) it.toLong() else it as Long }
-      val delayMean = list[3].let { if (it is Int) it.toLong() else it as Long }
-      val delayVariance = list[4].let { if (it is Int) it.toLong() else it as Long }
-      val webApiDefaultResponse: BridgeMockzillaHttpResponse? = (list[5] as List<Any?>?)?.let {
-        BridgeMockzillaHttpResponse.fromList(it)
-      }
-      val webApiErrorResponse: BridgeMockzillaHttpResponse? = (list[6] as List<Any?>?)?.let {
-        BridgeMockzillaHttpResponse.fromList(it)
-      }
-      return BridgeEndpointConfig(name, key, failureProbability, delayMean, delayVariance, webApiDefaultResponse, webApiErrorResponse)
+      val shouldFail = list[2] as Boolean
+      val delayMs = list[3].let { if (it is Int) it.toLong() else it as Long }
+      val versionCode = list[4].let { if (it is Int) it.toLong() else it as Long }
+      val config = BridgeDashboardOptionsConfig.fromList(list[5] as List<Any?>)
+      return BridgeEndpointConfig(name, key, shouldFail, delayMs, versionCode, config)
     }
   }
   fun toList(): List<Any?> {
     return listOf<Any?>(
       name,
       key,
-      failureProbability,
-      delayMean,
-      delayVariance,
-      webApiDefaultResponse?.toList(),
-      webApiErrorResponse?.toList(),
+      shouldFail,
+      delayMs,
+      versionCode,
+      config.toList(),
     )
   }
 }
@@ -199,7 +239,8 @@ data class BridgeMockzillaConfig (
   val isRelease: Boolean,
   val localHostOnly: Boolean,
   val logLevel: BridgeLogLevel,
-  val releaseModeConfig: BridgeReleaseModeConfig
+  val releaseModeConfig: BridgeReleaseModeConfig,
+  val isNetworkDiscoveryEnabled: Boolean
 
 ) {
   companion object {
@@ -211,7 +252,8 @@ data class BridgeMockzillaConfig (
       val localHostOnly = list[3] as Boolean
       val logLevel = BridgeLogLevel.ofRaw(list[4] as Int)!!
       val releaseModeConfig = BridgeReleaseModeConfig.fromList(list[5] as List<Any?>)
-      return BridgeMockzillaConfig(port, endpoints, isRelease, localHostOnly, logLevel, releaseModeConfig)
+      val isNetworkDiscoveryEnabled = list[6] as Boolean
+      return BridgeMockzillaConfig(port, endpoints, isRelease, localHostOnly, logLevel, releaseModeConfig, isNetworkDiscoveryEnabled)
     }
   }
   fun toList(): List<Any?> {
@@ -222,6 +264,7 @@ data class BridgeMockzillaConfig (
       localHostOnly,
       logLevel.raw,
       releaseModeConfig.toList(),
+      isNetworkDiscoveryEnabled,
     )
   }
 }
@@ -281,25 +324,35 @@ private object MockzillaHostApiCodec : StandardMessageCodec() {
     return when (type) {
       128.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeEndpointConfig.fromList(it)
+          BridgeDashboardOptionsConfig.fromList(it)
         }
       }
       129.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeMockzillaConfig.fromList(it)
+          BridgeDashboardOverridePreset.fromList(it)
         }
       }
       130.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeMockzillaHttpResponse.fromList(it)
+          BridgeEndpointConfig.fromList(it)
         }
       }
       131.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeMockzillaRuntimeParams.fromList(it)
+          BridgeMockzillaConfig.fromList(it)
         }
       }
       132.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          BridgeMockzillaHttpResponse.fromList(it)
+        }
+      }
+      133.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          BridgeMockzillaRuntimeParams.fromList(it)
+        }
+      }
+      134.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
           BridgeReleaseModeConfig.fromList(it)
         }
@@ -309,24 +362,32 @@ private object MockzillaHostApiCodec : StandardMessageCodec() {
   }
   override fun writeValue(stream: ByteArrayOutputStream, value: Any?)   {
     when (value) {
-      is BridgeEndpointConfig -> {
+      is BridgeDashboardOptionsConfig -> {
         stream.write(128)
         writeValue(stream, value.toList())
       }
-      is BridgeMockzillaConfig -> {
+      is BridgeDashboardOverridePreset -> {
         stream.write(129)
         writeValue(stream, value.toList())
       }
-      is BridgeMockzillaHttpResponse -> {
+      is BridgeEndpointConfig -> {
         stream.write(130)
         writeValue(stream, value.toList())
       }
-      is BridgeMockzillaRuntimeParams -> {
+      is BridgeMockzillaConfig -> {
         stream.write(131)
         writeValue(stream, value.toList())
       }
-      is BridgeReleaseModeConfig -> {
+      is BridgeMockzillaHttpResponse -> {
         stream.write(132)
+        writeValue(stream, value.toList())
+      }
+      is BridgeMockzillaRuntimeParams -> {
+        stream.write(133)
+        writeValue(stream, value.toList())
+      }
+      is BridgeReleaseModeConfig -> {
+        stream.write(134)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)

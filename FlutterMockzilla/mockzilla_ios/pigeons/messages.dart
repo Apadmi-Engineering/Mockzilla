@@ -55,24 +55,44 @@ class BridgeMockzillaHttpResponse {
   ]);
 }
 
+class BridgeDashboardOverridePreset {
+  final String name;
+  final String? description;
+  final BridgeMockzillaHttpResponse response;
+
+  const BridgeDashboardOverridePreset({
+    required this.name,
+    this.description,
+    required this.response,
+  });
+}
+
+class BridgeDashboardOptionsConfig {
+  final List<BridgeDashboardOverridePreset?> successPresets;
+  final List<BridgeDashboardOverridePreset?> errorPresets;
+
+  const BridgeDashboardOptionsConfig({
+    required this.successPresets,
+    required this.errorPresets,
+  });
+}
+
 class BridgeEndpointConfig {
   final String name;
   final String key;
-  final int failureProbability;
-  final int delayMean;
-  final int delayVariance;
-  final BridgeMockzillaHttpResponse? webApiDefaultResponse;
-  final BridgeMockzillaHttpResponse? webApiErrorResponse;
+  final bool shouldFail;
+  final int delayMs;
+  final int versionCode;
+  final BridgeDashboardOptionsConfig config;
 
-  const BridgeEndpointConfig(
-    this.name,
-    this.key,
-    this.failureProbability,
-    this.delayMean,
-    this.delayVariance, [
-    this.webApiDefaultResponse,
-    this.webApiErrorResponse,
-  ]);
+  const BridgeEndpointConfig({
+    required this.name,
+    required this.key,
+    required this.shouldFail,
+    required this.delayMs,
+    required this.versionCode,
+    required this.config,
+  });
 }
 
 class BridgeReleaseModeConfig {
@@ -94,6 +114,7 @@ class BridgeMockzillaConfig {
   final bool localHostOnly;
   final BridgeLogLevel logLevel;
   final BridgeReleaseModeConfig releaseModeConfig;
+  final bool isNetworkDiscoveryEnabled;
 
   const BridgeMockzillaConfig(
     this.port,
@@ -102,6 +123,7 @@ class BridgeMockzillaConfig {
     this.localHostOnly,
     this.logLevel,
     this.releaseModeConfig,
+    this.isNetworkDiscoveryEnabled,
   );
 }
 
