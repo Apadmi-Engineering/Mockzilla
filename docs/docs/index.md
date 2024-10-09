@@ -1,10 +1,11 @@
 # Overview
-A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your iOS, Android or [KMM](https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html) application.
+A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your iOS, Android, [KMM](https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html), or Flutter application.
 
 ## Supported Environments
 - Native iOS apps (written in Swift)
 - Native Android apps
-- Kotlin Multiplatform Apps (Android & iOS targets only).
+- Kotlin Multiplatform apps (Android & iOS targets only).
+- Flutter apps (Android & iOS targets only).
 
 ## Quick Start
 !!! important

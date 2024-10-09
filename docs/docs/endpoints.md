@@ -79,7 +79,7 @@ Example:
     })
     ```
 === "Flutter"
-    It is recommended to use a JSON serialization library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` method for you.
+    It is recommended to use a JSON serialization library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` methods for you.
     ```dart
     MockzillaHttpResponse(
       body: jsonEncode(
@@ -223,4 +223,5 @@ Mockzilla supports artificially causing network requests to fail.
         shouldFail: true,
     )
     ```
-    **The default failure probability is 0**.
+
+**The default failure probability is 0**.

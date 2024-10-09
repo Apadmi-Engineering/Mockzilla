@@ -14,13 +14,4 @@
     Update the Mockzilla version to the latest Snapshot version found [here](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apadmi/mockzilla/).
 
 === "Flutter"
-    If you wish to use the latest pre-release version of Mockzilla for Flutter, add the following dependency to your pubspec.yaml
-    file:
-
-    ```yaml
-    mockzilla:
-        git:
-            ref: develop
-            path: FlutterMockzilla/mockzilla
-            url: https://github.com/Apadmi-Engineering/Mockzilla
-    ```
+    Snapshots are published on [pub.dev](https://pub.dev/packages/mockzilla) as [pre-releases](https://dart.dev/tools/pub/publishing#publishing-prereleases).

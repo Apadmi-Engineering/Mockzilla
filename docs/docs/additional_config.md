@@ -1,7 +1,10 @@
 
 # Additional Configuration
 
-Most Mockzilla configuration is relatively self-explanatory and documented [here](../dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/index.html).
+Most Mockzilla configuration is relatively self-explanatory with API references available at the following:
+
+* [Kotlin](../dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/index.html)
+* [Dart](https://pub.dev/documentation/mockzilla/latest/)
 
 ## Logging
 
@@ -20,6 +23,12 @@ By default, Mockzilla outputs minimal logging. If more is needed to help with de
         .setLogLevel(level: LogLevel.verbose)
         ...
         .build()
+    ```
+=== "Flutter"
+    ```dart
+    final mockzillaConfig = const MockzillaConfig(
+        logLevel: LogLevel.verbose,
+    );
     ```
 
 ## Release Mode
