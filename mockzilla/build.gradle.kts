@@ -89,7 +89,6 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
 
-            implementation(libs.mockative)
             implementation(libs.kotlinx.coroutines.test)
         }
     }
@@ -120,19 +119,6 @@ buildkonfig {
         buildConfigField(STRING, "VERSION_NAME", version.toString())
     }
 }
-
-ksp {
-    arg("mockative.stubsUnitByDefault", "true")
-}
-
-dependencies {
-    configurations
-        .filter { it.name.startsWith("ksp") && it.name.contains("Test") }
-        .forEach {
-            add(it.name, libs.mockative.processor)
-        }
-}
-
 private val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
     from(tasks.dokkaHtml)

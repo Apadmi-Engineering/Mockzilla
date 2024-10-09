@@ -3,9 +3,9 @@
 # Kotlin
 adam = "0.5.7" # https://github.com/Malinskiy/adam
 jmdns = "3.5.12" # https://github.com/jmdns/jmdns
-kotlin = "1.9.23" # https://github.com/JetBrains/kotlin
-agp = "8.5.1" # https://developer.android.com/build/releases/gradle-plugin
-ksp = "1.9.23-1.0.20" # https://github.com/google/ksp
+kotlin = "2.0.21-RC" # https://github.com/JetBrains/kotlin
+agp = "8.7.0" # https://developer.android.com/build/releases/gradle-plugin
+ksp = "2.0.21-RC-1.0.25" # https://github.com/google/ksp
 
 # Logging
 kermit = "1.2.2" # https://github.com/touchlab/Kermit
@@ -20,39 +20,36 @@ dokka = "1.9.20" # https://github.com/Kotlin/dokka
 lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "2.3.11" # https://github.com/ktorio/ktor
+ktor = "2.3.12" # https://github.com/ktorio/ktor
 
 # Compose
-compose = "1.6.11" # https://github.com/JetBrains/compose-multiplatform
-compose-compiler = "1.5.13" # https://developer.android.com/jetpack/androidx/releases/compose-compiler
+compose = "1.7.0-rc01" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
 koin = "3.5.6" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
-kotlinx-coroutines = "1.8.1" # https://github.com/Kotlin/kotlinx.coroutines
-kotlinx-datetime = "0.5.0" # https://github.com/Kotlin/kotlinx-datetime
-kotlinx-serialization = "1.6.3" # https://github.com/Kotlin/kotlinx.serialization
+kotlinx-coroutines = "1.9.0" # https://github.com/Kotlin/kotlinx.coroutines
+kotlinx-datetime = "0.6.1" # https://github.com/Kotlin/kotlinx-datetime
+kotlinx-serialization = "1.7.2" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
 lifecycle = "2.8.5" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 compose-activity = "1.9.0" # https://developer.android.com/jetpack/androidx/releases/activity
+mockk = "1.13.12"
+playServicesAdsIdentifier = "18.1.0"
+
+# Semantic Versioning
+semver4j = "3.1.0" # https://github.com/vdurmont/semver4j
 
 # Code Formatting
-playServicesAdsIdentifier = "18.1.0"
-semver4j = "3.1.0" # https://github.com/vdurmont/semver4j
 spotless = "6.25.0" # https://github.com/diffplug/spotless
 
 # Testing
-kover = "0.7.6" # https://github.com/Kotlin/kotlinx-kover
+kover = "0.8.3" # https://github.com/Kotlin/kotlinx-kover
 turbine = "1.1.0" # https://github.com/cashapp/turbine
-mockative = "2.2.2" # https://github.com/mockative/mockative
 junit = "1.2.1" # https://developer.android.com/jetpack/androidx/releases/test
 testParamInjector = "1.16" # https://github.com/google/TestParameterInjector
-
-# Screenshots
-showkase = "1.0.3" # https://github.com/airbnb/Showkase
-paparazzi = "1.3.1" # https://github.com/cashapp/paparazzi
 
 # Conveyor
 conveyor = "1.10" # https://github.com/hydraulic-software/conveyor
@@ -96,12 +93,11 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
 # Testing
-mockative = { module = "io.mockative:mockative", version.ref = "mockative" }
-mockative-processor = { module = "io.mockative:mockative-processor", version.ref = "mockative" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 play-services-ads-identifier = { module = "com.google.android.gms:play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
 semver4j = { module = "com.vdurmont:semver4j", version.ref = "semver4j" }
-showkase = { module = "com.airbnb.android:showkase", version.ref = "showkase" }
-showkase-processor = { module = "com.airbnb.android:showkase-processor", version.ref = "showkase" }
+
+
 androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
 testParamInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version.ref = "testParamInjector" }
 turbine = { module="app.cash.turbine:turbine", version.ref = "turbine" }
@@ -121,6 +117,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 conveyor = { id = "dev.hydraulic.conveyor", version.ref = "conveyor" }

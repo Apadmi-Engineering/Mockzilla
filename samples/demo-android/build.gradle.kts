@@ -3,6 +3,7 @@ import com.apadmi.mockzilla.JavaConfig
 
 plugins {
     alias(libs.plugins.compose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.app)
     alias(libs.plugins.kotlin.serialization)
@@ -49,9 +50,7 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
+    
     packaging {
         resources {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
