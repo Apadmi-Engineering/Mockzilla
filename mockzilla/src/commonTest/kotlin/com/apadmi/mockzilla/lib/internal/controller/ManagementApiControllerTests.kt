@@ -64,7 +64,7 @@ class ManagementApiControllerTests {
     @Test
     fun `clearAllCaches - calls through`() = runTest {
         /* Setup */
-        val fakeLocalCacheService = FakeLocalCacheService();
+        val fakeLocalCacheService = FakeLocalCacheService()
         val sut =
             ManagementApiController(dummyEndpoints, fakeLocalCacheService, FakeMockServerMonitor())
 
@@ -72,7 +72,7 @@ class ManagementApiControllerTests {
         sut.clearAllCaches()
 
         /* Verify */
-        assertEquals(1, fakeLocalCacheService.clearAllCachesCallCount);
+        assertEquals(1, fakeLocalCacheService.clearAllCachesCallCount)
     }
 
     @Test
@@ -121,7 +121,7 @@ class ManagementApiControllerTests {
     @Test
     fun `updateEntry - calls through`() = runTest {
         /* Setup */
-        val fakeLocalCacheService = FakeLocalCacheService();
+        val fakeLocalCacheService = FakeLocalCacheService()
         val sut =
             ManagementApiController(dummyEndpoints, fakeLocalCacheService, FakeMockServerMonitor())
 
@@ -131,7 +131,7 @@ class ManagementApiControllerTests {
         )
 
         /* Verify */
-        assertEquals( mapOf(
+        assertEquals(mapOf(
             dummyEndpoints.first() to
                     SerializableEndpointPatchItemDto.allUnset(dummyEndpoints.first().key)
         ), fakeLocalCacheService.patchLocalCachesArgument)

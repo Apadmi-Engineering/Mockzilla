@@ -11,33 +11,5 @@ platform :android do
                 ":mockzilla-management-ui:bundleDebug"
             ]
         )
-        # update_reference_screenshots
-    end
-
-    desc "Generate screenshots and upload them"
-    lane :update_reference_screenshots do
-        # Compile and Test
-#         gradle(tasks: [":mockzilla-management-ui:recordPaparazziDebug"])
-#         upload_screenshots
-    end
-
-    private_lane :upload_screenshots do
-        file_name_prefix = "screenshots_PaparazziScreenshotTest_previewTests\["
-
-        # Remove the prefix
-        sh("cd #{screenshots_output_directory}; find . -name '*png' -exec sh -c 'mv \"$0\" \"$(dirname \"$0\")/${0\#./#{file_name_prefix}}\"' {} \\;")
-
-        # Remove remaining ']' chars
-        sh("cd #{screenshots_output_directory}; find . -name '*png' -exec sh -c 'mv \"$0\" \"$(dirname \"$0\")/${0//\]/}\"' {} \\;")
-
-        screenshotbot_installer
-        screenshotbot(
-          channel: "mockzilla-management-ui",
-          repo_url: ENV["GIT_REPOSITORY_URL"],
-          is_pr: ENV["PR"],
-          git_branch: ENV["GITHUB_REF_NAME"],
-          screenshots_directory: screenshots_output_directory,
-          pr_destination: ENV["GITHUB_BASE_REF"]
-        )
     end
 end

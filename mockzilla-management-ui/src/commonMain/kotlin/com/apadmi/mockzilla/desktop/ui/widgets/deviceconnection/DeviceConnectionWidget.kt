@@ -1,8 +1,7 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.desktop.ui.tooling.preview.Preview
-//import androidx.compose.desktop.ui.tooling.preview.Preview
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -27,14 +26,12 @@ import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
-import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
- // import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
+
 import com.apadmi.mockzilla.desktop.ui.components.StandardTextTooltip
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionViewModel.State
-import com.apadmi.mockzilla.desktop.utils.Platform
 
- import com.apadmi.common.generated.resources.Res
+import com.apadmi.common.generated.resources.Res
 import com.apadmi.common.generated.resources.mockzilla_logo
 import com.apadmi.mockzilla_management_ui.generated.resources.Res
 import com.apadmi.mockzilla_management_ui.generated.resources.mockzilla_logo
@@ -98,11 +95,11 @@ fun DeviceConnectionContent(
         )
 
         Spacer(Modifier.height(4.dp))
-//        if (Platform.current == Platform.Android) {
-//            Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
-//                Text(strings.widgets.deviceConnection.androidDevConnectButton)
-//            }
-//        }
+        // if (Platform.current == Platform.Android) {
+        // Button(onClick = { onIpAndPortChanged("127.0.0.1:8080") }) {
+        // Text(strings.widgets.deviceConnection.androidDevConnectButton)
+        // }
+        // }
 
         AnimatedContent(
             targetState = state.hasDevices
@@ -115,13 +112,6 @@ fun DeviceConnectionContent(
             }
         }
     }
-}
-
-//@ShowkaseComposable("DeviceConnection-Idle", "DeviceConnection")
-@Composable
-@Preview
-fun DeviceConnectionWidgetPreview() = PreviewSurface {
-    DeviceConnectionContent(State(), {}, {})
 }
 
 @OptIn(ExperimentalFoundationApi::class)

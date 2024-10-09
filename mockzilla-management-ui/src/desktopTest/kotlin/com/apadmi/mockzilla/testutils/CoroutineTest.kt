@@ -1,6 +1,8 @@
 package com.apadmi.mockzilla.testutils
 
 import io.mockk.MockKAnnotations
+import org.junit.Before
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
@@ -8,7 +10,6 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.Before
 
 open class CoroutineTest {
     protected val testScope = TestScope()

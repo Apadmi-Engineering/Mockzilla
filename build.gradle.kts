@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.dokka) apply true
     alias(libs.plugins.compose) apply false
     alias(libs.plugins.compose.compiler) apply false
-    alias(libs.plugins.paparazzi) apply false
     alias(libs.plugins.buildKonfig) apply false
 }
 

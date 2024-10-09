@@ -2,7 +2,6 @@
 
 package com.apadmi.mockzilla.desktop.ui.widgets.endpoints.details
 
-//import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,13 +58,10 @@ import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
-import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
- // import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
+
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
-import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
@@ -215,106 +211,6 @@ fun EndpointDetailsWidgetContent(
             }
         }
     }
-}
-
-// @ShowkaseComposable("EndpointDetails-None", "EndpointDetails")
-@Composable
-// @Preview 
-fun EndpointDetailsWidgetNonePreview() = PreviewSurface {
-    EndpointDetailsWidgetContent(
-        state = EndpointDetailsViewModel.State.Empty,
-        onDefaultBodyChange = {},
-        onErrorBodyChange = {},
-        onFailChange = {},
-        onJsonDefaultEditingChange = {},
-        onJsonErrorEditingChange = {},
-        onDefaultStatusCodeChange = {},
-        onErrorStatusCodeChange = {},
-        onDelayChange = {},
-        onDefaultHeadersChange = {},
-        onErrorHeadersChange = {},
-        onErrorPresetSelected = {},
-        onDefaultPresetSelected = {},
-        onResetAll = {}
-    )
-}
-
-// @ShowkaseComposable("EndpointDetails-SetContent", "EndpointDetails")
-@Composable
-// @Preview 
-fun EndpointDetailsWidgetPreview() = PreviewSurface {
-    EndpointDetailsWidgetContent(
-        state = EndpointDetailsViewModel.State.Endpoint(
-            config = SerializableEndpointConfig.allNulls(
-                key = "key",
-                name = "getCows",
-                versionCode = 1
-            ),
-            defaultBody = """{ "cows": [] }""",
-            defaultStatus = HttpStatusCode.OK,
-            defaultHeaders = listOf("a" to "b"),
-            errorBody = """{ "error": 500 }""",
-            errorStatus = HttpStatusCode.InternalServerError,
-            errorHeaders = listOf(),
-            fail = false,
-            delayMillis = "100",
-            jsonEditingDefault = true,
-            jsonEditingError = true,
-            presets = DashboardOptionsConfig(listOf(), listOf()),
-        ),
-        onDefaultBodyChange = {},
-        onErrorBodyChange = {},
-        onFailChange = {},
-        onJsonDefaultEditingChange = {},
-        onJsonErrorEditingChange = {},
-        onDefaultStatusCodeChange = {},
-        onErrorStatusCodeChange = {},
-        onDelayChange = {},
-        onDefaultHeadersChange = {},
-        onErrorHeadersChange = {},
-        onErrorPresetSelected = {},
-        onDefaultPresetSelected = {},
-        onResetAll = {}
-    )
-}
-
-// @ShowkaseComposable("EndpointDetails-UnsetContent", "EndpointDetails")
-@Composable
-// @Preview 
-fun EndpointDetailsWidgetUnsetPreview() = PreviewSurface {
-    EndpointDetailsWidgetContent(
-        state = EndpointDetailsViewModel.State.Endpoint(
-            config = SerializableEndpointConfig.allNulls(
-                key = "key",
-                name = "getCows",
-                versionCode = 1
-            ),
-            defaultBody = null,
-            defaultStatus = null,
-            defaultHeaders = null,
-            errorBody = null,
-            errorStatus = null,
-            errorHeaders = null,
-            fail = null,
-            delayMillis = null,
-            jsonEditingDefault = true,
-            jsonEditingError = true,
-            presets = DashboardOptionsConfig(listOf(), listOf()),
-        ),
-        onDefaultBodyChange = {},
-        onErrorBodyChange = {},
-        onFailChange = {},
-        onJsonDefaultEditingChange = {},
-        onJsonErrorEditingChange = {},
-        onDefaultStatusCodeChange = {},
-        onErrorStatusCodeChange = {},
-        onDelayChange = {},
-        onDefaultHeadersChange = {},
-        onErrorHeadersChange = {},
-        onErrorPresetSelected = {},
-        onDefaultPresetSelected = {},
-        onResetAll = {}
-    )
 }
 
 @Composable

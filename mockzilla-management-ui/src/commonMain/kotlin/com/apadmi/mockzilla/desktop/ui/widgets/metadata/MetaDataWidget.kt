@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.metadata
 
-//import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,8 +25,7 @@ import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
-import com.apadmi.mockzilla.desktop.ui.components.PreviewSurface
- // import com.apadmi.mockzilla.desktop.ui.components.ShowkaseComposable
+
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidgetViewModel.*
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
@@ -40,14 +38,17 @@ import org.koin.core.parameter.parametersOf
 private fun RunTarget.label(strings: Strings) = when (this) {
     RunTarget.AndroidDevice,
     RunTarget.AndroidEmulator -> strings.widgets.metaData.android
+
     RunTarget.IosDevice,
     RunTarget.IosSimulator -> strings.widgets.metaData.ios
+
     RunTarget.Jvm -> strings.widgets.metaData.jvm
 }
 
 @Composable
 fun MetaDataWidget(device: Device) {
-    val viewModel = getViewModel<MetaDataWidgetViewModel>(key = device.toString()) { parametersOf(device) }
+    val viewModel =
+        getViewModel<MetaDataWidgetViewModel>(key = device.toString()) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     MetaDataWidgetContent(state)
@@ -89,7 +90,11 @@ fun MetaDataListView(
     MetaDataRow(strings.widgets.metaData.operatingSystemVersion, metaData.operatingSystemVersion)
     MetaDataRow(strings.widgets.metaData.deviceModel, metaData.deviceModel)
     MetaDataRow(strings.widgets.metaData.appVersion, metaData.appVersion)
-    MetaDataRow(strings.widgets.metaData.mockzillaVersion, metaData.mockzillaVersion, showDivider = false)
+    MetaDataRow(
+        strings.widgets.metaData.mockzillaVersion,
+        metaData.mockzillaVersion,
+        showDivider = false
+    )
 }
 
 @Composable
@@ -115,35 +120,4 @@ fun MetaDataRow(
                 .align(Alignment.BottomCenter)
         )
     }
-}
-
-// @ShowkaseComposable("MetaDataWidget-Loading", "MetaDataWidget")
-@Composable
-// @Preview 
-fun MetaDataWidgetLoadingContentPreview() = PreviewSurface {
-    MetaDataWidgetContent(State.Loading)
-}
-
-// @ShowkaseComposable("MetaDataWidget-Error", "MetaDataWidget")
-@Composable
-// @Preview 
-fun MetaDataWidgetErrorContentPreview() = PreviewSurface {
-    MetaDataWidgetContent(State.Error)
-}
-
-// @ShowkaseComposable("MetaDataWidget-DeviceConnected", "MetaDataWidget")
-@Composable
-// @Preview 
-fun MetaDataWidgetConnectedDeviceContentPreview() = PreviewSurface {
-    MetaDataWidgetContent(State.DisplayMetaData(
-        metaData = MetaData(
-            appName = "App Name",
-            appPackage = "App Package",
-            appVersion = "0.0.1",
-            runTarget = RunTarget.AndroidDevice,
-            operatingSystemVersion = "34",
-            deviceModel = "Pixel 3",
-            mockzillaVersion = "1.0.0"
-        )
-    ))
 }

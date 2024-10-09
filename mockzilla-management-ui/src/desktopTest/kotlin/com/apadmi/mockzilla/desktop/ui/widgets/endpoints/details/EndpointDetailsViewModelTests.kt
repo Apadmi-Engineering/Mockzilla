@@ -10,12 +10,10 @@ import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import io.ktor.http.HttpStatusCode
-import io.mockk.mockk
 
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import org.junit.Test
 
 import kotlin.test.assertEquals
@@ -24,6 +22,8 @@ import kotlinx.coroutines.yield
 
 @Suppress("TOO_LONG_FUNCTION", "MAGIC_NUMBER")
 class EndpointDetailsViewModelTests : CoroutineTest() {
+    private val dummyActiveDevice = Device.dummy().copy(ip = "device1")
+
     @RelaxedMockK
     lateinit var endpointsServiceMock: MockzillaManagement.EndpointsService
 
@@ -35,7 +35,6 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
 
     @RelaxedMockK
     lateinit var eventBusMock: EventBus
-    private val dummyActiveDevice = Device.dummy().copy(ip = "device1")
 
     private fun createSut() = EndpointDetailsViewModel(
         key = EndpointConfiguration.Key("key"),

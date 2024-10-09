@@ -11,11 +11,9 @@ import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 
 import app.cash.turbine.test
-import io.mockk.mockk
 
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.TestCase.assertFalse
@@ -28,16 +26,6 @@ import kotlinx.coroutines.yield
 
 @Suppress("TOO_LONG_FUNCTION")
 class EndpointsViewModelTests : CoroutineTest() {
-
-    @RelaxedMockK
-    lateinit var endpointsServiceMock: MockzillaManagement.EndpointsService
-
-    @RelaxedMockK
-    lateinit var updateServiceMock: MockzillaManagement.UpdateService
-
-    @RelaxedMockK
-    lateinit var eventBusMock: EventBus
-
     private val defaultEndpointList = State.EndpointsList(
         listOf(
             State.EndpointConfig(
@@ -67,6 +55,15 @@ class EndpointsViewModelTests : CoroutineTest() {
         ),
         filter = ""
     )
+
+    @RelaxedMockK
+    lateinit var endpointsServiceMock: MockzillaManagement.EndpointsService
+
+    @RelaxedMockK
+    lateinit var updateServiceMock: MockzillaManagement.UpdateService
+
+    @RelaxedMockK
+    lateinit var eventBusMock: EventBus
 
     private fun createSut() = EndpointsViewModel(
         Device.dummy(),
