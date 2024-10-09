@@ -31,8 +31,6 @@ import com.apadmi.mockzilla.desktop.ui.components.StandardTextTooltip
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.widgets.deviceconnection.DeviceConnectionViewModel.State
 
-import com.apadmi.common.generated.resources.Res
-import com.apadmi.common.generated.resources.mockzilla_logo
 import com.apadmi.mockzilla_management_ui.generated.resources.Res
 import com.apadmi.mockzilla_management_ui.generated.resources.mockzilla_logo
 import org.jetbrains.compose.resources.painterResource
