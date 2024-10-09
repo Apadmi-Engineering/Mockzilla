@@ -22,6 +22,8 @@ All work is tracked using Github Issues. Before starting please ensure you creat
 
 ## Write your code!
 
+For guidance on contributing to the Flutter packages, please checkout the [Flutter README](https://github.com/Apadmi-Engineering/Mockzilla/tree/develop/FlutterMockzilla).
+
 1. Checkout the tests. The library is setup with TDD in mind, we recommend writing your tests first!
 2. Implement your feature/bugfix!
 
