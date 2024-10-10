@@ -1,3 +1,7 @@
+## 1.0.0-dev.0
+
+* Updates underlying KMP library to 2.0.1.
+
 ## 0.1.2
 
 * Fixes an issue where HTTP request body was not passed from native models to Dart 
