@@ -11,7 +11,7 @@ ksp = "2.0.21-RC-1.0.25" # https://github.com/google/ksp
 kermit = "1.2.2" # https://github.com/touchlab/Kermit
 
 # Config
-buildKonfig = "0.15.1" # https://github.com/yshrsmz/BuildKonfig
+buildKonfig = "0.15.2" # https://github.com/yshrsmz/BuildKonfig
 
 # Documentation
 dokka = "1.9.20" # https://github.com/Kotlin/dokka
