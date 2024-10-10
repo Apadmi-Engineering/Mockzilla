@@ -20,7 +20,7 @@ dokka = "1.9.20" # https://github.com/Kotlin/dokka
 lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "2.3.12" # https://github.com/ktorio/ktor
+ktor = "3.0.0" # https://github.com/ktorio/ktor
 
 # Compose
 compose = "1.7.0-rc01" # https://github.com/JetBrains/compose-multiplatform
