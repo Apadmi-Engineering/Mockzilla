@@ -14,6 +14,7 @@ demo-android/build
 generated_docs/*
 
 docs/__pycache__/
+docs/site
 **/.gradle/**
 **/build/**
 **/.idea/**
@@ -35,3 +36,4 @@ SwiftMockzilla/.swiftpm
 temp/
 mockzilla-management-ui/common/src/test/snapshots/images
 output/
+.kotlin

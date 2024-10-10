@@ -29,6 +29,7 @@ nav:
       - contributing.md
       - Desktop App: desktop_contributing.md
       - Documentation: documentation.md
+      - Flutter: flutter_contributing.md
   - Api Reference:
       ./dokka/index.html
 markdown_extensions:
