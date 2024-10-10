@@ -79,7 +79,7 @@ Example:
     })
     ```
 === "Flutter"
-    It is recommended to use a JSON serialization library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` method for you.
+    It is recommended to use a JSON serialization library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` methods for you.
     ```dart
     MockzillaHttpResponse(
       body: jsonEncode(
@@ -184,8 +184,7 @@ either across all endpoints on the top level config, or on individual endpoints 
         defaultHandler: (request) => MockzillaHttpResponse(
         body: jsonEncode(const FetchDeparturesResponse(departures: []))),
         errorHandler: (request) => const MockzillaHttpResponse(statusCode: 418),
-        delayMean: 100,
-        delayVariance: 20,
+        delay: const Duration(milliseconds: 500),
     )
     ```
 
@@ -221,7 +220,8 @@ Mockzilla supports artificially causing network requests to fail.
         defaultHandler: (request) => MockzillaHttpResponse(
         body: jsonEncode(const FetchDeparturesResponse(departures: []))),
         errorHandler: (request) => const MockzillaHttpResponse(statusCode: 418),
-        failureProbability: 0
+        shouldFail: true,
     )
     ```
-    **The default failure probability is 0**.
+
+**The default failure probability is 0**.

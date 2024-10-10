@@ -221,7 +221,11 @@ abstract class _MockzillaHttpRequest implements MockzillaHttpRequest {
 
 /// @nodoc
 mixin _$MockzillaHttpResponse {
+  /// The HTTP status to use for the response, defaults to 200 - OK.
   int get statusCode => throw _privateConstructorUsedError;
+
+  /// The response headers, defaults a single `Content-Type` header with a
+  /// value of `application/json`.
   Map<String, String> get headers => throw _privateConstructorUsedError;
   String get body => throw _privateConstructorUsedError;
 
@@ -336,10 +340,17 @@ class _$MockzillaHttpResponseImpl implements _MockzillaHttpResponse {
       this.body = ""})
       : _headers = headers;
 
+  /// The HTTP status to use for the response, defaults to 200 - OK.
   @override
   @JsonKey()
   final int statusCode;
+
+  /// The response headers, defaults a single `Content-Type` header with a
+  /// value of `application/json`.
   final Map<String, String> _headers;
+
+  /// The response headers, defaults a single `Content-Type` header with a
+  /// value of `application/json`.
   @override
   @JsonKey()
   Map<String, String> get headers {
@@ -388,8 +399,12 @@ abstract class _MockzillaHttpResponse implements MockzillaHttpResponse {
       final Map<String, String> headers,
       final String body}) = _$MockzillaHttpResponseImpl;
 
+  /// The HTTP status to use for the response, defaults to 200 - OK.
   @override
   int get statusCode;
+
+  /// The response headers, defaults a single `Content-Type` header with a
+  /// value of `application/json`.
   @override
   Map<String, String> get headers;
   @override
@@ -773,15 +788,21 @@ abstract class _DashboardOptionsConfig implements DashboardOptionsConfig {
 /// @nodoc
 mixin _$EndpointConfig {
   String get name => throw _privateConstructorUsedError;
+
+  /// Identifier for this endpoint, defaults to [name].
   String? get customKey => throw _privateConstructorUsedError;
 
   /// Whether the Mockzilla server should return an artificial error for a
-  /// request to this endpoint.
+  /// request to this endpoint. Defaults to [false].
   bool get shouldFail => throw _privateConstructorUsedError;
 
-  /// Optional, the artificial delay that Mockzilla should apply to responses
-  /// to simulate latency.
+  /// The artificial delay that Mockzilla should apply to responses
+  /// to simulate latency. Defaults to 100ms.
   Duration get delay => throw _privateConstructorUsedError;
+
+  /// Incrementing this will indicate a breaking change has been
+  /// made to this endpoint and will invalidate any cached data on the host
+  /// device without intervention by the user. Defaults to 1.
   int get versionCode => throw _privateConstructorUsedError;
 
   /// Used to determine whether a particular `request` should be evaluated by
@@ -795,13 +816,13 @@ mixin _$EndpointConfig {
       throw _privateConstructorUsedError;
 
   /// This function is called when a network request is made to this endpoint,
-  /// note that if an error is being returned due to `failureProbability`
-  /// then `errorHandler` is used instead.
+  /// note that if an error is being returned due to [shouldFail] then
+  /// `errorHandler` is used instead.
   MockzillaHttpResponse Function(MockzillaHttpRequest) get defaultHandler =>
       throw _privateConstructorUsedError;
 
   /// This function is called when, in response to a network request, the
-  /// server returns an error due to`failureProbability`.
+  /// server returns an error due to [shouldFail].
   MockzillaHttpResponse Function(MockzillaHttpRequest) get errorHandler =>
       throw _privateConstructorUsedError;
 
@@ -1013,20 +1034,26 @@ class _$EndpointConfigImpl extends _EndpointConfig {
 
   @override
   final String name;
+
+  /// Identifier for this endpoint, defaults to [name].
   @override
   final String? customKey;
 
   /// Whether the Mockzilla server should return an artificial error for a
-  /// request to this endpoint.
+  /// request to this endpoint. Defaults to [false].
   @override
   @JsonKey()
   final bool shouldFail;
 
-  /// Optional, the artificial delay that Mockzilla should apply to responses
-  /// to simulate latency.
+  /// The artificial delay that Mockzilla should apply to responses
+  /// to simulate latency. Defaults to 100ms.
   @override
   @JsonKey()
   final Duration delay;
+
+  /// Incrementing this will indicate a breaking change has been
+  /// made to this endpoint and will invalidate any cached data on the host
+  /// device without intervention by the user. Defaults to 1.
   @override
   @JsonKey()
   final int versionCode;
@@ -1043,13 +1070,13 @@ class _$EndpointConfigImpl extends _EndpointConfig {
   final DashboardOptionsConfig dashboardOptionsConfig;
 
   /// This function is called when a network request is made to this endpoint,
-  /// note that if an error is being returned due to `failureProbability`
-  /// then `errorHandler` is used instead.
+  /// note that if an error is being returned due to [shouldFail] then
+  /// `errorHandler` is used instead.
   @override
   final MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler;
 
   /// This function is called when, in response to a network request, the
-  /// server returns an error due to`failureProbability`.
+  /// server returns an error due to [shouldFail].
   @override
   final MockzillaHttpResponse Function(MockzillaHttpRequest) errorHandler;
 
@@ -1121,18 +1148,24 @@ abstract class _EndpointConfig extends EndpointConfig {
 
   @override
   String get name;
+
+  /// Identifier for this endpoint, defaults to [name].
   @override
   String? get customKey;
 
   /// Whether the Mockzilla server should return an artificial error for a
-  /// request to this endpoint.
+  /// request to this endpoint. Defaults to [false].
   @override
   bool get shouldFail;
 
-  /// Optional, the artificial delay that Mockzilla should apply to responses
-  /// to simulate latency.
+  /// The artificial delay that Mockzilla should apply to responses
+  /// to simulate latency. Defaults to 100ms.
   @override
   Duration get delay;
+
+  /// Incrementing this will indicate a breaking change has been
+  /// made to this endpoint and will invalidate any cached data on the host
+  /// device without intervention by the user. Defaults to 1.
   @override
   int get versionCode;
 
@@ -1147,13 +1180,13 @@ abstract class _EndpointConfig extends EndpointConfig {
   DashboardOptionsConfig get dashboardOptionsConfig;
 
   /// This function is called when a network request is made to this endpoint,
-  /// note that if an error is being returned due to `failureProbability`
-  /// then `errorHandler` is used instead.
+  /// note that if an error is being returned due to [shouldFail] then
+  /// `errorHandler` is used instead.
   @override
   MockzillaHttpResponse Function(MockzillaHttpRequest) get defaultHandler;
 
   /// This function is called when, in response to a network request, the
-  /// server returns an error due to`failureProbability`.
+  /// server returns an error due to [shouldFail].
   @override
   MockzillaHttpResponse Function(MockzillaHttpRequest) get errorHandler;
 
@@ -1363,8 +1396,8 @@ mixin _$MockzillaConfig {
   /// Used for additional configuration when [isRelease] is [true].
   ReleaseModeConfig get releaseModeConfig => throw _privateConstructorUsedError;
 
-  /// Whether devices running Mockzilla are discoverable through the desktop
-  /// management UI.
+  /// Whether devices running Mockzilla are discoverable on the local network
+  /// through the desktop management app.
   bool get isNetworkDiscoveryEnabled => throw _privateConstructorUsedError;
 
   /// Create a copy of MockzillaConfig
@@ -1585,8 +1618,8 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   @JsonKey()
   final ReleaseModeConfig releaseModeConfig;
 
-  /// Whether devices running Mockzilla are discoverable through the desktop
-  /// management UI.
+  /// Whether devices running Mockzilla are discoverable on the local network
+  /// through the desktop management app.
   @override
   @JsonKey()
   final bool isNetworkDiscoveryEnabled;
@@ -1674,8 +1707,8 @@ abstract class _MockzillaConfig implements MockzillaConfig {
   @override
   ReleaseModeConfig get releaseModeConfig;
 
-  /// Whether devices running Mockzilla are discoverable through the desktop
-  /// management UI.
+  /// Whether devices running Mockzilla are discoverable on the local network
+  /// through the desktop management app.
   @override
   bool get isNetworkDiscoveryEnabled;
 

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 part 'models.freezed.dart';
 
@@ -41,7 +40,10 @@ class MockzillaHttpResponse with _$MockzillaHttpResponse {
   /// Created and returned by an endpoint handler in response to an incoming
   /// HTTP request.
   const factory MockzillaHttpResponse({
+    /// The HTTP status to use for the response, defaults to 200 - OK.
     @Default(HttpStatus.ok) int statusCode,
+    /// The response headers, defaults a single `Content-Type` header with a
+    /// value of `application/json`.
     @Default({"Content-Type": "application/json"}) Map<String, String> headers,
     @Default("") String body,
   }) = _MockzillaHttpResponse;
@@ -49,6 +51,8 @@ class MockzillaHttpResponse with _$MockzillaHttpResponse {
 
 @freezed
 class DashboardOverridePreset with _$DashboardOverridePreset {
+  /// Definition for a preset response that can be selected in the desktop
+  /// management app.
   const factory DashboardOverridePreset({
     required String name,
     required String? description,
@@ -58,6 +62,8 @@ class DashboardOverridePreset with _$DashboardOverridePreset {
 
 @freezed
 class DashboardOptionsConfig with _$DashboardOptionsConfig {
+  /// A collection of preset responses from an endpoint that can be selected in
+  /// the desktop management app.
   const factory DashboardOptionsConfig({
     @Default([]) List<DashboardOverridePreset> successPresets,
     @Default([]) List<DashboardOverridePreset> errorPresets,
@@ -68,24 +74,28 @@ class DashboardOptionsConfig with _$DashboardOptionsConfig {
 class EndpointConfig with _$EndpointConfig {
   const EndpointConfig._();
 
-  /// This configuration defines how Mockzilla should deal with a subset of
-  /// requests such as configuring the response and meta-data such as the
-  /// latency and failure rate.
+  /// Configuration for an endpoint including how requests should be handled
+  /// and desktop app presets.
   ///
   /// Please see [https://apadmi-engineering.github.io/Mockzilla/endpoints/]()
   /// for more information.
   const factory EndpointConfig({
     required String name,
+
+    /// Identifier for this endpoint, defaults to [name].
     String? customKey,
 
     /// Whether the Mockzilla server should return an artificial error for a
-    /// request to this endpoint.
+    /// request to this endpoint. Defaults to [false].
     @Default(false) bool shouldFail,
 
-    /// Optional, the artificial delay that Mockzilla should apply to responses
-    /// to simulate latency.
+    /// The artificial delay that Mockzilla should apply to responses
+    /// to simulate latency. Defaults to 100ms.
     @Default(Duration(milliseconds: 100)) Duration delay,
 
+    /// Incrementing this will indicate a breaking change has been
+    /// made to this endpoint and will invalidate any cached data on the host
+    /// device without intervention by the user. Defaults to 1.
     @Default(1) int versionCode,
 
     /// Used to determine whether a particular `request` should be evaluated by
@@ -97,13 +107,13 @@ class EndpointConfig with _$EndpointConfig {
     @Default(DashboardOptionsConfig()) DashboardOptionsConfig dashboardOptionsConfig,
 
     /// This function is called when a network request is made to this endpoint,
-    /// note that if an error is being returned due to `failureProbability`
-    /// then `errorHandler` is used instead.
+    /// note that if an error is being returned due to [shouldFail] then
+    /// `errorHandler` is used instead.
     required MockzillaHttpResponse Function(MockzillaHttpRequest request)
         defaultHandler,
 
     /// This function is called when, in response to a network request, the
-    /// server returns an error due to`failureProbability`.
+    /// server returns an error due to [shouldFail].
     required MockzillaHttpResponse Function(MockzillaHttpRequest request)
         errorHandler,
   }) = _EndpointConfig;
@@ -150,8 +160,8 @@ class MockzillaConfig with _$MockzillaConfig {
     /// Used for additional configuration when [isRelease] is [true].
     @Default(ReleaseModeConfig()) ReleaseModeConfig releaseModeConfig,
 
-    /// Whether devices running Mockzilla are discoverable through the desktop
-    /// management UI.
+    /// Whether devices running Mockzilla are discoverable on the local network
+    /// through the desktop management app.
     @Default(true) bool isNetworkDiscoveryEnabled,
   }) = _MockzillaConfig;
 }
