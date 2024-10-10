@@ -10,7 +10,7 @@ final mockzillaConfig = const MockzillaConfig().addEndpoint(
         request.uri.endsWith("packages") && request.method == HttpMethod.get,
     defaultHandler: (_) => defaultResponse,
     errorHandler: (_) => errorResponse,
-    shouldFail: true,
+    shouldFail: false,
   ),
 );
 
