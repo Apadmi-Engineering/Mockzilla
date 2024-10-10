@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.0.3...mockzilla-management-ui-v1.1.0) (2024-10-10)
+
+
+### Features
+
+* remove previews and screenshot tests ([d14a059](https://github.com/Apadmi-Engineering/Mockzilla/commit/d14a0598c1aa1b1d4ef8949d9eae5714e1b70e35))
+
+
+### Bug Fixes
+
+* Trigger deploy with updated dependencies ([b5200c6](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5200c6cff3e6c6e4ad258e4900e318831151444))
+
 ## [1.0.3](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.0.0...mockzilla-management-ui-v1.0.3) (2024-07-02)
 
 
