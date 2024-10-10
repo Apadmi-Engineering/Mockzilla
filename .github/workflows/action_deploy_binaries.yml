@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - release-please--branches--develop--components--release-please-action
+      - release-please--branches--develop--groups--Kmp-libs
     tags:
       - mockzilla-v**
 env:
