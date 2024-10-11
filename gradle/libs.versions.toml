@@ -1,7 +1,7 @@
 [versions]
 
 # Kotlin
-adam = "0.5.7" # https://github.com/Malinskiy/adam
+adam = "0.5.8" # https://github.com/Malinskiy/adam
 jmdns = "3.5.12" # https://github.com/jmdns/jmdns
 kotlin = "2.0.21-RC" # https://github.com/JetBrains/kotlin
 agp = "8.7.0" # https://developer.android.com/build/releases/gradle-plugin
