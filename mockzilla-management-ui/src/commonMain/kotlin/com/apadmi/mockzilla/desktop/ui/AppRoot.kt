@@ -64,7 +64,8 @@ fun App(
 
         AnimatedErrorBanner(
             (state as? AppRootViewModel.State.Connected)?.error,
-            viewModel::refreshAll
+            viewModel::refreshAll,
+            viewModel::dismissError
         )
     }
 }

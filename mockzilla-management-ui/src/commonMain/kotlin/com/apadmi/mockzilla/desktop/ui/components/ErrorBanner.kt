@@ -9,6 +9,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -60,7 +62,8 @@ private fun Connected.ErrorBannerState.backgroundColor() = when (this) {
 @Composable
 fun AnimatedErrorBanner(
     state: Connected.ErrorBannerState?,
-    onRefreshAll: () -> Unit
+    onRefreshAll: () -> Unit,
+    onDismissError: () -> Unit,
 ) = AnimatedContent(
     targetState = state,
     transitionSpec = {
@@ -82,7 +85,7 @@ fun AnimatedErrorBanner(
     }
 ) { errorBannerState ->
     errorBannerState?.let {
-        ErrorBanner(errorBannerState, onRefreshAll = onRefreshAll)
+        ErrorBanner(errorBannerState, onRefreshAll = onRefreshAll, onDismissError = onDismissError)
     }
 }
 
@@ -90,7 +93,8 @@ fun AnimatedErrorBanner(
 private fun ErrorBanner(
     state: Connected.ErrorBannerState,
     strings: Strings = LocalStrings.current,
-    onRefreshAll: () -> Unit
+    onRefreshAll: () -> Unit,
+    onDismissError: () -> Unit,
 ) = Box(
     modifier = Modifier.fillMaxWidth(),
     contentAlignment = Alignment.CenterEnd,
@@ -99,7 +103,12 @@ private fun ErrorBanner(
         modifier = Modifier.padding(16.dp)
             .clip(RoundedCornerShape(25))
             .background(state.backgroundColor())
-            .padding(12.dp),
+            .padding(12.dp).pointerInput(Unit) {
+                detectDragGestures { change, _ ->
+                    change.consume()
+                    onDismissError()
+                }
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
