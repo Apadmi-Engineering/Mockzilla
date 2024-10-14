@@ -31,7 +31,7 @@ jobs:
           echo -n "$MAC_SIGNING_KEY" | base64 --decode > $MAC_SIGNING_KEY_PATH
           echo -n "$APPLE_NOTARIZATION_KEY" | base64 --decode > $APPLE_NOTARIZATION_KEY_PATH
       - name: Build Jar
-        run: ./gradlew :mockzilla-management-ui:jvmJar
+        run: ./gradlew :mockzilla-management-ui:desktopJar
       - name: Run Conveyor
         uses: hydraulic-software/conveyor/actions/build@v14.3
         env:
