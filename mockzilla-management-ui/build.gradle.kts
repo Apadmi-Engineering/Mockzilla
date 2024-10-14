@@ -56,9 +56,6 @@ kotlin {
             implementation(kotlin("test"))
         }
         androidMain.dependencies {
-            /* Compose */
-
-
             /* ViewModel */
             implementation(libs.androidx.lifecycleViewModelCompose)
             implementation(libs.koin.android)
@@ -97,10 +94,6 @@ kotlin {
             }
         }
     }
-}
-
-dependencies {
-
 }
 
 android {
