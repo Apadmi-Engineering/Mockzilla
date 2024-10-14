@@ -20,16 +20,16 @@ import kotlinx.coroutines.withContext
 
 @Suppress("TOO_LONG_FUNCTION")
 internal fun Application.configureEndpoints(
-    superviser: CompletableJob,
+    supervisor: CompletableJob,
     di: DependencyInjector
 ) {
     routing {
         HttpMethod.DefaultMethods.forEach { method ->
             route("/local-mock/{...}", method) {
                 handle {
-                    withContext(coroutineContext + superviser) {
+                    withContext(coroutineContext + supervisor) {
                         di.logger.i { "Responding to ${method.value}: ${call.request.uri}" }
-                        safeResponse(di.logger) {
+                        safeResponse(di.logger) { call ->
                             call.respondMockzilla(
                                 di.localMockController.handleRequest(call.toMockzillaRequest(method))
                             )
@@ -45,14 +45,14 @@ internal fun Application.configureEndpoints(
         }
         get("/api/meta") {
             di.logger.v { "Handling GET meta: ${call.request.uri}" }
-            safeResponse(di.logger) {
+            safeResponse(di.logger) { call ->
                 call.allowCors()
                 call.respond(di.metaData)
             }
         }
         get("/api/mock-data") {
             di.logger.v { "Handling GET mock-data: ${call.request.uri}" }
-            safeResponse(di.logger) {
+            safeResponse(di.logger) { call ->
                 call.allowCors()
                 call.respond(
                     MockDataResponseDto(
@@ -63,14 +63,14 @@ internal fun Application.configureEndpoints(
         }
         get("/api/mock-data/{key}/dashboard-config") {
             di.logger.v { "Handling GET mock-data presets: ${call.request.uri}" }
-            safeResponse(di.logger) {
+            safeResponse(di.logger) { call ->
                 call.allowCors()
                 call.respond(di.managementApiController.getDashboardConfig(call.extractKey()))
             }
         }
         patch("/api/mock-data") {
             di.logger.v { "Handling POST mock-data: ${call.request.uri}" }
-            safeResponse(di.logger) {
+            safeResponse(di.logger) { call ->
                 call.allowCors()
                 val patches = call.receive<SerializableEndpointConfigPatchRequestDto>().entries
                 di.managementApiController.patchEntries(patches)
@@ -79,7 +79,7 @@ internal fun Application.configureEndpoints(
         }
         delete("/api/mock-data/all") {
             di.logger.v { "Handling DELETE mock-data: ${call.request.uri}" }
-            safeResponse(di.logger) {
+            safeResponse(di.logger) { call ->
                 di.managementApiController.clearAllCaches()
                 call.allowCors()
                 call.respond(HttpStatusCode.NoContent)
@@ -87,14 +87,14 @@ internal fun Application.configureEndpoints(
         }
         delete("/api/mock-data") {
             di.logger.v { "Handling DELETE mock-data: ${call.request.uri}" }
-            safeResponse(di.logger) {
+            safeResponse(di.logger) { call ->
                 di.managementApiController.clearCache(call.receive<ClearCachesRequestDto>().keys)
                 call.allowCors()
                 call.respond(HttpStatusCode.NoContent)
             }
         }
         get("/api/monitor-logs") {
-            safeResponse(di.logger) {
+            safeResponse(di.logger) { call ->
                 call.allowCors()
                 call.respond(
                     MonitorLogsResponse(
@@ -107,7 +107,7 @@ internal fun Application.configureEndpoints(
             route("/api/global", method = method) {
                 handle {
                     di.logger.v { "Handling GET global: ${call.request.uri}" }
-                    safeResponse(di.logger) {
+                    safeResponse(di.logger) { call ->
                         call.respondText(
                             status = HttpStatusCode.Gone,
                             text = "Global overrides no longer supported"

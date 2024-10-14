@@ -6,7 +6,6 @@ import com.apadmi.mockzilla.lib.internal.plugin.SimpleAuthPlugin
 import com.apadmi.mockzilla.lib.internal.service.AuthenticationConstants
 import com.apadmi.mockzilla.lib.internal.service.TokensService
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
-import com.apadmi.mockzilla.lib.internal.utils.environment
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import io.ktor.serialization.kotlinx.json.json
@@ -60,19 +59,22 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     val serverEngine = embeddedServer(CIO, configure = {
         connectionIdleTimeoutSeconds = 1
         reuseAddress = true
-    }, environment = environment(
-        port,
-        // Only allow localhost connections in release mode. This stops anyone on the network from
-        // being able to hit the server.
-        host = if (di.config.isRelease || di.config.localhostOnly) "127.0.0.1" else "0.0.0.0",
-    ) {
-        setupServerEnvironment(job, di)
+
+        connector {
+            this.port = port
+            // Only allow localhost connections in release mode. This stops anyone on the network from
+            // being able to hit the server.
+            this.host = if (di.config.isRelease || di.config.localhostOnly) "127.0.0.1" else "0.0.0.0"
+        }
     }).apply {
-        server = this
+        application.setupServerEnvironment(job = job, di = di)
+        server = this.application.engine
         start(wait = false)
     }
 
-    val actualPort = serverEngine.resolvedConnectors().firstOrNull()?.port
+    val actualPort = serverEngine.application.engine.resolvedConnectors()
+        .firstOrNull()
+        ?.port
         ?: throw Exception("Could not determine runtime port")
 
     startNetworkDiscoveryBroadcastIfNeeded(job, di, actualPort)
