@@ -15,7 +15,11 @@ plugins {
 kotlin {
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
-    jvm("desktop")
+
+    jvm {
+        withJava()
+    }
+
     sourceSets {
         commonMain.dependencies {
             /* Compose */
@@ -74,6 +78,9 @@ kotlin {
                 implementation(libs.androidx.test.junit)
                 implementation(libs.testParamInjector)
             }
+        }
+        jvmMain.dependencies {
+            implementation(compose.desktop.currentOs)
         }
         val desktopMain by getting {
             dependencies {
