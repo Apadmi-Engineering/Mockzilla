@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.0.3...mockzilla-management-ui-v1.1.0) (2024-10-16)
+
+
+### Features
+
+* Enable dismissal of the error bubble ([9a692e4](https://github.com/Apadmi-Engineering/Mockzilla/commit/9a692e4e2a0551abddb497f4e68cd4a26b929fa1))
+* remove previews and screenshot tests ([d14a059](https://github.com/Apadmi-Engineering/Mockzilla/commit/d14a0598c1aa1b1d4ef8949d9eae5714e1b70e35))
+
+
+### Bug Fixes
+
+* Fix long text handling on desktop connection widget ([114dc27](https://github.com/Apadmi-Engineering/Mockzilla/commit/114dc2721ed9b41586ddae30f51b39c84be9f798))
+* Trigger deploy with updated dependencies ([b5200c6](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5200c6cff3e6c6e4ad258e4900e318831151444))
+
 ## [1.0.3](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.0.0...mockzilla-management-ui-v1.0.3) (2024-07-02)
 
 
