@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
@@ -146,8 +147,11 @@ private fun DevicesList(
                     onDraw = { drawCircle(color = device.state.color()) })
             }
 
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(device.prettyName())
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+                modifier = Modifier.weight(1f).padding(end = 8.dp)
+            ) {
+                Text(device.prettyName(), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
                     modifier = Modifier.alpha(0.5f),
                     text = buildString {
@@ -160,8 +164,6 @@ private fun DevicesList(
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
-
-            Spacer(Modifier.weight(1f))
 
             if (device.state == DetectedDevice.State.Resolving) {
                 CircularProgressIndicator(Modifier.padding(end = 8.dp).size(20.dp))

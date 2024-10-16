@@ -56,6 +56,11 @@ class AppRootViewModel(
         eventBus.send(Event.FullRefresh)
     }
 
+    fun dismissError() {
+        val currentState = state.value as? State.Connected ?: return
+        state.value = currentState.copy(error = null)
+    }
+
     sealed class State {
         data object NewDeviceConnection : State()
         data object UnsupportedDeviceMockzillaVersion : State()

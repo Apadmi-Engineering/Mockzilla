@@ -8,43 +8,62 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Dangerous
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.AppRootViewModel
+import com.apadmi.mockzilla.desktop.ui.AppRootViewModel.State.*
 import com.apadmi.mockzilla.desktop.ui.theme.theme_warning_background
 
-private fun AppRootViewModel.State.Connected.ErrorBannerState.bannerText(strings: Strings): String = when (this) {
-    AppRootViewModel.State.Connected.ErrorBannerState.ConnectionLost -> strings.widgets.errorBanner.connectionLost
-    AppRootViewModel.State.Connected.ErrorBannerState.UnknownError -> strings.widgets.errorBanner.unknownError
-}
+private fun Connected.ErrorBannerState.bannerText(strings: Strings): String =
+    when (this) {
+        Connected.ErrorBannerState.ConnectionLost -> strings.widgets.errorBanner.connectionLost
+        Connected.ErrorBannerState.UnknownError -> strings.widgets.errorBanner.unknownError
+    }
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-private fun AppRootViewModel.State.Connected.ErrorBannerState.backgroundColor() = when (this) {
-    AppRootViewModel.State.Connected.ErrorBannerState.ConnectionLost -> theme_warning_background
-    AppRootViewModel.State.Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.errorContainer
+private fun Connected.ErrorBannerState.backgroundColor() = when (this) {
+    Connected.ErrorBannerState.ConnectionLost -> theme_warning_background
+    Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.errorContainer
 }
 
 @Composable
 fun AnimatedErrorBanner(
-    state: AppRootViewModel.State.Connected.ErrorBannerState?,
-    onRefreshAll: () -> Unit
+    state: Connected.ErrorBannerState?,
+    onRefreshAll: () -> Unit,
+    onDismissError: () -> Unit,
 ) = AnimatedContent(
     targetState = state,
     transitionSpec = {
@@ -66,35 +85,50 @@ fun AnimatedErrorBanner(
     }
 ) { errorBannerState ->
     errorBannerState?.let {
-        ErrorBanner(errorBannerState, onRefreshAll = onRefreshAll)
+        ErrorBanner(errorBannerState, onRefreshAll = onRefreshAll, onDismissError = onDismissError)
     }
 }
 
 @Composable
 private fun ErrorBanner(
-    state: AppRootViewModel.State.Connected.ErrorBannerState,
+    state: Connected.ErrorBannerState,
     strings: Strings = LocalStrings.current,
-    onRefreshAll: () -> Unit
+    onRefreshAll: () -> Unit,
+    onDismissError: () -> Unit,
 ) = Box(
-    modifier = Modifier.fillMaxWidth().background(state.backgroundColor())
+    modifier = Modifier.fillMaxWidth(),
+    contentAlignment = Alignment.CenterEnd,
 ) {
     Row(
-        modifier = Modifier
-            .align(Alignment.Center)
-            .padding(8.dp),
+        modifier = Modifier.padding(16.dp)
+            .clip(RoundedCornerShape(25))
+            .background(state.backgroundColor())
+            .padding(12.dp).pointerInput(Unit) {
+                detectDragGestures { change, _ ->
+                    change.consume()
+                    onDismissError()
+                }
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        val onColor = when (state) {
+            Connected.ErrorBannerState.ConnectionLost -> Color.Black
+            Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.onErrorContainer
+        }
+        Icon(
+            imageVector =  Icons.Outlined.Warning,
+            contentDescription = null,
+            tint = onColor
+        )
+
         Text(
             text = state.bannerText(strings),
-            textAlign = TextAlign.Center,
-            fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-            color = when (state) {
-                AppRootViewModel.State.Connected.ErrorBannerState.ConnectionLost -> Color.Black
-                AppRootViewModel.State.Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.onErrorContainer
-            }
+            style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 0.sp),
+            color = onColor
         )
-        if (state == AppRootViewModel.State.Connected.ErrorBannerState.UnknownError) {
+
+        if (state == Connected.ErrorBannerState.UnknownError) {
             Button(onClick = onRefreshAll, contentPadding = PaddingValues(0.dp)) {
                 Text(
                     strings.widgets.errorBanner.refreshButton,
