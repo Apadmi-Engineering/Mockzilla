@@ -36,7 +36,7 @@ kotlinx-serialization = "1.7.3" # https://github.com/Kotlin/kotlinx.serializatio
 # AndroidX
 lifecycle = "2.8.6" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 compose-activity = "1.9.2" # https://developer.android.com/jetpack/androidx/releases/activity
-mockk = "1.13.12"
+mockk = "1.13.13"
 playServicesAdsIdentifier = "18.1.0"
 
 # Semantic Versioning
