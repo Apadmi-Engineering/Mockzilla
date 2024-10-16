@@ -12,13 +12,16 @@ plugins {
     alias(libs.plugins.conveyor)
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 kotlin {
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
 
-    jvm {
-        withJava()
-    }
+    jvm("desktop")
 
     sourceSets {
         commonMain.dependencies {
@@ -79,13 +82,9 @@ kotlin {
                 implementation(libs.testParamInjector)
             }
         }
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-        }
         val desktopMain by getting {
             dependencies {
-                /* Compose */
-                implementation(compose.desktop.currentOs) {
+                implementation(compose.desktop.currentOs){
                     exclude("org.jetbrains.compose.material")
                 }
 
@@ -93,6 +92,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.swing)
             }
         }
+
         val desktopTest by getting {
             dependencies {
                 implementation(libs.turbine)
