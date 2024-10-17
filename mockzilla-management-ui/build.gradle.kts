@@ -15,8 +15,9 @@ plugins {
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
-        println("------------------------- HERE HERE HERE ${System.getenv("CI")}")
-        vendor = JvmVendorSpec.ORACLE
+        if (System.getenv("CI").toBoolean()) {
+            vendor = JvmVendorSpec.ORACLE
+        }
     }
 }
 kotlin {
