@@ -52,7 +52,7 @@ junit = "1.2.1" # https://developer.android.com/jetpack/androidx/releases/test
 testParamInjector = "1.16" # https://github.com/google/TestParameterInjector
 
 # Conveyor
-conveyor = "1.11" # https://github.com/hydraulic-software/conveyor
+conveyor = "1.12" # https://github.com/hydraulic-software/conveyor
 
 [libraries]
 
