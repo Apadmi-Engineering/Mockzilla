@@ -21,7 +21,7 @@ import kotlinx.coroutines.GlobalScope
 
 internal fun useCaseModule(): Module = module {
     single<MetaDataUseCase> { MetaDataUseCaseImpl(get()) }
-    single<MonitorLogsUseCase> { MonitorLogsUseCaseImpl(get()) }
+    single<MonitorLogsUseCase> { MonitorLogsUseCaseImpl(get(), get()) }
     single<AdbConnectorService> { AdbConnectorServiceImpl }
     single { ZeroConfSdkWrapper(ZeroConfConfig.serviceType + ".local.", GlobalScope) }
     single<DeviceDetectionUseCase> {

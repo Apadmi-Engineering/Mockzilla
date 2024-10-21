@@ -7,10 +7,12 @@ import kotlinx.coroutines.sync.withLock
 
 interface MonitorLogsUseCase {
     suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>>
+    suspend fun clearMonitorLogs(device: Device): Result<Unit>
 }
 
 class MonitorLogsUseCaseImpl(
-    private val managementLogsService: MockzillaManagement.LogsService
+    private val managementLogsService: MockzillaManagement.LogsService,
+    private val managementMetaDataService: MockzillaManagement.MetaDataService,
 ) : MonitorLogsUseCase {
     private val mutex = Mutex()
     private val cache = mutableMapOf<CacheKey, Sequence<LogEvent>>()
@@ -22,6 +24,13 @@ class MonitorLogsUseCaseImpl(
             (existingLogs + response.logs).also {
                 cache[cacheKey] = it
             }
+        }
+    }
+
+    override suspend fun clearMonitorLogs(device: Device): Result<Unit> = mutex.withLock {
+        managementMetaDataService.fetchMetaData(device, hideFromLogs = true).map { response ->
+            val cacheKey = CacheKey(device, response.appPackage)
+            cache[cacheKey] = emptySequence()
         }
     }
 }
