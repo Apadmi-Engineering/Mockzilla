@@ -32,7 +32,7 @@
     },
     "mockzilla-management-ui": {
       "component": "mockzilla-management-ui",
-      "extra-files": ["desktop/build.gradle.kts"]
+      "extra-files": ["build.gradle.kts"]
     }
   },
   "plugins": [
