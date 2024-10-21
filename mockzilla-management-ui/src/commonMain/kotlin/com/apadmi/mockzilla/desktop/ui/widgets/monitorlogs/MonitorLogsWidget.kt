@@ -1,11 +1,16 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,6 +23,8 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.engine.device.Device
+import com.apadmi.mockzilla.desktop.i18n.LocalStrings
+import com.apadmi.mockzilla.desktop.i18n.Strings
 import com.apadmi.mockzilla.desktop.ui.theme.alternatingBackground
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_1xx
 import com.apadmi.mockzilla.desktop.ui.theme.httpStatusCode_2xx
@@ -46,12 +53,28 @@ fun MonitorLogsWidget(
     val viewModel = getViewModel<MonitorLogsViewModel>(key = device.toString()) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
-    MonitorLogsWidgetContent(state)
+    MonitorLogsWidgetContent(state = state, onClearAll = viewModel::clearLogs)
 }
 
 @Composable
-fun MonitorLogsWidgetContent(state: MonitorLogsViewModel.State) = when (state) {
-    is MonitorLogsViewModel.State.DisplayLogs -> MonitorLogsList(state.entries)
+fun MonitorLogsWidgetContent(
+    state: MonitorLogsViewModel.State.DisplayLogs,
+    onClearAll: () -> Unit,
+    strings: Strings = LocalStrings.current,
+) = Row {
+    MonitorLogsList(
+        entries = state.entries,
+        modifier = Modifier.weight(1F)
+    )
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        Surface(modifier = Modifier.padding(8.dp)) {
+            Button(
+                onClick = onClearAll,
+            ) {
+                Text(text = strings.widgets.logs.clearAll)
+            }
+        }
+    }
 }
 
 @Composable
@@ -68,7 +91,10 @@ fun LogRow(modifier: Modifier, event: LogEvent) =
     }
 
 @Composable
-private fun MonitorLogsList(entries: Sequence<LogEvent>) = LazyColumn {
+private fun MonitorLogsList(
+    entries: Sequence<LogEvent>,
+    modifier: Modifier = Modifier,
+) = LazyColumn(modifier) {
     entries.forEachIndexed { index, logEvent ->
         item {
             LogRow(Modifier.fillMaxWidth().alternatingBackground(index), logEvent)
