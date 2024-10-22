@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs
 
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.engine.device.MonitorLogsUseCase
+import com.apadmi.mockzilla.desktop.utils.launchUnit
 import com.apadmi.mockzilla.desktop.viewmodel.ViewModel
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import kotlinx.coroutines.CoroutineScope
@@ -11,11 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class MonitorLogsViewModel(
-    device: Device,
+    private val device: Device,
     private val monitorLogsUseCase: MonitorLogsUseCase,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
-    val state = MutableStateFlow<State>(State.DisplayLogs(emptySequence()))
+    val state = MutableStateFlow(State.DisplayLogs(emptySequence()))
     private var pollingJob: Job? = null
 
     init {
@@ -32,6 +33,12 @@ class MonitorLogsViewModel(
 
                 delay(200)
             }
+        }
+    }
+
+    fun clearLogs() = viewModelScope.launchUnit {
+        monitorLogsUseCase.clearMonitorLogs(device).onSuccess {
+            pollForLogs(device)
         }
     }
 

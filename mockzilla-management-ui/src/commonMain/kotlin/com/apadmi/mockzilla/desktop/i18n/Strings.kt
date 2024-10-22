@@ -54,8 +54,12 @@ data class Strings(
 
         /**
          * @property title
+         * @property clearAll
          */
-        data class Logs(val title: String)
+        data class Logs(
+            val title: String,
+            val clearAll: String,
+        )
 
         /**
          * @property refreshAll

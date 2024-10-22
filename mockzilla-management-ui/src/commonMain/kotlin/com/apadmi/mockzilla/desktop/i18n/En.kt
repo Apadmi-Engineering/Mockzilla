@@ -48,7 +48,8 @@ val EnStrings = Strings(
             jvm = "JVM",
         ),
         logs = Strings.Widgets.Logs(
-            "Logs"
+            title = "Logs",
+            clearAll = "Clear all",
         ),
         endpoints = Strings.Widgets.Endpoints(
             selectAllTooltip = "Select all",
