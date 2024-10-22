@@ -23,7 +23,7 @@ lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 ktor = "3.0.0" # https://github.com/ktorio/ktor
 
 # Compose
-compose = "1.7.0-rc01" # https://github.com/JetBrains/compose-multiplatform
+compose = "1.8.0-dev1890" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
 koin = "4.0.0" # https://github.com/InsertKoinIO/koin
