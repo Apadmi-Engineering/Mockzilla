@@ -10,6 +10,10 @@ on:
 env:
   is_snapshot: ${{ github.ref_type == 'branch' }}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_type }}
+  cancel-in-progress: false
+
 jobs:
   deploy:
     environment: production
