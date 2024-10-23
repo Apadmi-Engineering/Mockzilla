@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.0.1...mockzilla-v2.1.0) (2024-10-23)
+
+
+### Features
+
+* remove previews and screenshot tests ([d14a059](https://github.com/Apadmi-Engineering/Mockzilla/commit/d14a0598c1aa1b1d4ef8949d9eae5714e1b70e35))
+
+
+### Bug Fixes
+
+* Trigger deploy with updated dependencies ([b5200c6](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5200c6cff3e6c6e4ad258e4900e318831151444))
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v1.2.1-alpha2...mockzilla-v2.0.0) (2024-07-02)
 
 
