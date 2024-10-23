@@ -3,7 +3,7 @@
 # Kotlin
 adam = "0.5.8" # https://github.com/Malinskiy/adam
 jmdns = "3.5.12" # https://github.com/jmdns/jmdns
-kotlin = "2.1.0-Beta1" # https://github.com/JetBrains/kotlin
+kotlin = "2.1.0" # https://github.com/JetBrains/kotlin
 agp = "8.7.0" # https://developer.android.com/build/releases/gradle-plugin
 ksp = "2.1.0-Beta1-1.0.25" # https://github.com/google/ksp
 
@@ -23,7 +23,7 @@ lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 ktor = "3.0.0" # https://github.com/ktorio/ktor
 
 # Compose
-compose = "1.7.0-rc01" # https://github.com/JetBrains/compose-multiplatform
+compose = "1.7.0" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
 koin = "4.0.0" # https://github.com/InsertKoinIO/koin
