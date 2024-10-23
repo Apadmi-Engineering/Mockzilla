@@ -3,9 +3,9 @@
 # Kotlin
 adam = "0.5.8" # https://github.com/Malinskiy/adam
 jmdns = "3.5.12" # https://github.com/jmdns/jmdns
-kotlin = "2.1.0-Beta1" # https://github.com/JetBrains/kotlin
+kotlin = "2.1.0-Beta2" # https://github.com/JetBrains/kotlin
 agp = "8.7.1" # https://developer.android.com/build/releases/gradle-plugin
-ksp = "2.1.0-Beta1-1.0.25" # https://github.com/google/ksp
+ksp = "2.1.0-Beta2-1.0.25" # https://github.com/google/ksp
 
 # Logging
 kermit = "1.2.2" # https://github.com/touchlab/Kermit
