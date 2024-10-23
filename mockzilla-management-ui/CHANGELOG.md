@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.1.0...mockzilla-management-ui-v1.1.1) (2024-10-23)
+
+
+### Bug Fixes
+
+* Desktop deployments ([29b1c1f](https://github.com/Apadmi-Engineering/Mockzilla/commit/29b1c1ff0b9bd8b470761fb0ce75c6acf6480f63))
+
 ## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.0.3...mockzilla-management-ui-v1.1.0) (2024-10-16)
 
 
