@@ -2,6 +2,7 @@
 
 ## [1.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.1.0...mockzilla-management-ui-v1.1.1) (2024-10-23)
 
+* Add clear all logs button ([079cdb3](https://github.com/Apadmi-Engineering/Mockzilla/commit/079cdb3be7736deaee09244c69bf99dddbf62de2))
 
 ### Bug Fixes
 
