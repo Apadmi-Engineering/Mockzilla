@@ -7,15 +7,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -94,10 +99,33 @@ fun LogRow(modifier: Modifier, event: LogEvent) =
 private fun MonitorLogsList(
     entries: Sequence<LogEvent>,
     modifier: Modifier = Modifier,
-) = LazyColumn(modifier) {
-    entries.forEachIndexed { index, logEvent ->
-        item {
-            LogRow(Modifier.fillMaxWidth().alternatingBackground(index), logEvent)
+) {
+    val state = rememberLazyListState()
+    val entryList = entries.toList()
+    var previousSize by remember { mutableStateOf(entryList.size) }
+    LaunchedEffect(previousSize, entryList.size) {
+        val previous = previousSize
+        val current = entryList.size
+        if (previous != current) {
+            // Because we know entries can only be appended or cleared, we can check if the new
+            // list is bigger than the previous list and infer that a new entry was added to the
+            // end of the sequence if so
+            if (current > previous) {
+                // In such a case, if the user was scrolled down to the end of the logs we should
+                // autoscroll them to remain there
+                val previousLastItemIndex = state.layoutInfo.visibleItemsInfo.maxOf { it.index }
+                if (previousLastItemIndex >= previous - 1) {
+                    state.scrollToItem(entryList.lastIndex)
+                }
+            }
+            previousSize = current
+        }
+    }
+    LazyColumn(modifier = modifier, state = state) {
+        entryList.forEachIndexed { index, logEvent ->
+            item {
+                LogRow(Modifier.fillMaxWidth().alternatingBackground(index), logEvent)
+            }
         }
     }
 }
