@@ -14,7 +14,7 @@ class MockzillaIos extends MockzillaPlatform {
         BridgeAuthHeader(key: "Authorization", value: "Bearer"),
       ),
     );
-    MockzillaFlutterApi.setup(callbackProvider);
+    MockzillaFlutterApi.setUp(callbackProvider);
     return mockzillaHostBridge.startServer(config.toBridge());
   }
 
