@@ -1,3 +1,10 @@
+## 1.0.0-dev.1
+
+* Fixes an issue in the marshalling of request headers from bridge models to Dart.
+* Upgrades dependencies of federated plugins
+  * `mockzilla_android` from `1.0.0-dev.0` -> `1.0.0-dev.1`
+  * `mockzilla_ios` from `1.0.0-dev.0` -> `1.0.0-dev.1`
+
 ## 1.0.0-dev.0
 
 * Updates underlying KMP library to 2.0.1.
