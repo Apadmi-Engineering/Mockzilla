@@ -1,7 +1,6 @@
 import 'package:mockzilla_android/src/api_utils.dart';
 import 'package:mockzilla_android/src/messages.g.dart';
 import 'package:mockzilla_android/src/model/mockzilla_error.dart';
-import 'package:mockzilla_android/src/utils/list_utils.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
 class MockzillaAndroid extends MockzillaPlatform {
