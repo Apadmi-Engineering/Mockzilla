@@ -80,7 +80,7 @@ extension BridgeMockzillaHttpResponse {
     func toNative() -> MockzillaHttpResponse {
         return MockzillaHttpResponse(
             statusCode: Ktor_httpHttpStatusCode.init(value: Int32(self.statusCode), description: ""),
-            headers: DictionaryUtils.removeNils(self.headers),
+            headers: self.headers,
             body: self.body
         )
     }
@@ -116,14 +116,10 @@ extension BridgeDashboardOptionsConfig {
     func toNative() -> Mockzilla_commonDashboardOptionsConfig {
         return Mockzilla_commonDashboardOptionsConfig(
             errorPresets: errorPresets.map {
-                preset in preset?.toNative()
-            }.filter {
-                preset in preset != nil
+                preset in preset.toNative()
             } as! Array<Mockzilla_commonDashboardOverridePreset>,
             successPresets: successPresets.map {
-                preset in preset?.toNative()
-            }.filter {
-                preset in preset != nil
+                preset in preset.toNative()
             } as! Array<Mockzilla_commonDashboardOverridePreset>
         )
     }
@@ -199,9 +195,7 @@ extension BridgeMockzillaConfig {
         return MockzillaConfig(
             port: Int32(port),
             endpoints: endpoints.map {
-                endpoint in endpoint?.toNative(endpointMatcher: endpointMatcher, defaultHandler: defaultHandler, errorHandler: errorHandler)
-            }.filter {
-                endpoint in endpoint != nil
+                endpoint in endpoint.toNative(endpointMatcher: endpointMatcher, defaultHandler: defaultHandler, errorHandler: errorHandler)
             } as! Array<EndpointConfiguration>,
             isRelease: isRelease,
             localhostOnly: false, logLevel: logLevel.toNative(),
