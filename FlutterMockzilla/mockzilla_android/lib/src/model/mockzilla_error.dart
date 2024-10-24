@@ -1,14 +1,24 @@
-sealed class MockzillaError implements Error {}
+import 'package:flutter/services.dart';
+
+sealed class MockzillaError implements PlatformException {}
 
 class EndpointNotFoundError extends MockzillaError {
   String key;
-  @override
-  StackTrace stackTrace;
+  StackTrace trace;
 
-  EndpointNotFoundError(this.key, this.stackTrace);
+  EndpointNotFoundError(this.key, this.trace);
 
   @override
-  String toString() => "Mockzilla tried to find an endpoint with key $key but "
-      "it doesn't exist. If you have added an endpoint with key $key since "
-      "starting Mockzilla you may need to restart the server.";
+  String get code => "endpoint-not-found";
+
+  @override
+  get details => key;
+
+  @override
+  String? get message =>
+      "Mockzilla tried to find an endpoint with key $key but "
+          "it doesn't exist.";
+
+  @override
+  String? get stacktrace => trace.toString();
 }

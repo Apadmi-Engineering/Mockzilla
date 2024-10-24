@@ -14,9 +14,11 @@ import BridgeMockzillaHttpRequest
 import BridgeMockzillaRuntimeParams
 import MockzillaFlutterApi
 import MockzillaHostApi
+import io.ktor.http.HttpStatusCode
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
+import java.util.logging.Logger
 
 class MockzillaAndroid(
     private val flutterApi: MockzillaFlutterApi,
@@ -41,27 +43,47 @@ class MockzillaAndroid(
         val completer: CompletableDeferred<Boolean> = CompletableDeferred()
         uiThreadHandler.post {
             flutterApi.endpointMatcher(BridgeMockzillaHttpRequest.fromNative(request), key) {
-                completer.complete(it.getOrThrow())
+                completer.complete(it.getOrElse { false })
             }
         }
         return runBlocking { completer.await() }
     }
 
-    private fun callDefaultHandler(request: MockzillaHttpRequest, key: String): MockzillaHttpResponse {
+    private fun callDefaultHandler(
+        request: MockzillaHttpRequest,
+        key: String
+    ): MockzillaHttpResponse {
         val completer: CompletableDeferred<MockzillaHttpResponse> = CompletableDeferred()
         uiThreadHandler.post {
-            flutterApi.defaultHandler(BridgeMockzillaHttpRequest.fromNative(request), key) {
-                completer.complete(it.getOrThrow().toNative())
+            flutterApi.defaultHandler(
+                BridgeMockzillaHttpRequest.fromNative(request),
+                key
+            ) { bridgeResult ->
+                completer.complete(bridgeResult.map {
+                    it.toNative()
+                }.getOrElse {
+                    MockzillaHttpResponse(statusCode = HttpStatusCode.InternalServerError)
+                })
             }
         }
         return runBlocking { completer.await() }
     }
 
-    private fun callErrorHandler(request: MockzillaHttpRequest, key: String): MockzillaHttpResponse {
+    private fun callErrorHandler(
+        request: MockzillaHttpRequest,
+        key: String
+    ): MockzillaHttpResponse {
         val completer: CompletableDeferred<MockzillaHttpResponse> = CompletableDeferred()
         uiThreadHandler.post {
-            flutterApi.errorHandler(BridgeMockzillaHttpRequest.fromNative(request), key) {
-                completer.complete(it.getOrThrow().toNative())
+            flutterApi.errorHandler(
+                BridgeMockzillaHttpRequest.fromNative(request),
+                key
+            ) { bridgeResult ->
+                completer.complete(bridgeResult.map {
+                    it.toNative()
+                }.getOrElse {
+                    MockzillaHttpResponse(statusCode = HttpStatusCode.InternalServerError)
+                })
             }
         }
         return runBlocking { completer.await() }
