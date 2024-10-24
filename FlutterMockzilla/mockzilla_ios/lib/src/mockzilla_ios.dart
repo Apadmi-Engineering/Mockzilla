@@ -49,7 +49,7 @@ class CallbackProvider extends MockzillaFlutterApi {
   /// Calls the matcher on the specified endpoint.
   @override
   bool endpointMatcher(BridgeMockzillaHttpRequest request, String key) {
-    return _determineEndpoint(key).endpointMatcher(request.toDart()) ?? false;
+    return _determineEndpoint(key).endpointMatcher(request.toDart());
   }
 
   /// Returns the default response for the endpoint associated with [key].
