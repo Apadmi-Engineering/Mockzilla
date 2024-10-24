@@ -34,3 +34,5 @@ dev_dependencies:
     sdk: flutter
   pigeon: ^22.6.0
   flutter_lints: ^2.0.0
+  build_runner: ^2.4.13
+  mockito: ^5.4.4
