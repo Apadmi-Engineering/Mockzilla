@@ -70,15 +70,14 @@ fun BridgeMockzillaHttpRequest.Companion.fromNative(
     data: MockzillaHttpRequest
 ) = BridgeMockzillaHttpRequest(
     data.uri,
-    data.headers as Map<String?, String?>,
-    data.body,
+    data.headers,
+    data.bodyAsString(),
     BridgeHttpMethod.fromNative(data.method)
 )
 
 fun BridgeMockzillaHttpResponse.toNative() = MockzillaHttpResponse(
     HttpStatusCode.fromValue(this.statusCode.toInt()),
-    this.headers.filter { entry -> entry.key != null && entry.value != null } as? Map<String, String>
-        ?: emptyMap(),
+    this.headers,
     this.body,
 )
 
@@ -86,7 +85,7 @@ fun BridgeMockzillaHttpResponse.Companion.fromNative(
     data: MockzillaHttpResponse
 ) = BridgeMockzillaHttpResponse(
     data.statusCode.value.toLong(),
-    data.headers as Map<String?, String?>,
+    data.headers,
     data.body,
 )
 
@@ -104,8 +103,8 @@ fun BridgeDashboardOverridePreset.toNative() = DashboardOverridePreset(
 )
 
 fun BridgeDashboardOptionsConfig.toNative() = DashboardOptionsConfig(
-    successPresets = successPresets.mapNotNull { it?.toNative() },
-    errorPresets = errorPresets.mapNotNull { it?.toNative() }
+    successPresets = successPresets.map { it.toNative() },
+    errorPresets = errorPresets.map { it.toNative() }
 )
 
 fun BridgeDashboardOptionsConfig.Companion.fromNative(data: DashboardOptionsConfig) = BridgeDashboardOptionsConfig(
@@ -160,7 +159,7 @@ fun BridgeMockzillaConfig.toNative(
     errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
 ) = MockzillaConfig(
     this.port.toInt(),
-    this.endpoints.filterNotNull().map {
+    this.endpoints.map {
         it.toNative(endpointMatcher, defaultHandler, errorHandler)
     },
     this.isRelease,

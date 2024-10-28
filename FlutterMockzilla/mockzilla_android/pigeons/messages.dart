@@ -30,7 +30,7 @@ enum BridgeLogLevel {
 
 class BridgeMockzillaHttpRequest {
   final String uri;
-  final Map<String?, String?> headers;
+  final Map<String, String> headers;
   final String body;
   final BridgeHttpMethod method;
 
@@ -44,7 +44,7 @@ class BridgeMockzillaHttpRequest {
 
 class BridgeMockzillaHttpResponse {
   final int statusCode;
-  final Map<String?, String?> headers;
+  final Map<String, String> headers;
   final String body;
 
   const BridgeMockzillaHttpResponse([
@@ -67,8 +67,8 @@ class BridgeDashboardOverridePreset {
 }
 
 class BridgeDashboardOptionsConfig {
-  final List<BridgeDashboardOverridePreset?> successPresets;
-  final List<BridgeDashboardOverridePreset?> errorPresets;
+  final List<BridgeDashboardOverridePreset> successPresets;
+  final List<BridgeDashboardOverridePreset> errorPresets;
 
   const BridgeDashboardOptionsConfig({
     required this.successPresets,
@@ -108,7 +108,7 @@ class BridgeReleaseModeConfig {
 
 class BridgeMockzillaConfig {
   final int port;
-  final List<BridgeEndpointConfig?> endpoints;
+  final List<BridgeEndpointConfig> endpoints;
   final bool isRelease;
   final bool localHostOnly;
   final BridgeLogLevel logLevel;

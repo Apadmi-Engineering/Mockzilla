@@ -173,9 +173,9 @@ class BridgeUtilsTests: XCTestCase {
             
             let actualBridge = BridgeDashboardOptionsConfig.fromNative(native)
             XCTAssertEqual(actualBridge.successPresets.count, bridge.successPresets.count)
-            XCTAssertEqual(actualBridge.successPresets.first??.name, bridge.successPresets.first??.name)
+            XCTAssertEqual(actualBridge.successPresets.first?.name, bridge.successPresets.first?.name)
             XCTAssertEqual(actualBridge.errorPresets.count, bridge.errorPresets.count)
-            XCTAssertEqual(actualBridge.errorPresets.first??.name, bridge.errorPresets.first??.name)
+            XCTAssertEqual(actualBridge.errorPresets.first?.name, bridge.errorPresets.first?.name)
         }
     }
     
@@ -229,8 +229,8 @@ class BridgeUtilsTests: XCTestCase {
             XCTAssertEqual(actualBridge.shouldFail, bridge.shouldFail)
             XCTAssertEqual(actualBridge.delayMs, bridge.delayMs)
             XCTAssertEqual(actualBridge.versionCode, bridge.versionCode)
-            XCTAssertEqual(actualBridge.config.successPresets.first??.name, bridge.config.successPresets.first??.name)
-            XCTAssertEqual(actualBridge.config.errorPresets.first??.name, bridge.config.errorPresets.first??.name)
+            XCTAssertEqual(actualBridge.config.successPresets.first?.name, bridge.config.successPresets.first?.name)
+            XCTAssertEqual(actualBridge.config.errorPresets.first?.name, bridge.config.errorPresets.first?.name)
         }
     }
     
@@ -331,7 +331,7 @@ class BridgeUtilsTests: XCTestCase {
         
         // Verify from native to bridge
         XCTAssertEqual(actualBridge.port, bridge.port)
-        XCTAssertEqual(actualBridge.endpoints.first??.key, bridge.endpoints.first??.key)
+        XCTAssertEqual(actualBridge.endpoints.first?.key, bridge.endpoints.first?.key)
         XCTAssertEqual(actualBridge.isRelease, bridge.isRelease)
         XCTAssertEqual(actualBridge.localHostOnly, bridge.localHostOnly)
         XCTAssertEqual(actualBridge.logLevel, bridge.logLevel)

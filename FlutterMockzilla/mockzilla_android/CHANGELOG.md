@@ -1,3 +1,8 @@
+## 1.0.0-dev.1
+
+* Upgrades `pigeon` from `12.0.1` -> `22.6.0`.
+* Fixes an issue in the marshalling of request headers from bridge models to Dart.
+
 ## 1.0.0-dev.0
 
 * Updates underlying KMP library to 2.0.1.
