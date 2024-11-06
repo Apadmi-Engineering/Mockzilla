@@ -1,11 +1,12 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
 import com.apadmi.mockzilla.testutils.MockSelectorManager
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 internal class SocketIoTests {
     @Test
@@ -16,7 +17,8 @@ internal class SocketIoTests {
             val sut = SocketIo(mockSelectorManager)
 
             /* Run test & verify */
-            val actual = sut.isPortAvailable(8080)
+
+            val actual = sut.isPortAvailable(portFixture)
 
             /* Verify */
             assertEquals(true, actual)
@@ -34,10 +36,14 @@ internal class SocketIoTests {
             val sut = SocketIo(mockSelectorManager)
 
             /* Run test & verify */
-            val actual = sut.isPortAvailable(8080)
+            val actual = sut.isPortAvailable(portFixture)
 
             /* Verify */
             assertEquals(false, actual)
         }
+    }
+
+    companion object {
+        private val portFixture = 8080
     }
 }

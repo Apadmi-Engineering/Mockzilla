@@ -6,6 +6,10 @@ import io.ktor.network.selector.SelectorManager
 import java.nio.channels.spi.SelectorProvider
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * @property context
+ * @property whenBind
+ */
 internal actual class MockSelectorManager actual constructor(
     val context: CoroutineContext,
     val whenBind: () -> Unit
@@ -13,15 +17,11 @@ internal actual class MockSelectorManager actual constructor(
     override val provider: SelectorProvider
         get() {
             whenBind()
-            print("JVM provider requested")
             return SelectorProvider.provider()
         }
 
     override val coroutineContext: CoroutineContext
-        get() {
-            print("JVM coroutineContext requested")
-            return context
-        }
+        get() = context
 
     override fun close() {
         /* Intentionally blank. */
@@ -32,7 +32,6 @@ internal actual class MockSelectorManager actual constructor(
     }
 
     override suspend fun select(selectable: Selectable, interest: SelectInterest) {
-        print("JVM select executed")
         whenBind()
     }
 }
