@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.lib.internal.service.TokensService
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
+import com.apadmi.mockzilla.lib.models.PortConflictException
 import io.ktor.serialization.kotlinx.json.json
 
 import io.ktor.server.application.*
@@ -54,6 +55,7 @@ private fun Application.setupServerEnvironment(job: CompletableJob, di: Dependen
 
 internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     stopServer()
+    assertPortAvailability(port, di)
 
     val job = SupervisorJob().also { job = it }
     val serverEngine = embeddedServer(CIO, configure = {
@@ -64,7 +66,8 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
             this.port = port
             // Only allow localhost connections in release mode. This stops anyone on the network from
             // being able to hit the server.
-            this.host = if (di.config.isRelease || di.config.localhostOnly) "127.0.0.1" else "0.0.0.0"
+            this.host =
+                    if (di.config.isRelease || di.config.localhostOnly) "127.0.0.1" else "0.0.0.0"
         }
     }).apply {
         application.setupServerEnvironment(job = job, di = di)
@@ -92,6 +95,15 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
 internal fun stopServer() = runBlocking {
     job?.cancel()
     server?.stop()
+}
+
+internal suspend fun assertPortAvailability(port: Int, di: DependencyInjector) {
+    if (!di.socketIo.isPortAvailable(port)) {
+        PortConflictException(port).also { exception ->
+            di.logger.e(exception.message, exception)
+            throw exception
+        }
+    }
 }
 
 private fun startNetworkDiscoveryBroadcastIfNeeded(
