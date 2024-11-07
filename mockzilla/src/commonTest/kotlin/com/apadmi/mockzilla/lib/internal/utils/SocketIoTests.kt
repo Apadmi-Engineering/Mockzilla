@@ -29,6 +29,24 @@ internal class SocketIoTests {
     }
 
     @Test
+    fun `isPortAvailable - with random port flag - answers true`() = runTest {
+        runBlocking {
+            /* Setup */
+            val mockSocketBinder = MockSocketBinder {
+                throw IOException()
+            }
+            val sut = SocketIo(mockSocketBinder)
+
+            /* Run test & verify */
+
+            val actual = sut.isPortAvailable(0)
+
+            /* Verify */
+            assertEquals(true, actual)
+        }
+    }
+
+    @Test
     fun `isPortAvailable - upon bind failure - answers false`() = runTest {
         runBlocking {
             /* Setup */
