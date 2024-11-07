@@ -9,7 +9,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-private const val port = 8085
+private const val port = 8080
 
 private val getMyCow = EndpointConfiguration
     .Builder("cow")
