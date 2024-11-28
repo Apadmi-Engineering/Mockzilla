@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.0.1...mockzilla-common-v2.1.0) (2024-11-28)
+
+
+### Bug Fixes
+
+* **kmm:** Better handling of port conflicts ([42e0ee1](https://github.com/Apadmi-Engineering/Mockzilla/commit/42e0ee1dc2dd302136266eb1f4d1d30e52130e40))
+* Trigger deploy with updated dependencies ([b5200c6](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5200c6cff3e6c6e4ad258e4900e318831151444))
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v1.2.1-alpha2...mockzilla-common-v2.0.0) (2024-07-02)
 
 
