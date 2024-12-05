@@ -45,7 +45,8 @@ kotlin {
             baseName = "mockzilla"
         }
         license = "{:type => 'MIT', :file => 'LICENSE'}"
-        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => 'v$version' }"
+        // This is explicitly `getVersion()` and not `version`! The latter is shadowed in `cocoapods` scope.
+        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => 'v${project.version}' }"
         extraSpecAttributes["vendored_frameworks"] = "'Mockzilla.xcframework'"
         extraSpecAttributes["source_files"] = "'Sources/SwiftMockzilla/SwiftMockzilla.swift'"
         extraSpecAttributes["swift_version"] = "'5.9.2'"
