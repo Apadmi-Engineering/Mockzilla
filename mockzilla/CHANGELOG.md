@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.0...mockzilla-v2.1.1) (2024-12-05)
+
+
+### Bug Fixes
+
+* Remove 'kmm' from `mockzilla` + `mockzilla_common` changelog ([#273](https://github.com/Apadmi-Engineering/Mockzilla/issues/273)) ([261ef7c](https://github.com/Apadmi-Engineering/Mockzilla/commit/261ef7c140d892990b72533cde0094d52e7e53e5))
+
 ## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.0.1...mockzilla-v2.1.0) (2024-11-28)
 
 

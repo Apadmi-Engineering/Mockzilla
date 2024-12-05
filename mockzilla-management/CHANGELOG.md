@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-v2.1.0...mockzilla-management-v2.1.1) (2024-12-05)
+
+
+### Miscellaneous Chores
+
+* **mockzilla-management:** Synchronize Kmp libs versions
+
 ## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-v2.0.1...mockzilla-management-v2.1.0) (2024-11-28)
 
 
