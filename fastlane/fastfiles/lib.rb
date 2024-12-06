@@ -42,9 +42,22 @@ platform :ios do
             cd apadmi-mockzilla-ios;
             rm -rf ./*;
             cp -r #{lane_context[:repo_root]}/SwiftMockzilla/ .;
+
+            git add .;
+            git add --force mockzilla.xcframework;
+            git add --force SwiftMockzilla.podspec;
+            git commit -m "Updating Package #{get_version_name(options)}";
+            git push;
         })
 
         if !options[:is_snapshot]
+            sh(%{
+                cd apadmi-mockzilla-ios;
+                git push
+                git tag v#{get_version_name(options)}
+                git push --tags
+            })
+
             # Push podspec to trunk
             sh(%{
                 cd apadmi-mockzilla-ios
