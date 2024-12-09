@@ -188,3 +188,17 @@ class AuthHeader with _$AuthHeader {
 abstract class AuthHeaderProvider {
   Future<AuthHeader> generateHeader();
 }
+
+/// Thrown when attempting to start Mockzilla on a port currently occupied by
+/// another process. To resolve, either terminate the other process or choose a
+/// different port for the Mockzilla server.
+class MockzillaPortConflictException implements Exception {
+  final int port;
+
+  const MockzillaPortConflictException(this.port);
+
+  @override
+  String toString() =>
+      "Attempted to start Mockzilla server on a port that is already occupied "
+      "by another process ($port).";
+}
