@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.0...mockzilla-v2.1.1) (2024-12-05)
+
+
+### Bug Fixes
+
+* Remove 'kmm' from `mockzilla` + `mockzilla_common` changelog ([#273](https://github.com/Apadmi-Engineering/Mockzilla/issues/273)) ([261ef7c](https://github.com/Apadmi-Engineering/Mockzilla/commit/261ef7c140d892990b72533cde0094d52e7e53e5))
+
+## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.0.1...mockzilla-v2.1.0) (2024-11-28)
+
+
+### Features
+
+* remove previews and screenshot tests ([d14a059](https://github.com/Apadmi-Engineering/Mockzilla/commit/d14a0598c1aa1b1d4ef8949d9eae5714e1b70e35))
+
+
+### Bug Fixes
+
+* Better handling of port conflicts ([42e0ee1](https://github.com/Apadmi-Engineering/Mockzilla/commit/42e0ee1dc2dd302136266eb1f4d1d30e52130e40))
+* Trigger deploy with updated dependencies ([b5200c6](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5200c6cff3e6c6e4ad258e4900e318831151444))
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v1.2.1-alpha2...mockzilla-v2.0.0) (2024-07-02)
 
 

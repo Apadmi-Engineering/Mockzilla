@@ -5,16 +5,18 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.response.*
+import io.ktor.server.routing.RoutingCall
+import io.ktor.server.routing.RoutingContext
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
 
-internal suspend fun PipelineContext<Unit, ApplicationCall>.safeResponse(
+internal suspend fun RoutingContext.safeResponse(
     logger: Logger,
-    block: suspend (PipelineContext<Unit, ApplicationCall>) -> Unit,
+    block: suspend (RoutingCall) -> Unit,
 ) = try {
     this.call.response.headers.append("Connection", "close")
-    block(this)
+    block(call)
 } catch (e: Exception) {
     logger.e("Unexpected exception", e)
 
@@ -27,17 +29,4 @@ internal suspend fun PipelineContext<Unit, ApplicationCall>.safeResponse(
         )
     }
     Unit
-}
-
-internal fun environment(
-    port: Int,
-    host: String,
-    module: Application.() -> Unit
-) = applicationEngineEnvironment {
-    connector {
-        this.port = port
-        this.host = host
-    }
-
-    module(module)
 }

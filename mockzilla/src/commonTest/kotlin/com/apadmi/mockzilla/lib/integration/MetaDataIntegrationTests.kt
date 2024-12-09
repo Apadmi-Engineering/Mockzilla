@@ -46,12 +46,12 @@ class MetaDataIntegrationTests {
 
         /* Verify */
         assertEquals(
-            JsonProvider.json.encodeToString(metaData),
-            response.bodyAsText()
-        )
-        assertEquals(
             HttpStatusCode.OK,
             response.status
+        )
+        assertEquals(
+            JsonProvider.json.encodeToString(metaData),
+            response.bodyAsText()
         )
     }
 }

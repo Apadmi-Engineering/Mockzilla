@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: "gradle" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
     groups:
       kotlin:
         applies-to: version-updates
@@ -20,10 +20,21 @@ updates:
         applies-to: version-updates
         patterns:
           - "compose*"
+      patches:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
         interval: "weekly"
+    groups:
+      all-github:
+        applies-to: version-updates
+        patterns:
+          - "*"
   - package-ecosystem: 'bundler'
     directory: '/'
     schedule:
@@ -38,4 +49,4 @@ updates:
   - package-ecosystem: 'pub'
     directory: '/FlutterMockzilla'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'

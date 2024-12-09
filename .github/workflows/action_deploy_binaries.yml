@@ -4,11 +4,15 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - release-please--branches--develop--components--release-please-action
+      - release-please--branches--develop--groups--Kmp-libs
     tags:
       - mockzilla-v**
 env:
   is_snapshot: ${{ github.ref_type == 'branch' }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_type }}
+  cancel-in-progress: false
 
 jobs:
   deploy:

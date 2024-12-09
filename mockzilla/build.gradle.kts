@@ -21,7 +21,7 @@ kotlin {
     }
 
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "2.0.1" // x-release-please-version
+    version = project.injectedVersion() ?: "2.1.1" // x-release-please-version
 
     val xcf = XCFramework()
     listOf(
@@ -45,7 +45,8 @@ kotlin {
             baseName = "mockzilla"
         }
         license = "{:type => 'MIT', :file => 'LICENSE'}"
-        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => 'v$version' }"
+        // This is explicitly `getVersion()` and not `version`! The latter is shadowed in `cocoapods` scope.
+        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzilla.git', :tag => 'v${project.version}' }"
         extraSpecAttributes["vendored_frameworks"] = "'Mockzilla.xcframework'"
         extraSpecAttributes["source_files"] = "'Sources/SwiftMockzilla/SwiftMockzilla.swift'"
         extraSpecAttributes["swift_version"] = "'5.9.2'"
@@ -89,7 +90,6 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
 
-            implementation(libs.mockative)
             implementation(libs.kotlinx.coroutines.test)
         }
     }
@@ -120,19 +120,6 @@ buildkonfig {
         buildConfigField(STRING, "VERSION_NAME", version.toString())
     }
 }
-
-ksp {
-    arg("mockative.stubsUnitByDefault", "true")
-}
-
-dependencies {
-    configurations
-        .filter { it.name.startsWith("ksp") && it.name.contains("Test") }
-        .forEach {
-            add(it.name, libs.mockative.processor)
-        }
-}
-
 private val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
     from(tasks.dokkaHtml)

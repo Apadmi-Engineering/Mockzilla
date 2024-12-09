@@ -1,19 +1,15 @@
 package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
-import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
-import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.testutils.TestMockzillaHttpRequest
+import com.apadmi.mockzilla.testutils.fakes.FakeLocalCacheService
+import com.apadmi.mockzilla.testutils.fakes.FakeMockServerMonitor
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
 import io.ktor.http.*
-import io.mockative.Mock
-import io.mockative.classOf
-import io.mockative.coEvery
-import io.mockative.mock
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,11 +17,6 @@ import kotlinx.coroutines.test.runTest
 
 @Suppress("MAGIC_NUMBER", "TOO_LONG_FUNCTION")
 class LocalMockControllerTests {
-    @Mock
-    private val localCacheServiceMock = mock(classOf<LocalCacheService>())
-
-    @Mock
-    private val mockServerMonitorMock = mock(classOf<MockServerMonitor>())
     private val dummyEndpoints = listOf(
         EndpointConfiguration.Builder("my-id")
             .setPatternMatcher { uri.endsWith("my-id") }
@@ -42,12 +33,11 @@ class LocalMockControllerTests {
     fun `GET response - no caches - 0 failure probability - succeeds`() = runTest {
         /* Setup */
         val sut = LocalMockController(
-            localCacheServiceMock,
-            mockServerMonitorMock,
+            FakeLocalCacheService(null),
+            FakeMockServerMonitor(),
             dummyEndpoints,
             Logger(StaticConfig())
         )
-        coEvery { localCacheServiceMock.getLocalCache(EndpointConfiguration.Key("my-id")) }.returns(null)
 
         /* Run Test */
         val response = sut.handleRequest(
@@ -71,26 +61,25 @@ class LocalMockControllerTests {
     @Test
     fun `GET response - shouldFail=true cached - fails`() = runTest {
         /* Setup */
+        val localCacheValue = SerializableEndpointConfig(
+            key = EndpointConfiguration.Key("my-id"),
+            name = "my-id",
+            versionCode = 0,
+            shouldFail = true,
+            delayMs = 0,
+            defaultHeaders = emptyMap(),
+            defaultBody = "",
+            defaultStatus = HttpStatusCode.OK,
+            errorBody = "",
+            errorHeaders = emptyMap(),
+            errorStatus = HttpStatusCode.InternalServerError,
+        )
+
         val sut = LocalMockController(
-            localCacheServiceMock,
-            mockServerMonitorMock,
+            FakeLocalCacheService(mapOf(localCacheValue.key to localCacheValue)),
+            FakeMockServerMonitor(),
             dummyEndpoints,
             Logger(StaticConfig())
-        )
-        coEvery { localCacheServiceMock.getLocalCache(EndpointConfiguration.Key("my-id")) }.returns(
-            SerializableEndpointConfig(
-                key = EndpointConfiguration.Key("my-id"),
-                name = "my-id",
-                versionCode = 0,
-                shouldFail = true,
-                delayMs = 0,
-                defaultHeaders = emptyMap(),
-                defaultBody = "",
-                defaultStatus = HttpStatusCode.OK,
-                errorBody = "",
-                errorHeaders = emptyMap(),
-                errorStatus = HttpStatusCode.InternalServerError,
-            )
         )
 
         /* Run Test */

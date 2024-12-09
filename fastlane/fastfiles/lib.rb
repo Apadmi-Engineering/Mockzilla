@@ -32,7 +32,7 @@ platform :ios do
         sh("rm -rf apadmi-mockzilla-ios")
 
 
-        if options[:is_snapshot]
+        if !options[:is_snapshot]
             sh("git clone #{ENV["IOS_DEPLOY_URL"]} apadmi-mockzilla-ios")
         else
             sh("git clone -b deployment/snapshot #{ENV["IOS_DEPLOY_URL"]} apadmi-mockzilla-ios")

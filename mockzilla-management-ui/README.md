@@ -7,7 +7,7 @@
 Use the following command to run the desktop app.
 
 ```bash
-./gradlew mockzilla-management-ui:desktop:run
+./gradlew mockzilla-management-ui:run
 ```
 
 You'll need to run Mockzilla on a device in order to have test data to drive the desktop UI.
