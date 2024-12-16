@@ -4,7 +4,7 @@
 adam = "0.5.8" # https://github.com/Malinskiy/adam
 jmdns = "3.5.12" # https://github.com/jmdns/jmdns
 kotlin = "2.1.0" # https://github.com/JetBrains/kotlin
-agp = "8.7.2" # https://developer.android.com/build/releases/gradle-plugin
+agp = "8.7.3" # https://developer.android.com/build/releases/gradle-plugin
 ksp = "2.1.0-1.0.29" # https://github.com/google/ksp
 
 # Logging
@@ -20,7 +20,7 @@ dokka = "1.9.20" # https://github.com/Kotlin/dokka
 lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "3.0.1" # https://github.com/ktorio/ktor
+ktor = "3.0.2" # https://github.com/ktorio/ktor
 
 # Compose
 compose = "1.7.0" # https://github.com/JetBrains/compose-multiplatform
