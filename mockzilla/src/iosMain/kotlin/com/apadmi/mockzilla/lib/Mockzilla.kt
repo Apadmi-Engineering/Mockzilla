@@ -7,12 +7,14 @@ import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.extractMetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
+import com.apadmi.mockzilla.lib.models.PortConflictException
 
 /**
  * Starts the Mockzilla server,
  *
  * @param config The config with which to initialise mockzilla.
  */
+@Throws(PortConflictException::class)
 fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams {
     config.validateInfoPlistOrThrow()
 
