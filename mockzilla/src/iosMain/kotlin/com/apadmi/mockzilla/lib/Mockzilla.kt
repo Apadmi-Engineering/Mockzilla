@@ -10,7 +10,8 @@ import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.models.PortConflictException
 
 /**
- * Starts the Mockzilla server,
+ * Internal method to start the Mockzilla server. Consumer apps should prefer using the top-level
+ * `startMockzilla()` function to avoid breaking changes.
  *
  * @param config The config with which to initialise mockzilla.
  */

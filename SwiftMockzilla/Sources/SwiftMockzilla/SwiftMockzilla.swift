@@ -12,9 +12,19 @@ public typealias EndpointConfigurationBuilder = Mockzilla_commonEndpointConfigur
 public typealias AuthHeaderProvider = Mockzilla_commonAuthHeaderProvider
 public typealias ReleaseModeConfig = Mockzilla_commonMockzillaConfig.ReleaseModeConfig
 public typealias MockzillaLogWriter = Mockzilla_commonMockzillaLogWriter
+public typealias MockzillaPortConflictException = Mockzilla_commonPortConflictException
+public typealias Mockzilla = MockzillaKt
 
 public func startMockzilla(config mockzillaConfig: MockzillaConfig) -> MockzillaRuntimeParams {
-    MockzillaKt.startMockzilla(config: mockzillaConfig)
+    do {
+        return try MockzillaKt.startMockzilla(config: mockzillaConfig)
+    } catch {
+#if DEBUG
+        fatalError("Error starting Mockzilla server. \n\(error)")
+#else
+        fatalError("Error starting Mockzilla server.")
+#endif
+    }
 }
 
 public func stopMockzilla() {
