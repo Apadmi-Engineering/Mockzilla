@@ -1,7 +1,5 @@
 PODS:
   - Flutter (1.0.0)
-  - integration_test (0.0.1):
-    - Flutter
   - mockzilla_ios (0.0.1):
     - Flutter
     - SwiftMockzilla (= 1.2.1-alpha2)
@@ -9,7 +7,6 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - mockzilla_ios (from `.symlinks/plugins/mockzilla_ios/ios`)
 
 SPEC REPOS:
@@ -19,17 +16,14 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  integration_test:
-    :path: ".symlinks/plugins/integration_test/ios"
   mockzilla_ios:
     :path: ".symlinks/plugins/mockzilla_ios/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  mockzilla_ios: 861ff8ca56d2e1c3d5441061438d58114a713811
+  mockzilla_ios: 4cad37dc4b231ab86edf4164c634d49240a4f78d
   SwiftMockzilla: 2060ecb438431487b38afad14629211cf3c24713
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
