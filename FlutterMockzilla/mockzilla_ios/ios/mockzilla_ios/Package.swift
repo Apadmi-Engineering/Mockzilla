@@ -18,7 +18,7 @@ let package = Package(
     targets: [
         .target(
             name: "mockzilla_ios",
-            dependencies: [],
+            dependencies: ["SwiftMockzilla"],
             resources: []
         )
     ]
