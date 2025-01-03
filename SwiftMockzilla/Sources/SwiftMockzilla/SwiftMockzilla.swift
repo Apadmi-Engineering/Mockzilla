@@ -14,7 +14,11 @@ public typealias ReleaseModeConfig = Mockzilla_commonMockzillaConfig.ReleaseMode
 public typealias MockzillaLogWriter = Mockzilla_commonMockzillaLogWriter
 
 public func startMockzilla(config mockzillaConfig: MockzillaConfig) -> MockzillaRuntimeParams {
-    MockzillaKt.startMockzilla(config: mockzillaConfig)
+    do {
+        return try MockzillaKt.startMockzilla(config: mockzillaConfig)
+    } catch {
+        fatalError("Failed to start Mockzilla server: \n\(error)")
+    }
 }
 
 public func stopMockzilla() {
