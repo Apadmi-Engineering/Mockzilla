@@ -4,15 +4,18 @@
   "packages": {
     "mockzilla": {
       "component": "mockzilla",
-      "extra-files": ["build.gradle.kts"]
+      "extra-files": ["build.gradle.kts"],
+      "pull-request-title-pattern": "chore(${branch?}): release Kmp libs libraries"
     },
     "mockzilla-common": {
       "component": "mockzilla-common",
-      "extra-files": ["build.gradle.kts"]
+      "extra-files": ["build.gradle.kts"],
+      "pull-request-title-pattern": "chore(${branch?}): release Kmp libs libraries"
     },
     "mockzilla-management": {
       "component": "mockzilla-management",
-      "extra-files": ["build.gradle.kts"]
+      "extra-files": ["build.gradle.kts"],
+      "pull-request-title-pattern": "chore(${branch?}): release Kmp libs libraries"
     },
     "FlutterMockzilla/mockzilla": {
       "component": "flutter_mockzilla",
