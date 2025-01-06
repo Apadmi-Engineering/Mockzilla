@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:mockzilla_ios/src/api_utils.dart';
 import 'package:mockzilla_ios/src/messages.g.dart';
 import 'package:mockzilla_ios/src/model/mockzilla_error.dart';
@@ -14,7 +15,14 @@ class MockzillaIos extends MockzillaPlatform {
           Future.value(const AuthHeader(key: "Authorization", value: "Bearer")),
     );
     MockzillaFlutterApi.setUp(callbackProvider);
-    return mockzillaHostBridge.startServer(config.toBridge());
+    try {
+      return mockzillaHostBridge.startServer(config.toBridge());
+    } on PlatformException catch (exception) {
+      if (exception.code == "PortConflictException") {
+        throw MockzillaPortConflictException(config.port);
+      }
+      rethrow;
+    }
   }
 
   @override
