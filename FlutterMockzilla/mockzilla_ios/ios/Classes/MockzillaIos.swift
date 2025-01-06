@@ -91,8 +91,14 @@ class MockzillaIos: Thread, MockzillaHostApi {
                 }
             }
         )
-        let params = startMockzilla(config: nativeConfig)
-        return try BridgeMockzillaRuntimeParams.fromNative(params)
+        do {
+            let params = try MockzillaKt.startMockzilla(config: nativeConfig)
+            return try BridgeMockzillaRuntimeParams.fromNative(params)
+        } catch let error as NSError where error.userInfo["KotlinException"] is Mockzilla_commonPortConflictException {
+            throw PigeonError(code: "PortConflictException", message: nil, details: nil)
+        } catch {
+            throw error
+        }
     }
 
     func stopServer() throws {
