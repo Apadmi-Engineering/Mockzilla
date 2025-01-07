@@ -8,7 +8,7 @@ class MockzillaIos extends MockzillaPlatform {
   final mockzillaHostBridge = MockzillaHostApi();
 
   @override
-  Future<void> startMockzilla(MockzillaConfig config) {
+  Future<void> startMockzilla(MockzillaConfig config) async {
     final callbackProvider = CallbackProvider(
       config.endpoints,
       () =>
@@ -16,7 +16,7 @@ class MockzillaIos extends MockzillaPlatform {
     );
     MockzillaFlutterApi.setUp(callbackProvider);
     try {
-      return mockzillaHostBridge.startServer(config.toBridge());
+      await mockzillaHostBridge.startServer(config.toBridge());
     } on PlatformException catch (exception) {
       if (exception.code == "PortConflictException") {
         throw MockzillaPortConflictException(config.port);
