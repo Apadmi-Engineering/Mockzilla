@@ -23,10 +23,10 @@ enum LogLevel {
   assertion;
 }
 
+/// A representation of a request to the Mockzilla server; this is passed to
+/// an endpoint handler in order to generate an appropriate response.
 @freezed
 class MockzillaHttpRequest with _$MockzillaHttpRequest {
-  /// A representation of a request to the Mockzilla server; this is passed to
-  /// an endpoint handler in order to generate an appropriate response.
   const factory MockzillaHttpRequest({
     required String uri,
     @Default({}) Map<String, String> headers,
@@ -35,13 +35,14 @@ class MockzillaHttpRequest with _$MockzillaHttpRequest {
   }) = _MockzillaHttpRequest;
 }
 
+/// Created and returned by an endpoint handler in response to an incoming
+/// HTTP request.
 @freezed
 class MockzillaHttpResponse with _$MockzillaHttpResponse {
-  /// Created and returned by an endpoint handler in response to an incoming
-  /// HTTP request.
   const factory MockzillaHttpResponse({
     /// The HTTP status to use for the response, defaults to 200 - OK.
     @Default(HttpStatus.ok) int statusCode,
+
     /// The response headers, defaults a single `Content-Type` header with a
     /// value of `application/json`.
     @Default({"Content-Type": "application/json"}) Map<String, String> headers,
@@ -49,10 +50,10 @@ class MockzillaHttpResponse with _$MockzillaHttpResponse {
   }) = _MockzillaHttpResponse;
 }
 
+/// Definition for a preset response that can be selected in the desktop
+/// management app.
 @freezed
 class DashboardOverridePreset with _$DashboardOverridePreset {
-  /// Definition for a preset response that can be selected in the desktop
-  /// management app.
   const factory DashboardOverridePreset({
     required String name,
     required String? description,
@@ -60,25 +61,25 @@ class DashboardOverridePreset with _$DashboardOverridePreset {
   }) = _DashboardOverridePreset;
 }
 
+/// A collection of preset responses from an endpoint that can be selected in
+/// the desktop management app.
 @freezed
 class DashboardOptionsConfig with _$DashboardOptionsConfig {
-  /// A collection of preset responses from an endpoint that can be selected in
-  /// the desktop management app.
   const factory DashboardOptionsConfig({
     @Default([]) List<DashboardOverridePreset> successPresets,
     @Default([]) List<DashboardOverridePreset> errorPresets,
-}) = _DashboardOptionsConfig;
+  }) = _DashboardOptionsConfig;
 }
 
+/// Configuration for an endpoint including how requests should be handled
+/// and desktop app presets.
+///
+/// Please see [https://apadmi-engineering.github.io/Mockzilla/endpoints/]()
+/// for more information.
 @freezed
 class EndpointConfig with _$EndpointConfig {
   const EndpointConfig._();
 
-  /// Configuration for an endpoint including how requests should be handled
-  /// and desktop app presets.
-  ///
-  /// Please see [https://apadmi-engineering.github.io/Mockzilla/endpoints/]()
-  /// for more information.
   const factory EndpointConfig({
     required String name,
 
@@ -104,7 +105,8 @@ class EndpointConfig with _$EndpointConfig {
 
     /// Optional, configures the preset responses for the endpoint in the
     /// Mockzilla dashboard.
-    @Default(DashboardOptionsConfig()) DashboardOptionsConfig dashboardOptionsConfig,
+    @Default(DashboardOptionsConfig())
+    DashboardOptionsConfig dashboardOptionsConfig,
 
     /// This function is called when a network request is made to this endpoint,
     /// note that if an error is being returned due to [shouldFail] then
@@ -154,4 +156,18 @@ class MockzillaRuntimeParams with _$MockzillaRuntimeParams {
     required String apiBaseUrl,
     required int port,
   }) = _MockzillaRuntimeParams;
+}
+
+/// Thrown when attempting to start Mockzilla on a port currently occupied by
+/// another process. To resolve, either terminate the other process or choose a
+/// different port for the Mockzilla server.
+class MockzillaPortConflictException implements Exception {
+  final int port;
+
+  const MockzillaPortConflictException(this.port);
+
+  @override
+  String toString() =>
+      "Attempted to start Mockzilla server on a port that is already occupied "
+          "by another process ($port).";
 }

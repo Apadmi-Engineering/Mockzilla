@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:flutter/services.dart';
 import 'package:mockzilla_ios/src/api_utils.dart';
 import 'package:mockzilla_ios/src/messages.g.dart';
 import 'package:mockzilla_ios/src/model/mockzilla_error.dart';
@@ -13,16 +14,24 @@ class MockzillaIos extends MockzillaPlatform {
       config.endpoints,
     );
     MockzillaFlutterApi.setUp(callbackProvider);
-    final bridgeParams = await mockzillaHostBridge.startServer(config.toBridge());
-    /// As an alternative, we could use the endpoints in `config`, however
-    /// using `callbackProvider` means that the returned runtime params and
-    /// server will be consistent in using the cached endpoints. This will make
-    /// debugging much easier.
-    return bridgeParams.toDart(
-        endpointMatcher: callbackProvider.flutterEndpointMatcher,
-        defaultHandler: callbackProvider.flutterDefaultHandler,
-        errorHandler: callbackProvider.flutterErrorHandler
-    );
+    try {
+      final bridgeParams =
+          await mockzillaHostBridge.startServer(config.toBridge());
+
+      /// As an alternative, we could use the endpoints in `config`, however
+      /// using `callbackProvider` means that the returned runtime params and
+      /// server will be consistent in using the cached endpoints. This will make
+      /// debugging much easier.
+      return bridgeParams.toDart(
+          endpointMatcher: callbackProvider.flutterEndpointMatcher,
+          defaultHandler: callbackProvider.flutterDefaultHandler,
+          errorHandler: callbackProvider.flutterErrorHandler);
+    } on PlatformException catch (exception) {
+      if (exception.code == "PortConflictException") {
+        throw MockzillaPortConflictException(config.port);
+      }
+      rethrow;
+    }
   }
 
   @override
@@ -90,11 +99,13 @@ extension FlutterCallbackProvider on CallbackProvider {
     return endpointMatcher(request.toBridge(), key);
   }
 
-  MockzillaHttpResponse flutterDefaultHandler(MockzillaHttpRequest request, String key) {
+  MockzillaHttpResponse flutterDefaultHandler(
+      MockzillaHttpRequest request, String key) {
     return defaultHandler(request.toBridge(), key).toDart();
   }
 
-  MockzillaHttpResponse flutterErrorHandler(MockzillaHttpRequest request, String key) {
+  MockzillaHttpResponse flutterErrorHandler(
+      MockzillaHttpRequest request, String key) {
     return errorHandler(request.toBridge(), key).toDart();
   }
 }
