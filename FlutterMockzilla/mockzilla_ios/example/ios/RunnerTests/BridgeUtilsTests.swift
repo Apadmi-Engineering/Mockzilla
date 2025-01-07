@@ -46,7 +46,7 @@ class BridgeUtilsTests: XCTestCase {
         }
     }
     
-    func testMockzilaHttpResponseMarshalling() throws {
+    func testMockzillaHttpResponseMarshalling() throws {
         let nativeToBridge = [
             MockzillaHttpResponse(
                 status: HttpStatusCode.OK,
@@ -234,34 +234,6 @@ class BridgeUtilsTests: XCTestCase {
         }
     }
     
-    func testBridgeReleaseModeConfigMarshalling() throws {
-        let nativeToBridge = [
-            MockzillaConfig.ReleaseModeConfig(
-                rateLimit: 500,
-                rateLimitRefillPeriod: 7200,
-                tokenLifeSpan: 3600
-            ): BridgeReleaseModeConfig(
-                rateLimit: 500,
-                rateLimitRefillPeriodMillis: 7200,
-                tokenLifeSpanMillis: 3600
-            )
-        ]
-        
-        nativeToBridge.forEach { (native, bridge) in
-            // From bridge to native
-            let actualNative = bridge.toNative()
-            XCTAssertEqual(actualNative.rateLimit, native.rateLimit)
-            XCTAssertEqual(actualNative.rateLimitRefillPeriod, native.rateLimitRefillPeriod)
-            XCTAssertEqual(actualNative.tokenLifeSpan, native.tokenLifeSpan)
-            
-            // From native to bridge
-            let actualBridge = BridgeReleaseModeConfig.fromNative(native)
-            XCTAssertEqual(actualBridge.rateLimit, bridge.rateLimit)
-            XCTAssertEqual(actualBridge.rateLimitRefillPeriodMillis, bridge.rateLimitRefillPeriodMillis)
-            XCTAssertEqual(actualBridge.tokenLifeSpanMillis, bridge.tokenLifeSpanMillis)
-        }
-    }
-    
     func testMockzillaConfigMarshalling() throws {
         let native = MockzillaConfig(
             port: 8080,
@@ -282,9 +254,9 @@ class BridgeUtilsTests: XCTestCase {
             localhostOnly: false,
             logLevel: MockzillaConfig.LogLevel.debug,
             releaseModeConfig: MockzillaConfig.ReleaseModeConfig(
-                rateLimit: 500,
-                rateLimitRefillPeriod: 3600,
-                tokenLifeSpan: 7200
+                rateLimit: 60,
+                rateLimitRefillPeriod: 60_000,
+                tokenLifeSpan: 500
             ),
             isNetworkDiscoveryEnabled: false,
             additionalLogWriters: []
@@ -302,14 +274,8 @@ class BridgeUtilsTests: XCTestCase {
                     config: BridgeDashboardOptionsConfig(successPresets: [], errorPresets: [])
                 )
             ],
-            isRelease: false,
             localHostOnly: false,
             logLevel: BridgeLogLevel.debug,
-            releaseModeConfig: BridgeReleaseModeConfig(
-                rateLimit: 500,
-                rateLimitRefillPeriodMillis: 3600,
-                tokenLifeSpanMillis: 7200
-            ),
             isNetworkDiscoveryEnabled: false
         )
         
@@ -332,9 +298,7 @@ class BridgeUtilsTests: XCTestCase {
         // Verify from native to bridge
         XCTAssertEqual(actualBridge.port, bridge.port)
         XCTAssertEqual(actualBridge.endpoints.first?.key, bridge.endpoints.first?.key)
-        XCTAssertEqual(actualBridge.isRelease, bridge.isRelease)
         XCTAssertEqual(actualBridge.localHostOnly, bridge.localHostOnly)
         XCTAssertEqual(actualBridge.logLevel, bridge.logLevel)
-        XCTAssertEqual(actualBridge.releaseModeConfig.rateLimit, bridge.releaseModeConfig.rateLimit)
     }
 }

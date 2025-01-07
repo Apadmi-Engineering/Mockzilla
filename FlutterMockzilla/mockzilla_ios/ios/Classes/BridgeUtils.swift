@@ -168,24 +168,6 @@ extension BridgeEndpointConfig {
     }
 }
 
-extension BridgeReleaseModeConfig {
-    func toNative() -> MockzillaConfig.ReleaseModeConfig {
-        return MockzillaConfig.ReleaseModeConfig(
-            rateLimit: Int32(rateLimit),
-            rateLimitRefillPeriod: rateLimitRefillPeriodMillis,
-            tokenLifeSpan: tokenLifeSpanMillis
-        )
-    }
-    
-    static func fromNative(_ config: MockzillaConfig.ReleaseModeConfig) -> BridgeReleaseModeConfig {
-        return BridgeReleaseModeConfig(
-            rateLimit: Int64(config.rateLimit),
-            rateLimitRefillPeriodMillis: config.rateLimitRefillPeriod,
-            tokenLifeSpanMillis: config.tokenLifeSpan
-        )
-    }
-}
-
 extension BridgeMockzillaConfig {
     func toNative(
         endpointMatcher: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> Bool,
@@ -197,9 +179,13 @@ extension BridgeMockzillaConfig {
             endpoints: endpoints.map {
                 endpoint in endpoint.toNative(endpointMatcher: endpointMatcher, defaultHandler: defaultHandler, errorHandler: errorHandler)
             } as! Array<EndpointConfiguration>,
-            isRelease: isRelease,
+            isRelease: false,
             localhostOnly: false, logLevel: logLevel.toNative(),
-            releaseModeConfig: releaseModeConfig.toNative(),
+            releaseModeConfig: ReleaseModeConfig(
+                rateLimit: 60,
+                rateLimitRefillPeriod: 60_000,
+                tokenLifeSpan: 500
+            ),
             isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
             additionalLogWriters: []
         )
@@ -211,10 +197,8 @@ extension BridgeMockzillaConfig {
             endpoints: config.endpoints.map {
                 endpoint in BridgeEndpointConfig.fromNative(endpoint)
             },
-            isRelease: config.isRelease,
             localHostOnly: config.isRelease,
             logLevel: try BridgeLogLevel.fromNative(config.logLevel),
-            releaseModeConfig: BridgeReleaseModeConfig.fromNative(config.releaseModeConfig),
             isNetworkDiscoveryEnabled: config.isNetworkDiscoveryEnabled
         )
     }
