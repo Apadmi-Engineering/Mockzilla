@@ -77,12 +77,8 @@ extension DashboardOverridePresetBridge on DashboardOverridePreset {
 
 extension BridgeDashboardOverrideConfigBridge on BridgeDashboardOptionsConfig {
   DashboardOptionsConfig toDart() => DashboardOptionsConfig(
-        successPresets: successPresets
-            .map((it) => it.toDart())
-            .toList(),
-        errorPresets: errorPresets
-            .map((it) => it.toDart())
-            .toList(),
+        successPresets: successPresets.map((it) => it.toDart()).toList(),
+        errorPresets: errorPresets.map((it) => it.toDart()).toList(),
       );
 }
 
@@ -123,37 +119,6 @@ extension EndpointConfigBridge on EndpointConfig {
       );
 }
 
-extension BridgeReleaseModeConfigBridge on BridgeReleaseModeConfig {
-  ReleaseModeConfig toDart() => ReleaseModeConfig(
-        rateLimit: rateLimit,
-        rateLimitRefillPeriod:
-            Duration(milliseconds: rateLimitRefillPeriodMillis),
-        tokenLifeSpan: Duration(milliseconds: tokenLifeSpanMillis),
-      );
-}
-
-extension ReleaseModeConfigBridge on ReleaseModeConfig {
-  BridgeReleaseModeConfig toBridge() => BridgeReleaseModeConfig(
-        rateLimit: rateLimit,
-        rateLimitRefillPeriodMillis: rateLimitRefillPeriod.inMilliseconds,
-        tokenLifeSpanMillis: tokenLifeSpan.inMilliseconds,
-      );
-}
-
-extension BridgeAuthHeaderBridge on BridgeAuthHeader {
-  AuthHeader toDart() => AuthHeader(
-        key: key,
-        value: value,
-      );
-}
-
-extension AuthHeaderBridge on AuthHeader {
-  BridgeAuthHeader toBridge() => BridgeAuthHeader(
-        key: key,
-        value: value,
-      );
-}
-
 extension MockzillaConfigBridge on MockzillaConfig {
   BridgeMockzillaConfig toBridge() => BridgeMockzillaConfig(
         port: port,
@@ -162,34 +127,59 @@ extension MockzillaConfigBridge on MockzillaConfig {
               (endpoint) => endpoint.toBridge(),
             )
             .toList(),
-        isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toBridge(),
-        releaseModeConfig: releaseModeConfig.toBridge(),
         isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
       );
 }
 
 extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
-  MockzillaConfig toDart(
-    bool Function(MockzillaHttpRequest request) endpointMatcher,
-    MockzillaHttpResponse Function(MockzillaHttpRequest request) defaultHandler,
-    MockzillaHttpResponse Function(MockzillaHttpRequest request) errorHandler,
-  ) =>
+  MockzillaConfig toDart({
+    required bool Function(MockzillaHttpRequest request, String key)
+        endpointMatcher,
+    required MockzillaHttpResponse Function(
+            MockzillaHttpRequest request, String key)
+        defaultHandler,
+    required MockzillaHttpResponse Function(
+            MockzillaHttpRequest request, String key)
+        errorHandler,
+  }) =>
       MockzillaConfig(
         port: port,
         endpoints: endpoints
             .map(
               (endpoint) => endpoint.toDart(
-                endpointMatcher,
-                defaultHandler,
-                errorHandler,
+                (request) => endpointMatcher(request, endpoint.key),
+                (request) => defaultHandler(request, endpoint.key),
+                (request) => errorHandler(request, endpoint.key),
               ),
             )
             .toList(),
-        isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toDart(),
         isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
+      );
+}
+
+extension BridgeMockzillaRuntimeParamsBridge on BridgeMockzillaRuntimeParams {
+  MockzillaRuntimeParams toDart({
+    required bool Function(MockzillaHttpRequest request, String key)
+        endpointMatcher,
+    required MockzillaHttpResponse Function(
+            MockzillaHttpRequest request, String key)
+        defaultHandler,
+    required MockzillaHttpResponse Function(
+            MockzillaHttpRequest request, String key)
+        errorHandler,
+  }) =>
+      MockzillaRuntimeParams(
+        config: config.toDart(
+          endpointMatcher: endpointMatcher,
+          defaultHandler: defaultHandler,
+          errorHandler: errorHandler,
+        ),
+        mockBaseUrl: mockBaseUrl,
+        apiBaseUrl: apiBaseUrl,
+        port: port,
       );
 }
