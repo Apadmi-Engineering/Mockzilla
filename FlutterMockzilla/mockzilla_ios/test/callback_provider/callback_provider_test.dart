@@ -25,7 +25,6 @@ void main() {
       reset(mockEndpoint);
       sut = CallbackProvider(
         [mockEndpoint],
-        () async => const AuthHeader(key: "Authorization", value: "Bearer"),
       );
     });
 
@@ -111,6 +110,94 @@ void main() {
       // Run test & verify
       expect(
         () => sut.errorHandler(_bridgeRequestFixture, "unknown"),
+        throwsA(isA<EndpointNotFoundError>()),
+      );
+    });
+
+    test(
+        "flutterEndpointMatcher - with known, matching endpoint - returns true",
+        () {
+      // Setup
+      when(mockEndpoint.key).thenReturn("key");
+      when(mockEndpoint.endpointMatcher).thenReturn((_) => true);
+
+      // Run test
+      final result = sut.flutterEndpointMatcher(_requestFixture, "key");
+
+      // Verify
+      expect(result, true);
+    });
+
+    test(
+        "flutterEndpointMatcher - with known, non-matching endpoint - returns false",
+        () {
+      // Setup
+      when(mockEndpoint.key).thenReturn("key");
+      when(mockEndpoint.endpointMatcher).thenReturn((_) => false);
+
+      // Run test
+      final result = sut.flutterEndpointMatcher(_requestFixture, "key");
+
+      // Verify
+      expect(result, false);
+    });
+
+    test("flutterEndpointMatcher - with unknown endpoint - throws", () {
+      // Setup
+      when(mockEndpoint.key).thenReturn("key");
+      when(mockEndpoint.endpointMatcher).thenReturn((_) => true);
+
+      // Run test & verify
+      expect(
+        () => sut.flutterEndpointMatcher(_requestFixture, "unknown"),
+        throwsA(isA<EndpointNotFoundError>()),
+      );
+    });
+
+    test("flutterDefaultHandler - with known endpoint - returns response", () {
+      // Setup
+      when(mockEndpoint.key).thenReturn("key");
+      when(mockEndpoint.defaultHandler).thenReturn((_) => _responseFixture);
+
+      // Run test
+      final result = sut.flutterDefaultHandler(_requestFixture, "key");
+
+      // Verify
+      expect(result, _responseFixture);
+    });
+
+    test("flutterDefaultHandler - with unknown endpoint - throws", () {
+      // Setup
+      when(mockEndpoint.key).thenReturn("key");
+      when(mockEndpoint.defaultHandler).thenReturn((_) => _responseFixture);
+
+      // Run test & verify
+      expect(
+        () => sut.flutterDefaultHandler(_requestFixture, "unknown"),
+        throwsA(isA<EndpointNotFoundError>()),
+      );
+    });
+
+    test("flutterErrorHandler - with known endpoint - returns response", () {
+      // Setup
+      when(mockEndpoint.key).thenReturn("key");
+      when(mockEndpoint.errorHandler).thenReturn((_) => _responseFixture);
+
+      // Run test
+      final result = sut.flutterErrorHandler(_requestFixture, "key");
+
+      // Verify
+      expect(result, _responseFixture);
+    });
+
+    test("flutterErrorHandler - with unknown endpoint - throws", () {
+      // Setup
+      when(mockEndpoint.key).thenReturn("key");
+      when(mockEndpoint.defaultHandler).thenReturn((_) => _responseFixture);
+
+      // Run test & verify
+      expect(
+        () => sut.flutterErrorHandler(_requestFixture, "unknown"),
         throwsA(isA<EndpointNotFoundError>()),
       );
     });
