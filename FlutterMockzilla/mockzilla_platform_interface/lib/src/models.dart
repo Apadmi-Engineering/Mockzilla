@@ -121,18 +121,6 @@ class EndpointConfig with _$EndpointConfig {
   String get key => customKey ?? name;
 }
 
-@freezed
-class ReleaseModeConfig with _$ReleaseModeConfig {
-  /// Rate limiting uses Ktor's implementation, please see
-  /// [https://ktor.io/docs/rate-limit.html#configure-rate-limiting]() for more
-  /// info.
-  const factory ReleaseModeConfig({
-    @Default(60) int rateLimit,
-    @Default(Duration(seconds: 60)) Duration rateLimitRefillPeriod,
-    @Default(Duration(milliseconds: 500)) Duration tokenLifeSpan,
-  }) = _ReleaseModeConfig;
-}
-
 abstract class MockzillaLogger {
   void log(LogLevel level, String message, String tag, Exception? exception);
 }
@@ -146,19 +134,11 @@ class MockzillaConfig with _$MockzillaConfig {
     /// The list of available mocked endpoints.
     @Default([]) List<EndpointConfig> endpoints,
 
-    /// Can be used to add rudimentary restrictions to the Mockzilla server
-    /// such as rate limiting. See [https://apadmi-engineering.github.io/Mockzilla/additional_config/#release-mode]()
-    /// for more information.
-    @Default(false) bool isRelease,
-
     /// Whether Mockzilla server should only be available on the host device.
     @Default(false) bool localHostOnly,
 
     /// The level of logging that should be used by Mockzilla.
     @Default(LogLevel.info) LogLevel logLevel,
-
-    /// Used for additional configuration when [isRelease] is [true].
-    @Default(ReleaseModeConfig()) ReleaseModeConfig releaseModeConfig,
 
     /// Whether devices running Mockzilla are discoverable on the local network
     /// through the desktop management app.
@@ -173,7 +153,6 @@ class MockzillaRuntimeParams with _$MockzillaRuntimeParams {
     required String mockBaseUrl,
     required String apiBaseUrl,
     required int port,
-    required AuthHeaderProvider authHeaderProvider,
   }) = _MockzillaRuntimeParams;
 }
 
@@ -183,8 +162,4 @@ class AuthHeader with _$AuthHeader {
     required String key,
     required String value,
   }) = _AuthHeader;
-}
-
-abstract class AuthHeaderProvider {
-  Future<AuthHeader> generateHeader();
 }
