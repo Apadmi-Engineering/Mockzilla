@@ -94,34 +94,18 @@ class BridgeEndpointConfig {
   });
 }
 
-class BridgeReleaseModeConfig {
-  final int rateLimit;
-  final int rateLimitRefillPeriodMillis;
-  final int tokenLifeSpanMillis;
-
-  const BridgeReleaseModeConfig([
-    this.rateLimit = 60,
-    this.rateLimitRefillPeriodMillis = 60000,
-    this.tokenLifeSpanMillis = 500,
-  ]);
-}
-
 class BridgeMockzillaConfig {
   final int port;
   final List<BridgeEndpointConfig> endpoints;
-  final bool isRelease;
   final bool localHostOnly;
   final BridgeLogLevel logLevel;
-  final BridgeReleaseModeConfig releaseModeConfig;
   final bool isNetworkDiscoveryEnabled;
 
   const BridgeMockzillaConfig(
     this.port,
     this.endpoints,
-    this.isRelease,
     this.localHostOnly,
     this.logLevel,
-    this.releaseModeConfig,
     this.isNetworkDiscoveryEnabled,
   );
 }
@@ -137,16 +121,6 @@ class BridgeMockzillaRuntimeParams {
     this.mockBaseUrl,
     this.apiBaseUrl,
     this.port,
-  );
-}
-
-class BridgeAuthHeader {
-  final String key;
-  final String value;
-
-  const BridgeAuthHeader(
-    this.key,
-    this.value,
   );
 }
 
@@ -166,9 +140,6 @@ abstract class MockzillaFlutterApi {
 
   BridgeMockzillaHttpResponse errorHandler(
       BridgeMockzillaHttpRequest request, String key);
-
-  @async
-  BridgeAuthHeader generateAuthHeader();
 
   void log(
     BridgeLogLevel logLevel,
