@@ -35,6 +35,13 @@ kotlin {
         }
     }
 
+    // Enables KDocs comments export to Objective-C headers.
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        compilations["main"].compileTaskProvider.configure {
+            compilerOptions.freeCompilerArgs.add("-Xexport-kdoc")
+        }
+    }
+
     jvm()
     jvmToolchain(JavaConfig.toolchain)
     cocoapods {

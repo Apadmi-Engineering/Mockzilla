@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:mockzilla_android/src/api_utils.dart';
 import 'package:mockzilla_android/src/messages.g.dart';
 import 'package:mockzilla_android/src/model/mockzilla_error.dart';
@@ -7,14 +8,21 @@ class MockzillaAndroid extends MockzillaPlatform {
   final mockzillaHostBridge = MockzillaHostApi();
 
   @override
-  Future<void> startMockzilla(MockzillaConfig config) {
+  Future<void> startMockzilla(MockzillaConfig config) async {
     final callbackProvider = CallbackProvider(
       config.endpoints,
       () =>
           Future.value(const AuthHeader(key: "Authorization", value: "Bearer")),
     );
     MockzillaFlutterApi.setUp(callbackProvider);
-    return mockzillaHostBridge.startServer(config.toBridge());
+    try {
+      await mockzillaHostBridge.startServer(config.toBridge());
+    } on PlatformException catch(exception) {
+      if(exception.code == "PortConflictException") {
+        throw MockzillaPortConflictException(config.port);
+      }
+      rethrow;
+    }
   }
 
   @override
