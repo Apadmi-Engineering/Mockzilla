@@ -8,7 +8,16 @@ import 'engine/config/mockzilla_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Mockzilla.startMockzilla(mockzillaConfig);
+  final params = await Mockzilla.startMockzilla(mockzillaConfig);
+  debugPrint("""
+    +----------------+-----------------------------------+
+    |                Mockzilla started 🚀                |
+    +----------------+-----------------------------------+
+    | Mock base URL  | ${params.mockBaseUrl.padRight(33)} |
+    | API base URL   | ${params.apiBaseUrl.padRight(33)} |
+    | Endpoint count | ${params.config.endpoints.length.toString().padRight(33)} |
+    +----------------+-----------------------------------+
+  """);
   runApp(const MyApp());
 }
 
