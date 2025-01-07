@@ -155,11 +155,3 @@ class MockzillaRuntimeParams with _$MockzillaRuntimeParams {
     required int port,
   }) = _MockzillaRuntimeParams;
 }
-
-@freezed
-class AuthHeader with _$AuthHeader {
-  const factory AuthHeader({
-    required String key,
-    required String value,
-  }) = _AuthHeader;
-}
