@@ -15,7 +15,6 @@ import BridgeMockzillaConfig
 import BridgeMockzillaHttpRequest
 import BridgeMockzillaHttpResponse
 import BridgeMockzillaRuntimeParams
-import BridgeReleaseModeConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import io.ktor.http.HttpMethod
@@ -139,19 +138,6 @@ fun BridgeEndpointConfig.Companion.fromNative(
     BridgeDashboardOptionsConfig.fromNative(data.dashboardOptionsConfig)
 )
 
-fun BridgeReleaseModeConfig.toNative() = MockzillaConfig.ReleaseModeConfig(
-    this.rateLimit.toInt(),
-    this.rateLimitRefillPeriodMillis.milliseconds,
-    this.tokenLifeSpanMillis.milliseconds,
-)
-
-fun BridgeReleaseModeConfig.Companion.fromNative(
-    data: MockzillaConfig.ReleaseModeConfig
-) = BridgeReleaseModeConfig(
-    data.rateLimit.toLong(),
-    data.rateLimitRefillPeriod.inWholeMilliseconds,
-    data.tokenLifeSpan.inWholeMilliseconds
-)
 
 fun BridgeMockzillaConfig.toNative(
     endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
@@ -162,10 +148,11 @@ fun BridgeMockzillaConfig.toNative(
     this.endpoints.map {
         it.toNative(endpointMatcher, defaultHandler, errorHandler)
     },
-    this.isRelease,
-    this.localHostOnly,
+    // Release mode unsupported.
+    isRelease = false,
+    localhostOnly = this.localHostOnly,
     this.logLevel.toNative(),
-    this.releaseModeConfig.toNative(),
+    MockzillaConfig.ReleaseModeConfig(),
     this.isNetworkDiscoveryEnabled,
     emptyList()
 )
@@ -175,10 +162,8 @@ fun BridgeMockzillaConfig.Companion.fromNative(
 ) = BridgeMockzillaConfig(
     data.port.toLong(),
     data.endpoints.map { BridgeEndpointConfig.fromNative(it) },
-    data.isRelease,
     data.localhostOnly,
     BridgeLogLevel.fromNative(data.logLevel),
-    BridgeReleaseModeConfig.fromNative(data.releaseModeConfig),
     data.isNetworkDiscoveryEnabled,
 )
 

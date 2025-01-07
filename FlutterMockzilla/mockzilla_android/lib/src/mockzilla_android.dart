@@ -32,11 +32,9 @@ class MockzillaAndroid extends MockzillaPlatform {
 
 class CallbackProvider extends MockzillaFlutterApi {
   final List<EndpointConfig> endpoints;
-  final Future<AuthHeader> Function() _generateAuthHeader;
 
   CallbackProvider(
     this.endpoints,
-    this._generateAuthHeader,
   );
 
   /// Utility function to find a cached endpoint config with a given [key].
@@ -71,11 +69,6 @@ class CallbackProvider extends MockzillaFlutterApi {
       BridgeMockzillaHttpRequest request, String key) {
     return _determineEndpoint(key).errorHandler(request.toDart()).toBridge();
   }
-
-  @override
-  Future<BridgeAuthHeader> generateAuthHeader() => _generateAuthHeader().then(
-        (result) => result.toBridge(),
-      );
 
   @override
   void log(
