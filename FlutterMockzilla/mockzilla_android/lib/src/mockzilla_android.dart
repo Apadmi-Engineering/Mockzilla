@@ -2,6 +2,7 @@ import 'package:mockzilla_android/src/api_utils.dart';
 import 'package:mockzilla_android/src/messages.g.dart';
 import 'package:mockzilla_android/src/model/mockzilla_error.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
+import 'package:meta/meta.dart';
 
 class MockzillaAndroid extends MockzillaPlatform {
   final mockzillaHostBridge = MockzillaHostApi();
@@ -81,7 +82,8 @@ class CallbackProvider extends MockzillaFlutterApi {
   }
 }
 
-extension on CallbackProvider {
+@internal
+extension FlutterCallbackProvider on CallbackProvider {
   bool flutterEndpointMatcher(MockzillaHttpRequest request, String key) {
     return endpointMatcher(request.toBridge(), key);
   }
