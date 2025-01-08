@@ -224,4 +224,4 @@ Mockzilla supports artificially causing network requests to fail.
     )
     ```
 
-**The default failure probability is 0**.
+**The default is for requests to succeed**.
