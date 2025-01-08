@@ -18,7 +18,7 @@ A Flutter plugin for running and configuring a local, mock HTTP server that allo
 
 ## To hit the ground running
 
- >**Before we begin:** Mockzilla is a development tool only. Do not use it in production! Advice on how to do this using different Dart entrypoints can be found [here](https://apadmi-engineering.github.io/Mockzilla/#recommendation).
+> ⚠️ **Warning:** Mockzilla is a development tool only. Do not use it in production! Advice on how to do this using different Dart entrypoints can be found [here](https://apadmi-engineering.github.io/Mockzilla/#recommendation).
 
 **(1)** Create your Mockzilla server config and add mocked endpoints.
 
@@ -45,3 +45,13 @@ WidgetsFlutterBinding.ensureInitialized();
 
 await Mockzilla.startMockzilla(mockzillaConfig);
 ```
+
+## Mockzilla Desktop
+
+The Mockzilla Desktop application lets you inspect and configure the mocked endpoints at runtime. You can manipulate the responses and adjust simulated latency on a connected device.
+
+<img src="https://raw.githubusercontent.com/Apadmi-Engineering/Mockzilla/refs/heads/develop/docs/docs/desktop/img/desktop_demo.gif">
+
+More information about Mockzilla Desktop can be found [here](https://apadmi-engineering.github.io/Mockzilla/desktop/overview/).
+
+> ℹ️ **Note:** Mockzilla Desktop replaces the web console from version 1.0.0 onwards. The web console is now deprecated and will eventually be retired.
