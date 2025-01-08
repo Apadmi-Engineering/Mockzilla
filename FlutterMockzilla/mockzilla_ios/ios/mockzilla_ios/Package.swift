@@ -12,7 +12,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/Apadmi-Engineering/SwiftMockzilla.git",
-            .upToNextMajor(from: "1.2.1-alpha2")
+            .upToNextMajor(from: "2.1.2")
         )
     ],
     targets: [
