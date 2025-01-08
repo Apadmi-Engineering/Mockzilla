@@ -18,8 +18,6 @@ import io.ktor.http.HttpStatusCode
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
-import java.util.logging.Logger
-
 class MockzillaAndroid(
     private val flutterApi: MockzillaFlutterApi,
     private val context: Context
@@ -43,6 +41,7 @@ class MockzillaAndroid(
         val completer: CompletableDeferred<Boolean> = CompletableDeferred()
         uiThreadHandler.post {
             flutterApi.endpointMatcher(BridgeMockzillaHttpRequest.fromNative(request), key) {
+                // Return default of `false` if error occurs.
                 completer.complete(it.getOrElse { false })
             }
         }
@@ -59,6 +58,7 @@ class MockzillaAndroid(
                 BridgeMockzillaHttpRequest.fromNative(request),
                 key
             ) { bridgeResult ->
+                // Return default of 500 error if error occurs.
                 completer.complete(bridgeResult.map {
                     it.toNative()
                 }.getOrElse {
@@ -79,6 +79,7 @@ class MockzillaAndroid(
                 BridgeMockzillaHttpRequest.fromNative(request),
                 key
             ) { bridgeResult ->
+                // Return default of 500 error if error occurs.
                 completer.complete(bridgeResult.map {
                     it.toNative()
                 }.getOrElse {
