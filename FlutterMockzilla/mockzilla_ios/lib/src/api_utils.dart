@@ -1,30 +1,36 @@
+import 'package:meta/meta.dart';
 import 'package:mockzilla_ios/src/messages.g.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
+@internal
 extension BridgeHttpMethodBridge on BridgeHttpMethod {
   HttpMethod toDart() => HttpMethod.values.firstWhere(
         (element) => element.name == name,
       );
 }
 
+@internal
 extension HttpMethodBridge on HttpMethod {
   BridgeHttpMethod toBridge() => BridgeHttpMethod.values.firstWhere(
         (element) => element.name == name,
       );
 }
 
+@internal
 extension BridgeLogLevelBridge on BridgeLogLevel {
   LogLevel toDart() => LogLevel.values.firstWhere(
         (element) => element.name == name,
       );
 }
 
+@internal
 extension LogLevelBridge on LogLevel {
   BridgeLogLevel toBridge() => BridgeLogLevel.values.firstWhere(
         (element) => element.name == name,
       );
 }
 
+@internal
 extension BridgeMockzillaHttpRequestBridge on BridgeMockzillaHttpRequest {
   MockzillaHttpRequest toDart() => MockzillaHttpRequest(
         uri: uri,
@@ -34,6 +40,7 @@ extension BridgeMockzillaHttpRequestBridge on BridgeMockzillaHttpRequest {
       );
 }
 
+@internal
 extension MockzillaHttpRequestBridge on MockzillaHttpRequest {
   BridgeMockzillaHttpRequest toBridge() => BridgeMockzillaHttpRequest(
         uri: uri,
@@ -43,6 +50,7 @@ extension MockzillaHttpRequestBridge on MockzillaHttpRequest {
       );
 }
 
+@internal
 extension BridgeMockzillaHttpResponseBridge on BridgeMockzillaHttpResponse {
   MockzillaHttpResponse toDart() => MockzillaHttpResponse(
         statusCode: statusCode,
@@ -51,6 +59,7 @@ extension BridgeMockzillaHttpResponseBridge on BridgeMockzillaHttpResponse {
       );
 }
 
+@internal
 extension MockzillaHttpResponseBridge on MockzillaHttpResponse {
   BridgeMockzillaHttpResponse toBridge() => BridgeMockzillaHttpResponse(
         statusCode: statusCode,
@@ -59,6 +68,7 @@ extension MockzillaHttpResponseBridge on MockzillaHttpResponse {
       );
 }
 
+@internal
 extension BridgeDashboardOverridePresetBridge on BridgeDashboardOverridePreset {
   DashboardOverridePreset toDart() => DashboardOverridePreset(
         name: name,
@@ -67,6 +77,7 @@ extension BridgeDashboardOverridePresetBridge on BridgeDashboardOverridePreset {
       );
 }
 
+@internal
 extension DashboardOverridePresetBridge on DashboardOverridePreset {
   BridgeDashboardOverridePreset toBridge() => BridgeDashboardOverridePreset(
         name: name,
@@ -75,6 +86,7 @@ extension DashboardOverridePresetBridge on DashboardOverridePreset {
       );
 }
 
+@internal
 extension BridgeDashboardOverrideConfigBridge on BridgeDashboardOptionsConfig {
   DashboardOptionsConfig toDart() => DashboardOptionsConfig(
         successPresets: successPresets.map((it) => it.toDart()).toList(),
@@ -82,6 +94,7 @@ extension BridgeDashboardOverrideConfigBridge on BridgeDashboardOptionsConfig {
       );
 }
 
+@internal
 extension DashboardOverrideConfigBridge on DashboardOptionsConfig {
   BridgeDashboardOptionsConfig toBridge() => BridgeDashboardOptionsConfig(
         successPresets: successPresets.map((it) => it.toBridge()).toList(),
@@ -89,6 +102,7 @@ extension DashboardOverrideConfigBridge on DashboardOptionsConfig {
       );
 }
 
+@internal
 extension BridgeEndpointConfigBridge on BridgeEndpointConfig {
   EndpointConfig toDart(
     bool Function(MockzillaHttpRequest request) endpointMatcher,
@@ -108,6 +122,7 @@ extension BridgeEndpointConfigBridge on BridgeEndpointConfig {
       );
 }
 
+@internal
 extension EndpointConfigBridge on EndpointConfig {
   BridgeEndpointConfig toBridge() => BridgeEndpointConfig(
         name: name,
@@ -119,37 +134,7 @@ extension EndpointConfigBridge on EndpointConfig {
       );
 }
 
-extension BridgeReleaseModeConfigBridge on BridgeReleaseModeConfig {
-  ReleaseModeConfig toDart() => ReleaseModeConfig(
-        rateLimit: rateLimit,
-        rateLimitRefillPeriod:
-            Duration(milliseconds: rateLimitRefillPeriodMillis),
-        tokenLifeSpan: Duration(milliseconds: tokenLifeSpanMillis),
-      );
-}
-
-extension ReleaseModeConfigBridge on ReleaseModeConfig {
-  BridgeReleaseModeConfig toBridge() => BridgeReleaseModeConfig(
-        rateLimit: rateLimit,
-        rateLimitRefillPeriodMillis: rateLimitRefillPeriod.inMilliseconds,
-        tokenLifeSpanMillis: tokenLifeSpan.inMilliseconds,
-      );
-}
-
-extension BridgeAuthHeaderBridge on BridgeAuthHeader {
-  AuthHeader toDart() => AuthHeader(
-        key: key,
-        value: value,
-      );
-}
-
-extension AuthHeaderBridge on AuthHeader {
-  BridgeAuthHeader toBridge() => BridgeAuthHeader(
-        key: key,
-        value: value,
-      );
-}
-
+@internal
 extension MockzillaConfigBridge on MockzillaConfig {
   BridgeMockzillaConfig toBridge() => BridgeMockzillaConfig(
         port: port,
@@ -158,34 +143,57 @@ extension MockzillaConfigBridge on MockzillaConfig {
               (endpoint) => endpoint.toBridge(),
             )
             .toList(),
-        isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toBridge(),
-        releaseModeConfig: releaseModeConfig.toBridge(),
         isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
       );
 }
 
+@internal
 extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
-  MockzillaConfig toDart(
-    bool Function(MockzillaHttpRequest request) endpointMatcher,
-    MockzillaHttpResponse Function(MockzillaHttpRequest request) defaultHandler,
-    MockzillaHttpResponse Function(MockzillaHttpRequest request) errorHandler,
-  ) =>
+  MockzillaConfig toDart({
+    required bool Function(MockzillaHttpRequest request, String key) endpointMatcher,
+    required MockzillaHttpResponse Function(MockzillaHttpRequest request, String key) defaultHandler,
+    required MockzillaHttpResponse Function(MockzillaHttpRequest request, String key) errorHandler,
+  }) =>
       MockzillaConfig(
         port: port,
         endpoints: endpoints
             .map(
               (endpoint) => endpoint.toDart(
-                endpointMatcher,
-                defaultHandler,
-                errorHandler,
+                (request) => endpointMatcher(request, endpoint.key),
+                (request) => defaultHandler(request, endpoint.key),
+                (request) => errorHandler(request, endpoint.key),
               ),
             )
             .toList(),
-        isRelease: isRelease,
         localHostOnly: localHostOnly,
         logLevel: logLevel.toDart(),
         isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
       );
 }
+
+@internal
+extension BridgeMockzillaRuntimeParamsBridge on BridgeMockzillaRuntimeParams {
+  MockzillaRuntimeParams toDart({
+    required bool Function(MockzillaHttpRequest request, String key)
+    endpointMatcher,
+    required MockzillaHttpResponse Function(
+        MockzillaHttpRequest request, String key)
+    defaultHandler,
+    required MockzillaHttpResponse Function(
+        MockzillaHttpRequest request, String key)
+    errorHandler,
+  }) =>
+      MockzillaRuntimeParams(
+        config: config.toDart(
+          endpointMatcher: endpointMatcher,
+          defaultHandler: defaultHandler,
+          errorHandler: errorHandler,
+        ),
+        mockBaseUrl: mockBaseUrl,
+        apiBaseUrl: apiBaseUrl,
+        port: port,
+      );
+}
+

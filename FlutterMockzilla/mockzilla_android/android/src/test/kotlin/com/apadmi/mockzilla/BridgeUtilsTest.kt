@@ -7,7 +7,6 @@ import BridgeHttpMethod
 import BridgeLogLevel
 import BridgeMockzillaConfig
 import BridgeMockzillaHttpResponse
-import BridgeReleaseModeConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -18,8 +17,6 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 internal class BridgeUtilsTest {
     @Test
@@ -212,29 +209,6 @@ internal class BridgeUtilsTest {
     }
 
     @Test
-    fun releaseModeConfigMarshallingReturnsExpectedValue() {
-        // Setup
-        val bridgeToNative = mapOf(
-            BridgeReleaseModeConfig(
-                2000,
-                60_000,
-                86_400_000
-            ) to
-                    MockzillaConfig.ReleaseModeConfig(
-                        2000,
-                        Duration.parseIsoString("PT1M"),
-                        Duration.parseIsoString("P1D"),
-                    )
-        )
-
-        // Run test & verify
-        bridgeToNative.forEach { (bridge, native) ->
-            assertEquals(native, bridge.toNative())
-            assertEquals(bridge, BridgeReleaseModeConfig.fromNative(native))
-        }
-    }
-
-    @Test
     fun mockzillaConfigMarshallingReturnsExpectedValue() {
         // Setup
         val endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean = { _: String -> true }
@@ -253,8 +227,7 @@ internal class BridgeUtilsTest {
                         ),
                     )
                 ),
-                isRelease = false, localHostOnly = false, BridgeLogLevel.INFO,
-                BridgeReleaseModeConfig(2000, 60_000, 86_400_000),
+                localHostOnly = false, BridgeLogLevel.INFO,
                 false
             ) to MockzillaConfig(
                 8080,
@@ -276,7 +249,7 @@ internal class BridgeUtilsTest {
                 isRelease = false,
                 localhostOnly = false,
                 MockzillaConfig.LogLevel.Info,
-                MockzillaConfig.ReleaseModeConfig(2000, 60.seconds, 86_400.seconds),
+                MockzillaConfig.ReleaseModeConfig(),
                 false,
                 emptyList()
             )

@@ -1199,182 +1199,6 @@ abstract class _EndpointConfig extends EndpointConfig {
 }
 
 /// @nodoc
-mixin _$ReleaseModeConfig {
-  int get rateLimit => throw _privateConstructorUsedError;
-  Duration get rateLimitRefillPeriod => throw _privateConstructorUsedError;
-  Duration get tokenLifeSpan => throw _privateConstructorUsedError;
-
-  /// Create a copy of ReleaseModeConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ReleaseModeConfigCopyWith<ReleaseModeConfig> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ReleaseModeConfigCopyWith<$Res> {
-  factory $ReleaseModeConfigCopyWith(
-          ReleaseModeConfig value, $Res Function(ReleaseModeConfig) then) =
-      _$ReleaseModeConfigCopyWithImpl<$Res, ReleaseModeConfig>;
-  @useResult
-  $Res call(
-      {int rateLimit, Duration rateLimitRefillPeriod, Duration tokenLifeSpan});
-}
-
-/// @nodoc
-class _$ReleaseModeConfigCopyWithImpl<$Res, $Val extends ReleaseModeConfig>
-    implements $ReleaseModeConfigCopyWith<$Res> {
-  _$ReleaseModeConfigCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of ReleaseModeConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? rateLimit = null,
-    Object? rateLimitRefillPeriod = null,
-    Object? tokenLifeSpan = null,
-  }) {
-    return _then(_value.copyWith(
-      rateLimit: null == rateLimit
-          ? _value.rateLimit
-          : rateLimit // ignore: cast_nullable_to_non_nullable
-              as int,
-      rateLimitRefillPeriod: null == rateLimitRefillPeriod
-          ? _value.rateLimitRefillPeriod
-          : rateLimitRefillPeriod // ignore: cast_nullable_to_non_nullable
-              as Duration,
-      tokenLifeSpan: null == tokenLifeSpan
-          ? _value.tokenLifeSpan
-          : tokenLifeSpan // ignore: cast_nullable_to_non_nullable
-              as Duration,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$ReleaseModeConfigImplCopyWith<$Res>
-    implements $ReleaseModeConfigCopyWith<$Res> {
-  factory _$$ReleaseModeConfigImplCopyWith(_$ReleaseModeConfigImpl value,
-          $Res Function(_$ReleaseModeConfigImpl) then) =
-      __$$ReleaseModeConfigImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {int rateLimit, Duration rateLimitRefillPeriod, Duration tokenLifeSpan});
-}
-
-/// @nodoc
-class __$$ReleaseModeConfigImplCopyWithImpl<$Res>
-    extends _$ReleaseModeConfigCopyWithImpl<$Res, _$ReleaseModeConfigImpl>
-    implements _$$ReleaseModeConfigImplCopyWith<$Res> {
-  __$$ReleaseModeConfigImplCopyWithImpl(_$ReleaseModeConfigImpl _value,
-      $Res Function(_$ReleaseModeConfigImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ReleaseModeConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? rateLimit = null,
-    Object? rateLimitRefillPeriod = null,
-    Object? tokenLifeSpan = null,
-  }) {
-    return _then(_$ReleaseModeConfigImpl(
-      rateLimit: null == rateLimit
-          ? _value.rateLimit
-          : rateLimit // ignore: cast_nullable_to_non_nullable
-              as int,
-      rateLimitRefillPeriod: null == rateLimitRefillPeriod
-          ? _value.rateLimitRefillPeriod
-          : rateLimitRefillPeriod // ignore: cast_nullable_to_non_nullable
-              as Duration,
-      tokenLifeSpan: null == tokenLifeSpan
-          ? _value.tokenLifeSpan
-          : tokenLifeSpan // ignore: cast_nullable_to_non_nullable
-              as Duration,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$ReleaseModeConfigImpl implements _ReleaseModeConfig {
-  const _$ReleaseModeConfigImpl(
-      {this.rateLimit = 60,
-      this.rateLimitRefillPeriod = const Duration(seconds: 60),
-      this.tokenLifeSpan = const Duration(milliseconds: 500)});
-
-  @override
-  @JsonKey()
-  final int rateLimit;
-  @override
-  @JsonKey()
-  final Duration rateLimitRefillPeriod;
-  @override
-  @JsonKey()
-  final Duration tokenLifeSpan;
-
-  @override
-  String toString() {
-    return 'ReleaseModeConfig(rateLimit: $rateLimit, rateLimitRefillPeriod: $rateLimitRefillPeriod, tokenLifeSpan: $tokenLifeSpan)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ReleaseModeConfigImpl &&
-            (identical(other.rateLimit, rateLimit) ||
-                other.rateLimit == rateLimit) &&
-            (identical(other.rateLimitRefillPeriod, rateLimitRefillPeriod) ||
-                other.rateLimitRefillPeriod == rateLimitRefillPeriod) &&
-            (identical(other.tokenLifeSpan, tokenLifeSpan) ||
-                other.tokenLifeSpan == tokenLifeSpan));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, rateLimit, rateLimitRefillPeriod, tokenLifeSpan);
-
-  /// Create a copy of ReleaseModeConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ReleaseModeConfigImplCopyWith<_$ReleaseModeConfigImpl> get copyWith =>
-      __$$ReleaseModeConfigImplCopyWithImpl<_$ReleaseModeConfigImpl>(
-          this, _$identity);
-}
-
-abstract class _ReleaseModeConfig implements ReleaseModeConfig {
-  const factory _ReleaseModeConfig(
-      {final int rateLimit,
-      final Duration rateLimitRefillPeriod,
-      final Duration tokenLifeSpan}) = _$ReleaseModeConfigImpl;
-
-  @override
-  int get rateLimit;
-  @override
-  Duration get rateLimitRefillPeriod;
-  @override
-  Duration get tokenLifeSpan;
-
-  /// Create a copy of ReleaseModeConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ReleaseModeConfigImplCopyWith<_$ReleaseModeConfigImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
 mixin _$MockzillaConfig {
   /// The port that the Mockzilla should be available through.
   int get port => throw _privateConstructorUsedError;
@@ -1382,19 +1206,11 @@ mixin _$MockzillaConfig {
   /// The list of available mocked endpoints.
   List<EndpointConfig> get endpoints => throw _privateConstructorUsedError;
 
-  /// Can be used to add rudimentary restrictions to the Mockzilla server
-  /// such as rate limiting. See [https://apadmi-engineering.github.io/Mockzilla/additional_config/#release-mode]()
-  /// for more information.
-  bool get isRelease => throw _privateConstructorUsedError;
-
   /// Whether Mockzilla server should only be available on the host device.
   bool get localHostOnly => throw _privateConstructorUsedError;
 
   /// The level of logging that should be used by Mockzilla.
   LogLevel get logLevel => throw _privateConstructorUsedError;
-
-  /// Used for additional configuration when [isRelease] is [true].
-  ReleaseModeConfig get releaseModeConfig => throw _privateConstructorUsedError;
 
   /// Whether devices running Mockzilla are discoverable on the local network
   /// through the desktop management app.
@@ -1416,13 +1232,9 @@ abstract class $MockzillaConfigCopyWith<$Res> {
   $Res call(
       {int port,
       List<EndpointConfig> endpoints,
-      bool isRelease,
       bool localHostOnly,
       LogLevel logLevel,
-      ReleaseModeConfig releaseModeConfig,
       bool isNetworkDiscoveryEnabled});
-
-  $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig;
 }
 
 /// @nodoc
@@ -1442,10 +1254,8 @@ class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
   $Res call({
     Object? port = null,
     Object? endpoints = null,
-    Object? isRelease = null,
     Object? localHostOnly = null,
     Object? logLevel = null,
-    Object? releaseModeConfig = null,
     Object? isNetworkDiscoveryEnabled = null,
   }) {
     return _then(_value.copyWith(
@@ -1457,10 +1267,6 @@ class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
           ? _value.endpoints
           : endpoints // ignore: cast_nullable_to_non_nullable
               as List<EndpointConfig>,
-      isRelease: null == isRelease
-          ? _value.isRelease
-          : isRelease // ignore: cast_nullable_to_non_nullable
-              as bool,
       localHostOnly: null == localHostOnly
           ? _value.localHostOnly
           : localHostOnly // ignore: cast_nullable_to_non_nullable
@@ -1469,25 +1275,11 @@ class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
           ? _value.logLevel
           : logLevel // ignore: cast_nullable_to_non_nullable
               as LogLevel,
-      releaseModeConfig: null == releaseModeConfig
-          ? _value.releaseModeConfig
-          : releaseModeConfig // ignore: cast_nullable_to_non_nullable
-              as ReleaseModeConfig,
       isNetworkDiscoveryEnabled: null == isNetworkDiscoveryEnabled
           ? _value.isNetworkDiscoveryEnabled
           : isNetworkDiscoveryEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
-  }
-
-  /// Create a copy of MockzillaConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig {
-    return $ReleaseModeConfigCopyWith<$Res>(_value.releaseModeConfig, (value) {
-      return _then(_value.copyWith(releaseModeConfig: value) as $Val);
-    });
   }
 }
 
@@ -1502,14 +1294,9 @@ abstract class _$$MockzillaConfigImplCopyWith<$Res>
   $Res call(
       {int port,
       List<EndpointConfig> endpoints,
-      bool isRelease,
       bool localHostOnly,
       LogLevel logLevel,
-      ReleaseModeConfig releaseModeConfig,
       bool isNetworkDiscoveryEnabled});
-
-  @override
-  $ReleaseModeConfigCopyWith<$Res> get releaseModeConfig;
 }
 
 /// @nodoc
@@ -1527,10 +1314,8 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
   $Res call({
     Object? port = null,
     Object? endpoints = null,
-    Object? isRelease = null,
     Object? localHostOnly = null,
     Object? logLevel = null,
-    Object? releaseModeConfig = null,
     Object? isNetworkDiscoveryEnabled = null,
   }) {
     return _then(_$MockzillaConfigImpl(
@@ -1542,10 +1327,6 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
           ? _value._endpoints
           : endpoints // ignore: cast_nullable_to_non_nullable
               as List<EndpointConfig>,
-      isRelease: null == isRelease
-          ? _value.isRelease
-          : isRelease // ignore: cast_nullable_to_non_nullable
-              as bool,
       localHostOnly: null == localHostOnly
           ? _value.localHostOnly
           : localHostOnly // ignore: cast_nullable_to_non_nullable
@@ -1554,10 +1335,6 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
           ? _value.logLevel
           : logLevel // ignore: cast_nullable_to_non_nullable
               as LogLevel,
-      releaseModeConfig: null == releaseModeConfig
-          ? _value.releaseModeConfig
-          : releaseModeConfig // ignore: cast_nullable_to_non_nullable
-              as ReleaseModeConfig,
       isNetworkDiscoveryEnabled: null == isNetworkDiscoveryEnabled
           ? _value.isNetworkDiscoveryEnabled
           : isNetworkDiscoveryEnabled // ignore: cast_nullable_to_non_nullable
@@ -1572,10 +1349,8 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   const _$MockzillaConfigImpl(
       {this.port = 8080,
       final List<EndpointConfig> endpoints = const [],
-      this.isRelease = false,
       this.localHostOnly = false,
       this.logLevel = LogLevel.info,
-      this.releaseModeConfig = const ReleaseModeConfig(),
       this.isNetworkDiscoveryEnabled = true})
       : _endpoints = endpoints;
 
@@ -1596,13 +1371,6 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
     return EqualUnmodifiableListView(_endpoints);
   }
 
-  /// Can be used to add rudimentary restrictions to the Mockzilla server
-  /// such as rate limiting. See [https://apadmi-engineering.github.io/Mockzilla/additional_config/#release-mode]()
-  /// for more information.
-  @override
-  @JsonKey()
-  final bool isRelease;
-
   /// Whether Mockzilla server should only be available on the host device.
   @override
   @JsonKey()
@@ -1613,11 +1381,6 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   @JsonKey()
   final LogLevel logLevel;
 
-  /// Used for additional configuration when [isRelease] is [true].
-  @override
-  @JsonKey()
-  final ReleaseModeConfig releaseModeConfig;
-
   /// Whether devices running Mockzilla are discoverable on the local network
   /// through the desktop management app.
   @override
@@ -1626,7 +1389,7 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
 
   @override
   String toString() {
-    return 'MockzillaConfig(port: $port, endpoints: $endpoints, isRelease: $isRelease, localHostOnly: $localHostOnly, logLevel: $logLevel, releaseModeConfig: $releaseModeConfig, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled)';
+    return 'MockzillaConfig(port: $port, endpoints: $endpoints, localHostOnly: $localHostOnly, logLevel: $logLevel, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled)';
   }
 
   @override
@@ -1637,14 +1400,10 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
             (identical(other.port, port) || other.port == port) &&
             const DeepCollectionEquality()
                 .equals(other._endpoints, _endpoints) &&
-            (identical(other.isRelease, isRelease) ||
-                other.isRelease == isRelease) &&
             (identical(other.localHostOnly, localHostOnly) ||
                 other.localHostOnly == localHostOnly) &&
             (identical(other.logLevel, logLevel) ||
                 other.logLevel == logLevel) &&
-            (identical(other.releaseModeConfig, releaseModeConfig) ||
-                other.releaseModeConfig == releaseModeConfig) &&
             (identical(other.isNetworkDiscoveryEnabled,
                     isNetworkDiscoveryEnabled) ||
                 other.isNetworkDiscoveryEnabled == isNetworkDiscoveryEnabled));
@@ -1655,10 +1414,8 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
       runtimeType,
       port,
       const DeepCollectionEquality().hash(_endpoints),
-      isRelease,
       localHostOnly,
       logLevel,
-      releaseModeConfig,
       isNetworkDiscoveryEnabled);
 
   /// Create a copy of MockzillaConfig
@@ -1675,10 +1432,8 @@ abstract class _MockzillaConfig implements MockzillaConfig {
   const factory _MockzillaConfig(
       {final int port,
       final List<EndpointConfig> endpoints,
-      final bool isRelease,
       final bool localHostOnly,
       final LogLevel logLevel,
-      final ReleaseModeConfig releaseModeConfig,
       final bool isNetworkDiscoveryEnabled}) = _$MockzillaConfigImpl;
 
   /// The port that the Mockzilla should be available through.
@@ -1689,12 +1444,6 @@ abstract class _MockzillaConfig implements MockzillaConfig {
   @override
   List<EndpointConfig> get endpoints;
 
-  /// Can be used to add rudimentary restrictions to the Mockzilla server
-  /// such as rate limiting. See [https://apadmi-engineering.github.io/Mockzilla/additional_config/#release-mode]()
-  /// for more information.
-  @override
-  bool get isRelease;
-
   /// Whether Mockzilla server should only be available on the host device.
   @override
   bool get localHostOnly;
@@ -1702,10 +1451,6 @@ abstract class _MockzillaConfig implements MockzillaConfig {
   /// The level of logging that should be used by Mockzilla.
   @override
   LogLevel get logLevel;
-
-  /// Used for additional configuration when [isRelease] is [true].
-  @override
-  ReleaseModeConfig get releaseModeConfig;
 
   /// Whether devices running Mockzilla are discoverable on the local network
   /// through the desktop management app.
@@ -1726,8 +1471,6 @@ mixin _$MockzillaRuntimeParams {
   String get mockBaseUrl => throw _privateConstructorUsedError;
   String get apiBaseUrl => throw _privateConstructorUsedError;
   int get port => throw _privateConstructorUsedError;
-  AuthHeaderProvider get authHeaderProvider =>
-      throw _privateConstructorUsedError;
 
   /// Create a copy of MockzillaRuntimeParams
   /// with the given fields replaced by the non-null parameter values.
@@ -1746,8 +1489,7 @@ abstract class $MockzillaRuntimeParamsCopyWith<$Res> {
       {MockzillaConfig config,
       String mockBaseUrl,
       String apiBaseUrl,
-      int port,
-      AuthHeaderProvider authHeaderProvider});
+      int port});
 
   $MockzillaConfigCopyWith<$Res> get config;
 }
@@ -1772,7 +1514,6 @@ class _$MockzillaRuntimeParamsCopyWithImpl<$Res,
     Object? mockBaseUrl = null,
     Object? apiBaseUrl = null,
     Object? port = null,
-    Object? authHeaderProvider = null,
   }) {
     return _then(_value.copyWith(
       config: null == config
@@ -1791,10 +1532,6 @@ class _$MockzillaRuntimeParamsCopyWithImpl<$Res,
           ? _value.port
           : port // ignore: cast_nullable_to_non_nullable
               as int,
-      authHeaderProvider: null == authHeaderProvider
-          ? _value.authHeaderProvider
-          : authHeaderProvider // ignore: cast_nullable_to_non_nullable
-              as AuthHeaderProvider,
     ) as $Val);
   }
 
@@ -1822,8 +1559,7 @@ abstract class _$$MockzillaRuntimeParamsImplCopyWith<$Res>
       {MockzillaConfig config,
       String mockBaseUrl,
       String apiBaseUrl,
-      int port,
-      AuthHeaderProvider authHeaderProvider});
+      int port});
 
   @override
   $MockzillaConfigCopyWith<$Res> get config;
@@ -1848,7 +1584,6 @@ class __$$MockzillaRuntimeParamsImplCopyWithImpl<$Res>
     Object? mockBaseUrl = null,
     Object? apiBaseUrl = null,
     Object? port = null,
-    Object? authHeaderProvider = null,
   }) {
     return _then(_$MockzillaRuntimeParamsImpl(
       config: null == config
@@ -1867,10 +1602,6 @@ class __$$MockzillaRuntimeParamsImplCopyWithImpl<$Res>
           ? _value.port
           : port // ignore: cast_nullable_to_non_nullable
               as int,
-      authHeaderProvider: null == authHeaderProvider
-          ? _value.authHeaderProvider
-          : authHeaderProvider // ignore: cast_nullable_to_non_nullable
-              as AuthHeaderProvider,
     ));
   }
 }
@@ -1882,8 +1613,7 @@ class _$MockzillaRuntimeParamsImpl implements _MockzillaRuntimeParams {
       {required this.config,
       required this.mockBaseUrl,
       required this.apiBaseUrl,
-      required this.port,
-      required this.authHeaderProvider});
+      required this.port});
 
   @override
   final MockzillaConfig config;
@@ -1893,12 +1623,10 @@ class _$MockzillaRuntimeParamsImpl implements _MockzillaRuntimeParams {
   final String apiBaseUrl;
   @override
   final int port;
-  @override
-  final AuthHeaderProvider authHeaderProvider;
 
   @override
   String toString() {
-    return 'MockzillaRuntimeParams(config: $config, mockBaseUrl: $mockBaseUrl, apiBaseUrl: $apiBaseUrl, port: $port, authHeaderProvider: $authHeaderProvider)';
+    return 'MockzillaRuntimeParams(config: $config, mockBaseUrl: $mockBaseUrl, apiBaseUrl: $apiBaseUrl, port: $port)';
   }
 
   @override
@@ -1911,14 +1639,12 @@ class _$MockzillaRuntimeParamsImpl implements _MockzillaRuntimeParams {
                 other.mockBaseUrl == mockBaseUrl) &&
             (identical(other.apiBaseUrl, apiBaseUrl) ||
                 other.apiBaseUrl == apiBaseUrl) &&
-            (identical(other.port, port) || other.port == port) &&
-            (identical(other.authHeaderProvider, authHeaderProvider) ||
-                other.authHeaderProvider == authHeaderProvider));
+            (identical(other.port, port) || other.port == port));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, config, mockBaseUrl, apiBaseUrl, port, authHeaderProvider);
+  int get hashCode =>
+      Object.hash(runtimeType, config, mockBaseUrl, apiBaseUrl, port);
 
   /// Create a copy of MockzillaRuntimeParams
   /// with the given fields replaced by the non-null parameter values.
@@ -1932,12 +1658,10 @@ class _$MockzillaRuntimeParamsImpl implements _MockzillaRuntimeParams {
 
 abstract class _MockzillaRuntimeParams implements MockzillaRuntimeParams {
   const factory _MockzillaRuntimeParams(
-          {required final MockzillaConfig config,
-          required final String mockBaseUrl,
-          required final String apiBaseUrl,
-          required final int port,
-          required final AuthHeaderProvider authHeaderProvider}) =
-      _$MockzillaRuntimeParamsImpl;
+      {required final MockzillaConfig config,
+      required final String mockBaseUrl,
+      required final String apiBaseUrl,
+      required final int port}) = _$MockzillaRuntimeParamsImpl;
 
   @override
   MockzillaConfig get config;
@@ -1947,8 +1671,6 @@ abstract class _MockzillaRuntimeParams implements MockzillaRuntimeParams {
   String get apiBaseUrl;
   @override
   int get port;
-  @override
-  AuthHeaderProvider get authHeaderProvider;
 
   /// Create a copy of MockzillaRuntimeParams
   /// with the given fields replaced by the non-null parameter values.
@@ -1956,150 +1678,4 @@ abstract class _MockzillaRuntimeParams implements MockzillaRuntimeParams {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$MockzillaRuntimeParamsImplCopyWith<_$MockzillaRuntimeParamsImpl>
       get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-mixin _$AuthHeader {
-  String get key => throw _privateConstructorUsedError;
-  String get value => throw _privateConstructorUsedError;
-
-  /// Create a copy of AuthHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AuthHeaderCopyWith<AuthHeader> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $AuthHeaderCopyWith<$Res> {
-  factory $AuthHeaderCopyWith(
-          AuthHeader value, $Res Function(AuthHeader) then) =
-      _$AuthHeaderCopyWithImpl<$Res, AuthHeader>;
-  @useResult
-  $Res call({String key, String value});
-}
-
-/// @nodoc
-class _$AuthHeaderCopyWithImpl<$Res, $Val extends AuthHeader>
-    implements $AuthHeaderCopyWith<$Res> {
-  _$AuthHeaderCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of AuthHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? key = null,
-    Object? value = null,
-  }) {
-    return _then(_value.copyWith(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$AuthHeaderImplCopyWith<$Res>
-    implements $AuthHeaderCopyWith<$Res> {
-  factory _$$AuthHeaderImplCopyWith(
-          _$AuthHeaderImpl value, $Res Function(_$AuthHeaderImpl) then) =
-      __$$AuthHeaderImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String key, String value});
-}
-
-/// @nodoc
-class __$$AuthHeaderImplCopyWithImpl<$Res>
-    extends _$AuthHeaderCopyWithImpl<$Res, _$AuthHeaderImpl>
-    implements _$$AuthHeaderImplCopyWith<$Res> {
-  __$$AuthHeaderImplCopyWithImpl(
-      _$AuthHeaderImpl _value, $Res Function(_$AuthHeaderImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of AuthHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? key = null,
-    Object? value = null,
-  }) {
-    return _then(_$AuthHeaderImpl(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$AuthHeaderImpl implements _AuthHeader {
-  const _$AuthHeaderImpl({required this.key, required this.value});
-
-  @override
-  final String key;
-  @override
-  final String value;
-
-  @override
-  String toString() {
-    return 'AuthHeader(key: $key, value: $value)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AuthHeaderImpl &&
-            (identical(other.key, key) || other.key == key) &&
-            (identical(other.value, value) || other.value == value));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, key, value);
-
-  /// Create a copy of AuthHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AuthHeaderImplCopyWith<_$AuthHeaderImpl> get copyWith =>
-      __$$AuthHeaderImplCopyWithImpl<_$AuthHeaderImpl>(this, _$identity);
-}
-
-abstract class _AuthHeader implements AuthHeader {
-  const factory _AuthHeader(
-      {required final String key,
-      required final String value}) = _$AuthHeaderImpl;
-
-  @override
-  String get key;
-  @override
-  String get value;
-
-  /// Create a copy of AuthHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AuthHeaderImplCopyWith<_$AuthHeaderImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
