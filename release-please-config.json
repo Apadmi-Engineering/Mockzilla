@@ -1,4 +1,5 @@
 {
+  "group-pull-request-title-pattern": "chore${scope}: release Kmp libs libraries",
   "release-type": "simple",
   "separate-pull-requests": true,
   "packages": {

@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 
-private typealias UpdateServerBlock = suspend (config: SerializableEndpointConfig, device: Device) -> Unit
+private typealias UpdateServerBlock = (config: SerializableEndpointConfig, device: Device) -> Unit
 private typealias UpdateStateBlock = State.Endpoint.() -> State.Endpoint
 
 class EndpointDetailsViewModel(
@@ -65,12 +65,12 @@ class EndpointDetailsViewModel(
             endpoint.firstOrNull { it.key == key }
         }
 
-        val currentState = state.value
         state.value = endpoint.fold(
             onSuccess = { config ->
                 config?.let {
                     endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
                         onSuccess = { presets ->
+                            val currentState = state.value
                             State.Endpoint(
                                 config = config,
                                 defaultBody = config.defaultBody,
@@ -124,17 +124,19 @@ class EndpointDetailsViewModel(
     fun onDefaultStatusChange(value: HttpStatusCode?) =
         onPropertyChanged({ copy(defaultStatus = value) },
             { config, device ->
-                emitErrorAndEventIfNeeded(
-                    updateService.setDefaultStatus(
-                        device,
-                        config.key,
-                        value
+                viewModelScope.launch {
+                    emitErrorAndEventIfNeeded(
+                        updateService.setDefaultStatus(
+                            device,
+                            config.key,
+                            value
+                        )
                     )
-                )
+                }
             }
         )
 
-    private suspend fun withDebounce(job: Job?, op: suspend () -> Result<Unit>): Job {
+    private fun withDebounce(job: Job?, op: suspend () -> Result<Unit>): Job {
         job?.cancel()
         return viewModelScope.launch(Dispatchers.IO) {
             delay(600)
@@ -164,7 +166,7 @@ class EndpointDetailsViewModel(
         state.value = when (val state = state.value) {
             is State.Empty -> state
             is State.Endpoint -> {
-                viewModelScope.launch { updateServer(state.config, device) }
+                updateServer(state.config, device)
                 updateState(state)
             }
         }
@@ -173,25 +175,29 @@ class EndpointDetailsViewModel(
     fun onErrorStatusChange(value: HttpStatusCode?) =
         onPropertyChanged({ copy(errorStatus = value) },
             { config, device ->
-                emitErrorAndEventIfNeeded(
-                    updateService.setErrorStatus(
-                        device,
-                        config.key,
-                        value
+                viewModelScope.launch {
+                    emitErrorAndEventIfNeeded(
+                        updateService.setErrorStatus(
+                            device,
+                            config.key,
+                            value
+                        )
                     )
-                )
+                }
             }
         )
 
     fun onFailChange(value: Boolean?) = onPropertyChanged({ copy(fail = value) },
         { config, device ->
-            emitErrorAndEventIfNeeded(
-                updateService.setShouldFail(
-                    device,
-                    listOf(config.key),
-                    value
+            viewModelScope.launch {
+                emitErrorAndEventIfNeeded(
+                    updateService.setShouldFail(
+                        device,
+                        listOf(config.key),
+                        value
+                    )
                 )
-            )
+            }
         }
     )
 
@@ -270,13 +276,15 @@ class EndpointDetailsViewModel(
             jsonEditingDefault = JsonEditor(dashboardOverridePreset.response.body).isValidJson()
         )
     }, { config, device ->
-        emitErrorAndEventIfNeeded(
-            updateService.setDefaultPreset(
-                device,
-                config.key,
-                dashboardOverridePreset
+        viewModelScope.launch {
+            emitErrorAndEventIfNeeded(
+                updateService.setDefaultPreset(
+                    device,
+                    config.key,
+                    dashboardOverridePreset
+                )
             )
-        )
+        }
     })
 
     fun onErrorPresetSelected(
@@ -289,13 +297,15 @@ class EndpointDetailsViewModel(
             jsonEditingError = JsonEditor(dashboardOverridePreset.response.body).isValidJson()
         )
     }, { config, device ->
-        emitErrorAndEventIfNeeded(
-            updateService.setErrorPreset(
-                device,
-                config.key,
-                dashboardOverridePreset
+        viewModelScope.launch {
+            emitErrorAndEventIfNeeded(
+                updateService.setErrorPreset(
+                    device,
+                    config.key,
+                    dashboardOverridePreset
+                )
             )
-        )
+        }
     })
 
     sealed class State {

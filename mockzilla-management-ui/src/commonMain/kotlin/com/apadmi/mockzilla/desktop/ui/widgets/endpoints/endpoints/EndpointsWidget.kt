@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -123,8 +124,7 @@ private fun EndpointsList(
                 checked = endpoint.isCheckboxTicked,
                 onCheckedChange = { onCheckboxChanged(endpoint.key, it) }
             )
-            Text(endpoint.name)
-            Spacer(Modifier.weight(1f))
+            Text(text = endpoint.name, modifier = Modifier.weight(1f))
             if (endpoint.hasValuesOverridden) {
                 StandardTextTooltip(text = strings.widgets.endpoints.valuesOverriddenIndicatorTooltip) {
                     Icon(
@@ -133,6 +133,8 @@ private fun EndpointsList(
                         contentDescription = strings.widgets.endpoints.valuesOverriddenIndicatorTooltip
                     )
                 }
+            } else {
+                Spacer(modifier = Modifier.width(8.dp))
             }
             Switch(
                 checked = endpoint.fail,

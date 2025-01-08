@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.1...mockzilla-v2.1.2) (2025-01-03)
+
+
+### Bug Fixes
+
+* Handle checked exceptions in `SwiftMockzilla` ([#291](https://github.com/Apadmi-Engineering/Mockzilla/issues/291)) ([5f69e80](https://github.com/Apadmi-Engineering/Mockzilla/commit/5f69e80b5459a8836e133e47a0101c894ae1d86c))
+
 ## [2.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.0...mockzilla-v2.1.1) (2024-12-05)
 
 
