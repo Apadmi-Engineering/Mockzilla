@@ -1,6 +1,7 @@
 name: Publish to `mockzilla_ios` pub.dev
 
 on:
+  workflow_dispatch:
   push:
     tags:
     - 'flutter_mockzilla_ios-v[0-9]+.[0-9]+.[0-9]+*'
