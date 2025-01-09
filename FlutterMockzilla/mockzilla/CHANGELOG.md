@@ -1,39 +1,28 @@
+## 1.0.0 (2025-01-09)
+
+**⚠️ BREAKING CHANGES**
+
+* Removes `delayVariance`, and `failureProbability` fields from endpoint configurations ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Replaces `delayMean` with `mean` field for endpoint configurations ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Removes Web Api fields (these are replaced with dashboard overrides) ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Updates `startMockzilla` to return runtime information ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+
+**Features**
+
+* Adds support for Mockzilla Desktop ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Improves handling of port conflicts ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Adds support for SPM ([bbcd7ba](https://github.com/Apadmi-Engineering/Mockzilla/compare/5363e6d11372011bfec9dae3841910f907cbd681...bbcd7baaeb6556255714de7f90bac80fb6b65595))
+
+**Bug Fixes**
+
+* Fixes an issue in the marshalling of request headers for bridge models to Dart ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+
 ## 1.0.0-dev.1
 
 * Fixes an issue in the marshalling of request headers from bridge models to Dart.
 * Upgrades dependencies of federated plugins
   * `mockzilla_android` from `1.0.0-dev.0` -> `1.0.0-dev.1`
   * `mockzilla_ios` from `1.0.0-dev.0` -> `1.0.0-dev.1`
-
-## 1.0.0 (2025-01-09)
-
-
-### ⚠ BREAKING CHANGES
-
-* Migrates `webApiDefaultResponse` and `webApiErrorResponse` to `DashboardOptionsConfig` to allow for multiple preset successful/error responses (aligns with #61).
-
-### Features
-
-* add documentation and export builders ([8e3ccbe](https://github.com/Apadmi-Engineering/Mockzilla/commit/8e3ccbe08e44e80dde7f60914604fbc18dbdad66))
-* Collated Flutter v1 updates ([#300](https://github.com/Apadmi-Engineering/Mockzilla/issues/300)) ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/commit/ff272ae419acd8de42baf29a5cb97cde0023f75a))
-* create addEndpoint method for dart facing ([ebcfadc](https://github.com/Apadmi-Engineering/Mockzilla/commit/ebcfadce9fef3746c1068e12a304e5532621878c))
-* Integrate bonjour and enable network discovery ([34ecf69](https://github.com/Apadmi-Engineering/Mockzilla/commit/34ecf6923db72438df826ef1593d3a946176eebc))
-* Update `mockzilla_ios` plugin to use new `SwiftMockzilla` interface ([b4cf439](https://github.com/Apadmi-Engineering/Mockzilla/commit/b4cf43993e2932dd133c642f517784b17751df3a))
-* update example to use addEndpoint ([7749957](https://github.com/Apadmi-Engineering/Mockzilla/commit/77499573a95fbf9b8ecf688495d8a91bf7f8b6cc))
-
-
-### Bug Fixes
-
-* HTTP request mapping in `mockzilla_android` + `mockzilla_ios` ([#172](https://github.com/Apadmi-Engineering/Mockzilla/issues/172)) ([9644a10](https://github.com/Apadmi-Engineering/Mockzilla/commit/9644a102b4af40c63ea3caa56db838eba04fb648))
-* Resolve endpoints not being added due to use of an unmodifiable list ([640d833](https://github.com/Apadmi-Engineering/Mockzilla/commit/640d83324bd91627a325a25ad7bed35ebcb44939))
-* Trigger deploy with updated dependencies ([b5200c6](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5200c6cff3e6c6e4ad258e4900e318831151444))
-* Update Flutter SDK version constraint in pubspec.yaml ([c635907](https://github.com/Apadmi-Engineering/Mockzilla/commit/c635907f5dd4149a541cba212099d76d9dc6d6b6))
-
-
-### Miscellaneous Chores
-
-* release 2.0.0 ([c5aeb78](https://github.com/Apadmi-Engineering/Mockzilla/commit/c5aeb78c070a0dcee855920b6f0dce1966b98245))
-* release 2.0.0 ([4fa2326](https://github.com/Apadmi-Engineering/Mockzilla/commit/4fa2326c45a13f764dbe8549cf91bae36db85a1b))
 
 ## 1.0.0-dev.0
 
