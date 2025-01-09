@@ -1,44 +1,26 @@
+## 1.0.0 (2025-01-09)
+
+**⚠️ BREAKING CHANGES**
+
+* Removes `delayVariance`, and `failureProbability` fields from endpoint configurations ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Replaces `delayMean` with `mean` field for endpoint configurations ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Removes Web Api fields (these are replaced with dashboard overrides) ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Updates `startMockzilla` to return runtime information ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+
+**Features**
+
+* Adds support for Mockzilla Desktop ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Improves handling of port conflicts ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* Adds support for SPM ([bbcd7ba](https://github.com/Apadmi-Engineering/Mockzilla/compare/5363e6d11372011bfec9dae3841910f907cbd681...bbcd7baaeb6556255714de7f90bac80fb6b65595))
+
+**Bug Fixes**
+
+* Fixes an issue in the marshalling of request headers for bridge models to Dart ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
+
 ## 1.0.0-dev.1
 
 * Upgrades `pigeon` from `12.0.1` -> `22.6.0`.
 * Fixes an issue in the marshalling of request headers from bridge models to Dart.
-
-## 1.0.0 (2025-01-09)
-
-
-### ⚠ BREAKING CHANGES
-
-* Migrates `webApiDefaultResponse` and `webApiErrorResponse` to `DashboardOptionsConfig` to allow for multiple preset successful/error responses (aligns with #61).
-
-### Features
-
-* Add support for SPM in `mockzilla_ios` ([bbcd7ba](https://github.com/Apadmi-Engineering/Mockzilla/commit/bbcd7baaeb6556255714de7f90bac80fb6b65595))
-* Collated Flutter v1 updates ([#300](https://github.com/Apadmi-Engineering/Mockzilla/issues/300)) ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/commit/ff272ae419acd8de42baf29a5cb97cde0023f75a))
-* Implement `MockzillaIos` class ([c69bb6a](https://github.com/Apadmi-Engineering/Mockzilla/commit/c69bb6a0115c1cc71a9a8f46c9462a69bdf9504a))
-* Integrate bonjour and enable network discovery ([34ecf69](https://github.com/Apadmi-Engineering/Mockzilla/commit/34ecf6923db72438df826ef1593d3a946176eebc))
-* Update `mockzilla_ios` plugin to use new `SwiftMockzilla` interface ([b4cf439](https://github.com/Apadmi-Engineering/Mockzilla/commit/b4cf43993e2932dd133c642f517784b17751df3a))
-
-
-### Bug Fixes
-
-* Add `releaseModeConfig` field back to `MockzillaConfig` interface. ([37243da](https://github.com/Apadmi-Engineering/Mockzilla/commit/37243da848f2b9cba457fbcb1c09610dfab3ce38))
-* Add missing parameter in HTTP request marshalling. ([fa762f1](https://github.com/Apadmi-Engineering/Mockzilla/commit/fa762f148425475b342f71fdb40960ae7d984cf7))
-* Capitalise `mockzilla_ios` `HttpMethod` raw values ([497169e](https://github.com/Apadmi-Engineering/Mockzilla/commit/497169ec718dcb9640a6f1c81bc3aff2ab9f7757))
-* fix mockzilla_android and ios breaking changes ([80abbec](https://github.com/Apadmi-Engineering/Mockzilla/commit/80abbec6e70b93717b8c7db5abf89abb08ffd0bb))
-* HTTP request mapping in `mockzilla_android` + `mockzilla_ios` ([#172](https://github.com/Apadmi-Engineering/Mockzilla/issues/172)) ([9644a10](https://github.com/Apadmi-Engineering/Mockzilla/commit/9644a102b4af40c63ea3caa56db838eba04fb648))
-* Remove cast of Swift boolean to `KotlinBoolean`, use constructor instead ([561806f](https://github.com/Apadmi-Engineering/Mockzilla/commit/561806fa47cd0a9d5e652e55a007ed6f5eb88039))
-* Remove placeholder data ++ fix parsing in `mockzilla_ios` bridging utils ([8ea5a99](https://github.com/Apadmi-Engineering/Mockzilla/commit/8ea5a999a168746a54ab6d413b7f9f9393d233cc))
-* Resolve threads warning in `mockzilla_ios`. ([7f36bbb](https://github.com/Apadmi-Engineering/Mockzilla/commit/7f36bbb35810f182d5fc63ae26626563e02111bf))
-* Trigger deploy with updated dependencies ([b5200c6](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5200c6cff3e6c6e4ad258e4900e318831151444))
-* Update Flutter SDK version constraint in pubspec.yaml ([c635907](https://github.com/Apadmi-Engineering/Mockzilla/commit/c635907f5dd4149a541cba212099d76d9dc6d6b6))
-* Updates marshalling of `MockzillaConfig` in `mockzilla_android` + `mockzilla_ios` to account for removed fields. ([9ba7e81](https://github.com/Apadmi-Engineering/Mockzilla/commit/9ba7e81d157c9e8486d5002102cd65c91c938e1f))
-* Use error handler in `mockzilla_ios` for error response. ([683543e](https://github.com/Apadmi-Engineering/Mockzilla/commit/683543eddc90cf2a70d99cadb201f97a811d734f))
-
-
-### Miscellaneous Chores
-
-* release 2.0.0 ([c5aeb78](https://github.com/Apadmi-Engineering/Mockzilla/commit/c5aeb78c070a0dcee855920b6f0dce1966b98245))
-* release 2.0.0 ([4fa2326](https://github.com/Apadmi-Engineering/Mockzilla/commit/4fa2326c45a13f764dbe8549cf91bae36db85a1b))
 
 ## 1.0.0-dev.0
 
