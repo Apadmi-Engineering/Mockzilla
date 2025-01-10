@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.2...mockzilla-v1.0.0) (2025-01-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* Migrates `webApiDefaultResponse` and `webApiErrorResponse` to `DashboardOptionsConfig` to allow for multiple preset successful/error responses (aligns with #61).
+
+### Features
+
+* Collated Flutter v1 updates ([#300](https://github.com/Apadmi-Engineering/Mockzilla/issues/300)) ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/commit/ff272ae419acd8de42baf29a5cb97cde0023f75a))
+
 ## [2.1.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.1...mockzilla-v2.1.2) (2025-01-03)
 
 
