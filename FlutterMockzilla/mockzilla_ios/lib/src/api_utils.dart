@@ -152,9 +152,18 @@ extension MockzillaConfigBridge on MockzillaConfig {
 @internal
 extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
   MockzillaConfig toDart({
-    required bool Function(MockzillaHttpRequest request, String key) endpointMatcher,
-    required MockzillaHttpResponse Function(MockzillaHttpRequest request, String key) defaultHandler,
-    required MockzillaHttpResponse Function(MockzillaHttpRequest request, String key) errorHandler,
+    required bool Function(
+      MockzillaHttpRequest request,
+      String key,
+    ) endpointMatcher,
+    required MockzillaHttpResponse Function(
+      MockzillaHttpRequest request,
+      String key,
+    ) defaultHandler,
+    required MockzillaHttpResponse Function(
+      MockzillaHttpRequest request,
+      String key,
+    ) errorHandler,
   }) =>
       MockzillaConfig(
         port: port,
@@ -176,14 +185,18 @@ extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
 @internal
 extension BridgeMockzillaRuntimeParamsBridge on BridgeMockzillaRuntimeParams {
   MockzillaRuntimeParams toDart({
-    required bool Function(MockzillaHttpRequest request, String key)
-    endpointMatcher,
+    required bool Function(
+      MockzillaHttpRequest request,
+      String key,
+    ) endpointMatcher,
     required MockzillaHttpResponse Function(
-        MockzillaHttpRequest request, String key)
-    defaultHandler,
+      MockzillaHttpRequest request,
+      String key,
+    ) defaultHandler,
     required MockzillaHttpResponse Function(
-        MockzillaHttpRequest request, String key)
-    errorHandler,
+      MockzillaHttpRequest request,
+      String key,
+    ) errorHandler,
   }) =>
       MockzillaRuntimeParams(
         config: config.toDart(
@@ -196,4 +209,3 @@ extension BridgeMockzillaRuntimeParamsBridge on BridgeMockzillaRuntimeParams {
         port: port,
       );
 }
-

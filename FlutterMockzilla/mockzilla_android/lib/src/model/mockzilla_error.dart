@@ -17,7 +17,7 @@ class EndpointNotFoundError extends MockzillaError {
   @override
   String? get message =>
       "Mockzilla tried to find an endpoint with key $key but "
-          "it doesn't exist.";
+      "it doesn't exist.";
 
   @override
   String? get stacktrace => trace.toString();

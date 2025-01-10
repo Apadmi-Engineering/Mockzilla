@@ -169,5 +169,5 @@ class MockzillaPortConflictException implements Exception {
   @override
   String toString() =>
       "Attempted to start Mockzilla server on a port that is already occupied "
-          "by another process ($port).";
+      "by another process ($port).";
 }

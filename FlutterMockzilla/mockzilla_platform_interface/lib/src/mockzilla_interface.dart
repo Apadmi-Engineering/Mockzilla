@@ -2,7 +2,6 @@ import 'package:mockzilla_platform_interface/src/models.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 abstract class MockzillaPlatform extends PlatformInterface {
-
   static final _token = Object();
 
   MockzillaPlatform() : super(token: _token);
