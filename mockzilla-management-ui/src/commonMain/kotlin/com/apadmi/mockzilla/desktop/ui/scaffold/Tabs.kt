@@ -67,11 +67,7 @@ internal fun HorizontalTabList(
             TabItem(
                 title = tab.title,
                 selected = selected == index,
-                onSelect = {
-                    if (selected != index) {
-                        onSelect(index)
-                    }
-                },
+                onSelect = { onSelect(index) },
                 icon = tab.icon,
                 subtitle = tab.subtitle,
             )
