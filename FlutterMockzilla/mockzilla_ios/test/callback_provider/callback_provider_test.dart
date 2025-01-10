@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mockzilla_ios/mockzilla_ios.dart';
 import 'package:mockzilla_ios/src/api_utils.dart';
 import 'package:mockzilla_ios/src/messages.g.dart';
+import 'package:mockzilla_ios/src/mockzilla_ios.dart';
 import 'package:mockzilla_ios/src/model/mockzilla_error.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 

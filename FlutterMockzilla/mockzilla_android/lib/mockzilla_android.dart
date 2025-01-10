@@ -5,4 +5,4 @@
 // platforms in the `pubspec.yaml` at
 // https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
 
-export 'src/mockzilla_android.dart';
+export 'src/mockzilla_android.dart' hide FlutterCallbackProvider;

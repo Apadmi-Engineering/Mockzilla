@@ -1,1 +1,1 @@
-export 'src/mockzilla_ios.dart';
+export 'src/mockzilla_ios.dart' hide FlutterCallbackProvider;
