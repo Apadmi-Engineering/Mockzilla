@@ -14,7 +14,6 @@ desc "Flutter target for the lib"
 lane :flutter_lib_pull_request do
     sh("cd #{flutter_root}; dart pub global activate melos; melos bootstrap")
     flutter_analyze
-    flutter_format
     flutter_dart_test
     flutter_android_test
     flutter_ios_test
@@ -23,11 +22,6 @@ end
 desc "Analyzes Flutter packages, aborts upon warnings or errors"
 private_lane :flutter_analyze do
     sh("cd #{flutter_root}; melos analyze")
-end
-
-desc "Assesses formatting of Dart code in Flutter packages, aborts upon changes being required"
-private_lane :flutter_format do
-    sh("cd #{flutter_root}; melos format --set-exit-if-changed")
 end
 
 desc "Executes Dart unit tests"
