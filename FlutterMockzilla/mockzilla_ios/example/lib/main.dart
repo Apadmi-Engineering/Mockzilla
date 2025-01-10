@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:mockzilla_ios/mockzilla_ios.dart';
-
 void main() {
   runApp(const MyApp());
 }

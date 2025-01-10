@@ -4,7 +4,6 @@ import 'package:pigeon/pigeon.dart';
   PigeonOptions(
     dartOut: "lib/src/messages.g.dart",
     dartOptions: DartOptions(),
-    dartTestOut: "test/messages_test.g.dart",
     swiftOut: "ios/mockzilla_ios/Sources/mockzilla_ios/Messages.g.swift",
     swiftOptions: SwiftOptions(),
   ),

@@ -4,7 +4,6 @@ import 'package:pigeon/pigeon.dart';
   PigeonOptions(
     dartOut: "lib/src/messages.g.dart",
     dartOptions: DartOptions(),
-    dartTestOut: "test/messages_test.g.dart",
     kotlinOut: "android/src/main/kotlin/com/apadmi/mockzilla/Messages.g.kt",
     kotlinOptions: KotlinOptions(),
   ),
