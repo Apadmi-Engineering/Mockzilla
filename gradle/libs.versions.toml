@@ -29,9 +29,9 @@ compose = "1.7.0" # https://github.com/JetBrains/compose-multiplatform
 koin = "4.0.1" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
-kotlinx-coroutines = "1.9.0" # https://github.com/Kotlin/kotlinx.coroutines
+kotlinx-coroutines = "1.10.1" # https://github.com/Kotlin/kotlinx.coroutines
 kotlinx-datetime = "0.6.1" # https://github.com/Kotlin/kotlinx-datetime
-kotlinx-serialization = "1.7.3" # https://github.com/Kotlin/kotlinx.serialization
+kotlinx-serialization = "1.8.0" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
 lifecycle = "2.8.7" # https://developer.android.com/jetpack/androidx/releases/lifecycle
@@ -46,7 +46,7 @@ semver4j = "3.1.0" # https://github.com/vdurmont/semver4j
 spotless = "6.25.0" # https://github.com/diffplug/spotless
 
 # Testing
-kover = "0.8.3" # https://github.com/Kotlin/kotlinx-kover
+kover = "0.9.1" # https://github.com/Kotlin/kotlinx-kover
 turbine = "1.2.0" # https://github.com/cashapp/turbine
 junit = "1.2.1" # https://developer.android.com/jetpack/androidx/releases/test
 testParamInjector = "1.18" # https://github.com/google/TestParameterInjector
