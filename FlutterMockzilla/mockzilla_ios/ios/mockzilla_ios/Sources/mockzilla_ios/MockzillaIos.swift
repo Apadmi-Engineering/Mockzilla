@@ -15,9 +15,6 @@ class MockzillaIos: Thread, MockzillaHostApi {
     private let handler: MockzillaFlutterApi
     
     private let waiter = DispatchGroup()
-    private let matcherSemaphore = DispatchSemaphore(value: 0)
-    private let handlerSemaphore = DispatchSemaphore(value: 0)
-    private let errorHandlerSemaphore = DispatchSemaphore(value: 0)
     
     init(handler: MockzillaFlutterApi) {
         self.handler = handler
@@ -32,6 +29,7 @@ class MockzillaIos: Thread, MockzillaHostApi {
         let nativeConfig = config.toNative(
             endpointMatcher: { key, request in
                 do {
+                    let matcherSemaphore = DispatchSemaphore(value: 0)
                     var result: Result<Bool, PigeonError>!
                     let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
                     DispatchQueue.main.async {
@@ -40,11 +38,11 @@ class MockzillaIos: Thread, MockzillaHostApi {
                             key: key,
                             completion: { localResult in
                                 result = localResult
-                                self.matcherSemaphore.signal()
+                                matcherSemaphore.signal()
                             }
                         )
                     }
-                    self.matcherSemaphore.wait()
+                    matcherSemaphore.wait()
                     return try result.get()
                 } catch {
                     return false
@@ -52,6 +50,7 @@ class MockzillaIos: Thread, MockzillaHostApi {
             },
             defaultHandler: { key, request in
                 do {
+                    let handlerSemaphore = DispatchSemaphore(value: 0)
                     var result: Result<BridgeMockzillaHttpResponse, PigeonError>!
                     let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
                     DispatchQueue.main.async {
@@ -60,11 +59,11 @@ class MockzillaIos: Thread, MockzillaHostApi {
                             key: key,
                             completion: { localResult in
                                 result = localResult
-                                self.handlerSemaphore.signal()
+                                handlerSemaphore.signal()
                             }
                         )
                     }
-                    self.handlerSemaphore.wait()
+                    handlerSemaphore.wait()
                     return try result.map { response in response.toNative() }.get()
                 } catch {
                     return MockzillaHttpResponse(statusCode: HttpStatusCode.InternalServerError, headers: [:], body: "")
@@ -72,6 +71,7 @@ class MockzillaIos: Thread, MockzillaHostApi {
             },
             errorHandler: { key, request in
                 do {
+                    let errorHandlerSemaphore = DispatchSemaphore(value: 0)
                     var result: Result<BridgeMockzillaHttpResponse, PigeonError>!
                     let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
                     DispatchQueue.main.async {
@@ -80,11 +80,11 @@ class MockzillaIos: Thread, MockzillaHostApi {
                             key: key,
                             completion: { localResult in
                                 result = localResult
-                                self.errorHandlerSemaphore.signal()
+                                errorHandlerSemaphore.signal()
                             }
                         )
                     }
-                    self.errorHandlerSemaphore.wait()
+                    errorHandlerSemaphore.wait()
                     return try result.map { response in response.toNative() }.get()
                 } catch {
                     return MockzillaHttpResponse(statusCode: HttpStatusCode.InternalServerError, headers: [:], body: "")
