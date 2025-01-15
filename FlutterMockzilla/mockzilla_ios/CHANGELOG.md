@@ -17,6 +17,13 @@
 
 * Fixes an issue in the marshalling of request headers for bridge models to Dart ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/compare/55ec38c96e12c90753e9996420625c6f3c2a4da3...ff272ae419acd8de42baf29a5cb97cde0023f75a))
 
+## [1.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.0.0...flutter_mockzilla_ios-v1.0.1) (2025-01-15)
+
+
+### Bug Fixes
+
+* Fix crash in `mockzilla_ios` caused by multiple requests in quick succession ([85d21a8](https://github.com/Apadmi-Engineering/Mockzilla/commit/85d21a8acc685dc5e0c7db1fe7a726b3d31e56d4))
+
 ## 1.0.0-dev.1
 
 * Upgrades `pigeon` from `12.0.1` -> `22.6.0`.
