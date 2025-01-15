@@ -132,6 +132,7 @@ fun WidgetScaffold(
             }
             BottomPanel(
                 content = bottom,
+                openWidgets = openWidgets,
                 height = bottomPanelHeight,
                 settledHeight = bottomPanelSettledHeight,
                 onHeightChange = {
@@ -140,7 +141,8 @@ fun WidgetScaffold(
                 },
                 onDragStopped = {
                     bottomPanelHeight = bottomPanelSettledHeight
-                }
+                },
+                onSelected = onSelected
             )
         }
     }
@@ -154,14 +156,18 @@ fun WidgetScaffold(
 @Composable
 private fun BottomPanel(
     content: List<Widget>,
+    openWidgets: Set<String>,
     height: Dp,
     settledHeight: Dp,
     defaultHeight: Dp = 200.dp,
     onDragStopped: () -> Unit,
     onHeightChange: (Dp) -> Unit,
+    onSelected: (String) -> Unit,
 ) {
     val density = LocalDensity.current
-    var selectedWidget by remember { mutableStateOf(if (content.isEmpty()) null else 0) }
+    val selectedWidget = remember(openWidgets) {
+        content.indices.firstOrNull { openWidgets.contains(content[it].id) }
+    }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         selectedWidget?.let {
@@ -190,7 +196,7 @@ private fun BottomPanel(
             tabs = content.map { widget -> HorizontalTab(title = widget.title) },
             selected = selectedWidget,
             onSelect = { widget ->
-                selectedWidget = widget.takeUnless { widget == selectedWidget }
+                onSelected(content[widget].id)
                 if (height < 20.dp) {
                     onHeightChange(defaultHeight)
                 }

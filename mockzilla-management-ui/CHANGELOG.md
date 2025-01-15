@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.1.1...mockzilla-management-ui-v1.1.2) (2025-01-10)
+
+
+### Bug Fixes
+
+* Fixes an issue where the bottom logs tabs couldn't be hidden ([b4680e6](https://github.com/Apadmi-Engineering/Mockzilla/commit/b4680e6e313c947b8c9d876b12c15435aa1d2879))
+* prevent long text from pushing the endpoint switch off screen ([69db2f4](https://github.com/Apadmi-Engineering/Mockzilla/commit/69db2f4404c6af643901f4459af8a9899b93396f))
+* Try synchronously starting the update server block so the existing job is always cancelled before triggering a state update ([3d804db](https://github.com/Apadmi-Engineering/Mockzilla/commit/3d804db29174c9f6658880a7daa96480f30d7900))
+
 ## [1.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.1.0...mockzilla-management-ui-v1.1.1) (2024-10-23)
 
 * Add clear all logs button ([079cdb3](https://github.com/Apadmi-Engineering/Mockzilla/commit/079cdb3be7736deaee09244c69bf99dddbf62de2))
