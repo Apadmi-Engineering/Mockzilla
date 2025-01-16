@@ -1,3 +1,5 @@
+# Changelog
+
 ## [1.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.0.0...flutter_mockzilla_platform_interface-v1.0.1) (2025-01-16)
 
 
