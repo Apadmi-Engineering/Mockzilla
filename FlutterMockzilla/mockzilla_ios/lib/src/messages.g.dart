@@ -15,7 +15,8 @@ PlatformException _createConnectionError(String channelName) {
   );
 }
 
-List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
+List<Object?> wrapResponse(
+    {Object? result, PlatformException? error, bool empty = false}) {
   if (empty) {
     return <Object?>[];
   }
@@ -162,8 +163,10 @@ class BridgeDashboardOptionsConfig {
   static BridgeDashboardOptionsConfig decode(Object result) {
     result as List<Object?>;
     return BridgeDashboardOptionsConfig(
-      successPresets: (result[0] as List<Object?>?)!.cast<BridgeDashboardOverridePreset>(),
-      errorPresets: (result[1] as List<Object?>?)!.cast<BridgeDashboardOverridePreset>(),
+      successPresets:
+          (result[0] as List<Object?>?)!.cast<BridgeDashboardOverridePreset>(),
+      errorPresets:
+          (result[1] as List<Object?>?)!.cast<BridgeDashboardOverridePreset>(),
     );
   }
 }
@@ -291,7 +294,6 @@ class BridgeMockzillaRuntimeParams {
   }
 }
 
-
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -299,31 +301,31 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is BridgeHttpMethod) {
+    } else if (value is BridgeHttpMethod) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    }    else if (value is BridgeLogLevel) {
+    } else if (value is BridgeLogLevel) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    }    else if (value is BridgeMockzillaHttpRequest) {
+    } else if (value is BridgeMockzillaHttpRequest) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeMockzillaHttpResponse) {
+    } else if (value is BridgeMockzillaHttpResponse) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeDashboardOverridePreset) {
+    } else if (value is BridgeDashboardOverridePreset) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeDashboardOptionsConfig) {
+    } else if (value is BridgeDashboardOptionsConfig) {
       buffer.putUint8(134);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeEndpointConfig) {
+    } else if (value is BridgeEndpointConfig) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeMockzillaConfig) {
+    } else if (value is BridgeMockzillaConfig) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeMockzillaRuntimeParams) {
+    } else if (value is BridgeMockzillaRuntimeParams) {
       buffer.putUint8(137);
       writeValue(buffer, value.encode());
     } else {
@@ -334,25 +336,25 @@ class _PigeonCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 129: 
+      case 129:
         final int? value = readValue(buffer) as int?;
         return value == null ? null : BridgeHttpMethod.values[value];
-      case 130: 
+      case 130:
         final int? value = readValue(buffer) as int?;
         return value == null ? null : BridgeLogLevel.values[value];
-      case 131: 
+      case 131:
         return BridgeMockzillaHttpRequest.decode(readValue(buffer)!);
-      case 132: 
+      case 132:
         return BridgeMockzillaHttpResponse.decode(readValue(buffer)!);
-      case 133: 
+      case 133:
         return BridgeDashboardOverridePreset.decode(readValue(buffer)!);
-      case 134: 
+      case 134:
         return BridgeDashboardOptionsConfig.decode(readValue(buffer)!);
-      case 135: 
+      case 135:
         return BridgeEndpointConfig.decode(readValue(buffer)!);
-      case 136: 
+      case 136:
         return BridgeMockzillaConfig.decode(readValue(buffer)!);
-      case 137: 
+      case 137:
         return BridgeMockzillaRuntimeParams.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -364,18 +366,23 @@ class MockzillaHostApi {
   /// Constructor for [MockzillaHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  MockzillaHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
+  MockzillaHostApi(
+      {BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
       : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+        pigeonVar_messageChannelSuffix =
+            messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
 
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
-  Future<BridgeMockzillaRuntimeParams> startServer(BridgeMockzillaConfig config) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.mockzilla_ios.MockzillaHostApi.startServer$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+  Future<BridgeMockzillaRuntimeParams> startServer(
+      BridgeMockzillaConfig config) async {
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.mockzilla_ios.MockzillaHostApi.startServer$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -401,8 +408,10 @@ class MockzillaHostApi {
   }
 
   Future<void> stopServer() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.mockzilla_ios.MockzillaHostApi.stopServer$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.mockzilla_ios.MockzillaHostApi.stopServer$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
@@ -428,26 +437,38 @@ abstract class MockzillaFlutterApi {
 
   bool endpointMatcher(BridgeMockzillaHttpRequest request, String key);
 
-  BridgeMockzillaHttpResponse defaultHandler(BridgeMockzillaHttpRequest request, String key);
+  BridgeMockzillaHttpResponse defaultHandler(
+      BridgeMockzillaHttpRequest request, String key);
 
-  BridgeMockzillaHttpResponse errorHandler(BridgeMockzillaHttpRequest request, String key);
+  BridgeMockzillaHttpResponse errorHandler(
+      BridgeMockzillaHttpRequest request, String key);
 
-  void log(BridgeLogLevel logLevel, String message, String tag, String? exception);
+  void log(
+      BridgeLogLevel logLevel, String message, String tag, String? exception);
 
-  static void setUp(MockzillaFlutterApi? api, {BinaryMessenger? binaryMessenger, String messageChannelSuffix = '',}) {
-    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  static void setUp(
+    MockzillaFlutterApi? api, {
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) {
+    messageChannelSuffix =
+        messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
-      final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.endpointMatcher$messageChannelSuffix', pigeonChannelCodec,
+      final BasicMessageChannel<
+          Object?> pigeonVar_channel = BasicMessageChannel<
+              Object?>(
+          'dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.endpointMatcher$messageChannelSuffix',
+          pigeonChannelCodec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.endpointMatcher was null.');
+              'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.endpointMatcher was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final BridgeMockzillaHttpRequest? arg_request = (args[0] as BridgeMockzillaHttpRequest?);
+          final BridgeMockzillaHttpRequest? arg_request =
+              (args[0] as BridgeMockzillaHttpRequest?);
           assert(arg_request != null,
               'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.endpointMatcher was null, expected non-null BridgeMockzillaHttpRequest.');
           final String? arg_key = (args[1] as String?);
@@ -458,78 +479,94 @@ abstract class MockzillaFlutterApi {
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
-      final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.defaultHandler$messageChannelSuffix', pigeonChannelCodec,
+      final BasicMessageChannel<
+          Object?> pigeonVar_channel = BasicMessageChannel<
+              Object?>(
+          'dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.defaultHandler$messageChannelSuffix',
+          pigeonChannelCodec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.defaultHandler was null.');
+              'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.defaultHandler was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final BridgeMockzillaHttpRequest? arg_request = (args[0] as BridgeMockzillaHttpRequest?);
+          final BridgeMockzillaHttpRequest? arg_request =
+              (args[0] as BridgeMockzillaHttpRequest?);
           assert(arg_request != null,
               'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.defaultHandler was null, expected non-null BridgeMockzillaHttpRequest.');
           final String? arg_key = (args[1] as String?);
           assert(arg_key != null,
               'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.defaultHandler was null, expected non-null String.');
           try {
-            final BridgeMockzillaHttpResponse output = api.defaultHandler(arg_request!, arg_key!);
+            final BridgeMockzillaHttpResponse output =
+                api.defaultHandler(arg_request!, arg_key!);
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
-      final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.errorHandler$messageChannelSuffix', pigeonChannelCodec,
+      final BasicMessageChannel<
+          Object?> pigeonVar_channel = BasicMessageChannel<
+              Object?>(
+          'dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.errorHandler$messageChannelSuffix',
+          pigeonChannelCodec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.errorHandler was null.');
+              'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.errorHandler was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final BridgeMockzillaHttpRequest? arg_request = (args[0] as BridgeMockzillaHttpRequest?);
+          final BridgeMockzillaHttpRequest? arg_request =
+              (args[0] as BridgeMockzillaHttpRequest?);
           assert(arg_request != null,
               'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.errorHandler was null, expected non-null BridgeMockzillaHttpRequest.');
           final String? arg_key = (args[1] as String?);
           assert(arg_key != null,
               'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.errorHandler was null, expected non-null String.');
           try {
-            final BridgeMockzillaHttpResponse output = api.errorHandler(arg_request!, arg_key!);
+            final BridgeMockzillaHttpResponse output =
+                api.errorHandler(arg_request!, arg_key!);
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
     }
     {
-      final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.log$messageChannelSuffix', pigeonChannelCodec,
+      final BasicMessageChannel<
+          Object?> pigeonVar_channel = BasicMessageChannel<
+              Object?>(
+          'dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.log$messageChannelSuffix',
+          pigeonChannelCodec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
         pigeonVar_channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.log was null.');
+              'Argument for dev.flutter.pigeon.mockzilla_ios.MockzillaFlutterApi.log was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final BridgeLogLevel? arg_logLevel = (args[0] as BridgeLogLevel?);
           assert(arg_logLevel != null,
@@ -546,8 +583,9 @@ abstract class MockzillaFlutterApi {
             return wrapResponse(empty: true);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+                error: PlatformException(code: 'error', message: e.toString()));
           }
         });
       }
