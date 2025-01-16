@@ -26,7 +26,7 @@ scripts:
     description: "Runs code generation for example apps where generated code is ignored"
     run: "melos run codeGeneration:example --no-select"
   codeGeneration:example:
-    run: "dart run build_runner build --delete-conficting-outputs"
+    run: melos exec -c 1 "dart run build_runner build -d"
     packageFilters:
       scope: "mockzilla_example"
   test:all:
