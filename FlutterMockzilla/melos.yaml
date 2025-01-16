@@ -22,13 +22,6 @@ scripts:
       melos exec -c 1 "cd example && flutter build ios --config-only --no-codesign"
     packageFilters:
       scope: "mockzilla_ios"
-  codeGeneration:all:
-    description: "Runs code generation for example apps where generated code is ignored"
-    run: "melos run codeGeneration:example --no-select"
-  codeGeneration:example:
-    run: melos exec -c 1 "dart run build_runner build -d"
-    packageFilters:
-      scope: "mockzilla_example"
   test:all:
     run: "melos run test:dart --no-select"
   test:dart:
