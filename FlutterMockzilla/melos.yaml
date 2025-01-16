@@ -10,16 +10,6 @@ packages:
   - mockzilla_platform_interface
 
 scripts:
-  buildExample:
-    description: "Build example apps"
-    run: >
-      melos exec -c 1 "cd example &&
-      flutter pub get &&
-      dart run build_runner build &&
-      flutter build apk &&
-      flutter build ipa --no-codesign"
-    packageFilters:
-      scope: "mockzilla"
   buildConfig:android:
     description: "Builds config of Android example"
     run: >
@@ -32,6 +22,13 @@ scripts:
       melos exec -c 1 "cd example && flutter build ios --config-only --no-codesign"
     packageFilters:
       scope: "mockzilla_ios"
+  codeGeneration:all:
+    description: "Runs code generation for example apps where generated code is ignored"
+    run: "melos run codeGeneration:example --no-select"
+  codeGeneration:example:
+    run: "dart run build_runner build --delete-conficting-outputs"
+    packageFilters:
+      scope: "mockzilla_example"
   test:all:
     run: "melos run test:dart --no-select"
   test:dart:

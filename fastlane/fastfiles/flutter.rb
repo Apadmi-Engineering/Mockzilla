@@ -13,6 +13,7 @@ end
 desc "Flutter target for the lib"
 lane :flutter_lib_pull_request do
     sh("cd #{flutter_root}; dart pub global activate melos; melos bootstrap")
+    flutter_code_generation
     flutter_analyze
     flutter_dart_test
     flutter_android_test
@@ -22,6 +23,11 @@ end
 desc "Analyzes Flutter packages, aborts upon warnings or errors"
 private_lane :flutter_analyze do
     sh("cd #{flutter_root}; melos analyze")
+end
+
+desc "Executes code generation where required"
+private_lane :flutter_code_generation do
+    sh("cd #{flutter_root}; melos run codeGeneration:all")
 end
 
 desc "Executes Dart unit tests"
@@ -46,8 +52,4 @@ private_lane :flutter_ios_test do
         scheme: "Runner",
         configuration: "Debug"
     )
-end
-
-lane :demo_flutter_pull_request do
-    sh("cd #{flutter_root}; melos run buildExample")
 end
