@@ -10,6 +10,16 @@ packages:
   - mockzilla_platform_interface
 
 scripts:
+  buildExample:
+    description: "Build example apps"
+    run: >
+      melos exec -c 1 "cd example &&
+      flutter pub get &&
+      dart run build_runner build &&
+      flutter build apk &&
+      flutter build ipa --no-codesign"
+    packageFilters:
+      scope: "mockzilla"
   buildConfig:android:
     description: "Builds config of Android example"
     run: >

@@ -53,3 +53,7 @@ private_lane :flutter_ios_test do
         configuration: "Debug"
     )
 end
+
+lane :demo_flutter_pull_request do
+    sh("cd #{flutter_root}; melos run buildExample")
+end
