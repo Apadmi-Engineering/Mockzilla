@@ -15,7 +15,6 @@ scripts:
     run: >
       melos exec -c 1 "cd example &&
       flutter pub get &&
-      dart run build_runner build &&
       flutter build apk &&
       flutter build ipa --no-codesign"
     packageFilters:
