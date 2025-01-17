@@ -1,9 +1,4 @@
-## [1.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.0.0...flutter_mockzilla_ios-v1.0.1) (2025-01-15)
-
-
-### Bug Fixes
-
-* Fix crash in `mockzilla_ios` caused by multiple requests in quick succession ([85d21a8](https://github.com/Apadmi-Engineering/Mockzilla/commit/85d21a8acc685dc5e0c7db1fe7a726b3d31e56d4))
+# Changelog
 
 ## [1.0.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.0.1...flutter_mockzilla_ios-v1.0.2) (2025-01-17)
 
@@ -12,6 +7,13 @@
 
 * Hides `FlutterCallbackProvider` from exported symbols ([93149c8](https://github.com/Apadmi-Engineering/Mockzilla/commit/93149c8d647dfbd8c149b4458a91135fbffab437))
 * Loosens dependency constraints ([93149c8](https://github.com/Apadmi-Engineering/Mockzilla/commit/93149c8d647dfbd8c149b4458a91135fbffab437))
+
+## [1.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.0.0...flutter_mockzilla_ios-v1.0.1) (2025-01-15)
+
+
+### Bug Fixes
+
+* Fix crash in `mockzilla_ios` caused by multiple requests in quick succession ([85d21a8](https://github.com/Apadmi-Engineering/Mockzilla/commit/85d21a8acc685dc5e0c7db1fe7a726b3d31e56d4))
 
 ## [1.0.0](https://github.com/Apadmi-Engineering/Mockzilla/releases/tag/flutter_mockzilla_ios-v1.0.0) (2025-01-09)
 
