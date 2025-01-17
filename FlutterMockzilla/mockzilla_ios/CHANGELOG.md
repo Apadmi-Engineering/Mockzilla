@@ -1,3 +1,13 @@
+# Changelog
+
+## [1.0.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.0.1...flutter_mockzilla_ios-v1.0.2) (2025-01-17)
+
+
+### Bug Fixes
+
+* Hides `FlutterCallbackProvider` from exported symbols ([93149c8](https://github.com/Apadmi-Engineering/Mockzilla/commit/93149c8d647dfbd8c149b4458a91135fbffab437))
+* Loosens dependency constraints ([93149c8](https://github.com/Apadmi-Engineering/Mockzilla/commit/93149c8d647dfbd8c149b4458a91135fbffab437))
+
 ## [1.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.0.0...flutter_mockzilla_ios-v1.0.1) (2025-01-15)
 
 
