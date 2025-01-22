@@ -28,11 +28,12 @@ interface ActiveDeviceSelector {
     fun clearSelectedDevice()
     fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData)
     fun updateSelectedDevice(device: Device)
+    fun removeDevice(device: Device)
 }
 
 class ActiveDeviceManagerImpl(
     private val metaDataUseCase: MetaDataUseCase,
-    scope: CoroutineScope
+    private val scope: CoroutineScope
 ) : ActiveDeviceMonitor, ActiveDeviceSelector {
     override val selectedDevice = MutableStateFlow<StatefulDevice?>(null)
     override val onDeviceConnectionStateChange = MutableSharedFlow<Unit>(replay = 1)
@@ -96,6 +97,16 @@ class ActiveDeviceManagerImpl(
 
     override fun clearSelectedDevice() {
         selectedDevice.value = null
+    }
+
+    override fun removeDevice(device: Device) {
+        scope.launch {
+            if (selectedDevice.value?.device == device) {
+                clearSelectedDevice()
+            }
+            allDevicesInternal.remove(device)
+            onDeviceConnectionStateChange.emit(Unit)
+        }
     }
 
     // Only used by tests, otherwise should survive for the lifetime of the application i.e. the lifetime
