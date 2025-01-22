@@ -35,6 +35,10 @@ class DeviceTabsViewModel(
         activeDeviceSelector.clearSelectedDevice()
     }
 
+    fun removeDevice(device: State.DeviceTabEntry) {
+        activeDeviceSelector.removeDevice(device.underlyingDevice)
+    }
+
     private fun reloadData(selectedDevice: Device?) {
         state.value = State(devices = activeDeviceMonitor.allDevices.map {
             State.DeviceTabEntry(it.name, it.device == selectedDevice, it.isConnected, it.device)

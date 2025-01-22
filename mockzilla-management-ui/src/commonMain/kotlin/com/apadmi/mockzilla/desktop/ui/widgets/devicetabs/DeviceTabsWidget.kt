@@ -1,15 +1,25 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.devicetabs
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.PointerMatcher
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.onClick
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditOff
 import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerButton
+import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
@@ -30,17 +40,20 @@ fun DeviceTabsWidget(
         state = state,
         onSelect = viewModel::onChangeDevice,
         onAddNewDevice = viewModel::addNewDevice,
+        onCloseTab = viewModel::removeDevice,
         modifier = modifier,
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DeviceTabsWidgetContent(
     state: State,
     modifier: Modifier = Modifier,
     strings: Strings = LocalStrings.current,
     onSelect: (State.DeviceTabEntry) -> Unit,
-    onAddNewDevice: () -> Unit
+    onAddNewDevice: () -> Unit,
+    onCloseTab: (State.DeviceTabEntry) -> Unit,
 ) {
     val selectedDevice = state.devices.indexOfFirst { it.isActive }
     val selectedTab = if (selectedDevice == -1) {
@@ -54,7 +67,7 @@ fun DeviceTabsWidgetContent(
             tabs = state.devices.map { device ->
                 HorizontalTab(
                     title = device.name,
-                    icon = if (device.isActive) {
+                    leadingIcon = if (device.isActive) {
                         if (device.isConnected) {
                             Icons.Filled.Edit
                         } else {
@@ -67,17 +80,31 @@ fun DeviceTabsWidgetContent(
                         strings.widgets.deviceTabs.connected
                     } else {
                         strings.widgets.deviceTabs.disconnected
-                    }
+                    },
+                    trailing = {
+                        IconButton(
+                            content = {
+                                Icon(Icons.Filled.Close, "Close")
+                            },
+                            modifier = Modifier.size(24.dp),
+                            onClick = { onCloseTab(device) }
+                        )
+                    },
+                    modifier = Modifier.onClick(
+                        matcher = PointerMatcher.mouse(PointerButton.Tertiary),
+                        interactionSource = MutableInteractionSource(),
+                        onClick = { onCloseTab(device) }
+                    )
                 )
             } + HorizontalTab(
                 title = strings.widgets.deviceTabs.addDevice,
-                icon = Icons.Filled.Add,
+                leadingIcon = Icons.Filled.Add,
                 // always ensure tabs have a subtitle to keep tab heights the same
                 subtitle = strings.widgets.deviceTabs.devices(state.devices.size),
             ),
             selected = selectedTab,
             onSelect = {
-                if(it == selectedTab) {
+                if (it == selectedTab) {
                     return@HorizontalTabList
                 }
                 if (it > state.devices.lastIndex) {

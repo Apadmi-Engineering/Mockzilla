@@ -31,8 +31,10 @@ internal data class VerticalTab(
 @Immutable
 internal data class HorizontalTab(
     val title: String?,
-    val icon: ImageVector? = null,
+    val leadingIcon: ImageVector? = null,
     val subtitle: String? = null,
+    val trailing: (@Composable () -> Unit)? = null,
+    val modifier: Modifier = Modifier,
 )
 
 @Composable
@@ -68,8 +70,10 @@ internal fun HorizontalTabList(
                 title = tab.title,
                 selected = selected == index,
                 onSelect = { onSelect(index) },
-                icon = tab.icon,
+                leadingIcon = tab.leadingIcon,
                 subtitle = tab.subtitle,
+                trailing = tab.trailing,
+                modifier = tab.modifier
             )
         }
     }
@@ -81,8 +85,9 @@ private fun TabItem(
     selected: Boolean,
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
+    leadingIcon: ImageVector? = null,
     subtitle: String? = null,
+    trailing: (@Composable () -> Unit)? = null,
 ) {
     Surface(
         color = if (selected) {
@@ -102,9 +107,9 @@ private fun TabItem(
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            icon?.let {
+            leadingIcon?.let {
                 Icon(
-                    imageVector = icon,
+                    imageVector = leadingIcon,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(4.dp))
@@ -120,6 +125,10 @@ private fun TabItem(
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }
+            }
+            trailing?.let {
+                Spacer(modifier = Modifier.width(4.dp))
+                it()
             }
         }
     }
