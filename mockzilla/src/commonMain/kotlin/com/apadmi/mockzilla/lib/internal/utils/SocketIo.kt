@@ -14,7 +14,6 @@ internal class SocketBinderImpl(private val selectorManager: SelectorManager) : 
 }
 
 internal class SocketIo(private val socketBinder: SocketBinder) {
-
     /**
      * Ktor treats port `0` as a flag to use a random, available port. See more at
      * https://ktor.io/docs/server-configuration-code.html#embedded-basic

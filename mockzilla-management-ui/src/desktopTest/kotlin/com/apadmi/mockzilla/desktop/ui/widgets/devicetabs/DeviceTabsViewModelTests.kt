@@ -60,6 +60,21 @@ class DeviceTabsViewModelTests : CoroutineTest() {
         verify(exactly = 1) { activeDeviceSelectorMock.clearSelectedDevice() }
     }
 
+    @Test
+    fun `removeDevice - calls through to selector`() = runBlockingTest {
+        /* Setup */
+        every { activeDeviceMonitorMock.selectedDevice }.returns(MutableStateFlow(null))
+        every { activeDeviceMonitorMock.allDevices }.returns(emptyList())
+        every { activeDeviceSelectorMock.removeDevice(any()) }.returns(Unit)
+        val sut = createSut()
+
+        /* Run test */
+        sut.removeDevice(State.DeviceTabEntry.dummy())
+
+        /* Verify */
+        verify(exactly = 1) { activeDeviceSelectorMock.removeDevice(State.DeviceTabEntry.dummy().underlyingDevice) }
+    }
+
     @Suppress("TOO_LONG_FUNCTION")
     @Test
     fun `init - pulls latest data from monitor - updates state`() = runBlockingTest {

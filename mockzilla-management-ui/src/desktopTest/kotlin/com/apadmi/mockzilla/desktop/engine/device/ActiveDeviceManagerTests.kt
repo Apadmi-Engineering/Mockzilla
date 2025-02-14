@@ -14,6 +14,7 @@ import org.junit.Test
 
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class ActiveDeviceManagerTests : CoroutineTest() {
     @RelaxedMockK
@@ -119,6 +120,56 @@ class ActiveDeviceManagerTests : CoroutineTest() {
 
             /* Verify */
             assertNull(awaitItem())
+            ensureAllEventsConsumed()
+            sut.cancelPolling()
+        }
+    }
+
+    @Test
+    fun `removeDevice - device not selected - emits state change`() = runBlockingTest {
+        /* Setup */
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+            Result.success(MetaData.dummy())
+        )
+        val sut = createSut()
+        sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
+        sut.clearSelectedDevice()
+
+        sut.onDeviceConnectionStateChange.test {
+            /* Run test */
+            sut.removeDevice(Device.dummy())
+
+            /* Verify */
+            skipItems(1)
+            awaitItem()
+            assertTrue { sut.allDevices.isEmpty() }
+            ensureAllEventsConsumed()
+            sut.cancelPolling()
+        }
+    }
+
+    @Test
+    fun `removeDevice - device selected - emits state change, clears selected device`() = runBlockingTest {
+        /* Setup */
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+            Result.success(MetaData.dummy())
+        )
+        val sut = createSut()
+        sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
+        sut.clearSelectedDevice()
+
+        sut.onDeviceConnectionStateChange.test {
+            awaitItem()
+
+            /* Run test */
+            sut.removeDevice(Device.dummy())
+
+            /* Verify */
+            awaitItem()
+            assertTrue { sut.allDevices.isEmpty() }
+            assertNull(sut.selectedDevice.value)
+
+            /* Tear down */
             ensureAllEventsConsumed()
             sut.cancelPolling()
         }
