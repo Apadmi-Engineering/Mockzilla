@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,87 +10,50 @@ part of 'models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$MockzillaHttpRequest {
-  String get uri => throw _privateConstructorUsedError;
-  Map<String, String> get headers => throw _privateConstructorUsedError;
-  String get body => throw _privateConstructorUsedError;
-  HttpMethod get method => throw _privateConstructorUsedError;
+  String get uri;
+  Map<String, String> get headers;
+  String get body;
+  HttpMethod get method;
 
   /// Create a copy of MockzillaHttpRequest
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $MockzillaHttpRequestCopyWith<MockzillaHttpRequest> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $MockzillaHttpRequestCopyWith<$Res> {
-  factory $MockzillaHttpRequestCopyWith(MockzillaHttpRequest value,
-          $Res Function(MockzillaHttpRequest) then) =
-      _$MockzillaHttpRequestCopyWithImpl<$Res, MockzillaHttpRequest>;
-  @useResult
-  $Res call(
-      {String uri,
-      Map<String, String> headers,
-      String body,
-      HttpMethod method});
-}
-
-/// @nodoc
-class _$MockzillaHttpRequestCopyWithImpl<$Res,
-        $Val extends MockzillaHttpRequest>
-    implements $MockzillaHttpRequestCopyWith<$Res> {
-  _$MockzillaHttpRequestCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of MockzillaHttpRequest
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $MockzillaHttpRequestCopyWith<MockzillaHttpRequest> get copyWith =>
+      _$MockzillaHttpRequestCopyWithImpl<MockzillaHttpRequest>(
+          this as MockzillaHttpRequest, _$identity);
+
   @override
-  $Res call({
-    Object? uri = null,
-    Object? headers = null,
-    Object? body = null,
-    Object? method = null,
-  }) {
-    return _then(_value.copyWith(
-      uri: null == uri
-          ? _value.uri
-          : uri // ignore: cast_nullable_to_non_nullable
-              as String,
-      headers: null == headers
-          ? _value.headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>,
-      body: null == body
-          ? _value.body
-          : body // ignore: cast_nullable_to_non_nullable
-              as String,
-      method: null == method
-          ? _value.method
-          : method // ignore: cast_nullable_to_non_nullable
-              as HttpMethod,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MockzillaHttpRequest &&
+            (identical(other.uri, uri) || other.uri == uri) &&
+            const DeepCollectionEquality().equals(other.headers, headers) &&
+            (identical(other.body, body) || other.body == body) &&
+            (identical(other.method, method) || other.method == method));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, uri,
+      const DeepCollectionEquality().hash(headers), body, method);
+
+  @override
+  String toString() {
+    return 'MockzillaHttpRequest(uri: $uri, headers: $headers, body: $body, method: $method)';
   }
 }
 
 /// @nodoc
-abstract class _$$MockzillaHttpRequestImplCopyWith<$Res>
-    implements $MockzillaHttpRequestCopyWith<$Res> {
-  factory _$$MockzillaHttpRequestImplCopyWith(_$MockzillaHttpRequestImpl value,
-          $Res Function(_$MockzillaHttpRequestImpl) then) =
-      __$$MockzillaHttpRequestImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $MockzillaHttpRequestCopyWith<$Res> {
+  factory $MockzillaHttpRequestCopyWith(MockzillaHttpRequest value,
+          $Res Function(MockzillaHttpRequest) _then) =
+      _$MockzillaHttpRequestCopyWithImpl;
   @useResult
   $Res call(
       {String uri,
@@ -99,12 +63,12 @@ abstract class _$$MockzillaHttpRequestImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$MockzillaHttpRequestImplCopyWithImpl<$Res>
-    extends _$MockzillaHttpRequestCopyWithImpl<$Res, _$MockzillaHttpRequestImpl>
-    implements _$$MockzillaHttpRequestImplCopyWith<$Res> {
-  __$$MockzillaHttpRequestImplCopyWithImpl(_$MockzillaHttpRequestImpl _value,
-      $Res Function(_$MockzillaHttpRequestImpl) _then)
-      : super(_value, _then);
+class _$MockzillaHttpRequestCopyWithImpl<$Res>
+    implements $MockzillaHttpRequestCopyWith<$Res> {
+  _$MockzillaHttpRequestCopyWithImpl(this._self, this._then);
+
+  final MockzillaHttpRequest _self;
+  final $Res Function(MockzillaHttpRequest) _then;
 
   /// Create a copy of MockzillaHttpRequest
   /// with the given fields replaced by the non-null parameter values.
@@ -116,21 +80,21 @@ class __$$MockzillaHttpRequestImplCopyWithImpl<$Res>
     Object? body = null,
     Object? method = null,
   }) {
-    return _then(_$MockzillaHttpRequestImpl(
+    return _then(_self.copyWith(
       uri: null == uri
-          ? _value.uri
+          ? _self.uri
           : uri // ignore: cast_nullable_to_non_nullable
               as String,
       headers: null == headers
-          ? _value._headers
+          ? _self.headers
           : headers // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
       body: null == body
-          ? _value.body
+          ? _self.body
           : body // ignore: cast_nullable_to_non_nullable
               as String,
       method: null == method
-          ? _value.method
+          ? _self.method
           : method // ignore: cast_nullable_to_non_nullable
               as HttpMethod,
     ));
@@ -139,8 +103,8 @@ class __$$MockzillaHttpRequestImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$MockzillaHttpRequestImpl implements _MockzillaHttpRequest {
-  const _$MockzillaHttpRequestImpl(
+class _MockzillaHttpRequest implements MockzillaHttpRequest {
+  const _MockzillaHttpRequest(
       {required this.uri,
       final Map<String, String> headers = const {},
       this.body = "",
@@ -164,16 +128,20 @@ class _$MockzillaHttpRequestImpl implements _MockzillaHttpRequest {
   @override
   final HttpMethod method;
 
+  /// Create a copy of MockzillaHttpRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'MockzillaHttpRequest(uri: $uri, headers: $headers, body: $body, method: $method)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$MockzillaHttpRequestCopyWith<_MockzillaHttpRequest> get copyWith =>
+      __$MockzillaHttpRequestCopyWithImpl<_MockzillaHttpRequest>(
+          this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MockzillaHttpRequestImpl &&
+            other is _MockzillaHttpRequest &&
             (identical(other.uri, uri) || other.uri == uri) &&
             const DeepCollectionEquality().equals(other._headers, _headers) &&
             (identical(other.body, body) || other.body == body) &&
@@ -184,124 +152,121 @@ class _$MockzillaHttpRequestImpl implements _MockzillaHttpRequest {
   int get hashCode => Object.hash(runtimeType, uri,
       const DeepCollectionEquality().hash(_headers), body, method);
 
-  /// Create a copy of MockzillaHttpRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$MockzillaHttpRequestImplCopyWith<_$MockzillaHttpRequestImpl>
-      get copyWith =>
-          __$$MockzillaHttpRequestImplCopyWithImpl<_$MockzillaHttpRequestImpl>(
-              this, _$identity);
+  String toString() {
+    return 'MockzillaHttpRequest(uri: $uri, headers: $headers, body: $body, method: $method)';
+  }
 }
 
-abstract class _MockzillaHttpRequest implements MockzillaHttpRequest {
-  const factory _MockzillaHttpRequest(
-      {required final String uri,
-      final Map<String, String> headers,
-      final String body,
-      required final HttpMethod method}) = _$MockzillaHttpRequestImpl;
+/// @nodoc
+abstract mixin class _$MockzillaHttpRequestCopyWith<$Res>
+    implements $MockzillaHttpRequestCopyWith<$Res> {
+  factory _$MockzillaHttpRequestCopyWith(_MockzillaHttpRequest value,
+          $Res Function(_MockzillaHttpRequest) _then) =
+      __$MockzillaHttpRequestCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {String uri,
+      Map<String, String> headers,
+      String body,
+      HttpMethod method});
+}
 
-  @override
-  String get uri;
-  @override
-  Map<String, String> get headers;
-  @override
-  String get body;
-  @override
-  HttpMethod get method;
+/// @nodoc
+class __$MockzillaHttpRequestCopyWithImpl<$Res>
+    implements _$MockzillaHttpRequestCopyWith<$Res> {
+  __$MockzillaHttpRequestCopyWithImpl(this._self, this._then);
+
+  final _MockzillaHttpRequest _self;
+  final $Res Function(_MockzillaHttpRequest) _then;
 
   /// Create a copy of MockzillaHttpRequest
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MockzillaHttpRequestImplCopyWith<_$MockzillaHttpRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? uri = null,
+    Object? headers = null,
+    Object? body = null,
+    Object? method = null,
+  }) {
+    return _then(_MockzillaHttpRequest(
+      uri: null == uri
+          ? _self.uri
+          : uri // ignore: cast_nullable_to_non_nullable
+              as String,
+      headers: null == headers
+          ? _self._headers
+          : headers // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
+      body: null == body
+          ? _self.body
+          : body // ignore: cast_nullable_to_non_nullable
+              as String,
+      method: null == method
+          ? _self.method
+          : method // ignore: cast_nullable_to_non_nullable
+              as HttpMethod,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$MockzillaHttpResponse {
   /// The HTTP status to use for the response, defaults to 200 - OK.
-  int get statusCode => throw _privateConstructorUsedError;
+  int get statusCode;
 
   /// The response headers, defaults a single `Content-Type` header with a
   /// value of `application/json`.
-  Map<String, String> get headers => throw _privateConstructorUsedError;
-  String get body => throw _privateConstructorUsedError;
+  Map<String, String> get headers;
+  String get body;
 
   /// Create a copy of MockzillaHttpResponse
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $MockzillaHttpResponseCopyWith<MockzillaHttpResponse> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $MockzillaHttpResponseCopyWith<$Res> {
-  factory $MockzillaHttpResponseCopyWith(MockzillaHttpResponse value,
-          $Res Function(MockzillaHttpResponse) then) =
-      _$MockzillaHttpResponseCopyWithImpl<$Res, MockzillaHttpResponse>;
-  @useResult
-  $Res call({int statusCode, Map<String, String> headers, String body});
-}
-
-/// @nodoc
-class _$MockzillaHttpResponseCopyWithImpl<$Res,
-        $Val extends MockzillaHttpResponse>
-    implements $MockzillaHttpResponseCopyWith<$Res> {
-  _$MockzillaHttpResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of MockzillaHttpResponse
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $MockzillaHttpResponseCopyWith<MockzillaHttpResponse> get copyWith =>
+      _$MockzillaHttpResponseCopyWithImpl<MockzillaHttpResponse>(
+          this as MockzillaHttpResponse, _$identity);
+
   @override
-  $Res call({
-    Object? statusCode = null,
-    Object? headers = null,
-    Object? body = null,
-  }) {
-    return _then(_value.copyWith(
-      statusCode: null == statusCode
-          ? _value.statusCode
-          : statusCode // ignore: cast_nullable_to_non_nullable
-              as int,
-      headers: null == headers
-          ? _value.headers
-          : headers // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>,
-      body: null == body
-          ? _value.body
-          : body // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MockzillaHttpResponse &&
+            (identical(other.statusCode, statusCode) ||
+                other.statusCode == statusCode) &&
+            const DeepCollectionEquality().equals(other.headers, headers) &&
+            (identical(other.body, body) || other.body == body));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, statusCode,
+      const DeepCollectionEquality().hash(headers), body);
+
+  @override
+  String toString() {
+    return 'MockzillaHttpResponse(statusCode: $statusCode, headers: $headers, body: $body)';
   }
 }
 
 /// @nodoc
-abstract class _$$MockzillaHttpResponseImplCopyWith<$Res>
-    implements $MockzillaHttpResponseCopyWith<$Res> {
-  factory _$$MockzillaHttpResponseImplCopyWith(
-          _$MockzillaHttpResponseImpl value,
-          $Res Function(_$MockzillaHttpResponseImpl) then) =
-      __$$MockzillaHttpResponseImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $MockzillaHttpResponseCopyWith<$Res> {
+  factory $MockzillaHttpResponseCopyWith(MockzillaHttpResponse value,
+          $Res Function(MockzillaHttpResponse) _then) =
+      _$MockzillaHttpResponseCopyWithImpl;
   @useResult
   $Res call({int statusCode, Map<String, String> headers, String body});
 }
 
 /// @nodoc
-class __$$MockzillaHttpResponseImplCopyWithImpl<$Res>
-    extends _$MockzillaHttpResponseCopyWithImpl<$Res,
-        _$MockzillaHttpResponseImpl>
-    implements _$$MockzillaHttpResponseImplCopyWith<$Res> {
-  __$$MockzillaHttpResponseImplCopyWithImpl(_$MockzillaHttpResponseImpl _value,
-      $Res Function(_$MockzillaHttpResponseImpl) _then)
-      : super(_value, _then);
+class _$MockzillaHttpResponseCopyWithImpl<$Res>
+    implements $MockzillaHttpResponseCopyWith<$Res> {
+  _$MockzillaHttpResponseCopyWithImpl(this._self, this._then);
+
+  final MockzillaHttpResponse _self;
+  final $Res Function(MockzillaHttpResponse) _then;
 
   /// Create a copy of MockzillaHttpResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -312,17 +277,17 @@ class __$$MockzillaHttpResponseImplCopyWithImpl<$Res>
     Object? headers = null,
     Object? body = null,
   }) {
-    return _then(_$MockzillaHttpResponseImpl(
+    return _then(_self.copyWith(
       statusCode: null == statusCode
-          ? _value.statusCode
+          ? _self.statusCode
           : statusCode // ignore: cast_nullable_to_non_nullable
               as int,
       headers: null == headers
-          ? _value._headers
+          ? _self.headers
           : headers // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
       body: null == body
-          ? _value.body
+          ? _self.body
           : body // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -331,8 +296,8 @@ class __$$MockzillaHttpResponseImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$MockzillaHttpResponseImpl implements _MockzillaHttpResponse {
-  const _$MockzillaHttpResponseImpl(
+class _MockzillaHttpResponse implements MockzillaHttpResponse {
+  const _MockzillaHttpResponse(
       {this.statusCode = HttpStatus.ok,
       final Map<String, String> headers = const {
         "Content-Type": "application/json"
@@ -363,16 +328,20 @@ class _$MockzillaHttpResponseImpl implements _MockzillaHttpResponse {
   @JsonKey()
   final String body;
 
+  /// Create a copy of MockzillaHttpResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'MockzillaHttpResponse(statusCode: $statusCode, headers: $headers, body: $body)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$MockzillaHttpResponseCopyWith<_MockzillaHttpResponse> get copyWith =>
+      __$MockzillaHttpResponseCopyWithImpl<_MockzillaHttpResponse>(
+          this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MockzillaHttpResponseImpl &&
+            other is _MockzillaHttpResponse &&
             (identical(other.statusCode, statusCode) ||
                 other.statusCode == statusCode) &&
             const DeepCollectionEquality().equals(other._headers, _headers) &&
@@ -383,186 +352,76 @@ class _$MockzillaHttpResponseImpl implements _MockzillaHttpResponse {
   int get hashCode => Object.hash(runtimeType, statusCode,
       const DeepCollectionEquality().hash(_headers), body);
 
-  /// Create a copy of MockzillaHttpResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$MockzillaHttpResponseImplCopyWith<_$MockzillaHttpResponseImpl>
-      get copyWith => __$$MockzillaHttpResponseImplCopyWithImpl<
-          _$MockzillaHttpResponseImpl>(this, _$identity);
-}
-
-abstract class _MockzillaHttpResponse implements MockzillaHttpResponse {
-  const factory _MockzillaHttpResponse(
-      {final int statusCode,
-      final Map<String, String> headers,
-      final String body}) = _$MockzillaHttpResponseImpl;
-
-  /// The HTTP status to use for the response, defaults to 200 - OK.
-  @override
-  int get statusCode;
-
-  /// The response headers, defaults a single `Content-Type` header with a
-  /// value of `application/json`.
-  @override
-  Map<String, String> get headers;
-  @override
-  String get body;
-
-  /// Create a copy of MockzillaHttpResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MockzillaHttpResponseImplCopyWith<_$MockzillaHttpResponseImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-mixin _$DashboardOverridePreset {
-  String get name => throw _privateConstructorUsedError;
-  String? get description => throw _privateConstructorUsedError;
-  MockzillaHttpResponse get response => throw _privateConstructorUsedError;
-
-  /// Create a copy of DashboardOverridePreset
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DashboardOverridePresetCopyWith<DashboardOverridePreset> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $DashboardOverridePresetCopyWith<$Res> {
-  factory $DashboardOverridePresetCopyWith(DashboardOverridePreset value,
-          $Res Function(DashboardOverridePreset) then) =
-      _$DashboardOverridePresetCopyWithImpl<$Res, DashboardOverridePreset>;
-  @useResult
-  $Res call({String name, String? description, MockzillaHttpResponse response});
-
-  $MockzillaHttpResponseCopyWith<$Res> get response;
-}
-
-/// @nodoc
-class _$DashboardOverridePresetCopyWithImpl<$Res,
-        $Val extends DashboardOverridePreset>
-    implements $DashboardOverridePresetCopyWith<$Res> {
-  _$DashboardOverridePresetCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of DashboardOverridePreset
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? description = freezed,
-    Object? response = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      response: null == response
-          ? _value.response
-          : response // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse,
-    ) as $Val);
-  }
-
-  /// Create a copy of DashboardOverridePreset
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $MockzillaHttpResponseCopyWith<$Res> get response {
-    return $MockzillaHttpResponseCopyWith<$Res>(_value.response, (value) {
-      return _then(_value.copyWith(response: value) as $Val);
-    });
+  String toString() {
+    return 'MockzillaHttpResponse(statusCode: $statusCode, headers: $headers, body: $body)';
   }
 }
 
 /// @nodoc
-abstract class _$$DashboardOverridePresetImplCopyWith<$Res>
-    implements $DashboardOverridePresetCopyWith<$Res> {
-  factory _$$DashboardOverridePresetImplCopyWith(
-          _$DashboardOverridePresetImpl value,
-          $Res Function(_$DashboardOverridePresetImpl) then) =
-      __$$DashboardOverridePresetImplCopyWithImpl<$Res>;
+abstract mixin class _$MockzillaHttpResponseCopyWith<$Res>
+    implements $MockzillaHttpResponseCopyWith<$Res> {
+  factory _$MockzillaHttpResponseCopyWith(_MockzillaHttpResponse value,
+          $Res Function(_MockzillaHttpResponse) _then) =
+      __$MockzillaHttpResponseCopyWithImpl;
   @override
   @useResult
-  $Res call({String name, String? description, MockzillaHttpResponse response});
-
-  @override
-  $MockzillaHttpResponseCopyWith<$Res> get response;
+  $Res call({int statusCode, Map<String, String> headers, String body});
 }
 
 /// @nodoc
-class __$$DashboardOverridePresetImplCopyWithImpl<$Res>
-    extends _$DashboardOverridePresetCopyWithImpl<$Res,
-        _$DashboardOverridePresetImpl>
-    implements _$$DashboardOverridePresetImplCopyWith<$Res> {
-  __$$DashboardOverridePresetImplCopyWithImpl(
-      _$DashboardOverridePresetImpl _value,
-      $Res Function(_$DashboardOverridePresetImpl) _then)
-      : super(_value, _then);
+class __$MockzillaHttpResponseCopyWithImpl<$Res>
+    implements _$MockzillaHttpResponseCopyWith<$Res> {
+  __$MockzillaHttpResponseCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of DashboardOverridePreset
+  final _MockzillaHttpResponse _self;
+  final $Res Function(_MockzillaHttpResponse) _then;
+
+  /// Create a copy of MockzillaHttpResponse
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
-    Object? name = null,
-    Object? description = freezed,
-    Object? response = null,
+    Object? statusCode = null,
+    Object? headers = null,
+    Object? body = null,
   }) {
-    return _then(_$DashboardOverridePresetImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+    return _then(_MockzillaHttpResponse(
+      statusCode: null == statusCode
+          ? _self.statusCode
+          : statusCode // ignore: cast_nullable_to_non_nullable
+              as int,
+      headers: null == headers
+          ? _self._headers
+          : headers // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
+      body: null == body
+          ? _self.body
+          : body // ignore: cast_nullable_to_non_nullable
               as String,
-      description: freezed == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      response: null == response
-          ? _value.response
-          : response // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse,
     ));
   }
 }
 
 /// @nodoc
+mixin _$DashboardOverridePreset {
+  String get name;
+  String? get description;
+  MockzillaHttpResponse get response;
 
-class _$DashboardOverridePresetImpl implements _DashboardOverridePreset {
-  const _$DashboardOverridePresetImpl(
-      {required this.name, required this.description, required this.response});
-
-  @override
-  final String name;
-  @override
-  final String? description;
-  @override
-  final MockzillaHttpResponse response;
-
-  @override
-  String toString() {
-    return 'DashboardOverridePreset(name: $name, description: $description, response: $response)';
-  }
+  /// Create a copy of DashboardOverridePreset
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $DashboardOverridePresetCopyWith<DashboardOverridePreset> get copyWith =>
+      _$DashboardOverridePresetCopyWithImpl<DashboardOverridePreset>(
+          this as DashboardOverridePreset, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$DashboardOverridePresetImpl &&
+            other is DashboardOverridePreset &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -573,103 +432,209 @@ class _$DashboardOverridePresetImpl implements _DashboardOverridePreset {
   @override
   int get hashCode => Object.hash(runtimeType, name, description, response);
 
-  /// Create a copy of DashboardOverridePreset
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$DashboardOverridePresetImplCopyWith<_$DashboardOverridePresetImpl>
-      get copyWith => __$$DashboardOverridePresetImplCopyWithImpl<
-          _$DashboardOverridePresetImpl>(this, _$identity);
-}
-
-abstract class _DashboardOverridePreset implements DashboardOverridePreset {
-  const factory _DashboardOverridePreset(
-          {required final String name,
-          required final String? description,
-          required final MockzillaHttpResponse response}) =
-      _$DashboardOverridePresetImpl;
-
-  @override
-  String get name;
-  @override
-  String? get description;
-  @override
-  MockzillaHttpResponse get response;
-
-  /// Create a copy of DashboardOverridePreset
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DashboardOverridePresetImplCopyWith<_$DashboardOverridePresetImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-mixin _$DashboardOptionsConfig {
-  List<DashboardOverridePreset> get successPresets =>
-      throw _privateConstructorUsedError;
-  List<DashboardOverridePreset> get errorPresets =>
-      throw _privateConstructorUsedError;
-
-  /// Create a copy of DashboardOptionsConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DashboardOptionsConfigCopyWith<DashboardOptionsConfig> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $DashboardOptionsConfigCopyWith<$Res> {
-  factory $DashboardOptionsConfigCopyWith(DashboardOptionsConfig value,
-          $Res Function(DashboardOptionsConfig) then) =
-      _$DashboardOptionsConfigCopyWithImpl<$Res, DashboardOptionsConfig>;
-  @useResult
-  $Res call(
-      {List<DashboardOverridePreset> successPresets,
-      List<DashboardOverridePreset> errorPresets});
-}
-
-/// @nodoc
-class _$DashboardOptionsConfigCopyWithImpl<$Res,
-        $Val extends DashboardOptionsConfig>
-    implements $DashboardOptionsConfigCopyWith<$Res> {
-  _$DashboardOptionsConfigCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of DashboardOptionsConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? successPresets = null,
-    Object? errorPresets = null,
-  }) {
-    return _then(_value.copyWith(
-      successPresets: null == successPresets
-          ? _value.successPresets
-          : successPresets // ignore: cast_nullable_to_non_nullable
-              as List<DashboardOverridePreset>,
-      errorPresets: null == errorPresets
-          ? _value.errorPresets
-          : errorPresets // ignore: cast_nullable_to_non_nullable
-              as List<DashboardOverridePreset>,
-    ) as $Val);
+  String toString() {
+    return 'DashboardOverridePreset(name: $name, description: $description, response: $response)';
   }
 }
 
 /// @nodoc
-abstract class _$$DashboardOptionsConfigImplCopyWith<$Res>
-    implements $DashboardOptionsConfigCopyWith<$Res> {
-  factory _$$DashboardOptionsConfigImplCopyWith(
-          _$DashboardOptionsConfigImpl value,
-          $Res Function(_$DashboardOptionsConfigImpl) then) =
-      __$$DashboardOptionsConfigImplCopyWithImpl<$Res>;
+abstract mixin class $DashboardOverridePresetCopyWith<$Res> {
+  factory $DashboardOverridePresetCopyWith(DashboardOverridePreset value,
+          $Res Function(DashboardOverridePreset) _then) =
+      _$DashboardOverridePresetCopyWithImpl;
+  @useResult
+  $Res call({String name, String? description, MockzillaHttpResponse response});
+
+  $MockzillaHttpResponseCopyWith<$Res> get response;
+}
+
+/// @nodoc
+class _$DashboardOverridePresetCopyWithImpl<$Res>
+    implements $DashboardOverridePresetCopyWith<$Res> {
+  _$DashboardOverridePresetCopyWithImpl(this._self, this._then);
+
+  final DashboardOverridePreset _self;
+  final $Res Function(DashboardOverridePreset) _then;
+
+  /// Create a copy of DashboardOverridePreset
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
   @override
+  $Res call({
+    Object? name = null,
+    Object? description = freezed,
+    Object? response = null,
+  }) {
+    return _then(_self.copyWith(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: freezed == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      response: null == response
+          ? _self.response
+          : response // ignore: cast_nullable_to_non_nullable
+              as MockzillaHttpResponse,
+    ));
+  }
+
+  /// Create a copy of DashboardOverridePreset
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $MockzillaHttpResponseCopyWith<$Res> get response {
+    return $MockzillaHttpResponseCopyWith<$Res>(_self.response, (value) {
+      return _then(_self.copyWith(response: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _DashboardOverridePreset implements DashboardOverridePreset {
+  const _DashboardOverridePreset(
+      {required this.name, required this.description, required this.response});
+
+  @override
+  final String name;
+  @override
+  final String? description;
+  @override
+  final MockzillaHttpResponse response;
+
+  /// Create a copy of DashboardOverridePreset
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$DashboardOverridePresetCopyWith<_DashboardOverridePreset> get copyWith =>
+      __$DashboardOverridePresetCopyWithImpl<_DashboardOverridePreset>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _DashboardOverridePreset &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.response, response) ||
+                other.response == response));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, name, description, response);
+
+  @override
+  String toString() {
+    return 'DashboardOverridePreset(name: $name, description: $description, response: $response)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$DashboardOverridePresetCopyWith<$Res>
+    implements $DashboardOverridePresetCopyWith<$Res> {
+  factory _$DashboardOverridePresetCopyWith(_DashboardOverridePreset value,
+          $Res Function(_DashboardOverridePreset) _then) =
+      __$DashboardOverridePresetCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String name, String? description, MockzillaHttpResponse response});
+
+  @override
+  $MockzillaHttpResponseCopyWith<$Res> get response;
+}
+
+/// @nodoc
+class __$DashboardOverridePresetCopyWithImpl<$Res>
+    implements _$DashboardOverridePresetCopyWith<$Res> {
+  __$DashboardOverridePresetCopyWithImpl(this._self, this._then);
+
+  final _DashboardOverridePreset _self;
+  final $Res Function(_DashboardOverridePreset) _then;
+
+  /// Create a copy of DashboardOverridePreset
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? description = freezed,
+    Object? response = null,
+  }) {
+    return _then(_DashboardOverridePreset(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: freezed == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      response: null == response
+          ? _self.response
+          : response // ignore: cast_nullable_to_non_nullable
+              as MockzillaHttpResponse,
+    ));
+  }
+
+  /// Create a copy of DashboardOverridePreset
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $MockzillaHttpResponseCopyWith<$Res> get response {
+    return $MockzillaHttpResponseCopyWith<$Res>(_self.response, (value) {
+      return _then(_self.copyWith(response: value));
+    });
+  }
+}
+
+/// @nodoc
+mixin _$DashboardOptionsConfig {
+  List<DashboardOverridePreset> get successPresets;
+  List<DashboardOverridePreset> get errorPresets;
+
+  /// Create a copy of DashboardOptionsConfig
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $DashboardOptionsConfigCopyWith<DashboardOptionsConfig> get copyWith =>
+      _$DashboardOptionsConfigCopyWithImpl<DashboardOptionsConfig>(
+          this as DashboardOptionsConfig, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is DashboardOptionsConfig &&
+            const DeepCollectionEquality()
+                .equals(other.successPresets, successPresets) &&
+            const DeepCollectionEquality()
+                .equals(other.errorPresets, errorPresets));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(successPresets),
+      const DeepCollectionEquality().hash(errorPresets));
+
+  @override
+  String toString() {
+    return 'DashboardOptionsConfig(successPresets: $successPresets, errorPresets: $errorPresets)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $DashboardOptionsConfigCopyWith<$Res> {
+  factory $DashboardOptionsConfigCopyWith(DashboardOptionsConfig value,
+          $Res Function(DashboardOptionsConfig) _then) =
+      _$DashboardOptionsConfigCopyWithImpl;
   @useResult
   $Res call(
       {List<DashboardOverridePreset> successPresets,
@@ -677,14 +642,12 @@ abstract class _$$DashboardOptionsConfigImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$DashboardOptionsConfigImplCopyWithImpl<$Res>
-    extends _$DashboardOptionsConfigCopyWithImpl<$Res,
-        _$DashboardOptionsConfigImpl>
-    implements _$$DashboardOptionsConfigImplCopyWith<$Res> {
-  __$$DashboardOptionsConfigImplCopyWithImpl(
-      _$DashboardOptionsConfigImpl _value,
-      $Res Function(_$DashboardOptionsConfigImpl) _then)
-      : super(_value, _then);
+class _$DashboardOptionsConfigCopyWithImpl<$Res>
+    implements $DashboardOptionsConfigCopyWith<$Res> {
+  _$DashboardOptionsConfigCopyWithImpl(this._self, this._then);
+
+  final DashboardOptionsConfig _self;
+  final $Res Function(DashboardOptionsConfig) _then;
 
   /// Create a copy of DashboardOptionsConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -694,13 +657,13 @@ class __$$DashboardOptionsConfigImplCopyWithImpl<$Res>
     Object? successPresets = null,
     Object? errorPresets = null,
   }) {
-    return _then(_$DashboardOptionsConfigImpl(
+    return _then(_self.copyWith(
       successPresets: null == successPresets
-          ? _value._successPresets
+          ? _self.successPresets
           : successPresets // ignore: cast_nullable_to_non_nullable
               as List<DashboardOverridePreset>,
       errorPresets: null == errorPresets
-          ? _value._errorPresets
+          ? _self.errorPresets
           : errorPresets // ignore: cast_nullable_to_non_nullable
               as List<DashboardOverridePreset>,
     ));
@@ -709,8 +672,8 @@ class __$$DashboardOptionsConfigImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$DashboardOptionsConfigImpl implements _DashboardOptionsConfig {
-  const _$DashboardOptionsConfigImpl(
+class _DashboardOptionsConfig implements DashboardOptionsConfig {
+  const _DashboardOptionsConfig(
       {final List<DashboardOverridePreset> successPresets = const [],
       final List<DashboardOverridePreset> errorPresets = const []})
       : _successPresets = successPresets,
@@ -734,16 +697,20 @@ class _$DashboardOptionsConfigImpl implements _DashboardOptionsConfig {
     return EqualUnmodifiableListView(_errorPresets);
   }
 
+  /// Create a copy of DashboardOptionsConfig
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'DashboardOptionsConfig(successPresets: $successPresets, errorPresets: $errorPresets)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$DashboardOptionsConfigCopyWith<_DashboardOptionsConfig> get copyWith =>
+      __$DashboardOptionsConfigCopyWithImpl<_DashboardOptionsConfig>(
+          this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$DashboardOptionsConfigImpl &&
+            other is _DashboardOptionsConfig &&
             const DeepCollectionEquality()
                 .equals(other._successPresets, _successPresets) &&
             const DeepCollectionEquality()
@@ -756,88 +723,147 @@ class _$DashboardOptionsConfigImpl implements _DashboardOptionsConfig {
       const DeepCollectionEquality().hash(_successPresets),
       const DeepCollectionEquality().hash(_errorPresets));
 
-  /// Create a copy of DashboardOptionsConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$DashboardOptionsConfigImplCopyWith<_$DashboardOptionsConfigImpl>
-      get copyWith => __$$DashboardOptionsConfigImplCopyWithImpl<
-          _$DashboardOptionsConfigImpl>(this, _$identity);
+  String toString() {
+    return 'DashboardOptionsConfig(successPresets: $successPresets, errorPresets: $errorPresets)';
+  }
 }
 
-abstract class _DashboardOptionsConfig implements DashboardOptionsConfig {
-  const factory _DashboardOptionsConfig(
-          {final List<DashboardOverridePreset> successPresets,
-          final List<DashboardOverridePreset> errorPresets}) =
-      _$DashboardOptionsConfigImpl;
+/// @nodoc
+abstract mixin class _$DashboardOptionsConfigCopyWith<$Res>
+    implements $DashboardOptionsConfigCopyWith<$Res> {
+  factory _$DashboardOptionsConfigCopyWith(_DashboardOptionsConfig value,
+          $Res Function(_DashboardOptionsConfig) _then) =
+      __$DashboardOptionsConfigCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {List<DashboardOverridePreset> successPresets,
+      List<DashboardOverridePreset> errorPresets});
+}
 
-  @override
-  List<DashboardOverridePreset> get successPresets;
-  @override
-  List<DashboardOverridePreset> get errorPresets;
+/// @nodoc
+class __$DashboardOptionsConfigCopyWithImpl<$Res>
+    implements _$DashboardOptionsConfigCopyWith<$Res> {
+  __$DashboardOptionsConfigCopyWithImpl(this._self, this._then);
+
+  final _DashboardOptionsConfig _self;
+  final $Res Function(_DashboardOptionsConfig) _then;
 
   /// Create a copy of DashboardOptionsConfig
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DashboardOptionsConfigImplCopyWith<_$DashboardOptionsConfigImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? successPresets = null,
+    Object? errorPresets = null,
+  }) {
+    return _then(_DashboardOptionsConfig(
+      successPresets: null == successPresets
+          ? _self._successPresets
+          : successPresets // ignore: cast_nullable_to_non_nullable
+              as List<DashboardOverridePreset>,
+      errorPresets: null == errorPresets
+          ? _self._errorPresets
+          : errorPresets // ignore: cast_nullable_to_non_nullable
+              as List<DashboardOverridePreset>,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$EndpointConfig {
-  String get name => throw _privateConstructorUsedError;
+  String get name;
 
   /// Identifier for this endpoint, defaults to [name].
-  String? get customKey => throw _privateConstructorUsedError;
+  String? get customKey;
 
   /// Whether the Mockzilla server should return an artificial error for a
   /// request to this endpoint. Defaults to [false].
-  bool get shouldFail => throw _privateConstructorUsedError;
+  bool get shouldFail;
 
   /// The artificial delay that Mockzilla should apply to responses
   /// to simulate latency. Defaults to 100ms.
-  Duration get delay => throw _privateConstructorUsedError;
+  Duration get delay;
 
   /// Incrementing this will indicate a breaking change has been
   /// made to this endpoint and will invalidate any cached data on the host
   /// device without intervention by the user. Defaults to 1.
-  int get versionCode => throw _privateConstructorUsedError;
+  int get versionCode;
 
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
-  bool Function(MockzillaHttpRequest) get endpointMatcher =>
-      throw _privateConstructorUsedError;
+  bool Function(MockzillaHttpRequest request) get endpointMatcher;
 
   /// Optional, configures the preset responses for the endpoint in the
   /// Mockzilla dashboard.
-  DashboardOptionsConfig get dashboardOptionsConfig =>
-      throw _privateConstructorUsedError;
+  DashboardOptionsConfig get dashboardOptionsConfig;
 
   /// This function is called when a network request is made to this endpoint,
   /// note that if an error is being returned due to [shouldFail] then
   /// `errorHandler` is used instead.
-  MockzillaHttpResponse Function(MockzillaHttpRequest) get defaultHandler =>
-      throw _privateConstructorUsedError;
+  MockzillaHttpResponse Function(MockzillaHttpRequest request)
+      get defaultHandler;
 
   /// This function is called when, in response to a network request, the
   /// server returns an error due to [shouldFail].
-  MockzillaHttpResponse Function(MockzillaHttpRequest) get errorHandler =>
-      throw _privateConstructorUsedError;
+  MockzillaHttpResponse Function(MockzillaHttpRequest request) get errorHandler;
 
   /// Create a copy of EndpointConfig
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $EndpointConfigCopyWith<EndpointConfig> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$EndpointConfigCopyWithImpl<EndpointConfig>(
+          this as EndpointConfig, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is EndpointConfig &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.customKey, customKey) ||
+                other.customKey == customKey) &&
+            (identical(other.shouldFail, shouldFail) ||
+                other.shouldFail == shouldFail) &&
+            (identical(other.delay, delay) || other.delay == delay) &&
+            (identical(other.versionCode, versionCode) ||
+                other.versionCode == versionCode) &&
+            (identical(other.endpointMatcher, endpointMatcher) ||
+                other.endpointMatcher == endpointMatcher) &&
+            (identical(other.dashboardOptionsConfig, dashboardOptionsConfig) ||
+                other.dashboardOptionsConfig == dashboardOptionsConfig) &&
+            (identical(other.defaultHandler, defaultHandler) ||
+                other.defaultHandler == defaultHandler) &&
+            (identical(other.errorHandler, errorHandler) ||
+                other.errorHandler == errorHandler));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      name,
+      customKey,
+      shouldFail,
+      delay,
+      versionCode,
+      endpointMatcher,
+      dashboardOptionsConfig,
+      defaultHandler,
+      errorHandler);
+
+  @override
+  String toString() {
+    return 'EndpointConfig(name: $name, customKey: $customKey, shouldFail: $shouldFail, delay: $delay, versionCode: $versionCode, endpointMatcher: $endpointMatcher, dashboardOptionsConfig: $dashboardOptionsConfig, defaultHandler: $defaultHandler, errorHandler: $errorHandler)';
+  }
 }
 
 /// @nodoc
-abstract class $EndpointConfigCopyWith<$Res> {
+abstract mixin class $EndpointConfigCopyWith<$Res> {
   factory $EndpointConfigCopyWith(
-          EndpointConfig value, $Res Function(EndpointConfig) then) =
-      _$EndpointConfigCopyWithImpl<$Res, EndpointConfig>;
+          EndpointConfig value, $Res Function(EndpointConfig) _then) =
+      _$EndpointConfigCopyWithImpl;
   @useResult
   $Res call(
       {String name,
@@ -845,23 +871,23 @@ abstract class $EndpointConfigCopyWith<$Res> {
       bool shouldFail,
       Duration delay,
       int versionCode,
-      bool Function(MockzillaHttpRequest) endpointMatcher,
+      bool Function(MockzillaHttpRequest request) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
-      MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler,
-      MockzillaHttpResponse Function(MockzillaHttpRequest) errorHandler});
+      MockzillaHttpResponse Function(MockzillaHttpRequest request)
+          defaultHandler,
+      MockzillaHttpResponse Function(MockzillaHttpRequest request)
+          errorHandler});
 
   $DashboardOptionsConfigCopyWith<$Res> get dashboardOptionsConfig;
 }
 
 /// @nodoc
-class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
+class _$EndpointConfigCopyWithImpl<$Res>
     implements $EndpointConfigCopyWith<$Res> {
-  _$EndpointConfigCopyWithImpl(this._value, this._then);
+  _$EndpointConfigCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final EndpointConfig _self;
+  final $Res Function(EndpointConfig) _then;
 
   /// Create a copy of EndpointConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -878,44 +904,44 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
     Object? defaultHandler = null,
     Object? errorHandler = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       customKey: freezed == customKey
-          ? _value.customKey
+          ? _self.customKey
           : customKey // ignore: cast_nullable_to_non_nullable
               as String?,
       shouldFail: null == shouldFail
-          ? _value.shouldFail
+          ? _self.shouldFail
           : shouldFail // ignore: cast_nullable_to_non_nullable
               as bool,
       delay: null == delay
-          ? _value.delay
+          ? _self.delay
           : delay // ignore: cast_nullable_to_non_nullable
               as Duration,
       versionCode: null == versionCode
-          ? _value.versionCode
+          ? _self.versionCode
           : versionCode // ignore: cast_nullable_to_non_nullable
               as int,
       endpointMatcher: null == endpointMatcher
-          ? _value.endpointMatcher
+          ? _self.endpointMatcher
           : endpointMatcher // ignore: cast_nullable_to_non_nullable
-              as bool Function(MockzillaHttpRequest),
+              as bool Function(MockzillaHttpRequest request),
       dashboardOptionsConfig: null == dashboardOptionsConfig
-          ? _value.dashboardOptionsConfig
+          ? _self.dashboardOptionsConfig
           : dashboardOptionsConfig // ignore: cast_nullable_to_non_nullable
               as DashboardOptionsConfig,
       defaultHandler: null == defaultHandler
-          ? _value.defaultHandler
+          ? _self.defaultHandler
           : defaultHandler // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse Function(MockzillaHttpRequest),
+              as MockzillaHttpResponse Function(MockzillaHttpRequest request),
       errorHandler: null == errorHandler
-          ? _value.errorHandler
+          ? _self.errorHandler
           : errorHandler // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse Function(MockzillaHttpRequest),
-    ) as $Val);
+              as MockzillaHttpResponse Function(MockzillaHttpRequest request),
+    ));
   }
 
   /// Create a copy of EndpointConfig
@@ -923,104 +949,17 @@ class _$EndpointConfigCopyWithImpl<$Res, $Val extends EndpointConfig>
   @override
   @pragma('vm:prefer-inline')
   $DashboardOptionsConfigCopyWith<$Res> get dashboardOptionsConfig {
-    return $DashboardOptionsConfigCopyWith<$Res>(_value.dashboardOptionsConfig,
+    return $DashboardOptionsConfigCopyWith<$Res>(_self.dashboardOptionsConfig,
         (value) {
-      return _then(_value.copyWith(dashboardOptionsConfig: value) as $Val);
+      return _then(_self.copyWith(dashboardOptionsConfig: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$EndpointConfigImplCopyWith<$Res>
-    implements $EndpointConfigCopyWith<$Res> {
-  factory _$$EndpointConfigImplCopyWith(_$EndpointConfigImpl value,
-          $Res Function(_$EndpointConfigImpl) then) =
-      __$$EndpointConfigImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String name,
-      String? customKey,
-      bool shouldFail,
-      Duration delay,
-      int versionCode,
-      bool Function(MockzillaHttpRequest) endpointMatcher,
-      DashboardOptionsConfig dashboardOptionsConfig,
-      MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler,
-      MockzillaHttpResponse Function(MockzillaHttpRequest) errorHandler});
 
-  @override
-  $DashboardOptionsConfigCopyWith<$Res> get dashboardOptionsConfig;
-}
-
-/// @nodoc
-class __$$EndpointConfigImplCopyWithImpl<$Res>
-    extends _$EndpointConfigCopyWithImpl<$Res, _$EndpointConfigImpl>
-    implements _$$EndpointConfigImplCopyWith<$Res> {
-  __$$EndpointConfigImplCopyWithImpl(
-      _$EndpointConfigImpl _value, $Res Function(_$EndpointConfigImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of EndpointConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? customKey = freezed,
-    Object? shouldFail = null,
-    Object? delay = null,
-    Object? versionCode = null,
-    Object? endpointMatcher = null,
-    Object? dashboardOptionsConfig = null,
-    Object? defaultHandler = null,
-    Object? errorHandler = null,
-  }) {
-    return _then(_$EndpointConfigImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      customKey: freezed == customKey
-          ? _value.customKey
-          : customKey // ignore: cast_nullable_to_non_nullable
-              as String?,
-      shouldFail: null == shouldFail
-          ? _value.shouldFail
-          : shouldFail // ignore: cast_nullable_to_non_nullable
-              as bool,
-      delay: null == delay
-          ? _value.delay
-          : delay // ignore: cast_nullable_to_non_nullable
-              as Duration,
-      versionCode: null == versionCode
-          ? _value.versionCode
-          : versionCode // ignore: cast_nullable_to_non_nullable
-              as int,
-      endpointMatcher: null == endpointMatcher
-          ? _value.endpointMatcher
-          : endpointMatcher // ignore: cast_nullable_to_non_nullable
-              as bool Function(MockzillaHttpRequest),
-      dashboardOptionsConfig: null == dashboardOptionsConfig
-          ? _value.dashboardOptionsConfig
-          : dashboardOptionsConfig // ignore: cast_nullable_to_non_nullable
-              as DashboardOptionsConfig,
-      defaultHandler: null == defaultHandler
-          ? _value.defaultHandler
-          : defaultHandler // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse Function(MockzillaHttpRequest),
-      errorHandler: null == errorHandler
-          ? _value.errorHandler
-          : errorHandler // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse Function(MockzillaHttpRequest),
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$EndpointConfigImpl extends _EndpointConfig {
-  const _$EndpointConfigImpl(
+class _EndpointConfig extends EndpointConfig {
+  const _EndpointConfig(
       {required this.name,
       this.customKey,
       this.shouldFail = false,
@@ -1061,7 +1000,7 @@ class _$EndpointConfigImpl extends _EndpointConfig {
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
   @override
-  final bool Function(MockzillaHttpRequest) endpointMatcher;
+  final bool Function(MockzillaHttpRequest request) endpointMatcher;
 
   /// Optional, configures the preset responses for the endpoint in the
   /// Mockzilla dashboard.
@@ -1073,23 +1012,28 @@ class _$EndpointConfigImpl extends _EndpointConfig {
   /// note that if an error is being returned due to [shouldFail] then
   /// `errorHandler` is used instead.
   @override
-  final MockzillaHttpResponse Function(MockzillaHttpRequest) defaultHandler;
+  final MockzillaHttpResponse Function(MockzillaHttpRequest request)
+      defaultHandler;
 
   /// This function is called when, in response to a network request, the
   /// server returns an error due to [shouldFail].
   @override
-  final MockzillaHttpResponse Function(MockzillaHttpRequest) errorHandler;
+  final MockzillaHttpResponse Function(MockzillaHttpRequest request)
+      errorHandler;
 
+  /// Create a copy of EndpointConfig
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'EndpointConfig(name: $name, customKey: $customKey, shouldFail: $shouldFail, delay: $delay, versionCode: $versionCode, endpointMatcher: $endpointMatcher, dashboardOptionsConfig: $dashboardOptionsConfig, defaultHandler: $defaultHandler, errorHandler: $errorHandler)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$EndpointConfigCopyWith<_EndpointConfig> get copyWith =>
+      __$EndpointConfigCopyWithImpl<_EndpointConfig>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$EndpointConfigImpl &&
+            other is _EndpointConfig &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.customKey, customKey) ||
                 other.customKey == customKey) &&
@@ -1121,175 +1065,174 @@ class _$EndpointConfigImpl extends _EndpointConfig {
       defaultHandler,
       errorHandler);
 
-  /// Create a copy of EndpointConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$EndpointConfigImplCopyWith<_$EndpointConfigImpl> get copyWith =>
-      __$$EndpointConfigImplCopyWithImpl<_$EndpointConfigImpl>(
-          this, _$identity);
+  String toString() {
+    return 'EndpointConfig(name: $name, customKey: $customKey, shouldFail: $shouldFail, delay: $delay, versionCode: $versionCode, endpointMatcher: $endpointMatcher, dashboardOptionsConfig: $dashboardOptionsConfig, defaultHandler: $defaultHandler, errorHandler: $errorHandler)';
+  }
 }
 
-abstract class _EndpointConfig extends EndpointConfig {
-  const factory _EndpointConfig(
-      {required final String name,
-      final String? customKey,
-      final bool shouldFail,
-      final Duration delay,
-      final int versionCode,
-      required final bool Function(MockzillaHttpRequest) endpointMatcher,
-      final DashboardOptionsConfig dashboardOptionsConfig,
-      required final MockzillaHttpResponse Function(MockzillaHttpRequest)
+/// @nodoc
+abstract mixin class _$EndpointConfigCopyWith<$Res>
+    implements $EndpointConfigCopyWith<$Res> {
+  factory _$EndpointConfigCopyWith(
+          _EndpointConfig value, $Res Function(_EndpointConfig) _then) =
+      __$EndpointConfigCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {String name,
+      String? customKey,
+      bool shouldFail,
+      Duration delay,
+      int versionCode,
+      bool Function(MockzillaHttpRequest request) endpointMatcher,
+      DashboardOptionsConfig dashboardOptionsConfig,
+      MockzillaHttpResponse Function(MockzillaHttpRequest request)
           defaultHandler,
-      required final MockzillaHttpResponse Function(MockzillaHttpRequest)
-          errorHandler}) = _$EndpointConfigImpl;
-  const _EndpointConfig._() : super._();
+      MockzillaHttpResponse Function(MockzillaHttpRequest request)
+          errorHandler});
 
   @override
-  String get name;
+  $DashboardOptionsConfigCopyWith<$Res> get dashboardOptionsConfig;
+}
 
-  /// Identifier for this endpoint, defaults to [name].
-  @override
-  String? get customKey;
+/// @nodoc
+class __$EndpointConfigCopyWithImpl<$Res>
+    implements _$EndpointConfigCopyWith<$Res> {
+  __$EndpointConfigCopyWithImpl(this._self, this._then);
 
-  /// Whether the Mockzilla server should return an artificial error for a
-  /// request to this endpoint. Defaults to [false].
-  @override
-  bool get shouldFail;
-
-  /// The artificial delay that Mockzilla should apply to responses
-  /// to simulate latency. Defaults to 100ms.
-  @override
-  Duration get delay;
-
-  /// Incrementing this will indicate a breaking change has been
-  /// made to this endpoint and will invalidate any cached data on the host
-  /// device without intervention by the user. Defaults to 1.
-  @override
-  int get versionCode;
-
-  /// Used to determine whether a particular `request` should be evaluated by
-  /// this endpoint.
-  @override
-  bool Function(MockzillaHttpRequest) get endpointMatcher;
-
-  /// Optional, configures the preset responses for the endpoint in the
-  /// Mockzilla dashboard.
-  @override
-  DashboardOptionsConfig get dashboardOptionsConfig;
-
-  /// This function is called when a network request is made to this endpoint,
-  /// note that if an error is being returned due to [shouldFail] then
-  /// `errorHandler` is used instead.
-  @override
-  MockzillaHttpResponse Function(MockzillaHttpRequest) get defaultHandler;
-
-  /// This function is called when, in response to a network request, the
-  /// server returns an error due to [shouldFail].
-  @override
-  MockzillaHttpResponse Function(MockzillaHttpRequest) get errorHandler;
+  final _EndpointConfig _self;
+  final $Res Function(_EndpointConfig) _then;
 
   /// Create a copy of EndpointConfig
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$EndpointConfigImplCopyWith<_$EndpointConfigImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? customKey = freezed,
+    Object? shouldFail = null,
+    Object? delay = null,
+    Object? versionCode = null,
+    Object? endpointMatcher = null,
+    Object? dashboardOptionsConfig = null,
+    Object? defaultHandler = null,
+    Object? errorHandler = null,
+  }) {
+    return _then(_EndpointConfig(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      customKey: freezed == customKey
+          ? _self.customKey
+          : customKey // ignore: cast_nullable_to_non_nullable
+              as String?,
+      shouldFail: null == shouldFail
+          ? _self.shouldFail
+          : shouldFail // ignore: cast_nullable_to_non_nullable
+              as bool,
+      delay: null == delay
+          ? _self.delay
+          : delay // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      versionCode: null == versionCode
+          ? _self.versionCode
+          : versionCode // ignore: cast_nullable_to_non_nullable
+              as int,
+      endpointMatcher: null == endpointMatcher
+          ? _self.endpointMatcher
+          : endpointMatcher // ignore: cast_nullable_to_non_nullable
+              as bool Function(MockzillaHttpRequest request),
+      dashboardOptionsConfig: null == dashboardOptionsConfig
+          ? _self.dashboardOptionsConfig
+          : dashboardOptionsConfig // ignore: cast_nullable_to_non_nullable
+              as DashboardOptionsConfig,
+      defaultHandler: null == defaultHandler
+          ? _self.defaultHandler
+          : defaultHandler // ignore: cast_nullable_to_non_nullable
+              as MockzillaHttpResponse Function(MockzillaHttpRequest request),
+      errorHandler: null == errorHandler
+          ? _self.errorHandler
+          : errorHandler // ignore: cast_nullable_to_non_nullable
+              as MockzillaHttpResponse Function(MockzillaHttpRequest request),
+    ));
+  }
+
+  /// Create a copy of EndpointConfig
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DashboardOptionsConfigCopyWith<$Res> get dashboardOptionsConfig {
+    return $DashboardOptionsConfigCopyWith<$Res>(_self.dashboardOptionsConfig,
+        (value) {
+      return _then(_self.copyWith(dashboardOptionsConfig: value));
+    });
+  }
 }
 
 /// @nodoc
 mixin _$MockzillaConfig {
   /// The port that the Mockzilla should be available through.
-  int get port => throw _privateConstructorUsedError;
+  int get port;
 
   /// The list of available mocked endpoints.
-  List<EndpointConfig> get endpoints => throw _privateConstructorUsedError;
+  List<EndpointConfig> get endpoints;
 
   /// Whether Mockzilla server should only be available on the host device.
-  bool get localHostOnly => throw _privateConstructorUsedError;
+  bool get localHostOnly;
 
   /// The level of logging that should be used by Mockzilla.
-  LogLevel get logLevel => throw _privateConstructorUsedError;
+  LogLevel get logLevel;
 
   /// Whether devices running Mockzilla are discoverable on the local network
   /// through the desktop management app.
-  bool get isNetworkDiscoveryEnabled => throw _privateConstructorUsedError;
+  bool get isNetworkDiscoveryEnabled;
 
   /// Create a copy of MockzillaConfig
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $MockzillaConfigCopyWith<MockzillaConfig> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $MockzillaConfigCopyWith<$Res> {
-  factory $MockzillaConfigCopyWith(
-          MockzillaConfig value, $Res Function(MockzillaConfig) then) =
-      _$MockzillaConfigCopyWithImpl<$Res, MockzillaConfig>;
-  @useResult
-  $Res call(
-      {int port,
-      List<EndpointConfig> endpoints,
-      bool localHostOnly,
-      LogLevel logLevel,
-      bool isNetworkDiscoveryEnabled});
-}
-
-/// @nodoc
-class _$MockzillaConfigCopyWithImpl<$Res, $Val extends MockzillaConfig>
-    implements $MockzillaConfigCopyWith<$Res> {
-  _$MockzillaConfigCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of MockzillaConfig
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $MockzillaConfigCopyWith<MockzillaConfig> get copyWith =>
+      _$MockzillaConfigCopyWithImpl<MockzillaConfig>(
+          this as MockzillaConfig, _$identity);
+
   @override
-  $Res call({
-    Object? port = null,
-    Object? endpoints = null,
-    Object? localHostOnly = null,
-    Object? logLevel = null,
-    Object? isNetworkDiscoveryEnabled = null,
-  }) {
-    return _then(_value.copyWith(
-      port: null == port
-          ? _value.port
-          : port // ignore: cast_nullable_to_non_nullable
-              as int,
-      endpoints: null == endpoints
-          ? _value.endpoints
-          : endpoints // ignore: cast_nullable_to_non_nullable
-              as List<EndpointConfig>,
-      localHostOnly: null == localHostOnly
-          ? _value.localHostOnly
-          : localHostOnly // ignore: cast_nullable_to_non_nullable
-              as bool,
-      logLevel: null == logLevel
-          ? _value.logLevel
-          : logLevel // ignore: cast_nullable_to_non_nullable
-              as LogLevel,
-      isNetworkDiscoveryEnabled: null == isNetworkDiscoveryEnabled
-          ? _value.isNetworkDiscoveryEnabled
-          : isNetworkDiscoveryEnabled // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MockzillaConfig &&
+            (identical(other.port, port) || other.port == port) &&
+            const DeepCollectionEquality().equals(other.endpoints, endpoints) &&
+            (identical(other.localHostOnly, localHostOnly) ||
+                other.localHostOnly == localHostOnly) &&
+            (identical(other.logLevel, logLevel) ||
+                other.logLevel == logLevel) &&
+            (identical(other.isNetworkDiscoveryEnabled,
+                    isNetworkDiscoveryEnabled) ||
+                other.isNetworkDiscoveryEnabled == isNetworkDiscoveryEnabled));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      port,
+      const DeepCollectionEquality().hash(endpoints),
+      localHostOnly,
+      logLevel,
+      isNetworkDiscoveryEnabled);
+
+  @override
+  String toString() {
+    return 'MockzillaConfig(port: $port, endpoints: $endpoints, localHostOnly: $localHostOnly, logLevel: $logLevel, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled)';
   }
 }
 
 /// @nodoc
-abstract class _$$MockzillaConfigImplCopyWith<$Res>
-    implements $MockzillaConfigCopyWith<$Res> {
-  factory _$$MockzillaConfigImplCopyWith(_$MockzillaConfigImpl value,
-          $Res Function(_$MockzillaConfigImpl) then) =
-      __$$MockzillaConfigImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $MockzillaConfigCopyWith<$Res> {
+  factory $MockzillaConfigCopyWith(
+          MockzillaConfig value, $Res Function(MockzillaConfig) _then) =
+      _$MockzillaConfigCopyWithImpl;
   @useResult
   $Res call(
       {int port,
@@ -1300,12 +1243,12 @@ abstract class _$$MockzillaConfigImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$MockzillaConfigImplCopyWithImpl<$Res>
-    extends _$MockzillaConfigCopyWithImpl<$Res, _$MockzillaConfigImpl>
-    implements _$$MockzillaConfigImplCopyWith<$Res> {
-  __$$MockzillaConfigImplCopyWithImpl(
-      _$MockzillaConfigImpl _value, $Res Function(_$MockzillaConfigImpl) _then)
-      : super(_value, _then);
+class _$MockzillaConfigCopyWithImpl<$Res>
+    implements $MockzillaConfigCopyWith<$Res> {
+  _$MockzillaConfigCopyWithImpl(this._self, this._then);
+
+  final MockzillaConfig _self;
+  final $Res Function(MockzillaConfig) _then;
 
   /// Create a copy of MockzillaConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -1318,25 +1261,25 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
     Object? logLevel = null,
     Object? isNetworkDiscoveryEnabled = null,
   }) {
-    return _then(_$MockzillaConfigImpl(
+    return _then(_self.copyWith(
       port: null == port
-          ? _value.port
+          ? _self.port
           : port // ignore: cast_nullable_to_non_nullable
               as int,
       endpoints: null == endpoints
-          ? _value._endpoints
+          ? _self.endpoints
           : endpoints // ignore: cast_nullable_to_non_nullable
               as List<EndpointConfig>,
       localHostOnly: null == localHostOnly
-          ? _value.localHostOnly
+          ? _self.localHostOnly
           : localHostOnly // ignore: cast_nullable_to_non_nullable
               as bool,
       logLevel: null == logLevel
-          ? _value.logLevel
+          ? _self.logLevel
           : logLevel // ignore: cast_nullable_to_non_nullable
               as LogLevel,
       isNetworkDiscoveryEnabled: null == isNetworkDiscoveryEnabled
-          ? _value.isNetworkDiscoveryEnabled
+          ? _self.isNetworkDiscoveryEnabled
           : isNetworkDiscoveryEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
@@ -1345,8 +1288,8 @@ class __$$MockzillaConfigImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$MockzillaConfigImpl implements _MockzillaConfig {
-  const _$MockzillaConfigImpl(
+class _MockzillaConfig implements MockzillaConfig {
+  const _MockzillaConfig(
       {this.port = 8080,
       final List<EndpointConfig> endpoints = const [],
       this.localHostOnly = false,
@@ -1387,16 +1330,19 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
   @JsonKey()
   final bool isNetworkDiscoveryEnabled;
 
+  /// Create a copy of MockzillaConfig
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'MockzillaConfig(port: $port, endpoints: $endpoints, localHostOnly: $localHostOnly, logLevel: $logLevel, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$MockzillaConfigCopyWith<_MockzillaConfig> get copyWith =>
+      __$MockzillaConfigCopyWithImpl<_MockzillaConfig>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MockzillaConfigImpl &&
+            other is _MockzillaConfig &&
             (identical(other.port, port) || other.port == port) &&
             const DeepCollectionEquality()
                 .equals(other._endpoints, _endpoints) &&
@@ -1418,72 +1364,115 @@ class _$MockzillaConfigImpl implements _MockzillaConfig {
       logLevel,
       isNetworkDiscoveryEnabled);
 
-  /// Create a copy of MockzillaConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$MockzillaConfigImplCopyWith<_$MockzillaConfigImpl> get copyWith =>
-      __$$MockzillaConfigImplCopyWithImpl<_$MockzillaConfigImpl>(
-          this, _$identity);
+  String toString() {
+    return 'MockzillaConfig(port: $port, endpoints: $endpoints, localHostOnly: $localHostOnly, logLevel: $logLevel, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled)';
+  }
 }
 
-abstract class _MockzillaConfig implements MockzillaConfig {
-  const factory _MockzillaConfig(
-      {final int port,
-      final List<EndpointConfig> endpoints,
-      final bool localHostOnly,
-      final LogLevel logLevel,
-      final bool isNetworkDiscoveryEnabled}) = _$MockzillaConfigImpl;
-
-  /// The port that the Mockzilla should be available through.
+/// @nodoc
+abstract mixin class _$MockzillaConfigCopyWith<$Res>
+    implements $MockzillaConfigCopyWith<$Res> {
+  factory _$MockzillaConfigCopyWith(
+          _MockzillaConfig value, $Res Function(_MockzillaConfig) _then) =
+      __$MockzillaConfigCopyWithImpl;
   @override
-  int get port;
+  @useResult
+  $Res call(
+      {int port,
+      List<EndpointConfig> endpoints,
+      bool localHostOnly,
+      LogLevel logLevel,
+      bool isNetworkDiscoveryEnabled});
+}
 
-  /// The list of available mocked endpoints.
-  @override
-  List<EndpointConfig> get endpoints;
+/// @nodoc
+class __$MockzillaConfigCopyWithImpl<$Res>
+    implements _$MockzillaConfigCopyWith<$Res> {
+  __$MockzillaConfigCopyWithImpl(this._self, this._then);
 
-  /// Whether Mockzilla server should only be available on the host device.
-  @override
-  bool get localHostOnly;
-
-  /// The level of logging that should be used by Mockzilla.
-  @override
-  LogLevel get logLevel;
-
-  /// Whether devices running Mockzilla are discoverable on the local network
-  /// through the desktop management app.
-  @override
-  bool get isNetworkDiscoveryEnabled;
+  final _MockzillaConfig _self;
+  final $Res Function(_MockzillaConfig) _then;
 
   /// Create a copy of MockzillaConfig
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MockzillaConfigImplCopyWith<_$MockzillaConfigImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? port = null,
+    Object? endpoints = null,
+    Object? localHostOnly = null,
+    Object? logLevel = null,
+    Object? isNetworkDiscoveryEnabled = null,
+  }) {
+    return _then(_MockzillaConfig(
+      port: null == port
+          ? _self.port
+          : port // ignore: cast_nullable_to_non_nullable
+              as int,
+      endpoints: null == endpoints
+          ? _self._endpoints
+          : endpoints // ignore: cast_nullable_to_non_nullable
+              as List<EndpointConfig>,
+      localHostOnly: null == localHostOnly
+          ? _self.localHostOnly
+          : localHostOnly // ignore: cast_nullable_to_non_nullable
+              as bool,
+      logLevel: null == logLevel
+          ? _self.logLevel
+          : logLevel // ignore: cast_nullable_to_non_nullable
+              as LogLevel,
+      isNetworkDiscoveryEnabled: null == isNetworkDiscoveryEnabled
+          ? _self.isNetworkDiscoveryEnabled
+          : isNetworkDiscoveryEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$MockzillaRuntimeParams {
-  MockzillaConfig get config => throw _privateConstructorUsedError;
-  String get mockBaseUrl => throw _privateConstructorUsedError;
-  String get apiBaseUrl => throw _privateConstructorUsedError;
-  int get port => throw _privateConstructorUsedError;
+  MockzillaConfig get config;
+  String get mockBaseUrl;
+  String get apiBaseUrl;
+  int get port;
 
   /// Create a copy of MockzillaRuntimeParams
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $MockzillaRuntimeParamsCopyWith<MockzillaRuntimeParams> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$MockzillaRuntimeParamsCopyWithImpl<MockzillaRuntimeParams>(
+          this as MockzillaRuntimeParams, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is MockzillaRuntimeParams &&
+            (identical(other.config, config) || other.config == config) &&
+            (identical(other.mockBaseUrl, mockBaseUrl) ||
+                other.mockBaseUrl == mockBaseUrl) &&
+            (identical(other.apiBaseUrl, apiBaseUrl) ||
+                other.apiBaseUrl == apiBaseUrl) &&
+            (identical(other.port, port) || other.port == port));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, config, mockBaseUrl, apiBaseUrl, port);
+
+  @override
+  String toString() {
+    return 'MockzillaRuntimeParams(config: $config, mockBaseUrl: $mockBaseUrl, apiBaseUrl: $apiBaseUrl, port: $port)';
+  }
 }
 
 /// @nodoc
-abstract class $MockzillaRuntimeParamsCopyWith<$Res> {
+abstract mixin class $MockzillaRuntimeParamsCopyWith<$Res> {
   factory $MockzillaRuntimeParamsCopyWith(MockzillaRuntimeParams value,
-          $Res Function(MockzillaRuntimeParams) then) =
-      _$MockzillaRuntimeParamsCopyWithImpl<$Res, MockzillaRuntimeParams>;
+          $Res Function(MockzillaRuntimeParams) _then) =
+      _$MockzillaRuntimeParamsCopyWithImpl;
   @useResult
   $Res call(
       {MockzillaConfig config,
@@ -1495,15 +1484,12 @@ abstract class $MockzillaRuntimeParamsCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$MockzillaRuntimeParamsCopyWithImpl<$Res,
-        $Val extends MockzillaRuntimeParams>
+class _$MockzillaRuntimeParamsCopyWithImpl<$Res>
     implements $MockzillaRuntimeParamsCopyWith<$Res> {
-  _$MockzillaRuntimeParamsCopyWithImpl(this._value, this._then);
+  _$MockzillaRuntimeParamsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final MockzillaRuntimeParams _self;
+  final $Res Function(MockzillaRuntimeParams) _then;
 
   /// Create a copy of MockzillaRuntimeParams
   /// with the given fields replaced by the non-null parameter values.
@@ -1515,24 +1501,24 @@ class _$MockzillaRuntimeParamsCopyWithImpl<$Res,
     Object? apiBaseUrl = null,
     Object? port = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_self.copyWith(
       config: null == config
-          ? _value.config
+          ? _self.config
           : config // ignore: cast_nullable_to_non_nullable
               as MockzillaConfig,
       mockBaseUrl: null == mockBaseUrl
-          ? _value.mockBaseUrl
+          ? _self.mockBaseUrl
           : mockBaseUrl // ignore: cast_nullable_to_non_nullable
               as String,
       apiBaseUrl: null == apiBaseUrl
-          ? _value.apiBaseUrl
+          ? _self.apiBaseUrl
           : apiBaseUrl // ignore: cast_nullable_to_non_nullable
               as String,
       port: null == port
-          ? _value.port
+          ? _self.port
           : port // ignore: cast_nullable_to_non_nullable
               as int,
-    ) as $Val);
+    ));
   }
 
   /// Create a copy of MockzillaRuntimeParams
@@ -1540,76 +1526,16 @@ class _$MockzillaRuntimeParamsCopyWithImpl<$Res,
   @override
   @pragma('vm:prefer-inline')
   $MockzillaConfigCopyWith<$Res> get config {
-    return $MockzillaConfigCopyWith<$Res>(_value.config, (value) {
-      return _then(_value.copyWith(config: value) as $Val);
+    return $MockzillaConfigCopyWith<$Res>(_self.config, (value) {
+      return _then(_self.copyWith(config: value));
     });
   }
 }
 
 /// @nodoc
-abstract class _$$MockzillaRuntimeParamsImplCopyWith<$Res>
-    implements $MockzillaRuntimeParamsCopyWith<$Res> {
-  factory _$$MockzillaRuntimeParamsImplCopyWith(
-          _$MockzillaRuntimeParamsImpl value,
-          $Res Function(_$MockzillaRuntimeParamsImpl) then) =
-      __$$MockzillaRuntimeParamsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {MockzillaConfig config,
-      String mockBaseUrl,
-      String apiBaseUrl,
-      int port});
 
-  @override
-  $MockzillaConfigCopyWith<$Res> get config;
-}
-
-/// @nodoc
-class __$$MockzillaRuntimeParamsImplCopyWithImpl<$Res>
-    extends _$MockzillaRuntimeParamsCopyWithImpl<$Res,
-        _$MockzillaRuntimeParamsImpl>
-    implements _$$MockzillaRuntimeParamsImplCopyWith<$Res> {
-  __$$MockzillaRuntimeParamsImplCopyWithImpl(
-      _$MockzillaRuntimeParamsImpl _value,
-      $Res Function(_$MockzillaRuntimeParamsImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of MockzillaRuntimeParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? config = null,
-    Object? mockBaseUrl = null,
-    Object? apiBaseUrl = null,
-    Object? port = null,
-  }) {
-    return _then(_$MockzillaRuntimeParamsImpl(
-      config: null == config
-          ? _value.config
-          : config // ignore: cast_nullable_to_non_nullable
-              as MockzillaConfig,
-      mockBaseUrl: null == mockBaseUrl
-          ? _value.mockBaseUrl
-          : mockBaseUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      apiBaseUrl: null == apiBaseUrl
-          ? _value.apiBaseUrl
-          : apiBaseUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      port: null == port
-          ? _value.port
-          : port // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$MockzillaRuntimeParamsImpl implements _MockzillaRuntimeParams {
-  const _$MockzillaRuntimeParamsImpl(
+class _MockzillaRuntimeParams implements MockzillaRuntimeParams {
+  const _MockzillaRuntimeParams(
       {required this.config,
       required this.mockBaseUrl,
       required this.apiBaseUrl,
@@ -1624,16 +1550,20 @@ class _$MockzillaRuntimeParamsImpl implements _MockzillaRuntimeParams {
   @override
   final int port;
 
+  /// Create a copy of MockzillaRuntimeParams
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'MockzillaRuntimeParams(config: $config, mockBaseUrl: $mockBaseUrl, apiBaseUrl: $apiBaseUrl, port: $port)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$MockzillaRuntimeParamsCopyWith<_MockzillaRuntimeParams> get copyWith =>
+      __$MockzillaRuntimeParamsCopyWithImpl<_MockzillaRuntimeParams>(
+          this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$MockzillaRuntimeParamsImpl &&
+            other is _MockzillaRuntimeParams &&
             (identical(other.config, config) || other.config == config) &&
             (identical(other.mockBaseUrl, mockBaseUrl) ||
                 other.mockBaseUrl == mockBaseUrl) &&
@@ -1646,36 +1576,77 @@ class _$MockzillaRuntimeParamsImpl implements _MockzillaRuntimeParams {
   int get hashCode =>
       Object.hash(runtimeType, config, mockBaseUrl, apiBaseUrl, port);
 
+  @override
+  String toString() {
+    return 'MockzillaRuntimeParams(config: $config, mockBaseUrl: $mockBaseUrl, apiBaseUrl: $apiBaseUrl, port: $port)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$MockzillaRuntimeParamsCopyWith<$Res>
+    implements $MockzillaRuntimeParamsCopyWith<$Res> {
+  factory _$MockzillaRuntimeParamsCopyWith(_MockzillaRuntimeParams value,
+          $Res Function(_MockzillaRuntimeParams) _then) =
+      __$MockzillaRuntimeParamsCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {MockzillaConfig config,
+      String mockBaseUrl,
+      String apiBaseUrl,
+      int port});
+
+  @override
+  $MockzillaConfigCopyWith<$Res> get config;
+}
+
+/// @nodoc
+class __$MockzillaRuntimeParamsCopyWithImpl<$Res>
+    implements _$MockzillaRuntimeParamsCopyWith<$Res> {
+  __$MockzillaRuntimeParamsCopyWithImpl(this._self, this._then);
+
+  final _MockzillaRuntimeParams _self;
+  final $Res Function(_MockzillaRuntimeParams) _then;
+
   /// Create a copy of MockzillaRuntimeParams
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$MockzillaRuntimeParamsImplCopyWith<_$MockzillaRuntimeParamsImpl>
-      get copyWith => __$$MockzillaRuntimeParamsImplCopyWithImpl<
-          _$MockzillaRuntimeParamsImpl>(this, _$identity);
-}
-
-abstract class _MockzillaRuntimeParams implements MockzillaRuntimeParams {
-  const factory _MockzillaRuntimeParams(
-      {required final MockzillaConfig config,
-      required final String mockBaseUrl,
-      required final String apiBaseUrl,
-      required final int port}) = _$MockzillaRuntimeParamsImpl;
-
-  @override
-  MockzillaConfig get config;
-  @override
-  String get mockBaseUrl;
-  @override
-  String get apiBaseUrl;
-  @override
-  int get port;
+  $Res call({
+    Object? config = null,
+    Object? mockBaseUrl = null,
+    Object? apiBaseUrl = null,
+    Object? port = null,
+  }) {
+    return _then(_MockzillaRuntimeParams(
+      config: null == config
+          ? _self.config
+          : config // ignore: cast_nullable_to_non_nullable
+              as MockzillaConfig,
+      mockBaseUrl: null == mockBaseUrl
+          ? _self.mockBaseUrl
+          : mockBaseUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      apiBaseUrl: null == apiBaseUrl
+          ? _self.apiBaseUrl
+          : apiBaseUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      port: null == port
+          ? _self.port
+          : port // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
 
   /// Create a copy of MockzillaRuntimeParams
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$MockzillaRuntimeParamsImplCopyWith<_$MockzillaRuntimeParamsImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $MockzillaConfigCopyWith<$Res> get config {
+    return $MockzillaConfigCopyWith<$Res>(_self.config, (value) {
+      return _then(_self.copyWith(config: value));
+    });
+  }
 }
+
+// dart format on

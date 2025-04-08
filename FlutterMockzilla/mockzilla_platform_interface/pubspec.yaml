@@ -22,14 +22,14 @@ dependencies:
     sdk: flutter
 
   # Interface
-  plugin_platform_interface: ^2.0.2
+  plugin_platform_interface: ^2.1.8
 
   # Models
-  freezed_annotation: ^2.4.1
+  freezed_annotation: ^3.0.0
 
 dev_dependencies:
   # Models
-  freezed: ^2.4.5
+  freezed: ^3.0.6
   build_runner: ^2.4.6
 
   # Testing
@@ -37,4 +37,4 @@ dev_dependencies:
     sdk: flutter
 
   # Linting
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
