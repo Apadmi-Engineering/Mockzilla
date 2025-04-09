@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.0.1...flutter_mockzilla_platform_interface-v1.0.2) (2025-04-09)
+
+
+### Bug Fixes
+
+* Bump `freezed` dependency from 2.X -&gt; 3.x ([b8df550](https://github.com/Apadmi-Engineering/Mockzilla/commit/b8df5501b415206537278fd7d93fd5a6aa8ecb8e))
+
 ## [1.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.0.0...flutter_mockzilla_platform_interface-v1.0.1) (2025-01-16)
 
 
