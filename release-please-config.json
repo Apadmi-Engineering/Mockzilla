@@ -5,6 +5,7 @@
   "packages": {
     "mockzilla": {
       "component": "mockzilla",
+      "last-release-sha": "aa9edf9d34f8651dc219ab0c1dfc858f1b25128a",
       "extra-files": ["build.gradle.kts"]
     },
     "mockzilla-common": {
