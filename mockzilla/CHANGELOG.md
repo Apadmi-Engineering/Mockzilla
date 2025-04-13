@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.2...mockzilla-v1.0.0) (2025-04-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* Migrates `webApiDefaultResponse` and `webApiErrorResponse` to `DashboardOptionsConfig` to allow for multiple preset successful/error responses (aligns with #61).
+
+### Features
+
+* Collated Flutter v1 updates ([#300](https://github.com/Apadmi-Engineering/Mockzilla/issues/300)) ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/commit/ff272ae419acd8de42baf29a5cb97cde0023f75a))
+
+
+### Bug Fixes
+
+* Update Kermit and remove named argument for tag to sidestep conflicting overloads ([93ce7f6](https://github.com/Apadmi-Engineering/Mockzilla/commit/93ce7f66ee0f34f40404218a7a8a5ef6cd49d257))
+* Update Kermit to v2.0.5 ([a8d6133](https://github.com/Apadmi-Engineering/Mockzilla/commit/a8d61334b07053f9bcd42d48c5aaddde80da62c3))
+
 ## [2.1.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.1...mockzilla-v2.1.2) (2025-01-03)
 
 
