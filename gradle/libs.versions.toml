@@ -26,7 +26,7 @@ ktor = "3.1.2" # https://github.com/ktorio/ktor
 compose = "1.7.0" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
-koin = "4.0.3" # https://github.com/InsertKoinIO/koin
+koin = "4.0.4" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
 kotlinx-coroutines = "1.10.2" # https://github.com/Kotlin/kotlinx.coroutines
@@ -43,7 +43,7 @@ playServicesAdsIdentifier = "18.2.0"
 semver4j = "3.1.0" # https://github.com/vdurmont/semver4j
 
 # Code Formatting
-spotless = "7.0.2" # https://github.com/diffplug/spotless
+spotless = "7.0.3" # https://github.com/diffplug/spotless
 
 # Testing
 kover = "0.9.1" # https://github.com/Kotlin/kotlinx-kover
