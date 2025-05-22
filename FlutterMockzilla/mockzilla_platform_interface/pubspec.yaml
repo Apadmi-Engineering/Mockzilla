@@ -1,7 +1,7 @@
 name: mockzilla_platform_interface
 description: A common interface for the mockzilla plugin.
 # x-release-please-start-version
-version: 1.0.1
+version: 1.0.2
 # x-release-please-end
 homepage: https://apadmi-engineering.github.io/Mockzilla/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
@@ -14,22 +14,22 @@ topics:
   - mockzilla
 
 environment:
-  sdk: '>=3.1.0 <4.0.0'
-  flutter: '>=3.3.0'
+  sdk: '>=3.6.0 <4.0.0'
+  flutter: '>=3.27.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
   # Interface
-  plugin_platform_interface: ^2.0.2
+  plugin_platform_interface: ^2.1.8
 
   # Models
-  freezed_annotation: ^2.4.1
+  freezed_annotation: ^3.0.0
 
 dev_dependencies:
   # Models
-  freezed: ^2.4.5
+  freezed: ^3.0.0
   build_runner: ^2.4.6
 
   # Testing
@@ -37,4 +37,4 @@ dev_dependencies:
     sdk: flutter
 
   # Linting
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0

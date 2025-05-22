@@ -1,52 +1,52 @@
 [versions]
 
 # Kotlin
-adam = "0.5.8" # https://github.com/Malinskiy/adam
-jmdns = "3.6.0" # https://github.com/jmdns/jmdns
-kotlin = "2.1.0" # https://github.com/JetBrains/kotlin
+adam = "0.5.10" # https://github.com/Malinskiy/adam
+jmdns = "3.6.1" # https://github.com/jmdns/jmdns
+kotlin = "2.1.10" # https://github.com/JetBrains/kotlin
 agp = "8.7.3" # https://developer.android.com/build/releases/gradle-plugin
-ksp = "2.1.0-1.0.29" # https://github.com/google/ksp
+ksp = "2.1.10-1.0.31" # https://github.com/google/ksp
 
 # Logging
 kermit = "2.0.5" # https://github.com/touchlab/Kermit
 
 # Config
-buildKonfig = "0.15.2" # https://github.com/yshrsmz/BuildKonfig
+buildKonfig = "0.17.0" # https://github.com/yshrsmz/BuildKonfig
 
 # Documentation
-dokka = "1.9.20" # https://github.com/Kotlin/dokka
+dokka = "2.0.0" # https://github.com/Kotlin/dokka
 
 # Localization
 lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "3.0.3" # https://github.com/ktorio/ktor
+ktor = "3.1.2" # https://github.com/ktorio/ktor
 
 # Compose
 compose = "1.7.0" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
-koin = "4.0.1" # https://github.com/InsertKoinIO/koin
+koin = "4.0.3" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
-kotlinx-coroutines = "1.9.0" # https://github.com/Kotlin/kotlinx.coroutines
-kotlinx-datetime = "0.6.1" # https://github.com/Kotlin/kotlinx-datetime
-kotlinx-serialization = "1.7.3" # https://github.com/Kotlin/kotlinx.serialization
+kotlinx-coroutines = "1.10.2" # https://github.com/Kotlin/kotlinx.coroutines
+kotlinx-datetime = "0.6.2" # https://github.com/Kotlin/kotlinx-datetime
+kotlinx-serialization = "1.8.1" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
 lifecycle = "2.8.7" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 compose-activity = "1.9.3" # https://developer.android.com/jetpack/androidx/releases/activity
-mockk = "1.13.14"
+mockk = "1.13.17"
 playServicesAdsIdentifier = "18.2.0"
 
 # Semantic Versioning
 semver4j = "3.1.0" # https://github.com/vdurmont/semver4j
 
 # Code Formatting
-spotless = "6.25.0" # https://github.com/diffplug/spotless
+spotless = "7.0.2" # https://github.com/diffplug/spotless
 
 # Testing
-kover = "0.8.3" # https://github.com/Kotlin/kotlinx-kover
+kover = "0.9.1" # https://github.com/Kotlin/kotlinx-kover
 turbine = "1.2.0" # https://github.com/cashapp/turbine
 junit = "1.2.1" # https://developer.android.com/jetpack/androidx/releases/test
 testParamInjector = "1.18" # https://github.com/google/TestParameterInjector

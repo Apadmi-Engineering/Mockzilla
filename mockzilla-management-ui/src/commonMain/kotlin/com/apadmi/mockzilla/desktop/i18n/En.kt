@@ -51,6 +51,20 @@ val EnStrings = Strings(
             title = "Logs",
             clearAll = "Clear all",
         ),
+        logDetails = Strings.Widgets.LogDetails(
+            title = "Log Detail",
+            emptyTitle = "\uD83D\uDC47",
+            emptyDescription = "Choose a Log to view details",
+            responseDelayUnits = "ms delay",
+            intendedFailure = "Used error response",
+            intendedSuccess = "Used non error response",
+            requestHeaders = "Request headers",
+            requestBody = "Request body",
+            responseHeaders = "Response headers",
+            responseBody = "Response body",
+            noHeaders = "None",
+            noBody = "Empty"
+        ),
         endpoints = Strings.Widgets.Endpoints(
             selectAllTooltip = "Select all",
             errorSwitchLabel = "Use Error Response",
@@ -107,6 +121,8 @@ val EnStrings = Strings(
             resetHeaders = "Reset all headers",
             noHeaders = "Headers set to an empty list",
             headersUnset = "Headers unset",
+            emptyTitle = "\uD83D\uDC48",
+            emptyDescription = "Choose an Endpoint to start editing",
         ),
         miscControls = Strings.Widgets.MiscControls(
             refreshAll = "Re-sync all",

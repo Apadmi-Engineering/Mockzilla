@@ -1,7 +1,5 @@
 # Mockzilla Desktop
 
-
-
 ### Building and Running
 
 Use the following command to run the desktop app.

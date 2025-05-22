@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
@@ -53,22 +55,29 @@ private fun HttpStatusCode.color() = when (this.value) {
 
 @Composable
 fun MonitorLogsWidget(
-    device: Device
+    device: Device,
+    onViewDetail: (LogEvent) -> Unit,
 ) {
     val viewModel = getViewModel<MonitorLogsViewModel>(key = device.toString()) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
-    MonitorLogsWidgetContent(state = state, onClearAll = viewModel::clearLogs)
+    MonitorLogsWidgetContent(
+        state = state,
+        onViewDetail = onViewDetail,
+        onClearAll = viewModel::clearLogs
+    )
 }
 
 @Composable
 fun MonitorLogsWidgetContent(
     state: MonitorLogsViewModel.State.DisplayLogs,
     onClearAll: () -> Unit,
+    onViewDetail: (LogEvent) -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Row {
     MonitorLogsList(
         entries = state.entries,
+        onViewDetail = onViewDetail,
         modifier = Modifier.weight(1F)
     )
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -98,6 +107,7 @@ fun LogRow(modifier: Modifier, event: LogEvent) =
 @Composable
 private fun MonitorLogsList(
     entries: Sequence<LogEvent>,
+    onViewDetail: (LogEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state = rememberLazyListState()
@@ -124,7 +134,13 @@ private fun MonitorLogsList(
     LazyColumn(modifier = modifier, state = state) {
         entryList.forEachIndexed { index, logEvent ->
             item {
-                LogRow(Modifier.fillMaxWidth().alternatingBackground(index), logEvent)
+                LogRow(
+                    modifier = Modifier
+                        .clickable(onClick = { onViewDetail(logEvent) }, role = Role.Button)
+                        .fillMaxWidth()
+                        .alternatingBackground(index),
+                    event = logEvent
+                )
             }
         }
     }

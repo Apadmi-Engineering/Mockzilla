@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -50,7 +49,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -58,6 +56,7 @@ import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
+import com.apadmi.mockzilla.desktop.ui.components.EmptyState
 
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTab
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalTabList
@@ -128,7 +127,10 @@ fun EndpointDetailsWidgetContent(
     val coroutineScope = rememberCoroutineScope()
 
     when (state) {
-        is EndpointDetailsViewModel.State.Empty -> EmptyState()
+        is EndpointDetailsViewModel.State.Empty -> EmptyState(
+            title = strings.widgets.endpointDetails.emptyTitle,
+            description = strings.widgets.endpointDetails.emptyDescription
+        )
         is EndpointDetailsViewModel.State.Endpoint -> {
             Text(
                 text = state.config.name,
@@ -211,25 +213,6 @@ fun EndpointDetailsWidgetContent(
             }
         }
     }
-}
-
-@Composable
-private fun EmptyState() = Column(
-    Modifier.fillMaxSize().padding(16.dp),
-    verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically)
-) {
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        text = "\uD83D\uDC48",
-        style = MaterialTheme.typography.displayLarge,
-        textAlign = TextAlign.Center
-    )
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        text = "Choose an Endpoint to start editing",
-        style = MaterialTheme.typography.titleMedium,
-        textAlign = TextAlign.Center
-    )
 }
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)

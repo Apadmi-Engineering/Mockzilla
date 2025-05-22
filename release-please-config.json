@@ -2,6 +2,7 @@
   "group-pull-request-title-pattern": "chore${scope}: release Kmp libs libraries",
   "release-type": "simple",
   "separate-pull-requests": true,
+  "last-release-sha": "8e8e18b4a58ec80e1f0bdcc1dc13a9f106dd2042",
   "packages": {
     "mockzilla": {
       "component": "mockzilla",

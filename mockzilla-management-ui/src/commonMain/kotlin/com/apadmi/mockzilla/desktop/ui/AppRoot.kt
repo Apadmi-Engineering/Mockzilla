@@ -28,9 +28,12 @@ import com.apadmi.mockzilla.desktop.ui.widgets.endpoints.endpoints.EndpointsWidg
 import com.apadmi.mockzilla.desktop.ui.widgets.metadata.MetaDataWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.misccontrols.MiscControlsWidget
 import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.MonitorLogsWidget
+import com.apadmi.mockzilla.desktop.ui.widgets.monitorlogs.details.MonitorLogDetailsWidget
+import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 
 private const val endpointDetailsWidgetId = "endpoint-details"
+private const val logDetailsWidgetId = "log-details"
 
 @Composable
 fun App(
@@ -41,18 +44,26 @@ fun App(
         val state by viewModel.state.collectAsState()
 
         var openWidgets by remember { mutableStateOf(emptySet<String>()) }
+        var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
         WidgetScaffold(
             modifier = Modifier.androidStatusBarPadding().fillMaxSize(),
             openWidgets = openWidgets,
             top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
             left = leftPanelWidgets(state, strings),
-            right = rightPanelWidgets(state, strings),
+            right = rightPanelWidgets(state = state, logDetail = logDetail, strings = strings),
             middle = middleWidgets(state) {
                 viewModel.setSelectedEndpoint(it)
                 openWidgets = openWidgets.plus(endpointDetailsWidgetId)
             },
-            bottom = bottomPanelWidgets(state, strings),
+            bottom = bottomPanelWidgets(
+                state = state,
+                onViewDetail = {
+                    logDetail = it
+                    openWidgets = openWidgets.plus(logDetailsWidgetId)
+                },
+                strings = strings,
+            ),
             onSelected = {
                 openWidgets = if (openWidgets.contains(it)) {
                     openWidgets.minus(it)
@@ -70,13 +81,18 @@ fun App(
     }
 }
 
+@Suppress("LAMBDA_IS_NOT_LAST_PARAMETER")
 private fun bottomPanelWidgets(
     state: AppRootViewModel.State,
+    onViewDetail: (LogEvent) -> Unit,
     strings: Strings
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
     listOf(
         Widget(id = "monitor-logs", strings.widgets.logs.title) {
-            MonitorLogsWidget(connectedState.activeDevice.device)
+            MonitorLogsWidget(
+                device = connectedState.activeDevice.device,
+                onViewDetail = onViewDetail
+            )
         }
     )
 } ?: emptyList()
@@ -104,16 +120,28 @@ private fun middleWidgets(
 
 private fun rightPanelWidgets(
     state: AppRootViewModel.State,
+    logDetail: LogEvent?,
     strings: Strings
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
-    listOf(Widget(id = endpointDetailsWidgetId, strings.widgets.endpointDetails.title) {
-        Crossfade(
-            targetState = connectedState,
-            animationSpec = tween(durationMillis = 200)
-        ) { newState ->
-            EndpointDetailsWidget(newState.activeDevice.device, newState.selectedEndpoint)
+    listOf(
+        Widget(
+            id = endpointDetailsWidgetId,
+            title = strings.widgets.endpointDetails.title
+        ) {
+            Crossfade(
+                targetState = connectedState,
+                animationSpec = tween(durationMillis = 200)
+            ) { newState ->
+                EndpointDetailsWidget(newState.activeDevice.device, newState.selectedEndpoint)
+            }
+        },
+        Widget(
+            id = logDetailsWidgetId,
+            title = strings.widgets.logDetails.title
+        ) {
+            MonitorLogDetailsWidget(logDetail)
         }
-    })
+    )
 } ?: emptyList()
 
 private fun leftPanelWidgets(

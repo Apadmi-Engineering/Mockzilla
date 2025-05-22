@@ -5,7 +5,7 @@ import io.ktor.http.*
 import kotlinx.serialization.Serializable
 
 /**
- * @property timestamp
+ * @property timestamp milliseconds from 1st Jan 1970 epoch
  * @property url
  * @property requestBody
  * @property requestHeaders

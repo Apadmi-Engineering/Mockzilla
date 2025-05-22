@@ -24,6 +24,7 @@ data class Strings(
      * @property deviceTabs
      * @property metaData
      * @property logs
+     * @property logDetails
      * @property endpointDetails
      * @property endpoints
      * @property miscControls
@@ -35,6 +36,7 @@ data class Strings(
         val deviceTabs: DeviceTabs,
         val metaData: MetaData,
         val logs: Logs,
+        val logDetails: LogDetails,
         val endpointDetails: EndpointDetails,
         val endpoints: Endpoints,
         val miscControls: MiscControls,
@@ -59,6 +61,35 @@ data class Strings(
         data class Logs(
             val title: String,
             val clearAll: String,
+        )
+
+        /**
+         * @property title
+         * @property emptyTitle
+         * @property emptyDescription
+         * @property responseDelayUnits
+         * @property intendedFailure
+         * @property intendedSuccess
+         * @property requestHeaders
+         * @property requestBody
+         * @property responseHeaders
+         * @property responseBody
+         * @property noHeaders
+         * @property noBody
+         */
+        data class LogDetails(
+            val title: String,
+            val emptyTitle: String,
+            val emptyDescription: String,
+            val responseDelayUnits: String,
+            val intendedFailure: String,
+            val intendedSuccess: String,
+            val requestHeaders: String,
+            val requestBody: String,
+            val responseHeaders: String,
+            val responseBody: String,
+            val noHeaders: String,
+            val noBody: String
         )
 
         /**
@@ -164,6 +195,7 @@ data class Strings(
             val filterLabel: String,
             val filterClear: String
         )
+
         /**
          * @property none
          * @property useErrorResponse
@@ -199,6 +231,8 @@ data class Strings(
          * @property noHeaders
          * @property headersUnset
          * @property title
+         * @property emptyTitle
+         * @property emptyDescription
          */
         data class EndpointDetails(
             val title: String,
@@ -234,7 +268,9 @@ data class Strings(
             val editHeaders: String,
             val resetHeaders: String,
             val noHeaders: String,
-            val headersUnset: String
+            val headersUnset: String,
+            val emptyTitle: String,
+            val emptyDescription: String
         )
 
         /**

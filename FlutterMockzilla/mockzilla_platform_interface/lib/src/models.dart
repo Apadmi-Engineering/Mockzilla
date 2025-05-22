@@ -26,7 +26,7 @@ enum LogLevel {
 /// A representation of a request to the Mockzilla server; this is passed to
 /// an endpoint handler in order to generate an appropriate response.
 @freezed
-class MockzillaHttpRequest with _$MockzillaHttpRequest {
+abstract class MockzillaHttpRequest with _$MockzillaHttpRequest {
   const factory MockzillaHttpRequest({
     required String uri,
     @Default({}) Map<String, String> headers,
@@ -38,7 +38,7 @@ class MockzillaHttpRequest with _$MockzillaHttpRequest {
 /// Created and returned by an endpoint handler in response to an incoming
 /// HTTP request.
 @freezed
-class MockzillaHttpResponse with _$MockzillaHttpResponse {
+abstract class MockzillaHttpResponse with _$MockzillaHttpResponse {
   const factory MockzillaHttpResponse({
     /// The HTTP status to use for the response, defaults to 200 - OK.
     @Default(HttpStatus.ok) int statusCode,
@@ -53,7 +53,7 @@ class MockzillaHttpResponse with _$MockzillaHttpResponse {
 /// Definition for a preset response that can be selected in the desktop
 /// management app.
 @freezed
-class DashboardOverridePreset with _$DashboardOverridePreset {
+abstract class DashboardOverridePreset with _$DashboardOverridePreset {
   const factory DashboardOverridePreset({
     required String name,
     required String? description,
@@ -64,7 +64,7 @@ class DashboardOverridePreset with _$DashboardOverridePreset {
 /// A collection of preset responses from an endpoint that can be selected in
 /// the desktop management app.
 @freezed
-class DashboardOptionsConfig with _$DashboardOptionsConfig {
+abstract class DashboardOptionsConfig with _$DashboardOptionsConfig {
   const factory DashboardOptionsConfig({
     @Default([]) List<DashboardOverridePreset> successPresets,
     @Default([]) List<DashboardOverridePreset> errorPresets,
@@ -77,7 +77,7 @@ class DashboardOptionsConfig with _$DashboardOptionsConfig {
 /// Please see [https://apadmi-engineering.github.io/Mockzilla/endpoints/]()
 /// for more information.
 @freezed
-class EndpointConfig with _$EndpointConfig {
+abstract class EndpointConfig with _$EndpointConfig {
   const EndpointConfig._();
 
   const factory EndpointConfig({
@@ -128,7 +128,7 @@ abstract class MockzillaLogger {
 }
 
 @freezed
-class MockzillaConfig with _$MockzillaConfig {
+abstract class MockzillaConfig with _$MockzillaConfig {
   const factory MockzillaConfig({
     /// The port that the Mockzilla should be available through.
     @Default(8080) int port,
@@ -149,7 +149,7 @@ class MockzillaConfig with _$MockzillaConfig {
 }
 
 @freezed
-class MockzillaRuntimeParams with _$MockzillaRuntimeParams {
+abstract class MockzillaRuntimeParams with _$MockzillaRuntimeParams {
   const factory MockzillaRuntimeParams({
     required MockzillaConfig config,
     required String mockBaseUrl,

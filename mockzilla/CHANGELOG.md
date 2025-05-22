@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.2...mockzilla-v2.1.3) (2025-05-07)
+
+
+### Bug Fixes
+
+* bump version ([f27a5d1](https://github.com/Apadmi-Engineering/Mockzilla/commit/f27a5d1abde14b313a2bf62361d3ccd50b724d44))
+
 ## [2.1.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.1...mockzilla-v2.1.2) (2025-01-03)
 
 
@@ -81,7 +88,6 @@
 * Add the ability to specify custom log writers on mockzilla ([ce8108e](https://github.com/Apadmi-Engineering/Mockzilla/commit/ce8108e79fcaf2b198cf66878be167ac47fc3fd1))
 
 ## [1.0.1-alpha2](https://github.com/Apadmi-Engineering/Mockzilla/compare/1.0.0-alpha2...v1.0.1-alpha2) (2023-08-06)
-
 
 ### Bug Fixes
 
