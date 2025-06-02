@@ -6,3 +6,4 @@ import androidx.compose.ui.Modifier
 actual fun Modifier.verticalResizeCursor(): Modifier = this
 actual fun Modifier.horizontalResizeCursor(): Modifier = this
 actual fun Modifier.androidStatusBarPadding() = statusBarsPadding()
+actual fun Modifier.desktopTertiaryPointerClick(onClick: () -> Unit) = this

@@ -23,3 +23,4 @@ fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
 expect fun Modifier.verticalResizeCursor(): Modifier
 expect fun Modifier.horizontalResizeCursor(): Modifier
 expect fun Modifier.androidStatusBarPadding(): Modifier
+expect fun Modifier.desktopTertiaryPointerClick(onClick: () -> Unit): Modifier
