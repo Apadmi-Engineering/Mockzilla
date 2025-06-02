@@ -32,7 +32,8 @@ val EnStrings = Strings(
                     1 -> "1 device"
                     else -> "$number devices"
                 }
-            }
+            },
+            closeButtonDescription = "Close"
         ), metaData = Strings.Widgets.MetaData(
             title = "Meta Data",
             noDeviceConnected = "No device connected",
