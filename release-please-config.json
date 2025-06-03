@@ -18,19 +18,23 @@
     },
     "FlutterMockzilla/mockzilla": {
       "component": "flutter_mockzilla",
-      "release-type": "dart"
+      "release-type": "dart",
+      "always-update": true
     },
     "FlutterMockzilla/mockzilla_platform_interface": {
       "component": "flutter_mockzilla_platform_interface",
-      "release-type": "dart"
+      "release-type": "dart",
+      "always-update": true
     },
     "FlutterMockzilla/mockzilla_android": {
       "component": "flutter_mockzilla_android",
-      "release-type": "dart"
+      "release-type": "dart",
+      "always-update": true
     },
     "FlutterMockzilla/mockzilla_ios": {
       "component": "flutter_mockzilla_ios",
-      "release-type": "dart"
+      "release-type": "dart",
+      "always-update": true
     },
     "mockzilla-management-ui": {
       "component": "mockzilla-management-ui",
