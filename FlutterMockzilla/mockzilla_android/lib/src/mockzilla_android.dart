@@ -89,16 +89,13 @@ class CallbackProvider extends MockzillaFlutterApi {
     String tag,
     String? exception,
   ) {
+    final mappedLogLevel = logLevel.toDart();
+    final mappedException = switch (exception) {
+      null => null,
+      _ => MockzillaPlatformException(exception),
+    };
     for (final logger in loggers) {
-      logger.log(
-        logLevel.toDart(),
-        message,
-        tag,
-        switch (exception) {
-          null => null,
-          _ => MockzillaPlatformException(message),
-        },
-      );
+      logger.log(mappedLogLevel, message, tag, mappedException);
     }
   }
 }
