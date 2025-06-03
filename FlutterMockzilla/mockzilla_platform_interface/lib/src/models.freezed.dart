@@ -1189,6 +1189,10 @@ mixin _$MockzillaConfig {
   /// through the desktop management app.
   bool get isNetworkDiscoveryEnabled;
 
+  /// Custom logger implementations for surfacing Mockzilla logs outside of
+  /// the Flutter console.
+  List<MockzillaLogger> get loggers;
+
   /// Create a copy of MockzillaConfig
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1210,7 +1214,8 @@ mixin _$MockzillaConfig {
                 other.logLevel == logLevel) &&
             (identical(other.isNetworkDiscoveryEnabled,
                     isNetworkDiscoveryEnabled) ||
-                other.isNetworkDiscoveryEnabled == isNetworkDiscoveryEnabled));
+                other.isNetworkDiscoveryEnabled == isNetworkDiscoveryEnabled) &&
+            const DeepCollectionEquality().equals(other.loggers, loggers));
   }
 
   @override
@@ -1220,11 +1225,12 @@ mixin _$MockzillaConfig {
       const DeepCollectionEquality().hash(endpoints),
       localHostOnly,
       logLevel,
-      isNetworkDiscoveryEnabled);
+      isNetworkDiscoveryEnabled,
+      const DeepCollectionEquality().hash(loggers));
 
   @override
   String toString() {
-    return 'MockzillaConfig(port: $port, endpoints: $endpoints, localHostOnly: $localHostOnly, logLevel: $logLevel, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled)';
+    return 'MockzillaConfig(port: $port, endpoints: $endpoints, localHostOnly: $localHostOnly, logLevel: $logLevel, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled, loggers: $loggers)';
   }
 }
 
@@ -1239,7 +1245,8 @@ abstract mixin class $MockzillaConfigCopyWith<$Res> {
       List<EndpointConfig> endpoints,
       bool localHostOnly,
       LogLevel logLevel,
-      bool isNetworkDiscoveryEnabled});
+      bool isNetworkDiscoveryEnabled,
+      List<MockzillaLogger> loggers});
 }
 
 /// @nodoc
@@ -1260,6 +1267,7 @@ class _$MockzillaConfigCopyWithImpl<$Res>
     Object? localHostOnly = null,
     Object? logLevel = null,
     Object? isNetworkDiscoveryEnabled = null,
+    Object? loggers = null,
   }) {
     return _then(_self.copyWith(
       port: null == port
@@ -1282,6 +1290,10 @@ class _$MockzillaConfigCopyWithImpl<$Res>
           ? _self.isNetworkDiscoveryEnabled
           : isNetworkDiscoveryEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
+      loggers: null == loggers
+          ? _self.loggers
+          : loggers // ignore: cast_nullable_to_non_nullable
+              as List<MockzillaLogger>,
     ));
   }
 }
@@ -1294,8 +1306,10 @@ class _MockzillaConfig implements MockzillaConfig {
       final List<EndpointConfig> endpoints = const [],
       this.localHostOnly = false,
       this.logLevel = LogLevel.info,
-      this.isNetworkDiscoveryEnabled = true})
-      : _endpoints = endpoints;
+      this.isNetworkDiscoveryEnabled = true,
+      final List<MockzillaLogger> loggers = const []})
+      : _endpoints = endpoints,
+        _loggers = loggers;
 
   /// The port that the Mockzilla should be available through.
   @override
@@ -1330,6 +1344,20 @@ class _MockzillaConfig implements MockzillaConfig {
   @JsonKey()
   final bool isNetworkDiscoveryEnabled;
 
+  /// Custom logger implementations for surfacing Mockzilla logs outside of
+  /// the Flutter console.
+  final List<MockzillaLogger> _loggers;
+
+  /// Custom logger implementations for surfacing Mockzilla logs outside of
+  /// the Flutter console.
+  @override
+  @JsonKey()
+  List<MockzillaLogger> get loggers {
+    if (_loggers is EqualUnmodifiableListView) return _loggers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_loggers);
+  }
+
   /// Create a copy of MockzillaConfig
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -1352,7 +1380,8 @@ class _MockzillaConfig implements MockzillaConfig {
                 other.logLevel == logLevel) &&
             (identical(other.isNetworkDiscoveryEnabled,
                     isNetworkDiscoveryEnabled) ||
-                other.isNetworkDiscoveryEnabled == isNetworkDiscoveryEnabled));
+                other.isNetworkDiscoveryEnabled == isNetworkDiscoveryEnabled) &&
+            const DeepCollectionEquality().equals(other._loggers, _loggers));
   }
 
   @override
@@ -1362,11 +1391,12 @@ class _MockzillaConfig implements MockzillaConfig {
       const DeepCollectionEquality().hash(_endpoints),
       localHostOnly,
       logLevel,
-      isNetworkDiscoveryEnabled);
+      isNetworkDiscoveryEnabled,
+      const DeepCollectionEquality().hash(_loggers));
 
   @override
   String toString() {
-    return 'MockzillaConfig(port: $port, endpoints: $endpoints, localHostOnly: $localHostOnly, logLevel: $logLevel, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled)';
+    return 'MockzillaConfig(port: $port, endpoints: $endpoints, localHostOnly: $localHostOnly, logLevel: $logLevel, isNetworkDiscoveryEnabled: $isNetworkDiscoveryEnabled, loggers: $loggers)';
   }
 }
 
@@ -1383,7 +1413,8 @@ abstract mixin class _$MockzillaConfigCopyWith<$Res>
       List<EndpointConfig> endpoints,
       bool localHostOnly,
       LogLevel logLevel,
-      bool isNetworkDiscoveryEnabled});
+      bool isNetworkDiscoveryEnabled,
+      List<MockzillaLogger> loggers});
 }
 
 /// @nodoc
@@ -1404,6 +1435,7 @@ class __$MockzillaConfigCopyWithImpl<$Res>
     Object? localHostOnly = null,
     Object? logLevel = null,
     Object? isNetworkDiscoveryEnabled = null,
+    Object? loggers = null,
   }) {
     return _then(_MockzillaConfig(
       port: null == port
@@ -1426,6 +1458,10 @@ class __$MockzillaConfigCopyWithImpl<$Res>
           ? _self.isNetworkDiscoveryEnabled
           : isNetworkDiscoveryEnabled // ignore: cast_nullable_to_non_nullable
               as bool,
+      loggers: null == loggers
+          ? _self._loggers
+          : loggers // ignore: cast_nullable_to_non_nullable
+              as List<MockzillaLogger>,
     ));
   }
 }

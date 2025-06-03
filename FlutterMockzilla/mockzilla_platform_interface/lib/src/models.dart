@@ -145,6 +145,10 @@ abstract class MockzillaConfig with _$MockzillaConfig {
     /// Whether devices running Mockzilla are discoverable on the local network
     /// through the desktop management app.
     @Default(true) bool isNetworkDiscoveryEnabled,
+
+    /// Custom logger implementations for surfacing Mockzilla logs outside of
+    /// the Flutter console.
+    @Default([]) List<MockzillaLogger> loggers,
   }) = _MockzillaConfig;
 }
 
