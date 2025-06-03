@@ -11,7 +11,8 @@ class MockzillaAndroidPlugin : FlutterPlugin {
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         val flutterApi = MockzillaFlutterApi(flutterPluginBinding.binaryMessenger)
-        mockzillaApi = MockzillaAndroid(flutterApi, flutterPluginBinding.applicationContext)
+        val proxyLogger = ProxyMockzillaLogger(flutterApi)
+        mockzillaApi = MockzillaAndroid(flutterApi, proxyLogger, flutterPluginBinding.applicationContext)
         MockzillaHostApi.setUp(flutterPluginBinding.binaryMessenger, mockzillaApi)
     }
 

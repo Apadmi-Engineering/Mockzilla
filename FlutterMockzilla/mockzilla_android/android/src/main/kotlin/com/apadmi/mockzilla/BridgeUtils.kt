@@ -106,10 +106,11 @@ fun BridgeDashboardOptionsConfig.toNative() = DashboardOptionsConfig(
     errorPresets = errorPresets.map { it.toNative() }
 )
 
-fun BridgeDashboardOptionsConfig.Companion.fromNative(data: DashboardOptionsConfig) = BridgeDashboardOptionsConfig(
-    successPresets = data.successPresets.map { BridgeDashboardOverridePreset.fromNative(it) },
-    errorPresets = data.errorPresets.map { BridgeDashboardOverridePreset.fromNative(it) }
-)
+fun BridgeDashboardOptionsConfig.Companion.fromNative(data: DashboardOptionsConfig) =
+    BridgeDashboardOptionsConfig(
+        successPresets = data.successPresets.map { BridgeDashboardOverridePreset.fromNative(it) },
+        errorPresets = data.errorPresets.map { BridgeDashboardOverridePreset.fromNative(it) }
+    )
 
 fun BridgeEndpointConfig.toNative(
     endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
@@ -143,6 +144,7 @@ fun BridgeMockzillaConfig.toNative(
     endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
     defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
     errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
+    proxyMockzillaLogger: ProxyMockzillaLogger,
 ) = MockzillaConfig(
     this.port.toInt(),
     this.endpoints.map {
@@ -154,7 +156,7 @@ fun BridgeMockzillaConfig.toNative(
     this.logLevel.toNative(),
     MockzillaConfig.ReleaseModeConfig(),
     this.isNetworkDiscoveryEnabled,
-    emptyList()
+    listOf(proxyMockzillaLogger),
 )
 
 fun BridgeMockzillaConfig.Companion.fromNative(
