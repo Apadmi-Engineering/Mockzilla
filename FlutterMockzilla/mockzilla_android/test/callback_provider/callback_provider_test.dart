@@ -13,11 +13,13 @@ part 'fixtures.dart';
 
 @GenerateNiceMocks([
   MockSpec<EndpointConfig>(),
+  MockSpec<MockzillaLogger>(),
   MockSpec<MockzillaHttpRequest>(),
 ])
 void main() {
   group("Callback provider unit tests", () {
     final mockEndpoint = MockEndpointConfig();
+    final mockLogger = MockMockzillaLogger();
     final mockRequest = MockMockzillaHttpRequest();
     late CallbackProvider sut;
 
@@ -25,6 +27,7 @@ void main() {
       reset(mockEndpoint);
       sut = CallbackProvider(
         [mockEndpoint],
+        [mockLogger],
       );
     });
 
@@ -200,6 +203,16 @@ void main() {
         () => sut.flutterErrorHandler(_requestFixture, "unknown"),
         throwsA(isA<EndpointNotFoundError>()),
       );
+    });
+
+    test("log - calls through to custom logger instances", () {
+      // Run test
+      sut.log(BridgeLogLevel.debug, "This is a test message", "DEBUG", null);
+
+      // Verify
+      verify(
+        mockLogger.log(LogLevel.debug, "This is a test message", "DEBUG", null),
+      ).called(1);
     });
   });
 }

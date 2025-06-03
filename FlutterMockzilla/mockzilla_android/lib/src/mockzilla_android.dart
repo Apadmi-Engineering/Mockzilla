@@ -10,7 +10,7 @@ class MockzillaAndroid extends MockzillaPlatform {
 
   @override
   Future<MockzillaRuntimeParams> startMockzilla(MockzillaConfig config) async {
-    final callbackProvider = CallbackProvider(config.endpoints);
+    final callbackProvider = CallbackProvider(config.endpoints, config.loggers);
     MockzillaFlutterApi.setUp(callbackProvider);
     try {
       final bridgeParams =
@@ -42,9 +42,11 @@ class MockzillaAndroid extends MockzillaPlatform {
 
 class CallbackProvider extends MockzillaFlutterApi {
   final List<EndpointConfig> endpoints;
+  final List<MockzillaLogger> loggers;
 
   CallbackProvider(
     this.endpoints,
+    this.loggers,
   );
 
   /// Utility function to find a cached endpoint config with a given [key].
@@ -87,7 +89,17 @@ class CallbackProvider extends MockzillaFlutterApi {
     String tag,
     String? exception,
   ) {
-    /* TODO: Implement */
+    for (final logger in loggers) {
+      logger.log(
+        logLevel.toDart(),
+        message,
+        tag,
+        switch (exception) {
+          null => null,
+          _ => MockzillaPlatformException(message),
+        },
+      );
+    }
   }
 }
 

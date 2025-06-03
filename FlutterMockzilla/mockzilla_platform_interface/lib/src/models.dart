@@ -175,3 +175,11 @@ class MockzillaPortConflictException implements Exception {
       "Attempted to start Mockzilla server on a port that is already occupied "
       "by another process ($port).";
 }
+
+/// Passed to custom Mockzilla logger instances when an exception is thrown in
+/// the platform Mockzilla implementation.
+class MockzillaPlatformException implements Exception {
+  final String message;
+
+  const MockzillaPlatformException(this.message);
+}
