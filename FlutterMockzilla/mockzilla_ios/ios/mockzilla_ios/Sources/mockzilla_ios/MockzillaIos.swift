@@ -13,11 +13,13 @@ import SwiftMockzilla
 class MockzillaIos: Thread, MockzillaHostApi {
     
     private let handler: MockzillaFlutterApi
+    private let proxyLogger: ProxyMockzillaLogger
     
     private let waiter = DispatchGroup()
     
-    init(handler: MockzillaFlutterApi) {
+    init(handler: MockzillaFlutterApi, proxyLogger: ProxyMockzillaLogger) {
         self.handler = handler
+        self.proxyLogger = proxyLogger
     }
     
     override func main() {
@@ -89,7 +91,8 @@ class MockzillaIos: Thread, MockzillaHostApi {
                 } catch {
                     return MockzillaHttpResponse(statusCode: HttpStatusCode.InternalServerError, headers: [:], body: "")
                 }
-            }
+            },
+            proxyLogger: proxyLogger
         )
         do {
             let params = try MockzillaKt.startMockzilla(config: nativeConfig)

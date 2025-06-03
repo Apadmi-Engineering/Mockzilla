@@ -172,7 +172,8 @@ extension BridgeMockzillaConfig {
     func toNative(
         endpointMatcher: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> Bool,
         defaultHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse,
-        errorHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse
+        errorHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse,
+        proxyLogger: ProxyMockzillaLogger
     ) -> MockzillaConfig {
         return MockzillaConfig(
             port: Int32(port),
@@ -187,7 +188,7 @@ extension BridgeMockzillaConfig {
                 tokenLifeSpan: 500
             ),
             isNetworkDiscoveryEnabled: isNetworkDiscoveryEnabled,
-            additionalLogWriters: []
+            additionalLogWriters: [proxyLogger]
         )
     }
     
