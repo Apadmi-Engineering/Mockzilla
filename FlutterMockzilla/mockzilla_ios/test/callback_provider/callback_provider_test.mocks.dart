@@ -136,8 +136,8 @@ class MockEndpointConfig extends _i1.Mock implements _i2.EndpointConfig {
   bool Function(_i2.MockzillaHttpRequest) get endpointMatcher =>
       (super.noSuchMethod(
         Invocation.getter(#endpointMatcher),
-        returnValue: (_i2.MockzillaHttpRequest __p0) => false,
-        returnValueForMissingStub: (_i2.MockzillaHttpRequest __p0) => false,
+        returnValue: (_i2.MockzillaHttpRequest request) => false,
+        returnValueForMissingStub: (_i2.MockzillaHttpRequest request) => false,
       ) as bool Function(_i2.MockzillaHttpRequest));
 
   @override
@@ -157,12 +157,12 @@ class MockEndpointConfig extends _i1.Mock implements _i2.EndpointConfig {
   _i2.MockzillaHttpResponse Function(_i2.MockzillaHttpRequest)
       get defaultHandler => (super.noSuchMethod(
             Invocation.getter(#defaultHandler),
-            returnValue: (_i2.MockzillaHttpRequest __p0) =>
+            returnValue: (_i2.MockzillaHttpRequest request) =>
                 _FakeMockzillaHttpResponse_2(
               this,
               Invocation.getter(#defaultHandler),
             ),
-            returnValueForMissingStub: (_i2.MockzillaHttpRequest __p0) =>
+            returnValueForMissingStub: (_i2.MockzillaHttpRequest request) =>
                 _FakeMockzillaHttpResponse_2(
               this,
               Invocation.getter(#defaultHandler),
@@ -173,12 +173,12 @@ class MockEndpointConfig extends _i1.Mock implements _i2.EndpointConfig {
   _i2.MockzillaHttpResponse Function(_i2.MockzillaHttpRequest)
       get errorHandler => (super.noSuchMethod(
             Invocation.getter(#errorHandler),
-            returnValue: (_i2.MockzillaHttpRequest __p0) =>
+            returnValue: (_i2.MockzillaHttpRequest request) =>
                 _FakeMockzillaHttpResponse_2(
               this,
               Invocation.getter(#errorHandler),
             ),
-            returnValueForMissingStub: (_i2.MockzillaHttpRequest __p0) =>
+            returnValueForMissingStub: (_i2.MockzillaHttpRequest request) =>
                 _FakeMockzillaHttpResponse_2(
               this,
               Invocation.getter(#errorHandler),
@@ -199,6 +199,31 @@ class MockEndpointConfig extends _i1.Mock implements _i2.EndpointConfig {
           Invocation.getter(#copyWith),
         ),
       ) as _i2.$EndpointConfigCopyWith<_i2.EndpointConfig>);
+}
+
+/// A class which mocks [MockzillaLogger].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockMockzillaLogger extends _i1.Mock implements _i2.MockzillaLogger {
+  @override
+  void log(
+    _i2.LogLevel? level,
+    String? message,
+    String? tag,
+    Exception? exception,
+  ) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #log,
+          [
+            level,
+            message,
+            tag,
+            exception,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
 }
 
 /// A class which mocks [MockzillaHttpRequest].
