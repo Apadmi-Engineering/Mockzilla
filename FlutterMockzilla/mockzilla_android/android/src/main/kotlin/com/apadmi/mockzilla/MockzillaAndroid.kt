@@ -29,7 +29,8 @@ class MockzillaAndroid(
         val nativeConfig = config.toNative(
             { key -> isMatchedEndpoint(this, key) },
             { key -> callDefaultHandler(this, key) },
-            { key -> callErrorHandler(this, key) }
+            { key -> callErrorHandler(this, key) },
+            proxyMockzillaLogger,
         )
         val nativeRuntimeParams = startMockzilla(nativeConfig, context)
         return BridgeMockzillaRuntimeParams.fromNative(nativeRuntimeParams)
