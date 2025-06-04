@@ -16,14 +16,17 @@ class ProxyMockzillaLogger: MockzillaLogWriter {
     
     func log(logLevel: MockzillaLogLevel, message: String, tag: String, throwable: KotlinThrowable?) {
         do {
-            try flutterApi.log(
-                logLevel: BridgeLogLevel.fromNative(logLevel),
-                message: message as String,
-                tag: tag as String,
-                exception: throwable?.message,
-                completion: { localResult in
-                    // Intentionally blank.
-                })
+            try DispatchQueue.main.asyncAndWait {
+                try flutterApi.log(
+                    logLevel: BridgeLogLevel.fromNative(logLevel),
+                    message: message as String,
+                    tag: tag as String,
+                    exception: throwable?.message,
+                    completion: { localResult in
+                        // Intentionally blank.
+                    }
+                )
+            }
         } catch {
             // Intentionally blank as this is a fire and forget call.
         }
