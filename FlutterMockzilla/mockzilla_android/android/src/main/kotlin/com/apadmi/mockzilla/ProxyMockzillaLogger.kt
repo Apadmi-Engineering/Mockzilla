@@ -7,10 +7,10 @@ import android.os.Looper
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.service.MockzillaLogWriter
 
-class ProxyMockzillaLogger(
-    private val flutterApi: MockzillaFlutterApi
+open class ProxyMockzillaLogger(
+    private val flutterApi: MockzillaFlutterApi,
+    private val uiThreadHandler: Handler = Handler(Looper.getMainLooper())
 ) : MockzillaLogWriter {
-    val uiThreadHandler = Handler(Looper.getMainLooper())
 
     override fun log(
         logLevel: MockzillaConfig.LogLevel,

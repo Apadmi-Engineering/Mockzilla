@@ -202,8 +202,14 @@ internal class BridgeUtilsTest {
 
         // Run test & verify
         bridgeToNative.forEach { (bridge, native) ->
-            // TODO: This doesn't pass as lambdas are references, fix this!!
-            // assertEquals(bridge.toNative(endpointMatcher, defaultHandler, errorHandler), native)
+            with(bridge.toNative(endpointMatcher, defaultHandler, errorHandler)) {
+                assertEquals(key, native.key)
+                assertEquals(name, native.name)
+                assertEquals(shouldFail, native.shouldFail)
+                assertEquals(delay, native.delay)
+                assertEquals(dashboardOptionsConfig, native.dashboardOptionsConfig)
+                assertEquals(versionCode, native.versionCode)
+            }
             assertEquals(BridgeEndpointConfig.fromNative(native), bridge)
         }
     }
@@ -211,6 +217,8 @@ internal class BridgeUtilsTest {
     @Test
     fun mockzillaConfigMarshallingReturnsExpectedValue() {
         // Setup
+        val dummyProxyMockzillaLogger =
+            DummyProxyMockzillaLogger()
         val endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean = { _: String -> true }
         val defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse =
             { _: String -> MockzillaHttpResponse() }
@@ -236,7 +244,7 @@ internal class BridgeUtilsTest {
                         "name",
                         EndpointConfiguration.Key("key"),
                         false,
-                        null,
+                        100,
                         DashboardOptionsConfig(
                             emptyList(), emptyList()
                         ),
@@ -257,10 +265,26 @@ internal class BridgeUtilsTest {
 
         // Run test & verify
         bridgeToNative.forEach { (bridge, native) ->
-            // TODO: This doesn't pass as lambdas are references, fix this!!
-            // assertEquals(
-            // bridge.toNative(endpointMatcher, defaultHandler, errorHandler),native
-            // )
+            with(
+                bridge.toNative(
+                    endpointMatcher,
+                    defaultHandler,
+                    errorHandler,
+                    dummyProxyMockzillaLogger
+                )
+            ) {
+                assertEquals(port, native.port)
+                with(endpoints) {
+                    assertEquals(first().key, native.endpoints.first().key)
+                    assertEquals(size, native.endpoints.size)
+                    // Endpoint marshalling is covered in
+                    // `endpointConfigMarshallingReturnsExpectedValue`
+                }
+                assertEquals(isRelease, native.isRelease)
+                assertEquals(localhostOnly, native.localhostOnly)
+                assertEquals(logLevel, native.logLevel)
+                assertEquals(releaseModeConfig, native.releaseModeConfig)
+            }
             assertEquals(BridgeMockzillaConfig.fromNative(native), bridge)
         }
     }
