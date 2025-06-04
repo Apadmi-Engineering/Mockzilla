@@ -282,7 +282,12 @@ class BridgeUtilsTests: XCTestCase {
         let actualNative = bridge.toNative(
             endpointMatcher: { (key, request) in true },
             defaultHandler: { (key, request) in MockzillaHttpResponse() },
-            errorHandler: { (key, request) in MockzillaHttpResponse()}
+            errorHandler: { (key, request) in MockzillaHttpResponse()},
+            proxyLogger: DummyProxyMockzillaLogger(
+                flutterApi: DummyFlutterApi(
+                    binaryMessenger: DummyFlutterBinaryMessenger()
+                )
+            )
         )
         
         let actualBridge = try BridgeMockzillaConfig.fromNative(native)
