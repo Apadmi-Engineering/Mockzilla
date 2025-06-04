@@ -10,8 +10,7 @@
 import Flutter
 
 final class DummyFlutterBinaryMessenger: NSObject, FlutterBinaryMessenger {
-    
-    
+        
     func send(onChannel channel: String, message: Data?) {
         // Intentionally blank
     }
@@ -31,9 +30,9 @@ final class DummyFlutterBinaryMessenger: NSObject, FlutterBinaryMessenger {
 }
 
 class DummyFlutterApi: MockzillaFlutterApi {
-    
+    // Intentionally blank
 }
 
 class DummyProxyMockzillaLogger: ProxyMockzillaLogger {
-    
+    // Intentionally blank
 }
