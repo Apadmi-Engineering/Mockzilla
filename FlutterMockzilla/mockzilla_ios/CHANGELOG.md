@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.0.3...flutter_mockzilla_ios-v1.1.0) (2025-06-05)
+
+
+### Features
+
+* Implement support for custom Flutter loggers ([#370](https://github.com/Apadmi-Engineering/Mockzilla/issues/370)) ([78e9112](https://github.com/Apadmi-Engineering/Mockzilla/commit/78e9112cc447188eb58750986324b3bec62c4b12))
+
+
+### Bug Fixes
+
+* Bump Flutter version used in CI workflows from `3.29.2` -&gt; `3.32.2`. ([54af7ba](https://github.com/Apadmi-Engineering/Mockzilla/commit/54af7ba8ffdc021100a11a40608997e4ee9bb9b5))
+* Fix minor Flutter warnings ([#378](https://github.com/Apadmi-Engineering/Mockzilla/issues/378)) ([54af7ba](https://github.com/Apadmi-Engineering/Mockzilla/commit/54af7ba8ffdc021100a11a40608997e4ee9bb9b5))
+* Update Flutter package inter-dependencies ([afe63a4](https://github.com/Apadmi-Engineering/Mockzilla/commit/afe63a49275f57e17df814addd0f922bb5aca22d))
+
 ## [1.0.3](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.0.2...flutter_mockzilla_ios-v1.0.3) (2025-04-09)
 
 
