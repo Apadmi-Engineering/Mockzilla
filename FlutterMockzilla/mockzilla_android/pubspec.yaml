@@ -1,7 +1,7 @@
 name: mockzilla_android
 description: The Android implementation for the mockzilla plugin.
 # x-release-please-start-version
-version: 1.0.2
+version: 1.1.0
 # x-release-please-end
 homepage: https://apadmi-engineering.github.io/Mockzilla/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
