@@ -20,9 +20,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mockzilla_platform_interface: ^1.0.0
-  mockzilla_android: ^1.0.0
-  mockzilla_ios: ^1.0.0
+  mockzilla_platform_interface: ^1.1.0
+  mockzilla_android: ^1.1.0
+  mockzilla_ios: ^1.1.0
 
 dev_dependencies:
   flutter_test:

@@ -30,7 +30,7 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.15.0
-  mockzilla_platform_interface: ^1.0.0
+  mockzilla_platform_interface: ^1.1.0
 
 dev_dependencies:
   flutter_test:
