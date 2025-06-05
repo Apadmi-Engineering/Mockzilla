@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.0.2...flutter_mockzilla_platform_interface-v1.1.0) (2025-06-05)
+
+
+### Features
+
+* Implement support for custom Flutter loggers ([#370](https://github.com/Apadmi-Engineering/Mockzilla/issues/370)) ([78e9112](https://github.com/Apadmi-Engineering/Mockzilla/commit/78e9112cc447188eb58750986324b3bec62c4b12))
+
 ## [1.0.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.0.1...flutter_mockzilla_platform_interface-v1.0.2) (2025-04-09)
 
 
