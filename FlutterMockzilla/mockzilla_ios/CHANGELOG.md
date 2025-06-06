@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.1.0...flutter_mockzilla_ios-v1.1.1) (2025-06-06)
+
+
+### Bug Fixes
+
+* Fix `mockzilla_ios` release by removing reference to symlink ([#380](https://github.com/Apadmi-Engineering/Mockzilla/issues/380)) ([852ce69](https://github.com/Apadmi-Engineering/Mockzilla/commit/852ce6993efe921d99c423282ee53f4c3e2ef3be))
+
 ## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.0.3...flutter_mockzilla_ios-v1.1.0) (2025-06-05)
 
 

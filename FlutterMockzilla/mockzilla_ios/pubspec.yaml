@@ -1,7 +1,7 @@
 name: mockzilla_ios
 description: The iOS implementation for the mockzilla plugin.
 # x-release-please-start-version
-version: 1.1.0
+version: 1.1.1
 # x-release-please-end
 homepage: https://apadmi-engineering.github.io/Mockzilla/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
