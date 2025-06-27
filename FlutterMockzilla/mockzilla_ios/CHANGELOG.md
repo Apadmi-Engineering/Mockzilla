@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.1.1...flutter_mockzilla_ios-v1.1.2) (2025-06-27)
+
+
+### Bug Fixes
+
+* **flutter:** Swap usage of `asyncAndWait` -&gt; `async` in iOS proxy logger ([a9cdf90](https://github.com/Apadmi-Engineering/Mockzilla/commit/a9cdf902dac5e0cac2c1506bfb0d36cffc978ced))
+
 ## [1.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.1.0...flutter_mockzilla_ios-v1.1.1) (2025-06-06)
 
 
