@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.2.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.3...mockzilla-v2.2.0) (2025-07-12)
+
+
+### Features
+
+* Implement ability to close device tabs ([#367](https://github.com/Apadmi-Engineering/Mockzilla/issues/367)) ([30068db](https://github.com/Apadmi-Engineering/Mockzilla/commit/30068db464484fab89e3ae762290912e3515cdb4))
+
+
+### Bug Fixes
+
+* make use of port re-binding ([1f5ac15](https://github.com/Apadmi-Engineering/Mockzilla/commit/1f5ac15eb3c071e95857917d3e49cb732e186307))
+* make use of port re-binding ([a6ba694](https://github.com/Apadmi-Engineering/Mockzilla/commit/a6ba6941c5a8488db86369a921cab95b2e685b85))
+
 ## [2.1.3](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.2...mockzilla-v2.1.3) (2025-05-07)
 
 
