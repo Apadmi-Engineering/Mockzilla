@@ -12,7 +12,7 @@ if (isSnapshot()) {
 
 publishing {
     repositories.maven(mavenUrl()) {
-        name = "OSSRH"
+        name = "ossrh-staging-api"
 
         credentials {
             username = System.getenv("OSSRH_USERNAME")
@@ -72,9 +72,9 @@ if (hasKey) {
 }
 
 fun mavenUrl() = if (isSnapshot()) {
-    "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+    "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/"
 } else {
-    "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+    "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
 }
 
 private fun isSnapshot() = project.properties["is_snapshot"].toString().toBoolean()
