@@ -3,8 +3,10 @@ name: Deploy Binaries
 on: 
   workflow_dispatch:
   push:
-    branches:
-      - release-please--branches--develop--groups--Kmp-libs
+# Turning off Snapshot builds temporarily until we change deployment system
+# See here: https://github.com/Apadmi-Engineering/Mockzilla/issues/395
+#    branches:
+#      - release-please--branches--develop--groups--Kmp-libs
     tags:
       - mockzilla-v**
 env:

@@ -101,8 +101,15 @@ lane :publish_to_maven do |options|
             "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
         }.merge(createSnapshotProp(options[:is_snapshot], get_version_name(options)))
     )
-    
-    complete_maven_upload
+
+    begin
+      # Let the maven APIs update
+      sleep 10
+      complete_maven_upload
+    rescue => e
+      complete_maven_upload # Try twice
+    end
+
 end
 
 def createSnapshotProp(is_snapshot, version)
@@ -135,11 +142,17 @@ lane :complete_maven_upload do
 
     req.body = ''
 
-    req_options = {
-      use_ssl: uri.scheme == 'https'
-    }
-    res = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-      http.request(req)
-    end
+    http = Net::HTTP.new(uri.hostname, uri.port)
+    http.use_ssl = true
+
+    # Set timeouts, request is slow
+    http.open_timeout = 300
+    http.read_timeout = 300
+    http.write_timeout = 300
+    http.ssl_timeout = 300
+
+    # Perform the request
+    res = http.request(req)
+
     puts res.body
 end
