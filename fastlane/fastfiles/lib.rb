@@ -88,6 +88,7 @@ lane :publish_to_maven do |options|
     publish_to_maven_local(is_snapshot: options[:is_snapshot])
     FastlaneCore::UI.success("Published to maven local")
 
+    # Real Thing
     FastlaneCore::UI.message("Publishing to remote")
     gradle(
         tasks: [
@@ -100,6 +101,8 @@ lane :publish_to_maven do |options|
             "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
         }.merge(createSnapshotProp(options[:is_snapshot], get_version_name(options)))
     )
+    
+    complete_maven_upload
 end
 
 def createSnapshotProp(is_snapshot, version)
@@ -115,4 +118,28 @@ private_lane :get_version_name do |options|
     version = build_gradle_text.match(version_pattern)[1]
 
     options[:is_snapshot] ? "#{version}-SNAPSHOT" : version
+end
+
+# Needed as per: https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/#configuring-the-repository
+lane :complete_maven_upload do
+    require 'net/http'
+
+    uri = URI('https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/com.apadmi')
+    uri.query = URI.encode_www_form( {
+      :publishing_type => 'automatic',
+    })
+    req = Net::HTTP::Post.new(uri)
+    req.content_type = 'application/x-www-form-urlencoded'
+    req['accept'] = '*/*'
+    req.basic_auth ENV["OSSRH_USERNAME"], ENV["OSSRH_PASSWORD"]
+
+    req.body = ''
+
+    req_options = {
+      use_ssl: uri.scheme == 'https'
+    }
+    res = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+      http.request(req)
+    end
+    puts res.body
 end

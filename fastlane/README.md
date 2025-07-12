@@ -53,6 +53,14 @@ Publish to maven local
 
 Publish to maven remote
 
+### complete_maven_upload
+
+```sh
+[bundle exec] fastlane complete_maven_upload
+```
+
+
+
 ### lib_mockzilla_management_pull_request
 
 ```sh
@@ -156,7 +164,6 @@ Android target for the lib
 ```sh
 [bundle exec] fastlane android management_ui_pull_request
 ```
-
 
 
 
