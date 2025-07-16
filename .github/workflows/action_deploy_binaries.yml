@@ -10,7 +10,7 @@ on:
     tags:
       - mockzilla-v**
 env:
-  is_snapshot: ${{ github.ref_type == 'branch' }}
+  is_snapshot: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_type }}
@@ -36,7 +36,7 @@ jobs:
         run: | 
           echo "is_snapshot: $is_snapshot"
           export GPG_TTY=$(tty)
-          bundle exec fastlane publish_to_maven is_snapshot:$is_snapshot
+          bundle exec fastlane publish_to_maven is_snapshot:false
         env:
           GPG_PASSPHRASE:  ${{ secrets.GPG_PASSWORD }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
