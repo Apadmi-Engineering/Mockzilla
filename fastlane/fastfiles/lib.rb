@@ -85,31 +85,39 @@ end
 desc "Publish to maven remote"
 lane :publish_to_maven do |options|
     # Dry run
-    publish_to_maven_local(is_snapshot: options[:is_snapshot])
+#     publish_to_maven_local(is_snapshot: options[:is_snapshot])
     FastlaneCore::UI.success("Published to maven local")
 
     # Real Thing
     FastlaneCore::UI.message("Publishing to remote")
+    props = {
+        "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
+        "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
+    }.merge(createSnapshotProp(options[:is_snapshot], get_version_name(options)))
+
     gradle(
-        tasks: [
-            ":mockzilla-common:publish",
-            ":mockzilla:publish",
-            ":mockzilla-management:publish",
-        ],
-        properties: {
-            "signing.gnupg.keyName" => ENV["GPG_KEY_ID"],
-            "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
-        }.merge(createSnapshotProp(options[:is_snapshot], get_version_name(options)))
+        tasks: [":mockzilla-common:publish"],
+        properties: props
     )
 
-    begin
-      # Let the maven APIs update
-      sleep 10
-      complete_maven_upload
-    rescue => e
-      complete_maven_upload # Try twice
-    end
+    complete_maven_upload
+    sleep 10
 
+    gradle(
+        tasks: [":mockzilla:publish"],
+        properties: props
+    )
+
+    complete_maven_upload
+    sleep 10
+
+    gradle(
+        tasks: [":mockzilla-management:publish"],
+        properties: props
+    )
+
+    complete_maven_upload
+    sleep 10
 end
 
 def createSnapshotProp(is_snapshot, version)
