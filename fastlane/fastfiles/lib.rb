@@ -95,13 +95,13 @@ lane :publish_to_maven do |options|
         "signing.gnupg.passphrase" => ENV["GPG_PASSPHRASE"]
     }.merge(createSnapshotProp(options[:is_snapshot], get_version_name(options)))
 
-    gradle(
-        tasks: [":mockzilla-common:publish"],
-        properties: props
-    )
-
-    complete_maven_upload
-    sleep 10
+#     gradle(
+#         tasks: [":mockzilla-common:publish"],
+#         properties: props
+#     )
+#
+#     complete_maven_upload
+#     sleep 10
 
     gradle(
         tasks: [":mockzilla:publish"],
@@ -111,13 +111,13 @@ lane :publish_to_maven do |options|
     complete_maven_upload
     sleep 10
 
-    gradle(
-        tasks: [":mockzilla-management:publish"],
-        properties: props
-    )
-
-    complete_maven_upload
-    sleep 10
+#     gradle(
+#         tasks: [":mockzilla-management:publish"],
+#         properties: props
+#     )
+#
+#     complete_maven_upload
+#     sleep 10
 end
 
 def createSnapshotProp(is_snapshot, version)
