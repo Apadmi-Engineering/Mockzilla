@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.2.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.1.3...mockzilla-common-v2.2.0) (2025-07-24)
+
+
+### Bug Fixes
+
+* make use of port re-binding ([1f5ac15](https://github.com/Apadmi-Engineering/Mockzilla/commit/1f5ac15eb3c071e95857917d3e49cb732e186307))
+* make use of port re-binding ([a6ba694](https://github.com/Apadmi-Engineering/Mockzilla/commit/a6ba6941c5a8488db86369a921cab95b2e685b85))
+
 ## [2.1.3](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.1.2...mockzilla-common-v2.1.3) (2025-05-07)
 
 
