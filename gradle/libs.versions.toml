@@ -30,7 +30,7 @@ koin = "4.0.3" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
 kotlinx-coroutines = "1.10.2" # https://github.com/Kotlin/kotlinx.coroutines
-kotlinx-datetime = "0.7.1" # https://github.com/Kotlin/kotlinx-datetime
+kotlinx-datetime = "0.7.1-0.6.x-compat" # https://github.com/Kotlin/kotlinx-datetime
 kotlinx-serialization = "1.9.0" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
