@@ -1,14 +1,41 @@
 package com.apadmi.mockzilla.desktop.ui.widgets.misccontrols
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Button
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.di.utils.getViewModel
 import com.apadmi.mockzilla.desktop.engine.device.Device
 import com.apadmi.mockzilla.desktop.i18n.LocalStrings
 import com.apadmi.mockzilla.desktop.i18n.Strings
+import com.apadmi.mockzilla.desktop.ui.theme.LocalSetScaleFactor
+import com.apadmi.mockzilla.desktop.ui.theme.ScaleFactor
 import org.koin.core.parameter.parametersOf
+
+private data object PresentationModeScaleFactor {
+    const val MIN = 0.8F
+    const val MAX = 1.4F
+    const val DEFAULT = 1.2F
+}
 
 @Composable
 fun MiscControlsWidget(
@@ -17,7 +44,7 @@ fun MiscControlsWidget(
     val viewModel = getViewModel<MiscControlsViewModel>(key = device?.toString()) { parametersOf(device) }
     MiscControlsWidgetContent(
         onRefreshAll = viewModel::refreshAllData,
-        onClearAllOverrides = viewModel::clearAllOverrides
+        onClearAllOverrides = viewModel::clearAllOverrides,
     )
 }
 
@@ -33,4 +60,71 @@ fun MiscControlsWidgetContent(
     Button(onClick = onClearAllOverrides) {
         Text(strings.widgets.miscControls.clearOverrides)
     }
+    var presentationMode by rememberSaveable { mutableStateOf(false) }
+    var presentationModeScaleFactor by rememberSaveable {
+        mutableFloatStateOf(PresentationModeScaleFactor.DEFAULT)
+    }
+    val setScaleFactor = LocalSetScaleFactor.current
+    PresentationModeSettings(
+        presentationMode = presentationMode,
+        onPresentationModeChange = { presentationModeEnabled ->
+            presentationMode = presentationModeEnabled
+            if (presentationModeEnabled) {
+                setScaleFactor(presentationModeScaleFactor)
+            } else {
+                setScaleFactor(ScaleFactor.DEFAULT)
+            }
+        },
+        presentationModeScaleFactor = presentationModeScaleFactor,
+        onPresentationModeScaleFactorChange = { scaleFactor ->
+            setScaleFactor(scaleFactor)
+            presentationModeScaleFactor = scaleFactor
+        },
+    )
+}
+
+@Composable
+private fun PresentationModeSettings(
+    presentationMode: Boolean,
+    onPresentationModeChange: (Boolean) -> Unit,
+    presentationModeScaleFactor: Float,
+    onPresentationModeScaleFactorChange: (Float) -> Unit,
+    strings: Strings = LocalStrings.current
+) = Column {
+    Row(
+        modifier = Modifier
+            .toggleable(
+                value = presentationMode,
+                onValueChange = { checked ->
+                    onPresentationModeChange(checked)
+                },
+                role = Role.Switch,
+            )
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = strings.widgets.miscControls.presentationMode,
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Switch(
+            checked = presentationMode,
+            onCheckedChange = null,
+        )
+    }
+    AnimatedVisibility(visible = presentationMode) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+        ) {
+            Slider(
+                value = presentationModeScaleFactor,
+                onValueChange = { onPresentationModeScaleFactorChange(it) },
+                steps = 5,
+                valueRange = PresentationModeScaleFactor.MIN..PresentationModeScaleFactor.MAX,
+            )
+            Text(text = strings.widgets.miscControls.fontScaleLabel(presentationModeScaleFactor))
+        }
+    }
+    Spacer(modifier = Modifier.height(4.dp))
 }

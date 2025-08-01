@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.desktop.i18n
 
 import cafe.adriel.lyricist.LyricistStrings
 import io.ktor.http.HttpStatusCode
+import kotlin.math.roundToInt
 
 @LyricistStrings(languageTag = "En", default = true)
 val EnStrings = Strings(
@@ -128,7 +129,9 @@ val EnStrings = Strings(
         miscControls = Strings.Widgets.MiscControls(
             refreshAll = "Re-sync all",
             clearOverrides = "Reset all overrides",
-            title = "Tools"
+            title = "Tools",
+            presentationMode = "Presentation mode",
+            fontScaleLabel = { scale -> "${(scale * 100).roundToInt()}%" }
         ),
         unsupportedMockzilla = Strings.Widgets.UnsupportedMockzillaVersion(
             heading = "Unsupported SDK",

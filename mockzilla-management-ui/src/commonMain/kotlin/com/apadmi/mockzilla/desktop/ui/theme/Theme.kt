@@ -10,6 +10,10 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalDensity
@@ -86,6 +90,13 @@ private val darkColors = darkColorScheme(
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalForceDarkMode = compositionLocalOf { false }
 
+@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
+val LocalSetScaleFactor = compositionLocalOf<(Float) -> Unit> { { /* noop */ } }
+
+data object ScaleFactor {
+    const val DEFAULT = 0.9F
+}
+
 @Composable
 fun Modifier.alternatingBackground(index: Int) = background(
     if (index % 2 == 0) {
@@ -106,12 +117,17 @@ fun AppTheme(
         lightColors
     }
 
+    var scaleFactor by rememberSaveable { mutableFloatStateOf(ScaleFactor.DEFAULT) }
     ProvideLocalisableStrings {
-        ScaledDensity(scaleFactor = 0.9f) {
-            MaterialTheme(
-                colorScheme = colors,
-                content = content
-            )
+        CompositionLocalProvider(
+            LocalSetScaleFactor provides { scale -> scaleFactor = scale },
+        ) {
+            ScaledDensity(scaleFactor = scaleFactor) {
+                MaterialTheme(
+                    colorScheme = colors,
+                    content = content
+                )
+            }
         }
     }
 }
