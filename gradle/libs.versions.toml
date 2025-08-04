@@ -20,7 +20,7 @@ dokka = "2.0.0" # https://github.com/Kotlin/dokka
 lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "3.2.2" # https://github.com/ktorio/ktor
+ktor = "3.2.3" # https://github.com/ktorio/ktor
 
 # Compose
 compose = "1.7.0" # https://github.com/JetBrains/compose-multiplatform
@@ -30,7 +30,7 @@ koin = "4.0.3" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
 kotlinx-coroutines = "1.10.2" # https://github.com/Kotlin/kotlinx.coroutines
-kotlinx-datetime = "0.7.1" # https://github.com/Kotlin/kotlinx-datetime
+kotlinx-datetime = "0.7.1-0.6.x-compat" # https://github.com/Kotlin/kotlinx-datetime
 kotlinx-serialization = "1.9.0" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
