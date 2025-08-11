@@ -35,6 +35,16 @@ private data object PresentationModeScaleFactor {
     const val MIN = 0.8F
     const val MAX = 1.4F
     const val DEFAULT = 1.2F
+
+    // These variables are in-memory caches for the state that we
+    // may want to save to disk in the future. Without an in-memory
+    // cache the compose state would reset on tab switches since the
+    // entire tab tree UI is removed from the composition on tab switching
+    // These are not themselves mutable state tracked by compose so we must
+    // ensure we don't reference these values outside of the defaults
+    // for setting up rememberSaveable states.
+    var enabled = false
+    var scaleFactor = DEFAULT
 }
 
 @Composable
@@ -60,15 +70,16 @@ fun MiscControlsWidgetContent(
     Button(onClick = onClearAllOverrides) {
         Text(strings.widgets.miscControls.clearOverrides)
     }
-    var presentationMode by rememberSaveable { mutableStateOf(false) }
+    var presentationMode by rememberSaveable { mutableStateOf(PresentationModeScaleFactor.enabled) }
     var presentationModeScaleFactor by rememberSaveable {
-        mutableFloatStateOf(PresentationModeScaleFactor.DEFAULT)
+        mutableFloatStateOf(PresentationModeScaleFactor.scaleFactor)
     }
     val setScaleFactor = LocalSetScaleFactor.current
     PresentationModeSettings(
         presentationMode = presentationMode,
         onPresentationModeChange = { presentationModeEnabled ->
             presentationMode = presentationModeEnabled
+            PresentationModeScaleFactor.enabled = presentationModeEnabled
             if (presentationModeEnabled) {
                 setScaleFactor(presentationModeScaleFactor)
             } else {
@@ -79,6 +90,7 @@ fun MiscControlsWidgetContent(
         onPresentationModeScaleFactorChange = { scaleFactor ->
             setScaleFactor(scaleFactor)
             presentationModeScaleFactor = scaleFactor
+            PresentationModeScaleFactor.scaleFactor = scaleFactor
         },
     )
 }
