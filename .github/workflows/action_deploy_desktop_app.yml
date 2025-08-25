@@ -16,8 +16,8 @@ jobs:
     environment: production
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
@@ -33,7 +33,7 @@ jobs:
       - name: Build Jar
         run: ./gradlew :mockzilla-management-ui:desktopJar
       - name: Run Conveyor
-        uses: hydraulic-software/conveyor/actions/build@v18.1
+        uses: hydraulic-software/conveyor/actions/build@v19.0
         env:
           MAC_SIGNING_KEY_PASSWORD: ${{ secrets.MAC_SIGNING_KEY_PASSWORD }}
           APPLE_NOTARIZATION_KEY_ID: ${{ secrets.APPLE_NOTARIZATION_KEY_ID }}
