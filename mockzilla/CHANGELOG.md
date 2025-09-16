@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.4.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.3.0...mockzilla-v2.4.0) (2025-09-16)
+
+
+### Features
+
+* Implement ability to close device tabs ([#367](https://github.com/Apadmi-Engineering/Mockzilla/issues/367)) ([30068db](https://github.com/Apadmi-Engineering/Mockzilla/commit/30068db464484fab89e3ae762290912e3515cdb4))
+
+
+### Bug Fixes
+
+* bump version ([f27a5d1](https://github.com/Apadmi-Engineering/Mockzilla/commit/f27a5d1abde14b313a2bf62361d3ccd50b724d44))
+* make use of port re-binding ([1f5ac15](https://github.com/Apadmi-Engineering/Mockzilla/commit/1f5ac15eb3c071e95857917d3e49cb732e186307))
+* make use of port re-binding ([a6ba694](https://github.com/Apadmi-Engineering/Mockzilla/commit/a6ba6941c5a8488db86369a921cab95b2e685b85))
+* Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
+
 ## [2.3.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.3.0...mockzilla-v2.2.4) (2025-09-16)
 
 ### Bug Fixes

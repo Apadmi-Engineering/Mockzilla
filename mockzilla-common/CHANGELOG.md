@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.4.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.3.0...mockzilla-common-v2.4.0) (2025-09-16)
+
+
+### Bug Fixes
+
+* make use of port re-binding ([1f5ac15](https://github.com/Apadmi-Engineering/Mockzilla/commit/1f5ac15eb3c071e95857917d3e49cb732e186307))
+* make use of port re-binding ([a6ba694](https://github.com/Apadmi-Engineering/Mockzilla/commit/a6ba6941c5a8488db86369a921cab95b2e685b85))
+* Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
+
 ## [2.3.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.2.3...mockzilla-common-v2.3.0) (2025-09-16)
 
 
