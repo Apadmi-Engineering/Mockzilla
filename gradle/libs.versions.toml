@@ -2,13 +2,13 @@
 
 # Kotlin
 adam = "0.5.10" # https://github.com/Malinskiy/adam
-jmdns = "3.6.1" # https://github.com/jmdns/jmdns
+jmdns = "3.6.2" # https://github.com/jmdns/jmdns
 kotlin = "2.2.20" # https://github.com/JetBrains/kotlin
 agp = "8.11.1" # https://developer.android.com/build/releases/gradle-plugin
 ksp = "2.2.20-2.0.3" # https://github.com/google/ksp
 
 # Logging
-kermit = "2.0.6" # https://github.com/touchlab/Kermit
+kermit = "2.0.8" # https://github.com/touchlab/Kermit
 
 # Config
 buildKonfig = "0.17.1" # https://github.com/yshrsmz/BuildKonfig
