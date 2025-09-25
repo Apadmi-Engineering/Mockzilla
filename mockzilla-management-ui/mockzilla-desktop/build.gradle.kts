@@ -20,7 +20,7 @@ val artifactName = "mockzilla-management-ui"
 
 kotlin {
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "1.2.0" // x-release-please-version
+    version = "1.2.0" // x-release-please-version
 
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
@@ -117,8 +117,6 @@ kotlin {
 }
 
 android {
-    // Managed automatically by release-please PRs
-    version = "1.2.1" // x-release-please-version
     compileSdk = AndroidConfig.targetSdk
     namespace = group.toString()
     defaultConfig {

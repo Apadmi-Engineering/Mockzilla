@@ -5,7 +5,7 @@ import platform.Foundation.*
 import kotlinx.cinterop.ExperimentalForeignApi
 
 @OptIn(ExperimentalForeignApi::class)
-internal actual class FileIo {
+actual class FileIo {
     private val directoryPath by lazy {
         val dir = NSSearchPathForDirectoriesInDomains(
             NSCachesDirectory,
@@ -37,4 +37,4 @@ internal actual class FileIo {
     private fun filePath(filename: String) = "$directoryPath/$filename"
 }
 
-internal actual fun createFileIoforTesting() = FileIo()
+actual fun createFileIoforTesting() = FileIo()

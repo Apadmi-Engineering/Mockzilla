@@ -1,11 +1,12 @@
 {
   "FlutterMockzilla": "1.0.0",
-  "mockzilla-management-ui": "1.2.1",
-  "mockzilla": "2.3.2",
-  "mockzilla-common": "2.3.2",
-  "mockzilla-management": "2.3.2",
-  "FlutterMockzilla/mockzilla": "1.2.0",
-  "FlutterMockzilla/mockzilla_android": "1.2.0",
-  "FlutterMockzilla/mockzilla_ios": "1.2.0",
-  "FlutterMockzilla/mockzilla_platform_interface": "1.1.1"
+  "mockzilla": "2.4.1",
+  "mockzilla-common": "2.4.1",
+  "mockzilla-management": "2.4.1",
+  "mockzilla-desktop": "1.2.1",
+  "mockzilla-mobile-ui": "0.0.1",
+  "FlutterMockzilla/mockzilla": "1.1.0",
+  "FlutterMockzilla/mockzilla_android": "1.1.0",
+  "FlutterMockzilla/mockzilla_ios": "1.1.2",
+  "FlutterMockzilla/mockzilla_platform_interface": "1.1.0"
 }

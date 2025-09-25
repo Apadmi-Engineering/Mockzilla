@@ -39,10 +39,10 @@ object MockzillaUiKoinContext {
 
     val koin get() = koinApp.koin
 
-    fun startMockzillaUiKoinIfNeeded(sdkSpecificModule: Module) {
+    fun startMockzillaUiKoinIfNeeded(modules: List<Module>) {
         if (!isInitialised) {
             isInitialised = true
-            koinApp.koin.loadModules(listOf(sdkSpecificModule))
+            koinApp.koin.loadModules(modules)
         }
     }
 }

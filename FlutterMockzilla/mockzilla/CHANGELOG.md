@@ -6,7 +6,6 @@
 ### Features
 
 * bump underlying kotlin library version to bump android target ([3a6fc2f](https://github.com/Apadmi-Engineering/Mockzilla/commit/3a6fc2fb682061159f87b652ad2dab759dc6fb41))
-* bump underlying kotlin library version to bump android target ([1d254d1](https://github.com/Apadmi-Engineering/Mockzilla/commit/1d254d12373196c7efed2046ce8a58112f0ef1ed))
 
 
 ### Bug Fixes

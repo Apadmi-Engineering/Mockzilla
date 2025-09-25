@@ -151,6 +151,8 @@ data class Strings(
          * @property autoConnectSubHeading
          * @property autoConnectButton
          * @property androidDevConnectButton
+         * @property errorTitle
+         * @property connected
          */
         data class DeviceConnection(
             val tabTitle: String,

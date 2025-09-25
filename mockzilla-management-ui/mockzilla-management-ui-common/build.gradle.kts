@@ -1,5 +1,8 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.configureCommonProperties
+import com.apadmi.mockzilla.injectedVersion
+import com.apadmi.mockzilla.isSigningEnabled
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
@@ -10,12 +13,15 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.vanniktechPublish)
 }
 
 val artifactName = "mockzilla-management-ui-common"
 
-
 kotlin {
+
+    version = project.injectedVersion() ?: "0.0.1" // x-release-please-version
+
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
     jvm("desktop")
@@ -57,8 +63,11 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             /* Mockzilla Management */
-            implementation(project(":mockzilla-management"))
-            implementation(project(":mockzilla-common"))
+            // These are overridden in the sample apps to use local dependencies for development
+            //noinspection UseTomlInstead
+            implementation("com.apadmi:mockzilla-management:2.4.1-SNAPSHOT")
+            //noinspection UseTomlInstead
+            implementation("com.apadmi:mockzilla-common:2.4.1-SNAPSHOT")
 
             /* Serialization */
             implementation(libs.kotlinx.serialization.json)
@@ -139,5 +148,26 @@ configurations.all {
     attributes {
         // Temporary fix for https://github.com/JetBrains/compose-jb/issues/1404#issuecomment-1146894731
         attribute(Attribute.of("ui", String::class.java), "awt")
+    }
+}
+
+mavenPublishing {
+    publishToMavenCentral(automaticRelease = true)
+
+    if (isSigningEnabled()) {
+        signAllPublications()
+    }
+
+    coordinates(group.toString(), artifactName, version.toString())
+
+    pom {
+        name.set(artifactName)
+        description.set(
+            """
+            A utility module containing common utilities and models used by Mockzilla desktop and embedded mobile ui.
+        """.trimIndent()
+        )
+
+        configureCommonProperties()
     }
 }

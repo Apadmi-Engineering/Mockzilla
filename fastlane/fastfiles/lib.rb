@@ -92,7 +92,7 @@ lane :publish_to_maven do |options|
             ":mockzilla:publishToMavenCentral",
             ":mockzilla-management:publishToMavenCentral",
         ],
-        properties: createSnapshotProp(options[:is_snapshot], get_version_name(options))
+        properties: createSnapshotProp(options[:is_snapshot], get_core_mockzilla_version_name(options))
     )
 end
 

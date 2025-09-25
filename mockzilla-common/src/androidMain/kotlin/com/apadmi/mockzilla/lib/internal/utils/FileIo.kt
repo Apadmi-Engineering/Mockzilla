@@ -6,7 +6,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 
-internal actual class FileIo(private val cacheDir: File) {
+actual class FileIo(private val cacheDir: File) {
     private val cacheDirectory
         get() = File(
             cacheDir,
@@ -45,4 +45,4 @@ internal actual class FileIo(private val cacheDir: File) {
 }
 
 @TargetApi(Build.VERSION_CODES.O)
-internal actual fun createFileIoforTesting() = FileIo(Files.createTempDirectory("").toFile())
+actual fun createFileIoforTesting() = FileIo(Files.createTempDirectory("").toFile())

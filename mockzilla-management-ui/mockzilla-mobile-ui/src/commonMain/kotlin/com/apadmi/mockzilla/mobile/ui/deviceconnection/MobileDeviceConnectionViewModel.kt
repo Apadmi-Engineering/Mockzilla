@@ -3,8 +3,8 @@ package com.apadmi.mockzilla.mobile.ui.deviceconnection
 import androidx.compose.runtime.Immutable
 
 import com.apadmi.mockzilla.lib.models.MetaData
-import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
-import com.apadmi.mockzilla.lib.sharedstate.SharedProcessState
+import com.apadmi.mockzilla.lib.sharedstate.MockzillaSharedProcessState
+import com.apadmi.mockzilla.lib.sharedstate.MockzillaSharedProcessStateHandler
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MetaDataUseCase
@@ -16,7 +16,8 @@ import kotlinx.coroutines.launch
 
 internal class MobileDeviceConnectionViewModel(
     private val metaDataUseCase: MetaDataUseCase,
-    private val activeDeviceSelector: ActiveDeviceSelector
+    private val activeDeviceSelector: ActiveDeviceSelector,
+    private val sharedProcessStateHandler: MockzillaSharedProcessStateHandler,
 ) : ViewModel() {
     val state = MutableStateFlow<State>(State.Connecting)
     private var connectionJob: Job? = null
@@ -25,15 +26,15 @@ internal class MobileDeviceConnectionViewModel(
         attemptLocalConnection()
     }
 
-    fun attemptLocalConnection() {
+    fun attemptLocalConnection() = viewModelScope.launch {
         connectionJob?.cancel()
         state.value = State.Connecting
-        val localRuntimeParams = SharedProcessState.runtimeParams
-        localRuntimeParams ?: run {
+        val sharedState = sharedProcessStateHandler.getSharedProcessState()
+        sharedState ?: run {
             state.value = State.Error("Mockzilla Server not running")
-            return
+            return@launch
         }
-        connectionJob = awaitConnectionAndSetState(localRuntimeParams.toDevice())
+        connectionJob = awaitConnectionAndSetState(sharedState.toDevice())
     }
 
     private fun awaitConnectionAndSetState(device: Device): Job = viewModelScope.launch {
@@ -56,4 +57,4 @@ internal class MobileDeviceConnectionViewModel(
     }
 }
 
-private fun MockzillaRuntimeParams.toDevice() = Device(ip, port.toString())
+private fun MockzillaSharedProcessState.toDevice() = Device(ip, port.toString())

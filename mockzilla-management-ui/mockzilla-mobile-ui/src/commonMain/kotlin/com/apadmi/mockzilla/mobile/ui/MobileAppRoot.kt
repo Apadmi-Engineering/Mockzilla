@@ -45,6 +45,7 @@ import kotlinx.serialization.Serializable
 /**
  * @property key
  */
+// TODO: Replace these with a sealed class so their usages are exhaustive
 @Serializable
 internal data class EndpointDetails(val key: String)
 

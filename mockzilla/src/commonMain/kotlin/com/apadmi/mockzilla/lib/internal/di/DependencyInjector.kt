@@ -12,6 +12,7 @@ import com.apadmi.mockzilla.lib.internal.utils.SocketIo
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
+import com.apadmi.mockzilla.lib.sharedstate.MockzillaSharedProcessStateHandler
 
 import co.touchlab.kermit.Logger
 import io.ktor.network.selector.SelectorManager
@@ -61,4 +62,5 @@ internal class DependencyInjector(
 
     /* Utils */
     internal val socketIo = SocketIo(socketBinder)
+    internal val sharedStateHandler = MockzillaSharedProcessStateHandler(fileIo)
 }

@@ -36,9 +36,18 @@
       "release-type": "dart",
       "always-update": true
     },
-    "mockzilla-management-ui": {
-      "component": "mockzilla-management-ui",
+    "mockzilla-management-ui/mockzilla-desktop": {
+      "component": "mockzilla-desktop",
       "extra-files": ["build.gradle.kts"]
+    },
+    "mockzilla-management-ui/mockzilla-mobile-ui": {
+      "component": "mockzilla-mobile-ui",
+      "extra-files": [
+        "build.gradle.kts",
+        "../../FlutterMockzilla/mockzilla_ui_mobile",
+        "../../FlutterMockzilla/mockzilla_ui_mobile/android/build.gradle",
+        "../../FlutterMockzilla/mockzilla_ui_mobile/ios/mockzilla_ui_mobile.podspec"
+      ]
     }
   },
   "plugins": [

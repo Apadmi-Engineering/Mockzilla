@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - mockzilla-management-ui-v**
+      - mockzilla-desktop-v**
 
 env:
   MAC_CERTIFICATE_PATH: "./osx_build_certificate.p12"

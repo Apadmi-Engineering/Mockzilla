@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mockzilla/mockzilla.dart';
 import 'package:mockzilla_example/engine/feature/packages/models.dart';
 import 'package:mockzilla_example/engine/feature/packages/packages_client.dart';
+import 'package:mockzilla_ui_mobile/mockzilla_ui_mobile.dart';
 
 import 'engine/config/mockzilla_config.dart';
 
@@ -71,6 +72,10 @@ class _PackagesListState extends State<PackagesList> {
       appBar: AppBar(
         title: const Text("Mockzilla Demo"),
         actions: [
+          IconButton(
+            onPressed: MockzillaUiMobile.launchManagementUi,
+            icon: const Icon(Icons.settings),
+          ),
           IconButton(
             onPressed: fetchPackages,
             icon: const Icon(Icons.refresh),

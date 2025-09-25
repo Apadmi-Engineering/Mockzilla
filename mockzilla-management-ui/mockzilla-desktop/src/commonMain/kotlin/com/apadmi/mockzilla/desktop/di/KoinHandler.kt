@@ -19,7 +19,7 @@ import java.net.NetworkInterface
 import kotlinx.coroutines.GlobalScope
 
 fun startDesktopMockzillaKoin() {
-    MockzillaUiKoinContext.startMockzillaUiKoinIfNeeded(module {
+    MockzillaUiKoinContext.startMockzillaUiKoinIfNeeded(listOf(module {
         single<AdbConnectorService> { AdbConnectorServiceImpl }
         single<DeviceDetectionUseCase> {
             DeviceDetectionUseCaseImpl(
@@ -34,5 +34,5 @@ fun startDesktopMockzillaKoin() {
         single { ZeroConfSdkWrapper(ZeroConfConfig.serviceType + ".local.", GlobalScope) }
         viewModel { DeviceConnectionViewModel(get(), get(), get()) }
         viewModel { DeviceTabsViewModel(get(), get()) }
-    })
+    }))
 }

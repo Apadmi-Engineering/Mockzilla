@@ -4,7 +4,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 
-internal actual class FileIo(private val cacheDir: File) {
+actual class FileIo(private val cacheDir: File) {
     private val cacheDirectory
         get() = File(
             cacheDir,
@@ -43,4 +43,4 @@ internal actual class FileIo(private val cacheDir: File) {
     }
 }
 
-internal actual fun createFileIoforTesting(): FileIo = FileIo(Files.createTempDirectory("").toFile())
+actual fun createFileIoforTesting(): FileIo = FileIo(Files.createTempDirectory("").toFile())

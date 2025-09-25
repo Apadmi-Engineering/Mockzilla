@@ -81,7 +81,7 @@ private suspend fun HttpClient.get(
 // Mockzilla server within the Mockzilla UI so that we don't have to have it running separately for development
 fun startDevelopmentMockzillaServer(context: Context) = startMockzilla(
     MockzillaConfig.Builder()
-        .setPort(0)
+        .setPort(5614)
         .addEndpoint(endpointWithPresets)
         .addEndpoint(endpointThatCyclesThroughResponseCodes)
         .build(),

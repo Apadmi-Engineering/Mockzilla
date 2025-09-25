@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.vanniktechPublish)
+    kotlin("native.cocoapods") apply true
 }
 
 val artifactName = "mockzilla-mobile-ui"
@@ -24,6 +25,23 @@ kotlin {
 
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
+
+    cocoapods {
+        name = "SwiftMockzillaMobileUi"
+        summary = "Embedded UI for configuring and controlling the Mockzilla server from within an app"
+        homepage = "https://apadmi-engineering.github.io/Mockzilla/"
+        framework {
+            baseName = artifactName
+        }
+        license = "{:type => 'MIT', :file => 'LICENSE'}"
+        // This is explicitly `getVersion()` and not `version`! The latter is shadowed in `cocoapods` scope.
+        source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi.git', :tag => 'v${project.version}' }"
+        extraSpecAttributes["vendored_frameworks"] = "'mockzilla_mobile_ui.xcframework'"
+        extraSpecAttributes["source_files"] = "'Sources/SwiftMockzillaMobileUi/SwiftMockzillaMobileUi.swift'"
+        extraSpecAttributes["swift_version"] = "'5.9.2'"
+
+        ios.deploymentTarget = "13.0"
+    }
 
     val xcf = XCFramework()
     listOf(
@@ -55,12 +73,6 @@ kotlin {
             /* DI */
             implementation(libs.koin.core)
 
-            /* Coroutines */
-            implementation(libs.kotlinx.coroutines.core)
-
-            /* JSON */
-            implementation(libs.kotlinx.serialization.json)
-
             /* Mockzilla Management */
             implementation(project(":mockzilla-management-ui:mockzilla-management-ui-common"))
             implementation(project(":mockzilla-management"))
@@ -87,12 +99,6 @@ kotlin {
             implementation(libs.androidx.compose.activity)
             implementation(compose.preview)
             implementation(compose.components.uiToolingPreview)
-
-            /* Mockzilla */
-            // Android target is only used for development since it's a better dev experience than desktop
-            // So using mockzilla to have a "Mock app" to connect to
-            implementation(project(":mockzilla"))
-            implementation(libs.ktor.client.core)
         }
         val androidUnitTest by getting {
             dependencies {
@@ -110,7 +116,7 @@ android {
         minSdk = AndroidConfig.minSdk
         targetSdk = AndroidConfig.targetSdk
 
-        consumerProguardFiles("mockzilla-proguard-rules.pro")
+        consumerProguardFiles("proguard-rules.pro")
     }
 
     compileOptions {

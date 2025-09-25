@@ -27,7 +27,7 @@ extension MockzillaConfig {
 fileprivate extension MockzillaConfig {
     static var getCowEndpoint: EndpointConfiguration {
         get {
-            EndpointConfiguration.Builder(id: "cow")
+            EndpointConfiguration.Builder(key: "cow")
                 .setSwiftPatternMatcher {
                     $0.uri.hasSuffix("cow")
                 }

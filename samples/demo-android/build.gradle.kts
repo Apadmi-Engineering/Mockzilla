@@ -47,6 +47,15 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("com.apadmi:mockzilla-management"))
+            .using(project(":mockzilla-management"))
+        substitute(module("com.apadmi:mockzilla-common"))
+            .using(project(":mockzilla-common"))
+    }
+}
+
 kotlin {
     jvmToolchain(JavaConfig.toolchain)
 }

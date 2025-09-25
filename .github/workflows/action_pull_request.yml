@@ -101,7 +101,7 @@ jobs:
         run: bundle exec fastlane lib_mockzilla_management_pull_request
       - name: Management UI (desktop app)
         if: steps.filter.outputs.mockzilla-management-ui == 'true'
-        run: bundle exec fastlane android management_ui_pull_request
+        run: bundle exec fastlane management_ui_pull_request
       - name: SwiftMockzilla
         if: steps.filter.outputs.swift-mockzilla == 'true'
         run: bundle exec fastlane ios lib_swift_mockzilla_pull_request

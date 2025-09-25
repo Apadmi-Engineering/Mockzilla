@@ -40,6 +40,15 @@ kotlin {
     }
 }
 
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("com.apadmi:mockzilla-management"))
+            .using(project(":mockzilla-management"))
+        substitute(module("com.apadmi:mockzilla-common"))
+            .using(project(":mockzilla-common"))
+    }
+}
+
 android {
     namespace = "$group.mockzilla.kmm.shared"
     compileSdk = AndroidConfig.targetSdk

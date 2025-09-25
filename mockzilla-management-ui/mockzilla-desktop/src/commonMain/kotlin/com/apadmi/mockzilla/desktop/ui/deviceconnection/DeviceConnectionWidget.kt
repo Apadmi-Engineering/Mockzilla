@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.*
 
-import com.apadmi.mockzilla.lib.sharedstate.SharedProcessState
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -93,7 +92,7 @@ fun DeviceConnectionContent(
         Spacer(Modifier.height(4.dp))
         if (Platform.current == Platform.Android) {
             Button(onClick = {
-                onIpAndPortChanged("127.0.0.1:${SharedProcessState.runtimeParams?.port}")
+                onIpAndPortChanged("127.0.0.1:5614")
             }) {
                 Text(strings.widgets.deviceConnection.androidDevConnectButton)
             }
