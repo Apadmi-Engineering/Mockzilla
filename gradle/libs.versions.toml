@@ -24,7 +24,7 @@ ktor = "3.3.0" # https://github.com/ktorio/ktor
 
 # Compose
 # using beta to fix https://slack-chats.kotlinlang.org/t/29844860/hello-everyone-in-my-team-we-are-having-a-big-problem-with-t
-compose = "1.9.0-beta03" # https://github.com/JetBrains/compose-multiplatform
+compose = "1.9.0" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
 koin = "4.1.1" # https://github.com/InsertKoinIO/koin
@@ -38,7 +38,7 @@ kotlinx-serialization = "1.9.0" # https://github.com/Kotlin/kotlinx.serializatio
 lifecycle = "2.9.4" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 compose-activity = "1.11.0" # https://developer.android.com/jetpack/androidx/releases/activity
 mockk = "1.14.5"
-navigationCompose = "2.9.10-alpha01"
+navigationCompose = "2.9.0"
 playServicesAdsIdentifier = "18.2.0"
 
 # Semantic Versioning
