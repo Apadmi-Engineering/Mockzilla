@@ -1,5 +1,6 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.MobileUiConfig
 import com.apadmi.mockzilla.configureCommonProperties
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.isSigningEnabled
@@ -75,6 +76,7 @@ kotlin {
 
             /* Mockzilla Management */
             implementation(project(":mockzilla-management-ui:mockzilla-management-ui-common"))
+            implementation("com.apadmi:mockzilla-common:${MobileUiConfig.coreVersionForManagementUi}")
 
             /* Serialization */
             implementation(libs.kotlinx.serialization.json)

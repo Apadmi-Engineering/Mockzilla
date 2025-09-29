@@ -1,5 +1,6 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.MobileUiConfig
 import com.apadmi.mockzilla.configureCommonProperties
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.isSigningEnabled
@@ -64,10 +65,8 @@ kotlin {
 
             /* Mockzilla Management */
             // These are overridden in the sample apps to use local dependencies for development
-            //noinspection UseTomlInstead
-            implementation("com.apadmi:mockzilla-management:2.4.1")
-            //noinspection UseTomlInstead
-            implementation("com.apadmi:mockzilla-common:2.4.1")
+            implementation("com.apadmi:mockzilla-management:${MobileUiConfig.coreVersionForManagementUi}")
+            implementation("com.apadmi:mockzilla-common:${MobileUiConfig.coreVersionForManagementUi}")
 
             /* Serialization */
             implementation(libs.kotlinx.serialization.json)
