@@ -51,7 +51,7 @@ spotless = "7.2.1" # https://github.com/diffplug/spotless
 kover = "0.9.1" # https://github.com/Kotlin/kotlinx-kover
 turbine = "1.2.1" # https://github.com/cashapp/turbine
 junit = "1.3.0" # https://developer.android.com/jetpack/androidx/releases/test
-testParamInjector = "1.18" # https://github.com/google/TestParameterInjector
+testParamInjector = "1.19" # https://github.com/google/TestParameterInjector
 
 # Conveyor
 conveyor = "1.12" # https://github.com/hydraulic-software/conveyor
