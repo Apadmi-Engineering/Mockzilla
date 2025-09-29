@@ -1,4 +1,4 @@
-# Mockzilla Desktop
+# Mockzilla Desktop (beta)
 
 The Mockzilla desktop app can be downloaded [here]({{ get_download_site_url() }}).
 

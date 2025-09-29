@@ -75,8 +75,6 @@ kotlin {
 
             /* Mockzilla Management */
             implementation(project(":mockzilla-management-ui:mockzilla-management-ui-common"))
-            implementation(project(":mockzilla-management"))
-            implementation(project(":mockzilla-common"))
 
             /* Serialization */
             implementation(libs.kotlinx.serialization.json)

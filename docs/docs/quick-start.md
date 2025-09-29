@@ -8,7 +8,7 @@
 
 ## Installation
 
-=== "KMM & Android"
+=== "KMP & Android"
     Add the gradle dependency:
     
     ```kotlin
@@ -21,7 +21,7 @@
     2. Add `https://github.com/Apadmi-Engineering/SwiftMockzilla.git`
 
     !!! note 
-        Note: This is not for KMM projects (for those, the gradle dependecy should be added to `shared` source set). 
+        Note: This is not for KMP projects (for those, the gradle dependecy should be added to `shared` source set). 
         This SPM dependency is for purely native iOS apps only.
 
 === "Flutter"
@@ -83,8 +83,8 @@ See [here](./endpoints/) for more information on configuring your endpoints. (In
 ### (2): Just start the server!
 
 !!! note 
-    For KMM apps, even though all the configuration can be defined in Kotlin. The server should still be started directly from within native code on both platforms.
-    See the [KMM demo](https://github.com/Apadmi-Engineering/Mockzilla/tree/develop/demo-kmm) for an example.
+    For KMP apps, even though all the configuration can be defined in Kotlin. The server should still be started directly from within native code on both platforms.
+    See the [KMP demo](https://github.com/Apadmi-Engineering/Mockzilla/tree/develop/demo-kmm) for an example.
 
 === "Android Application"
     ```kotlin
@@ -136,8 +136,8 @@ To configure the port see [here](./dokka/mockzilla-common/com.apadmi.mockzilla.l
 Since Mockzilla shouldn't be included in production binaries, we recommend creating a new product flavour specifically 
 for the mock and only including this dependency for this variant.
 
-=== "KMM"
-    For KMM projects this will require creating a new KMM module in your project specifically for the mock.
+=== "KMP"
+    For KMP projects this will require creating a new KMP module in your project specifically for the mock.
 
 === "Flutter"
     Flutter itself doesn't support product flavours in the same way as Android or iOS, however we can use different Dart 

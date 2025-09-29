@@ -42,10 +42,11 @@ nav:
     - additional_config.md
     - browser_stack.md
     - snapshots.md
+    - Configuration at Runtime:
+      - desktop/overview.md
+      - mobile_ui.md
     - Web:
         - Web Interface (Deprecated): web_interface.md
-    - Mockzilla Desktop:
-        - Overview: desktop/overview.md
   - Contributing:
       - contributing.md
       - Desktop App: desktop_contributing.md
