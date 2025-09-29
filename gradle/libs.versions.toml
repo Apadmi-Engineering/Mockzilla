@@ -45,7 +45,7 @@ playServicesAdsIdentifier = "18.2.0"
 semver = "3.0.0" # https://github.com/z4kn4fein/kotlin-semver
 
 # Code Formatting
-spotless = "7.2.1" # https://github.com/diffplug/spotless
+spotless = "8.0.0" # https://github.com/diffplug/spotless
 
 # Testing
 kover = "0.9.1" # https://github.com/Kotlin/kotlinx-kover
