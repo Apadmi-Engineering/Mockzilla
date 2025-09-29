@@ -1,5 +1,5 @@
 group = "com.example.mockzilla_mobile_ui"
-version = "0.0.1" // x-release-please-start-version
+version = "0.0.2" // x-release-please-version
 
 buildscript {
     ext.kotlin_version = "2.1.0"

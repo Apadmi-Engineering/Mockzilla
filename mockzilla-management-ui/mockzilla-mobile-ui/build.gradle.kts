@@ -22,7 +22,7 @@ val artifactName = "mockzilla-mobile-ui"
 
 kotlin {
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "0.0.1" // x-release-please-version
+    version = project.injectedVersion() ?: "0.0.2" // x-release-please-version
 
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
