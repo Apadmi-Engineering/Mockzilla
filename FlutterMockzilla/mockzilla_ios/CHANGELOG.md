@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.2.0...flutter_mockzilla_ios-v1.2.1) (2025-09-30)
+
+
+### Bug Fixes
+
+* Fix various build issues to support mobile UI ([b5d43b2](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5d43b278030904d1da12704a405acb974a70e61))
+
 ## [1.2.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.1.2...flutter_mockzilla_ios-v1.2.0) (2025-09-25)
 
 
