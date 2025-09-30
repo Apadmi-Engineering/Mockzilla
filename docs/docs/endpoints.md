@@ -161,7 +161,7 @@ data class MockzillaHttpRequest(
 
 ### (2) - Artificial Latency
 
-The following can be configured globally across all endpoints [here](./dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
+The following can be configured globally across all endpoints [here](/dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/#1935914297%2FFunctions%2F1121797123).
 
 Network requests generally don't complete instantly. Mockzilla mimics the latency of a network and can be configured 
 either across all endpoints on the top level config, or on individual endpoints as follows:
@@ -198,7 +198,7 @@ For each individual request invocation, an artificial delay is added.
 
 ### (3) - Artificial Errors
 
-The following can be configured globally across all endpoints [here](./dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
+The following can be configured globally across all endpoints [here](/dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/#-1949710801%2FFunctions%2F1121797123).
 
 Mockzilla supports artificially causing network requests to fail.
 

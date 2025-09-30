@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 The iOS implementation for the mockzilla mobile ui plugin.
                        DESC
-  s.homepage         = 'https://apadmi-engineering.github.io/Mockzilla/'
+  s.homepage         = 'https://mockzilla.apadmi.dev/'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Apadmi Ltd.' => 'samdc@apadmi.com' }
   s.source           = { :path => '.' }

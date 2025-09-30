@@ -30,7 +30,7 @@ kotlin {
     cocoapods {
         name = "SwiftMockzillaMobileUi"
         summary = "Embedded UI for configuring and controlling the Mockzilla server from within an app"
-        homepage = "https://apadmi-engineering.github.io/Mockzilla/"
+        homepage = "https://mockzilla.apadmi.dev/"
         framework {
             baseName = artifactName
         }

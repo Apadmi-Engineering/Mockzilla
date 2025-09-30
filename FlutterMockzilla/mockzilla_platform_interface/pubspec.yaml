@@ -3,10 +3,10 @@ description: A common interface for the mockzilla plugin.
 # x-release-please-start-version
 version: 1.1.1
 # x-release-please-end
-homepage: https://apadmi-engineering.github.io/Mockzilla/
+homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
 issue_tracker: https://github.com/Apadmi-Engineering/Mockzilla/issues
-documentation: https://apadmi-engineering.github.io/Mockzilla/
+documentation: https://mockzilla.apadmi.dev/
 topics:
   - http
   - server

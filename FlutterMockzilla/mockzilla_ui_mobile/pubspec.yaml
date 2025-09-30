@@ -3,10 +3,10 @@ description: "Embedded UI for controlling the mockzilla server at runtime"
 # x-release-please-start-version
 version: 0.0.4
 # x-release-please-end
-homepage: https://apadmi-engineering.github.io/Mockzilla/
+homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
 issue_tracker: https://github.com/Apadmi-Engineering/Mockzilla/issues
-documentation: https://apadmi-engineering.github.io/Mockzilla/
+documentation: https://mockzilla.apadmi.dev/
 
 environment:
   sdk: '>=3.6.0 <4.0.0'

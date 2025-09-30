@@ -20,7 +20,7 @@
     build: {
       target: 'esnext',
       outDir: 'build',
-      assetsDir: "Mockzilla/homepage-assets"
+      assetsDir: "homepage-assets"
     },
     server: {
       port: 3010,

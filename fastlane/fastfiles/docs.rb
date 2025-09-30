@@ -12,7 +12,6 @@ lane :generate_docs do
         npm run build;
     ");
 
-
     # Generate Kotlin documentation
     gradle(
         tasks: [":dokkaHtmlMultiModule"],
