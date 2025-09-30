@@ -5,7 +5,7 @@
 Pod::Spec.new do |s|
   s.name             = 'mockzilla_ui_mobile'
   # x-release-please-start-version
-  s.version          = '0.0.4'
+  s.version          = '0.0.1'
   # x-release-please-end
   s.summary          = 'The iOS implementation for the mockzilla mobile ui plugin.'
   s.description      = <<-DESC
