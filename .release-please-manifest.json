@@ -4,10 +4,10 @@
   "mockzilla-common": "2.4.1",
   "mockzilla-management": "2.4.1",
   "mockzilla-desktop": "1.2.1",
-  "mockzilla-mobile-ui": "0.0.2",
-  "FlutterMockzilla/mockzilla_ui_mobile": "0.0.2",
+  "FlutterMockzilla/mockzilla_ui_mobile": "0.0.3",
   "FlutterMockzilla/mockzilla": "1.2.0",
   "FlutterMockzilla/mockzilla_android": "1.2.0",
   "FlutterMockzilla/mockzilla_ios": "1.2.0",
-  "FlutterMockzilla/mockzilla_platform_interface": "1.2.0"
+  "FlutterMockzilla/mockzilla_platform_interface": "1.2.0",
+  "mockzilla-management-ui/mockzilla-mobile-ui": "0.0.3"
 }

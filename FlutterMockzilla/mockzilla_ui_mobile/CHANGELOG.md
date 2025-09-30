@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.2...flutter_mockzilla_ui_mobile-v0.0.3) (2025-09-30)
+
+
+### Bug Fixes
+
+* remove dependency on unsupported Compose versions.
+
 ## [0.0.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.1...flutter_mockzilla_ui_mobile-v0.0.2) (2025-09-29)
 
 
