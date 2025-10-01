@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v1.2.0...flutter_mockzilla-v1.3.0) (2025-10-01)
+
+
+### Features
+
+* setup flutter wrapper and deployments ([86fa014](https://github.com/Apadmi-Engineering/Mockzilla/commit/86fa0140f5b3de8c716f5c1cdd3e088b992a78ba))
+
+
+### Bug Fixes
+
+* fix flutter example ([#463](https://github.com/Apadmi-Engineering/Mockzilla/issues/463)) ([2c4fd3f](https://github.com/Apadmi-Engineering/Mockzilla/commit/2c4fd3fb4e2a450dccec1ad09464fdfea4364b97))
+* remove unneeded server dependency from mobile ui ([a5e6c38](https://github.com/Apadmi-Engineering/Mockzilla/commit/a5e6c38ae3fc30df846c2963b053b272e242149f))
+* various build issues ([b5d43b2](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5d43b278030904d1da12704a405acb974a70e61))
+
 ## [1.2.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v1.1.0...flutter_mockzilla-v1.2.0) (2025-09-25)
 
 
