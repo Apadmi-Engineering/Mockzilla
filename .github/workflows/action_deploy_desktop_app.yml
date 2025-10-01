@@ -31,14 +31,15 @@ jobs:
           echo -n "$MAC_SIGNING_KEY" | base64 --decode > $MAC_SIGNING_KEY_PATH
           echo -n "$APPLE_NOTARIZATION_KEY" | base64 --decode > $APPLE_NOTARIZATION_KEY_PATH
       - name: Build Jar
-        run: ./gradlew :mockzilla-management-ui:desktopJar
+        run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:desktopJar
       - name: Run Conveyor
         uses: hydraulic-software/conveyor/actions/build@v20.0
         env:
           MAC_SIGNING_KEY_PASSWORD: ${{ secrets.MAC_SIGNING_KEY_PASSWORD }}
           APPLE_NOTARIZATION_KEY_ID: ${{ secrets.APPLE_NOTARIZATION_KEY_ID }}
           APPLE_NOTARIZATION_ISSUER_ID: ${{ secrets.APPLE_NOTARIZATION_ISSUER_ID }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+          CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
         with:
           command: make copied-site
           extra_flags: -f ci.conveyor.conf
