@@ -11,6 +11,7 @@ import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.di.utils.viewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 import org.koin.dsl.module
 
@@ -18,6 +19,7 @@ import java.net.NetworkInterface
 
 import kotlinx.coroutines.GlobalScope
 
+@OptIn(DelicateCoroutinesApi::class)
 fun startDesktopMockzillaKoin() {
     MockzillaUiKoinContext.startMockzillaUiKoinIfNeeded(listOf(module {
         single<AdbConnectorService> { AdbConnectorServiceImpl }

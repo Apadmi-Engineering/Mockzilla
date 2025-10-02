@@ -37,7 +37,9 @@ private val getMyCow = EndpointConfiguration
                     likesGrass = true,
                     hasHorns = false,
                     mooSample = "Mooooooooo",
-                    someValueFromRequest = Json.decodeFromString<GetCowRequestDto>(body).valueInTheRequest
+                    someValueFromRequest = Json.decodeFromString<GetCowRequestDto>(
+                        bodyAsString()
+                    ).valueInTheRequest
                 )
             )
         )

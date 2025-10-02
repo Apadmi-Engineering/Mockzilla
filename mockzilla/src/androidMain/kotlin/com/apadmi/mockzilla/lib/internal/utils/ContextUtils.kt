@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.os.Build
 import android.os.Build.VERSION
+import androidx.core.content.pm.PackageInfoCompat
 
 import com.apadmi.mockzilla.BuildKonfig
 import com.apadmi.mockzilla.lib.models.MetaData
@@ -23,13 +24,14 @@ internal val Context.applicationName: String? get() {
 
 internal fun Context.extractMetaData(): MetaData {
     val packageInfo = runCatching { packageManager.getPackageInfo(packageName, 0) }.getOrNull()
+    val versionCode = packageInfo?.let { PackageInfoCompat.getLongVersionCode(it) }
     return MetaData(
         appName = applicationName?.take(MetaData.maxFieldLength) ?: "-",
         appPackage = packageName.take(MetaData.maxFieldLength),
         runTarget = if (isProbablyRunningOnEmulator) RunTarget.AndroidEmulator else RunTarget.AndroidDevice,
         operatingSystemVersion = VERSION.SDK_INT.toString(),
         deviceModel = Build.MODEL,
-        appVersion = packageInfo?.let { "${it.versionName}-${it.versionCode}" } ?: "-",
+        appVersion = packageInfo?.let { "${it.versionName}-$versionCode" } ?: "-",
         mockzillaVersion = BuildKonfig.VERSION_NAME
     )
 }

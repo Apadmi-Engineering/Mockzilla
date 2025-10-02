@@ -1,4 +1,5 @@
 import com.apadmi.mockzilla.AndroidConfig
+import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.MobileUiConfig
 import com.apadmi.mockzilla.configureCommonProperties
@@ -121,6 +122,9 @@ kotlin {
             }
         }
     }
+    compilerOptions {
+        freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+    }
 }
 
 android {
@@ -128,7 +132,7 @@ android {
     compileSdk = AndroidConfig.targetSdk
     defaultConfig {
         minSdk = AndroidConfig.minSdk
-        targetSdk = AndroidConfig.targetSdk
+        testOptions.targetSdk = AndroidConfig.targetSdk
     }
 
     compileOptions {

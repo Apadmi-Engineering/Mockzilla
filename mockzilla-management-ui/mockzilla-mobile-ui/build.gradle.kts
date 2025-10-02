@@ -1,4 +1,5 @@
 import com.apadmi.mockzilla.AndroidConfig
+import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.MobileUiConfig
 import com.apadmi.mockzilla.configureCommonProperties
@@ -76,7 +77,10 @@ kotlin {
 
             /* Mockzilla Management */
             implementation(project(":mockzilla-management-ui:mockzilla-management-ui-common"))
+            //noinspection UseTomlInstead
             implementation("com.apadmi:mockzilla-common:${MobileUiConfig.coreVersionForManagementUi}")
+            //noinspection UseTomlInstead
+            implementation("com.apadmi:mockzilla-management:${MobileUiConfig.coreVersionForManagementUi}")
 
             /* Serialization */
             implementation(libs.kotlinx.serialization.json)
@@ -107,6 +111,9 @@ kotlin {
             }
         }
     }
+    compilerOptions {
+        freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+    }
 }
 
 android {
@@ -114,7 +121,7 @@ android {
     compileSdk = AndroidConfig.targetSdk
     defaultConfig {
         minSdk = AndroidConfig.minSdk
-        targetSdk = AndroidConfig.targetSdk
+        testOptions.targetSdk = AndroidConfig.targetSdk
 
         consumerProguardFiles("proguard-rules.pro")
     }

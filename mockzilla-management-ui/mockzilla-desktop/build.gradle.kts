@@ -1,4 +1,5 @@
 import com.apadmi.mockzilla.AndroidConfig
+import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -114,6 +115,9 @@ kotlin {
             }
         }
     }
+    compilerOptions {
+        freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+    }
 }
 
 android {
@@ -141,7 +145,7 @@ android {
     }
     android {
         packaging {
-            exclude("META-INF/*")
+            resources.excludes.add("META-INF/*")
         }
     }
 }

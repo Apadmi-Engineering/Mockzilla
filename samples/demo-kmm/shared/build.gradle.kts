@@ -54,7 +54,7 @@ android {
     compileSdk = AndroidConfig.targetSdk
     defaultConfig {
         minSdk = AndroidConfig.minSdk
-        targetSdk = AndroidConfig.targetSdk
+        testOptions.targetSdk = AndroidConfig.targetSdk
 
         compileOptions {
             sourceCompatibility = JavaConfig.version

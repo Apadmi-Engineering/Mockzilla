@@ -45,8 +45,6 @@ nav:
     - Configuration at Runtime:
       - desktop/overview.md
       - mobile_ui.md
-    - Web:
-        - Web Interface (Deprecated): web_interface.md
   - Contributing:
       - contributing.md
       - Desktop App: desktop_contributing.md

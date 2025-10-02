@@ -25,7 +25,7 @@ import kotlinx.coroutines.*
 private var server: ApplicationEngine? = null
 private var job: Job? = null
 
-private inline fun Application.setupReleaseMode(
+private fun Application.setupReleaseMode(
     config: MockzillaConfig,
     tokensService: TokensService
 ) {

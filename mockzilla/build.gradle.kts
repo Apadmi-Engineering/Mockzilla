@@ -1,4 +1,5 @@
 import com.apadmi.mockzilla.AndroidConfig
+import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.configureCommonProperties
@@ -20,7 +21,7 @@ val artifactName = "mockzilla"
 
 kotlin {
     androidTarget {
-        publishAllLibraryVariants()
+        publishLibraryVariants()
     }
 
     // Managed automatically by release-please PRs
@@ -103,6 +104,9 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
         }
     }
+    compilerOptions {
+        freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+    }
 }
 
 android {
@@ -110,7 +114,7 @@ android {
     compileSdk = AndroidConfig.targetSdk
     defaultConfig {
         minSdk = AndroidConfig.minSdk
-        targetSdk = AndroidConfig.targetSdk
+        testOptions.targetSdk = AndroidConfig.targetSdk
 
         consumerProguardFiles("mockzilla-proguard-rules.pro")
     }

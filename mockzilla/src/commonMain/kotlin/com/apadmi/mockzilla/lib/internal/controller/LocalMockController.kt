@@ -38,7 +38,7 @@ internal class LocalMockController(
         val delay = (cachedResponse?.delayMs ?: endpoint.delay)?.toLong() ?: 0
         delay(delay)
 
-        // Use the cached response by default, i.e. if a user has specified data via the web portal
+        // Use the cached response by default, i.e. if a user has specified data via the management api
         // then we return that, otherwise we call the appropriate handler.
         return if (shouldFail) {
             logger.v { "Call to ${endpoint.key} should fail, returning error response" }
