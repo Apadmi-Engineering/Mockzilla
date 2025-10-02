@@ -14,10 +14,13 @@ import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 
 object MockzillaUiKoinContext {
     private var isInitialised = false
+
+    @OptIn(DelicateCoroutinesApi::class)
     private val koinApp = koinApplication {
         modules(
             viewModelModule(),

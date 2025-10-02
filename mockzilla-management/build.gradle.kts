@@ -1,3 +1,4 @@
+import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.configureCommonProperties
@@ -21,7 +22,6 @@ kotlin {
     version = project.injectedVersion() ?: "2.4.1" // x-release-please-version
 
     jvm {
-        withJava()
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
         }
@@ -68,6 +68,9 @@ kotlin {
             /* Mockzilla */
             implementation(project(":mockzilla"))
         }
+    }
+    compilerOptions {
+        freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
     }
 }
 

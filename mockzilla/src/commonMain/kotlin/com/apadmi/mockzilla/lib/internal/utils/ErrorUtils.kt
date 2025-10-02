@@ -2,7 +2,7 @@
 
 package com.apadmi.mockzilla.lib.internal.utils
 
-expect class AddressAlreadyInUseException
+expect class AddressAlreadyInUseException : Throwable
 
 fun Throwable.isSomeMatchInChain(predicate: (Throwable) -> Boolean): Boolean {
     var current: Throwable? = this

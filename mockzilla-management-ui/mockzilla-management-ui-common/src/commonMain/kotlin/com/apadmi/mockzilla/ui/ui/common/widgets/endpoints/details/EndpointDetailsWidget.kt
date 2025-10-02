@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -243,9 +244,9 @@ private fun EndpointDetailsResponseBody(
             value = statusCode
                 ?.let { strings.widgets.endpointDetails.statusCodeLabel(it) }
                 ?: strings.widgets.endpointDetails.noOverrideStatusCode,
-            // TODO: Work out how to also let user type in custom status number like on web portal
+            // TODO: Work out how to also let user type in custom status number
             onValueChange = {},
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
             readOnly = true,
             singleLine = true,
             label = { Text(text = strings.widgets.endpointDetails.statusCode) },

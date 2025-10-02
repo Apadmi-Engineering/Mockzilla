@@ -5,10 +5,10 @@ import androidx.compose.runtime.Composable
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel as InternalViewModel
 
 import org.koin.androidx.compose.koinViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel as koinViewModel
 import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel as koinViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 

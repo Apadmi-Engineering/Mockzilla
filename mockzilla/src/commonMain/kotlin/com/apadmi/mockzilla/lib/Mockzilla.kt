@@ -1,3 +1,5 @@
+@file:OptIn(DelicateCoroutinesApi::class)
+
 package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
@@ -18,6 +20,7 @@ import co.touchlab.kermit.StaticConfig
 import co.touchlab.kermit.platformLogWriter
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

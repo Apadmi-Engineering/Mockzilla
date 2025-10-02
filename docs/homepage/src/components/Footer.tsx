@@ -16,8 +16,8 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold">Documentation</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a target="_top" href="/Mockzilla/endpoints" className="hover:text-foreground transition-colors">Getting Started</a></li>
-              <li><a target="_top" href="/Mockzilla/dokka" className="hover:text-foreground transition-colors">API Reference</a></li>
+              <li><a target="_top" href="/quick-start" className="hover:text-foreground transition-colors">Getting Started</a></li>
+              <li><a target="_top" href="/dokka" className="hover:text-foreground transition-colors">API Reference</a></li>
               <li><a target="_top" href="https://github.com/Apadmi-Engineering/Mockzilla/tree/develop/samples" className="hover:text-foreground transition-colors">Examples</a></li>
             </ul>
           </div>
@@ -26,7 +26,7 @@ export function Footer() {
             <h3 className="font-semibold">Community</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><a target="_top" href="https://github.com/Apadmi-Engineering/Mockzilla/" className="hover:text-foreground transition-colors">GitHub</a></li>
-              <li><a target="_top" href="/Mockzilla/contributing" className="hover:text-foreground transition-colors">Contributing</a></li>
+              <li><a target="_top" href="/contributing" className="hover:text-foreground transition-colors">Contributing</a></li>
             </ul>
           </div>
           

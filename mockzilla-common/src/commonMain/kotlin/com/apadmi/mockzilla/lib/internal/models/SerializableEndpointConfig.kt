@@ -1,9 +1,12 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package com.apadmi.mockzilla.lib.internal.models
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import io.ktor.http.*
 import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -65,7 +68,7 @@ data class SerializableEndpointConfig(
 }
 
 /**
- * DTO for interaction with the web portal.
+ * DTO for interaction with the management apis.
  *
  * @property key
  * @property shouldFail

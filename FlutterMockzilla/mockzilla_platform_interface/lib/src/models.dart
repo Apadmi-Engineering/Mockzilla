@@ -74,7 +74,7 @@ abstract class DashboardOptionsConfig with _$DashboardOptionsConfig {
 /// Configuration for an endpoint including how requests should be handled
 /// and desktop app presets.
 ///
-/// Please see [https://apadmi-engineering.github.io/Mockzilla/endpoints/]()
+/// Please see [https://mockzilla.apadmi.dev/endpoints/]()
 /// for more information.
 @freezed
 abstract class EndpointConfig with _$EndpointConfig {

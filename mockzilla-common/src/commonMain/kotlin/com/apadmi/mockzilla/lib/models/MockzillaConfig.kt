@@ -137,7 +137,7 @@ data class MockzillaConfig(
 
         /**
          * Setting this value to `true` means the mockzilla server will only accept calls from localhost.
-         * Calls from other IPs will be blocked (including blocking the Mockzilla web interface)
+         * Calls from other IPs will be blocked (including blocking the Mockzilla desktop interface)
          *
          * @param localhostOnly
          */

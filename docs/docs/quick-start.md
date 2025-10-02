@@ -78,13 +78,13 @@ Mockzilla is entirely driven by a config object which is used to start the serve
         ),
     );
     ```
-See [here](./endpoints/) for more information on configuring your endpoints. (Including compile-time safety!)
+See [here](/endpoints/) for more information on configuring your endpoints. (Including compile-time safety!)
 
 ### (2): Just start the server!
 
 !!! note 
     For KMP apps, even though all the configuration can be defined in Kotlin. The server should still be started directly from within native code on both platforms.
-    See the [KMP demo](https://github.com/Apadmi-Engineering/Mockzilla/tree/develop/demo-kmm) for an example.
+    See the [KMP demo](https://github.com/Apadmi-Engineering/Mockzilla/tree/develop/samples/demo-kmm) for an example.
 
 === "Android Application"
     ```kotlin
@@ -129,7 +129,7 @@ See [here](./endpoints/) for more information on configuring your endpoints. (In
 
 Mockzilla listens for calls to `http://localhost:8080/local-mock` (this should be your base url).
 
-To configure the port see [here](./dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/).
+To configure the port see [here](/dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/#581853299%2FFunctions%2F1121797123).
 
 ## Recommendation
 

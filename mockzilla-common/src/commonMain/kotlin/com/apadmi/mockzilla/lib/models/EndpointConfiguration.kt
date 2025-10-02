@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.lib.models
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
-import com.apadmi.mockzilla.lib.service.MockzillaWeb
 
 import io.ktor.http.*
 import io.ktor.server.request.ApplicationRequest
@@ -94,16 +93,6 @@ data class EndpointConfiguration(
         }
 
         /**
-         * No longer supported
-         *
-         * @param delay delay in milliseconds
-         */
-        @Deprecated("No longer supported")
-        fun setDelayVarianceMillis(variance: Int) = apply {
-            // No-op
-        }
-
-        /**
          * The block called when a network request is made to this endpoint. Note: If the value of
          * [setShouldFail] causes Mockzilla to generate a failure response, then this block
          * will *not* be called, instead the block specified by [setErrorHandler] is called.
@@ -123,30 +112,6 @@ data class EndpointConfiguration(
         fun setErrorHandler(handler: MockzillaHttpRequest.() -> MockzillaHttpResponse) = apply {
             config = config.copy(errorHandler = handler)
         }
-
-        /**
-         * The response which is prefilled in the Mockzilla web page.
-         *
-         * @param response
-         */
-        @MockzillaWeb
-        @Deprecated(
-            "Obsolete, see `configureDashboardOverrides`",
-            replaceWith = ReplaceWith("configureDashboardOverrides")
-        )
-        fun setWebApiDefaultResponse(response: MockzillaHttpResponse) = this
-
-        /**
-         * The error response which is prefilled in the Mockzilla web page.
-         *
-         * @param response
-         */
-        @MockzillaWeb
-        @Deprecated(
-            "Obsolete, see `configureDashboardOverrides`",
-            replaceWith = ReplaceWith("configureDashboardOverrides")
-        )
-        fun setWebApiErrorResponse(response: MockzillaHttpResponse) = this
 
         /**
          * Configure the presets that are available to users of the dashboard.
@@ -178,6 +143,7 @@ data class EndpointConfiguration(
          *
          * @param regex
          */
+        @Suppress("unused")
         fun setPattern(regex: String) = apply {
             config = config.copy(endpointMatcher = {
                 regex.toRegex().matches(uri)

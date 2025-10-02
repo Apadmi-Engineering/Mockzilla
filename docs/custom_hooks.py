@@ -12,7 +12,7 @@ def on_pre_build(config):
                 This is a debug build, to see the homepage here first run
                 `npm run build` in the homepage project directory.
 
-                Click <a target="_top" href="/Mockzilla/endpoints">here</a> to go to main docs
+                Click <a target="_top" href="/endpoints">here</a> to go to main docs
                  """, file=text_file)
     if "build" in sys.argv:
         if not os.path.isfile(index_dir):

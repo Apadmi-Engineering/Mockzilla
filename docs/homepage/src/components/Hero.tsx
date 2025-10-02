@@ -63,7 +63,7 @@ startMockzilla(config)`}</SyntaxHighlighter>
 
                         <div className="flex flex-col sm:flex-row gap-4">
                             <Button size="lg" className="w-fit"
-                                    onClick={() => (window.top || window).location.href = "/Mockzilla/endpoints"}>
+                                    onClick={() => (window.top || window).location.href = "/quick-start"}>
                                 Get Started
                                 <ArrowRight className="ml-2 h-4 w-4"/>
                             </Button>

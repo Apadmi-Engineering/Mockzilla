@@ -11,16 +11,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
 import com.apadmi.mockzilla.mobile.ui.launchManagementUi
 
 import com.apadmi.mockzilla.mock.CowDto
 import com.apadmi.mockzilla.mock.DataResult
 import com.apadmi.mockzilla.mock.GetCowRequestDto
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +30,7 @@ class MainActivity : ComponentActivity() {
         val repository = (application as RootApplication).repository
         val response = mutableStateOf<DataResult<CowDto, String>?>(null)
         setContent {
+            val scope = rememberCoroutineScope()
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
@@ -36,7 +38,7 @@ class MainActivity : ComponentActivity() {
                 MainContent(
                     cowResult = response.value,
                     makeRequest = { someValue ->
-                        lifecycleScope.launchWhenCreated {
+                        scope.launch {
                             response.value = repository.getCow(someValue)
                         }
                     },
@@ -90,7 +92,7 @@ fun MainContent(
             "${GetCowRequestDto(text.value)}",
             fontFamily = FontFamily.Monospace
         )
-        Divider()
+        HorizontalDivider()
         Text("Response: ${if (cowResult.isSuccess()) "Success!" else "Failed"}")
         Text(
             "${cowResult.dataOrNull() ?: cowResult.errorOrNull()}",

@@ -42,7 +42,9 @@ private val getMyCow = EndpointConfiguration
                     true,
                     hasHorns = false,
                     mooSample = "Mooooooooo",
-                    Json.decodeFromString<GetCowRequestDto>(body).valueInTheRequest
+                    Json.decodeFromString<GetCowRequestDto>(
+                        bodyAsString()
+                    ).valueInTheRequest
                 )
             ), headers = mapOf("Content-Type" to "application/json")
         )

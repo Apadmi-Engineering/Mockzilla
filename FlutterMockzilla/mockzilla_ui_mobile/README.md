@@ -10,7 +10,7 @@ A Flutter plugin providing inbuilt UI for configuring the [Mockzilla](https://pu
 |-------------|-------------------------|-------|
 | **Support** | SDK 21+ (Target SDK 36) | 13.0+ |
 
-**Full documentation available [here!](https://apadmi-engineering.github.io/Mockzilla/mobile_ui)**
+**Full documentation available [here!](https://mockzilla.apadmi.dev/mobile_ui)**
 
 ## Setup Mockzilla
 

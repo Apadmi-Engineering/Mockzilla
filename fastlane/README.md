@@ -114,21 +114,13 @@ Publish to maven remote
 
 iOS target for the kmm demo
 
-### ios generate_xcframework
+### ios generate_framework_and_podspec
 
 ```sh
-[bundle exec] fastlane ios generate_xcframework
+[bundle exec] fastlane ios generate_framework_and_podspec
 ```
 
-Generate XCFramework
-
-### ios generate_podspec
-
-```sh
-[bundle exec] fastlane ios generate_podspec
-```
-
-Generate Podspec
+Generate Podspec and Framework
 
 ### ios publish_swift_package
 
@@ -153,14 +145,6 @@ iOS target for the lib
 ```
 
 Build and test SwiftMockzilla
-
-### ios generate_mobile_ui_framework_and_podspec
-
-```sh
-[bundle exec] fastlane ios generate_mobile_ui_framework_and_podspec
-```
-
-Generate Podspec
 
 ### ios publish_mobile_ui_swift_package
 
