@@ -22,6 +22,7 @@ import androidx.navigation.toRoute
 
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.mobile.ui.deviceconnection.MobileDeviceConnectionWidget
+import com.apadmi.mockzilla.mobile.ui.utils.Destination
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
@@ -31,18 +32,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
-
-import kotlinx.serialization.Serializable
-
-/**
- * @property key
- */
-// TODO: Replace these with a sealed class so their usages are exhaustive
-@Serializable
-internal data class EndpointDetails(val key: String)
-
-@Serializable
-internal data object EndpointList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,21 +88,24 @@ private fun ConnectedState(
 ) = Surface {
     NavHost(
         navController = navController,
-        startDestination = EndpointList
+        startDestination = Destination.EndpointList
     ) {
-        composable<EndpointDetails> { backStackEntry ->
+        composable<Destination.EndpointDetails> { backStackEntry ->
             EndpointDetailsWidget(
                 device = currentState.activeDevice.device,
-                activeEndpoint = EndpointConfiguration.Key(backStackEntry.toRoute<EndpointDetails>().key)
+                activeEndpoint = EndpointConfiguration.Key(
+                    backStackEntry.toRoute<Destination.EndpointDetails>().key
+                )
             )
         }
 
-        composable<EndpointList> {
+        composable<Destination.EndpointList> {
             EndpointsWidget(
-                device = currentState.activeDevice.device
-            ) {
-                navController.navigate(EndpointDetails(it.raw))
-            }
+                device = currentState.activeDevice.device,
+                onEndpointClicked = {
+                    navController.navigate(Destination.EndpointDetails(it.raw))
+                }
+            )
         }
     }
 }
