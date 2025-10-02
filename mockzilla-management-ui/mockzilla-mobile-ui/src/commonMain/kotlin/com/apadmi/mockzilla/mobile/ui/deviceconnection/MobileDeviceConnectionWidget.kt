@@ -59,7 +59,7 @@ internal fun MobileDeviceConnectionWidget(
                 }
 
                 Text(
-                    text = currentState.message,
+                    text = strings.widgets.deviceConnection.errorMessage,
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center
