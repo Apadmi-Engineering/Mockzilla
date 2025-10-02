@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.mobile.ui.deviceconnection
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.mobile.ui.deviceconnection.MobileDeviceConnectionViewModel.*
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -27,19 +29,43 @@ internal fun MobileDeviceConnectionWidget(
     val viewModel = getViewModel<MobileDeviceConnectionViewModel>()
     val state by viewModel.state.collectAsState()
 
-    return Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+    return Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         when (val currentState = state) {
-            State.Connecting -> CircularProgressIndicator(Modifier.padding(end = 8.dp).size(20.dp))
+            State.Connecting -> CircularProgressIndicator(
+                modifier = Modifier.padding(end = 8.dp).size(20.dp)
+            )
+
             is State.Error -> {
-                Text(strings.widgets.deviceConnection.errorTitle)
-                Button(onClick = viewModel::attemptLocalConnection, contentPadding = PaddingValues(0.dp)) {
+                Text(
+                    text = strings.widgets.deviceConnection.errorTitle,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
+                Button(
+                    onClick = viewModel::attemptLocalConnection
+                ) {
                     Text(
-                        strings.widgets.errorBanner.refreshButton,
-                        style = MaterialTheme.typography.bodySmall
+                        text = strings.widgets.errorBanner.refreshButton,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
-                Text(currentState.message)
+
+                Text(
+                    text = currentState.message,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
             }
+
             State.Connected -> Text(strings.widgets.deviceConnection.connected)
         }
     }

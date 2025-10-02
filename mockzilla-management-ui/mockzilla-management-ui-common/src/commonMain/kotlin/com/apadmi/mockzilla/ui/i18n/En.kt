@@ -19,6 +19,9 @@ val EnStrings = Strings(
             ipInputLabel = "e.g 127.0.0.1:8080",
             androidDevConnectButton = "Connect to development Mockzilla",
             errorTitle = "Failed to connect",
+            errorMessage = "Please check the following:" +
+                    "\n1. You have called startMockzilla() during your application's launch." +
+                    "\n2. The Mockzilla library you are using is above the minimum versions (KMP: 2.4.1, Flutter: 1.3.0).",
             connected = "Connected",
             tooltips = Strings.Widgets.DeviceConnection.ToolTips(
                 notYourSimulator = "We don't think this is your simulator, but you can try to connect! (Probably won't work)",

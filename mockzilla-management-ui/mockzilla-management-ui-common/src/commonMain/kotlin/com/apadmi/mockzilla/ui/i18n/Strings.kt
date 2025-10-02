@@ -152,6 +152,7 @@ data class Strings(
          * @property autoConnectButton
          * @property androidDevConnectButton
          * @property errorTitle
+         * @property errorMessage
          * @property connected
          */
         data class DeviceConnection(
@@ -164,6 +165,7 @@ data class Strings(
             val autoConnectButton: String,
             val androidDevConnectButton: String,
             val errorTitle: String,
+            val errorMessage: String,
             val connected: String
         ) {
             /**
