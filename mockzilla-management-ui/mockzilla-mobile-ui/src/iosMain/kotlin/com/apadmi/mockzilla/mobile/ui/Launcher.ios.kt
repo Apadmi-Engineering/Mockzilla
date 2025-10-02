@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.mobile.ui
 
 import androidx.compose.ui.window.ComposeUIViewController
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
+import com.apadmi.mockzilla.mobile.ui.utils.startMockzillaMobileUiKoin
 import org.koin.dsl.module
 
 import platform.UIKit.*

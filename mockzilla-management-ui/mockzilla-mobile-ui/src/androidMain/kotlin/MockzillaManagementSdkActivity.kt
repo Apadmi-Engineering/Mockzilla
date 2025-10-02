@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.CompositionLocalProvider
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.mobile.ui.MobileAppRoot
-import com.apadmi.mockzilla.mobile.ui.startMockzillaMobileUiKoin
+import com.apadmi.mockzilla.mobile.ui.utils.startMockzillaMobileUiKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 

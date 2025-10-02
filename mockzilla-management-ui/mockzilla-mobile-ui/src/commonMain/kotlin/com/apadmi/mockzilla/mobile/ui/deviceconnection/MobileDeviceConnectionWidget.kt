@@ -36,7 +36,7 @@ internal fun MobileDeviceConnectionWidget(
         verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        when (val currentState = state) {
+        when (state) {
             State.Connecting -> CircularProgressIndicator(
                 modifier = Modifier.padding(end = 8.dp).size(20.dp)
             )

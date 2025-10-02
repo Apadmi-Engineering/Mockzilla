@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.mobile.ui
+package com.apadmi.mockzilla.mobile.ui.utils
 
 import com.apadmi.mockzilla.lib.sharedstate.MockzillaSharedProcessStateHandler
 import com.apadmi.mockzilla.mobile.ui.deviceconnection.MobileDeviceConnectionViewModel
