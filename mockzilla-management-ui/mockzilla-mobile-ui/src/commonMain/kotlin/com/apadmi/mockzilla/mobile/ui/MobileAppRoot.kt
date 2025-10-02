@@ -3,9 +3,6 @@
 package com.apadmi.mockzilla.mobile.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -15,13 +12,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -60,14 +52,17 @@ internal fun MobileAppRoot(
 ) = AppTheme {
     val viewModel = getViewModel<AppRootViewModel>()
     val state by viewModel.state.collectAsState()
-    var showBackButton = remember { mutableStateOf(false) }
+    val navController = rememberNavController()
+    val showBackButton = navController.currentBackStack.collectAsState()
+        .value
+        .size > 2
+
     Column {
         TopAppBar(
-            title = { },
+            title = { /* No title */ },
             navigationIcon = {
-                // TODO: Wire up back nav
-                if (showBackButton.value) {
-                    IconButton(onClick = onClose) {
+                if (showBackButton) {
+                    IconButton(onClick = navController::navigateUp) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = strings.common.backDescription
@@ -82,13 +77,13 @@ internal fun MobileAppRoot(
                         contentDescription = strings.common.closeDescription
                     )
                 }
-            },
+            }
         )
 
         when (val currentState = state) {
             is State.Connected -> ConnectedState(
-                currentState = currentState,
-                showBackButton = showBackButton
+                navController = navController,
+                currentState = currentState
             )
 
             State.NewDeviceConnection -> MobileDeviceConnectionWidget()
@@ -99,35 +94,25 @@ internal fun MobileAppRoot(
 
 @Composable
 private fun ConnectedState(
-    navController: NavHostController = rememberNavController(),
-    currentState: State.Connected,
-    showBackButton: MutableState<Boolean>
-) {
-    val backStack by navController.currentBackStack.collectAsState()
-    LaunchedEffect(backStack) {
-        showBackButton.value = backStack.size > 1
-    }
-
+    navController: NavHostController,
+    currentState: State.Connected
+) = Surface {
     NavHost(
         navController = navController,
         startDestination = EndpointList
     ) {
-        composable<EndpointDetails>() { backStackEntry ->
-            Surface(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-                EndpointDetailsWidget(
-                    currentState.activeDevice.device,
-                    activeEndpoint = EndpointConfiguration.Key(backStackEntry.toRoute<EndpointDetails>().key)
-                )
-            }
+        composable<EndpointDetails> { backStackEntry ->
+            EndpointDetailsWidget(
+                device = currentState.activeDevice.device,
+                activeEndpoint = EndpointConfiguration.Key(backStackEntry.toRoute<EndpointDetails>().key)
+            )
         }
 
         composable<EndpointList> {
-            Surface {
-                EndpointsWidget(
-                    currentState.activeDevice.device
-                ) {
-                    navController.navigate(EndpointDetails(it.raw))
-                }
+            EndpointsWidget(
+                device = currentState.activeDevice.device
+            ) {
+                navController.navigate(EndpointDetails(it.raw))
             }
         }
     }
