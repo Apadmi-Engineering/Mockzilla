@@ -207,7 +207,8 @@ class MockzillaManagementRepositoryIntegrationTests {
                         DashboardOverridePreset(
                             "name",
                             "desc",
-                            MockzillaHttpResponse(body = "preset")
+                            response = MockzillaHttpResponse(body = "preset"),
+                            type = null
                         )
                     ),
                     errorPresets = emptyList()

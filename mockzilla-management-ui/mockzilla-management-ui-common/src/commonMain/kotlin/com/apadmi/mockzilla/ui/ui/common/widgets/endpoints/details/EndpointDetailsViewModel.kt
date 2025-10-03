@@ -278,28 +278,7 @@ class EndpointDetailsViewModel(
     }, { config, device ->
         viewModelScope.launch {
             emitErrorAndEventIfNeeded(
-                updateService.setDefaultPreset(
-                    device,
-                    config.key,
-                    dashboardOverridePreset
-                )
-            )
-        }
-    })
-
-    fun onErrorPresetSelected(
-        dashboardOverridePreset: DashboardOverridePreset
-    ) = onPropertyChanged({
-        copy(
-            errorHeaders = dashboardOverridePreset.response.headers.toList(),
-            errorStatus = dashboardOverridePreset.response.statusCode,
-            errorBody = dashboardOverridePreset.response.body,
-            jsonEditingError = JsonEditor(dashboardOverridePreset.response.body).isValidJson()
-        )
-    }, { config, device ->
-        viewModelScope.launch {
-            emitErrorAndEventIfNeeded(
-                updateService.setErrorPreset(
+                updateService.applyPreset(
                     device,
                     config.key,
                     dashboardOverridePreset
