@@ -3,10 +3,12 @@ package com.apadmi.mockzilla.demo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -19,6 +21,7 @@ import com.apadmi.mockzilla.mobile.ui.launchManagementUi
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         val repository = (application as RootApplication).repository
@@ -56,12 +59,13 @@ fun MainContent(
 ) = Column(
     modifier = Modifier
         .fillMaxSize(1f)
+        .statusBarsPadding()
         .verticalScroll(rememberScrollState())
         .padding(16.dp),
-    verticalArrangement = Arrangement.spacedBy(8.dp)
+    verticalArrangement = Arrangement.spacedBy(12.dp)
 ) {
     Text(
-        "Enter a value here to be passed into the request body",
+        text = "Enter a value here to be passed into the request body",
         fontSize = 24.sp
     )
     TextField(
@@ -89,16 +93,17 @@ fun MainContent(
     ) {
         Text("Launch Management UI")
     }
+
     state.cowResult?.let { cowResult ->
         Text("Network Request Body")
         Text(
-            "${GetCowRequestDto(state.request)}",
+            text = "${GetCowRequestDto(state.request)}",
             fontFamily = FontFamily.Monospace
         )
         HorizontalDivider()
         Text("Response: ${if (cowResult.isSuccess()) "Success!" else "Failed"}")
         Text(
-            "${cowResult.dataOrNull() ?: cowResult.errorOrNull()}",
+            text = "${cowResult.dataOrNull() ?: cowResult.errorOrNull()}",
             fontFamily = FontFamily.Monospace
         )
     }

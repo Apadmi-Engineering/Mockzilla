@@ -3,10 +3,12 @@ package com.apadmi.mockzilla.mock.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,10 +27,12 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         val repository = (application as RootApplication).repository
         val response = mutableStateOf<DataResult<CowDto, String>?>(null)
+
         setContent {
             val scope = rememberCoroutineScope()
             Surface(
@@ -44,7 +48,8 @@ class MainActivity : ComponentActivity() {
                     },
                     launchManagementUi = {
                         launchManagementUi(this)
-                    })
+                    }
+                )
             }
         }
     }
@@ -58,13 +63,14 @@ fun MainContent(
 ) = Column(
     modifier = Modifier
         .fillMaxSize(1f)
+        .statusBarsPadding()
         .padding(16.dp),
-    verticalArrangement = Arrangement.spacedBy(8.dp)
+    verticalArrangement = Arrangement.spacedBy(12.dp)
 ) {
     val text = remember { mutableStateOf("") }
 
     Text(
-        "Enter a value here to be passed into the request body",
+        text = "Enter a value here to be passed into the request body",
         fontSize = 24.sp
     )
     TextField(
@@ -75,11 +81,12 @@ fun MainContent(
         }
     )
 
-    Button({
-        makeRequest(text.value)
-    }) {
+    Button(
+        onClick = { makeRequest(text.value) }
+    ) {
         Text("Make Network Request")
     }
+
     Button(
         onClick = launchManagementUi
     ) {
@@ -89,13 +96,13 @@ fun MainContent(
     cowResult?.let {
         Text("Network Request Body")
         Text(
-            "${GetCowRequestDto(text.value)}",
+            text = "${GetCowRequestDto(text.value)}",
             fontFamily = FontFamily.Monospace
         )
         HorizontalDivider()
         Text("Response: ${if (cowResult.isSuccess()) "Success!" else "Failed"}")
         Text(
-            "${cowResult.dataOrNull() ?: cowResult.errorOrNull()}",
+            text = "${cowResult.dataOrNull() ?: cowResult.errorOrNull()}",
             fontFamily = FontFamily.Monospace
         )
     }
