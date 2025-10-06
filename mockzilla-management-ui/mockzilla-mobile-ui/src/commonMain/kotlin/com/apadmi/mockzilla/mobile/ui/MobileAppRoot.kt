@@ -3,6 +3,9 @@
 package com.apadmi.mockzilla.mobile.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -14,6 +17,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -85,12 +89,16 @@ internal fun MobileAppRoot(
 private fun ConnectedState(
     navController: NavHostController,
     currentState: State.Connected
-) = Surface {
-    NavHost(
-        navController = navController,
-        startDestination = Destination.EndpointList
-    ) {
-        composable<Destination.EndpointDetails> { backStackEntry ->
+) = NavHost(
+    navController = navController,
+    startDestination = Destination.EndpointList
+) {
+    composable<Destination.EndpointDetails> { backStackEntry ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
             EndpointDetailsWidget(
                 device = currentState.activeDevice.device,
                 activeEndpoint = EndpointConfiguration.Key(
@@ -98,8 +106,10 @@ private fun ConnectedState(
                 )
             )
         }
+    }
 
-        composable<Destination.EndpointList> {
+    composable<Destination.EndpointList> {
+        Surface {
             EndpointsWidget(
                 device = currentState.activeDevice.device,
                 onEndpointClicked = {

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -18,8 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
@@ -127,11 +124,7 @@ fun EndpointDetailsWidgetContent(
     onErrorPresetSelected: (DashboardOverridePreset) -> Unit,
     onResetAll: () -> Unit,
     strings: Strings = LocalStrings.current,
-) = Column(
-    modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(rememberScrollState())
-) {
+) = Column {
     val pagerState = rememberPagerState(initialPage = 0) { Tab.entries.size }
     val coroutineScope = rememberCoroutineScope()
 
