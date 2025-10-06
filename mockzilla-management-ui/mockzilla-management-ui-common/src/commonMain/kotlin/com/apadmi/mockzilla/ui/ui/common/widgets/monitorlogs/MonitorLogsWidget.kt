@@ -32,6 +32,7 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
 import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_1xx
 import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_2xx
@@ -40,6 +41,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_4xx
 import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_5xx
 
 import io.ktor.http.HttpStatusCode
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 @Suppress("MAGIC_NUMBER")
@@ -102,6 +104,31 @@ fun LogRow(modifier: Modifier, event: LogEvent) =
             onDraw = { drawCircle(color = event.status.color()) })
         Text("${event.status.description} ${event.method}: ${event.url}")
     }
+
+@Preview
+@Composable
+fun MonitorLogsWidgetPreview() = PreviewSurface {
+    MonitorLogsWidgetContent(
+        state = MonitorLogsViewModel.State.DisplayLogs(
+            entries = sequenceOf(
+                LogEvent(
+                    timestamp = 1000,
+                    url = "https://www.example.com/url",
+                    requestBody = "request body",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = "response body",
+                    status = HttpStatusCode.OK,
+                    delay = 50,
+                    method = "GET",
+                    isIntendedFailure = false
+                )
+            ),
+        ),
+        onClearAll = {},
+        onViewDetail = { _ -> }
+    )
+}
 
 @Composable
 private fun MonitorLogsList(

@@ -63,11 +63,13 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTabList
 import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
 
 import io.ktor.http.HttpStatusCode
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 import kotlinx.coroutines.launch
@@ -220,6 +222,12 @@ fun EndpointDetailsWidgetContent(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun EndpointDetailsWidgetPreview() = PreviewSurface {
+    EndpointDetailsWidgetPreviewContent()
 }
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)

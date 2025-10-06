@@ -34,6 +34,7 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.State.*
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning_background
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private fun Connected.ErrorBannerState.bannerText(strings: Strings): String =
     when (this) {
@@ -126,4 +127,24 @@ fun ErrorBanner(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun ConnectionLostBannerPreview() = PreviewSurface {
+    ErrorBanner(
+        state = Connected.ErrorBannerState.ConnectionLost,
+        onRefreshAll = {},
+        onDismissError = {}
+    )
+}
+
+@Preview
+@Composable
+private fun UnknownErrorBannerPreview() = PreviewSurface {
+    ErrorBanner(
+        state = Connected.ErrorBannerState.UnknownError,
+        onRefreshAll = {},
+        onDismissError = {}
+    )
 }

@@ -27,10 +27,12 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
 import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
 import com.apadmi.mockzilla.ui.ui.common.utils.mockzillaLogoResource
 import com.apadmi.mockzilla.ui.utils.Platform
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private fun DetectedDevice.State.toolTipText(strings: Strings) = when (this) {
     DetectedDevice.State.NotYourSimulator -> strings.widgets.deviceConnection.tooltips.notYourSimulator
@@ -52,7 +54,11 @@ fun DeviceConnectionWidget() {
     val viewModel = getViewModel<DeviceConnectionViewModel>()
     val state by viewModel.state.collectAsState()
 
-    DeviceConnectionContent(state, viewModel::onIpAndPortChanged, viewModel::connectToDevice)
+    DeviceConnectionContent(
+        state,
+        viewModel::onIpAndPortChanged,
+        viewModel::connectToDevice
+    )
 }
 
 @Composable
@@ -108,6 +114,32 @@ fun DeviceConnectionContent(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun DeviceConnectionWidgetPreview() = PreviewSurface {
+    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+        DeviceConnectionContent(
+            state = State(
+                ipAndPort = "127.0.0.1:60000",
+                connectionState = State.ConnectionState.Connecting,
+                devices = listOf(
+                    DetectedDevice(
+                        connectionName = "iPhone",
+                        metaData = null,
+                        hostAddress = "127.0.0.1",
+                        hostAddresses = listOf(),
+                        port = 60000,
+                        adbConnection = null,
+                        state = DetectedDevice.State.ReadyToConnect
+                    )
+                ),
+            ),
+            onIpAndPortChanged = {},
+            onTapDevice = {}
+        )
     }
 }
 

@@ -32,8 +32,10 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
 import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import org.koin.core.parameter.parametersOf
 
@@ -166,5 +168,54 @@ private fun Filter(
                 )
             }
         }
+    )
+}
+
+@Preview
+@Composable
+private fun EndpointsWidgetPreview() = PreviewSurface {
+    EndpointsWidgetContent(
+        state = EndpointsViewModel.State.EndpointsList(
+            endpoints = listOf(
+                EndpointsViewModel.State.EndpointConfig(
+                    key = Key("1"),
+                    name = "FooBar",
+                    fail = false,
+                    isCheckboxTicked = false,
+                    hasValuesOverridden = false,
+                    display = true
+                ),
+                EndpointsViewModel.State.EndpointConfig(
+                    key = Key("2"),
+                    name = "Foo",
+                    fail = true,
+                    isCheckboxTicked = true,
+                    hasValuesOverridden = false,
+                    display = true
+                ),
+                EndpointsViewModel.State.EndpointConfig(
+                    key = Key("3"),
+                    name = "FooBuzz",
+                    fail = false,
+                    isCheckboxTicked = false,
+                    hasValuesOverridden = true,
+                    display = true
+                ),
+                EndpointsViewModel.State.EndpointConfig(
+                    key = Key("4"),
+                    name = "Foobar",
+                    fail = false,
+                    isCheckboxTicked = false,
+                    hasValuesOverridden = false,
+                    display = true
+                )
+            ),
+            filter = "Foo",
+        ),
+        onAllCheckboxChanged = {},
+        onCheckboxChanged = { _, _ -> },
+        onFailChanged = { _, _ -> },
+        onFilterUpdate = {},
+        onEndpointClicked = {}
     )
 }

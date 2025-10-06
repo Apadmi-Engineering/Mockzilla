@@ -27,10 +27,12 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.mockzilla_logo
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 import kotlin.String
@@ -120,4 +122,19 @@ fun MetaDataRow(
                 .align(Alignment.BottomCenter)
         )
     }
+}
+
+@Preview
+@Composable
+fun MetaDataListViewPreview() = PreviewSurface {
+    MetaDataListView(
+        metaData = MetaData(
+            appName = "App name",
+            appPackage = "app.package",
+            operatingSystemVersion = "OS",
+            deviceModel = "Model",
+            appVersion = "App version",
+            mockzillaVersion = "Mockzilla version"
+        )
+    )
 }
