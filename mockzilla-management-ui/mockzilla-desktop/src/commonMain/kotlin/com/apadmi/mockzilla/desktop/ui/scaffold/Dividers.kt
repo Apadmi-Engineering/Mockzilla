@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.ui.utils.horizontalResizeCursor
 import com.apadmi.mockzilla.desktop.ui.utils.verticalResizeCursor
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun HorizontalDraggableDivider(
@@ -52,4 +54,34 @@ internal fun VerticalDraggableDivider(
                 onDragStopped = { onDragStopped() },
             )
     )
+}
+
+@Preview
+@Composable
+private fun HorizontalDraggableDividerPreview() = PreviewSurface {
+    Box(
+        modifier = Modifier
+            .size(100.dp)
+            .padding(20.dp)
+    ) {
+        HorizontalDraggableDivider(
+            onDrag = {},
+            onDragStopped = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun VerticalDraggableDividerPreview() = PreviewSurface {
+    Box(
+        modifier = Modifier
+            .size(100.dp)
+            .padding(20.dp)
+    ) {
+        VerticalDraggableDivider(
+            onDrag = {},
+            onDragStopped = {}
+        )
+    }
 }

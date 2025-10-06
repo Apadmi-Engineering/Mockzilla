@@ -21,7 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.desktop.utils.rotateVertically
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Immutable
 data class VerticalTab(
@@ -132,4 +134,35 @@ private fun TabItem(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun VerticalTabListPreview() = PreviewSurface {
+    VerticalTabList(
+        tabs = listOf(
+            VerticalTab(title = "Tab 1"),
+            VerticalTab(title = "Tab 2"),
+            VerticalTab(title = "Tab 3"),
+            VerticalTab(title = "Tab 4")
+        ),
+        clockwise = false,
+        selected = listOf(),
+        onSelect = {}
+    )
+}
+
+@Preview
+@Composable
+private fun HorizontalTabListPreview() = PreviewSurface {
+    HorizontalTabList(
+        tabs = listOf(
+            HorizontalTab(title = "Tab 1"),
+            HorizontalTab(title = "Tab 2"),
+            HorizontalTab(title = "Tab 3"),
+            HorizontalTab(title = "Tab 4")
+        ),
+        selected = 0,
+        onSelect = {}
+    )
 }

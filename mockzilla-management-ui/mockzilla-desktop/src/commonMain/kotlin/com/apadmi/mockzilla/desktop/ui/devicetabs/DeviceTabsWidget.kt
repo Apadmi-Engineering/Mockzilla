@@ -19,10 +19,13 @@ import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.*
 
 import com.apadmi.mockzilla.desktop.ui.utils.desktopTertiaryPointerClick
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTabList
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import kotlin.collections.plus
 
@@ -108,4 +111,30 @@ fun DeviceTabsWidgetContent(
             },
         )
     }
+}
+
+@Preview
+@Composable
+private fun DeviceTabsWidgetPreview() = PreviewSurface {
+    DeviceTabsWidgetContent(
+        state = State(
+            devices = listOf(
+                State.DeviceTabEntry(
+                    name = "Device 1",
+                    isActive = true,
+                    isConnected = true,
+                    underlyingDevice = Device(ip = "", port = "")
+                ),
+                State.DeviceTabEntry(
+                    name = "Device 2",
+                    isActive = false,
+                    isConnected = false,
+                    underlyingDevice = Device(ip = "", port = "")
+                )
+            )
+        ),
+        onSelect = {},
+        onAddNewDevice = {},
+        onCloseTab = {}
+    )
 }

@@ -21,52 +21,87 @@ import com.apadmi.mockzilla.mobile.ui.deviceconnection.MobileDeviceConnectionVie
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-internal fun MobileDeviceConnectionWidget(
-    strings: Strings = LocalStrings.current
-) {
+internal fun MobileDeviceConnectionWidget() {
     val viewModel = getViewModel<MobileDeviceConnectionViewModel>()
     val state by viewModel.state.collectAsState()
 
-    return Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        when (state) {
-            State.Connecting -> CircularProgressIndicator(
-                modifier = Modifier.padding(end = 8.dp).size(20.dp)
+    MobileDeviceConnectionWidgetContent(
+        state = state,
+        onRetryClick = viewModel::attemptLocalConnection
+    )
+}
+
+@Composable
+private fun MobileDeviceConnectionWidgetContent(
+    state: State,
+    strings: Strings = LocalStrings.current,
+    onRetryClick: () -> Unit
+) = Column(
+    modifier = Modifier
+        .fillMaxSize()
+        .background(color = MaterialTheme.colorScheme.background),
+    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
+    horizontalAlignment = Alignment.CenterHorizontally
+) {
+    when (state) {
+        State.Connecting -> CircularProgressIndicator(
+            modifier = Modifier.padding(end = 8.dp).size(20.dp)
+        )
+
+        is State.Error -> {
+            Text(
+                text = strings.widgets.deviceConnection.errorTitle,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge
             )
 
-            is State.Error -> {
+            Button(onClick = onRetryClick) {
                 Text(
-                    text = strings.widgets.deviceConnection.errorTitle,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    text = strings.widgets.errorBanner.refreshButton,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.bodyLarge
-                )
-
-                Button(
-                    onClick = viewModel::attemptLocalConnection
-                ) {
-                    Text(
-                        text = strings.widgets.errorBanner.refreshButton,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-
-                Text(
-                    text = strings.widgets.deviceConnection.errorMessage,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
                 )
             }
 
-            State.Connected -> Text(strings.widgets.deviceConnection.connected)
+            Text(
+                text = strings.widgets.deviceConnection.errorMessage,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
+            )
         }
+
+        State.Connected -> Text(strings.widgets.deviceConnection.connected)
     }
+}
+
+@Preview
+@Composable
+private fun MobileConnectionWidgetConnectedPreview() = PreviewSurface {
+    MobileDeviceConnectionWidgetContent(
+        state = State.Connected,
+        onRetryClick = {}
+    )
+}
+
+@Preview
+@Composable
+private fun MobileConnectionWidgetConnectingPreview() = PreviewSurface {
+    MobileDeviceConnectionWidgetContent(
+        state = State.Connecting,
+        onRetryClick = {}
+    )
+}
+
+@Preview
+@Composable
+private fun MobileConnectionWidgetErrorPreview() = PreviewSurface {
+    MobileDeviceConnectionWidgetContent(
+        state = State.Error(""),
+        onRetryClick = {}
+    )
 }

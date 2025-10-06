@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.utils.mockzillaLogoResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun UnsupportedDeviceMockzillaVersionWidget() {
@@ -53,4 +55,10 @@ fun UnsupportedDeviceMockzillaVersionContent(
         style = MaterialTheme.typography.labelSmall,
         textAlign = TextAlign.Center
     )
+}
+
+@Preview
+@Composable
+private fun UnsupportedDeviceMockzillaVersionPreview() = PreviewSurface {
+    UnsupportedDeviceMockzillaVersionContent()
 }
