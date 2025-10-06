@@ -94,7 +94,8 @@ end
 def createSnapshotProp(is_snapshot, version)
     {
         "is_snapshot" => is_snapshot,
-        "version" => version
+        "version" => version,
+        "is_building_for_deployment" => true
     }
 end
 
@@ -104,6 +105,17 @@ private_lane :get_mobile_ui_version_name do |options|
     version = build_gradle_text.match(version_pattern)[1]
 
     options[:is_snapshot] ? "#{version}-SNAPSHOT" : version
+end
+
+desc "During deployment we don't use local packages, but for deployment we have to, so run tests against the deployed core binaries"
+lane :management_ui_pre_deploy_checks do |options|
+    gradle(
+        tasks: [
+            ":mockzilla-management-ui:mockzilla-management-ui-common:desktopTest",
+            ":mockzilla-management-ui:mockzilla-mobile-ui:testDebugUnitTest"
+        ],
+        properties: createSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options))
+    )
 end
 
 lane :management_ui_pull_request do

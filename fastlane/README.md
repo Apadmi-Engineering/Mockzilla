@@ -85,6 +85,14 @@ Publish to maven local
 
 Publish to maven remote
 
+### management_ui_pre_deploy_checks
+
+```sh
+[bundle exec] fastlane management_ui_pre_deploy_checks
+```
+
+During deployment we don't use local packages, but for deployment we have to, so run tests against the deployed core binaries
+
 ### management_ui_pull_request
 
 ```sh

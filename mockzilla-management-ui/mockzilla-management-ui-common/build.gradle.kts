@@ -4,6 +4,7 @@ import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.MobileUiConfig
 import com.apadmi.mockzilla.configureCommonProperties
 import com.apadmi.mockzilla.injectedVersion
+import com.apadmi.mockzilla.isMobileUiDeployBuild
 import com.apadmi.mockzilla.isSigningEnabled
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
@@ -66,9 +67,15 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             /* Mockzilla Management */
-            // These are overridden in the sample apps to use local dependencies for development
-            implementation("com.apadmi:mockzilla-management:${MobileUiConfig.coreVersionForManagementUi}")
-            implementation("com.apadmi:mockzilla-common:${MobileUiConfig.coreVersionForManagementUi}")
+            if (isMobileUiDeployBuild()) {
+                //noinspection UseTomlInstead
+                implementation("com.apadmi:mockzilla-common:${MobileUiConfig.coreVersionForManagementUi}")
+                //noinspection UseTomlInstead
+                implementation("com.apadmi:mockzilla-management:${MobileUiConfig.coreVersionForManagementUi}")
+            } else {
+                implementation(project(":mockzilla-common"))
+                implementation(project(":mockzilla-management"))
+            }
 
             /* Serialization */
             implementation(libs.kotlinx.serialization.json)
