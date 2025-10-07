@@ -82,6 +82,21 @@ val EnStrings = Strings(
             filterLabel = "Filter",
             filterClear = "Clear"
         ),
+        globalControls = Strings.Widgets.GlobalControls(
+            title = "Global Controls",
+            subtitle = "Apply to all endpoints",
+            resetAllLabel = "Reset All",
+            normalBehaviourTitle = "Normal API Behavior",
+            normalBehaviourSubtitle = "API will respond with configured presets",
+            forceFailureButtonLabel = "Force Failure",
+            forcedFailureTitle = "Forced API Failure Enabled",
+            forcedFailureSubtitle = "All API calls will return error responses regardless of your configured presets.",
+            restoreApiButtonLabel = "Restore API",
+            responseLatencyTitle = "Response Latency",
+            milliseconds = "ms",
+            zeroSeconds = "0s",
+            sixtySeconds = "60s"
+        ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",
             none = "No endpoint selected",

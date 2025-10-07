@@ -40,6 +40,7 @@ data class Strings(
      * @property miscControls
      * @property unsupportedMockzilla
      * @property errorBanner
+     * @property globalControls
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -49,6 +50,7 @@ data class Strings(
         val logDetails: LogDetails,
         val endpointDetails: EndpointDetails,
         val endpoints: Endpoints,
+        val globalControls: GlobalControls,
         val miscControls: MiscControls,
         val unsupportedMockzilla: UnsupportedMockzillaVersion,
         val errorBanner: ErrorBanner
@@ -212,6 +214,37 @@ data class Strings(
             val valuesOverriddenIndicatorTooltip: String,
             val filterLabel: String,
             val filterClear: String
+        )
+
+        /**
+         * @property title
+         * @property subtitle
+         * @property resetAllLabel
+         * @property normalBehaviourTitle
+         * @property normalBehaviourSubtitle
+         * @property forceFailureButtonLabel
+         * @property forcedFailureTitle
+         * @property forcedFailureSubtitle
+         * @property restoreApiButtonLabel
+         * @property responseLatencyTitle
+         * @property milliseconds
+         * @property zeroSeconds
+         * @property sixtySeconds
+         */
+        data class GlobalControls(
+            val title: String,
+            val subtitle: String,
+            val resetAllLabel: String,
+            val normalBehaviourTitle: String,
+            val normalBehaviourSubtitle: String,
+            val forceFailureButtonLabel: String,
+            val forcedFailureTitle: String,
+            val forcedFailureSubtitle: String,
+            val restoreApiButtonLabel: String,
+            val responseLatencyTitle: String,
+            val milliseconds: String,
+            val zeroSeconds: String,
+            val sixtySeconds: String
         )
 
         /**
