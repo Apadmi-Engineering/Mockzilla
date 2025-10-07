@@ -106,7 +106,8 @@ private fun middleWidgets(
     is AppRootViewModel.State.Connected -> Widget(id = "endpoints") {
         EndpointsWidget(
             state.activeDevice.device,
-            onEndpointClicked
+            onEndpointClicked,
+            {} // TODO: Wire this up
         )
     }
 

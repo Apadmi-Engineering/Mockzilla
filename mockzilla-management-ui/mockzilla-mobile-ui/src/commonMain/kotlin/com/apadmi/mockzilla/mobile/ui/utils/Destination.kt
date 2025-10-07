@@ -7,6 +7,9 @@ internal sealed class Destination {
     @Serializable
     internal data object EndpointList : Destination()
 
+    @Serializable
+    internal data object GlobalControls : Destination()
+
     /**
      * @property key
      */
