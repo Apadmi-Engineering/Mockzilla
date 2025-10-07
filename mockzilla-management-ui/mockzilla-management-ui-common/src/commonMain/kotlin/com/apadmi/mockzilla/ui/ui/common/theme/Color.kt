@@ -89,3 +89,6 @@ val theme_background_light = Color(0xFF404040)
 val theme_primary_foreground = Color(0xFFF2F2F2)
 val theme_secondary_foreground = Color(0xFFCCCCCC)
 val seed = Color(0xFFFF8E3D)
+
+val theme_white = Color(0xFFFFFFFF)
+val theme_turquoise = Color(0xFF4ECED8)
