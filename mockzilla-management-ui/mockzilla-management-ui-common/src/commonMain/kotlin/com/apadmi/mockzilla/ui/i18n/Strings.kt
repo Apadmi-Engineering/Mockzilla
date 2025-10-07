@@ -220,12 +220,8 @@ data class Strings(
          * @property title
          * @property subtitle
          * @property resetAllLabel
-         * @property normalBehaviourTitle
-         * @property normalBehaviourSubtitle
-         * @property forceFailureButtonLabel
-         * @property forcedFailureTitle
-         * @property forcedFailureSubtitle
-         * @property restoreApiButtonLabel
+         * @property normalBehaviourBannerConfig
+         * @property forcedFailureBannerConfig
          * @property responseLatencyTitle
          * @property milliseconds
          * @property zeroSeconds
@@ -235,17 +231,24 @@ data class Strings(
             val title: String,
             val subtitle: String,
             val resetAllLabel: String,
-            val normalBehaviourTitle: String,
-            val normalBehaviourSubtitle: String,
-            val forceFailureButtonLabel: String,
-            val forcedFailureTitle: String,
-            val forcedFailureSubtitle: String,
-            val restoreApiButtonLabel: String,
+            val normalBehaviourBannerConfig: GlobalConfigBanner,
+            val forcedFailureBannerConfig: GlobalConfigBanner,
             val responseLatencyTitle: String,
             val milliseconds: String,
             val zeroSeconds: String,
             val sixtySeconds: String
-        )
+        ) {
+            /**
+             * @property title
+             * @property subtitle
+             * @property buttonLabel
+             */
+            data class GlobalConfigBanner(
+                val title: String,
+                val subtitle: String,
+                val buttonLabel: String
+            )
+        }
 
         /**
          * @property none

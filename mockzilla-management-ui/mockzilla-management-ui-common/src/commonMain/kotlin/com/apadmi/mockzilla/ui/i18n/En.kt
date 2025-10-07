@@ -86,12 +86,16 @@ val EnStrings = Strings(
             title = "Global Controls",
             subtitle = "Apply to all endpoints",
             resetAllLabel = "Reset All",
-            normalBehaviourTitle = "Normal API Behavior",
-            normalBehaviourSubtitle = "API will respond with configured presets",
-            forceFailureButtonLabel = "Force Failure",
-            forcedFailureTitle = "Forced API Failure Enabled",
-            forcedFailureSubtitle = "All API calls will return error responses regardless of your configured presets.",
-            restoreApiButtonLabel = "Restore API",
+            normalBehaviourBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
+                title = "Normal API Behavior",
+                subtitle = "API will respond with configured presets.",
+                buttonLabel = "Force Failure"
+            ),
+            forcedFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
+                title = "Forced API Failure Enabled",
+                subtitle = "All API calls will return error responses regardless of your configured presets.",
+                buttonLabel = "Restore API"
+            ),
             responseLatencyTitle = "Response Latency",
             milliseconds = "ms",
             zeroSeconds = "0s",
