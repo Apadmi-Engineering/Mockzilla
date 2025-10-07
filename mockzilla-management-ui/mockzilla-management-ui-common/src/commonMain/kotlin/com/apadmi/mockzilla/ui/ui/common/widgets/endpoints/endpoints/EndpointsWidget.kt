@@ -88,7 +88,7 @@ private fun ColumnScope.EndpointsList(
                 .clickable { onEndpointClicked(endpoint.key) }
                 .alternatingBackground(index)
                 .padding(end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
                 checked = endpoint.isCheckboxTicked,
