@@ -1,0 +1,44 @@
+{% extends "base.html" %} {% block scripts %} {{ super() }}
+<script>
+	// Send theme updates to homepage iframe
+	function notifyIframeTheme() {
+		const iframe = document.querySelector('iframe[src*="homepage"]');
+		if (iframe && iframe.contentWindow) {
+			const scheme = document.body.getAttribute('data-md-color-scheme');
+			iframe.contentWindow.postMessage(
+				{
+					type: 'theme-change',
+					theme: scheme,
+				},
+				'*'
+			);
+		}
+	}
+
+	// Listen for theme toggle clicks
+	document.addEventListener('DOMContentLoaded', function () {
+		setTimeout(notifyIframeTheme, 100);
+
+		// Listen for palette changes
+		const observer = new MutationObserver(function (mutations) {
+			mutations.forEach(function (mutation) {
+				if (mutation.attributeName === 'data-md-color-scheme') {
+					notifyIframeTheme();
+				}
+			});
+		});
+
+		observer.observe(document.body, {
+			attributes: true,
+			attributeFilter: ['data-md-color-scheme'],
+		});
+
+		// Handle requests from iframe
+		window.addEventListener('message', function (event) {
+			if (event.data?.type === 'get-theme') {
+				notifyIframeTheme();
+			}
+		});
+	});
+</script>
+{% endblock %}

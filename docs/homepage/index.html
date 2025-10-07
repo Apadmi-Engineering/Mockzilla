@@ -1,15 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Mockzilla</title>
+		<style>
+			html {
+				background-color: #ffffff;
+			}
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Mockzilla</title>
-    </head>
+			@media (prefers-color-scheme: dark) {
+				html {
+					background-color: #0d0d0d;
+				}
+			}
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+			body {
+				margin: 0;
+				background-color: inherit;
+				transition: background-color 0.3s ease;
+			}
+
+			#root {
+				min-height: 100vh;
+				background-color: inherit;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="root"></div>
+		<script
+			type="module"
+			src="/src/main.tsx"></script>
+	</body>
+</html>
