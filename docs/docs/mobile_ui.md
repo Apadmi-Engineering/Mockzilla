@@ -1,9 +1,9 @@
-# Mockzilla Mobile Ui (alpha)
+# Mockzilla Mobile UI (alpha)
 
 !!! warning
     Warning: This plugin is still experimental and may contain bugs! The API is also subject to change
 
-Mockzilla provides embedded Ui into your App to control the server at runtime.
+Mockzilla provides an embedded UI for your App to control the server at runtime.
 
 ## Installation
 
@@ -40,7 +40,7 @@ Mockzilla provides embedded Ui into your App to control the server at runtime.
 
 If you've not configured the Mockzilla server yet, then do that first [here](../quick-start/)!
 
-### Launch The Embedded Ui
+### Launch The Embedded UI
 
 You can do this from a button click or any trigger in your app code.
 
@@ -63,4 +63,4 @@ You can do this from a button click or any trigger in your app code.
     MockzillaUiMobile.launchManagementUi();
     ```
 
-This will launch the Ui overlay allowing a user to configure the mocked endpoints.
+This will launch the UI overlay allowing a user to configure the mocked endpoints.
