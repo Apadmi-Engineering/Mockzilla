@@ -8,6 +8,17 @@ It allows manipulation of the mock data being returned by Mockzilla on your devi
     You **must** be using the same Wifi network on your device running Mockzilla and the device running
     the desktop app.
 
+## Preparation
+
+On iOS add the following to your Info.plist
+
+```xml
+<key>NSBonjourServices</key>
+<array>
+  <string>_mockzilla._tcp</string>
+</array>
+```
+
 ### (1): Connect your device
 
 Your device should be automatically discovered by Mockzilla (you may need to restart the app on your device).

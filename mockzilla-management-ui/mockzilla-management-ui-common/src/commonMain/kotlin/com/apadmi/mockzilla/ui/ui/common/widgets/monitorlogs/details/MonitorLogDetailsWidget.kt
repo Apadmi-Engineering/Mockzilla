@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,7 +36,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @Composable
@@ -85,7 +83,6 @@ fun MonitorLogDetailsContent(
     } ?: MonitorLogDetailsEmptyContent()
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalTime::class)
 @Composable
 fun LogDetailsContent(
     logDetail: LogEvent,

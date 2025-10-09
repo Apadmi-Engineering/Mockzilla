@@ -2,22 +2,28 @@
 
 package com.apadmi.mockzilla.mobile.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,7 +43,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDev
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MobileAppRoot(
     strings: Strings = LocalStrings.current,
@@ -51,27 +56,32 @@ internal fun MobileAppRoot(
         .size > 2
 
     Column {
-        TopAppBar(
-            title = { /* No title */ },
-            navigationIcon = {
-                if (showBackButton) {
-                    IconButton(onClick = navController::navigateUp) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = strings.common.backDescription
-                        )
-                    }
-                }
-            },
-            actions = {
-                IconButton(onClick = onClose) {
+        Row(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .statusBarsPadding()
+                .height(64.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (showBackButton) {
+                IconButton(onClick = navController::navigateUp) {
                     Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = strings.common.closeDescription
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = strings.common.backDescription
                     )
                 }
             }
-        )
+            Spacer(Modifier.weight(1f))
+
+            IconButton(onClick = onClose) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    contentDescription = strings.common.closeDescription
+                )
+            }
+        }
 
         when (val currentState = state) {
             is State.Connected -> ConnectedState(

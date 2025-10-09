@@ -22,6 +22,9 @@ plugins {
 
 val artifactName = "mockzilla-mobile-ui"
 
+// Kotlin changes `-` for `_` in framework names which breaks appstore uploads
+val xcFrameworkName = "mockzillamobileui"
+
 kotlin {
     // Managed automatically by release-please PRs
     version = project.injectedVersion() ?: "0.0.4" // x-release-please-version
@@ -34,12 +37,12 @@ kotlin {
         summary = "Embedded UI for configuring and controlling the Mockzilla server from within an app"
         homepage = "https://mockzilla.apadmi.dev/"
         framework {
-            baseName = artifactName
+            baseName = xcFrameworkName
         }
         license = "{:type => 'MIT', :file => 'LICENSE'}"
         // This is explicitly `getVersion()` and not `version`! The latter is shadowed in `cocoapods` scope.
         source = "{ :git => 'https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi.git', :tag => 'v${project.version}' }"
-        extraSpecAttributes["vendored_frameworks"] = "'mockzilla_mobile_ui.xcframework'"
+        extraSpecAttributes["vendored_frameworks"] = "'${xcFrameworkName}.xcframework'"
         extraSpecAttributes["source_files"] = "'Sources/SwiftMockzillaMobileUi/SwiftMockzillaMobileUi.swift'"
         extraSpecAttributes["swift_version"] = "'5.9.2'"
 
@@ -53,7 +56,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = artifactName
+            baseName = xcFrameworkName
             xcf.add(this)
         }
     }

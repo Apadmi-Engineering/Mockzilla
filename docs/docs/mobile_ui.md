@@ -48,13 +48,31 @@ You can do this from a button click or any trigger in your app code.
     ```kotlin
     import com.apadmi.mockzilla.mobile.ui.launchManagementUi
 
+    /// Android Target ///
     launchManagementUi(context /* Activity Context */)
+
+    /// iOS Target ///
+    launchManagementUi()
+
+    // Or 
+
+    // Handle the ViewController directly
+    createManagementUiViewController(onClose = { 
+        // Dismiss the ViewController
+    }
     ```
 === "Swift"
     ```swift
     import SwiftMockzillaMobileUi
 
     launchManagementUiSwift()
+
+    // Or
+
+    // Handle the ViewController directly
+    createManagementUiViewControllerSwift {
+      // Dismiss the ViewController
+    }
     ```
 === "Flutter"
     ```dart

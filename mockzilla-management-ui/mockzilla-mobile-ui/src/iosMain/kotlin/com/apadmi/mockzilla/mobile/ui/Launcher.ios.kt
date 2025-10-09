@@ -8,17 +8,21 @@ import org.koin.dsl.module
 import platform.UIKit.*
 
 fun launchManagementUi() {
+    val root = UIApplication.sharedApplication.keyWindow?.rootViewController
+        ?: throw IllegalStateException("No root ViewController found, cannot push Mockzilla UI.")
+    val vc = createManagementUiViewController {
+        root.dismissViewControllerAnimated(true, null)
+    }
+
+    root.presentViewController(vc, animated = true, completion = null)
+}
+
+fun createManagementUiViewController(onClose: () -> Unit): UIViewController {
     startMockzillaMobileUiKoin(module {
         single { FileIo() }
     })
 
-    val root = UIApplication.sharedApplication.keyWindow?.rootViewController
-        ?: throw IllegalStateException("No root ViewController found, cannot push mockzilla UI.")
-    val controller = ComposeUIViewController(configure = { enforceStrictPlistSanityCheck = false }) {
-        MobileAppRoot(onClose = {
-            root.dismissViewControllerAnimated(true) { }
-        })
+    return ComposeUIViewController(configure = { enforceStrictPlistSanityCheck = false }) {
+        MobileAppRoot(onClose = onClose)
     }
-
-    root.presentViewController(controller, animated = true, completion = null)
 }
