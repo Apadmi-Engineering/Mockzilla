@@ -26,6 +26,6 @@ The iOS implementation for the mockzilla mobile ui plugin.
    # Since this Flutter wrapper is so thin it's deployed along with each Kotlin update so
    # they share versions
   # x-release-please-start-version
-  s.dependency 'SwiftMockzillaMobileUi', '0.0.4'
+  s.dependency 'SwiftMockzillaMobileUi', '0.0.5'
   # x-release-please-end
 end

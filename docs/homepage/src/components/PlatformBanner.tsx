@@ -2,7 +2,7 @@ import {AndroidIcon, FlutterIcon, KotlinIcon, SwiftIcon} from "./ui/icons";
 
 export function PlatformBanner() {
   return (
-    <div id="platform-banner" className="bg-primary text-primary-foreground py-3 border-b">
+    <div id="platform-banner" className="bg-[#232323] text-white py-3 border-b border-[#232323]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-center space-x-8">
 

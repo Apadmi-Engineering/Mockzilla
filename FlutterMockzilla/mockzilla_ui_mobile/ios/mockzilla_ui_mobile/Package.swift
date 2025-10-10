@@ -17,7 +17,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "mockzilla_ui_mobile",
+            name: "mockzillauimobile",
             dependencies: ["SwiftMockzillaMobileUi"],
             resources: []
         )

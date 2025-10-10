@@ -445,7 +445,7 @@ packages:
       path: "../../mockzilla_ui_mobile"
       relative: true
     source: path
-    version: "0.0.4"
+    version: "0.0.5"
   package_config:
     dependency: transitive
     description:

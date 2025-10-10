@@ -1,45 +1,18 @@
-{% extends "base.html" %}
-
-{% block header %}
-    <!-- TODO: Remove this and support dark mode on the homepage -->
-    {{ super() }}
-    <style>
-    [data-md-component="palette"] {
-        display: none;
-        margin: 400px;
-    }
-
-    .md-header__button {
-        display: none !important;
-    }
-    </style>
-
-{% endblock %}
-
-{% block styles %}
-{{ super() }}
+{% extends "main.html" %} {% block header %} {{ super() }} {% endblock %} {% block styles %} {{ super() }}
 <style>
-.md-main__inner {
-    display: none;
-}
-.md-main {
-    display: none;
-}
+	.md-main__inner {
+		display: none;
+	}
+	.md-main {
+		display: none;
+	}
 
-iframe {
-    flex: 1;
-    margin: 0;
-    border: none;
-}
+	iframe {
+		flex: 1;
+		margin: 0;
+		border: none;
+	}
 </style>
-{% endblock %}
-
-{% block footer %}
-{% endblock %}
-
-{% block tabs %}
-
-{% block content %}
+{% endblock %} {% block footer %} {% endblock %} {% block tabs %} {% block content %}
 <iframe src="homepage/index.html"></iframe>
-{% endblock %}
-{% endblock %}
+{% endblock %} {% endblock %}

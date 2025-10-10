@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.5](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.4...flutter_mockzilla_ui_mobile-v0.0.5) (2025-09-30)
+
+### Bug Fixes
+
+* Rename underlying XCFramework name to support AppStore distribution
+
 ## [0.0.4](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.3...flutter_mockzilla_ui_mobile-v0.0.4) (2025-09-30)
 
 ### Bug Fixes

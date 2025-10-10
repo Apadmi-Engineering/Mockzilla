@@ -2,10 +2,10 @@
 
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,14 +20,12 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -106,7 +104,6 @@ fun EndpointDetailsWidget(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun EndpointDetailsWidgetContent(
     state: EndpointDetailsViewModel.State,
@@ -223,7 +220,6 @@ private fun EndpointDetailsWidgetPreview() = PreviewSurface {
     EndpointDetailsWidgetPreviewContent()
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun EndpointDetailsResponseBody(
     modifier: Modifier = Modifier,
@@ -243,23 +239,24 @@ private fun EndpointDetailsResponseBody(
     Spacer(Modifier.height(4.dp))
     var pickingStatusCode by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
-        expanded = pickingStatusCode,
-        onExpandedChange = { pickingStatusCode = it },
+    Box(
         modifier = Modifier.padding(horizontal = 8.dp),
     ) {
-        TextField(
-            value = statusCode
-                ?.let { strings.widgets.endpointDetails.statusCodeLabel(it) }
-                ?: strings.widgets.endpointDetails.noOverrideStatusCode,
-            // TODO: Work out how to also let user type in custom status number
-            onValueChange = {},
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
-            readOnly = true,
-            singleLine = true,
-            label = { Text(text = strings.widgets.endpointDetails.statusCode) },
-        )
-        ExposedDropdownMenu(
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                .clickable(onClick = {
+                    pickingStatusCode = !pickingStatusCode
+                })
+        ) {
+            // TODO: Let user type in custom status number
+            // Temp before proper refactor
+            Text(text = strings.widgets.endpointDetails.statusCode)
+            Text(
+                text = statusCode
+                    ?.let { strings.widgets.endpointDetails.statusCodeLabel(it) }
+                    ?: strings.widgets.endpointDetails.noOverrideStatusCode)
+        }
+        DropdownMenu(
             expanded = pickingStatusCode,
             onDismissRequest = { pickingStatusCode = false },
         ) {
@@ -484,7 +481,6 @@ private fun Settings(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun HeadersEditor(
     headers: List<Pair<String, String>>?,

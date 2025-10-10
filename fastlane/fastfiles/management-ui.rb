@@ -9,7 +9,7 @@ platform :ios do
         )
 
         # Copy the Podspec to where the publish lane can find it
-        sh("cp -rf #{lane_context[:repo_root]}/mockzilla-management-ui/mockzilla-mobile-ui/build/cocoapods/publish/release/mockzilla_mobile_ui.xcframework #{lane_context[:repo_root]}/SwiftMockzillaMobileUi")
+        sh("cp -rf #{lane_context[:repo_root]}/mockzilla-management-ui/mockzilla-mobile-ui/build/cocoapods/publish/release/mockzillamobileui.xcframework #{lane_context[:repo_root]}/SwiftMockzillaMobileUi")
         sh("cp -rf #{lane_context[:repo_root]}/mockzilla-management-ui/mockzilla-mobile-ui/build/cocoapods/publish/release/SwiftMockzillaMobileUi.podspec #{lane_context[:repo_root]}/SwiftMockzillaMobileUi")
 
         # Remove the resources line from Podspec since it causes it to fail validation (and it's not used)
@@ -41,7 +41,7 @@ platform :ios do
             cp -r #{lane_context[:repo_root]}/SwiftMockzillaMobileUi/ .;
 
             git add .;
-            git add --force mockzilla_mobile_ui.xcframework;
+            git add --force mockzillamobileui.xcframework;
             git add --force SwiftMockzillaMobileUi.podspec;
             git commit -m "Updating Package #{get_mobile_ui_version_name(options)}";
             git push;

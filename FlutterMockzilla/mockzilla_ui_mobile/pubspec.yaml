@@ -1,7 +1,7 @@
 name: mockzilla_ui_mobile
 description: "Embedded UI for controlling the mockzilla server at runtime"
 # x-release-please-start-version
-version: 0.0.4
+version: 0.0.5
 # x-release-please-end
 homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla

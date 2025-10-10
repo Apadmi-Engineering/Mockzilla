@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.5](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.4...flutter_mockzilla_ui_mobile-v0.0.5) (2025-09-30)
+
+### Features
+
+* Provide a mechanism to access the management Ui VC to allow the caller to present it the way they want
+
+### Bug Fixes
+
+* Rename underlying XCFramework name to support AppStore distribution
+* Strip out Experimental Compose Apis to boost compatibility
+
 ## 0.0.4 (2025-09-30)
 
 ### Bug Fixes

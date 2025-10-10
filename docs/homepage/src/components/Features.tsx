@@ -10,7 +10,7 @@ const features = [
   {
     icon: Shuffle,
     title: "Client Agnostic",
-    description: "Independent of your app's code, so use any Http client!"
+    description: "Independent of your app's code, so use any HTTP client!"
   },
   {
     icon: ShieldCheck,

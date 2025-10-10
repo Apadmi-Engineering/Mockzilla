@@ -65,7 +65,7 @@ Hello world
 
 ## Compile-time Safety
 
-This relies on a simple concept: **Use the same set of model classes for deserialization and for your mocks!**.
+This relies on a simple concept: **Use the same set of model classes for deserialization and for your mocks!**
 
 Example:
 
