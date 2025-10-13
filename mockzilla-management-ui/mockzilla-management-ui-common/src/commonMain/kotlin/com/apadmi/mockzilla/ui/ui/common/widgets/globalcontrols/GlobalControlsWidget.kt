@@ -65,9 +65,7 @@ fun GlobalControlsWidget(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(12.dp),
+        Modifier.padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         val isNormalApiBehaviour = false  // TODO: Use VM to determine this
@@ -89,9 +87,14 @@ private fun GlobalConfigBanner(
     strings: Strings.Widgets.GlobalControls.GlobalConfigBanner,
     isNormalApiBehavior: Boolean
 ) {
-    val borderColor = if (isNormalApiBehavior) Color(0xFF_B9_F8_CF) else MaterialTheme.colorScheme.error
-    val backgroundColor = if (isNormalApiBehavior) Color(0xFF_F0_FF_F5) else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)
-    val bannerIcon = if (isNormalApiBehavior) Res.drawable.circle_check else Res.drawable.lightning_bolt
+    val borderColor =
+        if (isNormalApiBehavior) Color(0xFF_B9_F8_CF) else MaterialTheme.colorScheme.error
+    val backgroundColor =
+        if (isNormalApiBehavior) Color(0xFF_F0_FF_F5) else MaterialTheme.colorScheme.errorContainer.copy(
+            alpha = 0.1f
+        )
+    val bannerIcon =
+        if (isNormalApiBehavior) Res.drawable.circle_check else Res.drawable.lightning_bolt
 
     Column(
         modifier = Modifier

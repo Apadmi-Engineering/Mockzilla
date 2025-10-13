@@ -35,7 +35,7 @@ fun CustomOutlineButton(
     modifier = modifier,
     onClick = onClick,
     shape = RoundedCornerShape(8.dp),
-    border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primaryContainer),
+    border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
     contentPadding = contentPadding
 ) {
     leadingIcon?.let { icon ->

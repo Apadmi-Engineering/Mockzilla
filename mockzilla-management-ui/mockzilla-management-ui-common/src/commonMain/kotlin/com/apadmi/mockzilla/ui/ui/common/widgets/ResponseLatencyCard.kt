@@ -40,7 +40,13 @@ import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.clock
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+
+// Arbitrary max just to stop overflow
+private fun Long.clamped() = min(max(0, this), 1.days.inWholeMilliseconds)
 
 @Composable
 internal fun ResponseLatencyCard(
@@ -79,26 +85,26 @@ internal fun ResponseLatencyCard(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             SquareIconButton(onClick = {
-                value -= 100
+                value = (value - 100).clamped()
             }) {
                 Icon(imageVector = Icons.Default.Remove, contentDescription = "Minus")
             }
             Spacer(Modifier.size(12.dp))
             CustomTextField(
                 value = value.toString(),
-                onValueChange = { value = it.toLongOrNull() ?: 0 },
+                onValueChange = { value = it.toLongOrNull()?.clamped() ?: 0 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 suffix = {
                     Text(strings.widgets.latency.millisecondLabel)
                 })
             Spacer(Modifier.size(12.dp))
             SquareIconButton(onClick = {
-                value += 100
+                value = (value + 100).clamped()
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Plus")
             }
         }
-        Spacer(Modifier.height(4.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(modifier = Modifier.padding(8.dp), text = strings.widgets.latency.sliderMin)
             Slider(
