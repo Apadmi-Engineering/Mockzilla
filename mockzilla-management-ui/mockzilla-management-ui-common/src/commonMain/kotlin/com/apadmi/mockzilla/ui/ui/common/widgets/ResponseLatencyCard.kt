@@ -36,6 +36,7 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.utils.debounced
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.clock
 import org.jetbrains.compose.resources.painterResource
@@ -51,10 +52,17 @@ private fun Long.clamped() = min(max(0, this), 1.days.inWholeMilliseconds)
 @Composable
 internal fun ResponseLatencyCard(
     initialValue: Long,
+    onChange: (Long) -> Unit,
     strings: Strings = LocalStrings.current
 ) {
     var value by remember { mutableStateOf(initialValue) }
-
+    val debouncer = debounced(onChange)
+    val updateValue = remember {
+        { it: Long ->
+            value = it.clamped()
+            debouncer(it.clamped())
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,21 +93,21 @@ internal fun ResponseLatencyCard(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             SquareIconButton(onClick = {
-                value = (value - 100).clamped()
+                updateValue(value - 100)
             }) {
                 Icon(imageVector = Icons.Default.Remove, contentDescription = "Minus")
             }
             Spacer(Modifier.size(12.dp))
             CustomTextField(
                 value = value.toString(),
-                onValueChange = { value = it.toLongOrNull()?.clamped() ?: 0 },
+                onValueChange = { updateValue(it.toLongOrNull() ?: 0) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 suffix = {
                     Text(strings.widgets.latency.millisecondLabel)
                 })
             Spacer(Modifier.size(12.dp))
             SquareIconButton(onClick = {
-                value = (value + 100).clamped()
+                updateValue(value + 100)
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Plus")
             }
@@ -137,5 +145,5 @@ private fun SquareIconButton(
 @Preview
 @Composable
 private fun ResponseLatencyCardPreview() = PreviewSurface {
-    ResponseLatencyCard(150)
+    ResponseLatencyCard(150, {})
 }

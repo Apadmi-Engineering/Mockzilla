@@ -154,7 +154,9 @@ private fun ConnectedState(
     // (they already are in Android compose but not in KMP)
     composable<Destination.GlobalControls> {
         Surface {
-            GlobalControlsWidget()
+            GlobalControlsWidget(
+                device = currentState.activeDevice.device,
+            )
         }
     }
     composable<Destination.DebugColors> {

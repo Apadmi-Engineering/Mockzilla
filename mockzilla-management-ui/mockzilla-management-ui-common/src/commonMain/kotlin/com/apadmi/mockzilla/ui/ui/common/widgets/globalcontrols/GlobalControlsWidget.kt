@@ -21,24 +21,43 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.widgets.ResponseLatencyCard
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.circle_check
 import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
 import com.apadmi.mockzilla_management_ui_common.generated.resources.play
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-// TODO: Migrate to using colours from ColorScheme
-// TODO: Text styling
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun GlobalControlsWidget(
+fun GlobalControlsWidget(device: Device) {
+    val viewModel = getViewModel<GlobalControlsViewModel>(key = device.toString()) {
+        parametersOf(device)
+    }
+
+    GlobalControlsWidgetContent(
+        onResetClicked = viewModel::resetAll,
+        onRestoreApiClicked = viewModel::restoreApi,
+        onForceFailureClicked = viewModel::forceFailure,
+        onLatencyChanged = viewModel::updateLatency
+    )
+}
+
+@Composable
+fun GlobalControlsWidgetContent(
+    onResetClicked: () -> Unit,
+    onRestoreApiClicked: () -> Unit,
+    onForceFailureClicked: () -> Unit,
+    onLatencyChanged: (Long) -> Unit,
     strings: Strings = LocalStrings.current
 ) = Column(
     modifier = Modifier.fillMaxSize()
@@ -60,7 +79,7 @@ fun GlobalControlsWidget(
         CustomOutlineButton(
             label = strings.widgets.globalControls.resetAllLabel,
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-            onClick = {}  // TODO: Add button click
+            onClick = onResetClicked
         )
     }
 
@@ -77,7 +96,11 @@ fun GlobalControlsWidget(
             },
             isNormalApiBehavior = isNormalApiBehaviour
         )
-        ResponseLatencyCard(strings = strings, initialValue = 150)
+        ResponseLatencyCard(
+            strings = strings,
+            onChange = onLatencyChanged,
+            initialValue = 150,
+        )
     }
 }
 
@@ -153,5 +176,10 @@ private fun GlobalConfigBanner(
 @Preview
 @Composable
 private fun GlobalControlsWidgetPreview() = PreviewSurface {
-    GlobalControlsWidget()
+    GlobalControlsWidgetContent(
+        onResetClicked = {},
+        onRestoreApiClicked = {},
+        onForceFailureClicked = {},
+        onLatencyChanged = {}
+    )
 }
