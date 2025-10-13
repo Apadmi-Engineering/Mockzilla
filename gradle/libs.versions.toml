@@ -5,7 +5,7 @@ adam = "0.5.10" # https://github.com/Malinskiy/adam
 jmdns = "3.6.2" # https://github.com/jmdns/jmdns
 kotlin = "2.2.20" # https://github.com/JetBrains/kotlin
 agp = "8.13.0" # https://developer.android.com/build/releases/gradle-plugin
-ksp = "2.2.20-2.0.3" # https://github.com/google/ksp
+ksp = "2.2.20-2.0.4" # https://github.com/google/ksp
 
 # Logging
 kermit = "2.0.8" # https://github.com/touchlab/Kermit
@@ -20,7 +20,7 @@ dokka = "2.0.0" # https://github.com/Kotlin/dokka
 lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "3.3.0" # https://github.com/ktorio/ktor
+ktor = "3.3.1" # https://github.com/ktorio/ktor
 
 # Compose
 # using beta to fix https://slack-chats.kotlinlang.org/t/29844860/hello-everyone-in-my-team-we-are-having-a-big-problem-with-t
