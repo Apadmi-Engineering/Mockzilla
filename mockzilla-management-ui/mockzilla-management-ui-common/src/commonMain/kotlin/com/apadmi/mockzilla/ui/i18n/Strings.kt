@@ -53,7 +53,8 @@ data class Strings(
         val globalControls: GlobalControls,
         val miscControls: MiscControls,
         val unsupportedMockzilla: UnsupportedMockzillaVersion,
-        val errorBanner: ErrorBanner
+        val errorBanner: ErrorBanner,
+        val latency: Latency
     ) {
         /**
          * @property connectionLost
@@ -233,10 +234,6 @@ data class Strings(
             val resetAllLabel: String,
             val normalBehaviourBannerConfig: GlobalConfigBanner,
             val forcedFailureBannerConfig: GlobalConfigBanner,
-            val responseLatencyTitle: String,
-            val milliseconds: String,
-            val zeroSeconds: String,
-            val sixtySeconds: String
         ) {
             /**
              * @property title
@@ -249,6 +246,13 @@ data class Strings(
                 val buttonLabel: String
             )
         }
+
+        data class Latency(
+            val title: String,
+            val millisecondLabel: String,
+            val sliderMin: String,
+            val sliderMax: String
+        )
 
         /**
          * @property none

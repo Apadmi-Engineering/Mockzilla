@@ -74,7 +74,7 @@ internal fun ResponseLatencyCard(
                 painter = painterResource(resource = Res.drawable.clock),
                 contentDescription = null
             )
-            Text(text = strings.widgets.globalControls.responseLatencyTitle)
+            Text(text = strings.widgets.latency.title)
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -89,7 +89,7 @@ internal fun ResponseLatencyCard(
                 onValueChange = { value = it.toLongOrNull() ?: 0 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 suffix = {
-                    Text("ms")
+                    Text(strings.widgets.latency.millisecondLabel)
                 })
             Spacer(Modifier.size(12.dp))
             SquareIconButton(onClick = {
@@ -100,7 +100,7 @@ internal fun ResponseLatencyCard(
         }
         Spacer(Modifier.height(4.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(modifier = Modifier.padding(8.dp), text = "0s")
+            Text(modifier = Modifier.padding(8.dp), text = strings.widgets.latency.sliderMin)
             Slider(
                 value.toFloat(),
                 valueRange = 0f..60.seconds.inWholeMilliseconds.toFloat(),
@@ -109,7 +109,7 @@ internal fun ResponseLatencyCard(
                     value = it.toLong()
                 }
             )
-            Text(modifier = Modifier.padding(8.dp), text = "60s")
+            Text(modifier = Modifier.padding(8.dp), text = strings.widgets.latency.sliderMax)
         }
     }
 }

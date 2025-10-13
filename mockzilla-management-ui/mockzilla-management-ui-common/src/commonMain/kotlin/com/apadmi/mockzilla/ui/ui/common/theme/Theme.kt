@@ -18,6 +18,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 
 import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.widgets.DebugColorsWidget
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val lightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -38,7 +41,6 @@ private val lightColors = lightColorScheme(
     onErrorContainer = md_theme_light_onErrorContainer,
     background = md_theme_light_background,
     onBackground = md_theme_light_onBackground,
-    // Temporary solution to make surfaces a little darker than the backgrounds
     surface = md_theme_light_surface,
     surfaceContainer = md_theme_light_surface_container,
     onSurface = md_theme_light_onSurface,
@@ -72,8 +74,7 @@ private val darkColors = darkColorScheme(
     onErrorContainer = md_theme_dark_onErrorContainer,
     background = md_theme_dark_background,
     onBackground = md_theme_dark_onBackground,
-    // Temporary solution to make surfaces a little darker than the backgrounds
-    surface = md_theme_dark_primary.copy(alpha = 0.05F).compositeOver(md_theme_dark_surface),
+    surface = md_theme_dark_surface,
     onSurface = md_theme_dark_onSurface,
     surfaceVariant = md_theme_dark_surfaceVariant,
     onSurfaceVariant = md_theme_dark_onSurfaceVariant,
@@ -104,7 +105,7 @@ fun AppTheme(
     useDarkTheme: Boolean = LocalForceDarkMode.current || isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (useDarkTheme) {
+    val colors = if (true) {
         darkColors
     } else {
         lightColors
@@ -129,3 +130,4 @@ fun ScaledDensity(scaleFactor: Float, content: @Composable () -> Unit) {
     )
     CompositionLocalProvider(LocalDensity provides scaledDensity, content = content)
 }
+

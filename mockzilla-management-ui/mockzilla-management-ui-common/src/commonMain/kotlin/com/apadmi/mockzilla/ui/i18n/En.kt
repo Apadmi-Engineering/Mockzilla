@@ -96,10 +96,12 @@ val EnStrings = Strings(
                 subtitle = "All API calls will return error responses regardless of your configured presets.",
                 buttonLabel = "Restore API"
             ),
-            responseLatencyTitle = "Response Latency",
-            milliseconds = "ms",
-            zeroSeconds = "0s",
-            sixtySeconds = "60s"
+        ),
+        latency = Strings.Widgets.Latency(
+            title = "Response Latency",
+            sliderMin = "0s",
+            sliderMax = "60s",
+            millisecondLabel = "ms",
         ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",

@@ -83,8 +83,3 @@ fun DebugColorsWidget() = Column(Modifier.fillMaxHeight()) {
     }
 }
 
-@Preview
-@Composable
-fun DebugColorsWidgetPreview() = PreviewSurface {
-    DebugColorsWidget()
-}

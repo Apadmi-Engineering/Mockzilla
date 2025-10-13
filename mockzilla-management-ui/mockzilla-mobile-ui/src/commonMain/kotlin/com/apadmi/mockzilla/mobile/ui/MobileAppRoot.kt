@@ -64,15 +64,14 @@ internal fun MobileAppRoot(
         Row(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
-                .statusBarsPadding()
-                .height(64.dp),
+                .statusBarsPadding(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (showBackButton) {
                 IconButton(onClick = navController::navigateUp) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        tint = MaterialTheme.colorScheme.onBackground,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         contentDescription = strings.common.backDescription
                     )
                 }
@@ -84,7 +83,7 @@ internal fun MobileAppRoot(
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Article,
-                        tint = MaterialTheme.colorScheme.onBackground,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         contentDescription = strings.common.backDescription
                     )
                 }
@@ -95,7 +94,7 @@ internal fun MobileAppRoot(
             IconButton(onClick = onClose) {
                 Icon(
                     imageVector = Icons.Filled.Close,
-                    tint = MaterialTheme.colorScheme.onBackground,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     contentDescription = strings.common.closeDescription
                 )
             }

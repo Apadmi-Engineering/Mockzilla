@@ -10,7 +10,11 @@
 
 package com.apadmi.mockzilla.ui.ui.common.theme
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.widgets.DebugColorsWidget
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // Seed color is #4ECED8
 val md_theme_light_primary = Color(0xFF00696F)
@@ -45,13 +49,13 @@ val md_theme_light_surfaceTint = Color(0xFFDAF0F2)
 val md_theme_light_outlineVariant = Color(0xFFD7C2B8)
 val md_theme_light_scrim = Color(0xFF000000)
 
-val md_theme_dark_primary = Color(0xFF4ECED8)
-val md_theme_dark_onPrimary = Color(0xFF512300)
-val md_theme_dark_primaryContainer = Color(0xFF743500)
-val md_theme_dark_onPrimaryContainer = Color(0xFFFFDBC8)
-val md_theme_dark_secondary = Color(0xFFE5BFA9)
+val md_theme_dark_primary = md_theme_light_primary
+val md_theme_dark_onPrimary = md_theme_light_onPrimary
+val md_theme_dark_primaryContainer = Color(0xFF286B70)
+val md_theme_dark_onPrimaryContainer = Color(0xFFE5E2E1)
+val md_theme_dark_secondary = Color(0xFFA5E1E6)
 val md_theme_dark_onSecondary = Color(0xFF432B1C)
-val md_theme_dark_secondaryContainer = Color(0xFF5C4130)
+val md_theme_dark_secondaryContainer = Color(0xFF454E4F)
 val md_theme_dark_onSecondaryContainer = Color(0xFFFFDBC8)
 val md_theme_dark_tertiary = Color(0xFFCBC992)
 val md_theme_dark_onTertiary = Color(0xFF323209)
@@ -88,3 +92,8 @@ val theme_success = Color(0xFF4ED887)
 val theme_warning = Color(0xFFCCD84E)
 val theme_background_dark = Color(0xFF0D0D0D)
 
+@Preview
+@Composable
+fun DebugColorsWidgetPreview() = PreviewSurface {
+    DebugColorsWidget()
+}
