@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,10 +25,10 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
+import com.apadmi.mockzilla.ui.ui.common.widgets.ResponseLatencyCard
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.circle_check
-import com.apadmi.mockzilla_management_ui_common.generated.resources.clock
 import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
 import com.apadmi.mockzilla_management_ui_common.generated.resources.play
 import org.jetbrains.compose.resources.painterResource
@@ -38,13 +41,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun GlobalControlsWidget(
     strings: Strings = LocalStrings.current
 ) = Column(
-    modifier = Modifier.fillMaxWidth(),
+    modifier = Modifier.fillMaxSize()
+        .background(color = MaterialTheme.colorScheme.background)
+        .verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.spacedBy(12.dp)
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color(0xFF_FF_FF_FF))
+            .background(color = MaterialTheme.colorScheme.surface)
             .padding(vertical = 20.dp, horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -52,9 +57,8 @@ fun GlobalControlsWidget(
             Text(text = strings.widgets.globalControls.title)
             Text(text = strings.widgets.globalControls.subtitle)
         }
-        OutlineButton(
+        CustomOutlineButton(
             label = strings.widgets.globalControls.resetAllLabel,
-            outlineColor = Color(0xFF_4E_CE_D8),
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
             onClick = {}  // TODO: Add button click
         )
@@ -62,7 +66,7 @@ fun GlobalControlsWidget(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -75,7 +79,7 @@ fun GlobalControlsWidget(
             },
             isNormalApiBehavior = isNormalApiBehaviour
         )
-        ResponseLatencyCard(strings = strings)
+        ResponseLatencyCard(strings = strings, initialValue = 150)
     }
 }
 
@@ -122,12 +126,10 @@ private fun GlobalConfigBanner(
         }
 
         if (isNormalApiBehavior) {
-            OutlineButton(
+            CustomOutlineButton(
                 modifier = Modifier.align(Alignment.End),
                 label = strings.buttonLabel,
                 leadingIcon = painterResource(resource = Res.drawable.lightning_bolt),
-                outlineColor = Color(0xFF_FF_A2_A2),
-                contentColor = Color(0xFF_E7_00_0B),
                 contentPadding = PaddingValues(12.dp),
                 onClick = {}  // TODO: Add button click
             )
@@ -143,44 +145,6 @@ private fun GlobalConfigBanner(
             )
         }
     }
-}
-
-@Composable
-private fun ResponseLatencyCard(
-    strings: Strings
-) = Column(
-    modifier = Modifier
-        .fillMaxWidth()
-        .background(
-            color = Color(0xFF_FF_FF_FF),
-            shape = RoundedCornerShape(12.dp)
-        )
-        .border(
-            width = 1.dp,
-            color = Color(0xFF_00_00_00).copy(alpha = 0.1f),
-            shape = RoundedCornerShape(12.dp)
-        )
-        .padding(12.dp),
-    verticalArrangement = Arrangement.spacedBy(12.dp)
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // TODO: Add tint
-        Icon(
-            modifier = Modifier.size(20.dp),
-            painter = painterResource(resource = Res.drawable.clock),
-            contentDescription = null
-        )
-        Text(text = strings.widgets.globalControls.responseLatencyTitle)
-    }
-
-    // TODO: Add slider component
-    Text(text = "Seconds Slider")
-
-    // TODO: Add milliseconds slider component
-    Text(text = "Milliseconds Slider")
 }
 
 @Preview

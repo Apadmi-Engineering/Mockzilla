@@ -152,6 +152,10 @@ android {
         sourceCompatibility = JavaConfig.version
         targetCompatibility = JavaConfig.version
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 configurations.all {

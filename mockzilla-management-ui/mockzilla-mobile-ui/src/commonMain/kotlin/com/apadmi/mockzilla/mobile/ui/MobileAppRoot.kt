@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -40,10 +41,12 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
+import com.apadmi.mockzilla.ui.ui.common.widgets.DebugColorsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsWidget
+import com.apadmi.mockzilla.ui.utils.DebugUtils
 
 @Composable
 internal fun MobileAppRoot(
@@ -60,7 +63,7 @@ internal fun MobileAppRoot(
     Column {
         Row(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .statusBarsPadding()
                 .height(64.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -74,6 +77,19 @@ internal fun MobileAppRoot(
                     )
                 }
             }
+
+            if (DebugUtils.isDebug) {
+                IconButton(onClick = {
+                    navController.navigate(Destination.DebugColors)
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Article,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = strings.common.backDescription
+                    )
+                }
+            }
+
             Spacer(Modifier.weight(1f))
 
             IconButton(onClick = onClose) {
@@ -97,12 +113,12 @@ internal fun MobileAppRoot(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ConnectedState(
     navController: NavHostController,
     currentState: State.Connected
 ) = NavHost(
+    modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
     navController = navController,
     startDestination = Destination.EndpointList
 ) {
@@ -135,13 +151,16 @@ private fun ConnectedState(
         }
     }
 
+    // TODO: Replace this with a bottom sheet once they're out of Experimental status
+    // (they already are in Android compose but not in KMP)
     composable<Destination.GlobalControls> {
-        ModalBottomSheet(
-            onDismissRequest = navController::navigateUp,
-            shape = RoundedCornerShape(16.dp),
-            dragHandle = { /* Hide drag handle */ }
-        ) {
+        Surface {
             GlobalControlsWidget()
+        }
+    }
+    composable<Destination.DebugColors> {
+        Surface {
+            DebugColorsWidget()
         }
     }
 }

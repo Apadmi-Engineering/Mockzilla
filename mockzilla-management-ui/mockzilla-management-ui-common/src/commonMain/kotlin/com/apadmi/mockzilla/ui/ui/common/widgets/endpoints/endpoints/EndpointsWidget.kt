@@ -39,8 +39,6 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
 import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
-import com.apadmi.mockzilla.ui.ui.common.theme.theme_turquoise
-import com.apadmi.mockzilla.ui.ui.common.theme.theme_white
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import org.koin.core.parameter.parametersOf
@@ -120,8 +118,6 @@ private fun ColumnScope.EndpointsList(
             .align(Alignment.End)
             .padding(end = 8.dp),
         onClick = onGlobalControlsClicked,
-        containerColor = theme_turquoise,
-        contentColor = theme_white
     ) {
         Icon(
             imageVector = Icons.Filled.Settings,
