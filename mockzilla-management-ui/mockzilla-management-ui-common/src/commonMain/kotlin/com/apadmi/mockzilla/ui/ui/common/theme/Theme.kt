@@ -1,9 +1,10 @@
-@file:Suppress("MAGIC_NUMBER")
+@file:Suppress("MAGIC_NUMBER", "FILE_NAME_MATCH_CLASS")
 
 package com.apadmi.mockzilla.ui.ui.common.theme
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -11,11 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 
 import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
+import com.apadmi.mockzilla.ui.utils.Platform
 
 private val lightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -36,8 +38,8 @@ private val lightColors = lightColorScheme(
     onErrorContainer = md_theme_light_onErrorContainer,
     background = md_theme_light_background,
     onBackground = md_theme_light_onBackground,
-    // Temporary solution to make surfaces a little darker than the backgrounds
-    surface = md_theme_light_primary.copy(alpha = 0.05F).compositeOver(md_theme_light_surface),
+    surface = md_theme_light_surface,
+    surfaceContainer = md_theme_light_surface_container,
     onSurface = md_theme_light_onSurface,
     surfaceVariant = md_theme_light_surfaceVariant,
     onSurfaceVariant = md_theme_light_onSurfaceVariant,
@@ -69,8 +71,7 @@ private val darkColors = darkColorScheme(
     onErrorContainer = md_theme_dark_onErrorContainer,
     background = md_theme_dark_background,
     onBackground = md_theme_dark_onBackground,
-    // Temporary solution to make surfaces a little darker than the backgrounds
-    surface = md_theme_dark_primary.copy(alpha = 0.05F).compositeOver(md_theme_dark_surface),
+    surface = md_theme_dark_surface,
     onSurface = md_theme_dark_onSurface,
     surfaceVariant = md_theme_dark_surfaceVariant,
     onSurfaceVariant = md_theme_dark_onSurfaceVariant,
@@ -83,8 +84,41 @@ private val darkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
+@get:Composable
+val ColorScheme.success get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
+    true -> StateColors(
+        primary = Color(0xFF_00_E6_5F),
+        container = Color(0xFF_00_82_36).copy(alpha = 0.1f),
+    )
+    false -> StateColors(
+        primary = Color(0xFF_00_82_36),
+        container = Color(0xFF_00_82_36).copy(alpha = 0.1f),
+    )
+}
+
+@get:Composable
+val ColorScheme.partialFailure get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
+    true -> StateColors(
+        primary = Color(0xFF_F0_90_00),
+        container = Color(0xFF_D1_65_00).copy(alpha = 0.1f),
+    )
+    false -> StateColors(
+        primary = Color(0xFF_D1_65_00),
+        container = Color(0xFF_D1_65_00).copy(alpha = 0.1f),
+    )
+}
+
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalForceDarkMode = compositionLocalOf { false }
+
+/**
+ * @property primary
+ * @property container
+ */
+data class StateColors(
+    val primary: Color,
+    val container: Color
+)
 
 @Composable
 fun Modifier.alternatingBackground(index: Int) = background(
@@ -107,7 +141,7 @@ fun AppTheme(
     }
 
     ProvideLocalisableStrings {
-        ScaledDensity(scaleFactor = 0.9f) {
+        ScaledDensity(scaleFactor = if (Platform.current == Platform.Desktop) 0.9f else 1f) {
             MaterialTheme(
                 colorScheme = colors,
                 content = content

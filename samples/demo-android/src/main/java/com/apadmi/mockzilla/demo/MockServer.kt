@@ -9,6 +9,14 @@ import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.lib.startMockzilla
 import kotlinx.serialization.json.Json
 
+private val getMySheep = EndpointConfiguration
+    .Builder("sheep")
+    .setPatternMatcher { uri.endsWith("sheep") }
+    .configureDashboardOverrides {
+        addSuccessPreset(MockzillaHttpResponse(body = "sheep preset"))
+    }
+    .setDefaultHandler { MockzillaHttpResponse(body = "sheep") }
+
 private val getMyCow = EndpointConfiguration
     .Builder("cow")
     .setPatternMatcher { uri.endsWith("cow") }
@@ -48,6 +56,7 @@ private val getMyCow = EndpointConfiguration
 fun startMockServer(context: Context, isRelease: Boolean) = startMockzilla(
     MockzillaConfig.Builder()
         .addEndpoint(getMyCow)
+        .addEndpoint(getMySheep)
         .setLogLevel(MockzillaConfig.LogLevel.Verbose)
         .setIsReleaseModeEnabled(isRelease)
         .build(), context

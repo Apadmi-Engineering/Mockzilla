@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.ui.ui.common.components.buttons
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,7 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,6 +20,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_accent
+import com.apadmi.mockzilla.ui.ui.common.theme.theme_background_dark
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_success
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
@@ -30,13 +29,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun OutlineButton(
+fun SolidButton(
     modifier: Modifier = Modifier,
     label: String,
     leadingIcon: Painter? = null,
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
-    outlineColor: Color,
-    contentColor: Color = MaterialTheme.colorScheme.onBackground,
+    backgroundColor: Color,
+    contentColor: Color,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     onClick: () -> Unit
 ) = Button(
@@ -49,7 +47,6 @@ fun OutlineButton(
         disabledContentColor = backgroundColor,
         disabledContainerColor = contentColor
     ),
-    border = BorderStroke(width = 1.dp, color = outlineColor),
     contentPadding = contentPadding
 ) {
     leadingIcon?.let { icon ->
@@ -65,21 +62,21 @@ fun OutlineButton(
 
 @Preview
 @Composable
-private fun OutlineButtonPreview() = PreviewSurface {
+private fun SolidButtonPreview() = PreviewSurface {
     Column(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        OutlineButton(
+        SolidButton(
             label = "Click me",
-            outlineColor = theme_success,
+            backgroundColor = theme_warning,
             contentColor = theme_success,
             onClick = {}
         )
-        OutlineButton(
+        SolidButton(
             label = "Click me",
             leadingIcon = painterResource(resource = Res.drawable.lightning_bolt),
-            outlineColor = theme_warning,
+            backgroundColor = theme_background_dark,
             contentColor = theme_accent,
             onClick = {}
         )

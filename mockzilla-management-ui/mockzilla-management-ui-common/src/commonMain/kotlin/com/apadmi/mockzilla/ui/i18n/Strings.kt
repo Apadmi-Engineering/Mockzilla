@@ -41,6 +41,7 @@ data class Strings(
      * @property unsupportedMockzilla
      * @property errorBanner
      * @property globalControls
+     * @property latency
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -53,7 +54,8 @@ data class Strings(
         val globalControls: GlobalControls,
         val miscControls: MiscControls,
         val unsupportedMockzilla: UnsupportedMockzillaVersion,
-        val errorBanner: ErrorBanner
+        val errorBanner: ErrorBanner,
+        val latency: Latency
     ) {
         /**
          * @property connectionLost
@@ -222,10 +224,9 @@ data class Strings(
          * @property resetAllLabel
          * @property normalBehaviourBannerConfig
          * @property forcedFailureBannerConfig
-         * @property responseLatencyTitle
-         * @property milliseconds
-         * @property zeroSeconds
-         * @property sixtySeconds
+         * @property partialFailureBannerConfig
+         * @property failButtonLabel
+         * @property restoreButtonLabel
          */
         data class GlobalControls(
             val title: String,
@@ -233,22 +234,32 @@ data class Strings(
             val resetAllLabel: String,
             val normalBehaviourBannerConfig: GlobalConfigBanner,
             val forcedFailureBannerConfig: GlobalConfigBanner,
-            val responseLatencyTitle: String,
-            val milliseconds: String,
-            val zeroSeconds: String,
-            val sixtySeconds: String
+            val partialFailureBannerConfig: GlobalConfigBanner,
+            val failButtonLabel: String,
+            val restoreButtonLabel: String,
         ) {
             /**
              * @property title
              * @property subtitle
-             * @property buttonLabel
              */
             data class GlobalConfigBanner(
                 val title: String,
                 val subtitle: String,
-                val buttonLabel: String
             )
         }
+
+        /**
+         * @property title
+         * @property millisecondLabel
+         * @property sliderMin
+         * @property sliderMax
+         */
+        data class Latency(
+            val title: String,
+            val millisecondLabel: String,
+            val sliderMin: String,
+            val sliderMax: String
+        )
 
         /**
          * @property none
