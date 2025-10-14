@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +43,7 @@ import com.apadmi.mockzilla.ui.ui.common.utils.debounced
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.clock
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.max
 import kotlin.math.min
@@ -57,6 +59,7 @@ private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
 internal fun ResponseLatencyCard(
     initialValue: Int?,
     onChange: (Int) -> Unit,
+    onReset: () -> Unit,
     strings: Strings = LocalStrings.current
 ) {
     var value by remember(initialValue) { mutableStateOf(initialValue) }
@@ -78,7 +81,7 @@ internal fun ResponseLatencyCard(
                 color = MaterialTheme.colorScheme.outline,
                 shape = RoundedCornerShape(12.dp)
             )
-            .padding(12.dp),
+            .padding(start = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Row(
@@ -95,9 +98,24 @@ internal fun ResponseLatencyCard(
                 text = strings.widgets.latency.title,
                 style = MaterialTheme.typography.titleMedium
             )
+            Spacer(Modifier.weight(1f))
+            IconButton(
+                onClick = onReset,
+                enabled = value != null
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    imageVector = Icons.Default.Restore,
+                    contentDescription = null
+                )
+
+            }
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.padding(end = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             SquareIconButton(
                 enabled = value != null && value != 0,
                 onClick = {
@@ -129,7 +147,10 @@ internal fun ResponseLatencyCard(
             }
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.padding(end = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(modifier = Modifier.padding(8.dp), text = strings.widgets.latency.sliderMin)
             Slider(
                 value?.toFloat() ?: 0f,
@@ -138,9 +159,11 @@ internal fun ResponseLatencyCard(
                 onValueChange = { updateValue(it.toInt()) }
             )
             Box {
-                Text(modifier = Modifier
-                    .alpha(if ((value ?: 0) > sliderMax) 0f else 1f)
-                    .padding(8.dp), text = strings.widgets.latency.sliderMax)
+                Text(
+                    modifier = Modifier
+                        .alpha(if ((value ?: 0) > sliderMax) 0f else 1f)
+                        .padding(8.dp), text = strings.widgets.latency.sliderMax
+                )
                 Icon(
                     modifier = Modifier
                         .size(20.dp)
@@ -151,6 +174,7 @@ internal fun ResponseLatencyCard(
                 )
             }
         }
+        Spacer(modifier = Modifier.size(4.dp))
     }
 }
 
@@ -173,5 +197,5 @@ private fun SquareIconButton(
 @Preview
 @Composable
 private fun ResponseLatencyCardPreview() = PreviewSurface {
-    ResponseLatencyCard(150, {})
+    ResponseLatencyCard(150, {}, {})
 }

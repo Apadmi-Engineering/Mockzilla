@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols
 
+import androidx.lifecycle.viewModelScope
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
@@ -44,7 +45,8 @@ internal class GlobalControlsViewModel(
                         endpoints.all { it.shouldFail == true } -> State.ApiFailureState.FullFailure
                         endpoints.none { it.shouldFail == true } -> State.ApiFailureState.Normal
                         else -> State.ApiFailureState.PartialFailure
-                    }
+                    },
+                    isLoading = false
                 )
             },
             onFailure = {
@@ -55,18 +57,21 @@ internal class GlobalControlsViewModel(
     }
 
     fun resetAll() = viewModelScope.launch {
+        setStateLoading()
         clearingService.clearAllCaches(device).onSuccess {
             eventBus.send(EventBus.Event.FullRefresh)
         }
     }
 
     fun restoreApi() = viewModelScope.launch {
+        setStateLoading()
         getAllKeys().map { keys ->
             updateService.setShouldFail(device, keys, false).handleResult(keys)
         }
     }
 
     fun forceFailure() = viewModelScope.launch {
+        setStateLoading()
         getAllKeys().map { keys ->
             updateService.setShouldFail(device, keys, true).handleResult(keys)
         }
@@ -81,7 +86,13 @@ internal class GlobalControlsViewModel(
         eventBus.send(EventBus.Event.GenericError)
     }
 
+    private fun setStateLoading() {
+        val current = state.value as? State.Idle ?: return
+        state.value = current.copy(isLoading = true)
+    }
+
     fun updateLatency(latencyMs: Int) {
+        setStateLoading()
         suspend fun update(): Result<Unit> = getAllKeys().map { keys ->
             updateService.setDelay(device, keys, latencyMs).handleResult(keys)
         }
@@ -89,11 +100,19 @@ internal class GlobalControlsViewModel(
         latencyDebounceJob = withDebounce(latencyDebounceJob, ::update)
     }
 
+    fun resetLatency() = viewModelScope.launch {
+        setStateLoading()
+        getAllKeys().map { keys ->
+            updateService.setDelay(device, keys, null).handleResult(keys)
+        }
+    }
+
     sealed class State {
         data object Loading : State()
         data class Idle(
             val initialLatencyMs: Int?,
-            val apiFailureState: ApiFailureState
+            val apiFailureState: ApiFailureState,
+            val isLoading: Boolean
         ) : State()
 
         enum class ApiFailureState {

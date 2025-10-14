@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,14 +28,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
@@ -55,14 +59,22 @@ fun GlobalControlsWidget(device: Device) {
     val viewModel = getViewModel<GlobalControlsViewModel>(key = device.toString()) {
         parametersOf(device)
     }
+    val focusManager = LocalFocusManager.current
     val state by viewModel.state.collectAsState()
 
     GlobalControlsWidgetContent(
         state = state,
-        onResetClicked = viewModel::resetAll,
+        onResetClicked = {
+            focusManager.clearFocus()
+            viewModel.resetAll()
+        },
         onRestoreApiClicked = viewModel::restoreApi,
         onForceFailureClicked = viewModel::forceFailure,
-        onLatencyChanged = viewModel::updateLatency
+        onLatencyChanged = viewModel::updateLatency,
+        onResetLatency = {
+            focusManager.clearFocus()
+            viewModel.resetLatency()
+        }
     )
 }
 
@@ -73,13 +85,15 @@ internal fun GlobalControlsWidgetContent(
     onRestoreApiClicked: () -> Unit,
     onForceFailureClicked: () -> Unit,
     onLatencyChanged: (Int) -> Unit,
+    onResetLatency: () -> Unit,
 ) = when (state) {
     is State.Idle -> GlobalControlsWidgetIdleContent(
         state,
         onResetClicked = onResetClicked,
         onRestoreApiClicked = onRestoreApiClicked,
         onForceFailureClicked = onForceFailureClicked,
-        onLatencyChanged = onLatencyChanged
+        onLatencyChanged = onLatencyChanged,
+        onResetLatency = onResetLatency
     )
 
     State.Loading -> Box(
@@ -99,11 +113,11 @@ internal fun GlobalControlsWidgetIdleContent(
     onRestoreApiClicked: () -> Unit,
     onForceFailureClicked: () -> Unit,
     onLatencyChanged: (Int) -> Unit,
+    onResetLatency: () -> Unit,
 ) = Column(
     modifier = Modifier.fillMaxSize()
         .background(color = MaterialTheme.colorScheme.background)
         .verticalScroll(rememberScrollState()),
-    verticalArrangement = Arrangement.spacedBy(12.dp)
 ) {
     Row(
         modifier = Modifier
@@ -129,6 +143,13 @@ internal fun GlobalControlsWidgetIdleContent(
         )
     }
 
+    Box(Modifier.height(12.dp).fillMaxWidth().clipToBounds()) {
+        TogglableProgressIndicator(
+            modifier = Modifier.fillMaxWidth(),
+            isLoading = state.isLoading
+        )
+    }
+
     Column(
         Modifier.padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -141,6 +162,7 @@ internal fun GlobalControlsWidgetIdleContent(
         ResponseLatencyCard(
             strings = strings,
             onChange = onLatencyChanged,
+            onReset = onResetLatency,
             initialValue = state.initialLatencyMs,
         )
     }
@@ -172,6 +194,7 @@ private fun GlobalFailureConfigBanner(
         State.ApiFailureState.PartialFailure -> MaterialTheme.colorScheme.partialFailure.container.copy(
             alpha = 0.1f
         )
+
         State.ApiFailureState.Normal -> borderAndTextColor.copy(alpha = 0.1f)
     }
 
@@ -290,10 +313,11 @@ private fun GlobalFailureConfigBannerPreview() {
 @Composable
 private fun GlobalControlsWidgetPreview() = PreviewSurface {
     GlobalControlsWidgetContent(
-        State.Idle(10, State.ApiFailureState.FullFailure),
+        State.Idle(10, isLoading = false, apiFailureState = State.ApiFailureState.FullFailure),
         onResetClicked = {},
         onRestoreApiClicked = {},
         onForceFailureClicked = {},
-        onLatencyChanged = {}
+        onLatencyChanged = {},
+        onResetLatency = {}
     )
 }
