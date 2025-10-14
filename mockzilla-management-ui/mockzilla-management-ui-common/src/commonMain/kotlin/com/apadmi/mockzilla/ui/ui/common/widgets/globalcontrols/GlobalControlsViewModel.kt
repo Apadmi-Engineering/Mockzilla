@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols
 
-import androidx.lifecycle.viewModelScope
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
@@ -92,9 +91,11 @@ internal class GlobalControlsViewModel(
     }
 
     fun updateLatency(latencyMs: Int) {
-        setStateLoading()
-        suspend fun update(): Result<Unit> = getAllKeys().map { keys ->
-            updateService.setDelay(device, keys, latencyMs).handleResult(keys)
+        suspend fun update(): Result<Unit> {
+            setStateLoading()
+            return getAllKeys().map { keys ->
+                updateService.setDelay(device, keys, latencyMs).handleResult(keys)
+            }
         }
 
         latencyDebounceJob = withDebounce(latencyDebounceJob, ::update)

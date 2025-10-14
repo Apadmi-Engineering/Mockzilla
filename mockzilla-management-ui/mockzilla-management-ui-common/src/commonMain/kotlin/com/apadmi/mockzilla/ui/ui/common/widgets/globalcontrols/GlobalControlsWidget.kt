@@ -146,7 +146,8 @@ internal fun GlobalControlsWidgetIdleContent(
     Box(Modifier.height(12.dp).fillMaxWidth().clipToBounds()) {
         TogglableProgressIndicator(
             modifier = Modifier.fillMaxWidth(),
-            isLoading = state.isLoading
+            isLoading = state.isLoading,
+            trackColor = Color.Transparent
         )
     }
 
@@ -178,7 +179,7 @@ private fun GlobalFailureConfigBanner(
 ) {
     val titleAndSubtitle = when (state) {
         State.ApiFailureState.FullFailure -> strings.widgets.globalControls.forcedFailureBannerConfig
-        State.ApiFailureState.PartialFailure -> strings.widgets.globalControls.forcedFailureBannerConfig
+        State.ApiFailureState.PartialFailure -> strings.widgets.globalControls.partialFailureBannerConfig
         State.ApiFailureState.Normal -> strings.widgets.globalControls.normalBehaviourBannerConfig
     }
     val borderAndTextColor = when (state) {
