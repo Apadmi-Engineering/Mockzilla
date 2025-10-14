@@ -11,16 +11,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,6 +38,8 @@ import androidx.compose.ui.unit.sp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.State.*
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning_background
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -86,7 +93,7 @@ fun ErrorBanner(
     onRefreshAll: () -> Unit,
     onDismissError: () -> Unit,
 ) = Box(
-    modifier = Modifier.fillMaxWidth(),
+    modifier = Modifier.fillMaxWidth().statusBarsPadding(),
     contentAlignment = Alignment.CenterEnd,
 ) {
     Row(
@@ -113,38 +120,42 @@ fun ErrorBanner(
         )
 
         Text(
+            modifier = Modifier.weight(1f),
             text = state.bannerText(strings),
-            style = MaterialTheme.typography.bodyMedium.copy(lineHeight = 0.sp),
+            style = MaterialTheme.typography.bodyMedium,
             color = onColor
         )
 
         if (state == Connected.ErrorBannerState.UnknownError) {
-            Button(onClick = onRefreshAll, contentPadding = PaddingValues(0.dp)) {
-                Text(
-                    strings.widgets.errorBanner.refreshButton,
-                    style = MaterialTheme.typography.bodySmall
+            CustomOutlineButton(
+                onClick = onRefreshAll,
+                label = strings.widgets.errorBanner.refreshButton,
+                colors = ButtonDefaults.outlinedButtonColors().copy(
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
-            }
+            )
         }
     }
 }
 
 @Preview
 @Composable
-private fun ConnectionLostBannerPreview() = PreviewSurface {
-    ErrorBanner(
-        state = Connected.ErrorBannerState.ConnectionLost,
-        onRefreshAll = {},
-        onDismissError = {}
-    )
+private fun BannerPreview(useDark: Boolean = false) = PreviewSurface(useDark) {
+    Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        ErrorBanner(
+            state = Connected.ErrorBannerState.ConnectionLost,
+            onRefreshAll = {},
+            onDismissError = {}
+        )
+
+        ErrorBanner(
+            state = Connected.ErrorBannerState.UnknownError,
+            onRefreshAll = {},
+            onDismissError = {}
+        )
+    }
 }
 
 @Preview
 @Composable
-private fun UnknownErrorBannerPreview() = PreviewSurface {
-    ErrorBanner(
-        state = Connected.ErrorBannerState.UnknownError,
-        onRefreshAll = {},
-        onDismissError = {}
-    )
-}
+private fun DarkBannerPreview() = BannerPreview(useDark = true)

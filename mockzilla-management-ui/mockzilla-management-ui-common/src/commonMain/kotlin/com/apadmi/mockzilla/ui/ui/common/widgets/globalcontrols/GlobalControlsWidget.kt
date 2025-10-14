@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
@@ -35,6 +37,8 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.partialFailure
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.ResponseLatencyCard
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.*
@@ -129,7 +133,11 @@ internal fun GlobalControlsWidgetIdleContent(
         Modifier.padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        GlobalFailureConfigBanner(state.apiFailureState)
+        GlobalFailureConfigBanner(
+            state.apiFailureState,
+            onRestoreApiClicked = onRestoreApiClicked,
+            onForceFailureClicked = onForceFailureClicked
+        )
         ResponseLatencyCard(
             strings = strings,
             onChange = onLatencyChanged,
@@ -142,6 +150,8 @@ internal fun GlobalControlsWidgetIdleContent(
 @Composable
 private fun GlobalFailureConfigBanner(
     state: State.ApiFailureState,
+    onRestoreApiClicked: () -> Unit,
+    onForceFailureClicked: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
     val titleAndSubtitle = when (state) {
@@ -149,18 +159,20 @@ private fun GlobalFailureConfigBanner(
         State.ApiFailureState.PartialFailure -> strings.widgets.globalControls.forcedFailureBannerConfig
         State.ApiFailureState.Normal -> strings.widgets.globalControls.normalBehaviourBannerConfig
     }
-    val borderColor = when (state) {
+    val borderAndTextColor = when (state) {
         State.ApiFailureState.FullFailure -> MaterialTheme.colorScheme.error
-        State.ApiFailureState.PartialFailure -> Color(0xFFFF9900)
+        State.ApiFailureState.PartialFailure -> MaterialTheme.colorScheme.partialFailure.primary
         State.ApiFailureState.Normal -> MaterialTheme.colorScheme.success.primary
     }
-    val backgroundColor = when (state) {
+    val backgroundColorOverlay = when (state) {
         State.ApiFailureState.FullFailure -> MaterialTheme.colorScheme.errorContainer.copy(
             alpha = 0.1f
         )
 
-        State.ApiFailureState.PartialFailure -> borderColor.copy(alpha = 0.1f)
-        State.ApiFailureState.Normal -> borderColor.copy(alpha = 0.1f)
+        State.ApiFailureState.PartialFailure -> MaterialTheme.colorScheme.partialFailure.container.copy(
+            alpha = 0.1f
+        )
+        State.ApiFailureState.Normal -> borderAndTextColor.copy(alpha = 0.1f)
     }
 
     val bannerIcon = when (state) {
@@ -174,15 +186,17 @@ private fun GlobalFailureConfigBanner(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = backgroundColor,
+                color = backgroundColorOverlay.compositeOver(
+                    MaterialTheme.colorScheme.surface
+                ),
                 shape = RoundedCornerShape(12.dp)
             )
             .border(
                 width = 1.dp,
-                color = borderColor,
+                color = borderAndTextColor,
                 shape = RoundedCornerShape(12.dp)
             )
-            .padding(12.dp),
+            .padding(top = 20.dp, bottom = 12.dp, start = 16.dp, end = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Row(
@@ -194,23 +208,23 @@ private fun GlobalFailureConfigBanner(
                 modifier = Modifier.size(20.dp),
                 painter = painterResource(resource = bannerIcon),
                 contentDescription = null,
-                tint = borderColor
+                tint = borderAndTextColor
             )
             Column {
                 Text(
-                    color = borderColor,
+                    color = borderAndTextColor,
                     text = titleAndSubtitle.title,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    color = borderColor,
+                    color = borderAndTextColor,
                     text = titleAndSubtitle.subtitle,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
 
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(2.dp))
 
         Row(
             modifier = Modifier.align(Alignment.End),
@@ -223,10 +237,12 @@ private fun GlobalFailureConfigBanner(
                     borderColor = MaterialTheme.colorScheme.error,
                     colors = ButtonDefaults.outlinedButtonColors().copy(
                         contentColor = MaterialTheme.colorScheme.error,
+                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.05f)
+                            .compositeOver(MaterialTheme.colorScheme.surface)
                     ),
                     leadingIcon = painterResource(resource = Res.drawable.lightning_bolt),
                     contentPadding = PaddingValues(12.dp),
-                    onClick = {}  // TODO: Add button click
+                    onClick = onForceFailureClicked
                 )
             }
 
@@ -236,9 +252,9 @@ private fun GlobalFailureConfigBanner(
                     label = strings.widgets.globalControls.restoreButtonLabel,
                     leadingIcon = painterResource(resource = Res.drawable.play),
                     backgroundColor = Color(0xFF_00_A6_3E),
-                    contentColor = Color(0xFF_FF_FF_FF),
-                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
-                    onClick = {}  // TODO: Add button click
+                    contentColor = Color.White,
+                    contentPadding = PaddingValues(12.dp),
+                    onClick = onRestoreApiClicked
                 )
             }
         }
@@ -248,14 +264,26 @@ private fun GlobalFailureConfigBanner(
 @Preview
 @Composable
 private fun GlobalControlsWidgetBannersPreview() = PreviewSurface {
+    GlobalFailureConfigBannerPreview()
+}
+
+
+@Preview
+@Composable
+private fun GlobalControlsWidgetBannersDarkPreview() = PreviewSurface(darkTheme = true) {
+    GlobalFailureConfigBannerPreview()
+}
+
+@Composable
+private fun GlobalFailureConfigBannerPreview() {
     Column(
+        modifier = Modifier.padding(8.dp).background(MaterialTheme.colorScheme.surface),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         State.ApiFailureState.entries.forEach {
-            GlobalFailureConfigBanner(it)
+            GlobalFailureConfigBanner(it, {}, {})
         }
     }
-
 }
 
 @Preview

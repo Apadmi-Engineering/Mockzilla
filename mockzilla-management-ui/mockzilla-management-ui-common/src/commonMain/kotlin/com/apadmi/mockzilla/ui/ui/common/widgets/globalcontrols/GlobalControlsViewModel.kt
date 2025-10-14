@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols
 
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
@@ -59,34 +60,41 @@ internal class GlobalControlsViewModel(
         }
     }
 
-    fun restoreApi() {
-
+    fun restoreApi() = viewModelScope.launch {
+        getAllKeys().map { keys ->
+            updateService.setShouldFail(device, keys, false).handleResult(keys)
+        }
     }
 
-    fun forceFailure() {
+    fun forceFailure() = viewModelScope.launch {
+        getAllKeys().map { keys ->
+            updateService.setShouldFail(device, keys, true).handleResult(keys)
+        }
+    }
 
+    private suspend fun getAllKeys() = endpointsService.fetchAllEndpointConfigs(device)
+        .map { endpoints -> endpoints.map { it.key } }
+
+    private fun Result<Unit>.handleResult(keys: List<EndpointConfiguration.Key>) = onSuccess {
+        eventBus.send(EventBus.Event.EndpointDataChanged(keys))
+    }.onFailure {
+        eventBus.send(EventBus.Event.GenericError)
     }
 
     fun updateLatency(latencyMs: Int) {
-        suspend fun update(): Result<Unit> =
-            endpointsService.fetchAllEndpointConfigs(device).map { endpoints ->
-                val keys = endpoints.map { it.key }
-                return updateService.setDelay(device, keys, latencyMs).onSuccess {
-                    eventBus.send(EventBus.Event.EndpointDataChanged(keys))
-                }.onFailure {
-                    eventBus.send(EventBus.Event.GenericError)
-                }
-            }
+        suspend fun update(): Result<Unit> = getAllKeys().map { keys ->
+            updateService.setDelay(device, keys, latencyMs).handleResult(keys)
+        }
 
         latencyDebounceJob = withDebounce(latencyDebounceJob, ::update)
     }
 
     sealed class State {
-        data object Loading: State()
+        data object Loading : State()
         data class Idle(
             val initialLatencyMs: Int?,
             val apiFailureState: ApiFailureState
-        ): State()
+        ) : State()
 
         enum class ApiFailureState {
             FullFailure,

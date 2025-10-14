@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 
@@ -11,6 +12,8 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 fun PreviewSurface(
     darkTheme: Boolean = LocalForceDarkMode.current || isSystemInDarkTheme(),
     content: @Composable () -> Unit
-) = AppTheme(useDarkTheme = darkTheme) {
-    Surface(color = MaterialTheme.colorScheme.surface, content = content)
+) = CompositionLocalProvider(LocalForceDarkMode provides darkTheme) {
+    AppTheme {
+        Surface(color = MaterialTheme.colorScheme.surface, content = content)
+    }
 }

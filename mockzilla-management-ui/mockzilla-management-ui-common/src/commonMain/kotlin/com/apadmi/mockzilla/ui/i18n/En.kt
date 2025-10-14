@@ -90,7 +90,7 @@ val EnStrings = Strings(
             restoreButtonLabel = "Restore API",
             normalBehaviourBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
                 title = "Normal API Behavior",
-                subtitle = "API will respond with configured presets.",
+                subtitle = "API will respond as normal. (Error presets will still return their errors)",
             ),
             partialFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
                 title = "Partial Failure Enabled",

@@ -84,15 +84,36 @@ private val darkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
-data class SuccessColors(
+data class StateColors(
     val primary: Color,
     val container: Color
 )
 
-val ColorScheme.success get() = SuccessColors(
-    primary = Color(0xFF008236),
-    container = Color(0xFF008236),
-)
+@get:Composable
+val ColorScheme.success get() = when(LocalForceDarkMode.current || isSystemInDarkTheme()) {
+    true -> StateColors(
+        primary = Color(0xFF00E65F),
+        container = Color(0xFF008236),
+    )
+    false -> StateColors(
+        primary = Color(0xFF008236),
+        container = Color(0xFF008236),
+    )
+}
+
+@get:Composable
+val ColorScheme.partialFailure get() = when(LocalForceDarkMode.current || isSystemInDarkTheme()) {
+    true -> StateColors(
+        primary = Color(0xFFF09000),
+        container = Color(0xFFD16500),
+    )
+    false -> StateColors(
+        primary = Color(0xFFD16500),
+        container = Color(0xFFD16500),
+    )
+}
+
+
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalForceDarkMode = compositionLocalOf { false }

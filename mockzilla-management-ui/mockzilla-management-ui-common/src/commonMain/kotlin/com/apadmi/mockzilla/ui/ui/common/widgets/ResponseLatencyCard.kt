@@ -113,7 +113,11 @@ internal fun ResponseLatencyCard(
                 onValueChange = { updateValue(it.toIntOrNull() ?: 0) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 suffix = {
-                    Text(strings.widgets.latency.millisecondLabel)
+                    if (value != null) {
+                        Text(strings.widgets.latency.millisecondLabel)
+                    } else {
+                        Box(Modifier)
+                    }
                 })
             Spacer(Modifier.size(12.dp))
             SquareIconButton(
