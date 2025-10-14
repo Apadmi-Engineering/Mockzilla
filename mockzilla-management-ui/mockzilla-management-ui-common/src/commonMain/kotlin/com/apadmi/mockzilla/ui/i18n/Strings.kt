@@ -234,6 +234,9 @@ data class Strings(
             val resetAllLabel: String,
             val normalBehaviourBannerConfig: GlobalConfigBanner,
             val forcedFailureBannerConfig: GlobalConfigBanner,
+            val partialFailureBannerConfig: GlobalConfigBanner,
+            val failButtonLabel: String,
+            val restoreButtonLabel: String,
         ) {
             /**
              * @property title
@@ -243,7 +246,6 @@ data class Strings(
             data class GlobalConfigBanner(
                 val title: String,
                 val subtitle: String,
-                val buttonLabel: String
             )
         }
 

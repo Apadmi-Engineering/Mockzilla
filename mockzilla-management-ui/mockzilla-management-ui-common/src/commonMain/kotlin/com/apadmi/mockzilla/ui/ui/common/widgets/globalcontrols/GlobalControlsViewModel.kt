@@ -3,9 +3,10 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
-import com.apadmi.mockzilla.ui.utils.launchUnit
+import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
@@ -21,6 +22,7 @@ internal class GlobalControlsViewModel(
     scope: CoroutineScope? = null,
 ) : ViewModel(scope) {
     val state = MutableStateFlow<State>(State.Loading)
+    var latencyDebounceJob: Job? = null
 
     init {
         eventBus.events.filter { it is EventBus.Event.EndpointDataChanged || it is EventBus.Event.FullRefresh }
@@ -34,8 +36,14 @@ internal class GlobalControlsViewModel(
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
             onSuccess = { endpoints ->
                 State.Idle(
-                    latencyMs = 10, // TODO: LATENCY NOT OVERRIDEN STATE
-                    isForceFailureEnabled = endpoints.all { it.shouldFail == true }
+                    initialLatencyMs = endpoints.firstOrNull()?.delayMs?.takeIf {
+                        endpoints.all { it.delayMs == endpoints.firstOrNull()?.delayMs }
+                    },
+                    apiFailureState = when {
+                        endpoints.all { it.shouldFail == true } -> State.ApiFailureState.FullFailure
+                        endpoints.none { it.shouldFail == true } -> State.ApiFailureState.Normal
+                        else -> State.ApiFailureState.PartialFailure
+                    }
                 )
             },
             onFailure = {
@@ -59,15 +67,31 @@ internal class GlobalControlsViewModel(
 
     }
 
-    fun updateLatency(latencyMs: Long) {
+    fun updateLatency(latencyMs: Int) {
+        suspend fun update(): Result<Unit> =
+            endpointsService.fetchAllEndpointConfigs(device).map { endpoints ->
+                val keys = endpoints.map { it.key }
+                return updateService.setDelay(device, keys, latencyMs).onSuccess {
+                    eventBus.send(EventBus.Event.EndpointDataChanged(keys))
+                }.onFailure {
+                    eventBus.send(EventBus.Event.GenericError)
+                }
+            }
 
+        latencyDebounceJob = withDebounce(latencyDebounceJob, ::update)
     }
 
     sealed class State {
         data object Loading: State()
         data class Idle(
-            val latencyMs: Long,
-            val isForceFailureEnabled: Boolean
+            val initialLatencyMs: Int?,
+            val apiFailureState: ApiFailureState
         ): State()
+
+        enum class ApiFailureState {
+            FullFailure,
+            PartialFailure,
+            Normal
+        }
     }
 }

@@ -13,7 +13,7 @@ package com.apadmi.mockzilla.ui.ui.common.theme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.widgets.DebugColorsWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.debug.DebugColorsWidget
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // Seed color is #4ECED8

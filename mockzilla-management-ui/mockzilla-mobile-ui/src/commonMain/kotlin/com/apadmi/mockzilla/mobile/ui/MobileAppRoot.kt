@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -24,8 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,7 +38,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
-import com.apadmi.mockzilla.ui.ui.common.widgets.DebugColorsWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.debug.DebugWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
@@ -79,7 +76,7 @@ internal fun MobileAppRoot(
 
             if (DebugUtils.isDebug) {
                 IconButton(onClick = {
-                    navController.navigate(Destination.DebugColors)
+                    navController.navigate(Destination.Debug)
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Article,
@@ -159,9 +156,9 @@ private fun ConnectedState(
             )
         }
     }
-    composable<Destination.DebugColors> {
+    composable<Destination.Debug> {
         Surface {
-            DebugColorsWidget()
+            DebugWidget()
         }
     }
 }

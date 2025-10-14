@@ -11,7 +11,7 @@ internal sealed class Destination {
     internal data object GlobalControls : Destination()
 
     @Serializable
-    internal data object DebugColors : Destination()
+    internal data object Debug : Destination()
 
     /**
      * @property key

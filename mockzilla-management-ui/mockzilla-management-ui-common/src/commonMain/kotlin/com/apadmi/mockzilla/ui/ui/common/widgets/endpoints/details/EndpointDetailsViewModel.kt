@@ -10,6 +10,7 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.jsoneditor.JsonEditor
+import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
 import io.ktor.http.HttpStatusCode
@@ -136,14 +137,6 @@ class EndpointDetailsViewModel(
             }
         )
 
-    private fun withDebounce(job: Job?, op: suspend () -> Result<Unit>): Job {
-        job?.cancel()
-        return viewModelScope.launch(Dispatchers.IO) {
-            delay(600)
-            yield()
-            op()
-        }
-    }
 
     private fun <T> emitErrorAndEventIfNeeded(result: Result<T>) = result.onSuccess {
         key?.let { eventBus.send(EventBus.Event.EndpointDataChanged(listOf(it))) }

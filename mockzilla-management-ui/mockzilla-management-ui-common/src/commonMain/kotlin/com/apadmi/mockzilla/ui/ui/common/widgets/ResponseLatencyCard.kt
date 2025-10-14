@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.ui.ui.common.widgets
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -47,20 +49,21 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
 // Arbitrary max just to stop overflow
-private fun Long.clamped() = min(max(0, this), 1.days.inWholeMilliseconds)
+private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
+private fun Int.clamped() = min(max(0, this), maxLatencyMs)
+private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
 
 @Composable
 internal fun ResponseLatencyCard(
-    initialValue: Long,
-    onChange: (Long) -> Unit,
+    initialValue: Int?,
+    onChange: (Int) -> Unit,
     strings: Strings = LocalStrings.current
 ) {
-    var value by remember { mutableStateOf(initialValue) }
-    val debouncer = debounced(onChange)
-    val updateValue = remember {
-        { it: Long ->
+    var value by remember(initialValue) { mutableStateOf(initialValue) }
+    val updateValue = remember(initialValue) {
+        { it: Int ->
             value = it.clamped()
-            debouncer(it.clamped())
+            onChange(it.clamped())
         }
     }
     Column(
@@ -88,27 +91,36 @@ internal fun ResponseLatencyCard(
                 painter = painterResource(resource = Res.drawable.clock),
                 contentDescription = null
             )
-            Text(text = strings.widgets.latency.title)
+            Text(
+                text = strings.widgets.latency.title,
+                style = MaterialTheme.typography.titleMedium
+            )
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SquareIconButton(onClick = {
-                updateValue(value - 100)
-            }) {
+            SquareIconButton(
+                enabled = value != null && value != 0,
+                onClick = {
+                    updateValue((value ?: 0) - 100)
+                }) {
                 Icon(imageVector = Icons.Default.Remove, contentDescription = "Minus")
             }
             Spacer(Modifier.size(12.dp))
             CustomTextField(
-                value = value.toString(),
-                onValueChange = { updateValue(it.toLongOrNull() ?: 0) },
+                modifier = Modifier.weight(1f),
+                value = value?.toString() ?: "",
+                placeholder = { Text("Not Set") },
+                onValueChange = { updateValue(it.toIntOrNull() ?: 0) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 suffix = {
                     Text(strings.widgets.latency.millisecondLabel)
                 })
             Spacer(Modifier.size(12.dp))
-            SquareIconButton(onClick = {
-                updateValue(value + 100)
-            }) {
+            SquareIconButton(
+                enabled = value != null && value != maxLatencyMs,
+                onClick = {
+                    updateValue((value ?: 0) + 100)
+                }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Plus")
             }
         }
@@ -116,14 +128,24 @@ internal fun ResponseLatencyCard(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(modifier = Modifier.padding(8.dp), text = strings.widgets.latency.sliderMin)
             Slider(
-                value.toFloat(),
-                valueRange = 0f..60.seconds.inWholeMilliseconds.toFloat(),
+                value?.toFloat() ?: 0f,
+                valueRange = 0f..sliderMax,
                 modifier = Modifier.weight(1f),
-                onValueChange = {
-                    value = it.toLong()
-                }
+                onValueChange = { updateValue(it.toInt()) }
             )
-            Text(modifier = Modifier.padding(8.dp), text = strings.widgets.latency.sliderMax)
+            Box {
+                Text(modifier = Modifier
+                    .alpha(if ((value ?: 0) > sliderMax) 0f else 1f)
+                    .padding(8.dp), text = strings.widgets.latency.sliderMax)
+                Icon(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .align(Alignment.Center)
+                        .alpha(if ((value ?: 0) > sliderMax) 1f else 0f),
+                    painter = painterResource(resource = Res.drawable.clock),
+                    contentDescription = null
+                )
+            }
         }
     }
 }
@@ -131,9 +153,11 @@ internal fun ResponseLatencyCard(
 @Composable
 private fun SquareIconButton(
     onClick: () -> Unit,
+    enabled: Boolean = true,
     content: @Composable () -> Unit,
 ) = IconButton(
     onClick = onClick,
+    enabled = enabled,
     modifier = Modifier.border(
         width = 1.dp,
         color = MaterialTheme.colorScheme.outline,

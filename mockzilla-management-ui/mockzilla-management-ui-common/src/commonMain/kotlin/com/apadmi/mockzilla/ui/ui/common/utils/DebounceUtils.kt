@@ -5,13 +5,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
+import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import kotlin.time.Clock
 
 @Composable
-inline fun debounced(crossinline onValueChange: (Long) -> Unit, debounceTime: Long = 1000L): (Long) -> Unit {
+inline fun debounced(crossinline onValueChange: (Int) -> Unit, debounceTime: Int = 1000): (Int) -> Unit {
     var lastTimeClicked by remember { mutableStateOf(0L) }
-    val onValueChangeLambda: (Long) -> Unit = {
+    val onValueChangeLambda: (Int) -> Unit = {
         val now = Clock.System.now().toEpochMilliseconds()
         if (now - lastTimeClicked > debounceTime) {
             onValueChange(it)
@@ -32,4 +38,13 @@ inline fun debounced(crossinline onClick: () -> Unit, debounceTime: Long = 1000L
         lastTimeClicked = now
     }
     return onClickLambda
+}
+
+internal fun ViewModel.withDebounce(job: Job?, op: suspend () -> Result<Unit>): Job {
+    job?.cancel()
+    return viewModelScope.launch(Dispatchers.IO) {
+        delay(600)
+        yield()
+        op()
+    }
 }

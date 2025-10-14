@@ -13,14 +13,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 
 import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
-import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.widgets.DebugColorsWidget
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.apadmi.mockzilla.ui.utils.Platform
 
 private val lightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -87,6 +84,15 @@ private val darkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
+data class SuccessColors(
+    val primary: Color,
+    val container: Color
+)
+
+val ColorScheme.success get() = SuccessColors(
+    primary = Color(0xFF008236),
+    container = Color(0xFF008236),
+)
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalForceDarkMode = compositionLocalOf { false }
@@ -105,14 +111,14 @@ fun AppTheme(
     useDarkTheme: Boolean = LocalForceDarkMode.current || isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (true) {
+    val colors = if (useDarkTheme) {
         darkColors
     } else {
         lightColors
     }
 
     ProvideLocalisableStrings {
-        ScaledDensity(scaleFactor = 0.9f) {
+        ScaledDensity(scaleFactor = if (Platform.current == Platform.Desktop) 0.9f else 1f) {
             MaterialTheme(
                 colorScheme = colors,
                 content = content

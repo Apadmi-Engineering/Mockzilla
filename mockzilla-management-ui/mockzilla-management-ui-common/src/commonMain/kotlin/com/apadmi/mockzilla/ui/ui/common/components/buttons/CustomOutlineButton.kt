@@ -9,13 +9,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
@@ -29,13 +32,18 @@ fun CustomOutlineButton(
     modifier: Modifier = Modifier,
     label: String,
     leadingIcon: Painter? = null,
+    enabled: Boolean = true,
+    colors: ButtonColors = ButtonDefaults.outlinedButtonColors(),
+    borderColor: Color = MaterialTheme.colorScheme.primary,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     onClick: () -> Unit
 ) = OutlinedButton(
     modifier = modifier,
     onClick = onClick,
+    colors = colors,
+    enabled = enabled,
     shape = RoundedCornerShape(8.dp),
-    border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
+    border = BorderStroke(width = 1.dp, color = borderColor),
     contentPadding = contentPadding
 ) {
     leadingIcon?.let { icon ->

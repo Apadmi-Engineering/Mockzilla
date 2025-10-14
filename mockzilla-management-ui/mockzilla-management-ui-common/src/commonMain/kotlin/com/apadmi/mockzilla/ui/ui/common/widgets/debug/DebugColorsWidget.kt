@@ -1,12 +1,10 @@
-package com.apadmi.mockzilla.ui.ui.common.widgets
+package com.apadmi.mockzilla.ui.ui.common.widgets.debug
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,13 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.text.append
-import kotlin.math.pow
 
 @Composable
-fun DebugColorsWidget() = Column(Modifier.fillMaxHeight()) {
+internal fun DebugColorsWidget() = Column(Modifier.fillMaxHeight()) {
     val colors = mapOf(
         "primary" to MaterialTheme.colorScheme.primary,
         "onPrimary" to MaterialTheme.colorScheme.onPrimary,
