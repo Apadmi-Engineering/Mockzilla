@@ -1,3 +1,5 @@
+@file:Suppress("MAGIC_NUMBER", "FLOAT_IN_ACCURATE_CALCULATIONS")
+
 package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.animation.core.Animatable
@@ -25,10 +27,7 @@ import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
 // Total duration for one cycle
-private const val LinearAnimationDuration = 800
-internal val LinearIndicatorWidth = 240.dp
-
-internal val LinearIndicatorHeight = 4.dp
+private const val linearAnimationDuration = 800
 
 // CircularProgressIndicator Material specs
 // Diameter of the indicator circle
@@ -38,43 +37,57 @@ internal val LinearIndicatorHeight = 4.dp
 // Total duration for one cycle
 
 // Duration of the head and tail animations for both lines
-private const val FirstLineHeadDuration = 750
-private const val FirstLineTailDuration = 850
+private const val firstLineHeadDuration = 750
+private const val firstLineTailDuration = 850
 
 // Delay before the start of the head and tail animations for both lines
-private const val FirstLineHeadDelay = 0
-private const val FirstLineTailDelay = 333
+private const val firstLineHeadDelay = 0
+private const val firstLineTailDelay = 333
+internal val linearIndicatorWidth = 240.dp
 
-private val FirstLineHeadEasing = CubicBezierEasing(0.2f, 0f, 0.8f, 1f)
-private val FirstLineTailEasing = CubicBezierEasing(0.4f, 0f, 1f, 1f)
+internal val linearIndicatorHeight = 4.dp
 
-@Composable
-private fun rememberPausableAnimation(
-    shouldContinue: Boolean,
-    animationSpec: AnimationSpec<Float>
-): State<Float> {
-    val anim = remember { Animatable(0f) }
-    val animating = remember { mutableStateOf(false) }
+private val firstLineHeadEasing = CubicBezierEasing(0.2f, 0f, 0.8f, 1f)
+private val firstLineTailEasing = CubicBezierEasing(0.4f, 0f, 1f, 1f)
 
-    LaunchedEffect(animating.value) {
-        if (shouldContinue && animating.value) {
-            anim.snapTo(0f)
-            anim.animateTo(
-                targetValue = 1f,
-                animationSpec = animationSpec,
+private fun DrawScope.drawLinearIndicator(
+    startFraction: Float,
+    endFraction: Float,
+    color: Color,
+    strokeWidth: Float,
+    strokeCap: StrokeCap,
+) {
+    val width = size.width
+    val height = size.height
+    // Start drawing from the vertical center of the stroke
+    val offset = height / 2
+
+    val isLtr = layoutDirection == LayoutDirection.Ltr
+    val barStart = (if (isLtr) startFraction else 1f - endFraction) * width
+    val barEnd = (if (isLtr) endFraction else 1f - startFraction) * width
+
+    // if there isn't enough space to draw the stroke caps, fall back to StrokeCap.Butt
+    if (strokeCap == StrokeCap.Butt || height > width) {
+        // Progress line
+        drawLine(color, Offset(barStart, offset), Offset(barEnd, offset), strokeWidth)
+    } else {
+        // need to adjust barStart and barEnd for the stroke caps
+        val strokeCapOffset = strokeWidth / 2
+        val coerceRange = strokeCapOffset..(width - strokeCapOffset)
+        val adjustedBarStart = barStart.coerceIn(coerceRange)
+        val adjustedBarEnd = barEnd.coerceIn(coerceRange)
+
+        if (abs(endFraction - startFraction) > 0) {
+            // Progress line
+            drawLine(
+                color,
+                Offset(adjustedBarStart, offset),
+                Offset(adjustedBarEnd, offset),
+                strokeWidth,
+                strokeCap,
             )
-
-            animating.value = false
         }
     }
-
-    LaunchedEffect(shouldContinue) {
-        if (shouldContinue && !animating.value) {
-            animating.value = true
-        }
-    }
-
-    return anim.asState()
 }
 
 @Composable
@@ -88,22 +101,19 @@ fun TogglableProgressIndicator(
 ) {
     // Material spec timing constants
     val firstLineHead = rememberPausableAnimation(shouldContinue = isLoading, keyframes {
-        durationMillis = LinearAnimationDuration
-        0f at FirstLineHeadDelay using FirstLineHeadEasing
-        1f at FirstLineHeadDuration + FirstLineHeadDelay
+        durationMillis = linearAnimationDuration
+        0f at firstLineHeadDelay using firstLineHeadEasing
+        1f at firstLineHeadDuration + firstLineHeadDelay
     })
-
-    println("head anim ${firstLineHead.value}")
 
     val firstLineTail = rememberPausableAnimation(shouldContinue = isLoading, keyframes {
-        durationMillis = LinearAnimationDuration
-        0f at FirstLineTailDelay using FirstLineTailEasing
-        1f at FirstLineTailDuration + FirstLineTailDelay
+        durationMillis = linearAnimationDuration
+        0f at firstLineTailDelay using firstLineTailEasing
+        1f at firstLineTailDuration + firstLineTailDelay
     })
 
-
     Canvas(
-        modifier.progressSemantics().size(LinearIndicatorWidth, LinearIndicatorHeight)
+        modifier.progressSemantics().size(linearIndicatorWidth, linearIndicatorHeight)
     ) {
         val strokeWidth = size.height
         val adjustedGapSize = if (strokeCap == StrokeCap.Butt || size.height > size.width) {
@@ -138,43 +148,31 @@ fun TogglableProgressIndicator(
     }
 }
 
-private fun DrawScope.drawLinearIndicator(
-    startFraction: Float,
-    endFraction: Float,
-    color: Color,
-    strokeWidth: Float,
-    strokeCap: StrokeCap,
-) {
-    val width = size.width
-    val height = size.height
-    // Start drawing from the vertical center of the stroke
-    val yOffset = height / 2
+@Composable
+private fun rememberPausableAnimation(
+    shouldContinue: Boolean,
+    animationSpec: AnimationSpec<Float>
+): State<Float> {
+    val anim = remember { Animatable(0f) }
+    val animating = remember { mutableStateOf(false) }
 
-    val isLtr = layoutDirection == LayoutDirection.Ltr
-    val barStart = (if (isLtr) startFraction else 1f - endFraction) * width
-    val barEnd = (if (isLtr) endFraction else 1f - startFraction) * width
-
-    // if there isn't enough space to draw the stroke caps, fall back to StrokeCap.Butt
-    if (strokeCap == StrokeCap.Butt || height > width) {
-        // Progress line
-        drawLine(color, Offset(barStart, yOffset), Offset(barEnd, yOffset), strokeWidth)
-    } else {
-        // need to adjust barStart and barEnd for the stroke caps
-        val strokeCapOffset = strokeWidth / 2
-        val coerceRange = strokeCapOffset..(width - strokeCapOffset)
-        val adjustedBarStart = barStart.coerceIn(coerceRange)
-        val adjustedBarEnd = barEnd.coerceIn(coerceRange)
-
-        if (abs(endFraction - startFraction) > 0) {
-            // Progress line
-            drawLine(
-                color,
-                Offset(adjustedBarStart, yOffset),
-                Offset(adjustedBarEnd, yOffset),
-                strokeWidth,
-                strokeCap,
+    LaunchedEffect(animating.value) {
+        if (shouldContinue && animating.value) {
+            anim.snapTo(0f)
+            anim.animateTo(
+                targetValue = 1f,
+                animationSpec = animationSpec,
             )
+
+            animating.value = false
         }
     }
-}
 
+    LaunchedEffect(shouldContinue) {
+        if (shouldContinue && !animating.value) {
+            animating.value = true
+        }
+    }
+
+    return anim.asState()
+}

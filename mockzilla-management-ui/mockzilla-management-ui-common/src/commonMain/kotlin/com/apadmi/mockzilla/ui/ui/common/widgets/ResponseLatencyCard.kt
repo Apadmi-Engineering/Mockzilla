@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,8 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,18 +29,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.utils.debounced
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.clock
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.max
 import kotlin.math.min
@@ -52,8 +46,10 @@ import kotlin.time.Duration.Companion.seconds
 
 // Arbitrary max just to stop overflow
 private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
-private fun Int.clamped() = min(max(0, this), maxLatencyMs)
+
+@Suppress("MAGIC_NUMBER")
 private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
+private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
 @Composable
 internal fun ResponseLatencyCard(
@@ -108,7 +104,6 @@ internal fun ResponseLatencyCard(
                     imageVector = Icons.Default.Restore,
                     contentDescription = null
                 )
-
             }
         }
 
@@ -131,11 +126,9 @@ internal fun ResponseLatencyCard(
                 onValueChange = { updateValue(it.toIntOrNull() ?: 0) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 suffix = {
-                    if (value != null) {
+                    value?.let {
                         Text(strings.widgets.latency.millisecondLabel)
-                    } else {
-                        Box(Modifier)
-                    }
+                    } ?: Box(Modifier)
                 })
             Spacer(Modifier.size(12.dp))
             SquareIconButton(

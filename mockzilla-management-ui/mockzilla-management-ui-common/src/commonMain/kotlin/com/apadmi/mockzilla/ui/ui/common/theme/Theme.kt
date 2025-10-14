@@ -1,4 +1,4 @@
-@file:Suppress("MAGIC_NUMBER")
+@file:Suppress("MAGIC_NUMBER", "FILE_NAME_MATCH_CLASS")
 
 package com.apadmi.mockzilla.ui.ui.common.theme
 
@@ -84,39 +84,41 @@ private val darkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
+@get:Composable
+val ColorScheme.success get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
+    true -> StateColors(
+        primary = Color(0xFF_00_E6_5F),
+        container = Color(0xFF_00_82_36),
+    )
+    false -> StateColors(
+        primary = Color(0xFF_00_82_36),
+        container = Color(0xFF_00_82_36),
+    )
+}
+
+@get:Composable
+val ColorScheme.partialFailure get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
+    true -> StateColors(
+        primary = Color(0xFF_F0_90_00),
+        container = Color(0xFF_D1_65_00),
+    )
+    false -> StateColors(
+        primary = Color(0xFF_D1_65_00),
+        container = Color(0xFF_D1_65_00),
+    )
+}
+
+@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
+val LocalForceDarkMode = compositionLocalOf { false }
+
+/**
+ * @property primary
+ * @property container
+ */
 data class StateColors(
     val primary: Color,
     val container: Color
 )
-
-@get:Composable
-val ColorScheme.success get() = when(LocalForceDarkMode.current || isSystemInDarkTheme()) {
-    true -> StateColors(
-        primary = Color(0xFF00E65F),
-        container = Color(0xFF008236),
-    )
-    false -> StateColors(
-        primary = Color(0xFF008236),
-        container = Color(0xFF008236),
-    )
-}
-
-@get:Composable
-val ColorScheme.partialFailure get() = when(LocalForceDarkMode.current || isSystemInDarkTheme()) {
-    true -> StateColors(
-        primary = Color(0xFFF09000),
-        container = Color(0xFFD16500),
-    )
-    false -> StateColors(
-        primary = Color(0xFFD16500),
-        container = Color(0xFFD16500),
-    )
-}
-
-
-
-@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-val LocalForceDarkMode = compositionLocalOf { false }
 
 @Composable
 fun Modifier.alternatingBackground(index: Int) = background(
@@ -157,4 +159,3 @@ fun ScaledDensity(scaleFactor: Float, content: @Composable () -> Unit) {
     )
     CompositionLocalProvider(LocalDensity provides scaledDensity, content = content)
 }
-

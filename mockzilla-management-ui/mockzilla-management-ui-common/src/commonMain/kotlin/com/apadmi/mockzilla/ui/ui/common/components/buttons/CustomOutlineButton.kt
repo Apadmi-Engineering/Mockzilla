@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -54,7 +53,7 @@ fun CustomOutlineButton(
         )
         Spacer(modifier = Modifier.width(10.dp))
     }
-    Text(text  = label)
+    Text(text = label)
 }
 
 @Preview

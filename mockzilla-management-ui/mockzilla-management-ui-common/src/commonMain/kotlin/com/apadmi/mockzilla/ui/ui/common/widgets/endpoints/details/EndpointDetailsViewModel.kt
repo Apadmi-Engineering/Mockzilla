@@ -16,15 +16,11 @@ import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 import io.ktor.http.HttpStatusCode
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 
 private typealias UpdateServerBlock = (config: SerializableEndpointConfig, device: Device) -> Unit
 private typealias UpdateStateBlock = EndpointDetailsViewModel.State.Endpoint.() -> EndpointDetailsViewModel.State.Endpoint
@@ -136,7 +132,6 @@ class EndpointDetailsViewModel(
                 }
             }
         )
-
 
     private fun <T> emitErrorAndEventIfNeeded(result: Result<T>) = result.onSuccess {
         key?.let { eventBus.send(EventBus.Event.EndpointDataChanged(listOf(it))) }

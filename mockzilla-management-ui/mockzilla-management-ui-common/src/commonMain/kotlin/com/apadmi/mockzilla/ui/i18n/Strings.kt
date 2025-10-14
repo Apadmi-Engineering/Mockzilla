@@ -41,6 +41,7 @@ data class Strings(
      * @property unsupportedMockzilla
      * @property errorBanner
      * @property globalControls
+     * @property latency
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -223,10 +224,9 @@ data class Strings(
          * @property resetAllLabel
          * @property normalBehaviourBannerConfig
          * @property forcedFailureBannerConfig
-         * @property responseLatencyTitle
-         * @property milliseconds
-         * @property zeroSeconds
-         * @property sixtySeconds
+         * @property partialFailureBannerConfig
+         * @property failButtonLabel
+         * @property restoreButtonLabel
          */
         data class GlobalControls(
             val title: String,
@@ -241,7 +241,6 @@ data class Strings(
             /**
              * @property title
              * @property subtitle
-             * @property buttonLabel
              */
             data class GlobalConfigBanner(
                 val title: String,
@@ -249,6 +248,12 @@ data class Strings(
             )
         }
 
+        /**
+         * @property title
+         * @property millisecondLabel
+         * @property sliderMin
+         * @property sliderMax
+         */
         data class Latency(
             val title: String,
             val millisecondLabel: String,
