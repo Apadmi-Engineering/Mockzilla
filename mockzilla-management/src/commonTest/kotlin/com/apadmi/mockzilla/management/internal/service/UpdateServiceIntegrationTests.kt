@@ -225,7 +225,7 @@ class UpdateServiceIntegrationTests {
             val preUpdate = getEndpointConfig(connection)
 
             /* Run Test */
-            val result = sut.setDefaultPreset(
+            val result = sut.applyPreset(
                 connection, dummyConfig.key, DashboardOverridePreset(
                     name = "name",
                     description = "description",
@@ -233,7 +233,8 @@ class UpdateServiceIntegrationTests {
                         HttpStatusCode.Conflict,
                         mapOf("key" to "value"),
                         body = "body"
-                    )
+                    ),
+                    type = null
                 )
             )
             val postUpdate = getEndpointConfig(connection)
@@ -245,41 +246,6 @@ class UpdateServiceIntegrationTests {
                     defaultStatus = HttpStatusCode.Conflict,
                     defaultHeaders = mapOf("key" to "value"),
                     defaultBody = "body"
-                ), postUpdate
-            )
-        }
-
-    @Test
-    fun `setErrorPreset - performs update`() =
-        runIntegrationTest(
-            config = MockzillaConfig.Builder().setPort(0).addEndpoint(dummyConfig)
-                .build(),
-            createSut = { UpdateServiceImpl(it) }
-        ) { sut, connection, _ ->
-            /* Setup */
-            val preUpdate = getEndpointConfig(connection)
-
-            /* Run Test */
-            val result = sut.setErrorPreset(
-                connection, dummyConfig.key, DashboardOverridePreset(
-                    name = "name",
-                    description = "description",
-                    response = MockzillaHttpResponse(
-                        HttpStatusCode.Conflict,
-                        mapOf("key" to "value"),
-                        body = "body"
-                    )
-                )
-            )
-            val postUpdate = getEndpointConfig(connection)
-
-            /* Verify */
-            assertEquals(Result.success(Unit), result)
-            assertEquals(
-                preUpdate.copy(
-                    errorStatus = HttpStatusCode.Conflict,
-                    errorHeaders = mapOf("key" to "value"),
-                    errorBody = "body"
                 ), postUpdate
             )
         }

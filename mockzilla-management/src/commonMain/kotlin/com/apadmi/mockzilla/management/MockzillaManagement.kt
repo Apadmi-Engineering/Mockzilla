@@ -88,13 +88,7 @@ interface MockzillaManagement {
             statusCode: HttpStatusCode?
         ): Result<Unit>
 
-        suspend fun setDefaultPreset(
-            connection: MockzillaConnectionConfig,
-            key: EndpointConfiguration.Key,
-            dashboardOverridePreset: DashboardOverridePreset
-        ): Result<Unit>
-
-        suspend fun setErrorPreset(
+        suspend fun applyPreset(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
             dashboardOverridePreset: DashboardOverridePreset

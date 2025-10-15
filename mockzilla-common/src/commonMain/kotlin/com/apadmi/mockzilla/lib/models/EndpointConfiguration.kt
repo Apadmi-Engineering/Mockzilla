@@ -6,7 +6,9 @@ import io.ktor.http.*
 import io.ktor.server.request.ApplicationRequest
 
 import kotlin.jvm.JvmInline
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
 /**
  * @property name
@@ -225,54 +227,80 @@ interface MockzillaHttpRequest {
  * @property errorPresets
  * @property successPresets
  */
+@Suppress("KDOC_NO_CONSTRUCTOR_PROPERTY_WITH_COMMENT")
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class DashboardOptionsConfig(
+    @Deprecated("Error Presets will be removed in a future version")
+    // No longer used, still included for backward compatibility
     val errorPresets: List<DashboardOverridePreset>,
+    // This will be renamed to just "presets" in a future release. This gets management api ready to consume that change
+    @Deprecated("Deprecated", replaceWith = ReplaceWith("presets"))
+    @JsonNames("presets")
     val successPresets: List<DashboardOverridePreset>
 ) {
-    class Builder {
-        private val errorPresets = mutableListOf<DashboardOverridePreset>()
-        private val successPresets = mutableListOf<DashboardOverridePreset>()
+    val presets get() = successPresets
 
+    class Builder {
+        private val presets = mutableListOf<DashboardOverridePreset>()
+
+        fun addPreset(
+            response: MockzillaHttpResponse,
+            name: String? = null,
+            description: String? = null,
+            type: DashboardOverridePreset.Type? = null
+        ) = presets.add(
+            DashboardOverridePreset(
+                name ?: "Preset ${presets.count() + 1}",
+                description,
+                type,
+                response
+            )
+        ).let { this }
+
+        @Deprecated(
+            "Separate success/error presets are no longer supported",
+            replaceWith = ReplaceWith("addPreset"))
         fun addSuccessPreset(
             response: MockzillaHttpResponse,
             name: String? = null,
             description: String? = null
-        ) = successPresets.add(
-            DashboardOverridePreset(
-                name ?: "Preset ${successPresets.count() + 1}",
-                description,
-                response
-            )
-        ).let { this }
+        ) = addPreset(response, name, description)
 
+        @Deprecated(
+            "Separate success/error presets are no longer supported",
+            replaceWith = ReplaceWith("addPreset"))
         fun addErrorPreset(
             response: MockzillaHttpResponse,
             name: String? = null,
             description: String? = null
-        ) = errorPresets.add(
-            DashboardOverridePreset(
-                name ?: "Error Preset ${errorPresets.count() + 1}",
-                description,
-                response
-            )
-        ).let { this }
+        ) = addPreset(response, name, description)
 
-        fun build() = DashboardOptionsConfig(
-            errorPresets = errorPresets,
-            successPresets = successPresets
-        )
+        fun build() = DashboardOptionsConfig(errorPresets = emptyList(), presets)
     }
 }
 
 /**
  * @property name
  * @property description
+ * @property type Overrides the type of the preset shown in UI, defaults to correspond with status code
  * @property response
  */
 @Serializable
 data class DashboardOverridePreset(
     val name: String,
     val description: String?,
+    val type: Type?,
     val response: MockzillaHttpResponse
-)
+) {
+    @Serializable
+    enum class Type {
+        ClientError,
+        Informational,
+        Other,
+        Redirect,
+        ServerError,
+        Success,
+        ;
+    }
+}
