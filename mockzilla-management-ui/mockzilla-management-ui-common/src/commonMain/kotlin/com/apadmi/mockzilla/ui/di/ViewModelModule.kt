@@ -16,7 +16,7 @@ internal fun viewModelModule(): Module = module {
     viewModel { MetaDataWidgetViewModel(get(), get()) }
     viewModel { MonitorLogsViewModel(get(), get()) }
     viewModel { MonitorLogDetailsViewModel() }
-    viewModel { params -> EndpointsViewModel(params.get(), get(), get(), get()) }
+    viewModel { params -> EndpointsViewModel(params.get(), get(), get()) }
     viewModel { params -> EndpointDetailsViewModel(params.getOrNull(), params.get(), get(), get(), get(), get()) }
     viewModel { params -> MiscControlsViewModel(params.getOrNull(), get(), get()) }
     viewModel { params -> GlobalControlsViewModel(params.get(), get(), get(), get(), get()) }

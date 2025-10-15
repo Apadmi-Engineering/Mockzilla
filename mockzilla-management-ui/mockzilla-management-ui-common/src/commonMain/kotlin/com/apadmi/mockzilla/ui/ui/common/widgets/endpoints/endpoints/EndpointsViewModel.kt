@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 class EndpointsViewModel(
     private val device: Device,
     private val endpointsService: MockzillaManagement.EndpointsService,
-    private val updateService: MockzillaManagement.UpdateService,
     private val eventBus: EventBus,
     scope: CoroutineScope? = null,
 ) : ViewModel(scope) {
@@ -56,59 +55,10 @@ class EndpointsViewModel(
                 name = it.name,
                 fail = it.shouldFail == true,
                 isCheckboxTicked = tickedCheckboxes?.contains(it.key) == true,
-                hasValuesOverridden = it.hasValuesOverridden(),
+                overriddenProperties = it.getOverriddenProperties(),
                 display = filter(currentState?.filter ?: "", it.name)
             )
         }
-    }
-
-    fun onCheckboxChanged(key: EndpointConfiguration.Key, value: Boolean) {
-        val currentState = state.value as? State.EndpointsList ?: return
-
-        if (value) {
-            checkboxStates.add(key)
-        } else {
-            checkboxStates.remove(key)
-        }
-
-        val newEndpoints = currentState.endpoints.map {
-            it.copy(isCheckboxTicked = if (it.key == key) value else it.isCheckboxTicked)
-        }
-        state.value = currentState.copy(
-            endpoints = newEndpoints
-        )
-    }
-
-    fun onFailChanged(key: EndpointConfiguration.Key, value: Boolean) = viewModelScope.launch {
-        val currentState = state.value as? State.EndpointsList ?: return@launch
-
-        val keysToChange = checkboxStates.takeIf { it.contains(key) } ?: listOf(key)
-
-        state.value = currentState.copy(endpoints = currentState.endpoints.map {
-            it.copy(
-                fail = if (keysToChange.contains(it.key)) value else it.fail,
-            )
-        })
-
-        updateService.setShouldFail(device, keysToChange, value).onSuccess {
-            eventBus.send(EventBus.Event.EndpointDataChanged(keysToChange))
-        }.onFailure {
-            eventBus.send(EventBus.Event.GenericError)
-        }
-    }
-
-    fun onAllCheckboxChanged(value: Boolean) {
-        val currentState = state.value as? State.EndpointsList ?: return
-
-        if (value) {
-            checkboxStates.addAll(currentState.endpoints.map { it.key })
-        } else {
-            checkboxStates.clear()
-        }
-
-        state.value = currentState.copy(
-            endpoints = currentState.endpoints.map { it.copy(isCheckboxTicked = value) }
-        )
     }
 
     fun onFilterChanged(value: String) {
@@ -132,7 +82,7 @@ class EndpointsViewModel(
          * @property name
          * @property fail
          * @property isCheckboxTicked
-         * @property hasValuesOverridden
+         * @property overriddenProperties
          * @property display
          */
         data class EndpointConfig(
@@ -140,7 +90,7 @@ class EndpointsViewModel(
             val name: String,
             val fail: Boolean,
             val isCheckboxTicked: Boolean,
-            val hasValuesOverridden: Boolean,
+            val overriddenProperties: List<EndpointProperties>,
             val display: Boolean,
         )
 
@@ -157,10 +107,23 @@ class EndpointsViewModel(
     }
 }
 
-private fun SerializableEndpointConfig.hasValuesOverridden() = delayMs != null ||
-        defaultBody != null ||
-        defaultStatus != null ||
-        defaultHeaders != null ||
-        errorStatus != null ||
-        errorBody != null ||
-        errorHeaders != null
+public enum class EndpointProperties {
+    Body,
+    Delay,
+    ErrorBody,
+    ErrorHeaders,
+    ErrorStatus,
+    Headers,
+    Status,
+    ;
+}
+
+private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull(
+    EndpointProperties.Delay.takeIf { delayMs != null },
+    EndpointProperties.Body.takeIf { defaultBody != null },
+    EndpointProperties.Status.takeIf { defaultStatus != null },
+    EndpointProperties.Headers.takeIf { defaultHeaders != null },
+    EndpointProperties.ErrorStatus.takeIf { errorStatus != null },
+    EndpointProperties.ErrorBody.takeIf { errorBody != null },
+    EndpointProperties.ErrorHeaders.takeIf { errorHeaders != null },
+)
