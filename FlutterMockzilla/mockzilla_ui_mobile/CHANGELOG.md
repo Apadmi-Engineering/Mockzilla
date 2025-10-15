@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.5](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.4...flutter_mockzilla_ui_mobile-v0.0.5) (2025-09-30)
+## [0.0.6](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.4...flutter_mockzilla_ui_mobile-v0.0.6) (2025-09-30)
 
 ### Bug Fixes
 

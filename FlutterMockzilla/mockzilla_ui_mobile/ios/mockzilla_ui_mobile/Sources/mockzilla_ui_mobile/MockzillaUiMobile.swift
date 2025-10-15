@@ -4,7 +4,7 @@
 
 import Foundation
 import Flutter
-import mockzilla_mobile_ui
+import mockzillamobileui
 import SwiftMockzillaMobileUi
 
 class MockzillaUiMobile: Thread, MockzillaUiMobileHostApi {
