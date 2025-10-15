@@ -85,8 +85,7 @@ private fun ColumnScope.EndpointsList(
         Spacer(modifier = Modifier.height(8.dp))
     }
 
-    // This FAB will be aligned properly once the UI for the endpoints widget is updated
-    Spacer(modifier = Modifier.height(20.dp))
+    Spacer(modifier = Modifier.weight(1f))
     FloatingActionButton(
         modifier = Modifier
             .align(Alignment.End)
