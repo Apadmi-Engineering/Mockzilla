@@ -104,7 +104,7 @@ internal class UpdateServiceImpl(
         ), connection
     )
 
-    override suspend fun setDefaultPreset(
+    override suspend fun applyPreset(
         connection: MockzillaConnectionConfig,
         key: EndpointConfiguration.Key,
         dashboardOverridePreset: DashboardOverridePreset
@@ -114,19 +114,6 @@ internal class UpdateServiceImpl(
             defaultBody = SetOrDont.Set(dashboardOverridePreset.response.body),
             defaultStatus = SetOrDont.Set(dashboardOverridePreset.response.statusCode),
             defaultHeaders = SetOrDont.Set(dashboardOverridePreset.response.headers)
-        ), connection
-    )
-
-    override suspend fun setErrorPreset(
-        connection: MockzillaConnectionConfig,
-        key: EndpointConfiguration.Key,
-        dashboardOverridePreset: DashboardOverridePreset
-    ) = repo.updateMockDataEntry(
-        SerializableEndpointPatchItemDto(
-            key = key,
-            errorBody = SetOrDont.Set(dashboardOverridePreset.response.body),
-            errorStatus = SetOrDont.Set(dashboardOverridePreset.response.statusCode),
-            errorHeaders = SetOrDont.Set(dashboardOverridePreset.response.headers)
         ), connection
     )
 }

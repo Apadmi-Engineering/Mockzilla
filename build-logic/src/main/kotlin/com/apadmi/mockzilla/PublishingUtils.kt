@@ -7,6 +7,7 @@ fun Project.injectedVersion() = if (project.hasProperty("version")) properties["
     .takeUnless { it.isBlank() || it == "unspecified" } else null
 
 fun isSigningEnabled() = System.getenv("ORG_GRADLE_PROJECT_signingInMemoryKeyId") != null
+fun isDevelopmentBuild() = !isSigningEnabled()
 
 fun MavenPom.configureCommonProperties() {
     url.set("https://github.com/Apadmi-Engineering/Mockzilla")

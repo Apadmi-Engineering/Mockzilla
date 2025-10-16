@@ -28,6 +28,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.apadmi.mockzilla.lib.MockzillaBuildConfig
 
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.mobile.ui.deviceconnection.MobileDeviceConnectionWidget
@@ -44,7 +45,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDev
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsWidget
-import com.apadmi.mockzilla.ui.utils.DebugUtils
 
 @Composable
 internal fun MobileAppRoot(
@@ -75,7 +75,7 @@ internal fun MobileAppRoot(
                 }
             }
 
-            if (DebugUtils.isDebug) {
+            if (MockzillaBuildConfig.isDevelopmentBuild) {
                 IconButton(onClick = {
                     navController.navigate(Destination.Debug)
                 }) {

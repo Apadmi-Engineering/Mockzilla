@@ -34,6 +34,7 @@ internal fun EndpointDetailsWidgetPreviewContent() = EndpointDetailsWidgetConten
                 DashboardOverridePreset(
                     name = "Preset",
                     description = "Preset Description",
+                    type = null,
                     response = MockzillaHttpResponse(
                         statusCode = HttpStatusCode.BadRequest,
                         body = "{ \"name\":\"mockzilla\" }"
@@ -53,6 +54,5 @@ internal fun EndpointDetailsWidgetPreviewContent() = EndpointDetailsWidgetConten
     onDefaultHeadersChange = {},
     onErrorHeadersChange = {},
     onDefaultPresetSelected = {},
-    onErrorPresetSelected = {},
     onResetAll = {}
 )

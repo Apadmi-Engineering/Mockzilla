@@ -88,11 +88,11 @@ private val darkColors = darkColorScheme(
 val ColorScheme.success get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
     true -> StateColors(
         primary = Color(0xFF_00_E6_5F),
-        container = Color(0xFF_00_82_36),
+        container = Color(0xFF_00_82_36).copy(alpha = 0.1f),
     )
     false -> StateColors(
         primary = Color(0xFF_00_82_36),
-        container = Color(0xFF_00_82_36),
+        container = Color(0xFF_00_82_36).copy(alpha = 0.1f),
     )
 }
 
@@ -100,11 +100,11 @@ val ColorScheme.success get() = when (LocalForceDarkMode.current || isSystemInDa
 val ColorScheme.partialFailure get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
     true -> StateColors(
         primary = Color(0xFF_F0_90_00),
-        container = Color(0xFF_D1_65_00),
+        container = Color(0xFF_D1_65_00).copy(alpha = 0.1f),
     )
     false -> StateColors(
         primary = Color(0xFF_D1_65_00),
-        container = Color(0xFF_D1_65_00),
+        container = Color(0xFF_D1_65_00).copy(alpha = 0.1f),
     )
 }
 

@@ -33,7 +33,7 @@ internal class GlobalControlsViewModel(
         viewModelScope.launch { reloadData() }
     }
 
-    private suspend fun reloadData() {
+    suspend fun reloadData() {
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
             onSuccess = { endpoints ->
                 State.Idle(

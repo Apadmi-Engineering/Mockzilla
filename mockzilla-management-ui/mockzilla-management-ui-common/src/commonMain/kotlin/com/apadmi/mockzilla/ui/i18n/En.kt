@@ -112,6 +112,31 @@ val EnStrings = Strings(
             sliderMax = "60s",
             millisecondLabel = "ms",
         ),
+        globalControls = Strings.Widgets.GlobalControls(
+            title = "Global Controls",
+            subtitle = "Apply to all endpoints",
+            resetAllLabel = "Reset All",
+            failButtonLabel = "Force Failure",
+            restoreButtonLabel = "Restore API",
+            normalBehaviourBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
+                title = "Normal API Behavior",
+                subtitle = "API will respond as normal. (Error presets will still return their errors)",
+            ),
+            partialFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
+                title = "Partial Failure Enabled",
+                subtitle = "Some API calls are forced to fail, others are not.",
+            ),
+            forcedFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
+                title = "Forced API Failure Enabled",
+                subtitle = "All API calls will return error responses regardless of your configured presets.",
+            ),
+        ),
+        latency = Strings.Widgets.Latency(
+            title = "Response Latency",
+            sliderMin = "0s",
+            sliderMax = "60s",
+            millisecondLabel = "ms",
+        ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",
             none = "No endpoint selected",

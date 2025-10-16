@@ -26,25 +26,12 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
-// Total duration for one cycle
 private const val linearAnimationDuration = 800
-
-// CircularProgressIndicator Material specs
-// Diameter of the indicator circle
-
-// Indeterminate linear indicator transition specs
-
-// Total duration for one cycle
-
-// Duration of the head and tail animations for both lines
 private const val firstLineHeadDuration = 750
 private const val firstLineTailDuration = 850
-
-// Delay before the start of the head and tail animations for both lines
 private const val firstLineHeadDelay = 0
 private const val firstLineTailDelay = 333
 internal val linearIndicatorWidth = 240.dp
-
 internal val linearIndicatorHeight = 4.dp
 
 private val firstLineHeadEasing = CubicBezierEasing(0.2f, 0f, 0.8f, 1f)
@@ -90,8 +77,20 @@ private fun DrawScope.drawLinearIndicator(
     }
 }
 
+/**
+ * A progress indicator that finishes its current pulse before disappearing after isLoading becomes false
+ *
+ * Based heavily on Comose LinearProgressIndicator
+ *
+ * @param isLoading Whether the indicator is active
+ * @param modifier
+ * @param color Pulse color
+ * @param trackColor Color of the background
+ * @param strokeCap
+ * @param gapSize
+ */
 @Composable
-fun TogglableProgressIndicator(
+internal fun TogglableProgressIndicator(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.primary,
@@ -123,13 +122,13 @@ fun TogglableProgressIndicator(
         }
         val gapSizeFraction = adjustedGapSize / size.width.toDp()
 
-        // Track before line 1
+        // Track before line
         if (firstLineHead.value < 1f - gapSizeFraction) {
             val start = if (firstLineHead.value > 0) firstLineHead.value + gapSizeFraction else 0f
             drawLinearIndicator(start, 1f, trackColor, strokeWidth, strokeCap)
         }
 
-        // Line 1
+        // Line
         if (firstLineHead.value - firstLineTail.value > 0) {
             drawLinearIndicator(
                 firstLineHead.value,
@@ -154,23 +153,23 @@ private fun rememberPausableAnimation(
     animationSpec: AnimationSpec<Float>
 ): State<Float> {
     val anim = remember { Animatable(0f) }
-    val animating = remember { mutableStateOf(false) }
+    val isAnimating = remember { mutableStateOf(false) }
 
-    LaunchedEffect(animating.value) {
-        if (shouldContinue && animating.value) {
+    LaunchedEffect(isAnimating.value) {
+        if (shouldContinue && isAnimating.value) {
             anim.snapTo(0f)
             anim.animateTo(
                 targetValue = 1f,
                 animationSpec = animationSpec,
             )
 
-            animating.value = false
+            isAnimating.value = false
         }
     }
 
     LaunchedEffect(shouldContinue) {
-        if (shouldContinue && !animating.value) {
-            animating.value = true
+        if (shouldContinue && !isAnimating.value) {
+            isAnimating.value = true
         }
     }
 

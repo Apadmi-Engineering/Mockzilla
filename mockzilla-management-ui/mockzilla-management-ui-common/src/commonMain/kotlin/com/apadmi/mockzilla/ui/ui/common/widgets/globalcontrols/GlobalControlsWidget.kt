@@ -31,18 +31,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
 import com.apadmi.mockzilla.ui.ui.common.theme.partialFailure
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.ResponseLatencyCard
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.*
+
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.circle_check
 import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
@@ -188,12 +190,8 @@ private fun GlobalFailureConfigBanner(
         State.ApiFailureState.FullFailure -> MaterialTheme.colorScheme.errorContainer.copy(
             alpha = 0.1f
         )
-
-        State.ApiFailureState.PartialFailure -> MaterialTheme.colorScheme.partialFailure.container.copy(
-            alpha = 0.1f
-        )
-
-        State.ApiFailureState.Normal -> borderAndTextColor.copy(alpha = 0.1f)
+        State.ApiFailureState.PartialFailure -> MaterialTheme.colorScheme.partialFailure.container
+        State.ApiFailureState.Normal -> MaterialTheme.colorScheme.success.container
     }
 
     val bannerIcon = when (state) {
@@ -269,7 +267,7 @@ private fun GlobalFailureConfigBanner(
 
             if (state != State.ApiFailureState.Normal) {
                 // Restore Api Button
-                BaseButton(
+                SolidButton(
                     label = strings.widgets.globalControls.restoreButtonLabel,
                     leadingIcon = painterResource(resource = Res.drawable.play),
                     backgroundColor = Color(0xFF_00_A6_3E),

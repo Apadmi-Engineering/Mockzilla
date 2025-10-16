@@ -21,7 +21,7 @@ private val getMyCow = EndpointConfiguration
     .Builder("cow")
     .setPatternMatcher { uri.endsWith("cow") }
     .configureDashboardOverrides {
-        addSuccessPreset(
+        addPreset(
             MockzillaHttpResponse(
                 body = Json.encodeToString(
                     CowDto(

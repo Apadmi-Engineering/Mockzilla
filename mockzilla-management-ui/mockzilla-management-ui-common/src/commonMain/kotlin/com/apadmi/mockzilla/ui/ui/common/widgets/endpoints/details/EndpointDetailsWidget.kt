@@ -99,7 +99,6 @@ fun EndpointDetailsWidget(
         viewModel::onDefaultHeadersChange,
         viewModel::onErrorHeadersChange,
         viewModel::onDefaultPresetSelected,
-        viewModel::onErrorPresetSelected,
         viewModel::onResetAll
     )
 }
@@ -118,7 +117,6 @@ fun EndpointDetailsWidgetContent(
     onDefaultHeadersChange: (List<Pair<String, String>>?) -> Unit,
     onErrorHeadersChange: (List<Pair<String, String>>?) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
-    onErrorPresetSelected: (DashboardOverridePreset) -> Unit,
     onResetAll: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column {
@@ -184,7 +182,7 @@ fun EndpointDetailsWidgetContent(
                             onPresetSelected = onDefaultPresetSelected,
                             headers = state.defaultHeaders,
                             onHeadersChange = onDefaultHeadersChange,
-                            presets = state.presets.successPresets
+                            presets = state.presets.presets
                         )
 
                         Tab.Error -> EndpointDetailsResponseBody(
@@ -195,10 +193,10 @@ fun EndpointDetailsWidgetContent(
                             jsonEditing = state.jsonEditingError,
                             onJsonEditingChange = onJsonErrorEditingChange,
                             bodyJsonError = state.errorBodyJsonError,
-                            onPresetSelected = onErrorPresetSelected,
                             headers = state.errorHeaders,
                             onHeadersChange = onErrorHeadersChange,
-                            presets = state.presets.errorPresets
+                            onPresetSelected = onDefaultPresetSelected,
+                            presets = state.presets.presets
                         )
 
                         Tab.Settings -> Settings(

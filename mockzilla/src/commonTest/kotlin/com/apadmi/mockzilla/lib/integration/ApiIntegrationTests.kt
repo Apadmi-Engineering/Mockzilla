@@ -83,12 +83,14 @@ class ApiIntegrationTests {
             .setDelayMillis(100)
             .addEndpoint(EndpointConfiguration.Builder("my-id")
                 .configureDashboardOverrides {
-                    addSuccessPreset(
+                    addPreset(
                         MockzillaHttpResponse(
                             HttpStatusCode.Created,
                             emptyMap(),
                             "my body"
-                        ), name = "Preset name", description = "Preset description"
+                        ), name = "Preset name",
+                        description = "Preset description",
+                        type = DashboardOverridePreset.Type.Informational
                     )
                 }
                 .build()
@@ -111,7 +113,9 @@ class ApiIntegrationTests {
                             HttpStatusCode.Created,
                             emptyMap(),
                             "my body"
-                        ), name = "Preset name", description = "Preset description"
+                        ), name = "Preset name",
+                        description = "Preset description",
+                        type = DashboardOverridePreset.Type.Informational
                     )
                 ),
                 errorPresets = emptyList()
