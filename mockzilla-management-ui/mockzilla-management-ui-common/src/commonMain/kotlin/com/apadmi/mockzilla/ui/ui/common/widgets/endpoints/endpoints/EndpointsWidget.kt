@@ -2,10 +2,12 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -13,7 +15,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,68 +43,25 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import org.koin.core.parameter.parametersOf
 
+@Suppress("MAGIC_NUMBER")
 @Composable
-fun EndpointsWidget(
-    device: Device,
-    onEndpointClicked: (Key) -> Unit,
-) {
-    val viewModel =
-        getViewModel<EndpointsViewModel>(key = device.toString()) { parametersOf(device) }
-    val state by viewModel.state.collectAsState()
-
-    EndpointsWidgetContent(
-        state,
-        viewModel::onAllCheckboxChanged,
-        viewModel::onCheckboxChanged,
-        viewModel::onFailChanged,
-        viewModel::onFilterChanged,
-        onEndpointClicked
-    )
-}
-
-@Composable
-fun EndpointsWidgetContent(
-    state: EndpointsViewModel.State,
-    onAllCheckboxChanged: (value: Boolean) -> Unit,
-    onCheckboxChanged: (Key, value: Boolean) -> Unit,
-    onFailChanged: (Key, value: Boolean) -> Unit,
-    onFilterUpdate: (String) -> Unit,
-    onEndpointClicked: (Key) -> Unit,
-) = Column(
-    modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(rememberScrollState())
-) {
-    when (state) {
-        EndpointsViewModel.State.Loading -> Text("Empty")
-        is EndpointsViewModel.State.EndpointsList -> EndpointsList(
-            state,
-            onAllCheckboxChanged,
-            onEndpointClicked,
-            onCheckboxChanged,
-            onFailChanged,
-            onFilterUpdate
-        )
-    }
-}
-
-@Composable
-private fun EndpointsList(
+private fun ColumnScope.EndpointsList(
     state: EndpointsViewModel.State.EndpointsList,
     onAllCheckboxChanged: (value: Boolean) -> Unit,
     onEndpointClicked: (Key) -> Unit,
+    onGlobalControlsClicked: () -> Unit,
     onCheckboxChanged: (Key, value: Boolean) -> Unit,
     onFailChanged: (Key, value: Boolean) -> Unit,
     onFilterUpdate: (String) -> Unit,
-    strings: Strings = LocalStrings.current,
+    strings: Strings = LocalStrings.current
 ) {
     Filter(
         value = state.filter,
         onFilterUpdate = onFilterUpdate
     )
+
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         StandardTextTooltip(text = strings.widgets.endpoints.selectAllTooltip) {
@@ -115,13 +76,16 @@ private fun EndpointsList(
             text = strings.widgets.endpoints.errorSwitchLabel
         )
     }
+
     HorizontalDivider()
+
     state.endpoints.filter { it.display }.forEachIndexed { index, endpoint ->
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onEndpointClicked(endpoint.key) }
-            .alternatingBackground(index)
-            .padding(end = 8.dp),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onEndpointClicked(endpoint.key) }
+                .alternatingBackground(index)
+                .padding(end = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
@@ -145,6 +109,70 @@ private fun EndpointsList(
                 onCheckedChange = { onFailChanged(endpoint.key, it) }
             )
         }
+    }
+
+    // This FAB will be aligned properly once the UI for the endpoints widget is updated
+    Spacer(modifier = Modifier.height(20.dp))
+    FloatingActionButton(
+        modifier = Modifier
+            .align(Alignment.End)
+            .padding(end = 8.dp),
+        onClick = onGlobalControlsClicked,
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Settings,
+            contentDescription = null
+        )
+    }
+}
+
+@Composable
+fun EndpointsWidget(
+    device: Device,
+    onEndpointClicked: (Key) -> Unit,
+    onGlobalControlsClicked: () -> Unit
+) {
+    val viewModel = getViewModel<EndpointsViewModel>(key = device.toString()) {
+        parametersOf(device)
+    }
+    val state by viewModel.state.collectAsState()
+
+    EndpointsWidgetContent(
+        state = state,
+        onAllCheckboxChanged = viewModel::onAllCheckboxChanged,
+        onCheckboxChanged = viewModel::onCheckboxChanged,
+        onFailChanged = viewModel::onFailChanged,
+        onFilterUpdate = viewModel::onFilterChanged,
+        onEndpointClicked = onEndpointClicked,
+        onGlobalControlsClicked = onGlobalControlsClicked
+    )
+}
+
+@Composable
+fun EndpointsWidgetContent(
+    state: EndpointsViewModel.State,
+    onAllCheckboxChanged: (value: Boolean) -> Unit,
+    onCheckboxChanged: (Key, value: Boolean) -> Unit,
+    onFailChanged: (Key, value: Boolean) -> Unit,
+    onFilterUpdate: (String) -> Unit,
+    onEndpointClicked: (Key) -> Unit,
+    onGlobalControlsClicked: () -> Unit
+) = Column(
+    modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
+) {
+    when (state) {
+        EndpointsViewModel.State.Loading -> Text("Empty")
+        is EndpointsViewModel.State.EndpointsList -> EndpointsList(
+            state = state,
+            onAllCheckboxChanged = onAllCheckboxChanged,
+            onEndpointClicked = onEndpointClicked,
+            onGlobalControlsClicked = onGlobalControlsClicked,
+            onCheckboxChanged = onCheckboxChanged,
+            onFailChanged = onFailChanged,
+            onFilterUpdate = onFilterUpdate
+        )
     }
 }
 
@@ -216,6 +244,7 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
         onCheckboxChanged = { _, _ -> },
         onFailChanged = { _, _ -> },
         onFilterUpdate = {},
-        onEndpointClicked = {}
+        onEndpointClicked = {},
+        onGlobalControlsClicked = {}
     )
 }

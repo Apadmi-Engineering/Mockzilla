@@ -2,14 +2,21 @@ package com.apadmi.mockzilla.desktop.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionWidget
@@ -28,6 +35,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols.MiscControlsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsWidget
@@ -104,10 +112,28 @@ private fun middleWidgets(
     onEndpointClicked: (EndpointConfiguration.Key) -> Unit
 ) = listOf(when (state) {
     is AppRootViewModel.State.Connected -> Widget(id = "endpoints") {
-        EndpointsWidget(
-            state.activeDevice.device,
-            onEndpointClicked
-        )
+        val isGlobalControlsOpen = remember { mutableStateOf(false) }
+
+        if (isGlobalControlsOpen.value) {
+            Column {
+                IconButton(modifier = Modifier.align(Alignment.End), onClick = {
+                    isGlobalControlsOpen.value = false
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        contentDescription = LocalStrings.current.common.backDescription
+                    )
+                }
+                GlobalControlsWidget(state.activeDevice.device)
+            }
+        } else {
+            EndpointsWidget(
+                state.activeDevice.device,
+                onEndpointClicked,
+                { isGlobalControlsOpen.value = true }
+            )
+        }
     }
 
     AppRootViewModel.State.NewDeviceConnection -> Widget(id = "device-connection") {
