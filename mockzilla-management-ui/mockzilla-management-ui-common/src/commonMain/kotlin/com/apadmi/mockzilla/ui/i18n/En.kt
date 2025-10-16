@@ -76,7 +76,6 @@ val EnStrings = Strings(
             noBody = "Empty"
         ),
         endpoints = Strings.Widgets.Endpoints(
-            valuesOverriddenIndicatorTooltip = "Some or all of the properties of this response are being overridden",
             filterPlaceholder = "Filter endpoints...",
             numberOfEndpointsShown = { current, max ->
                 "Showing $current of $max endpoints"

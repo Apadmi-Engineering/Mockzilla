@@ -21,7 +21,6 @@ class EndpointsViewModel(
     scope: CoroutineScope? = null,
 ) : ViewModel(scope) {
     val state = MutableStateFlow<State>(State.Loading)
-    private val checkboxStates = mutableSetOf<EndpointConfiguration.Key>()
 
     init {
         eventBus.events.filter { it is EventBus.Event.EndpointDataChanged || it is EventBus.Event.FullRefresh }
@@ -35,7 +34,7 @@ class EndpointsViewModel(
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
             onSuccess = {
                 val currentState = state.value as? State.EndpointsList
-                State.EndpointsList(it.toConfig(checkboxStates), currentState?.filter ?: "")
+                State.EndpointsList(it.toConfig(), currentState?.filter ?: "")
             },
             onFailure = {
                 eventBus.send(EventBus.Event.GenericError)
@@ -44,9 +43,7 @@ class EndpointsViewModel(
         )
     }
 
-    private fun List<SerializableEndpointConfig>.toConfig(
-        tickedCheckboxes: Set<EndpointConfiguration.Key>?,
-    ): List<State.EndpointConfig> {
+    private fun List<SerializableEndpointConfig>.toConfig(): List<State.EndpointConfig> {
         val currentState = state.value as? State.EndpointsList
 
         return map {
@@ -54,7 +51,6 @@ class EndpointsViewModel(
                 key = it.key,
                 name = it.name,
                 fail = it.shouldFail == true,
-                isCheckboxTicked = tickedCheckboxes?.contains(it.key) == true,
                 overriddenProperties = it.getOverriddenProperties(),
                 display = filter(currentState?.filter ?: "", it.name)
             )
@@ -81,7 +77,6 @@ class EndpointsViewModel(
          * @property key
          * @property name
          * @property fail
-         * @property isCheckboxTicked
          * @property overriddenProperties
          * @property display
          */
@@ -89,7 +84,6 @@ class EndpointsViewModel(
             val key: EndpointConfiguration.Key,
             val name: String,
             val fail: Boolean,
-            val isCheckboxTicked: Boolean,
             val overriddenProperties: List<EndpointProperties>,
             val display: Boolean,
         )
@@ -101,20 +95,21 @@ class EndpointsViewModel(
         data class EndpointsList(
             val endpoints: List<EndpointConfig>,
             val filter: String,
-        ) : State() {
-            val selectAllTicked: Boolean get() = endpoints.all { it.isCheckboxTicked }
-        }
+        ) : State()
     }
 }
 
-public enum class EndpointProperties {
-    Body,
-    Delay,
-    ErrorBody,
-    ErrorHeaders,
-    ErrorStatus,
-    Headers,
-    Status,
+/**
+ * @property displayName
+ */
+enum class EndpointProperties(val displayName: String) {
+    Body("Body"),
+    Delay("Delay"),
+    ErrorBody("Error Body"),
+    ErrorHeaders("Error Headers"),
+    ErrorStatus("Error Status"),
+    Headers("Headers"),
+    Status("Status"),
     ;
 }
 

@@ -6,9 +6,7 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import co.touchlab.kermit.Logger
 import platform.Foundation.NSArray
 import platform.Foundation.NSBundle
-import platform.Foundation.NSException
 import platform.Foundation.containsObject
-import platform.Foundation.raise
 
 internal fun MockzillaConfig.validateInfoPlist() {
     if (!isNetworkDiscoveryEnabled) {

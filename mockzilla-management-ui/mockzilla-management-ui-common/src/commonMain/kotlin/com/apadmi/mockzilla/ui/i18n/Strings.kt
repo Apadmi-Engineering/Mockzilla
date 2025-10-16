@@ -204,13 +204,11 @@ data class Strings(
         )
 
         /**
-         * @property valuesOverriddenIndicatorTooltip // TODO: Remove this
          * @property filterPlaceholder
          * @property numberOfEndpointsShown
          * @property overrides
          */
         data class Endpoints(
-            val valuesOverriddenIndicatorTooltip: String,
             val filterPlaceholder: String,
             val numberOfEndpointsShown: (shown: Int, max: Int) -> String,
             val overrides: (number: Int) -> String

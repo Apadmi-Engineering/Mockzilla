@@ -42,7 +42,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.utils.conditional
+import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
 import org.jetbrains.compose.resources.painterResource
@@ -64,7 +64,7 @@ private fun ColumnScope.EndpointsList(
         onFilterUpdate = onFilterUpdate
     )
 
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     Text(
         text = strings.widgets.endpoints.numberOfEndpointsShown(
@@ -75,7 +75,7 @@ private fun ColumnScope.EndpointsList(
         style = MaterialTheme.typography.labelSmall
     )
 
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 
     state.endpoints.filter { it.display }.forEach { endpoint ->
         EndpointCard(
@@ -118,19 +118,17 @@ fun EndpointsWidget(
     )
 }
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 private fun EndpointCard(
     endpoint: EndpointsViewModel.State.EndpointConfig,
     onEndpointClicked: (Key) -> Unit,
     strings: Strings = LocalStrings.current
 ) = Column(
-    modifier = Modifier
-        .fillMaxWidth()
-        .background(
-            color = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(10.dp)
-        )
+    modifier = Modifier.fillMaxWidth()
 ) {
+    val topSectionShape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)
+    val bottomSectionShape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp)
     val failureBorderColor = MaterialTheme.colorScheme.error
 
     Row(
@@ -143,16 +141,19 @@ private fun EndpointCard(
                 } else {
                     MaterialTheme.colorScheme.surface
                 },
-                shape = RoundedCornerShape(10.dp)
+                shape = if (endpoint.overriddenProperties.isEmpty()) {
+                    RoundedCornerShape(10.dp)
+                } else {
+                    topSectionShape
+                }
             )
-            .conditional(
-                predicate = endpoint.fail,
-                positive = {
-                    border(
-                        width = 1.dp,
-                        color = failureBorderColor,
-                        shape = RoundedCornerShape(10.dp)
-                    )
+            .border(
+                width = if (endpoint.fail) (1.5).dp else (0.5).dp,
+                color = if (endpoint.fail) failureBorderColor else Color.Black.copy(alpha = 0.1f),
+                shape = if (endpoint.overriddenProperties.isEmpty()) {
+                    RoundedCornerShape(10.dp)
+                } else {
+                    topSectionShape
                 }
             )
             .padding(16.dp),
@@ -191,18 +192,23 @@ private fun EndpointCard(
         }
     }
 
+    val isEndpointStatusCodeSuccess = true  // TODO: Retrieve this from VM
     if (endpoint.overriddenProperties.isNotEmpty() && !endpoint.fail) {
         FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = Color.Red,
-                    shape = RoundedCornerShape(
-                        topStart = 0.dp,
-                        topEnd = 0.dp,
-                        bottomStart = 10.dp,
-                        bottomEnd = 10.dp
-                    )
+                    color = if (isEndpointStatusCodeSuccess) {
+                        MaterialTheme.colorScheme.success.container.copy(alpha = 0.1f)
+                    } else {
+                        MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)
+                    },
+                    shape = bottomSectionShape
+                )
+                .border(
+                    width = (0.5).dp,
+                    color = Color.Black.copy(alpha = 0.1f),
+                    shape = bottomSectionShape
                 )
                 .padding(horizontal = 16.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -223,7 +229,7 @@ private fun EndpointCard(
                             shape = RoundedCornerShape(8.dp)
                         )
                         .padding(horizontal = 8.dp, vertical = 2.dp),
-                    text = property.toString(),  // TODO: Map property to actual string
+                    text = property.displayName,
                     style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
                 )
             }
@@ -290,7 +296,6 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
                     key = Key("1"),
                     name = "FooBar",
                     fail = false,
-                    isCheckboxTicked = false,
                     overriddenProperties = listOf(
                         EndpointProperties.Delay,
                         EndpointProperties.Body
@@ -301,7 +306,6 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
                     key = Key("2"),
                     name = "Foo",
                     fail = true,
-                    isCheckboxTicked = true,
                     overriddenProperties = emptyList(),
                     display = true
                 ),
@@ -309,7 +313,6 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
                     key = Key("3"),
                     name = "FooBuzz",
                     fail = false,
-                    isCheckboxTicked = false,
                     overriddenProperties = listOf(
                         EndpointProperties.Delay,
                         EndpointProperties.Body,
@@ -323,7 +326,6 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
                     key = Key("4"),
                     name = "Foobar",
                     fail = false,
-                    isCheckboxTicked = false,
                     overriddenProperties = emptyList(),
                     display = true
                 )
