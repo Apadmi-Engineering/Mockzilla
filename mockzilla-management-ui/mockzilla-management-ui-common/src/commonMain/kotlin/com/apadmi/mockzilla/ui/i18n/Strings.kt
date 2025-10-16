@@ -204,18 +204,14 @@ data class Strings(
         )
 
         /**
-         * @property selectAllTooltip
-         * @property errorSwitchLabel
-         * @property valuesOverriddenIndicatorTooltip
-         * @property filterLabel
-         * @property filterClear
+         * @property filterPlaceholder
+         * @property numberOfEndpointsShown
+         * @property overrides
          */
         data class Endpoints(
-            val selectAllTooltip: String,
-            val errorSwitchLabel: String,
-            val valuesOverriddenIndicatorTooltip: String,
-            val filterLabel: String,
-            val filterClear: String
+            val filterPlaceholder: String,
+            val numberOfEndpointsShown: (shown: Int, max: Int) -> String,
+            val overrides: (number: Int) -> String
         )
 
         /**

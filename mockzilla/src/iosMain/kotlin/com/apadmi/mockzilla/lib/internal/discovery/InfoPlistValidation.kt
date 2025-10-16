@@ -6,11 +6,9 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import co.touchlab.kermit.Logger
 import platform.Foundation.NSArray
 import platform.Foundation.NSBundle
-import platform.Foundation.NSException
 import platform.Foundation.containsObject
-import platform.Foundation.raise
 
-fun MockzillaConfig.validateInfoPlistOrThrow() {
+internal fun MockzillaConfig.validateInfoPlist() {
     if (!isNetworkDiscoveryEnabled) {
         return
     }
@@ -18,7 +16,7 @@ fun MockzillaConfig.validateInfoPlistOrThrow() {
     val infoDictionary = NSBundle.mainBundle.infoDictionary!!
     val bonjourEntry = infoDictionary["NSBonjourServices"] as? NSArray
     if (bonjourEntry == null || !bonjourEntry.containsObject(ZeroConfConfig.serviceType)) {
-        Logger.e {
+        Logger.w {
             """
                 👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇
                 --------------------------------------------------------------------------------
@@ -39,7 +37,5 @@ fun MockzillaConfig.validateInfoPlistOrThrow() {
                 ☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝️☝
             """.trimIndent()
         }
-        @OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
-        NSException.raise("Missing Bonjour entry in Info.plist. See above instructions", "", null)
     }
 }

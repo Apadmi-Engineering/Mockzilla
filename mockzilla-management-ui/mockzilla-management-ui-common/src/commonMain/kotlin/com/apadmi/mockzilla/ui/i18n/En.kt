@@ -76,11 +76,16 @@ val EnStrings = Strings(
             noBody = "Empty"
         ),
         endpoints = Strings.Widgets.Endpoints(
-            selectAllTooltip = "Select all",
-            errorSwitchLabel = "Use Error Response",
-            valuesOverriddenIndicatorTooltip = "Some or all of the properties of this response are being overridden",
-            filterLabel = "Filter",
-            filterClear = "Clear"
+            filterPlaceholder = "Filter endpoints...",
+            numberOfEndpointsShown = { current, max ->
+                "Showing $current of $max endpoints"
+            },
+            overrides = { number ->
+                when (number) {
+                    1 -> "1 override:"
+                    else -> "$number overrides:"
+                }
+            }
         ),
         globalControls = Strings.Widgets.GlobalControls(
             title = "Global Controls",

@@ -19,7 +19,7 @@ private fun wrapResult(result: Any?): List<Any?> {
 }
 
 private fun wrapError(exception: Throwable): List<Any?> {
-  return if (exception is MockzillaMobileUiErrorBridge) {
+  return if (exception is MockzillaMobileUiFlutterError) {
     listOf(
       exception.code,
       exception.message,
@@ -40,7 +40,7 @@ private fun wrapError(exception: Throwable): List<Any?> {
  * @property message The error message.
  * @property details The error details. Must be a datatype supported by the api codec.
  */
-class MockzillaMobileUiErrorBridge (
+class MockzillaMobileUiFlutterError (
   val code: String,
   override val message: String? = null,
   val details: Any? = null

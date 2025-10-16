@@ -27,7 +27,7 @@ android {
 
     buildTypes {
         getByName("debug") {
-            isMinifyEnabled = true
+//            isMinifyEnabled = true
         }
     }
 
