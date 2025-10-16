@@ -258,49 +258,6 @@ data class Strings(
         )
 
         /**
-         * @property title
-         * @property subtitle
-         * @property resetAllLabel
-         * @property normalBehaviourBannerConfig
-         * @property forcedFailureBannerConfig
-         * @property partialFailureBannerConfig
-         * @property failButtonLabel
-         * @property restoreButtonLabel
-         */
-        data class GlobalControls(
-            val title: String,
-            val subtitle: String,
-            val resetAllLabel: String,
-            val normalBehaviourBannerConfig: GlobalConfigBanner,
-            val forcedFailureBannerConfig: GlobalConfigBanner,
-            val partialFailureBannerConfig: GlobalConfigBanner,
-            val failButtonLabel: String,
-            val restoreButtonLabel: String,
-        ) {
-            /**
-             * @property title
-             * @property subtitle
-             */
-            data class GlobalConfigBanner(
-                val title: String,
-                val subtitle: String,
-            )
-        }
-
-        /**
-         * @property title
-         * @property millisecondLabel
-         * @property sliderMin
-         * @property sliderMax
-         */
-        data class Latency(
-            val title: String,
-            val millisecondLabel: String,
-            val sliderMin: String,
-            val sliderMax: String
-        )
-
-        /**
          * @property none
          * @property useErrorResponse
          * @property defaultDataTab

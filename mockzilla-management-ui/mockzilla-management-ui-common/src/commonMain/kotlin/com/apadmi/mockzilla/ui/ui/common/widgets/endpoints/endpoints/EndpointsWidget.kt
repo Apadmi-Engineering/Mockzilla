@@ -42,7 +42,6 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
 import org.jetbrains.compose.resources.painterResource
@@ -137,7 +136,7 @@ private fun EndpointCard(
             .clickable { onEndpointClicked(endpoint.key) }
             .background(
                 color = if (endpoint.fail) {
-                    MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
+                    MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f)
                 } else {
                     MaterialTheme.colorScheme.surface
                 },
@@ -192,17 +191,12 @@ private fun EndpointCard(
         }
     }
 
-    val isEndpointStatusCodeSuccess = true  // TODO: Retrieve this from VM
     if (endpoint.overriddenProperties.isNotEmpty() && !endpoint.fail) {
         FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (isEndpointStatusCodeSuccess) {
-                        MaterialTheme.colorScheme.success.container.copy(alpha = 0.1f)
-                    } else {
-                        MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)
-                    },
+                    color = MaterialTheme.colorScheme.secondaryContainer,  // TODO: Wire up correct colours
                     shape = bottomSectionShape
                 )
                 .border(
@@ -314,11 +308,11 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
                     name = "FooBuzz",
                     fail = false,
                     overriddenProperties = listOf(
+                        EndpointProperties.Status,
+                        EndpointProperties.Status,
                         EndpointProperties.Delay,
                         EndpointProperties.Body,
-                        EndpointProperties.Headers,
-                        EndpointProperties.ErrorHeaders,
-                        EndpointProperties.ErrorBody
+                        EndpointProperties.Headers
                     ),
                     display = true
                 ),

@@ -105,9 +105,6 @@ class EndpointsViewModel(
 enum class EndpointProperties(val displayName: String) {
     Body("Body"),
     Delay("Delay"),
-    ErrorBody("Error Body"),
-    ErrorHeaders("Error Headers"),
-    ErrorStatus("Error Status"),
     Headers("Headers"),
     Status("Status"),
     ;
@@ -117,8 +114,5 @@ private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull
     EndpointProperties.Delay.takeIf { delayMs != null },
     EndpointProperties.Body.takeIf { defaultBody != null },
     EndpointProperties.Status.takeIf { defaultStatus != null },
-    EndpointProperties.Headers.takeIf { defaultHeaders != null },
-    EndpointProperties.ErrorStatus.takeIf { errorStatus != null },
-    EndpointProperties.ErrorBody.takeIf { errorBody != null },
-    EndpointProperties.ErrorHeaders.takeIf { errorHeaders != null },
+    EndpointProperties.Headers.takeIf { defaultHeaders != null }
 )

@@ -168,7 +168,7 @@ internal fun GlobalControlsWidgetIdleContent(
     }
 }
 
-@Suppress("MAGIC_NUMBER")  // TODO: Remove
+@Suppress("MAGIC_NUMBER")
 @Composable
 private fun GlobalFailureConfigBanner(
     state: State.ApiFailureState,
