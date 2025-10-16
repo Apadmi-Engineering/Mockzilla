@@ -1,6 +1,6 @@
 import Flutter
 import UIKit
-import mockzilla_mobile_ui
+import mockzillamobileui
 import SwiftMockzillaMobileUi
 
 public class MockzillaUiMobilePlugin: NSObject, FlutterPlugin {

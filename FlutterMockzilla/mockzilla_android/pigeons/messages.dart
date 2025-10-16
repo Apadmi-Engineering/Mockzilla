@@ -5,7 +5,9 @@ import 'package:pigeon/pigeon.dart';
     dartOut: "lib/src/messages.g.dart",
     dartOptions: DartOptions(),
     kotlinOut: "android/src/main/kotlin/com/apadmi/mockzilla/Messages.g.kt",
-    kotlinOptions: KotlinOptions(),
+    kotlinOptions: KotlinOptions(
+      errorClassName: "MockzillaFlutterError",
+    ),
   ),
 )
 enum BridgeHttpMethod {

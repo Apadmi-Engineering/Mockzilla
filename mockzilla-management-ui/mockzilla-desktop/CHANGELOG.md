@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.2 (2025-10-13)
+
+### Features
+
+* first pass reworking the desktop UI to work on mobile ([149ef73](https://github.com/Apadmi-Engineering/Mockzilla/commit/149ef73cc1e78fa3598fecf89ddab685e652ec9e))
+* update colour scheme (#477)
+
+### Bug Fixes
+
+* fix navigation stack ([#471](https://github.com/Apadmi-Engineering/Mockzilla/issues/471)) ([2266872](https://github.com/Apadmi-Engineering/Mockzilla/commit/226687271a9ffdaef6d5258db195211f31860bbf))
+
 ## [1.2.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-ui-v1.2.0...mockzilla-management-ui-v1.2.1) (2025-09-17)
 
 

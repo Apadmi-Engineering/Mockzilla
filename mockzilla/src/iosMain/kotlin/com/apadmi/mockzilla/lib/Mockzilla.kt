@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryServiceImpl
-import com.apadmi.mockzilla.lib.internal.discovery.validateInfoPlistOrThrow
+import com.apadmi.mockzilla.lib.internal.discovery.validateInfoPlist
 import com.apadmi.mockzilla.lib.internal.persistance.KeychainSettings
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.extractMetaData
@@ -17,7 +17,7 @@ import com.apadmi.mockzilla.lib.models.PortConflictException
  */
 @Throws(PortConflictException::class)
 fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams {
-    config.validateInfoPlistOrThrow()
+    config.validateInfoPlist()
 
     return startMockzilla(
         config = config,
