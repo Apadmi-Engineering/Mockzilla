@@ -27,41 +27,33 @@ internal class LocalMockController(
         val endpoint = endpoints.firstOrNull {
             it.endpointMatcher(request)
         } ?: return MockzillaHttpResponse(
-            HttpStatusCode.InternalServerError,
+            statusCode = HttpStatusCode.InternalServerError,
             body = "Could not find endpoint for request ${request.uri}"
         )
 
-        val cachedResponse = localCacheService.getLocalCache(endpoint.key)
-        val shouldFail = cachedResponse?.shouldFail ?: endpoint.shouldFail
+        val cachedConfig = localCacheService.getLocalCache(endpoint.key)
+        val shouldFail = cachedConfig?.shouldFail ?: endpoint.shouldFail
 
         // Delay the response for the correct amount of time
-        val delay = (cachedResponse?.delayMs ?: endpoint.delay)?.toLong() ?: 0
+        val delay = (cachedConfig?.delayMs ?: endpoint.delay)?.toLong() ?: 0
         delay(delay)
 
         // Use the cached response by default, i.e. if a user has specified data via the management api
         // then we return that, otherwise we call the appropriate handler.
         return if (shouldFail) {
             logger.v { "Call to ${endpoint.key} should fail, returning error response" }
-            val response = if (listOf(
-                cachedResponse?.errorStatus,
-                cachedResponse?.errorHeaders,
-                cachedResponse?.errorBody
-            ).any { it == null }
-            ) {
-                endpoint.errorHandler(request)
-            } else {
-                null
-            }
+            val response = endpoint.errorHandler(request)
             MockzillaHttpResponse(
-                statusCode = cachedResponse?.errorStatus ?: response?.statusCode ?: HttpStatusCode.InternalServerError,
-                headers = cachedResponse?.errorHeaders ?: response?.headers ?: emptyMap(),
-                body = cachedResponse?.errorBody ?: response?.body ?: ""
+                statusCode = response.statusCode,
+                headers = response.headers,
+                body = response.body
             )
         } else {
+            val cachedResponse = cachedConfig?.appliedPresetOverride?.response
             val response = if (listOf(
-                cachedResponse?.defaultStatus,
-                cachedResponse?.defaultHeaders,
-                cachedResponse?.defaultBody
+                cachedResponse?.statusCode,
+                cachedResponse?.headers,
+                cachedResponse?.body
             ).any { it == null }
             ) {
                 endpoint.defaultHandler(request)
@@ -70,9 +62,9 @@ internal class LocalMockController(
             }
 
             MockzillaHttpResponse(
-                statusCode = cachedResponse?.defaultStatus ?: response?.statusCode ?: HttpStatusCode.InternalServerError,
-                headers = cachedResponse?.defaultHeaders ?: response?.headers ?: emptyMap(),
-                body = cachedResponse?.defaultBody ?: response?.body ?: ""
+                statusCode = cachedResponse?.statusCode ?: response?.statusCode ?: HttpStatusCode.InternalServerError,
+                headers = cachedResponse?.headers ?: response?.headers ?: emptyMap(),
+                body = cachedResponse?.body ?: response?.body ?: ""
             )
         }.also { response ->
             mockServerMonitor.log(

@@ -112,7 +112,7 @@ enum class EndpointProperties(val displayName: String) {
 
 private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull(
     EndpointProperties.Delay.takeIf { delayMs != null },
-    EndpointProperties.Body.takeIf { defaultBody != null },
-    EndpointProperties.Status.takeIf { defaultStatus != null },
-    EndpointProperties.Headers.takeIf { defaultHeaders != null }
+    EndpointProperties.Body.takeIf { defaultBody != null || appliedPresetOverride?.response?.body != null },
+    EndpointProperties.Status.takeIf { defaultStatus != null || appliedPresetOverride?.response?.statusCode != null },
+    EndpointProperties.Headers.takeIf { defaultHeaders != null || appliedPresetOverride?.response?.headers != null }
 )

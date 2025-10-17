@@ -64,6 +64,7 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
             errorHeaders = mapOf(),
             errorBody = "{}",
             errorStatus = HttpStatusCode.BadRequest,
+            appliedPresetOverride = null
         )
         val presets = DashboardOptionsConfig.Builder().build()
         every { eventBusMock.events }.returns(emptyFlow())
