@@ -20,7 +20,7 @@ dokka = "2.0.0" # https://github.com/Kotlin/dokka
 lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "3.3.0" # https://github.com/ktorio/ktor
+ktor = "3.3.1" # https://github.com/ktorio/ktor
 
 # Compose
 # using beta to fix https://slack-chats.kotlinlang.org/t/29844860/hello-everyone-in-my-team-we-are-having-a-big-problem-with-t
@@ -38,7 +38,7 @@ kotlinx-serialization = "1.9.0" # https://github.com/Kotlin/kotlinx.serializatio
 lifecycle = "2.9.4" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 compose-activity = "1.11.0" # https://developer.android.com/jetpack/androidx/releases/activity
 mockk = "1.14.6"
-navigationCompose = "2.9.0"
+navigationCompose = "2.9.1"
 playServicesAdsIdentifier = "18.2.0"
 
 # Semantic Versioning
