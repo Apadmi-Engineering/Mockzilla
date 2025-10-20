@@ -91,10 +91,10 @@ internal fun ResponseLatencyCard(
                 contentDescription = null
             )
             Text(
+                modifier = Modifier.weight(1f),
                 text = strings.widgets.latency.title,
                 style = MaterialTheme.typography.titleMedium
             )
-            Spacer(Modifier.weight(1f))
             IconButton(
                 onClick = onReset,
                 enabled = value != null
@@ -129,7 +129,8 @@ internal fun ResponseLatencyCard(
                     value?.let {
                         Text(strings.widgets.latency.millisecondLabel)
                     } ?: Box(Modifier)
-                })
+                }
+            )
             Spacer(Modifier.size(12.dp))
             SquareIconButton(
                 enabled = value != null && value != maxLatencyMs,

@@ -163,6 +163,7 @@ private fun ConnectedState(
             )
         }
     }
+
     composable<Destination.Debug> {
         Surface {
             DebugWidget()
