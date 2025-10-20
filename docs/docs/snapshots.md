@@ -8,10 +8,10 @@
     To try out the latest development build add the following Maven url to your project.
 
     ```kotlin
-    maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/") }
+    maven { setUrl("https://central.sonatype.com/repository/maven-snapshots/") }
     ```
 
-    Update the Mockzilla version to the latest Snapshot version found [here](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apadmi/mockzilla/).
+    The latest snapshot can be found by examining the latest build [here](https://github.com/Apadmi-Engineering/Mockzilla/actions/workflows/action_deploy_binaries.yml).
 
 === "Flutter"
     Snapshots are published on [pub.dev](https://pub.dev/packages/mockzilla) as [pre-releases](https://dart.dev/tools/pub/publishing#publishing-prereleases).

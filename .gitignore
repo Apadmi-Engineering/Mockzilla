@@ -37,3 +37,6 @@ temp/
 mockzilla-management-ui/common/src/test/snapshots/images
 output/
 .kotlin
+SwiftMockzillaMobileUi/SwiftMockzillaMobileUi.podspec
+
+mockzilla-management-ui/mockzilla-mobile-ui/SwiftMockzillaMobileUi.podspec

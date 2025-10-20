@@ -4,7 +4,11 @@
 
 A Flutter plugin for running and configuring a local, mock HTTP server that allows your mobile app to simulate calls to a REST API.
 
-**Full documentation available [here!](https://apadmi-engineering.github.io/Mockzilla/)**
+|             | Android                 | iOS   |
+|-------------|-------------------------|-------|
+| **Support** | SDK 21+ (Target SDK 36) | 13.0+ |
+
+**Full documentation available [here!](https://mockzilla.apadmi.dev/)**
 
 ## Why use Mockzilla?
 
@@ -18,7 +22,7 @@ A Flutter plugin for running and configuring a local, mock HTTP server that allo
 
 ## To hit the ground running
 
-> ⚠️ **Warning:** Mockzilla is a development tool only. Do not use it in production! Advice on how to do this using different Dart entrypoints can be found [here](https://apadmi-engineering.github.io/Mockzilla/#recommendation).
+> ⚠️ **Warning:** Mockzilla is a development tool only. Do not use it in production! Advice on how to do this using different Dart entrypoints can be found [here](https://mockzilla.apadmi.dev/#recommendation).
 
 **(1)** Create your Mockzilla server config and add mocked endpoints.
 
@@ -52,6 +56,6 @@ The Mockzilla Desktop application lets you inspect and configure the mocked endp
 
 <img src="https://raw.githubusercontent.com/Apadmi-Engineering/Mockzilla/refs/heads/develop/docs/docs/desktop/img/desktop_demo.gif">
 
-More information about Mockzilla Desktop can be found [here](https://apadmi-engineering.github.io/Mockzilla/desktop/overview/).
+More information about Mockzilla Desktop can be found [here](https://mockzilla.apadmi.dev/desktop/overview/).
 
 > ℹ️ **Note:** Mockzilla Desktop replaces the web console from version 1.0.0 onwards. The web console is now deprecated and will eventually be retired.

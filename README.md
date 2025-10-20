@@ -21,7 +21,7 @@ The source code is written in Kotlin but is fully compatible with a Swift enviro
 
 ## Quick Start 🚀
 
-Please see our quick start guide and full documentation [here](https://apadmi-engineering.github.io/Mockzilla/).
+Please see our quick start guide and full documentation [here](https://mockzilla.apadmi.dev/).
 
 ## Why's it useful? 🙌
 
@@ -69,7 +69,3 @@ Mockzilla is designed as a development and test tool **only**.
 Mockzilla should **never be used in production**. Its traffic is unprotected and by nature of running a server on device, it can introduce security issues. 
 
 **Do not ship it to production**.
-
-
-
-

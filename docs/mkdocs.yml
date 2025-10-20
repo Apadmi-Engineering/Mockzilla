@@ -1,11 +1,29 @@
 site_name: Mockzilla
-site_url: https://apadmi-engineering.github.io/Mockzilla/
+site_url: https://mockzilla.apadmi.dev/
 repo_url: https://github.com/Apadmi-Engineering/Mockzilla
+copyright: Copyright &copy; 2025 Apadmi Ltd
 theme:
+  logo: "img/icon.svg"
+  favicon: "img/favicon.ico"
+  custom_dir: docs/overrides
   palette:
-    scheme: slate
-    primary: deep orange
-    accent: deep orange
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+      primary: custom
+      accent: custom
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+      primary: custom
+      accent: custom
   name: material
   features:
     - navigation.tabs
@@ -14,17 +32,19 @@ theme:
 plugins:
   - search
   - macros
+extra_css:
+  - stylesheets/extra.css
 nav:
   - index.md
   - Docs:
+    - quick-start.md
     - endpoints.md
     - additional_config.md
     - browser_stack.md
     - snapshots.md
-    - Web:
-        - Web Interface (Deprecated): web_interface.md
-    - Mockzilla Desktop:
-        - Overview: desktop/overview.md
+    - Configuration at Runtime:
+      - desktop/overview.md
+      - mobile_ui.md
   - Contributing:
       - contributing.md
       - Desktop App: desktop_contributing.md
@@ -47,3 +67,5 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+hooks:
+  - custom_hooks.py

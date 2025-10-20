@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.1.0...flutter_mockzilla_platform_interface-v1.1.1) (2025-09-24)
+
+
+### Bug Fixes
+
+* Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
+
 ## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.0.2...flutter_mockzilla_platform_interface-v1.1.0) (2025-06-05)
 
 

@@ -7,6 +7,7 @@
 
 import mockzilla
 import SwiftUI
+import SwiftMockzillaMobileUi
 
 struct Fonts {
     static let debug = Font
@@ -38,6 +39,12 @@ struct RootView: View {
                 }
             }) {
                 Text("Make Network Request").font(.system(size: 16))
+            }
+            
+            Button(action: {
+                launchManagementUiSwift()
+            }) {
+                Text("Launch Management Ui").font(.system(size: 16))
             }
 
             Divider()

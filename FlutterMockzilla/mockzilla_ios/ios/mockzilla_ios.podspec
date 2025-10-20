@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 The iOS implementation for the mockzilla plugin.
                        DESC
-  s.homepage         = 'https://apadmi-engineering.github.io/Mockzilla/'
+  s.homepage         = 'https://mockzilla.apadmi.dev/'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Apadmi Ltd.' => 'tomh@apadmi.com' }
   s.source           = { :path => '.' }
@@ -21,5 +21,5 @@ The iOS implementation for the mockzilla plugin.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
 
-  s.dependency 'SwiftMockzilla', '2.1.3'
+  s.dependency 'SwiftMockzilla', '2.4.1'
 end

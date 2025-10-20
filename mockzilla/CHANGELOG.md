@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.3.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.3.2...mockzilla-v2.2.4) (2025-09-16)
+
+### Bug Fixes
+
+* Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
+
+### Miscellaneous Chores
+
+* Bump target Android version to 36
+
 ## [2.1.3](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v2.1.2...mockzilla-v2.1.3) (2025-05-07)
 
 

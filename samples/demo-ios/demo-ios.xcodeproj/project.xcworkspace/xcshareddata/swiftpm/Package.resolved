@@ -1,13 +1,22 @@
 {
+  "originHash" : "c02918196e846babc463f847316a57252d01c193aa36cd8b60bf50004643ce11",
   "pins" : [
     {
       "identity" : "swiftmockzilla",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Apadmi-Engineering/SwiftMockzilla",
       "state" : {
-        "revision" : "16d67d870d0fad648c000e54808cd9054975e1ac"
+        "revision" : "fd8be06de44e7f2fc3c6c877ab67845ce8639569"
+      }
+    },
+    {
+      "identity" : "swiftmockzillamobileui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi/",
+      "state" : {
+        "revision" : "ba06b3820b190593abddc7e9581a11f0ffd8278b"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

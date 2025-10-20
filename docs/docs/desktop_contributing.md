@@ -1,1 +1,1 @@
-{{print_source_file("mockzilla-management-ui/README.md")}}
+{{print_source_file("mockzilla-management-ui/mockzilla-desktop/README.md")}}

@@ -36,8 +36,21 @@
       "release-type": "dart",
       "always-update": true
     },
-    "mockzilla-management-ui": {
-      "component": "mockzilla-management-ui",
+    "mockzilla-management-ui/mockzilla-desktop": {
+      "component": "mockzilla-desktop",
+      "extra-files": ["build.gradle.kts"]
+    },
+    "FlutterMockzilla/mockzilla_ui_mobile": {
+      "component": "flutter_mockzilla_ui_mobile",
+      "release-type": "dart",
+      "always-update": true,
+      "extra-files": [
+        "android/build.gradle",
+        "ios/mockzilla_ui_mobile.podspec"
+      ]
+    },
+    "mockzilla-management-ui/mockzilla-mobile-ui": {
+      "component": "mockzilla-mobile-ui",
       "extra-files": ["build.gradle.kts"]
     }
   },
@@ -49,6 +62,14 @@
         "mockzilla",
         "mockzilla-common",
         "mockzilla-management"
+      ]
+    },
+    {
+      "type": "linked-versions",
+      "groupName": "Mockzilla mobile ui",
+      "components": [
+        "mockzilla-mobile-ui",
+        "flutter_mockzilla_ui_mobile"
       ]
     }
   ]

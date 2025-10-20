@@ -1,7 +1,19 @@
-This documentation is all built using [MkDocs](https://www.mkdocs.org/)
+This documentation is primarily built using [MkDocs](https://www.mkdocs.org/)
 with the [Material theme](https://squidfunk.github.io/mkdocs-material/).
 
 **Their documentation is brilliant so please check their docs if this is not sufficient.**
+
+
+## Working on the HomePage
+
+The homepage is a separate React site which is included in the MkDocs site.
+
+In your IDE of choice open `docs/homepage` and treat it as regular standalone react site.
+Install dependencies with `npm install` and run it with `npm run dev`.
+
+Note: Run `npm run build` to get your updates to the homepage reflected in the mkdocs site locally.
+
+## Working on the rest of the documentation
 
 Please ensure this documentation is updated whenever changes are made to
 the source code / configuration.

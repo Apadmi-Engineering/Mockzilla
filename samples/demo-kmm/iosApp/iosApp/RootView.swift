@@ -52,6 +52,11 @@ struct RootView: View {
                         .font(Fonts.debug)
                 }
             }
+            Button(action: {
+                MockServerKt.launchMockManagementUi()
+            }) {
+                Text("Launch Management UI").font(.system(size: 16))
+            }
             Spacer()
         }.frame(maxHeight: .infinity)
             .padding(16)

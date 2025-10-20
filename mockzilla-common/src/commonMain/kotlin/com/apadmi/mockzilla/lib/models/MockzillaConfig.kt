@@ -137,7 +137,7 @@ data class MockzillaConfig(
 
         /**
          * Setting this value to `true` means the mockzilla server will only accept calls from localhost.
-         * Calls from other IPs will be blocked (including blocking the Mockzilla web interface)
+         * Calls from other IPs will be blocked (including blocking the Mockzilla desktop interface)
          *
          * @param localhostOnly
          */
@@ -218,9 +218,11 @@ data class MockzillaConfig(
  * @property port
  * @property authHeaderProvider
  * @property mockzillaVersion
+ * @property ip
  */
 data class MockzillaRuntimeParams(
     val config: MockzillaConfig,
+    val ip: String,
     val mockBaseUrl: String,
     val apiBaseUrl: String,
     val port: Int,

@@ -53,6 +53,14 @@ Publish to maven local
 
 Publish to maven remote
 
+### get_core_mockzilla_version_name
+
+```sh
+[bundle exec] fastlane get_core_mockzilla_version_name
+```
+
+
+
 ### lib_mockzilla_management_pull_request
 
 ```sh
@@ -60,6 +68,38 @@ Publish to maven remote
 ```
 
 Run tests for management module
+
+### publish_mobile_ui_to_maven_local
+
+```sh
+[bundle exec] fastlane publish_mobile_ui_to_maven_local
+```
+
+Publish to maven local
+
+### publish_mobile_ui_to_maven
+
+```sh
+[bundle exec] fastlane publish_mobile_ui_to_maven
+```
+
+Publish to maven remote
+
+### management_ui_pre_deploy_checks
+
+```sh
+[bundle exec] fastlane management_ui_pre_deploy_checks
+```
+
+During deployment we don't use local packages, but for deployment we have to, so run tests against the deployed core binaries
+
+### management_ui_pull_request
+
+```sh
+[bundle exec] fastlane management_ui_pull_request
+```
+
+
 
 ### combined_pull_request
 
@@ -82,21 +122,13 @@ Run tests for management module
 
 iOS target for the kmm demo
 
-### ios generate_xcframework
+### ios generate_framework_and_podspec
 
 ```sh
-[bundle exec] fastlane ios generate_xcframework
+[bundle exec] fastlane ios generate_framework_and_podspec
 ```
 
-Generate XCFramework
-
-### ios generate_podspec
-
-```sh
-[bundle exec] fastlane ios generate_podspec
-```
-
-Generate Podspec
+Generate Podspec and Framework
 
 ### ios publish_swift_package
 
@@ -121,6 +153,14 @@ iOS target for the lib
 ```
 
 Build and test SwiftMockzilla
+
+### ios publish_mobile_ui_swift_package
+
+```sh
+[bundle exec] fastlane ios publish_mobile_ui_swift_package
+```
+
+Deploy the package to github & push podspec
 
 ### ios demo_ios_pull_request
 
@@ -150,15 +190,6 @@ Android target for the kmm demo
 ```
 
 Android target for the lib
-
-### android management_ui_pull_request
-
-```sh
-[bundle exec] fastlane android management_ui_pull_request
-```
-
-
-
 
 ### android demo_android_pull_request
 

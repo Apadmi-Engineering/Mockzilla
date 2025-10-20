@@ -25,7 +25,7 @@ import kotlinx.coroutines.*
 private var server: ApplicationEngine? = null
 private var job: Job? = null
 
-private inline fun Application.setupReleaseMode(
+private fun Application.setupReleaseMode(
     config: MockzillaConfig,
     tokensService: TokensService
 ) {
@@ -97,12 +97,13 @@ internal fun startServer(port: Int, di: DependencyInjector) = runBlocking {
     startNetworkDiscoveryBroadcastIfNeeded(job, di, actualPort)
 
     MockzillaRuntimeParams(
-        di.config,
-        "http://127.0.0.1:$actualPort/local-mock",
-        "http://127.0.0.1:$actualPort/api",
-        actualPort,
-        di.authHeaderProvider,
-        BuildKonfig.VERSION_NAME,
+        config = di.config,
+        ip = "127.0.0.1",
+        mockBaseUrl = "http://127.0.0.1:$actualPort/local-mock",
+        apiBaseUrl = "http://127.0.0.1:$actualPort/api",
+        port = actualPort,
+        authHeaderProvider = di.authHeaderProvider,
+        mockzillaVersion = BuildKonfig.VERSION_NAME,
     )
 }
 

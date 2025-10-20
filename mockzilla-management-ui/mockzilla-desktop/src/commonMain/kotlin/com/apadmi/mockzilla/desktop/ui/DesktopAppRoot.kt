@@ -1,0 +1,159 @@
+package com.apadmi.mockzilla.desktop.ui
+
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+
+import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionWidget
+import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsWidget
+import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
+import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
+import com.apadmi.mockzilla.desktop.ui.utils.mobileStatusBarPadding
+import com.apadmi.mockzilla.lib.internal.models.LogEvent
+import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.i18n.LocalStrings
+import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
+import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
+import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
+import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols.MiscControlsWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsWidget
+
+private const val endpointDetailsWidgetId = "endpoint-details"
+private const val logDetailsWidgetId = "log-details"
+
+@Composable
+fun DesktopApp(
+    strings: Strings = LocalStrings.current
+) {
+    AppTheme {
+        val viewModel = getViewModel<AppRootViewModel>()
+        val state by viewModel.state.collectAsState()
+
+        var openWidgets by remember { mutableStateOf(emptySet<String>()) }
+        var logDetail by remember { mutableStateOf<LogEvent?>(null) }
+
+        WidgetScaffold(
+            modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
+            openWidgets = openWidgets,
+            top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
+            left = leftPanelWidgets(state, strings),
+            right = rightPanelWidgets(state = state, logDetail = logDetail, strings = strings),
+            middle = middleWidgets(state) {
+                viewModel.setSelectedEndpoint(it)
+                openWidgets = openWidgets.plus(endpointDetailsWidgetId)
+            },
+            bottom = bottomPanelWidgets(
+                state = state,
+                onViewDetail = {
+                    logDetail = it
+                    openWidgets = openWidgets.plus(logDetailsWidgetId)
+                },
+                strings = strings,
+            ),
+            onSelected = {
+                openWidgets = if (openWidgets.contains(it)) {
+                    openWidgets.minus(it)
+                } else {
+                    openWidgets.plus(it)
+                }
+            }
+        )
+
+        AnimatedErrorBanner(
+            (state as? AppRootViewModel.State.Connected)?.error,
+            viewModel::refreshAll,
+            viewModel::dismissError
+        )
+    }
+}
+
+@Suppress("LAMBDA_IS_NOT_LAST_PARAMETER")
+private fun bottomPanelWidgets(
+    state: AppRootViewModel.State,
+    onViewDetail: (LogEvent) -> Unit,
+    strings: Strings
+) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
+    listOf(
+        Widget(id = "monitor-logs", strings.widgets.logs.title) {
+            MonitorLogsWidget(
+                device = connectedState.activeDevice.device,
+                onViewDetail = onViewDetail
+            )
+        }
+    )
+} ?: emptyList()
+
+@Suppress("diktat") // Diktat generates an invalid else block for some reason
+private fun middleWidgets(
+    state: AppRootViewModel.State,
+    onEndpointClicked: (EndpointConfiguration.Key) -> Unit
+) = listOf(when (state) {
+    is AppRootViewModel.State.Connected -> Widget(id = "endpoints") {
+        EndpointsWidget(
+            state.activeDevice.device,
+            onEndpointClicked
+        )
+    }
+
+    AppRootViewModel.State.NewDeviceConnection -> Widget(id = "device-connection") {
+        DeviceConnectionWidget()
+    }
+
+    AppRootViewModel.State.UnsupportedDeviceMockzillaVersion -> Widget(id = "unsupported-mockzilla") {
+        UnsupportedDeviceMockzillaVersionWidget()
+    }
+})
+
+private fun rightPanelWidgets(
+    state: AppRootViewModel.State,
+    logDetail: LogEvent?,
+    strings: Strings
+) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
+    listOf(
+        Widget(
+            id = endpointDetailsWidgetId,
+            title = strings.widgets.endpointDetails.title
+        ) {
+            Crossfade(
+                targetState = connectedState,
+                animationSpec = tween(durationMillis = 200)
+            ) { newState ->
+                EndpointDetailsWidget(newState.activeDevice.device, newState.selectedEndpoint)
+            }
+        },
+        Widget(
+            id = logDetailsWidgetId,
+            title = strings.widgets.logDetails.title
+        ) {
+            MonitorLogDetailsWidget(logDetail)
+        }
+    )
+} ?: emptyList()
+
+private fun leftPanelWidgets(
+    state: AppRootViewModel.State,
+    strings: Strings
+) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
+    listOf(
+        Widget(id = "meta-data", strings.widgets.metaData.title) {
+            MetaDataWidget(connectedState.activeDevice.device)
+        },
+        Widget(id = "misc-controls", strings.widgets.miscControls.title) {
+            MiscControlsWidget(connectedState.activeDevice.device)
+        })
+} ?: emptyList()

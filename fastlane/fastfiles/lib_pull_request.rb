@@ -10,7 +10,7 @@ platform :ios do
     desc "Build and test SwiftMockzilla"
     lane :lib_swift_mockzilla_pull_request do
         # Create the XCFramework
-        generate_xcframework
+        generate_framework_and_podspec
 
         # Scan fails to find .xcresult unless output dir explicitly defined.
         # See: https://github.com/fastlane/fastlane/issues/20012

@@ -33,7 +33,7 @@ internal class LocalCacheServiceImpl(
         """
             Failed to parse data from cache. 
             This is likely due to updating to a later version of Mockzilla.
-            Clearing all caches through the web interface (or a clean install of your app)
+            Clearing all caches through the desktop interface (or a clean install of your app)
             should fix this. If not, please report this here: https://github.com/Apadmi-Engineering/Mockzilla
         """.trimIndent(),
         cause

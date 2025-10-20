@@ -26,22 +26,11 @@ android {
     }
 
     buildTypes {
-        debug {
+        getByName("debug") {
             isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-
-        release {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaConfig.version
         targetCompatibility = JavaConfig.version
@@ -53,9 +42,22 @@ android {
     
     packaging {
         resources {
-            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
+            excludes.add("/META-INF/*")
         }
     }
+}
+
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("com.apadmi:mockzilla-management"))
+            .using(project(":mockzilla-management"))
+        substitute(module("com.apadmi:mockzilla-common"))
+            .using(project(":mockzilla-common"))
+    }
+}
+
+kotlin {
+    jvmToolchain(JavaConfig.toolchain)
 }
 
 dependencies {
@@ -69,6 +71,7 @@ dependencies {
 
     /* Mockzilla */
     implementation(project(":mockzilla"))
+    api(project(":mockzilla-management-ui:mockzilla-mobile-ui"))
 
     /* Json parsing */
     implementation(libs.kotlinx.serialization.json)

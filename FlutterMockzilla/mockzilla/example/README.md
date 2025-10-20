@@ -6,7 +6,7 @@ In order to download the required dependencies for this app, run the following c
 directory.
 
 ```shell
-flutter pub get
+flutter pub get[Podfile](ios/Podfile)
 ```
 
 This app uses the [freezed](https://pub.dev/packages/freezed) package for code generation of 

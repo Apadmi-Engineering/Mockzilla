@@ -1,0 +1,25 @@
+name: Trigger KMP snapshot if needed
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 23 * * *"
+
+jobs:
+  # Avoid running snapshots too often, max once a day if there were changes
+  check_need_snapshot:
+    runs-on: ubuntu-latest
+    name: Check if snapshot is needed
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: release-please--branches--develop--groups--Kmp-libs
+      - name: Decide if snapshot should fire
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          num_commits_today=$(git rev-list --since="24 hours ago" HEAD --count)
+          if [[ $num_commits_today -ne 0 ]]; then
+            gh workflow run action_deploy_binaries.yml --ref release-please--branches--develop--groups--Kmp-libs
+          fi

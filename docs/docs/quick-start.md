@@ -1,0 +1,202 @@
+# Quick Start
+!!! important
+    Mockzilla does not support HTTPS, all traffic is cleartext HTTP.
+
+!!! warning
+    Mockzilla is **not** a production tool. It is for development and testing only. It should **never** be deployed to 
+    production. Running a server on device may introduce un-foreseen security issues.
+
+## Installation
+
+=== "KMP & Android"
+    Add the gradle dependency:
+    
+    ```kotlin
+    implementation("com.apadmi:mockzilla:{{ get_version() }}")
+    ```
+=== "iOS"
+    Add the SPM dependency in XCode:
+
+    1. File > Swift Packages > Add Package Dependency
+    2. Add `https://github.com/Apadmi-Engineering/SwiftMockzilla.git`
+
+    !!! note 
+        Note: This is not for KMP projects (for those, the gradle dependecy should be added to `shared` source set). 
+        This SPM dependency is for purely native iOS apps only.
+
+=== "Flutter"
+    Either install the package using:
+
+    ```shell
+    flutter pub add mockzilla
+    ```
+
+    Or add the dependency in your pubspec.yaml file directly:
+
+    ```yaml
+    mockzilla: <version>
+    ```
+
+## Enable local plaintext traffic
+
+=== "Android"
+    Add both `localhost` and `127.0.0.1` to your [network_security_config.xml](https://developer.android.com/privacy-and-security/security-config).
+    (We recommend having a separate config for production which does not have these overrides)
+    ```xml
+    <?xml version="1.0" encoding="utf-8"?>
+    <network-security-config>
+        <base-config>
+            <trust-anchors>
+                <certificates src="system" />
+                <certificates src="user" />
+            </trust-anchors>
+        </base-config>
+        <domain-config cleartextTrafficPermitted="true">
+            <domain includeSubdomains="true">localhost</domain>
+            <domain includeSubdomains="true">127.0.0.1</domain>
+        </domain-config>
+    </network-security-config>
+    ```
+=== "iOS"
+    Add the following to your info.plist.
+    ```xml
+    <key>NSAppTransportSecurity</key>
+    <dict>
+    <key>NSAllowsLocalNetworking</key>
+    <true/>
+    </dict>
+    ```
+
+## Starting The Server
+
+Mockzilla is entirely driven by a config object which is used to start the server.
+
+### (1): Create the config:
+
+=== "Kotlin"
+    ```kotlin
+    val config = MockzillaConfig.Builder()
+        .addEndpoint(
+            EndpointConfiguration
+                .Builder("Hello World")
+                .setDefaultHandler {
+                    MockzillaHttpResponse(body = "Hello World")
+                })
+        .build()
+    ```
+=== "Swift"
+    ```swift
+    let config = MockzillaConfigBuilder()
+        .addEndpoint(endpoint: EndpointConfigurationBuilder(id: "Hello world")
+            .setDefaultHandler { _ in
+                MockzillaHttpResponse(body: "Hello world")
+            }.build()
+        ).build()
+    ```
+=== "Flutter"
+    ```dart
+    final mockzillaConfig = MockzillaConfig().addEndpoint(
+        () => EndpointConfig(
+            name: "Hello world",
+            endpointMatcher: (request) => request.uri.endsWith("/hello-world"),
+            defaultHandler: (request) => const MockzillaHttpResponse(
+                body: "Hello world",
+            ),
+            errorHandler: (request) => const MockzillaHttpResponse(
+                statusCode: 418,
+            ),
+        ),
+    );
+    ```
+See [here](/endpoints/) for more information on configuring your endpoints. (Including compile-time safety!)
+
+### (2): Just start the server!
+
+!!! note 
+    For KMP apps, even though all the configuration can be defined in Kotlin. The server should still be started directly from within native code on both platforms.
+    See the [KMP demo](https://github.com/Apadmi-Engineering/Mockzilla/tree/develop/samples/demo-kmm) for an example.
+
+=== "Android Application"
+    ```kotlin
+    class RootApplication : Application() {
+        
+        override fun onCreate() {
+            super.onCreate()
+    
+            val config = MockzillaConfig.Builder()....
+            startMockzilla(config, this)
+        }
+    }
+    ```
+=== "iOS App Delegate"
+    ```swift
+    import UIKit
+    import SwiftMockzilla
+    import mockzilla
+    
+    @main
+    class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+        func application(_: UIApplication,
+                         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
+        {
+            let config = MockillaConfig.Builder()...
+            startMockzilla(config: config)
+            
+            return true
+        }
+    }
+    ```
+=== "Flutter"
+    ```dart
+        // Make sure to call this before starting Mockzilla!
+        WidgetsFlutterBinding.ensureInitialized();
+        
+        await Mockzilla.startMockzilla(mockzillaConfig);
+    ```
+
+### (3): Call the server from your client code
+
+Mockzilla listens for calls to `http://localhost:8080/local-mock` (this should be your base url).
+
+To configure the port see [here](/dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/#581853299%2FFunctions%2F1121797123).
+
+## Recommendation
+
+Since Mockzilla shouldn't be included in production binaries, we recommend creating a new product flavour specifically 
+for the mock and only including this dependency for this variant.
+
+=== "KMP"
+    For KMP projects this will require creating a new KMP module in your project specifically for the mock.
+
+=== "Flutter"
+    Flutter itself doesn't support product flavours in the same way as Android or iOS, however we can use different Dart 
+    entrypoints into your application and Dart's tree-shaking to achieve a similar effect.
+
+    1. Before integrating Mockzilla, duplicate your `main.dart` file and rename it to create `main_mock.dart`.
+
+        ```
+        |-lib
+          |-main.dart
+          |-main_mock.dart
+        ```
+    
+    2. In `main_mock.dart`, follow the instructions above to configure and start the Mockzilla server and perform any 
+    additional configuration on your HTTP client to use the `localhost` base URL above.
+
+    3. We can now use the newly created `main_mock.dart` as a different entrypoint to your Flutter app to enable 
+    Mockzilla while leaving the standard `main.dart` as your production entrypoint!
+
+        ```shell
+        flutter run -t lib/main_mock.dart
+        ```
+
+    4. Optionally, feel free to move the Mockzilla config to an auxiliary file. Just make sure that the declarations 
+    aren't used in your production app.
+
+## Tips
+
+Ensure your development machine and test device are on the same wifi network. You can replace `localhost` with your 
+device's IP addresss and try calling these endpoints from Postman (or a similar REST client.)
+
+![alt text](img/postman-example.png "Postman example")

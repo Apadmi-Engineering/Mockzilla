@@ -6,13 +6,15 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=3.6.0 <4.0.0'
-  flutter: '>=3.27.0'
+  flutter: '>=3.35.0'
 
 dependencies:
   flutter:
     sdk: flutter
   mockzilla:
     path: ../../mockzilla
+  mockzilla_ui_mobile:
+    path: ../../mockzilla_ui_mobile
 
   cupertino_icons: ^1.0.2
   freezed_annotation: ^3.0.0

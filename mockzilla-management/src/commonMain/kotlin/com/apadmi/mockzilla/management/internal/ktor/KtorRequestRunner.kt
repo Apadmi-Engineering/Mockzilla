@@ -14,6 +14,7 @@ import io.ktor.http.isSuccess
 
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 internal class KtorRequestRunner(private val client: HttpClient) {

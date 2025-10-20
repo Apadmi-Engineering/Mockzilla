@@ -29,7 +29,7 @@
   enabled: true
 # Checks that file name has extension
 - name: FILE_NAME_INCORRECT
-  enabled: true
+  enabled: false
 # Checks that file name matches class name, if it is only one class in file
 - name: FILE_NAME_MATCH_CLASS
   enabled: true

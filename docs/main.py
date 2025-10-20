@@ -22,6 +22,17 @@ def define_env(env):
       return Path(full_path).read_text().replace('\n', '\n' + indent)
 
   @env.macro
+  def get_mobile_ui_version():
+      build_gradle_text = print_source_file("mockzilla-management-ui/mockzilla-mobile-ui/build.gradle.kts")
+
+      version_pattern = r'version\s*=.*"(.*\..*\..*)"'
+      match = re.search(version_pattern, build_gradle_text)
+      if match:
+          return match.group(1)
+      else:
+          return None
+
+  @env.macro
   def get_version():
       build_gradle_text = print_source_file("mockzilla/build.gradle.kts")
 

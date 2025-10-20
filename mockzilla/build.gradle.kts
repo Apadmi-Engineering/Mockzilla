@@ -1,4 +1,5 @@
 import com.apadmi.mockzilla.AndroidConfig
+import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.configureCommonProperties
@@ -20,11 +21,11 @@ val artifactName = "mockzilla"
 
 kotlin {
     androidTarget {
-        publishAllLibraryVariants()
+        publishLibraryVariants()
     }
 
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "2.2.3" // x-release-please-version
+    version = project.injectedVersion() ?: "2.4.1" // x-release-please-version
 
     val xcf = XCFramework()
     listOf(
@@ -50,7 +51,7 @@ kotlin {
     cocoapods {
         name = "SwiftMockzilla"
         summary = "A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your application."
-        homepage = "https://apadmi-engineering.github.io/Mockzilla/"
+        homepage = "https://mockzilla.apadmi.dev/"
         framework {
             baseName = artifactName
         }
@@ -103,6 +104,9 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
         }
     }
+    compilerOptions {
+        freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+    }
 }
 
 android {
@@ -110,7 +114,7 @@ android {
     compileSdk = AndroidConfig.targetSdk
     defaultConfig {
         minSdk = AndroidConfig.minSdk
-        targetSdk = AndroidConfig.targetSdk
+        testOptions.targetSdk = AndroidConfig.targetSdk
 
         consumerProguardFiles("mockzilla-proguard-rules.pro")
     }
@@ -139,7 +143,10 @@ mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
 
     if (isSigningEnabled()) {
+        logger.info("Signing key found  - signing")
         signAllPublications()
+    } else {
+        logger.info("No signing key found  - skipping signining")
     }
 
     coordinates(group.toString(), artifactName, version.toString())

@@ -1,7 +1,9 @@
+import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.configureCommonProperties
 import com.apadmi.mockzilla.isSigningEnabled
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 
 plugins {
@@ -17,12 +19,22 @@ val artifactName = "mockzilla-management"
 
 kotlin {
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "2.2.3" // x-release-please-version
+    version = project.injectedVersion() ?: "2.4.1" // x-release-please-version
 
     jvm {
-        withJava()
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
+        }
+    }
+    val xcf = XCFramework()
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = artifactName
+            xcf.add(this)
         }
     }
     jvmToolchain(JavaConfig.toolchain)
@@ -56,6 +68,9 @@ kotlin {
             /* Mockzilla */
             implementation(project(":mockzilla"))
         }
+    }
+    compilerOptions {
+        freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
     }
 }
 

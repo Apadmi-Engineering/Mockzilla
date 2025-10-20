@@ -25,6 +25,7 @@ kotlin {
         commonMain.dependencies {
             /* Mockzilla */
             api(project(":mockzilla"))
+            api(project(":mockzilla-management-ui:mockzilla-mobile-ui"))
 
             /* Json parsing */
             implementation(libs.kotlinx.serialization.json)
@@ -39,12 +40,21 @@ kotlin {
     }
 }
 
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("com.apadmi:mockzilla-management"))
+            .using(project(":mockzilla-management"))
+        substitute(module("com.apadmi:mockzilla-common"))
+            .using(project(":mockzilla-common"))
+    }
+}
+
 android {
     namespace = "$group.mockzilla.kmm.shared"
     compileSdk = AndroidConfig.targetSdk
     defaultConfig {
         minSdk = AndroidConfig.minSdk
-        targetSdk = AndroidConfig.targetSdk
+        testOptions.targetSdk = AndroidConfig.targetSdk
 
         compileOptions {
             sourceCompatibility = JavaConfig.version

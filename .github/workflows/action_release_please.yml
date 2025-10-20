@@ -18,9 +18,3 @@ jobs:
         id: release
         with:
           token: ${{ secrets.PAT_BS }}
-      - name: Trigger Deploy Binaries workflow (snapshots only)
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        if: ${{ steps.release.outputs.releases_created == 'false' && steps.release.outputs.prs_created == 'true' }}
-        run: gh workflow run action_deploy_binaries.yml --ref release-please--branches--develop--groups--Kmp-libs

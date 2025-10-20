@@ -1,3 +1,5 @@
+@file:OptIn(DelicateCoroutinesApi::class)
+
 package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
@@ -11,12 +13,14 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.service.toKermitLogWriter
 import com.apadmi.mockzilla.lib.service.toKermitSeverity
+import com.apadmi.mockzilla.lib.sharedstate.MockzillaSharedProcessState
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
 import co.touchlab.kermit.platformLogWriter
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -58,5 +62,14 @@ internal fun startMockzilla(
     scope: CoroutineScope = GlobalScope
 ): MockzillaRuntimeParams {
     scope.launch { di.localCacheService.clearStaleCaches(config.endpoints) }
-    return startServer(config.port, di)
+    return startServer(config.port, di).also {
+        scope.launch {
+            di.sharedStateHandler.setSharedProcessState(
+                MockzillaSharedProcessState(
+                    it.ip,
+                    it.port
+                )
+            )
+        }
+    }
 }

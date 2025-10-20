@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.2.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_android-v1.2.0...flutter_mockzilla_android-v1.2.1) (2025-10-01)
+
+
+### Bug Fixes
+
+* Fix various build issues to support mobile UI ([b5d43b2](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5d43b278030904d1da12704a405acb974a70e61))
+
+## [1.2.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_android-v1.1.0...flutter_mockzilla_android-v1.2.0) (2025-09-25)
+
+
+### Features
+
+* bump underlying kotlin library version to bump android target ([3a6fc2f](https://github.com/Apadmi-Engineering/Mockzilla/commit/3a6fc2fb682061159f87b652ad2dab759dc6fb41))
+* bump underlying kotlin library version to bump android target ([1d254d1](https://github.com/Apadmi-Engineering/Mockzilla/commit/1d254d12373196c7efed2046ce8a58112f0ef1ed))
+
+
+### Bug Fixes
+
+* Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
+
 ## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_android-v1.0.2...flutter_mockzilla_android-v1.1.0) (2025-06-05)
 
 
