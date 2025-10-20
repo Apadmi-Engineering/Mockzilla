@@ -181,6 +181,21 @@ data class MockzillaHttpResponse(
     val statusCode: HttpStatusCode = HttpStatusCode.OK,
     val headers: Map<String, String> = emptyMap(),
     val body: String = "",
+) {
+    fun toPartial() = PartialMockzillaHttpResponse(statusCode, headers, body)
+}
+
+/**
+ * @property statusCode
+ * @property headers
+ * @property body
+ */
+@Serializable
+data class PartialMockzillaHttpResponse(
+    @Serializable(with = HttpStatusCodeSerializer::class)
+    val statusCode: HttpStatusCode? = null,
+    val headers: Map<String, String>? = null,
+    val body: String? = null
 )
 
 interface MockzillaHttpRequest {
@@ -243,9 +258,15 @@ data class DashboardOptionsConfig(
 
     class Builder {
         private val presets = mutableListOf<DashboardOverridePreset>()
-
         fun addPreset(
             response: MockzillaHttpResponse,
+            name: String? = null,
+            description: String? = null,
+            type: DashboardOverridePreset.Type? = null
+        ) = addPreset(response.toPartial(), name, description, type)
+
+        fun addPreset(
+            response: PartialMockzillaHttpResponse,
             name: String? = null,
             description: String? = null,
             type: DashboardOverridePreset.Type? = null
@@ -285,13 +306,15 @@ data class DashboardOptionsConfig(
  * @property description
  * @property type Overrides the type of the preset shown in UI, defaults to correspond with status code
  * @property response
+ * @property isManagementUiDefinedCustomPreset
  */
 @Serializable
 data class DashboardOverridePreset(
     val name: String,
     val description: String?,
     val type: Type?,
-    val response: MockzillaHttpResponse
+    val response: PartialMockzillaHttpResponse,
+    val isManagementUiDefinedCustomPreset: Boolean = false
 ) {
     @Serializable
     enum class Type {

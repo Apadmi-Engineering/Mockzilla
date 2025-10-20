@@ -433,7 +433,7 @@ private fun PresetsSelector(
             }
             Text(
                 modifier = Modifier.alpha(0.5f),
-                text = preset.response.body,
+                text = preset.response.body ?: "",
                 maxLines = maxLines,
                 overflow = TextOverflow.Ellipsis,
             )

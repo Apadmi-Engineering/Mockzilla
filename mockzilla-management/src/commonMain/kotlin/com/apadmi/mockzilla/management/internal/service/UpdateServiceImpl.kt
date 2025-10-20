@@ -113,7 +113,8 @@ internal class UpdateServiceImpl(
             key = key,
             defaultBody = SetOrDont.Set(dashboardOverridePreset.response.body),
             defaultStatus = SetOrDont.Set(dashboardOverridePreset.response.statusCode),
-            defaultHeaders = SetOrDont.Set(dashboardOverridePreset.response.headers)
+            defaultHeaders = SetOrDont.Set(dashboardOverridePreset.response.headers),
+            appliedPresetOverride = SetOrDont.Set(dashboardOverridePreset),
         ), connection
     )
 }

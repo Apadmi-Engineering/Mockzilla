@@ -1,11 +1,11 @@
-@file:Suppress("MAGIC_NUMBER")
+@file:Suppress("MAGIC_NUMBER", "TOO_LONG_FUNCTION")
 
 package com.apadmi.mockzilla.management.internal.service
 
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
-import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepositoryImpl
 import com.apadmi.mockzilla.testutils.runIntegrationTest
@@ -229,7 +229,7 @@ class UpdateServiceIntegrationTests {
                 connection, dummyConfig.key, DashboardOverridePreset(
                     name = "name",
                     description = "description",
-                    response = MockzillaHttpResponse(
+                    response = PartialMockzillaHttpResponse(
                         HttpStatusCode.Conflict,
                         mapOf("key" to "value"),
                         body = "body"
@@ -245,7 +245,17 @@ class UpdateServiceIntegrationTests {
                 preUpdate.copy(
                     defaultStatus = HttpStatusCode.Conflict,
                     defaultHeaders = mapOf("key" to "value"),
-                    defaultBody = "body"
+                    defaultBody = "body",
+                    appliedPresetOverride = DashboardOverridePreset(
+                        name = "name",
+                        description = "description",
+                        response = PartialMockzillaHttpResponse(
+                            HttpStatusCode.Conflict,
+                            mapOf("key" to "value"),
+                            body = "body"
+                        ),
+                        type = null
+                    )
                 ), postUpdate
             )
         }
