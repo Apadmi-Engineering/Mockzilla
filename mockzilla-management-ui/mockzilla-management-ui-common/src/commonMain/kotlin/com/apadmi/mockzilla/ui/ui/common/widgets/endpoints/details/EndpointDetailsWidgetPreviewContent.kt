@@ -6,7 +6,7 @@ import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 
 import io.ktor.http.HttpStatusCode
 
@@ -35,7 +35,7 @@ internal fun EndpointDetailsWidgetPreviewContent() = EndpointDetailsWidgetConten
                     name = "Preset",
                     description = "Preset Description",
                     type = null,
-                    response = MockzillaHttpResponse(
+                    response = PartialMockzillaHttpResponse(
                         statusCode = HttpStatusCode.BadRequest,
                         body = "{ \"name\":\"mockzilla\" }"
                     )

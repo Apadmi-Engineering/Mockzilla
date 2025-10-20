@@ -7,6 +7,7 @@ import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.testutils.fakes.FakeLocalCacheService
 import com.apadmi.mockzilla.testutils.fakes.FakeMockServerMonitor
 
@@ -202,7 +203,7 @@ class ManagementApiControllerTests {
                 errorPresets = listOf(),
                 successPresets = listOf(
                     DashboardOverridePreset(
-                        response = MockzillaHttpResponse(
+                        response = PartialMockzillaHttpResponse(
                             statusCode = HttpStatusCode.Created,
                             headers = mapOf("test-header" to "test-value"),
                             body = "my response body"
@@ -211,7 +212,7 @@ class ManagementApiControllerTests {
                         type = DashboardOverridePreset.Type.Informational
                     ),
                     DashboardOverridePreset(
-                        response = MockzillaHttpResponse(
+                        response = PartialMockzillaHttpResponse(
                             statusCode = HttpStatusCode.Created,
                             headers = mapOf("test-header" to "test-value"),
                             body = "my response body2"
@@ -221,7 +222,7 @@ class ManagementApiControllerTests {
                         type = null
                     ),
                     DashboardOverridePreset(
-                        response = MockzillaHttpResponse(
+                        response = PartialMockzillaHttpResponse(
                             statusCode = HttpStatusCode.Created,
                             headers = mapOf("test-header" to "test-value"),
                             body = "my response body3"

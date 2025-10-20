@@ -26,6 +26,10 @@ class LocalMockControllerTests {
                     headers = mapOf("test-header" to "test-value"),
                     body = "my response body"
                 )
+            }.setErrorHandler {
+                MockzillaHttpResponse(
+                    statusCode = HttpStatusCode.InternalServerError
+                )
             }.build(),
     )
 
@@ -73,6 +77,7 @@ class LocalMockControllerTests {
             errorBody = "",
             errorHeaders = emptyMap(),
             errorStatus = HttpStatusCode.InternalServerError,
+            appliedPresetOverride = null
         )
 
         val sut = LocalMockController(

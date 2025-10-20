@@ -3,6 +3,7 @@
 package com.apadmi.mockzilla.lib.internal.models
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import io.ktor.http.*
 import kotlinx.serialization.EncodeDefault
@@ -26,6 +27,7 @@ import kotlinx.serialization.encoding.Encoder
  * @property errorStatus
  * @property errorHeaders
  * @property versionCode
+ * @property appliedPresetOverride
  */
 @Serializable
 data class SerializableEndpointConfig(
@@ -34,12 +36,19 @@ data class SerializableEndpointConfig(
     val versionCode: Int,
     val shouldFail: Boolean?,
     val delayMs: Int?,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val defaultHeaders: Map<String, String>?,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val defaultBody: String?,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val defaultStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val errorHeaders: Map<String, String>?,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val errorBody: String?,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val errorStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
+    val appliedPresetOverride: DashboardOverridePreset?
 ) {
     companion object {
         fun allNulls(
@@ -58,6 +67,7 @@ data class SerializableEndpointConfig(
             errorBody = null,
             errorHeaders = null,
             errorStatus = null,
+            appliedPresetOverride = null
         )
         fun allNulls(
             key: String,
@@ -79,6 +89,7 @@ data class SerializableEndpointConfig(
  * @property errorStatus
  * @property defaultStatus
  * @property errorHeaders
+ * @property appliedPresetOverride
  */
 @Suppress("TYPE_ALIAS")
 @Serializable
@@ -86,12 +97,19 @@ data class SerializableEndpointPatchItemDto(
     val key: EndpointConfiguration.Key,
     val shouldFail: SetOrDont<Boolean?> = SetOrDont.DoNotSet,
     val delayMs: SetOrDont<Int?> = SetOrDont.DoNotSet,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val defaultHeaders: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val defaultBody: SetOrDont<String?> = SetOrDont.DoNotSet,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val defaultStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val errorBody: SetOrDont<String?> = SetOrDont.DoNotSet,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val errorHeaders: SetOrDont<Map<String, String>?> = SetOrDont.DoNotSet,
+    @Deprecated("Unused by new management UI - Will be removed imminently")
     val errorStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
+    val appliedPresetOverride: SetOrDont<DashboardOverridePreset> = SetOrDont.DoNotSet
 ) {
     companion object {
         fun allUnset(key: String) = allUnset(EndpointConfiguration.Key(key))
@@ -116,7 +134,6 @@ data class SerializableEndpointPatchItemDto(
             defaultStatus = SetOrDont.Set(config.defaultStatus),
             errorBody = SetOrDont.Set(config.errorBody),
             errorStatus = SetOrDont.Set(config.errorStatus),
-
         )
     }
 }

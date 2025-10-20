@@ -258,10 +258,10 @@ class EndpointDetailsViewModel(
         dashboardOverridePreset: DashboardOverridePreset
     ) = onPropertyChanged({
         copy(
-            defaultHeaders = dashboardOverridePreset.response.headers.toList(),
+            defaultHeaders = dashboardOverridePreset.response.headers?.toList(),
             defaultStatus = dashboardOverridePreset.response.statusCode,
             defaultBody = dashboardOverridePreset.response.body,
-            jsonEditingDefault = JsonEditor(dashboardOverridePreset.response.body).isValidJson()
+            jsonEditingDefault = JsonEditor(dashboardOverridePreset.response.body ?: "").isValidJson()
         )
     }, { config, device ->
         viewModelScope.launch {

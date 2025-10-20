@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
 import io.ktor.client.*
@@ -109,7 +110,7 @@ class ApiIntegrationTests {
             DashboardOptionsConfig(
                 successPresets = listOf(
                     DashboardOverridePreset(
-                        response = MockzillaHttpResponse(
+                        response = PartialMockzillaHttpResponse(
                             HttpStatusCode.Created,
                             emptyMap(),
                             "my body"
