@@ -11,6 +11,10 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -111,6 +115,9 @@ val ColorScheme.partialFailure get() = when (LocalForceDarkMode.current || isSys
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalForceDarkMode = compositionLocalOf { false }
 
+@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
+val LocalSetScaleFactor = compositionLocalOf<(Float) -> Unit> { { /* noop */ } }
+
 /**
  * @property primary
  * @property container
@@ -119,6 +126,16 @@ data class StateColors(
     val primary: Color,
     val container: Color
 )
+
+data object ScaleFactor {
+    const val DEFAULT_DESKTOP = 0.9F
+    const val DEFAULT_MOBILE = 1.0F
+    val default = when (Platform.current) {
+        Platform.Android, Platform.Ios -> DEFAULT_MOBILE
+        Platform.Desktop -> DEFAULT_DESKTOP
+        else -> DEFAULT_MOBILE
+    }
+}
 
 @Composable
 fun Modifier.alternatingBackground(index: Int) = background(
@@ -140,12 +157,17 @@ fun AppTheme(
         lightColors
     }
 
+    var scaleFactor by rememberSaveable { mutableFloatStateOf(ScaleFactor.default) }
     ProvideLocalisableStrings {
-        ScaledDensity(scaleFactor = if (Platform.current == Platform.Desktop) 0.9f else 1f) {
-            MaterialTheme(
-                colorScheme = colors,
-                content = content
-            )
+        CompositionLocalProvider(
+            LocalSetScaleFactor provides { scale -> scaleFactor = scale },
+        ) {
+            ScaledDensity(scaleFactor = scaleFactor) {
+                MaterialTheme(
+                    colorScheme = colors,
+                    content = content
+                )
+            }
         }
     }
 }
