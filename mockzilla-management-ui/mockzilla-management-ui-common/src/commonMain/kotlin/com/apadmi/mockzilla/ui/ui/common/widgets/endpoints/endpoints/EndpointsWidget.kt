@@ -227,7 +227,8 @@ private fun EndpointsWidgetContent(
     state: EndpointsViewModel.State,
     onFilterUpdate: (String) -> Unit,
     onEndpointClicked: (Key) -> Unit,
-    onGlobalControlsClicked: () -> Unit
+    onGlobalControlsClicked: () -> Unit,
+    strings: Strings = LocalStrings.current
 ) = Box(
     modifier = Modifier
         .fillMaxSize()
@@ -254,7 +255,7 @@ private fun EndpointsWidgetContent(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
-                    contentDescription = null
+                    contentDescription = strings.widgets.globalControls.title
                 )
             }
         }

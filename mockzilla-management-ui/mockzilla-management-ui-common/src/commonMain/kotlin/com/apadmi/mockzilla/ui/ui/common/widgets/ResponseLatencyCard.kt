@@ -102,7 +102,7 @@ internal fun ResponseLatencyCard(
                 Icon(
                     modifier = Modifier.size(20.dp),
                     imageVector = Icons.Default.Restore,
-                    contentDescription = null
+                    contentDescription = strings.common.resetDescription
                 )
             }
         }
@@ -113,9 +113,8 @@ internal fun ResponseLatencyCard(
         ) {
             SquareIconButton(
                 enabled = value != null && value != 0,
-                onClick = {
-                    updateValue((value ?: 0) - 100)
-                }) {
+                onClick = { updateValue((value ?: 0) - 100) }
+            ) {
                 Icon(imageVector = Icons.Default.Remove, contentDescription = "Minus")
             }
             Spacer(Modifier.size(12.dp))
@@ -134,9 +133,8 @@ internal fun ResponseLatencyCard(
             Spacer(Modifier.size(12.dp))
             SquareIconButton(
                 enabled = value != null && value != maxLatencyMs,
-                onClick = {
-                    updateValue((value ?: 0) + 100)
-                }) {
+                onClick = { updateValue((value ?: 0) + 100) }
+            ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Plus")
             }
         }
