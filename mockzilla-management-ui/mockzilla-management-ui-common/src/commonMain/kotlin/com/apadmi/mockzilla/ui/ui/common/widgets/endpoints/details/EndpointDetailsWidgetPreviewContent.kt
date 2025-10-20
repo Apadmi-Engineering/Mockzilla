@@ -3,7 +3,6 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 import androidx.compose.runtime.Composable
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
-import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
@@ -18,19 +17,12 @@ internal fun EndpointDetailsWidgetPreviewContent() = EndpointDetailsWidgetConten
             name = "Endpoint Name",
             versionCode = 1
         ),
-        defaultBody = null,
-        defaultStatus = null,
-        defaultHeaders = null,
-        errorBody = null,
-        errorStatus = null,
-        errorHeaders = null,
         fail = null,
         delayMillis = null,
-        jsonEditingDefault = false,
-        jsonEditingError = false,
-        presets = DashboardOptionsConfig(
-            errorPresets = listOf(),
-            successPresets = listOf(
+        isLoading = false,
+        presets = EndpointDetailsViewModel.State.Endpoint.Presets(
+            appliedPreset = null,
+            visiblePresets = listOf(
                 DashboardOverridePreset(
                     name = "Preset",
                     description = "Preset Description",
@@ -40,19 +32,15 @@ internal fun EndpointDetailsWidgetPreviewContent() = EndpointDetailsWidgetConten
                         body = "{ \"name\":\"mockzilla\" }"
                     )
                 )
-            )
+            ),
+            allPresets = emptyList(),
+            filter = "",
         )
     ),
-    onDefaultBodyChange = {},
-    onErrorBodyChange = {},
-    onFailChange = {},
-    onJsonDefaultEditingChange = {},
-    onJsonErrorEditingChange = {},
-    onDefaultStatusCodeChange = {},
-    onErrorStatusCodeChange = {},
     onDelayChange = {},
-    onDefaultHeadersChange = {},
-    onErrorHeadersChange = {},
     onDefaultPresetSelected = {},
-    onResetAll = {}
+    onResetAll = {},
+    onFailChange = {},
+    onFilterPresetChanged = {},
+    onPresetMoreInfoClicked = {}
 )

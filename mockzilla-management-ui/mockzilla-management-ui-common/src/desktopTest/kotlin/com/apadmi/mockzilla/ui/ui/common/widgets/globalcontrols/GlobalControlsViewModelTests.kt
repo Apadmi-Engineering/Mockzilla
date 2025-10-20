@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.*
 
 import app.cash.turbine.test
@@ -86,7 +87,7 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             assertEquals(
                 State.Idle(
                     initialLatencyMs = 10,
-                    apiFailureState = State.ApiFailureState.FullFailure,
+                    apiFailureState = ForceFailureBannerState.FullFailure,
                     isLoading = false,
                 ), awaitItem()
             )
@@ -95,7 +96,7 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             assertEquals(
                 State.Idle(
                     initialLatencyMs = null,
-                    apiFailureState = State.ApiFailureState.PartialFailure,
+                    apiFailureState = ForceFailureBannerState.PartialFailure,
                     isLoading = false,
                 ), awaitItem()
             )
@@ -104,7 +105,7 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             assertEquals(
                 State.Idle(
                     initialLatencyMs = null,
-                    apiFailureState = State.ApiFailureState.Normal,
+                    apiFailureState = ForceFailureBannerState.Normal,
                     isLoading = false,
                 ), awaitItem()
             )
@@ -138,7 +139,7 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             /* Verify */
             assertEquals(State.Idle(
                 initialLatencyMs = null,
-                apiFailureState = State.ApiFailureState.PartialFailure,
+                apiFailureState = ForceFailureBannerState.PartialFailure,
                 isLoading = true
             ), awaitItem())
             coVerify {
@@ -174,7 +175,7 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             /* Verify */
             assertEquals(State.Idle(
                 initialLatencyMs = null,
-                apiFailureState = State.ApiFailureState.PartialFailure,
+                apiFailureState = ForceFailureBannerState.PartialFailure,
                 isLoading = true
             ), awaitItem())
             coVerify {
@@ -210,7 +211,7 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             /* Verify */
             assertEquals(State.Idle(
                 initialLatencyMs = null,
-                apiFailureState = State.ApiFailureState.PartialFailure,
+                apiFailureState = ForceFailureBannerState.PartialFailure,
                 isLoading = true
             ), awaitItem())
             coVerify {
@@ -246,7 +247,7 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             /* Verify */
             assertEquals(State.Idle(
                 initialLatencyMs = null,
-                apiFailureState = State.ApiFailureState.PartialFailure,
+                apiFailureState = ForceFailureBannerState.PartialFailure,
                 isLoading = true
             ), awaitItem())
             coVerify {

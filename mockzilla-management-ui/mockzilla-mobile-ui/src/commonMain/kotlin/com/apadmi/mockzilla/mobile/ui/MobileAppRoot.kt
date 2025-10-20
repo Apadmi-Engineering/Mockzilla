@@ -135,7 +135,7 @@ private fun ConnectedState(
                 device = currentState.activeDevice.device,
                 activeEndpoint = EndpointConfiguration.Key(
                     backStackEntry.toRoute<Destination.EndpointDetails>().key
-                )
+                ),
             )
         }
     }
