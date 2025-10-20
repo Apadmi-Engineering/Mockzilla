@@ -8,6 +8,8 @@ val EnStrings = Strings(
     common = Strings.Common(
         closeDescription = "Close",
         backDescription = "Back",
+        debugDescription = "Debug",
+        resetDescription = "Reset"
     ),
     widgets = Strings.Widgets(
         Strings.Widgets.DeviceConnection(
@@ -43,7 +45,8 @@ val EnStrings = Strings(
                 }
             },
             closeButtonDescription = "Close"
-        ), metaData = Strings.Widgets.MetaData(
+        ),
+        metaData = Strings.Widgets.MetaData(
             title = "Meta Data",
             noDeviceConnected = "No device connected",
             appName = "App Name",

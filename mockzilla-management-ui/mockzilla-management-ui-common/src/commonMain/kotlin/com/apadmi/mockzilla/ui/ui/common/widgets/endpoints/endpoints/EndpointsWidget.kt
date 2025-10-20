@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -145,10 +146,11 @@ private fun EndpointCard(
                 }
             )
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
+            modifier = Modifier.weight(1f),
             text = endpoint.name,
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
@@ -225,12 +227,14 @@ private fun EndpointsWidgetContent(
     state: EndpointsViewModel.State,
     onFilterUpdate: (String) -> Unit,
     onEndpointClicked: (Key) -> Unit,
-    onGlobalControlsClicked: () -> Unit
+    onGlobalControlsClicked: () -> Unit,
+    strings: Strings = LocalStrings.current
 ) = Box(
     modifier = Modifier
         .fillMaxSize()
         .background(color = MaterialTheme.colorScheme.background)
         .padding(horizontal = 12.dp, vertical = 15.dp)
+        .navigationBarsPadding()
 ) {
     when (state) {
         EndpointsViewModel.State.Loading -> CircularProgressIndicator(
@@ -251,7 +255,7 @@ private fun EndpointsWidgetContent(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
-                    contentDescription = null
+                    contentDescription = strings.widgets.globalControls.title
                 )
             }
         }

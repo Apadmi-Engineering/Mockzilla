@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -116,16 +117,19 @@ internal fun GlobalControlsWidgetIdleContent(
 ) = Column(
     modifier = Modifier.fillMaxSize()
         .background(color = MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+        .verticalScroll(rememberScrollState())
+        .navigationBarsPadding()
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surface)
             .padding(vertical = 20.dp, horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Column {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
             Text(
                 text = strings.widgets.globalControls.title,
                 style = MaterialTheme.typography.titleMedium
@@ -151,7 +155,7 @@ internal fun GlobalControlsWidgetIdleContent(
     }
 
     Column(
-        Modifier.padding(horizontal = 12.dp),
+        modifier = Modifier.padding(horizontal = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         GlobalFailureConfigBanner(
