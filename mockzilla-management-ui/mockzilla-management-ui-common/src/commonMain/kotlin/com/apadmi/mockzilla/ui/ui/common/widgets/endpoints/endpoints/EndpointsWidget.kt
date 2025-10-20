@@ -4,14 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration.*
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -49,15 +51,33 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import org.koin.core.parameter.parametersOf
 
+@Composable
+fun EndpointsWidget(
+    device: Device,
+    onEndpointClicked: (Key) -> Unit,
+    onGlobalControlsClicked: () -> Unit
+) {
+    val viewModel = getViewModel<EndpointsViewModel>(key = device.toString()) {
+        parametersOf(device)
+    }
+    val state by viewModel.state.collectAsState()
+
+    EndpointsWidgetContent(
+        state = state,
+        onFilterUpdate = viewModel::onFilterChanged,
+        onEndpointClicked = onEndpointClicked,
+        onGlobalControlsClicked = onGlobalControlsClicked
+    )
+}
+
 @Suppress("MAGIC_NUMBER")
 @Composable
-private fun ColumnScope.EndpointsList(
+private fun EndpointsList(
     state: EndpointsViewModel.State.EndpointsList,
     onEndpointClicked: (Key) -> Unit,
-    onGlobalControlsClicked: () -> Unit,
     onFilterUpdate: (String) -> Unit,
     strings: Strings = LocalStrings.current
-) {
+) = Column {
     FilterTextField(
         value = state.filter,
         onFilterUpdate = onFilterUpdate
@@ -83,38 +103,6 @@ private fun ColumnScope.EndpointsList(
         )
         Spacer(modifier = Modifier.height(8.dp))
     }
-
-    Spacer(modifier = Modifier.weight(1f))
-    FloatingActionButton(
-        modifier = Modifier
-            .align(Alignment.End)
-            .padding(end = 8.dp),
-        onClick = onGlobalControlsClicked,
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Settings,
-            contentDescription = null
-        )
-    }
-}
-
-@Composable
-fun EndpointsWidget(
-    device: Device,
-    onEndpointClicked: (Key) -> Unit,
-    onGlobalControlsClicked: () -> Unit
-) {
-    val viewModel = getViewModel<EndpointsViewModel>(key = device.toString()) {
-        parametersOf(device)
-    }
-    val state by viewModel.state.collectAsState()
-
-    EndpointsWidgetContent(
-        state = state,
-        onFilterUpdate = viewModel::onFilterChanged,
-        onEndpointClicked = onEndpointClicked,
-        onGlobalControlsClicked = onGlobalControlsClicked
-    )
 }
 
 @Suppress("MAGIC_NUMBER")
@@ -156,10 +144,11 @@ private fun EndpointCard(
                 }
             )
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
+            modifier = Modifier.weight(1f),
             text = endpoint.name,
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
@@ -236,22 +225,38 @@ private fun EndpointsWidgetContent(
     state: EndpointsViewModel.State,
     onFilterUpdate: (String) -> Unit,
     onEndpointClicked: (Key) -> Unit,
-    onGlobalControlsClicked: () -> Unit
-) = Column(
+    onGlobalControlsClicked: () -> Unit,
+    strings: Strings = LocalStrings.current
+) = Box(
     modifier = Modifier
         .fillMaxSize()
         .background(color = MaterialTheme.colorScheme.background)
         .verticalScroll(rememberScrollState())
         .padding(horizontal = 12.dp, vertical = 15.dp)
+        .navigationBarsPadding()
 ) {
     when (state) {
         EndpointsViewModel.State.Loading -> CircularProgressIndicator()
-        is EndpointsViewModel.State.EndpointsList -> EndpointsList(
-            state = state,
-            onEndpointClicked = onEndpointClicked,
-            onGlobalControlsClicked = onGlobalControlsClicked,
-            onFilterUpdate = onFilterUpdate
-        )
+        is EndpointsViewModel.State.EndpointsList -> {
+            EndpointsList(
+                state = state,
+                onEndpointClicked = onEndpointClicked,
+                onFilterUpdate = onFilterUpdate
+            )
+
+            FloatingActionButton(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .align(Alignment.BottomEnd)
+                    .zIndex(1f),
+                onClick = onGlobalControlsClicked,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = strings.widgets.globalControls.title
+                )
+            }
+        }
     }
 }
 

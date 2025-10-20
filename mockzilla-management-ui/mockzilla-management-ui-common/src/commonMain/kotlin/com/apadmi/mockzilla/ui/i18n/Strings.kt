@@ -24,10 +24,14 @@ data class Strings(
     /**
      * @property closeDescription
      * @property backDescription
+     * @property debugDescription
+     * @property resetDescription
      */
     data class Common(
         val closeDescription: String,
         val backDescription: String,
+        val debugDescription: String,
+        val resetDescription: String
     )
     /**
      * @property deviceConnection

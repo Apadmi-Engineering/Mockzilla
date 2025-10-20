@@ -76,13 +76,13 @@ internal fun MobileAppRoot(
             }
 
             if (MockzillaBuildConfig.isDevelopmentBuild) {
-                IconButton(onClick = {
-                    navController.navigate(Destination.Debug)
-                }) {
+                IconButton(
+                    onClick = { navController.navigate(Destination.Debug) }
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Article,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        contentDescription = strings.common.backDescription
+                        contentDescription = strings.common.debugDescription
                     )
                 }
             }
@@ -110,7 +110,7 @@ internal fun MobileAppRoot(
     }
 
     AnimatedErrorBanner(
-        (state as? AppRootViewModel.State.Connected)?.error,
+        (state as? State.Connected)?.error,
         viewModel::refreshAll,
         viewModel::dismissError
     )
@@ -163,6 +163,7 @@ private fun ConnectedState(
             )
         }
     }
+
     composable<Destination.Debug> {
         Surface {
             DebugWidget()

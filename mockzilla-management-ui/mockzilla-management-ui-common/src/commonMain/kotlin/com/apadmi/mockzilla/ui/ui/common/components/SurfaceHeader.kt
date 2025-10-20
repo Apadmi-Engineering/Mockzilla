@@ -22,7 +22,7 @@ fun SurfaceHeader(
         .fillMaxWidth()
         .background(color = MaterialTheme.colorScheme.surface)
         .padding(vertical = 20.dp, horizontal = 16.dp),
-    horizontalArrangement = Arrangement.SpaceBetween
+    horizontalArrangement = Arrangement.spacedBy(4.dp)
 ) {
     Column {
         Text(
