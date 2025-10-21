@@ -9,7 +9,7 @@ import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 
 import io.ktor.http.HttpStatusCode
 
-private val mockPresets = listOf(
+internal val mockPresets = listOf(
     DashboardOverridePreset(
         name = "Preset",
         description = "Preset Description",

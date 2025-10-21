@@ -24,9 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Suppress("COMPLEX_EXPRESSION")
 @Composable
@@ -81,4 +83,14 @@ internal fun ForcedFailureOverlayBanner(
     }
 }
 
-// TODO: Add previews
+@Preview
+@Composable
+private fun ForcedFailureOverlayBannerPreview() = PreviewSurface {
+    ForcedFailureOverlayBanner()
+}
+
+@Preview
+@Composable
+private fun ForcedFailureOverlayBannerDarkPreview() = PreviewSurface(darkTheme = true) {
+    ForcedFailureOverlayBanner()
+}

@@ -180,7 +180,21 @@ private fun EndpointDetailsWidgetPreview() = PreviewSurface {
 
 @Preview(heightDp = 1110)
 @Composable
+private fun EndpointDetailsWidgetDarkPreview() = PreviewSurface(darkTheme = true) {
+    EndpointDetailsWidgetPreviewContent(state = endpointDetailsWidgetSuccessState())
+}
+
+@Preview(heightDp = 1110)
+@Composable
 private fun EndpointDetailsWidgetForceFailurePreview() = PreviewSurface {
+    EndpointDetailsWidgetPreviewContent(
+        state = endpointDetailsWidgetSuccessState(fail = true)
+    )
+}
+
+@Preview(heightDp = 1110)
+@Composable
+private fun EndpointDetailsWidgetForceFailureDarkPreview() = PreviewSurface(darkTheme = true) {
     EndpointDetailsWidgetPreviewContent(
         state = endpointDetailsWidgetSuccessState(fail = true)
     )
