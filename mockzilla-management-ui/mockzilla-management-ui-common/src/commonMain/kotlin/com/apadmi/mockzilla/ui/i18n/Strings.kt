@@ -299,6 +299,8 @@ data class Strings(
          * @property emptyTitle
          * @property emptyDescription
          * @property title
+         * @property forcedApiFailureBannerTitle
+         * @property forcedApiFailureBannerSubtitle
          * @property presets
          */
         data class EndpointDetails(
@@ -339,6 +341,8 @@ data class Strings(
             val headersUnset: String,
             val emptyTitle: String,
             val emptyDescription: String,
+            val forcedApiFailureBannerTitle: String,
+            val forcedApiFailureBannerSubtitle: String,
             val presets: Presets
         ) {
             /**

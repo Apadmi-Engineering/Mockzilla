@@ -3,10 +3,13 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,59 +26,75 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
-import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.NoPresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
-import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun PresetsContainer(
-    presets: State.Endpoint.Presets,
+    state: State.Endpoint,
     onPresetFilterChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     modifier: Modifier = Modifier,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
-) = Column(
-    modifier.fillMaxWidth().background(
-        color = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-    ).border(
-        width = 1.dp,
-        color = MaterialTheme.colorScheme.outline,
-        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-    )
-        .padding(16.dp),
-    verticalArrangement = Arrangement.spacedBy(8.dp)
+) = Box(
+    modifier = modifier
+        .fillMaxWidth()
+        .height(IntrinsicSize.Max)
+        .background(
+            color = MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(12.dp)
+        )
+        .border(
+            width = 1.dp,
+            color = if (state.config.shouldFail == true) {
+                MaterialTheme.colorScheme.error
+            } else {
+                MaterialTheme.colorScheme.outline
+            },
+            shape = RoundedCornerShape(12.dp)
+        )
 ) {
-    if (presets.allPresets.isNotEmpty()) {
-        PopulatedPresets(presets, onPresetFilterChanged, onDefaultPresetSelected)
-    } else {
-        Column(
-            Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Text(
-                strings.noAvailablePresetsTitle,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        if (state.presets.allPresets.isNotEmpty()) {
+            PopulatedPresets(
+                presets = state.presets,
+                onPresetFilterChanged = onPresetFilterChanged,
+                onDefaultPresetSelected = onDefaultPresetSelected
             )
-            Text(
-                strings.noAvailablePresetsBody,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodySmall
-            )
-            Spacer(Modifier.size(4.dp))
-            CustomOutlineButton(label = "More Information", onClick = onPresetMoreInfoClicked)
+        } else {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = strings.noAvailablePresetsTitle,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = strings.noAvailablePresetsBody,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(modifier = Modifier.size(4.dp))
+                CustomOutlineButton(label = "More Information", onClick = onPresetMoreInfoClicked)
+            }
         }
+    }
+
+    if (state.config.shouldFail == true) {
+        ForcedFailureOverlayBanner(borderShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
     }
 }
 
@@ -84,41 +103,54 @@ internal fun ActivePresetCard(
     modifier: Modifier = Modifier,
     state: State.Endpoint,
     onEditPreset: (DashboardOverridePreset) -> Unit,
-    strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
-) = Column(
-    modifier.fillMaxWidth()
+    strings: Strings.Widgets.EndpointDetails = LocalStrings.current.widgets.endpointDetails
+) = Box(
+    modifier = modifier
+        .fillMaxWidth()
+        .height(IntrinsicSize.Max)
         .background(
             color = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(12.dp)
         )
         .border(
             width = 1.dp,
-            color = MaterialTheme.colorScheme.outline,
+            color = if (state.config.shouldFail == true) {
+                MaterialTheme.colorScheme.error
+            } else {
+                MaterialTheme.colorScheme.outline
+            },
             shape = RoundedCornerShape(12.dp)
         )
-        .padding(12.dp),
-    verticalArrangement = Arrangement.spacedBy(12.dp)
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+    Column(
+        modifier = Modifier.padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(strings.activePresetTitle, style = MaterialTheme.typography.titleMedium)
-        CustomOutlineButton(
-            label = strings.createCustomButton,
-            leadingIcon = rememberVectorPainter(Icons.Outlined.AddCircle),
-            onClick = { }  // TODO - Add custom preset support
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(strings.presets.activePresetTitle, style = MaterialTheme.typography.titleMedium)
+            CustomOutlineButton(
+                label = strings.presets.createCustomButton,
+                leadingIcon = rememberVectorPainter(Icons.Outlined.AddCircle),
+                onClick = { }  // TODO - Add custom preset support
+            )
+        }
+
+        state.presets.appliedPreset?.let {
+            PresetCard(
+                variant = PresetCardVariant.Selected,
+                preset = state.presets.appliedPreset,
+                onClicked = onEditPreset,
+            )
+        } ?: NoPresetCard()
     }
 
-    state.presets.appliedPreset?.let {
-        PresetCard(
-            variant = PresetCardVariant.Selected,
-            preset = state.presets.appliedPreset,
-            onClicked = onEditPreset,
-        )
-    } ?: NoPresetCard()
+    if (state.config.shouldFail == true) {
+        ForcedFailureOverlayBanner()
+    }
 }
 
 @Composable
@@ -159,43 +191,47 @@ private fun PopulatedPresets(
             onClicked = onDefaultPresetSelected
         )
     }
+
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
-@Preview
-@Composable
-private fun PresetsContainerEmptySearchPreview() = PreviewSurface {
-    PresetsContainer(
-        presets = State.Endpoint.Presets(
-            null,
-            emptyList(),
-            listOf(
-                DashboardOverridePreset(
-                    "",
-                    "",
-                    null,
-                    PartialMockzillaHttpResponse()
-                )
-            ),
-            ""
-        ),
-        {},
-        {},
-        {}
-    )
-}
+// TODO: Update previews
 
-@Preview
-@Composable
-private fun PresetsContainerEmptyPreview() = PreviewSurface {
-    PresetsContainer(
-        presets = State.Endpoint.Presets(
-            appliedPreset = null,
-            visiblePresets = emptyList(),
-            allPresets = emptyList(),
-            filter = ""
-        ),
-        {},
-        {},
-        onPresetMoreInfoClicked = {}
-    )
-}
+// @Preview
+// @Composable
+// private fun PresetsContainerEmptySearchPreview() = PreviewSurface {
+// PresetsContainer(
+// presets = State.Endpoint.Presets(
+// null,
+// emptyList(),
+// listOf(
+// DashboardOverridePreset(
+// "",
+// "",
+// null,
+// PartialMockzillaHttpResponse()
+// )
+// ),
+// ""
+// ),
+// {},
+// {},
+// {}
+// )
+// }
+// 
+// @Preview
+// @Composable
+// private fun PresetsContainerEmptyPreview() = PreviewSurface {
+// PresetsContainer(
+// presets = State.Endpoint.Presets(
+// appliedPreset = null,
+// visiblePresets = emptyList(),
+// allPresets = emptyList(),
+// filter = ""
+// ),
+// {},
+// {},
+// onPresetMoreInfoClicked = {}
+// )
+// }
