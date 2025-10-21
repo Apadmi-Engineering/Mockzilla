@@ -1,4 +1,4 @@
-@file:Suppress("FILE_NAME_MATCH_CLASS")
+@file:Suppress("FILE_NAME_MATCH_CLASS", "MAGIC_NUMBER")
 
 package com.apadmi.mockzilla.ui.ui.common.components
 
@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -61,7 +63,6 @@ internal enum class PresetCardVariant {
     Selectable, Selected
 }
 
-@Suppress("MAGIC_NUMBER")
 @Composable
 private fun DashboardOverridePreset.description(
     strings: Strings.Widgets.EndpointDetails.Presets.TypeDescriptions = LocalStrings.current.widgets.endpointDetails.presets.typeDescriptions
@@ -88,7 +89,6 @@ private fun DashboardOverridePreset.color() =
     (type?.exampleStatusCode() ?: response.statusCode)?.color()
         ?: httpStatus_fallback
 
-@Suppress("MAGIC_NUMBER")
 private fun DashboardOverridePreset.icon() = if (isManagementUiDefinedCustomPreset) {
     Res.drawable.ic_edit_circle
 } else {
@@ -109,13 +109,15 @@ internal fun PresetCard(
     onClicked: (DashboardOverridePreset) -> Unit,
 ) = Column(
     Modifier.fillMaxWidth()
-        .clickable() {
+        .clickable {
             onClicked(preset)
         }.border(
-            width = 1.dp, color = when (variant) {
+            width = 1.dp,
+            color = when (variant) {
                 PresetCardVariant.Selected -> MaterialTheme.colorScheme.onBackground
                 PresetCardVariant.Selectable -> MaterialTheme.colorScheme.outline
-            }, shape = RoundedCornerShape(12.dp)
+            },
+            shape = RoundedCornerShape(12.dp)
         ).background(
             color = MaterialTheme.colorScheme.surface,
             shape = RoundedCornerShape(12.dp)
@@ -138,7 +140,9 @@ internal fun PresetCard(
                 PresetCardVariant.Selected -> "Applied"
                 PresetCardVariant.Selectable -> preset.response.statusCode?.value?.toString()
                     ?: "XXX"
-            }, color = preset.color()
+            },
+            textColor = preset.color(),
+            borderColor = preset.color()
         )
     }
     Spacer(Modifier.size(8.dp))
@@ -158,7 +162,9 @@ internal fun PresetCard(
     ) {
         Tag(
             label = preset.description(),
-            color = preset.color()
+            textColor = preset.color(),
+            borderColor = preset.color(),
+            backgroundColor = preset.color().copy(alpha = 0.2f)
         )
         when (variant) {
             PresetCardVariant.Selected ->
@@ -171,12 +177,15 @@ internal fun PresetCard(
                         )
                     },
                     label = "Edit",
-                    color = MaterialTheme.colorScheme.onSurface
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                    borderColor = MaterialTheme.colorScheme.outline
                 )
 
             PresetCardVariant.Selectable -> Tag(
                 label = "Apply",
-                color = MaterialTheme.colorScheme.onSurface
+                textColor = MaterialTheme.colorScheme.onSurface,
+                borderColor = MaterialTheme.colorScheme.outline,
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
             )
         }
     }
@@ -192,17 +201,32 @@ internal fun Tag(
     modifier: Modifier = Modifier,
     prefix: @Composable () -> Unit = {},
     label: String,
-    color: Color
+    textColor: Color,
+    borderColor: Color,
+    backgroundColor: Color = Color.Transparent,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
 ) = Row(
-    modifier.border(
-        width = 1.dp, color = color, shape = RoundedCornerShape(8.dp)
-    ).padding(horizontal = 8.dp, vertical = 4.dp),
+    modifier = modifier
+        .border(
+            width = 1.dp,
+            color = borderColor,
+            shape = RoundedCornerShape(8.dp)
+        )
+        .background(
+            color = backgroundColor.compositeOver(
+                background = MaterialTheme.colorScheme.surface
+            ),
+            shape = RoundedCornerShape(8.dp)
+        )
+        .padding(contentPadding),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(8.dp)
 ) {
     prefix()
     Text(
-        text = label, style = MaterialTheme.typography.labelMedium, color = color
+        text = label,
+        style = MaterialTheme.typography.labelMedium,
+        color = textColor
     )
 }
 

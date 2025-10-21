@@ -108,6 +108,7 @@ internal fun ActivePresetCard(
         CustomOutlineButton(
             label = strings.createCustomButton,
             leadingIcon = rememberVectorPainter(Icons.Outlined.AddCircle),
+            borderColor = MaterialTheme.colorScheme.outline,
             onClick = { }  // TODO - Add custom preset support
         )
     }
