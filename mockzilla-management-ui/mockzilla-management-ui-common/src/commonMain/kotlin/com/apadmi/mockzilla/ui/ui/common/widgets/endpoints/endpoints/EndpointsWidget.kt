@@ -77,7 +77,9 @@ private fun EndpointsList(
     onEndpointClicked: (Key) -> Unit,
     onFilterUpdate: (String) -> Unit,
     strings: Strings = LocalStrings.current
-) = Column {
+) = Column(
+    modifier = Modifier.verticalScroll(rememberScrollState())
+) {
     FilterTextField(
         value = state.filter,
         onFilterUpdate = onFilterUpdate
@@ -231,7 +233,6 @@ private fun EndpointsWidgetContent(
     modifier = Modifier
         .fillMaxSize()
         .background(color = MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState())
         .padding(horizontal = 12.dp, vertical = 15.dp)
         .navigationBarsPadding()
 ) {
