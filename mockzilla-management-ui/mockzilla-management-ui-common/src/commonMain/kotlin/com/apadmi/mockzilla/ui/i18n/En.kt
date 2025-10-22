@@ -188,7 +188,11 @@ val EnStrings = Strings(
                 activePresetTitle = "Configure Overrides",
                 createCustomButton = "Create Custom",
                 filterPlaceholder = "Filter Presets",
-                filterPlaceholderEmpty = "Nothing here :("
+                filterPlaceholderEmpty = "Nothing here :(",
+                statusCodeFallback = "XXX",
+                applyLabel = "Apply",
+                appliedLabel = "Applied",
+                editLabel = "Edit"
             )
         ),
         miscControls = Strings.Widgets.MiscControls(

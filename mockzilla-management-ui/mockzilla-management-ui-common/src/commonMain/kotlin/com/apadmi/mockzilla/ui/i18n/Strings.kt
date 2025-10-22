@@ -357,6 +357,10 @@ data class Strings(
              * @property createCustomButton
              * @property filterPlaceholder
              * @property filterPlaceholderEmpty
+             * @property statusCodeFallback
+             * @property applyLabel
+             * @property appliedLabel
+             * @property editLabel
              */
             data class Presets(
                 val noPresetTitle: String,
@@ -369,7 +373,11 @@ data class Strings(
                 val activePresetTitle: String,
                 val createCustomButton: String,
                 val filterPlaceholder: String,
-                val filterPlaceholderEmpty: String
+                val filterPlaceholderEmpty: String,
+                val statusCodeFallback: String,
+                val applyLabel: String,
+                val appliedLabel: String,
+                val editLabel: String
             ) {
                 /**
                  * @property error

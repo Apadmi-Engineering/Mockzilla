@@ -1,4 +1,4 @@
-@file:Suppress("FILE_NAME_MATCH_CLASS")
+@file:Suppress("FILE_NAME_MATCH_CLASS", "MAGIC_NUMBER")
 
 package com.apadmi.mockzilla.ui.ui.common.components
 
@@ -61,7 +61,6 @@ internal enum class PresetCardVariant {
     Selectable, Selected
 }
 
-@Suppress("MAGIC_NUMBER")
 @Composable
 private fun DashboardOverridePreset.description(
     strings: Strings.Widgets.EndpointDetails.Presets.TypeDescriptions = LocalStrings.current.widgets.endpointDetails.presets.typeDescriptions
@@ -88,7 +87,6 @@ private fun DashboardOverridePreset.color() =
     (type?.exampleStatusCode() ?: response.statusCode)?.color()
         ?: httpStatus_fallback
 
-@Suppress("MAGIC_NUMBER")
 private fun DashboardOverridePreset.icon() = if (isManagementUiDefinedCustomPreset) {
     Res.drawable.ic_edit_circle
 } else {
@@ -107,6 +105,7 @@ internal fun PresetCard(
     variant: PresetCardVariant,
     preset: DashboardOverridePreset,
     onClicked: (DashboardOverridePreset) -> Unit,
+    strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) = Column(
     Modifier.fillMaxWidth()
         .clickable() {
@@ -135,9 +134,9 @@ internal fun PresetCard(
         Spacer(Modifier.weight(1f))
         Tag(
             label = when (variant) {
-                PresetCardVariant.Selected -> "Applied"
+                PresetCardVariant.Selected -> strings.appliedLabel
                 PresetCardVariant.Selectable -> preset.response.statusCode?.value?.toString()
-                    ?: "XXX"
+                    ?: strings.statusCodeFallback
             }, color = preset.color()
         )
     }
@@ -170,12 +169,12 @@ internal fun PresetCard(
                             contentDescription = null,
                         )
                     },
-                    label = "Edit",
+                    label = strings.editLabel,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
             PresetCardVariant.Selectable -> Tag(
-                label = "Apply",
+                label = strings.applyLabel,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }

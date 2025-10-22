@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -45,6 +46,7 @@ internal fun ForcedFailureOverlayBanner(
         .pointerInput(Unit) {
             detectTapGestures { /* Absorb touches */ }
         }
+        .semantics(mergeDescendants = true) { /* No-Op */ }
         .padding(horizontal = 12.dp)
         .zIndex(1f),
     contentAlignment = Alignment.Center
