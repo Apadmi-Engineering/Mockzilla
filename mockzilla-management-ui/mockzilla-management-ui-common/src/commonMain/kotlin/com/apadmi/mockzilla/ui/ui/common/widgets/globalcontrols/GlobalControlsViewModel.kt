@@ -4,6 +4,7 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -41,9 +42,9 @@ internal class GlobalControlsViewModel(
                         endpoints.all { it.delayMs == endpoints.firstOrNull()?.delayMs }
                     },
                     apiFailureState = when {
-                        endpoints.all { it.shouldFail == true } -> State.ApiFailureState.FullFailure
-                        endpoints.none { it.shouldFail == true } -> State.ApiFailureState.Normal
-                        else -> State.ApiFailureState.PartialFailure
+                        endpoints.all { it.shouldFail == true } -> ForceFailureBannerState.FullFailure
+                        endpoints.none { it.shouldFail == true } -> ForceFailureBannerState.Normal
+                        else -> ForceFailureBannerState.PartialFailure
                     },
                     isLoading = false
                 )
@@ -117,15 +118,8 @@ internal class GlobalControlsViewModel(
          */
         data class Idle(
             val initialLatencyMs: Int?,
-            val apiFailureState: ApiFailureState,
+            val apiFailureState: ForceFailureBannerState,
             val isLoading: Boolean
         ) : State()
-
-        enum class ApiFailureState {
-            FullFailure,
-            Normal,
-            PartialFailure,
-            ;
-        }
     }
 }

@@ -237,15 +237,14 @@ private fun EndpointsWidgetContent(
         .navigationBarsPadding()
 ) {
     when (state) {
-        EndpointsViewModel.State.Loading -> CircularProgressIndicator(
-            modifier = Modifier.fillMaxSize()
-        )
+        EndpointsViewModel.State.Loading -> CircularProgressIndicator()
         is EndpointsViewModel.State.EndpointsList -> {
             EndpointsList(
                 state = state,
                 onEndpointClicked = onEndpointClicked,
                 onFilterUpdate = onFilterUpdate
             )
+
             FloatingActionButton(
                 modifier = Modifier
                     .padding(end = 8.dp)

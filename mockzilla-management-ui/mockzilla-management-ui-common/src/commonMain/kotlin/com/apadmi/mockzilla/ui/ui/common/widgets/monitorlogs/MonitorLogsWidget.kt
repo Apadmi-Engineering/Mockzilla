@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
@@ -34,25 +33,11 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_1xx
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_2xx
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_3xx
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_4xx
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_5xx
+import com.apadmi.mockzilla.ui.ui.common.utils.color
 
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
-
-@Suppress("MAGIC_NUMBER")
-private fun HttpStatusCode.color() = when (this.value) {
-    in 100..199 -> httpStatusCode_1xx
-    in 200..299 -> httpStatusCode_2xx
-    in 300..399 -> httpStatusCode_3xx
-    in 400..499 -> httpStatusCode_4xx
-    in 500..599 -> httpStatusCode_5xx
-    else -> Color.Black
-}
 
 @Composable
 fun MonitorLogsWidget(

@@ -32,6 +32,7 @@ private const val firstLineTailDuration = 850
 private const val firstLineHeadDelay = 0
 private const val firstLineTailDelay = 333
 internal val linearIndicatorWidth = 240.dp
+
 internal val linearIndicatorHeight = 4.dp
 
 private val firstLineHeadEasing = CubicBezierEasing(0.2f, 0f, 0.8f, 1f)
@@ -122,13 +123,13 @@ internal fun TogglableProgressIndicator(
         }
         val gapSizeFraction = adjustedGapSize / size.width.toDp()
 
-        // Track before line
+        // Track before line 1
         if (firstLineHead.value < 1f - gapSizeFraction) {
             val start = if (firstLineHead.value > 0) firstLineHead.value + gapSizeFraction else 0f
             drawLinearIndicator(start, 1f, trackColor, strokeWidth, strokeCap)
         }
 
-        // Line
+        // Line 1
         if (firstLineHead.value - firstLineTail.value > 0) {
             drawLinearIndicator(
                 firstLineHead.value,

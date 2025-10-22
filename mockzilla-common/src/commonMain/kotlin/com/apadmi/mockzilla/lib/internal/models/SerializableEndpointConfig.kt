@@ -5,7 +5,7 @@ package com.apadmi.mockzilla.lib.internal.models
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -20,14 +20,14 @@ import kotlinx.serialization.encoding.Encoder
  * @property name
  * @property shouldFail
  * @property delayMs
+ * @property versionCode
+ * @property appliedPresetOverride
  * @property defaultHeaders
  * @property defaultBody
  * @property defaultStatus
+ * @property errorHeaders
  * @property errorBody
  * @property errorStatus
- * @property errorHeaders
- * @property versionCode
- * @property appliedPresetOverride
  */
 @Serializable
 data class SerializableEndpointConfig(
@@ -118,11 +118,7 @@ data class SerializableEndpointPatchItemDto(
             key = key,
             shouldFail = SetOrDont.DoNotSet,
             delayMs = SetOrDont.DoNotSet,
-            defaultHeaders = SetOrDont.DoNotSet,
-            defaultBody = SetOrDont.DoNotSet,
-            defaultStatus = SetOrDont.DoNotSet,
-            errorBody = SetOrDont.DoNotSet,
-            errorStatus = SetOrDont.DoNotSet,
+            appliedPresetOverride = SetOrDont.DoNotSet,
         )
 
         fun allSet(config: SerializableEndpointConfig) = SerializableEndpointPatchItemDto(

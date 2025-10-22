@@ -1,3 +1,5 @@
+@file:Suppress("COMPLEX_EXPRESSION")
+
 package com.apadmi.mockzilla.ui.i18n
 
 import cafe.adriel.lyricist.LyricistStrings
@@ -118,6 +120,7 @@ val EnStrings = Strings(
         ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",
+            subtitle = "Configure HTTP response",
             none = "No endpoint selected",
             useErrorResponse = "Return failure response",
             defaultDataTab = "Default Response",
@@ -167,6 +170,25 @@ val EnStrings = Strings(
             headersUnset = "Headers unset",
             emptyTitle = "\uD83D\uDC48",
             emptyDescription = "Choose an Endpoint to start editing",
+            presets = Strings.Widgets.EndpointDetails.Presets(
+                title = "Presets",
+                noPresetTitle = "No Override Selected",
+                noPresetBody = "Select a preset or create a custom response",
+                typeDescriptions = Strings.Widgets.EndpointDetails.Presets.TypeDescriptions(
+                    error = "Error",
+                    informational = "Info",
+                    other = "Custom",
+                    redirect = "Redirect",
+                    success = "Success"
+                ),
+                noAvailablePresetsTitle = "No presets yet!",
+                noAvailablePresetsBody = "Define presets in code to easily switch your responses for pre-defined ones",
+                moreInfoButton = "More Information",
+                activePresetTitle = "Configure Overrides",
+                createCustomButton = "Create Custom",
+                filterPlaceholder = "Filter Presets",
+                filterPlaceholderEmpty = "Nothing here :("
+            )
         ),
         miscControls = Strings.Widgets.MiscControls(
             refreshAll = "Re-sync all",

@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.ui.ui.common.widgets
+package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,8 +33,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
-import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
 import com.apadmi.mockzilla_management_ui_common.generated.resources.clock
 import org.jetbrains.compose.resources.painterResource
@@ -53,6 +51,7 @@ private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
 @Composable
 internal fun ResponseLatencyCard(
+    modifier: Modifier = Modifier,
     initialValue: Int?,
     onChange: (Int) -> Unit,
     onReset: () -> Unit,
@@ -66,7 +65,7 @@ internal fun ResponseLatencyCard(
         }
     }
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.surface,
@@ -189,5 +188,5 @@ private fun SquareIconButton(
 @Preview
 @Composable
 private fun ResponseLatencyCardPreview() = PreviewSurface {
-    ResponseLatencyCard(150, {}, {})
+    ResponseLatencyCard(initialValue = 150, onChange = {}, onReset = {})
 }

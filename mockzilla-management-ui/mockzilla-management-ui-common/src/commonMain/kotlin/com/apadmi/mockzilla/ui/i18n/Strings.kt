@@ -299,12 +299,15 @@ data class Strings(
          * @property resetHeaders
          * @property noHeaders
          * @property headersUnset
-         * @property title
+         * @property subtitle
          * @property emptyTitle
          * @property emptyDescription
+         * @property title
+         * @property presets
          */
         data class EndpointDetails(
             val title: String,
+            val subtitle: String,
             val none: String,
             val useErrorResponse: String,
             val defaultDataTab: String,
@@ -339,8 +342,51 @@ data class Strings(
             val noHeaders: String,
             val headersUnset: String,
             val emptyTitle: String,
-            val emptyDescription: String
-        )
+            val emptyDescription: String,
+            val presets: Presets
+        ) {
+            /**
+             * @property noPresetTitle
+             * @property noPresetBody
+             * @property typeDescriptions
+             * @property title
+             * @property noAvailablePresetsTitle
+             * @property noAvailablePresetsBody
+             * @property moreInfoButton
+             * @property activePresetTitle
+             * @property createCustomButton
+             * @property filterPlaceholder
+             * @property filterPlaceholderEmpty
+             */
+            data class Presets(
+                val noPresetTitle: String,
+                val noPresetBody: String,
+                val typeDescriptions: TypeDescriptions,
+                val title: String,
+                val noAvailablePresetsTitle: String,
+                val noAvailablePresetsBody: String,
+                val moreInfoButton: String,
+                val activePresetTitle: String,
+                val createCustomButton: String,
+                val filterPlaceholder: String,
+                val filterPlaceholderEmpty: String
+            ) {
+                /**
+                 * @property error
+                 * @property informational
+                 * @property other
+                 * @property redirect
+                 * @property success
+                 */
+                data class TypeDescriptions(
+                    val error: String,
+                    val informational: String,
+                    val other: String,
+                    val redirect: String,
+                    val success: String
+                )
+            }
+        }
 
         /**
          * @property heading
