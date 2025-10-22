@@ -15,7 +15,7 @@ val EnStrings = Strings(
         resetDescription = "Reset"
     ),
     widgets = Strings.Widgets(
-        Strings.Widgets.DeviceConnection(
+        deviceConnection = Strings.Widgets.DeviceConnection(
             tabTitle = "Connect Device",
             heading = "Enter IP and port to connect to a device",
             autoConnectHeading = "Or…",
@@ -170,6 +170,8 @@ val EnStrings = Strings(
             headersUnset = "Headers unset",
             emptyTitle = "\uD83D\uDC48",
             emptyDescription = "Choose an Endpoint to start editing",
+            forcedApiFailureBannerTitle = "Forced API Failure Enabled",
+            forcedApiFailureBannerSubtitle = "This setting is currently being overridden",
             presets = Strings.Widgets.EndpointDetails.Presets(
                 title = "Presets",
                 noPresetTitle = "No Override Selected",
@@ -187,7 +189,11 @@ val EnStrings = Strings(
                 activePresetTitle = "Configure Overrides",
                 createCustomButton = "Create Custom",
                 filterPlaceholder = "Filter Presets",
-                filterPlaceholderEmpty = "Nothing here :("
+                filterPlaceholderEmpty = "Nothing here :(",
+                statusCodeFallback = "XXX",
+                applyLabel = "Apply",
+                appliedLabel = "Applied",
+                editLabel = "Edit"
             )
         ),
         miscControls = Strings.Widgets.MiscControls(

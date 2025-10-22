@@ -9,38 +9,56 @@ import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 
 import io.ktor.http.HttpStatusCode
 
-@Composable
-internal fun EndpointDetailsWidgetPreviewContent() = EndpointDetailsWidgetContent(
-    state = EndpointDetailsViewModel.State.Endpoint(
-        config = SerializableEndpointConfig.allNulls(
-            key = EndpointConfiguration.Key("Key"),
-            name = "Endpoint Name",
-            versionCode = 1
-        ),
-        fail = null,
-        delayMillis = null,
-        isLoading = false,
-        presets = EndpointDetailsViewModel.State.Endpoint.Presets(
-            appliedPreset = null,
-            visiblePresets = listOf(
-                DashboardOverridePreset(
-                    name = "Preset",
-                    description = "Preset Description",
-                    type = null,
-                    response = PartialMockzillaHttpResponse(
-                        statusCode = HttpStatusCode.BadRequest,
-                        body = "{ \"name\":\"mockzilla\" }"
-                    )
-                )
-            ),
-            allPresets = emptyList(),
-            filter = "",
+internal val mockPresets = listOf(
+    DashboardOverridePreset(
+        name = "Preset",
+        description = "Preset Description",
+        type = null,
+        response = PartialMockzillaHttpResponse(
+            statusCode = HttpStatusCode.BadRequest,
+            body = "{ \"name\":\"mockzilla\" }"
         )
     ),
+    DashboardOverridePreset(
+        name = "Preset 2",
+        description = "Preset Description",
+        type = DashboardOverridePreset.Type.Success,
+        response = PartialMockzillaHttpResponse(
+            statusCode = HttpStatusCode.OK,
+            body = "{ \"name\":\"mockzilla\" }"
+        )
+    )
+)
+
+@Composable
+internal fun EndpointDetailsWidgetPreviewContent(
+    state: EndpointDetailsViewModel.State
+) = EndpointDetailsWidgetContent(
+    state = state,
     onDelayChange = {},
     onDefaultPresetSelected = {},
     onResetAll = {},
     onFailChange = {},
     onFilterPresetChanged = {},
     onPresetMoreInfoClicked = {}
+)
+
+@Suppress("TOO_LONG_FUNCTION")
+internal fun endpointDetailsWidgetSuccessState(
+    fail: Boolean = false
+) = EndpointDetailsViewModel.State.Endpoint(
+    config = SerializableEndpointConfig.allNulls(
+        key = EndpointConfiguration.Key("Key"),
+        name = "Endpoint Name",
+        versionCode = 1
+    ).copy(shouldFail = fail),
+    fail = fail,
+    delayMillis = null,
+    isLoading = false,
+    presets = EndpointDetailsViewModel.State.Endpoint.Presets(
+        appliedPreset = null,
+        visiblePresets = mockPresets,
+        allPresets = mockPresets,
+        filter = "",
+    )
 )

@@ -107,6 +107,7 @@ internal fun PresetCard(
     variant: PresetCardVariant,
     preset: DashboardOverridePreset,
     onClicked: (DashboardOverridePreset) -> Unit,
+    strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) = Column(
     Modifier.fillMaxWidth()
         .clickable {
@@ -137,9 +138,9 @@ internal fun PresetCard(
         Spacer(Modifier.weight(1f))
         Tag(
             label = when (variant) {
-                PresetCardVariant.Selected -> "Applied"
+                PresetCardVariant.Selected -> strings.appliedLabel
                 PresetCardVariant.Selectable -> preset.response.statusCode?.value?.toString()
-                    ?: "XXX"
+                    ?: strings.statusCodeFallback
             },
             textColor = preset.color(),
             borderColor = preset.color()
@@ -167,22 +168,20 @@ internal fun PresetCard(
             backgroundColor = preset.color().copy(alpha = 0.2f)
         )
         when (variant) {
-            PresetCardVariant.Selected ->
-                Tag(
-                    prefix = {
-                        Icon(
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            painter = painterResource(Res.drawable.ic_edit_underscore),
-                            contentDescription = null,
-                        )
-                    },
-                    label = "Edit",
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    borderColor = MaterialTheme.colorScheme.outline
-                )
-
+            PresetCardVariant.Selected -> Tag(
+                prefix = {
+                    Icon(
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        painter = painterResource(Res.drawable.ic_edit_underscore),
+                        contentDescription = null,
+                    )
+                },
+                label = strings.editLabel,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                borderColor = MaterialTheme.colorScheme.outline
+            )
             PresetCardVariant.Selectable -> Tag(
-                label = "Apply",
+                label = strings.applyLabel,
                 textColor = MaterialTheme.colorScheme.onSurface,
                 borderColor = MaterialTheme.colorScheme.outline,
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)

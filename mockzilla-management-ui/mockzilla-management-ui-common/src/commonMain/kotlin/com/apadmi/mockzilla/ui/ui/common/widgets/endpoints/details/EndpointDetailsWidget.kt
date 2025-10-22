@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -89,7 +88,7 @@ private fun ColumnScope.PopulatedState(
 
     ResponseLatencyCard(
         modifier = Modifier.padding(horizontal = 12.dp),
-        state.config.delayMs,
+        initialValue = state.config.delayMs,
         onChange = onDelayChange,
         onReset = { onDelayChange(null) }
     )
@@ -100,13 +99,11 @@ private fun ColumnScope.PopulatedState(
         onEditPreset = {}
     )
 
-    Spacer(Modifier.weight(1f))
-
     PresetsContainer(
-        state.presets,
-        onFilterPresetChanged,
-        onDefaultPresetSelected,
-        onPresetMoreInfoClicked
+        state = state,
+        onPresetFilterChanged = onFilterPresetChanged,
+        onDefaultPresetSelected = onDefaultPresetSelected,
+        onPresetMoreInfoClicked = onPresetMoreInfoClicked
     )
 }
 
@@ -146,8 +143,8 @@ fun EndpointDetailsWidgetContent(
     onPresetMoreInfoClicked: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column(
-    Modifier.fillMaxSize()
-        .background(color = MaterialTheme.colorScheme.surface)
+    modifier = Modifier
+        .fillMaxSize()
         .navigationBarsPadding()
         .background(color = MaterialTheme.colorScheme.background),
     verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -173,6 +170,34 @@ fun EndpointDetailsWidgetContent(
 
 @Preview(heightDp = 1000)
 @Composable
+private fun EndpointDetailsWidgetEmptyPreview() = PreviewSurface {
+    EndpointDetailsWidgetPreviewContent(state = State.Empty)
+}
+
+@Preview(heightDp = 1110)
+@Composable
 private fun EndpointDetailsWidgetPreview() = PreviewSurface {
-    EndpointDetailsWidgetPreviewContent()
+    EndpointDetailsWidgetPreviewContent(state = endpointDetailsWidgetSuccessState())
+}
+
+@Preview(heightDp = 1110)
+@Composable
+private fun EndpointDetailsWidgetDarkPreview() = PreviewSurface(darkTheme = true) {
+    EndpointDetailsWidgetPreviewContent(state = endpointDetailsWidgetSuccessState())
+}
+
+@Preview(heightDp = 1110)
+@Composable
+private fun EndpointDetailsWidgetForceFailurePreview() = PreviewSurface {
+    EndpointDetailsWidgetPreviewContent(
+        state = endpointDetailsWidgetSuccessState(fail = true)
+    )
+}
+
+@Preview(heightDp = 1110)
+@Composable
+private fun EndpointDetailsWidgetForceFailureDarkPreview() = PreviewSurface(darkTheme = true) {
+    EndpointDetailsWidgetPreviewContent(
+        state = endpointDetailsWidgetSuccessState(fail = true)
+    )
 }

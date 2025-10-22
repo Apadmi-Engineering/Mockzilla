@@ -117,6 +117,7 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
             versionCode = dummyVersion
         )
         val presets = DashboardOptionsConfig.Builder().build()
+
         every {
             eventBusMock.send(
                 EventBus.Event.EndpointDataChanged(listOf(EndpointConfiguration.Key(raw = "key")))
