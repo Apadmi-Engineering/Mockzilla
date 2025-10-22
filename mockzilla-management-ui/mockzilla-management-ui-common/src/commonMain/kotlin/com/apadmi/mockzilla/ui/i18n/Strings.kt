@@ -114,11 +114,15 @@ data class Strings(
          * @property refreshAll
          * @property clearOverrides
          * @property title
+         * @property presentationMode
+         * @property fontScaleLabel
          */
         data class MiscControls(
             val refreshAll: String,
             val clearOverrides: String,
-            val title: String
+            val title: String,
+            val presentationMode: String,
+            val fontScaleLabel: (Float) -> String,
         )
 
         /**

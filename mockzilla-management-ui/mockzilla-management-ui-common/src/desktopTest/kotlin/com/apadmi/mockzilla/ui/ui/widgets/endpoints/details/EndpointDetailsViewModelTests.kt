@@ -42,11 +42,11 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
     private fun createSut() = EndpointDetailsViewModel(
         key = EndpointConfiguration.Key("key"),
         device = dummyActiveDevice,
-        endpointsServiceMock,
-        updateServiceMock,
-        clearingServiceMock,
-        eventBusMock,
-        testScope.backgroundScope
+        endpointsService = endpointsServiceMock,
+        updateService = updateServiceMock,
+        clearingService = clearingServiceMock,
+        eventBus = eventBusMock,
+        scope = testScope.backgroundScope
     )
 
     @Test
@@ -70,11 +70,16 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
             appliedPresetOverride = null
         )
         val presets = DashboardOptionsConfig.Builder().build()
+
         every { eventBusMock.events }.returns(emptyFlow())
-        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice) }
-            .returns(Result.success(listOf(config)))
-        coEvery { endpointsServiceMock.fetchDashboardOptionsConfig(dummyActiveDevice, dummyKey) }
-            .returns(Result.success(presets))
+
+        coEvery {
+            endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice)
+        }.returns(Result.success(listOf(config)))
+
+        coEvery {
+            endpointsServiceMock.fetchDashboardOptionsConfig(dummyActiveDevice, dummyKey)
+        }.returns(Result.success(presets))
 
         /* Run Test */
         val sut = createSut()
@@ -88,11 +93,12 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 config = config,
                 fail = false,
                 delayMillis = 50,
+                isLoading = false,
                 presets = State.Endpoint.Presets(
-                    null,
-                    presets.presets,
-                    presets.presets,
-                    ""
+                    appliedPreset = null,
+                    visiblePresets = presets.presets,
+                    allPresets = presets.presets,
+                    filter = ""
                 ),
             ),
             sut.state.value
@@ -111,17 +117,36 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
             versionCode = dummyVersion
         )
         val presets = DashboardOptionsConfig.Builder().build()
-        every { eventBusMock.send(EventBus.Event.EndpointDataChanged(listOf(EndpointConfiguration.Key(raw = "key")))) }
-            .returns(Unit)
-        coEvery { updateServiceMock.setShouldFail(dummyActiveDevice, listOf(config.key), true) }
-            .returns(Result.success(Unit))
-        coEvery { updateServiceMock.applyPreset(dummyActiveDevice, config.key, any()) }
-            .returns(Result.success(Unit))
+
+        every {
+            eventBusMock.send(
+                EventBus.Event.EndpointDataChanged(listOf(EndpointConfiguration.Key(raw = "key")))
+            )
+        }.returns(Unit)
+
+        coEvery {
+            updateServiceMock.setShouldFail(
+                dummyActiveDevice, listOf(config.key), true
+            )
+        }.returns(Result.success(Unit))
+
+        coEvery {
+            updateServiceMock.applyPreset(
+                dummyActiveDevice, config.key, any()
+            )
+        }.returns(Result.success(Unit))
+
         every { eventBusMock.events }.returns(emptyFlow())
-        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice) }
-            .returns(Result.success(listOf(config)))
-        coEvery { endpointsServiceMock.fetchDashboardOptionsConfig(dummyActiveDevice, EndpointConfiguration.Key(dummyKey)) }
-            .returns(Result.success(presets))
+
+        coEvery {
+            endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice)
+        }.returns(Result.success(listOf(config)))
+
+        coEvery {
+            endpointsServiceMock.fetchDashboardOptionsConfig(
+                dummyActiveDevice, EndpointConfiguration.Key(dummyKey)
+            )
+        }.returns(Result.success(presets))
 
         /* Run Test */
         val sut = createSut()
@@ -129,12 +154,14 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
         val initialState = sut.state.value
         repeat(10) { yield() }
 
-        sut.onPresetSelected(DashboardOverridePreset(
-            "Preset name",
-            null,
-            DashboardOverridePreset.Type.Informational,
-            PartialMockzillaHttpResponse(body = "hello"),
-        ))
+        sut.onPresetSelected(
+            DashboardOverridePreset(
+                name = "Preset name",
+                description = null,
+                type = DashboardOverridePreset.Type.Informational,
+                response = PartialMockzillaHttpResponse(body = "hello")
+            )
+        )
         yield()
         sut.updateLatency(100)
         yield()
@@ -148,30 +175,33 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 config = config,
                 fail = null,
                 delayMillis = null,
+                isLoading = false,
                 presets = State.Endpoint.Presets(
-                    null,
-                    presets.presets,
-                    presets.presets,
-                    ""
+                    appliedPreset = null,
+                    visiblePresets = presets.presets,
+                    allPresets = presets.presets,
+                    filter = ""
                 ),
             ),
             initialState
         )
+
         assertEquals(
             State.Endpoint(
                 config = config,
                 fail = true,
                 delayMillis = 100,
+                isLoading = true,
                 presets = State.Endpoint.Presets(
-                    DashboardOverridePreset(
-                        "Preset name",
-                        null,
-                        DashboardOverridePreset.Type.Informational,
-                        PartialMockzillaHttpResponse(body = "hello"),
+                    appliedPreset = DashboardOverridePreset(
+                        name = "Preset name",
+                        description = null,
+                        type = DashboardOverridePreset.Type.Informational,
+                        response = PartialMockzillaHttpResponse(body = "hello"),
                     ),
-                    presets.presets,
-                    presets.presets,
-                    ""
+                    visiblePresets = presets.presets,
+                    allPresets = presets.presets,
+                    filter = ""
                 ),
             ),
             sut.state.value

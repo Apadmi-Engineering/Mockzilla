@@ -168,7 +168,7 @@ fun EndpointDetailsWidgetContent(
     }
 }
 
-@Preview
+@Preview(heightDp = 1000)
 @Composable
 private fun EndpointDetailsWidgetEmptyPreview() = PreviewSurface {
     EndpointDetailsWidgetPreviewContent(state = State.Empty)
