@@ -1,8 +1,11 @@
-package com.apadmi.mockzilla.demo
+package com.apadmi.mockzilla.demo.ui
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.apadmi.mockzilla.demo.engine.CowDto
+import com.apadmi.mockzilla.demo.engine.DataResult
+import com.apadmi.mockzilla.demo.engine.Repository
 import kotlinx.coroutines.launch
 
 class MainViewModel(

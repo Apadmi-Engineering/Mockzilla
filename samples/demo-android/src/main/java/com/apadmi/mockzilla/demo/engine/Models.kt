@@ -1,6 +1,6 @@
 @file:Suppress("KDOC_EXTRA_PROPERTY", "KDOC_NO_CONSTRUCTOR_PROPERTY")
 
-package com.apadmi.mockzilla.demo
+package com.apadmi.mockzilla.demo.engine
 
 import kotlinx.serialization.Serializable
 

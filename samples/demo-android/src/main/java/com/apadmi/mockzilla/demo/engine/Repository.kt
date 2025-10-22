@@ -1,9 +1,8 @@
-package com.apadmi.mockzilla.demo
+package com.apadmi.mockzilla.demo.engine
 
 import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
 
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -13,8 +12,6 @@ import okhttp3.Protocol
 
 import java.net.Proxy
 
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 sealed class DataResult<out T, out E> {

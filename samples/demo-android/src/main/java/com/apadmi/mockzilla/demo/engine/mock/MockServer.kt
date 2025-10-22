@@ -1,8 +1,10 @@
 @file:Suppress("MAGIC_NUMBER")
 
-package com.apadmi.mockzilla.demo
+package com.apadmi.mockzilla.demo.engine.mock
 
 import android.content.Context
+import com.apadmi.mockzilla.demo.engine.CowDto
+import com.apadmi.mockzilla.demo.engine.GetCowRequestDto
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig

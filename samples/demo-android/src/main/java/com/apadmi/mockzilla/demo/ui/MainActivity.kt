@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.demo
+package com.apadmi.mockzilla.demo.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.apadmi.mockzilla.demo.engine.GetCowRequestDto
 import com.apadmi.mockzilla.mobile.ui.launchManagementUi
 
 class MainActivity : ComponentActivity() {
