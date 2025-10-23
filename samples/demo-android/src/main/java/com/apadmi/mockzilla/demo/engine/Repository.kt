@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.demo.engine
 
-import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
+import com.apadmi.mockzilla.demo.engine.network.DataResult
+import com.apadmi.mockzilla.demo.engine.network.MockzillaTokenProvider
 
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.OkHttp
@@ -14,46 +15,23 @@ import java.net.Proxy
 
 import kotlinx.serialization.json.Json
 
-sealed class DataResult<out T, out E> {
-    fun dataOrNull() = when (this) {
-        is Success -> ok
-        is Failure -> null
-    }
-
-    fun errorOrNull() = when (this) {
-        is Success -> null
-        is Failure -> error
-    }
-
-    fun isSuccess() = this is Success
-
-    /**
-     * @property error
-     */
-    data class Failure<E>(val error: E) : DataResult<Nothing, E>()
-    /**
-     * @property ok
-     */
-    data class Success<T>(val ok: T) : DataResult<T, Nothing>()
-
-    companion object
-}
-
-interface MockzillaTokenProvider {
-    suspend fun getTokenHeader(): AuthHeaderProvider.Header
-}
-class Repository(private val baseUrl: String, private val tokenProvider: MockzillaTokenProvider) {
-    suspend fun getCow(someRequestValue: String): DataResult<CowDto, String> = try {
+class Repository(
+    private val baseUrl: String,
+    private val tokenProvider: MockzillaTokenProvider
+) {
+    suspend fun getAnimal(
+        urlSuffix: String,
+        someRequestValue: String
+    ): DataResult<AnimalDto, String> = try {
         val response = HttpClient(OkHttp) {
             engine {
                 preconfigured = OkHttpClient.Builder()
                     .proxy(Proxy.NO_PROXY)
                     .protocols(listOf(Protocol.HTTP_1_1)).build()
             }
-        }.post(
-            "$baseUrl/cow") {
+        }.post("$baseUrl/$urlSuffix") {
             contentType(ContentType.Application.Json)
-            setBody(Json.encodeToString(GetCowRequestDto(someRequestValue)))
+            setBody(Json.encodeToString(GetAnimalRequestDto(someRequestValue)))
 
             // In release mode this matters, otherwise it can be omitted
             val header = tokenProvider.getTokenHeader()

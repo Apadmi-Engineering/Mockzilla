@@ -5,18 +5,21 @@ package com.apadmi.mockzilla.demo.engine
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CowDto(
+data class AnimalDto(
+    val animal: AnimalTypeDto,
     val name: String,
     val age: Int,
-    val likesGrass: Boolean,
-    val hasHorns: Boolean,
-    val mooSample: String,
-    val someValueFromRequest: String,
+    val biography: String,
+    val owner: String,
 ) {
-    companion object {
-        val empty = CowDto("", 0, false, false, "", "")
+    @Serializable
+    enum class AnimalTypeDto {
+        Cow,
+        Pig,
+        Sheep,
+        ;
     }
 }
 
 @Serializable
-data class GetCowRequestDto(val valueInTheRequest: String)
+data class GetAnimalRequestDto(val owner: String = "")
