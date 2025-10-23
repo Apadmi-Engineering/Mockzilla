@@ -4,20 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.apadmi.mockzilla.demo.engine.GetCowRequestDto
 import com.apadmi.mockzilla.mobile.ui.launchManagementUi
 
 class MainActivity : ComponentActivity() {
@@ -26,9 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val repository = (application as RootApplication).repository
-        val viewModel = MainViewModel(
-            repository = repository
-        ) { isRelease ->
+        val viewModel = MainViewModel(repository = repository) { isRelease ->
             (application as RootApplication).setReleaseMode(isRelease)
         }
         val state = viewModel.state
@@ -47,65 +34,5 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-    }
-}
-
-@Composable
-fun MainContent(
-    state: MainViewModel.State,
-    setRequestText: (request: String) -> Unit,
-    makeRequest: (someValue: String) -> Unit,
-    setIsReleaseMode: (isRelease: Boolean) -> Unit,
-    launchManagementUi: () -> Unit
-) = Column(
-    modifier = Modifier
-        .fillMaxSize(1f)
-        .statusBarsPadding()
-        .verticalScroll(rememberScrollState())
-        .padding(16.dp),
-    verticalArrangement = Arrangement.spacedBy(12.dp)
-) {
-    Text(
-        text = "Enter a value here to be passed into the request body",
-        fontSize = 24.sp
-    )
-    TextField(
-        value = state.request,
-        onValueChange = setRequestText,
-        label = {
-            Text("Request Value")
-        }
-    )
-
-    Button(
-        onClick = { makeRequest(state.request) }
-    ) {
-        Text("Make Network Request")
-    }
-
-    Button(
-        onClick = { setIsReleaseMode(!state.isRelease) }
-    ) {
-        Text("Release Mode is ${if (state.isRelease) "On" else "Off"}")
-    }
-
-    Button(
-        onClick = launchManagementUi
-    ) {
-        Text("Launch Management UI")
-    }
-
-    state.cowResult?.let { cowResult ->
-        Text("Network Request Body")
-        Text(
-            text = "${GetCowRequestDto(state.request)}",
-            fontFamily = FontFamily.Monospace
-        )
-        HorizontalDivider()
-        Text("Response: ${if (cowResult.isSuccess()) "Success!" else "Failed"}")
-        Text(
-            text = "${cowResult.dataOrNull() ?: cowResult.errorOrNull()}",
-            fontFamily = FontFamily.Monospace
-        )
     }
 }
