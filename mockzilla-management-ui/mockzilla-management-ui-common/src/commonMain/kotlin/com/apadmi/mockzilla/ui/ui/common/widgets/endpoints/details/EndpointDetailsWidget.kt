@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -36,6 +37,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
 import com.apadmi.mockzilla.ui.ui.common.components.SurfaceHeader
 import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.ActivePresetCard
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
@@ -52,7 +54,9 @@ private fun ColumnScope.PopulatedState(
     onDelayChange: (Int?) -> Unit,
     onFilterPresetChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
-    onPresetMoreInfoClicked: () -> Unit
+    onPresetMoreInfoClicked: () -> Unit,
+    onCreatePreset: () -> Unit,
+    onEditPreset: () -> Unit,
 ) {
     Box {
         SurfaceHeader(
@@ -62,6 +66,7 @@ private fun ColumnScope.PopulatedState(
             CustomOutlineButton(
                 label = strings.widgets.globalControls.resetAllLabel,
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+                variant = OutlineButtonVariant.Secondary,
                 onClick = onResetAll
             )
         }
@@ -96,7 +101,8 @@ private fun ColumnScope.PopulatedState(
     ActivePresetCard(
         modifier = Modifier.padding(horizontal = 12.dp),
         state = state,
-        onEditPreset = {}
+        onEditPreset = { onEditPreset() },
+        onCreateNewPreset = onCreatePreset
     )
 
     PresetsContainer(
@@ -110,13 +116,15 @@ private fun ColumnScope.PopulatedState(
 @Composable
 fun EndpointDetailsWidget(
     device: Device,
-    activeEndpoint: EndpointConfiguration.Key?
+    activeEndpoint: EndpointConfiguration.Key?,
+    onCreatePreset: (EndpointConfiguration.Key) -> Unit,
+    onEditPreset: (EndpointConfiguration.Key) -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
     val viewModel = getViewModel<EndpointDetailsViewModel>(
         key = "${activeEndpoint?.raw}-$device"
     ) { parametersOf(activeEndpoint, device) }
-    val state by viewModel.state
+    val state by viewModel.state.collectAsState()
 
     EndpointDetailsWidgetContent(
         state = state,
@@ -125,6 +133,8 @@ fun EndpointDetailsWidget(
         onDefaultPresetSelected = viewModel::onPresetSelected,
         onResetAll = viewModel::onResetAll,
         onFilterPresetChanged = viewModel::onFilterPresetChanged,
+        onCreatePreset = { activeEndpoint?.let { onCreatePreset(activeEndpoint) } },
+        onEditPreset = { activeEndpoint?.let { onEditPreset(activeEndpoint) } },
         onPresetMoreInfoClicked = {
             // TODO, Add preset docs and update link
             uriHandler.openUri("https://mockzilla.apadmi.dev/")
@@ -141,6 +151,8 @@ fun EndpointDetailsWidgetContent(
     onResetAll: () -> Unit,
     onFilterPresetChanged: (String) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
+    onCreatePreset: () -> Unit,
+    onEditPreset: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column(
     modifier = Modifier
@@ -163,7 +175,9 @@ fun EndpointDetailsWidgetContent(
             onDelayChange,
             onFilterPresetChanged,
             onDefaultPresetSelected,
-            onPresetMoreInfoClicked
+            onPresetMoreInfoClicked,
+            onCreatePreset,
+            onEditPreset
         )
     }
 }

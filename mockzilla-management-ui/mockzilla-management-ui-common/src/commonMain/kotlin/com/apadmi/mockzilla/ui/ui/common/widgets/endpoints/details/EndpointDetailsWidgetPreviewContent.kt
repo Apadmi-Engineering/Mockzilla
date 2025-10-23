@@ -40,7 +40,9 @@ internal fun EndpointDetailsWidgetPreviewContent(
     onResetAll = {},
     onFailChange = {},
     onFilterPresetChanged = {},
-    onPresetMoreInfoClicked = {}
+    onPresetMoreInfoClicked = {},
+    onCreatePreset = {},
+    onEditPreset = {},
 )
 
 @Suppress("TOO_LONG_FUNCTION")

@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,6 +33,7 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.State.*
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning_background
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -124,9 +124,7 @@ fun ErrorBanner(
             CustomOutlineButton(
                 onClick = onRefreshAll,
                 label = strings.widgets.errorBanner.refreshButton,
-                colors = ButtonDefaults.outlinedButtonColors().copy(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                variant = OutlineButtonVariant.Secondary
             )
         }
     }

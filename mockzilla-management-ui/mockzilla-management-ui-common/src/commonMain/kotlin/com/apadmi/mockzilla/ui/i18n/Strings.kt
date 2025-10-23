@@ -26,12 +26,14 @@ data class Strings(
      * @property backDescription
      * @property debugDescription
      * @property resetDescription
+     * @property deleteDescription
      */
     data class Common(
         val closeDescription: String,
         val backDescription: String,
         val debugDescription: String,
-        val resetDescription: String
+        val resetDescription: String,
+        val deleteDescription: String
     )
     /**
      * @property deviceConnection
@@ -46,6 +48,7 @@ data class Strings(
      * @property errorBanner
      * @property globalControls
      * @property latency
+     * @property createEditPreset
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -54,6 +57,7 @@ data class Strings(
         val logs: Logs,
         val logDetails: LogDetails,
         val endpointDetails: EndpointDetails,
+        val createEditPreset: CreateEditPreset,
         val endpoints: Endpoints,
         val globalControls: GlobalControls,
         val miscControls: MiscControls,
@@ -267,37 +271,10 @@ data class Strings(
 
         /**
          * @property none
-         * @property useErrorResponse
-         * @property defaultDataTab
-         * @property errorDataTab
-         * @property generalTab
-         * @property noOverrideStatusCode
-         * @property statusCodeLabel
          * @property statusCode
          * @property edit
          * @property reset
          * @property resetUseErrorResponse
-         * @property bodyLabel
-         * @property bodyUnset
-         * @property delayLabel
-         * @property jsonEditingLabel
-         * @property invalidJson
-         * @property failOptionsLabel
-         * @property failLabel
-         * @property responseDelay
-         * @property noOverrideResponseDelay
-         * @property customResponseDelay
-         * @property responseDelayUnits
-         * @property responseDelayLabel
-         * @property resetAll
-         * @property headersLabel
-         * @property headerKeyLabel
-         * @property headerValueLabel
-         * @property headerDeleteContentDescription
-         * @property addHeader
-         * @property editHeaders
-         * @property resetHeaders
-         * @property noHeaders
          * @property headersUnset
          * @property subtitle
          * @property emptyTitle
@@ -311,37 +288,10 @@ data class Strings(
             val title: String,
             val subtitle: String,
             val none: String,
-            val useErrorResponse: String,
-            val defaultDataTab: String,
-            val errorDataTab: String,
-            val generalTab: String,
-            val noOverrideStatusCode: String,
-            val statusCodeLabel: (HttpStatusCode) -> String,
             val statusCode: String,
             val edit: String,
             val reset: String,
             val resetUseErrorResponse: String,
-            val bodyLabel: String,
-            val bodyUnset: String,
-            val delayLabel: String,
-            val jsonEditingLabel: (Boolean) -> String,
-            val invalidJson: String,
-            val failOptionsLabel: String,
-            val failLabel: (Boolean?) -> String,
-            val responseDelay: String,
-            val noOverrideResponseDelay: String,
-            val customResponseDelay: String,
-            val responseDelayUnits: String,
-            val responseDelayLabel: String,
-            val resetAll: String,
-            val headersLabel: String,
-            val headerKeyLabel: String,
-            val headerValueLabel: String,
-            val headerDeleteContentDescription: String,
-            val addHeader: String,
-            val editHeaders: String,
-            val resetHeaders: String,
-            val noHeaders: String,
             val headersUnset: String,
             val emptyTitle: String,
             val emptyDescription: String,
@@ -399,6 +349,53 @@ data class Strings(
                 )
             }
         }
+
+        /**
+         * @property createTitle
+         * @property editTitle
+         * @property statusCodeTitle
+         * @property noOverrideStatusCode
+         * @property statusCodeLabel
+         * @property bodyTitle
+         * @property bodyTypeJson
+         * @property bodyTypePlain
+         * @property responseBodyFormat
+         * @property responseBodyCopy
+         * @property responseCharacters
+         * @property validLabel
+         * @property invalidLabel
+         * @property headersTitle
+         * @property addHeaderTitle
+         * @property addHeaderButton
+         * @property responseBodyPlaceholder
+         * @property addHeaderKeyPlaceholder
+         * @property addHeaderValuePlaceholder
+         * @property save
+         * @property unset
+         */
+        data class CreateEditPreset(
+            val createTitle: String,
+            val editTitle: String,
+            val statusCodeTitle: String,
+            val noOverrideStatusCode: String,
+            val statusCodeLabel: (HttpStatusCode) -> String,
+            val bodyTitle: String,
+            val bodyTypeJson: String,
+            val bodyTypePlain: String,
+            val responseBodyFormat: String,
+            val responseBodyCopy: String,
+            val responseCharacters: (numChars: Int) -> String,
+            val validLabel: String,
+            val invalidLabel: String,
+            val headersTitle: String,
+            val addHeaderTitle: String,
+            val addHeaderButton: String,
+            val responseBodyPlaceholder: String,
+            val addHeaderKeyPlaceholder: String,
+            val addHeaderValuePlaceholder: String,
+            val unset: String,
+            val save: String,
+        )
 
         /**
          * @property heading

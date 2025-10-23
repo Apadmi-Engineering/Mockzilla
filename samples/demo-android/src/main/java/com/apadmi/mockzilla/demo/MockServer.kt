@@ -28,7 +28,7 @@ private val getMySheep = EndpointConfiguration
             about
             sheep
             !
-        """.trimIndent()))
+        """.trimIndent(), headers = mapOf("Content-Type" to "application/json")))
         addPreset(
             type = DashboardOverridePreset.Type.Informational,
             description = "A second preset",

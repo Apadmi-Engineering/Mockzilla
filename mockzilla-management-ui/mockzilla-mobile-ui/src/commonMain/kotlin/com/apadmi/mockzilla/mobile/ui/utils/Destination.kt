@@ -15,6 +15,13 @@ internal sealed class Destination {
 
     /**
      * @property key
+     * @property creatingNewPreset
+     */
+    @Serializable
+    internal data class CreateEditPreset(val key: String, val creatingNewPreset: Boolean) : Destination()
+
+    /**
+     * @property key
      */
     @Serializable
     internal data class EndpointDetails(val key: String) : Destination()

@@ -28,6 +28,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.endpointDetailsWidgetSuccessState
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.mockPresets
@@ -38,6 +39,7 @@ internal fun ActivePresetCard(
     modifier: Modifier = Modifier,
     state: State.Endpoint,
     onEditPreset: (DashboardOverridePreset) -> Unit,
+    onCreateNewPreset: () -> Unit,
     strings: Strings.Widgets.EndpointDetails = LocalStrings.current.widgets.endpointDetails
 ) = Box(
     modifier = modifier
@@ -58,19 +60,23 @@ internal fun ActivePresetCard(
         )
 ) {
     Column(
-        modifier = Modifier.padding(12.dp),
+        modifier = Modifier.fillMaxWidth().padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(strings.presets.activePresetTitle, style = MaterialTheme.typography.titleMedium)
+            Text(
+                modifier = Modifier.weight(1f),
+                text = strings.presets.activePresetTitle,
+                style = MaterialTheme.typography.titleMedium
+            )
             CustomOutlineButton(
                 label = strings.presets.createCustomButton,
                 leadingIcon = rememberVectorPainter(Icons.Outlined.AddCircle),
-                onClick = { }  // TODO - Add custom preset support
+                onClick = onCreateNewPreset,
+                variant = OutlineButtonVariant.Primary
             )
         }
 
@@ -122,6 +128,7 @@ private fun ActivePresetCardPreviewContainer(
                 appliedPreset = mockPresets.first()
             )
         ),
-        onEditPreset = {}
+        onEditPreset = {},
+        onCreateNewPreset = {}
     )
 }
