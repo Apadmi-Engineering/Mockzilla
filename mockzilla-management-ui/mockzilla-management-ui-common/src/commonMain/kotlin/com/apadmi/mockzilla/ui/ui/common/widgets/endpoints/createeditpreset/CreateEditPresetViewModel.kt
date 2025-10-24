@@ -49,7 +49,9 @@ class CreateEditPresetViewModel(
                 isSaving = false,
                 statusCode = current?.response?.statusCode.takeIf { isEditing },
                 body = current?.response?.body.takeIf { isEditing },
-                headers = current?.response?.headers.takeIf { isEditing },
+                headers = current?.response?.headers
+                    ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
+                    .takeIf { isEditing } ?: emptyList(),
                 responseType = State.Editing.ResponseType.PlainText,
                 variant = variant
             )
@@ -68,32 +70,108 @@ class CreateEditPresetViewModel(
             Platform.Desktop -> "Mockzilla Desktop"
             else -> "Mockzilla Embedded UI"
         }
-        updateService.applyPreset(device,
-            key, DashboardOverridePreset(
+
+        state.value = currentState.copy(isSaving = true)
+
+        updateService.applyPreset(
+            connection = device,
+            key = key,
+            dashboardOverridePreset = DashboardOverridePreset(
                 name = "Custom Preset",
                 description = "Edited through $appName on: ${Clock.System.now()}",
                 type = DashboardOverridePreset.Type.Other,
                 response = PartialMockzillaHttpResponse(
                     body = currentState.body,
                     statusCode = currentState.statusCode,
-                    headers = currentState.headers
+                    headers = currentState.headers?.associate { it.key to it.value }
                 ),
                 isManagementUiDefinedCustomPreset = true
+            )
+        ).onSuccess {
+            eventBus.send(EventBus.Event.EndpointDataChanged(listOf(key)))
+            state.value = currentState.copy(isSaving = false)
+        }.onFailure {
+            eventBus.send(EventBus.Event.GenericError)
+        }
+    }
+
+    fun onNewStatusCode(newStatusCode: HttpStatusCode) {
+        val currentState = state.value as? State.Editing ?: return
+        state.value = currentState.copy(statusCode = newStatusCode)
+    }
+
+    fun clearStatusCode() {
+        val currentState = state.value as? State.Editing ?: return
+        state.value = currentState.copy(statusCode = null)
+    }
+
+    fun onNewResponseBody(newBody: String) {
+        val currentState = state.value as? State.Editing ?: return
+        state.value = currentState.copy(body = newBody)
+    }
+
+    fun clearResponseBody() {
+        val currentState = state.value as? State.Editing ?: return
+        state.value = currentState.copy(body = null)
+    }
+
+    fun onUpdateNewHeader(key: String? = null, value: String? = null) {
+        val currentState = state.value as? State.Editing ?: return
+        state.value = currentState.copy(
+            newHeader = currentState.newHeader.copy(
+                key = key ?: currentState.newHeader.key,
+                value = value ?: currentState.newHeader.value
             )
         )
     }
 
-    fun clearStatusCode() = viewModelScope.launch {
-        val current = state.value as? State.Editing ?: return@launch
+    fun onUpdateHeader(
+        header: State.Editing.RequestHeader,
+        key: String? = null,
+        value: String? = null
+    ) {
+        val currentState = state.value as? State.Editing ?: return
+        val updatedHeader = currentState.headers.firstOrNull { it == header } ?: return
+
+        state.value = currentState.copy(
+            headers = currentState.headers.filter { it != header }.plus(
+                State.Editing.RequestHeader(
+                    key = key ?: updatedHeader.key,
+                    value = value ?: updatedHeader.value
+                )
+            )
+        )
+    }
+
+    fun onAddHeader() {
+        val currentState = state.value as? State.Editing ?: return
+        state.value = currentState.copy(
+            headers = currentState.headers.plus(currentState.newHeader),
+            newHeader = State.Editing.RequestHeader()
+        )
+    }
+
+    fun onRemoveHeader(header: State.Editing.RequestHeader) {
+        val currentState = state.value as? State.Editing ?: return
+        state.value = currentState.copy(
+            headers = currentState.headers.minus(header)
+        )
+    }
+
+    fun clearHeaders() {
+        val currentState = state.value as? State.Editing ?: return
+        state.value = currentState.copy(headers = emptyList())
     }
 
     sealed class State {
         data object Loading : State()
+
         /**
          * @property isSaving
          * @property statusCode
          * @property body
          * @property headers
+         * @property newHeader The header currently being edited by the user in the UI
          * @property responseType
          * @property hasBodyError
          * @property variant
@@ -103,7 +181,8 @@ class CreateEditPresetViewModel(
             val statusCode: HttpStatusCode?,
             val body: String? = null,
             val hasBodyError: Boolean = false,
-            val headers: Map<String, String>? = null,
+            val headers: List<RequestHeader> = emptyList(),
+            val newHeader: RequestHeader = RequestHeader(),
             val responseType: ResponseType,
             val variant: Variant,
         ) : State() {
@@ -118,6 +197,15 @@ class CreateEditPresetViewModel(
                 Edit,
                 ;
             }
+
+            /**
+             * @property key
+             * @property value
+             */
+            data class RequestHeader(
+                val key: String = "",
+                val value: String = ""
+            )
         }
     }
 }
