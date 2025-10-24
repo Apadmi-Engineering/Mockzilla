@@ -1,13 +1,10 @@
 package com.apadmi.mockzilla.demo.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -15,32 +12,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import com.apadmi.mockzilla.android.sample.R
 import com.apadmi.mockzilla.demo.ui.MainViewModel
 
 @Composable
 internal fun AppBar(
     state: MainViewModel.State,
-    setIsReleaseMode: (isRelease: Boolean) -> Unit,
-    launchManagementUi: () -> Unit
+    setIsReleaseMode: (isRelease: Boolean) -> Unit
 ) = Row(
     modifier = Modifier
         .fillMaxWidth()
         .background(color = MaterialTheme.colorScheme.primaryContainer)
         .statusBarsPadding(),
-    horizontalArrangement = Arrangement.SpaceBetween,
+    horizontalArrangement = Arrangement.End,
     verticalAlignment = Alignment.CenterVertically
 ) {
-    IconButton(onClick = launchManagementUi) {
-        Image(
-            modifier = Modifier.size(20.dp),
-            painter = painterResource(id = R.drawable.mockzilla_logo),
-            contentDescription = "Launch Mockzilla Management UI"
-        )
-    }
-
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {

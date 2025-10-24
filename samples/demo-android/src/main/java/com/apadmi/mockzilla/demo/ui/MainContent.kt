@@ -40,11 +40,7 @@ fun MainContent(
     setIsReleaseMode: (isRelease: Boolean) -> Unit,
     launchManagementUi: () -> Unit
 ) = Column {
-    AppBar(
-        state = state,
-        setIsReleaseMode = setIsReleaseMode,
-        launchManagementUi = launchManagementUi
-    )
+    AppBar(state = state, setIsReleaseMode = setIsReleaseMode)
 
     Column(
         modifier = Modifier
