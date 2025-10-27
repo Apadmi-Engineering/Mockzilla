@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlignVerticalTop
 import androidx.compose.material.icons.filled.Code
@@ -40,37 +39,41 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.card
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointBodyVisualTransformation
 
 private fun State.Editing.ResponseType.string(
-    strings: Strings,
+    strings: Strings.Widgets.CreateEditPreset,
 ) = when (this) {
-    State.Editing.ResponseType.Json -> strings.widgets.createEditPreset.bodyTypeJson
-    State.Editing.ResponseType.PlainText -> strings.widgets.createEditPreset.bodyTypePlain
+    State.Editing.ResponseType.Json -> strings.bodyTypeJson
+    State.Editing.ResponseType.PlainText -> strings.bodyTypePlain
 }
 
 @Composable
 internal fun EditResponseBody(
+    modifier: Modifier = Modifier,
     state: State.Editing,
+    onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
     onResetResponseBody: () -> Unit,
-    modifier: Modifier = Modifier,
-    strings: Strings = LocalStrings.current
+    strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset
 ) = Column(
     modifier = modifier.card().padding(bottom = 8.dp)
 ) {
     TitleRow(
         isSet = state.body != null,
         icon = Icons.Default.Code,
-        title = strings.widgets.createEditPreset.bodyTitle,
+        title = strings.bodyTitle,
         onReset = onResetResponseBody
     )
     DropdownMenu(
         stringForItem = { it.string(strings) },
         items = State.Editing.ResponseType.entries,
         selectedLabel = state.responseType.string(strings),
-        onSelected = { }
+        onSelected = onNewResponseType
     )
+    Spacer(modifier = Modifier.height(4.dp))
 
-    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-        Spacer(modifier = Modifier.height(4.dp))
+    Column(
+        modifier = Modifier.padding(horizontal = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         Editor(
             body = state.body,
             hasError = false,
@@ -78,17 +81,17 @@ internal fun EditResponseBody(
             onResponseBodyChange = onNewResponseBody
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = strings.widgets.createEditPreset.responseCharacters(state.body?.length ?: 0),
+                text = strings.responseCharacters(state.body?.length ?: 0),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(Modifier.weight(1f))
+
+            Spacer(modifier = Modifier.weight(1f))
             Icon(
                 modifier = Modifier.height(16.dp),
                 imageVector = when (state.hasBodyError) {
@@ -99,13 +102,14 @@ internal fun EditResponseBody(
                 tint = when (state.hasBodyError) {
                     true -> MaterialTheme.colorScheme.error
                     false -> MaterialTheme.colorScheme.success.primary
-                },
+                }
             )
-            Spacer(Modifier.size(2.dp))
+
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = when (state.hasBodyError) {
-                    true -> strings.widgets.createEditPreset.invalidLabel
-                    false -> strings.widgets.createEditPreset.validLabel
+                    true -> strings.invalidLabel
+                    false -> strings.validLabel
                 },
                 style = MaterialTheme.typography.labelMedium,
                 color = when (state.hasBodyError) {
@@ -114,20 +118,23 @@ internal fun EditResponseBody(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+
         Row(
             modifier = Modifier.align(Alignment.End),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            CustomOutlineButton(
-                leadingIcon = rememberVectorPainter(Icons.Default.AlignVerticalTop),
-                label = strings.widgets.createEditPreset.responseBodyFormat,
-                variant = OutlineButtonVariant.Secondary,
-                onClick = {}
-            )
+            if (state.responseType == State.Editing.ResponseType.Json) {
+                CustomOutlineButton(
+                    leadingIcon = rememberVectorPainter(Icons.Default.AlignVerticalTop),
+                    label = strings.responseBodyFormat,
+                    variant = OutlineButtonVariant.Secondary,
+                    onClick = {}
+                )
+            }
+
             CustomOutlineButton(
                 leadingIcon = rememberVectorPainter(Icons.Default.CopyAll),
-                label = strings.widgets.createEditPreset.responseBodyCopy,
+                label = strings.responseBodyCopy,
                 variant = OutlineButtonVariant.Secondary,
                 onClick = {}
             )
@@ -141,7 +148,7 @@ private fun Editor(
     hasError: Boolean,
     type: State.Editing.ResponseType,
     onResponseBodyChange: (String) -> Unit,
-    strings: Strings = LocalStrings.current
+    strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset
 ) {
     val localContentColor = LocalContentColor.current
     CustomTextField(
@@ -156,14 +163,14 @@ private fun Editor(
             .heightIn(min = 200.dp, max = 500.dp)
             .then(
                 if (hasError) {
-                    Modifier.semantics { error(strings.widgets.createEditPreset.invalidLabel) }
+                    Modifier.semantics { error(strings.invalidLabel) }
                 } else {
                     Modifier
                 }
             ),
         placeholder = {
             Text(
-                strings.widgets.createEditPreset.responseBodyPlaceholder,
+                text = strings.responseBodyPlaceholder,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -83,6 +83,7 @@ private fun ColumnScope.PopulatedState(
     onSave: () -> Unit,
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onResetStatusCode: () -> Unit,
+    onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
     onResetResponseBody: () -> Unit,
     onUpdateNewHeader: (String?, String?) -> Unit,
@@ -128,6 +129,7 @@ private fun ColumnScope.PopulatedState(
     EditResponseBody(
         modifier = Modifier.padding(horizontal = 12.dp),
         state = state,
+        onNewResponseType = onNewResponseType,
         onNewResponseBody = onNewResponseBody,
         onResetResponseBody = onResetResponseBody,
     )
@@ -168,6 +170,7 @@ fun CreateEditPresetWidget(
         onSave = viewModel::save,
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onResetStatusCode = viewModel::clearStatusCode,
+        onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
         onResetResponseBody = viewModel::clearResponseBody,
         onUpdateNewHeader = viewModel::onUpdateNewHeader,
@@ -184,6 +187,7 @@ fun CreateEditPresetWidgetContent(
     onSave: () -> Unit,
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onResetStatusCode: () -> Unit,
+    onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
     onResetResponseBody: () -> Unit,
     onUpdateNewHeader: (String?, String?) -> Unit,
@@ -211,6 +215,7 @@ fun CreateEditPresetWidgetContent(
             onSave = onSave,
             onStatusCodeSelected = onStatusCodeSelected,
             onResetStatusCode = onResetStatusCode,
+            onNewResponseType = onNewResponseType,
             onNewResponseBody = onNewResponseBody,
             onResetResponseBody = onResetResponseBody,
             onUpdateNewHeader = onUpdateNewHeader,
@@ -230,7 +235,7 @@ internal fun TitleRow(
     title: String,
     strings: Strings = LocalStrings.current,
 ) = Row(
-    modifier = Modifier.padding(start = 12.dp),
+    modifier = Modifier.padding(start = 12.dp, end = 4.dp),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(8.dp)
 ) {
@@ -400,6 +405,7 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
         ),
         onSave = {},
         onStatusCodeSelected = {},
+        onNewResponseType = {},
         onNewResponseBody = {},
         onResetStatusCode = {},
         onResetResponseBody = {},

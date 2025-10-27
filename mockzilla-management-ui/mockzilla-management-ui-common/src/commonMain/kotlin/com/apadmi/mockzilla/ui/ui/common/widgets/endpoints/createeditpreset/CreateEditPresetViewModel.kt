@@ -72,7 +72,6 @@ class CreateEditPresetViewModel(
         }
 
         state.value = currentState.copy(isSaving = true)
-
         updateService.applyPreset(
             connection = device,
             key = key,
@@ -103,6 +102,11 @@ class CreateEditPresetViewModel(
     fun clearStatusCode() {
         val currentState = state.value as? State.Editing ?: return
         state.value = currentState.copy(statusCode = null)
+    }
+
+    fun onNewResponseType(newResponseType: State.Editing.ResponseType) {
+        val currentState = state.value as? State.Editing ?: return
+        state.value = currentState.copy(responseType = newResponseType)
     }
 
     fun onNewResponseBody(newBody: String) {
