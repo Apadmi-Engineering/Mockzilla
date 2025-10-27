@@ -16,6 +16,7 @@ import io.ktor.http.HttpStatusCode
 import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 
 class CreateEditPresetViewModel(
     private val key: EndpointConfiguration.Key,
@@ -111,7 +112,23 @@ class CreateEditPresetViewModel(
 
     fun onNewResponseBody(newBody: String) {
         val currentState = state.value as? State.Editing ?: return
-        state.value = currentState.copy(body = newBody)
+        val hasBodyError = try {
+            Json.parseToJsonElement(newBody)
+            false
+        } catch (_: Exception) {
+            true
+        }
+        state.value = currentState.copy(body = newBody, hasBodyError = hasBodyError)
+    }
+
+    fun onFormatResponseBody() {
+        val currentState = state.value as? State.Editing ?: return
+        val bodyResponse = currentState.body ?: return
+
+        val prettyJson = Json { prettyPrint = true }
+        val formatted = prettyJson.encodeToString(Json.parseToJsonElement(bodyResponse))
+
+        state.value = currentState.copy(body = formatted)
     }
 
     fun clearResponseBody() {

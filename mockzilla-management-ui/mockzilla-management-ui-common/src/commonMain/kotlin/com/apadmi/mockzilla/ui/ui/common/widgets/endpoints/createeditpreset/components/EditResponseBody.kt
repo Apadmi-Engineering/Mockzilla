@@ -51,6 +51,7 @@ internal fun EditResponseBody(
     state: State.Editing,
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
+    onFormatResponseBody: () -> Unit,
     onResetResponseBody: () -> Unit,
     strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset
 ) = Column(
@@ -127,8 +128,11 @@ internal fun EditResponseBody(
                 CustomOutlineButton(
                     leadingIcon = rememberVectorPainter(Icons.Default.AlignVerticalTop),
                     label = strings.responseBodyFormat,
+                    enabled = !state.hasBodyError,
                     variant = OutlineButtonVariant.Secondary,
-                    onClick = {}
+                    onClick = {
+                        onFormatResponseBody()
+                    }
                 )
             }
 
