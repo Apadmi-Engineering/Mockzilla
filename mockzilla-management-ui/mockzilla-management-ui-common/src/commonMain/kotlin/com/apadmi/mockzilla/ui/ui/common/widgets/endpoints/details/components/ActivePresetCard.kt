@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +44,7 @@ internal fun ActivePresetCard(
     strings: Strings.Widgets.EndpointDetails = LocalStrings.current.widgets.endpointDetails
 ) = Box(
     modifier = modifier
+        .animateContentSize()
         .fillMaxWidth()
         .height(IntrinsicSize.Max)
         .background(
