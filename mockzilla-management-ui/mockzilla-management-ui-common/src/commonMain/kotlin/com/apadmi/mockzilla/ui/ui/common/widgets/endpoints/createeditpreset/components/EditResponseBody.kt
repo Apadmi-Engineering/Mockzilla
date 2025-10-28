@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlignVerticalTop
 import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.CopyAll
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.Icon
@@ -135,13 +134,6 @@ internal fun EditResponseBody(
                     }
                 )
             }
-
-            CustomOutlineButton(
-                leadingIcon = rememberVectorPainter(Icons.Default.CopyAll),
-                label = strings.responseBodyCopy,
-                variant = OutlineButtonVariant.Secondary,
-                onClick = {}
-            )
         }
     }
 }
