@@ -33,6 +33,7 @@ import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsWidget
@@ -40,9 +41,13 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols.MiscControlsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsWidget
+import kotlin.collections.buildList
+import kotlin.let
 
 private const val endpointDetailsWidgetId = "endpoint-details"
 private const val logDetailsWidgetId = "log-details"
+private const val editPresetWidgetId = "edit-preset"
+private const val createPresetWidgetId = "create-preset"
 
 @Composable
 fun DesktopApp(
@@ -55,12 +60,27 @@ fun DesktopApp(
         var openWidgets by remember { mutableStateOf(emptySet<String>()) }
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
+        val rightWidgets = rightPanelWidgets(
+            state = state,
+            logDetail = logDetail,
+            strings = strings,
+            onCreatePreset = {
+                viewModel.setSelectedEndpoint(it)
+                openWidgets = openWidgets.plus(createPresetWidgetId)
+            },
+            onEditPreset = {
+                viewModel.setSelectedEndpoint(it)
+                openWidgets = openWidgets.plus(editPresetWidgetId)
+            },
+            openWidgets = openWidgets
+        )
+        
         WidgetScaffold(
             modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
             openWidgets = openWidgets,
             top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
             left = leftPanelWidgets(state, strings),
-            right = rightPanelWidgets(state = state, logDetail = logDetail, strings = strings),
+            right = rightWidgets,
             middle = middleWidgets(state) {
                 viewModel.setSelectedEndpoint(it)
                 openWidgets = openWidgets.plus(endpointDetailsWidgetId)
@@ -148,27 +168,44 @@ private fun middleWidgets(
 private fun rightPanelWidgets(
     state: AppRootViewModel.State,
     logDetail: LogEvent?,
-    strings: Strings
+    strings: Strings,
+    openWidgets: Set<String>,
+    onCreatePreset: (EndpointConfiguration.Key) -> Unit,
+    onEditPreset: (EndpointConfiguration.Key) -> Unit
+
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
-    listOf(
-        Widget(
-            id = endpointDetailsWidgetId,
-            title = strings.widgets.endpointDetails.title
-        ) {
-            Crossfade(
-                targetState = connectedState,
-                animationSpec = tween(durationMillis = 200)
-            ) { newState ->
-                EndpointDetailsWidget(newState.activeDevice.device, newState.selectedEndpoint)
+    buildList {
+        add(
+            Widget(
+                id = endpointDetailsWidgetId, title = strings.widgets.endpointDetails.title
+            ) {
+                Crossfade(
+                    targetState = connectedState, animationSpec = tween(durationMillis = 200)
+                ) { newState ->
+                    EndpointDetailsWidget(
+                        device = newState.activeDevice.device,
+                        activeEndpoint = newState.selectedEndpoint,
+                        onCreatePreset = onCreatePreset,
+                        onEditPreset = onEditPreset
+                    )
+                }
             }
-        },
-        Widget(
-            id = logDetailsWidgetId,
-            title = strings.widgets.logDetails.title
-        ) {
-            MonitorLogDetailsWidget(logDetail)
-        }
-    )
+        )
+        addAll(
+            presetWidgets(
+                connected = connectedState,
+                strings = strings,
+                openWidgets = openWidgets
+            )
+        )
+        add(
+            Widget(
+                id = logDetailsWidgetId, title = strings.widgets.logDetails.title
+            ) {
+                MonitorLogDetailsWidget(logDetail)
+            }
+        )
+    }
 } ?: emptyList()
 
 private fun leftPanelWidgets(
@@ -183,3 +220,43 @@ private fun leftPanelWidgets(
             MiscControlsWidget(connectedState.activeDevice.device)
         })
 } ?: emptyList()
+
+private fun presetWidgets(
+    connected: AppRootViewModel.State.Connected,
+    strings: Strings,
+    openWidgets: Set<String>
+): List<Widget> {
+    val endpoint = connected.selectedEndpoint ?: return emptyList()
+
+    return buildList {
+        if (createPresetWidgetId in openWidgets) {
+            add(
+                Widget(
+                    id = createPresetWidgetId,
+                    title = strings.widgets.createEditPreset.createTitle
+                ) {
+                    CreateEditPresetWidget(
+                        device = connected.activeDevice.device,
+                        activeEndpoint = endpoint,
+                        creatingNewPreset = true
+                    )
+                }
+            )
+        }
+
+        if (editPresetWidgetId in openWidgets) {
+            add(
+                Widget(
+                    id = editPresetWidgetId,
+                    title = strings.widgets.createEditPreset.editTitle
+                ) {
+                    CreateEditPresetWidget(
+                        device = connected.activeDevice.device,
+                        activeEndpoint = endpoint,
+                        creatingNewPreset = false
+                    )
+                }
+            )
+        }
+    }
+}
