@@ -2,6 +2,8 @@ import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.JavaConfig
 
 plugins {
+    alias(libs.plugins.compose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
@@ -21,8 +23,18 @@ kotlin {
     }
     jvmToolchain(JavaConfig.toolchain)
 
+    js {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         commonMain.dependencies {
+            /* Compose */
+            implementation(compose.runtime)
+            implementation(compose.material3)
+            implementation(compose.components.resources)
+
             /* Mockzilla */
             api(project(":mockzilla"))
             api(project(":mockzilla-management-ui:mockzilla-mobile-ui"))

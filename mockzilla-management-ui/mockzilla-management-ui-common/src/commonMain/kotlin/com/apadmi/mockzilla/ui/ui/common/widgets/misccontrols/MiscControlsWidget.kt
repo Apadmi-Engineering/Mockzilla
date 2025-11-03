@@ -97,6 +97,15 @@ fun MiscControlsWidgetContent(
     )
 }
 
+@Preview
+@Composable
+fun MiscControlsWidgetPreview() = PreviewSurface {
+    MiscControlsWidgetContent(
+        onRefreshAll = {},
+        onClearAllOverrides = {}
+    )
+}
+
 @Composable
 private fun PresentationModeSettings(
     presentationMode: Boolean,
@@ -141,13 +150,4 @@ private fun PresentationModeSettings(
         }
     }
     Spacer(modifier = Modifier.height(4.dp))
-}
-
-@Preview
-@Composable
-fun MiscControlsWidgetPreview() = PreviewSurface {
-    MiscControlsWidgetContent(
-        onRefreshAll = {},
-        onClearAllOverrides = {}
-    )
 }

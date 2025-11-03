@@ -124,7 +124,9 @@ lane :management_ui_pull_request do
             ":mockzilla-management-ui:mockzilla-desktop:assembleDebug",
             ":mockzilla-management-ui:mockzilla-desktop:desktopTest",
             ":mockzilla-management-ui:mockzilla-management-ui-common:desktopTest",
-            ":mockzilla-management-ui:mockzilla-mobile-ui:testDebugUnitTest"
+            ":mockzilla-management-ui:mockzilla-management-ui-common:jsBrowserTest",
+            ":mockzilla-management-ui:mockzilla-mobile-ui:testDebugUnitTest",
+            ":mockzilla-management-ui:mockzilla-mobile-ui:jsBrowserTest"
         ]
     )
 end

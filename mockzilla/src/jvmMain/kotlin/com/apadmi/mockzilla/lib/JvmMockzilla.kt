@@ -12,6 +12,8 @@ import co.touchlab.kermit.Logger
 
 import java.nio.file.Files
 
+import kotlinx.coroutines.runBlocking
+
 /**
  * Starts the Mockzilla server,
  *
@@ -24,22 +26,24 @@ fun startMockzilla(
     appName: String,
     appVersion: String,
     config: MockzillaConfig,
-): MockzillaRuntimeParams = startMockzilla(
-    config,
-    MetaData(
-        appName = appName,
-        appPackage = "-",  // Not really a thing on non-mobile platforms
-        operatingSystemVersion = System.getProperty("os.version"),
-        deviceModel = "-",  // Covered by `operatingSystem`
-        appVersion = appVersion,
-        runTarget = RunTarget.Jvm,
-        mockzillaVersion = BuildKonfig.VERSION_NAME
-    ),
-    FileIo(Files.createTempDirectory("").toFile())
-) {
-    object : ZeroConfDiscoveryService {
-        override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
-            Logger.i("Mockzilla") { "ZeroConf not supported for JVM Mockzilla" }
+): MockzillaRuntimeParams = runBlocking {
+    startMockzilla(
+        config,
+        MetaData(
+            appName = appName,
+            appPackage = "-",  // Not really a thing on non-mobile platforms
+            operatingSystemVersion = System.getProperty("os.version"),
+            deviceModel = "-",  // Covered by `operatingSystem`
+            appVersion = appVersion,
+            runTarget = RunTarget.Jvm,
+            mockzillaVersion = BuildKonfig.VERSION_NAME
+        ),
+        FileIo(Files.createTempDirectory("").toFile())
+    ) {
+        object : ZeroConfDiscoveryService {
+            override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
+                Logger.i("Mockzilla") { "ZeroConf not supported for JVM Mockzilla" }
+            }
         }
     }
 }

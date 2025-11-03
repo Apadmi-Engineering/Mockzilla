@@ -56,6 +56,7 @@ enum class RunTarget {
     AndroidEmulator,
     IosDevice,
     IosSimulator,
+    Js,
     Jvm,
     ;
 }

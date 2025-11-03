@@ -206,7 +206,7 @@ data class MockzillaConfig(
         }, isRelease, localhostOnly, logLevel, releaseConfig, isNetworkDiscoveryEnabled, additionalLogWriters)
 
         companion object {
-            private const val defaultPort = 8080
+            const val defaultPort = 8080
         }
     }
 }

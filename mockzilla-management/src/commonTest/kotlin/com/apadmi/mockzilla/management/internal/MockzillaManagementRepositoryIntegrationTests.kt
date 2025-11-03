@@ -18,7 +18,6 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
 
@@ -58,16 +57,20 @@ class MockzillaManagementRepositoryIntegrationTests {
 
             /* Verify */
             assertEquals(
-
                 MetaData(
                     appName = dummyAppName,
                     appPackage = "-",
-                    operatingSystemVersion = System.getProperty("os.version"),
+                    operatingSystemVersion = "-",
                     deviceModel = "-",
                     appVersion = dummyAppVersion,
                     runTarget = RunTarget.IosDevice,
                     mockzillaVersion = runtimeParams.mockzillaVersion
-                ), result.getOrThrow().copy(runTarget = RunTarget.IosDevice)
+                ),
+                result.getOrThrow().copy(
+                    runTarget = RunTarget.IosDevice,
+                    operatingSystemVersion = "-",
+                    deviceModel = "-"
+                )
             )
         }
 
@@ -160,7 +163,7 @@ class MockzillaManagementRepositoryIntegrationTests {
             /* Setup */
 
             // Make a request for network logs
-            HttpClient(CIO)
+            HttpClient()
                 .get(urlString = "${params.mockBaseUrl}/$fetchLogsAndClearBufferEndpoint")
 
             val expectedLogs = MonitorLogsResponse(appPackage = "-", listOf(mockLog))

@@ -49,6 +49,7 @@ class DeviceDetectionUseCaseImpl(
             RunTarget.IosDevice,
             RunTarget.AndroidDevice,
             RunTarget.Jvm,
+            RunTarget.Js,
             null -> Result.success("${device.hostAddress}:${device.port}")
         }.map { IpAddress(it) }
     }

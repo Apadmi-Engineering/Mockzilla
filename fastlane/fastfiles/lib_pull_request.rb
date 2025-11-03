@@ -36,9 +36,24 @@ platform :android do
     end
 end
 
+platform :js do
+    desc "Js target for the lib"
+    lane :lib_mockzilla_pull_request do
+        gradle(
+            tasks: [
+                ":mockzilla-common:jsBrowserTest",
+                ":mockzilla:jsBrowserTest"
+            ]
+        )
+    end
+end
+
 desc "Run tests for management module"
 lane :lib_mockzilla_management_pull_request do
     gradle(
-        tasks: [":mockzilla-management:jvmTest"]
+        tasks: [
+            ":mockzilla-management:jvmTest",
+            ":mockzilla-management:jsBrowserTest",
+        ]
     )
 end

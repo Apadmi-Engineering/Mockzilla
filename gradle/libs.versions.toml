@@ -5,6 +5,7 @@ adam = "0.5.10" # https://github.com/Malinskiy/adam
 jmdns = "3.6.2" # https://github.com/jmdns/jmdns
 kotlin = "2.2.20" # https://github.com/JetBrains/kotlin
 agp = "8.13.0" # https://developer.android.com/build/releases/gradle-plugin
+kotlinxBrowser = "0.5.0" # https://github.com/Kotlin/kotlinx-browser
 ksp = "2.2.20-2.0.4" # https://github.com/google/ksp
 
 # Logging
@@ -24,14 +25,14 @@ ktor = "3.3.1" # https://github.com/ktorio/ktor
 
 # Compose
 # using beta to fix https://slack-chats.kotlinlang.org/t/29844860/hello-everyone-in-my-team-we-are-having-a-big-problem-with-t
-compose = "1.9.0" # https://github.com/JetBrains/compose-multiplatform
+compose = "1.9.1" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
 koin = "4.1.1" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
 kotlinx-coroutines = "1.10.2" # https://github.com/Kotlin/kotlinx.coroutines
-kotlinx-datetime = "0.7.1-0.6.x-compat" # https://github.com/Kotlin/kotlinx-datetime
+kotlinx-datetime = "0.7.1" # https://github.com/Kotlin/kotlinx-datetime
 kotlinx-serialization = "1.9.0" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
@@ -70,6 +71,7 @@ jmdns-jmdns = { module = "org.jmdns:jmdns", version.ref = "jmdns" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 # Kotlin
+kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinxBrowser" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
@@ -79,6 +81,7 @@ semver = { module = "io.github.z4kn4fein:semver", version.ref = "semver" }
 
 # Ktor
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }

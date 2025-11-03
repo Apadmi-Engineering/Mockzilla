@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.ui.engine.device
 
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.ui.engine.Config
+import com.apadmi.mockzilla.ui.utils.Platform
 
 import io.github.z4kn4fein.semver.toVersion
 
@@ -76,7 +77,12 @@ class ActiveDeviceManagerImpl(
                 onDeviceConnectionStateChange.emit(Unit)
             }
 
-            delay(1.seconds)
+            // Desktop is the only platform that is likely to survive past the mockzilla connection
+            // since it's not running on device, so the other platforms don't need as much polling
+            when (Platform.current) {
+                Platform.Desktop -> delay(3.seconds)
+                else -> delay(20.seconds)
+            }
             yield()
         }
     }

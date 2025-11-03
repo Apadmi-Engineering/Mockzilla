@@ -3,6 +3,7 @@ import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.configureCommonProperties
 import com.apadmi.mockzilla.isSigningEnabled
+import com.apadmi.mockzilla.prepareKarmaWithServiceWorkerAndGetConfigPath
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 
@@ -39,7 +40,24 @@ kotlin {
     }
     jvmToolchain(JavaConfig.toolchain)
 
+    js {
+        browser()
+        binaries.executable()
+
+        browser {
+            testTask {
+                useKarma {
+                    useConfigDirectory(prepareKarmaWithServiceWorkerAndGetConfigPath())
+                    useChromeHeadless()
+                }
+            }
+            binaries.executable()
+        }
+    }
+
+    applyDefaultHierarchyTemplate()
     sourceSets {
+
         commonMain.dependencies {
             /* Kotlin */
             implementation(libs.kotlinx.coroutines.core)
@@ -64,6 +82,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
 
             /* Mockzilla */
             implementation(project(":mockzilla"))

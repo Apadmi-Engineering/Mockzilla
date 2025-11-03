@@ -4,6 +4,7 @@ actual enum class Platform {
     Android,
     Desktop,
     Ios,
+    Js,
     ;
 
     actual companion object {

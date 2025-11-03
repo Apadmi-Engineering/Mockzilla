@@ -45,6 +45,7 @@ private fun RunTarget.label(strings: Strings) = when (this) {
     RunTarget.IosSimulator -> strings.widgets.metaData.ios
 
     RunTarget.Jvm -> strings.widgets.metaData.jvm
+    RunTarget.Js -> strings.widgets.metaData.js
 }
 
 @Composable
