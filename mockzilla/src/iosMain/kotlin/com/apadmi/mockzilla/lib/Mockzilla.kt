@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.lib
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryServiceImpl
 import com.apadmi.mockzilla.lib.internal.discovery.validateInfoPlist
 import com.apadmi.mockzilla.lib.internal.persistance.KeychainSettings
+import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.extractMetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
@@ -31,4 +32,11 @@ fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlockin
             )
         }
     )
+}
+
+/**
+ * Stops the Mockzilla server,
+ */
+fun stopMockzilla() = runBlocking {
+    stopServer()
 }

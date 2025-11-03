@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.lib
 
 import android.content.Context
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryServiceImpl
+import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.extractMetaData
 
@@ -25,4 +26,11 @@ fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeP
         ),
         zeroConfDiscoveryService = { logger -> ZeroConfDiscoveryServiceImpl(logger, context) }
     )
+}
+
+/**
+ * Stops the Mockzilla server,
+ */
+fun stopMockzilla() = runBlocking {
+    stopServer()
 }

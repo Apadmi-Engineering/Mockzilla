@@ -10,6 +10,9 @@ import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.models.RunTarget
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.lib.internal.stopServer
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.promise
 
 /**
  * Starts the Mockzilla server,
@@ -44,4 +47,8 @@ suspend fun startMockzilla(
             }
         }
     }
+}
+
+fun stopMockzilla() = GlobalScope.promise {
+    stopServer()
 }

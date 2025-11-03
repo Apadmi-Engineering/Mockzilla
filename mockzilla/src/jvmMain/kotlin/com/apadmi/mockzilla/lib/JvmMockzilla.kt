@@ -9,6 +9,7 @@ import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.models.RunTarget
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.lib.internal.stopServer
 
 import java.nio.file.Files
 
@@ -46,4 +47,11 @@ fun startMockzilla(
             }
         }
     }
+}
+
+/**
+ * Stops the Mockzilla server,
+ */
+fun stopMockzilla() = runBlocking {
+    stopServer()
 }

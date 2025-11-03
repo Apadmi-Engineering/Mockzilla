@@ -24,13 +24,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-/**
- * Stops the Mockzilla server,
- */
-suspend fun stopMockzilla() {
-    stopServer()
-}
-
 internal suspend fun startMockzilla(
     config: MockzillaConfig,
     metaData: MetaData,
