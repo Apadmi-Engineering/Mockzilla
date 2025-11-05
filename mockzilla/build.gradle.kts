@@ -4,10 +4,11 @@ import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.configureCommonProperties
 import com.apadmi.mockzilla.isSigningEnabled
-import com.apadmi.mockzilla.prepareKarmaWithServiceWorkerAndGetConfigPath
+import com.apadmi.mockzilla.karmaDirName
+import com.apadmi.mockzilla.prepareKarmaFile
+import com.apadmi.mockzilla.serviceWorkerFileName
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     alias(libs.plugins.android.library)
@@ -140,8 +141,9 @@ kotlin {
     js {
         browser {
             testTask {
+                doFirst { prepareKarmaFile() }
                 useKarma {
-                    useConfigDirectory(prepareKarmaWithServiceWorkerAndGetConfigPath())
+                    useConfigDirectory(File(projectDir, karmaDirName))
                     useChromeHeadless()
                 }
             }
@@ -149,6 +151,16 @@ kotlin {
         }
     }
 }
+
+val copyServiceWorker = tasks.register<Copy>("copyServiceWorker") {
+    from(rootProject.rootDir.resolve("js-scripts/")) {
+        include(serviceWorkerFileName)
+    }
+    into(layout.projectDirectory.dir("src/jsTest/resources/"))
+    description = "Copies the service worker file for JS testing."
+}
+
+tasks.getByPath(":mockzilla:jsTestProcessResources").dependsOn(copyServiceWorker)
 
 android {
     namespace = group.toString()

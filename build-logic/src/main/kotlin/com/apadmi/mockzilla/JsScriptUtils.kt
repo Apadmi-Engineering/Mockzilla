@@ -1,20 +1,16 @@
 package com.apadmi.mockzilla
 
 import org.gradle.api.Project
+import org.gradle.api.tasks.Copy
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.register
 import java.io.File
 
-private const val serviceWorkerFileName = "mockServiceWorker.js"
-fun Project.prepareKarmaWithServiceWorkerAndGetConfigPath(): String {
-    File(rootProject.rootDir, "js-scripts/$serviceWorkerFileName")
-        .copyTo(
-            File(projectDir, "src/jsTest/resources/$serviceWorkerFileName"),
-            overwrite = true
-        )
-    return prepareKarmaFileAndGetPath()
-}
+const val serviceWorkerFileName = "mockServiceWorker.js"
+const val karmaDirName = "karma.config.d/"
 
-private fun Project.prepareKarmaFileAndGetPath(): String {
-    val dir = File(projectDir, "karma.config.d/").apply { mkdirs() }
+fun Project.prepareKarmaFile() {
+    val dir = File(projectDir, karmaDirName).apply { mkdirs() }
     val file = File(dir, "karma.conf.js")
     val serviceWorkerPath =
         "${rootProject.rootDir.absolutePath.removeSuffix("/")}/build/js/packages/lib-${name}-test/kotlin/${serviceWorkerFileName}"
@@ -22,5 +18,4 @@ private fun Project.prepareKarmaFileAndGetPath(): String {
         config.files.push({ pattern: '${serviceWorkerPath}', served: true, watched: false, included: false });
         config.proxies['/${serviceWorkerFileName}'] = "/base/kotlin/${serviceWorkerFileName}";
     """.trimIndent())
-    return dir.absolutePath
 }

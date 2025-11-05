@@ -11,6 +11,7 @@ import com.apadmi.mockzilla.lib.models.RunTarget
 
 import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.lib.internal.stopServer
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 
@@ -49,6 +50,7 @@ suspend fun startMockzilla(
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 fun stopMockzilla() = GlobalScope.promise {
     stopServer()
 }
