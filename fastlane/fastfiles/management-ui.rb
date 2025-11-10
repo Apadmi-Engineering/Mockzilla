@@ -5,7 +5,7 @@ platform :ios do
     private_lane :generate_mobile_ui_framework_and_podspec do |options|
         gradle(
             tasks: [":mockzilla-management-ui:mockzilla-mobile-ui:podPublishReleaseXCFramework"],
-            properties: createSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options))
+            properties: createMobileUiSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options))
         )
 
         # Copy the Podspec to where the publish lane can find it
@@ -71,7 +71,7 @@ lane :publish_mobile_ui_to_maven_local do |options|
             ":mockzilla-management-ui:mockzilla-management-ui-common:publishToMavenLocal",
             ":mockzilla-management-ui:mockzilla-mobile-ui:publishToMavenLocal"
         ],
-        properties: createSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options)) 
+        properties: createMobileUiSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options)) 
     )
 end
 
@@ -87,11 +87,22 @@ lane :publish_mobile_ui_to_maven do |options|
             ":mockzilla-management-ui:mockzilla-management-ui-common:publishToMavenCentral",
             ":mockzilla-management-ui:mockzilla-mobile-ui:publishToMavenCentral"
         ],
-        properties: createSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options))
+        properties: createMobileUiSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options))
     )
 end
 
-def createSnapshotProp(is_snapshot, version)
+desc "Generate JavaScript artifacts"
+lane :build_mobile_ui_js_artifacts do |options|
+    gradle(
+        tasks: [
+            # Production build currently doesn't work, using development temporarily
+            ":mockzilla-management-ui:mockzilla-mobile-ui:jsBrowserDevelopmentWebpack",
+        ],
+        properties: createMobileUiSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options))
+    )
+end
+
+def createMobileUiSnapshotProp(is_snapshot, version)
     {
         "is_snapshot" => is_snapshot,
         "version" => version,
@@ -114,7 +125,7 @@ lane :management_ui_pre_deploy_checks do |options|
             ":mockzilla-management-ui:mockzilla-management-ui-common:desktopTest",
             ":mockzilla-management-ui:mockzilla-mobile-ui:testDebugUnitTest"
         ],
-        properties: createSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options))
+        properties: createMobileUiSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options))
     )
 end
 

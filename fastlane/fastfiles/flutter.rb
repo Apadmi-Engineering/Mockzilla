@@ -57,3 +57,27 @@ end
 lane :demo_flutter_pull_request do
     sh("cd #{flutter_root}; melos run buildExample")
 end
+
+lane :download_mockzilla_js_assets do
+    version = extract_pubspec_property(
+        "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_web/pubspec.yaml",
+         "mockzilla_js_version"
+    )
+    download_and_unzip_release_asset(
+        "mockzilla-v#{version}",
+        "javascript_output.zip",
+         "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_web/lib/assets"
+    )
+end
+
+lane :download_mockzilla_ui_mobile_js_assets do
+    version = extract_pubspec_property(
+        "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_ui_mobile/pubspec.yaml",
+         "mockzilla_js_version"
+    )
+    download_and_unzip_release_asset(
+        "mockzilla-mobile-ui-v#{version}",
+        "javascript_output.zip",
+         "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_ui_mobile/lib/assets"
+    )
+end

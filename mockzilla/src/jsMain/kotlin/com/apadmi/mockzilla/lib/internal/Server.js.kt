@@ -4,6 +4,7 @@ import com.apadmi.mockzilla.BuildKonfig
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.internal.msw.MswBrowser
 import com.apadmi.mockzilla.lib.internal.msw.ServiceWorkerInstance
+import com.apadmi.mockzilla.lib.internal.msw.StartServiceWorkerOptions
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
@@ -28,7 +29,7 @@ internal actual suspend fun startServer(
     globalWorker = worker
 
     if (!worker.context.isMockingEnabled) {
-        worker.start().await()
+        worker.start(createWorkerOptions()).await()
     }
 
     return MockzillaRuntimeParams(
@@ -43,6 +44,10 @@ internal actual suspend fun startServer(
         },
         mockzillaVersion = BuildKonfig.VERSION_NAME
     )
+}
+
+private fun createWorkerOptions() = js("({})").unsafeCast<StartServiceWorkerOptions>().apply {
+    onUnhandledRequest = "bypass"
 }
 
 internal actual suspend fun stopServer() {

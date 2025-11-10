@@ -37,7 +37,7 @@ platform :android do
 end
 
 platform :js do
-    desc "Js target for the lib"
+    desc "JavaScript target for the lib"
     lane :lib_mockzilla_pull_request do
         gradle(
             tasks: [

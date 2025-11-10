@@ -64,9 +64,13 @@ external interface DefaultContext {
     fun text(body: String): dynamic
 }
 
+external interface StartServiceWorkerOptions {
+    var onUnhandledRequest: String
+}
+
 external interface ServiceWorkerInstance {
     val context: ServiceWorkerContext
-    fun start(options: dynamic = definedExternally): Promise<Unit>
+    fun start(options: StartServiceWorkerOptions): Promise<Unit>
     fun use(vararg handlers: RestHandler): Promise<Unit>
     fun resetHandlers(): Promise<Unit>
     fun stop(): Promise<Unit>

@@ -14,14 +14,22 @@ concurrency:
 
 jobs:
   deploy-flutter:
+    runs-on: macos-14
     needs: [deploy-kotlin, deploy-swift]
     if: ${{ github.ref_type != 'branch' }}
     permissions:
       id-token: write
-    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
-    with:
-      working-directory: FlutterMockzilla/mockzilla_ui_mobile
-      environment: production
+    steps:
+      - name: Install dependencies
+        run: bundle install
+      - name: Download JS assets
+        run: |
+          export GPG_TTY=$(tty)
+          bundle exec fastlane download_mockzilla_ui_mobile_js_assets
+      - uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+        with:
+          working-directory: FlutterMockzilla/mockzilla_ui_mobile
+          environment: production
   release-please:
     needs: [deploy-flutter]
     runs-on: macos-14
@@ -98,3 +106,28 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
+  deploy-js:
+    name: Publish JS files to GitHub release
+    runs-on: macos-14
+    if: ${{ github.ref_type != 'branch' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Install dependencies
+        run: bundle install
+      - name: Build JS packages
+        run: bundle exec fastlane build_mobile_ui_js_artifacts
+      - name: Zip up assets
+        run: |
+          mv mockzilla-management-ui/mockzilla-mobile-ui/build/kotlin-webpack/js/developmentExecutable javascript_output
+          zip -r javascript_output.zip javascript_output
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: javascript_output.zip
+          tag: ${{ github.ref }}
+          overwrite: true

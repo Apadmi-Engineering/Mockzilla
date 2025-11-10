@@ -13,7 +13,8 @@ import org.w3c.dom.HTMLElement
 
 import kotlinx.browser.document
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalJsExport::class)
+@JsExport
 fun launchManagementUi(rootId: String = "mockzilla-ui-root") {
     val div = document.getElementById(rootId) ?: createMockzillaUi(rootId)
 
@@ -42,7 +43,6 @@ private fun createMockzillaUi(rootId: String): HTMLElement {
         left = "0"
         width = "90%"
         height = "90%"
-        backgroundColor = "blue"
         zIndex = "9999"  // ensures it's on top
     }
 

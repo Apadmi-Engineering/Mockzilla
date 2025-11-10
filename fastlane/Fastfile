@@ -4,6 +4,7 @@ Dotenv.load(".env", ".secret.env")
 
 ## See `fastfiles` directory for individual iOS and Android fastfiles
 Dir["./fastfiles/*"].each {|file| import file }
+Dir["./utils/*"].each {|file| import file }
 
 before_all do |lane, options|
     lane_context[:repo_root] = sh("git rev-parse --show-toplevel").strip

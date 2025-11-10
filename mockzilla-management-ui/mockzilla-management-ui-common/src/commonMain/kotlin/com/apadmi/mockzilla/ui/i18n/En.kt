@@ -57,7 +57,7 @@ val EnStrings = Strings(
             android = "Android",
             ios = "iOS",
             jvm = "JVM",
-            js = "Web - Js"
+            js = "Web - JS"
         ),
         logs = Strings.Widgets.Logs(
             title = "Logs",

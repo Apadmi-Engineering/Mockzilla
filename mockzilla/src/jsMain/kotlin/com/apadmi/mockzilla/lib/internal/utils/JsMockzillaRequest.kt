@@ -8,8 +8,11 @@ import io.ktor.utils.io.core.toByteArray
 import org.w3c.fetch.Request as JsRequest
 
 import kotlinx.coroutines.await
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class JsMockzillaRequest(private val jsRequest: JsRequest) : MockzillaHttpRequest {
+    private val lock = Mutex()
     private var bodyCache: String? = null
     override val uri: String = Url(jsRequest.url).encodedPath
     override val headers: Map<String, String> = run {
@@ -28,8 +31,8 @@ class JsMockzillaRequest(private val jsRequest: JsRequest) : MockzillaHttpReques
 
     override suspend fun bodyAsBytes(): ByteArray = bodyAsString().toByteArray()
 
-    override suspend fun bodyAsString(): String = bodyCache ?: run {
-        return jsRequest.text().await().also {
+    override suspend fun bodyAsString(): String = bodyCache ?: lock.withLock {
+        return bodyCache ?: jsRequest.text().await().also {
             bodyCache = it
         }
     }
