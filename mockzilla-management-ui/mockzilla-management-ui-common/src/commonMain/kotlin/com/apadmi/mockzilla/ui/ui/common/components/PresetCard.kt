@@ -68,8 +68,8 @@ private fun DashboardOverridePreset.description(
     when (type?.exampleStatusCode()?.value ?: response.statusCode?.value) {
         in 100..199 -> strings.informational
         in 200..299 -> strings.success
-        in 300..399 -> strings.other
-        in 400..499 -> strings.redirect
+        in 300..399 -> strings.redirect
+        in 400..499 -> strings.error
         in 500..599 -> strings.error
         else -> strings.other
     }
@@ -187,10 +187,11 @@ internal fun PresetCard(
         }
     }
 
-    preset.response.body?.let {
-        Spacer(Modifier.size(8.dp))
-        ExpandableResponseBody(preset.response.body ?: "")
-    }
+    preset.response.body?.takeIf { it.isNotBlank() }
+        ?.let {
+            Spacer(Modifier.size(8.dp))
+            ExpandableResponseBody(preset.response.body ?: "")
+        }
 }
 
 @Composable

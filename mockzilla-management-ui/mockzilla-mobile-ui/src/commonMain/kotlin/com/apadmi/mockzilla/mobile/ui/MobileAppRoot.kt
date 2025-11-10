@@ -172,11 +172,7 @@ private fun ConnectedState(
     }
 
     composable<Destination.CreateEditPreset> { backStackEntry ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
+        Surface {
             CreateEditPresetWidget(
                 device = currentState.activeDevice.device,
                 activeEndpoint = EndpointConfiguration.Key(

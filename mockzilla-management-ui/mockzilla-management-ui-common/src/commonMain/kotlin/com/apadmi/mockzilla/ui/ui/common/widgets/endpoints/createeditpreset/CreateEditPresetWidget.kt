@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -202,6 +204,7 @@ fun CreateEditPresetWidgetContent(
 ) = Column(
     modifier = Modifier
         .fillMaxSize()
+        .verticalScroll(rememberScrollState())
         .background(color = MaterialTheme.colorScheme.background)
         .navigationBarsPadding()
         .padding(bottom = 12.dp),

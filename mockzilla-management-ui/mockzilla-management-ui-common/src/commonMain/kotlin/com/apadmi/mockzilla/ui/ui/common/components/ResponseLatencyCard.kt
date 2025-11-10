@@ -83,7 +83,7 @@ internal fun ResponseLatencyCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(20.dp),
                 imageVector = Icons.Clock,
                 contentDescription = null,
             )
