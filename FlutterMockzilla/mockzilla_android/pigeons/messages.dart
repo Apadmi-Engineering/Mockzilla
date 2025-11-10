@@ -134,11 +134,14 @@ abstract class MockzillaHostApi {
 
 @FlutterApi()
 abstract class MockzillaFlutterApi {
+  @async
   bool endpointMatcher(BridgeMockzillaHttpRequest request, String key);
 
+  @async
   BridgeMockzillaHttpResponse defaultHandler(
       BridgeMockzillaHttpRequest request, String key);
 
+  @async
   BridgeMockzillaHttpResponse errorHandler(
       BridgeMockzillaHttpRequest request, String key);
 

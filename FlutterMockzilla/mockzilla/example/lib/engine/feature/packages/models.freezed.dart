@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,121 +9,29 @@ part of 'models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-FetchPackagesRequest _$FetchPackagesRequestFromJson(Map<String, dynamic> json) {
-  return _FetchPackagesRequest.fromJson(json);
-}
 
 /// @nodoc
 mixin _$FetchPackagesRequest {
-  String get query => throw _privateConstructorUsedError;
-
-  /// Serializes this FetchPackagesRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  String get query;
 
   /// Create a copy of FetchPackagesRequest
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $FetchPackagesRequestCopyWith<FetchPackagesRequest> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+      _$FetchPackagesRequestCopyWithImpl<FetchPackagesRequest>(
+          this as FetchPackagesRequest, _$identity);
 
-/// @nodoc
-abstract class $FetchPackagesRequestCopyWith<$Res> {
-  factory $FetchPackagesRequestCopyWith(FetchPackagesRequest value,
-          $Res Function(FetchPackagesRequest) then) =
-      _$FetchPackagesRequestCopyWithImpl<$Res, FetchPackagesRequest>;
-  @useResult
-  $Res call({String query});
-}
-
-/// @nodoc
-class _$FetchPackagesRequestCopyWithImpl<$Res,
-        $Val extends FetchPackagesRequest>
-    implements $FetchPackagesRequestCopyWith<$Res> {
-  _$FetchPackagesRequestCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of FetchPackagesRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? query = null,
-  }) {
-    return _then(_value.copyWith(
-      query: null == query
-          ? _value.query
-          : query // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$FetchPackagesRequestImplCopyWith<$Res>
-    implements $FetchPackagesRequestCopyWith<$Res> {
-  factory _$$FetchPackagesRequestImplCopyWith(_$FetchPackagesRequestImpl value,
-          $Res Function(_$FetchPackagesRequestImpl) then) =
-      __$$FetchPackagesRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String query});
-}
-
-/// @nodoc
-class __$$FetchPackagesRequestImplCopyWithImpl<$Res>
-    extends _$FetchPackagesRequestCopyWithImpl<$Res, _$FetchPackagesRequestImpl>
-    implements _$$FetchPackagesRequestImplCopyWith<$Res> {
-  __$$FetchPackagesRequestImplCopyWithImpl(_$FetchPackagesRequestImpl _value,
-      $Res Function(_$FetchPackagesRequestImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of FetchPackagesRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? query = null,
-  }) {
-    return _then(_$FetchPackagesRequestImpl(
-      query: null == query
-          ? _value.query
-          : query // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$FetchPackagesRequestImpl implements _FetchPackagesRequest {
-  const _$FetchPackagesRequestImpl({required this.query});
-
-  factory _$FetchPackagesRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$FetchPackagesRequestImplFromJson(json);
-
-  @override
-  final String query;
-
-  @override
-  String toString() {
-    return 'FetchPackagesRequest(query: $query)';
-  }
+  /// Serializes this FetchPackagesRequest to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FetchPackagesRequestImpl &&
+            other is FetchPackagesRequest &&
             (identical(other.query, query) || other.query == query));
   }
 
@@ -131,117 +39,331 @@ class _$FetchPackagesRequestImpl implements _FetchPackagesRequest {
   @override
   int get hashCode => Object.hash(runtimeType, query);
 
-  /// Create a copy of FetchPackagesRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$FetchPackagesRequestImplCopyWith<_$FetchPackagesRequestImpl>
-      get copyWith =>
-          __$$FetchPackagesRequestImplCopyWithImpl<_$FetchPackagesRequestImpl>(
-              this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$FetchPackagesRequestImplToJson(
-      this,
-    );
+  String toString() {
+    return 'FetchPackagesRequest(query: $query)';
   }
 }
 
-abstract class _FetchPackagesRequest implements FetchPackagesRequest {
-  const factory _FetchPackagesRequest({required final String query}) =
-      _$FetchPackagesRequestImpl;
+/// @nodoc
+abstract mixin class $FetchPackagesRequestCopyWith<$Res> {
+  factory $FetchPackagesRequestCopyWith(FetchPackagesRequest value,
+          $Res Function(FetchPackagesRequest) _then) =
+      _$FetchPackagesRequestCopyWithImpl;
+  @useResult
+  $Res call({String query});
+}
 
-  factory _FetchPackagesRequest.fromJson(Map<String, dynamic> json) =
-      _$FetchPackagesRequestImpl.fromJson;
+/// @nodoc
+class _$FetchPackagesRequestCopyWithImpl<$Res>
+    implements $FetchPackagesRequestCopyWith<$Res> {
+  _$FetchPackagesRequestCopyWithImpl(this._self, this._then);
+
+  final FetchPackagesRequest _self;
+  final $Res Function(FetchPackagesRequest) _then;
+
+  /// Create a copy of FetchPackagesRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? query = null,
+  }) {
+    return _then(_self.copyWith(
+      query: null == query
+          ? _self.query
+          : query // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [FetchPackagesRequest].
+extension FetchPackagesRequestPatterns on FetchPackagesRequest {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_FetchPackagesRequest value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesRequest() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_FetchPackagesRequest value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesRequest():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_FetchPackagesRequest value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesRequest() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(String query)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesRequest() when $default != null:
+        return $default(_that.query);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(String query) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesRequest():
+        return $default(_that.query);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(String query)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesRequest() when $default != null:
+        return $default(_that.query);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _FetchPackagesRequest implements FetchPackagesRequest {
+  const _FetchPackagesRequest({required this.query});
+  factory _FetchPackagesRequest.fromJson(Map<String, dynamic> json) =>
+      _$FetchPackagesRequestFromJson(json);
 
   @override
-  String get query;
+  final String query;
 
   /// Create a copy of FetchPackagesRequest
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FetchPackagesRequestImplCopyWith<_$FetchPackagesRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  _$FetchPackagesRequestCopyWith<_FetchPackagesRequest> get copyWith =>
+      __$FetchPackagesRequestCopyWithImpl<_FetchPackagesRequest>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$FetchPackagesRequestToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _FetchPackagesRequest &&
+            (identical(other.query, query) || other.query == query));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, query);
+
+  @override
+  String toString() {
+    return 'FetchPackagesRequest(query: $query)';
+  }
 }
 
-FetchPackagesResponse _$FetchPackagesResponseFromJson(
-    Map<String, dynamic> json) {
-  return _FetchPackagesResponse.fromJson(json);
+/// @nodoc
+abstract mixin class _$FetchPackagesRequestCopyWith<$Res>
+    implements $FetchPackagesRequestCopyWith<$Res> {
+  factory _$FetchPackagesRequestCopyWith(_FetchPackagesRequest value,
+          $Res Function(_FetchPackagesRequest) _then) =
+      __$FetchPackagesRequestCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String query});
+}
+
+/// @nodoc
+class __$FetchPackagesRequestCopyWithImpl<$Res>
+    implements _$FetchPackagesRequestCopyWith<$Res> {
+  __$FetchPackagesRequestCopyWithImpl(this._self, this._then);
+
+  final _FetchPackagesRequest _self;
+  final $Res Function(_FetchPackagesRequest) _then;
+
+  /// Create a copy of FetchPackagesRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? query = null,
+  }) {
+    return _then(_FetchPackagesRequest(
+      query: null == query
+          ? _self.query
+          : query // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 /// @nodoc
 mixin _$FetchPackagesResponse {
-  List<Package> get packages => throw _privateConstructorUsedError;
-
-  /// Serializes this FetchPackagesResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  List<Package> get packages;
 
   /// Create a copy of FetchPackagesResponse
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $FetchPackagesResponseCopyWith<FetchPackagesResponse> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $FetchPackagesResponseCopyWith<$Res> {
-  factory $FetchPackagesResponseCopyWith(FetchPackagesResponse value,
-          $Res Function(FetchPackagesResponse) then) =
-      _$FetchPackagesResponseCopyWithImpl<$Res, FetchPackagesResponse>;
-  @useResult
-  $Res call({List<Package> packages});
-}
-
-/// @nodoc
-class _$FetchPackagesResponseCopyWithImpl<$Res,
-        $Val extends FetchPackagesResponse>
-    implements $FetchPackagesResponseCopyWith<$Res> {
-  _$FetchPackagesResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of FetchPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $FetchPackagesResponseCopyWith<FetchPackagesResponse> get copyWith =>
+      _$FetchPackagesResponseCopyWithImpl<FetchPackagesResponse>(
+          this as FetchPackagesResponse, _$identity);
+
+  /// Serializes this FetchPackagesResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? packages = null,
-  }) {
-    return _then(_value.copyWith(
-      packages: null == packages
-          ? _value.packages
-          : packages // ignore: cast_nullable_to_non_nullable
-              as List<Package>,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is FetchPackagesResponse &&
+            const DeepCollectionEquality().equals(other.packages, packages));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(packages));
+
+  @override
+  String toString() {
+    return 'FetchPackagesResponse(packages: $packages)';
   }
 }
 
 /// @nodoc
-abstract class _$$FetchPackagesResponseImplCopyWith<$Res>
-    implements $FetchPackagesResponseCopyWith<$Res> {
-  factory _$$FetchPackagesResponseImplCopyWith(
-          _$FetchPackagesResponseImpl value,
-          $Res Function(_$FetchPackagesResponseImpl) then) =
-      __$$FetchPackagesResponseImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $FetchPackagesResponseCopyWith<$Res> {
+  factory $FetchPackagesResponseCopyWith(FetchPackagesResponse value,
+          $Res Function(FetchPackagesResponse) _then) =
+      _$FetchPackagesResponseCopyWithImpl;
   @useResult
   $Res call({List<Package> packages});
 }
 
 /// @nodoc
-class __$$FetchPackagesResponseImplCopyWithImpl<$Res>
-    extends _$FetchPackagesResponseCopyWithImpl<$Res,
-        _$FetchPackagesResponseImpl>
-    implements _$$FetchPackagesResponseImplCopyWith<$Res> {
-  __$$FetchPackagesResponseImplCopyWithImpl(_$FetchPackagesResponseImpl _value,
-      $Res Function(_$FetchPackagesResponseImpl) _then)
-      : super(_value, _then);
+class _$FetchPackagesResponseCopyWithImpl<$Res>
+    implements $FetchPackagesResponseCopyWith<$Res> {
+  _$FetchPackagesResponseCopyWithImpl(this._self, this._then);
+
+  final FetchPackagesResponse _self;
+  final $Res Function(FetchPackagesResponse) _then;
 
   /// Create a copy of FetchPackagesResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -250,23 +372,179 @@ class __$$FetchPackagesResponseImplCopyWithImpl<$Res>
   $Res call({
     Object? packages = null,
   }) {
-    return _then(_$FetchPackagesResponseImpl(
+    return _then(_self.copyWith(
       packages: null == packages
-          ? _value._packages
+          ? _self.packages
           : packages // ignore: cast_nullable_to_non_nullable
               as List<Package>,
     ));
   }
 }
 
+/// Adds pattern-matching-related methods to [FetchPackagesResponse].
+extension FetchPackagesResponsePatterns on FetchPackagesResponse {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_FetchPackagesResponse value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesResponse() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_FetchPackagesResponse value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesResponse():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_FetchPackagesResponse value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesResponse() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(List<Package> packages)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesResponse() when $default != null:
+        return $default(_that.packages);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(List<Package> packages) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesResponse():
+        return $default(_that.packages);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(List<Package> packages)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FetchPackagesResponse() when $default != null:
+        return $default(_that.packages);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 @JsonSerializable()
-class _$FetchPackagesResponseImpl implements _FetchPackagesResponse {
-  const _$FetchPackagesResponseImpl({required final List<Package> packages})
+class _FetchPackagesResponse implements FetchPackagesResponse {
+  const _FetchPackagesResponse({required final List<Package> packages})
       : _packages = packages;
-
-  factory _$FetchPackagesResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$FetchPackagesResponseImplFromJson(json);
+  factory _FetchPackagesResponse.fromJson(Map<String, dynamic> json) =>
+      _$FetchPackagesResponseFromJson(json);
 
   final List<Package> _packages;
   @override
@@ -276,16 +554,27 @@ class _$FetchPackagesResponseImpl implements _FetchPackagesResponse {
     return EqualUnmodifiableListView(_packages);
   }
 
+  /// Create a copy of FetchPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'FetchPackagesResponse(packages: $packages)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$FetchPackagesResponseCopyWith<_FetchPackagesResponse> get copyWith =>
+      __$FetchPackagesResponseCopyWithImpl<_FetchPackagesResponse>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$FetchPackagesResponseToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FetchPackagesResponseImpl &&
+            other is _FetchPackagesResponse &&
             const DeepCollectionEquality().equals(other._packages, _packages));
   }
 
@@ -294,160 +583,67 @@ class _$FetchPackagesResponseImpl implements _FetchPackagesResponse {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_packages));
 
-  /// Create a copy of FetchPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$FetchPackagesResponseImplCopyWith<_$FetchPackagesResponseImpl>
-      get copyWith => __$$FetchPackagesResponseImplCopyWithImpl<
-          _$FetchPackagesResponseImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$FetchPackagesResponseImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _FetchPackagesResponse implements FetchPackagesResponse {
-  const factory _FetchPackagesResponse(
-      {required final List<Package> packages}) = _$FetchPackagesResponseImpl;
-
-  factory _FetchPackagesResponse.fromJson(Map<String, dynamic> json) =
-      _$FetchPackagesResponseImpl.fromJson;
-
-  @override
-  List<Package> get packages;
-
-  /// Create a copy of FetchPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FetchPackagesResponseImplCopyWith<_$FetchPackagesResponseImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-Package _$PackageFromJson(Map<String, dynamic> json) {
-  return _Package.fromJson(json);
-}
-
-/// @nodoc
-mixin _$Package {
-  String get name => throw _privateConstructorUsedError;
-  String get description => throw _privateConstructorUsedError;
-
-  /// Serializes this Package to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of Package
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PackageCopyWith<Package> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PackageCopyWith<$Res> {
-  factory $PackageCopyWith(Package value, $Res Function(Package) then) =
-      _$PackageCopyWithImpl<$Res, Package>;
-  @useResult
-  $Res call({String name, String description});
-}
-
-/// @nodoc
-class _$PackageCopyWithImpl<$Res, $Val extends Package>
-    implements $PackageCopyWith<$Res> {
-  _$PackageCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of Package
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? description = null,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  String toString() {
+    return 'FetchPackagesResponse(packages: $packages)';
   }
 }
 
 /// @nodoc
-abstract class _$$PackageImplCopyWith<$Res> implements $PackageCopyWith<$Res> {
-  factory _$$PackageImplCopyWith(
-          _$PackageImpl value, $Res Function(_$PackageImpl) then) =
-      __$$PackageImplCopyWithImpl<$Res>;
+abstract mixin class _$FetchPackagesResponseCopyWith<$Res>
+    implements $FetchPackagesResponseCopyWith<$Res> {
+  factory _$FetchPackagesResponseCopyWith(_FetchPackagesResponse value,
+          $Res Function(_FetchPackagesResponse) _then) =
+      __$FetchPackagesResponseCopyWithImpl;
   @override
   @useResult
-  $Res call({String name, String description});
+  $Res call({List<Package> packages});
 }
 
 /// @nodoc
-class __$$PackageImplCopyWithImpl<$Res>
-    extends _$PackageCopyWithImpl<$Res, _$PackageImpl>
-    implements _$$PackageImplCopyWith<$Res> {
-  __$$PackageImplCopyWithImpl(
-      _$PackageImpl _value, $Res Function(_$PackageImpl) _then)
-      : super(_value, _then);
+class __$FetchPackagesResponseCopyWithImpl<$Res>
+    implements _$FetchPackagesResponseCopyWith<$Res> {
+  __$FetchPackagesResponseCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of Package
+  final _FetchPackagesResponse _self;
+  final $Res Function(_FetchPackagesResponse) _then;
+
+  /// Create a copy of FetchPackagesResponse
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
-    Object? name = null,
-    Object? description = null,
+    Object? packages = null,
   }) {
-    return _then(_$PackageImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_FetchPackagesResponse(
+      packages: null == packages
+          ? _self._packages
+          : packages // ignore: cast_nullable_to_non_nullable
+              as List<Package>,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$PackageImpl implements _Package {
-  const _$PackageImpl({required this.name, required this.description});
+mixin _$Package {
+  String get name;
+  String get description;
 
-  factory _$PackageImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PackageImplFromJson(json);
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PackageCopyWith<Package> get copyWith =>
+      _$PackageCopyWithImpl<Package>(this as Package, _$identity);
 
-  @override
-  final String name;
-  @override
-  final String description;
-
-  @override
-  String toString() {
-    return 'Package(name: $name, description: $description)';
-  }
+  /// Serializes this Package to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PackageImpl &&
+            other is Package &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description));
@@ -457,38 +653,287 @@ class _$PackageImpl implements _Package {
   @override
   int get hashCode => Object.hash(runtimeType, name, description);
 
-  /// Create a copy of Package
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$PackageImplCopyWith<_$PackageImpl> get copyWith =>
-      __$$PackageImplCopyWithImpl<_$PackageImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PackageImplToJson(
-      this,
-    );
+  String toString() {
+    return 'Package(name: $name, description: $description)';
   }
 }
 
-abstract class _Package implements Package {
-  const factory _Package(
-      {required final String name,
-      required final String description}) = _$PackageImpl;
+/// @nodoc
+abstract mixin class $PackageCopyWith<$Res> {
+  factory $PackageCopyWith(Package value, $Res Function(Package) _then) =
+      _$PackageCopyWithImpl;
+  @useResult
+  $Res call({String name, String description});
+}
 
-  factory _Package.fromJson(Map<String, dynamic> json) = _$PackageImpl.fromJson;
+/// @nodoc
+class _$PackageCopyWithImpl<$Res> implements $PackageCopyWith<$Res> {
+  _$PackageCopyWithImpl(this._self, this._then);
+
+  final Package _self;
+  final $Res Function(Package) _then;
+
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? description = null,
+  }) {
+    return _then(_self.copyWith(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [Package].
+extension PackagePatterns on Package {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_Package value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _Package() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_Package value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Package():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_Package value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Package() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(String name, String description)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _Package() when $default != null:
+        return $default(_that.name, _that.description);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(String name, String description) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Package():
+        return $default(_that.name, _that.description);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(String name, String description)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Package() when $default != null:
+        return $default(_that.name, _that.description);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _Package implements Package {
+  const _Package({required this.name, required this.description});
+  factory _Package.fromJson(Map<String, dynamic> json) =>
+      _$PackageFromJson(json);
 
   @override
-  String get name;
+  final String name;
   @override
-  String get description;
+  final String description;
 
   /// Create a copy of Package
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PackageImplCopyWith<_$PackageImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  _$PackageCopyWith<_Package> get copyWith =>
+      __$PackageCopyWithImpl<_Package>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PackageToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _Package &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.description, description) ||
+                other.description == description));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, description);
+
+  @override
+  String toString() {
+    return 'Package(name: $name, description: $description)';
+  }
 }
+
+/// @nodoc
+abstract mixin class _$PackageCopyWith<$Res> implements $PackageCopyWith<$Res> {
+  factory _$PackageCopyWith(_Package value, $Res Function(_Package) _then) =
+      __$PackageCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String name, String description});
+}
+
+/// @nodoc
+class __$PackageCopyWithImpl<$Res> implements _$PackageCopyWith<$Res> {
+  __$PackageCopyWithImpl(this._self, this._then);
+
+  final _Package _self;
+  final $Res Function(_Package) _then;
+
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? description = null,
+  }) {
+    return _then(_Package(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+// dart format on

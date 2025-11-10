@@ -13,6 +13,7 @@ topics:
   - tool
   - mockzilla
 
+resolution: workspace
 environment:
   sdk: '>=3.6.0 <4.0.0'
   flutter: '>=3.27.0'
@@ -36,6 +37,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   pigeon: ^22.6.0
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
   build_runner: ^2.4.13
   mockito: ^5.4.4

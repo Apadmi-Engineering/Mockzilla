@@ -10,7 +10,7 @@ abstract class PackagesClient {
   factory PackagesClient(Dio dio,
       {String baseUrl, ParseErrorLogger? errorLogger}) = _PackagesClient;
 
-  @GET("/packages")
+  @POST("/packages")
   Future<FetchPackagesResponse> fetchPackages(
       @Body() FetchPackagesRequest request);
 }

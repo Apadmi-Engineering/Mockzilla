@@ -101,7 +101,7 @@ abstract class EndpointConfig with _$EndpointConfig {
 
     /// Used to determine whether a particular `request` should be evaluated by
     /// this endpoint.
-    required bool Function(MockzillaHttpRequest request) endpointMatcher,
+    required Future<bool> Function(MockzillaHttpRequest request) endpointMatcher,
 
     /// Optional, configures the preset responses for the endpoint in the
     /// Mockzilla dashboard.
@@ -111,12 +111,12 @@ abstract class EndpointConfig with _$EndpointConfig {
     /// This function is called when a network request is made to this endpoint,
     /// note that if an error is being returned due to [shouldFail] then
     /// `errorHandler` is used instead.
-    required MockzillaHttpResponse Function(MockzillaHttpRequest request)
+    required Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
         defaultHandler,
 
     /// This function is called when, in response to a network request, the
     /// server returns an error due to [shouldFail].
-    required MockzillaHttpResponse Function(MockzillaHttpRequest request)
+    required Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
         errorHandler,
   }) = _EndpointConfig;
 
