@@ -43,17 +43,15 @@ import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.EditCircle
+import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
+import com.apadmi.mockzilla.ui.ui.common.assets.ErrorCircle
+import com.apadmi.mockzilla.ui.ui.common.assets.InfoCircle
+import com.apadmi.mockzilla.ui.ui.common.assets.RedirectCircle
+import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
 import com.apadmi.mockzilla.ui.ui.common.theme.httpStatus_fallback
 import com.apadmi.mockzilla.ui.ui.common.utils.color
-import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
-import com.apadmi.mockzilla_management_ui_common.generated.resources.ic_edit_circle
-import com.apadmi.mockzilla_management_ui_common.generated.resources.ic_edit_underscore
-import com.apadmi.mockzilla_management_ui_common.generated.resources.ic_error_circle
-import com.apadmi.mockzilla_management_ui_common.generated.resources.ic_info_circle
-import com.apadmi.mockzilla_management_ui_common.generated.resources.ic_redirect_circle
-import com.apadmi.mockzilla_management_ui_common.generated.resources.ic_success_circle
 import io.ktor.http.HttpStatusCode
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val intervalDp = 6
@@ -90,15 +88,15 @@ private fun DashboardOverridePreset.color() =
         ?: httpStatus_fallback
 
 private fun DashboardOverridePreset.icon() = if (isManagementUiDefinedCustomPreset) {
-    Res.drawable.ic_edit_circle
+    Icons.EditCircle
 } else {
     when ((type?.exampleStatusCode() ?: response.statusCode)?.value) {
-        in 100..199 -> Res.drawable.ic_info_circle
-        in 200..299 -> Res.drawable.ic_success_circle
-        in 300..399 -> Res.drawable.ic_redirect_circle
-        in 400..499 -> Res.drawable.ic_error_circle
-        in 500..599 -> Res.drawable.ic_error_circle
-        else -> Res.drawable.ic_edit_circle
+        in 100..199 -> Icons.InfoCircle
+        in 200..299 -> Icons.SuccessCircle
+        in 300..399 -> Icons.RedirectCircle
+        in 400..499 -> Icons.ErrorCircle
+        in 500..599 -> Icons.ErrorCircle
+        else -> Icons.EditCircle
     }
 }
 
@@ -127,7 +125,7 @@ internal fun PresetCard(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
-            painter = painterResource(preset.icon()),
+            imageVector = preset.icon(),
             contentDescription = null,
             tint = preset.color()
         )
@@ -172,7 +170,7 @@ internal fun PresetCard(
                 prefix = {
                     Icon(
                         modifier = Modifier.padding(vertical = 4.dp),
-                        painter = painterResource(Res.drawable.ic_edit_underscore),
+                        imageVector = Icons.EditUnderscore,
                         contentDescription = null,
                     )
                 },

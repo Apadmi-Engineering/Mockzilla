@@ -41,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -387,7 +386,7 @@ private fun EditHeaders(
 
         CustomOutlineButton(
             modifier = Modifier.fillMaxWidth(),
-            leadingIcon = rememberVectorPainter(Icons.Default.Add),
+            leadingIcon = Icons.Default.Add,
             label = strings.widgets.createEditPreset.addHeaderButton,
             variant = OutlineButtonVariant.Secondary,
             onClick = onAddHeader

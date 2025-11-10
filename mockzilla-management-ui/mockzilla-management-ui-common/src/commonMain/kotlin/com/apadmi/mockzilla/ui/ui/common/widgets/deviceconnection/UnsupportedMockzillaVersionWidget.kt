@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,8 +18,8 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.utils.mockzillaLogoResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -36,7 +37,7 @@ fun UnsupportedDeviceMockzillaVersionContent(
 ) {
     Image(
         modifier = Modifier.height(100.dp).padding(bottom = 8.dp),
-        painter = mockzillaLogoResource(),
+        imageVector = Icons.MockzillaLogo,
         contentDescription = null
     )
     Text(
