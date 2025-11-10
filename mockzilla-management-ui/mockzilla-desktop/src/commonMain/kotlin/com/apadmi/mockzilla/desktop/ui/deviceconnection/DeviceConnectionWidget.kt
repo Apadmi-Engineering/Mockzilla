@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -27,10 +28,10 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
 import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
-import com.apadmi.mockzilla.ui.ui.common.utils.mockzillaLogoResource
 import com.apadmi.mockzilla.ui.utils.Platform
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -79,7 +80,7 @@ fun DeviceConnectionContent(
                 .align(Alignment.CenterHorizontally)
                 .padding(vertical = 16.dp)
                 .height(100.dp),
-            painter = mockzillaLogoResource(),
+            imageVector = Icons.MockzillaLogo,
             contentDescription = null
         )
 

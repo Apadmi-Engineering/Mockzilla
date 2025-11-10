@@ -66,22 +66,28 @@ fun DesktopApp(
             strings = strings,
             onCreatePreset = {
                 viewModel.setSelectedEndpoint(it)
+                openWidgets = openWidgets.minus(editPresetWidgetId)
                 openWidgets = openWidgets.plus(createPresetWidgetId)
             },
             onEditPreset = {
                 viewModel.setSelectedEndpoint(it)
+                openWidgets = openWidgets.minus(createPresetWidgetId)
                 openWidgets = openWidgets.plus(editPresetWidgetId)
             },
-            openWidgets = openWidgets
         )
-        
+
         WidgetScaffold(
             modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
             openWidgets = openWidgets,
             top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
             left = leftPanelWidgets(state, strings),
             right = rightWidgets,
-            middle = middleWidgets(state) {
+            middle = middleWidgets(
+                state, openWidgets, onCloseEditor = {
+                    openWidgets.minus(editPresetWidgetId)
+                    openWidgets = openWidgets.minus(createPresetWidgetId)
+                }
+            ) {
                 viewModel.setSelectedEndpoint(it)
                 openWidgets = openWidgets.plus(endpointDetailsWidgetId)
             },
@@ -129,26 +135,36 @@ private fun bottomPanelWidgets(
 @Suppress("diktat") // Diktat generates an invalid else block for some reason
 private fun middleWidgets(
     state: AppRootViewModel.State,
-    onEndpointClicked: (EndpointConfiguration.Key) -> Unit
+    openWidgets: Set<String>,
+    onCloseEditor: () -> Unit,
+    onEndpointClicked: (EndpointConfiguration.Key) -> Unit,
 ) = listOf(when (state) {
     is AppRootViewModel.State.Connected -> Widget(id = "endpoints") {
         val isGlobalControlsOpen = remember { mutableStateOf(false) }
-
-        if (isGlobalControlsOpen.value) {
-            Column {
-                IconButton(modifier = Modifier.align(Alignment.End), onClick = {
-                    isGlobalControlsOpen.value = false
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        contentDescription = LocalStrings.current.common.backDescription
-                    )
-                }
+        val selectedEndpoint = state.selectedEndpoint
+        when {
+            (createPresetWidgetId in openWidgets || editPresetWidgetId in openWidgets)
+                    && selectedEndpoint != null -> Column {
+                IconButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = onCloseEditor,
+                ) { CloseButtonIcon() }
+                CreateEditPresetWidget(
+                    device = state.activeDevice.device,
+                    activeEndpoint = selectedEndpoint,
+                    creatingNewPreset = createPresetWidgetId in openWidgets
+                )
+            }
+            isGlobalControlsOpen.value -> Column {
+                IconButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = {
+                        isGlobalControlsOpen.value = false
+                    }) { CloseButtonIcon() }
                 GlobalControlsWidget(state.activeDevice.device)
             }
-        } else {
-            EndpointsWidget(
+
+            else -> EndpointsWidget(
                 state.activeDevice.device,
                 onEndpointClicked,
                 { isGlobalControlsOpen.value = true }
@@ -169,7 +185,6 @@ private fun rightPanelWidgets(
     state: AppRootViewModel.State,
     logDetail: LogEvent?,
     strings: Strings,
-    openWidgets: Set<String>,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
     onEditPreset: (EndpointConfiguration.Key) -> Unit
 
@@ -190,13 +205,6 @@ private fun rightPanelWidgets(
                     )
                 }
             }
-        )
-        addAll(
-            presetWidgets(
-                connected = connectedState,
-                strings = strings,
-                openWidgets = openWidgets
-            )
         )
         add(
             Widget(
@@ -221,42 +229,9 @@ private fun leftPanelWidgets(
         })
 } ?: emptyList()
 
-private fun presetWidgets(
-    connected: AppRootViewModel.State.Connected,
-    strings: Strings,
-    openWidgets: Set<String>
-): List<Widget> {
-    val endpoint = connected.selectedEndpoint ?: return emptyList()
-
-    return buildList {
-        if (createPresetWidgetId in openWidgets) {
-            add(
-                Widget(
-                    id = createPresetWidgetId,
-                    title = strings.widgets.createEditPreset.createTitle
-                ) {
-                    CreateEditPresetWidget(
-                        device = connected.activeDevice.device,
-                        activeEndpoint = endpoint,
-                        creatingNewPreset = true
-                    )
-                }
-            )
-        }
-
-        if (editPresetWidgetId in openWidgets) {
-            add(
-                Widget(
-                    id = editPresetWidgetId,
-                    title = strings.widgets.createEditPreset.editTitle
-                ) {
-                    CreateEditPresetWidget(
-                        device = connected.activeDevice.device,
-                        activeEndpoint = endpoint,
-                        creatingNewPreset = false
-                    )
-                }
-            )
-        }
-    }
-}
+@Composable
+private fun CloseButtonIcon() = Icon(
+    imageVector = Icons.Filled.Close,
+    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+    contentDescription = LocalStrings.current.common.backDescription
+)

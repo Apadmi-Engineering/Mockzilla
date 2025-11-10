@@ -72,7 +72,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
             implementation(libs.navigation.compose)
-            implementation(libs.savedstate)
 
             /* Localisable Strings */
             implementation(libs.lyricist.library)
