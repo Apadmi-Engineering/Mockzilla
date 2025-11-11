@@ -137,7 +137,7 @@ private fun EndpointCard(
             .border(
                 width = if (endpoint.fail) (1.5).dp else (0.5).dp,
                 color = if (endpoint.fail) failureBorderColor else Color.Black.copy(alpha = 0.1f),
-                shape = if (endpoint.overriddenProperties.isEmpty()) {
+                shape = if (endpoint.overriddenProperties.isEmpty() || endpoint.fail) {
                     RoundedCornerShape(10.dp)
                 } else {
                     topSectionShape
@@ -325,6 +325,16 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
                     name = "Foobar",
                     fail = false,
                     overriddenProperties = emptyList(),
+                    display = true
+                ),
+                EndpointsViewModel.State.EndpointConfig(
+                    key = Key("5"),
+                    name = "Foobuzz",
+                    fail = true,
+                    overriddenProperties = listOf(
+                        EndpointProperties.Delay,
+                        EndpointProperties.Body
+                    ),
                     display = true
                 )
             ),
