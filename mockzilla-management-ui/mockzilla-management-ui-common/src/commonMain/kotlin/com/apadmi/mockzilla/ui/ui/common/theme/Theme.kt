@@ -158,6 +158,7 @@ fun AppTheme(
         lightColors
     }
 
+    var scaleFactor by rememberSaveable { mutableFloatStateOf(ScaleFactor.default) }
     ProvideLocalisableStrings {
         CompositionLocalProvider(
             LocalSetScaleFactor provides { scale -> scaleFactor = scale },

@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val repository: Repository,
-    private val setReleaseMode: (isRelease: Boolean) -> Unit
+    private val setReleaseMode: suspend (isRelease: Boolean) -> Unit
 ) : ViewModel() {
     val state = mutableStateOf<State>(State.Fetching())
 
@@ -44,7 +44,7 @@ class MainViewModel(
         }
     }
 
-    fun setIsReleaseMode(isRelease: Boolean) {
+    fun setIsReleaseMode(isRelease: Boolean) = viewModelScope.launch {
         setReleaseMode(isRelease)
         val newValues = state.value.values.copy(isRelease = isRelease)
         state.value = state.value.withValues(values = newValues)
