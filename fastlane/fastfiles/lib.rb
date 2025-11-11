@@ -86,7 +86,7 @@ desc "Generate JavaScript artifacts"
 lane :build_js_artifacts do |options|
     gradle(
         tasks: [
-            ":mockzilla:jsBrowserProductionWebpack",
+            ":mockzilla:jsBrowserDevelopmentWebpack",
         ],
         properties: createSnapshotProp(options[:is_snapshot], get_core_mockzilla_version_name(options))
     )

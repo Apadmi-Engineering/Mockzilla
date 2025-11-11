@@ -2,16 +2,17 @@ package com.apadmi.mockzilla
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
-
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.mobile.ui.MobileAppRoot
 import com.apadmi.mockzilla.mobile.ui.utils.startMockzillaMobileUiKoin
 
-import org.jetbrains.compose.web.renderComposable
-import org.koin.dsl.module
+
 import org.w3c.dom.HTMLElement
 
 import kotlinx.browser.document
+import org.jetbrains.compose.web.renderComposable
+import org.jetbrains.skiko.wasm.onWasmReady
+import org.koin.dsl.module
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalJsExport::class)
 @JsExport
@@ -22,12 +23,14 @@ fun launchManagementUi(rootId: String = "mockzilla-ui-root") {
         single { FileIo() }
     })
 
-    renderComposable(rootId) {
-        ComposeViewport(viewportContainer = div, content = {
-            MobileAppRoot {
-                document.getElementById(rootId)?.remove()
-            }
-        })
+    onWasmReady {
+        renderComposable(rootId) {
+            ComposeViewport(viewportContainer = div, content = {
+                MobileAppRoot {
+                    document.getElementById(rootId)?.remove()
+                }
+            })
+        }
     }
 }
 

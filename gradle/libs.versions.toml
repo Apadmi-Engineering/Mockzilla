@@ -25,7 +25,7 @@ ktor = "3.3.1" # https://github.com/ktorio/ktor
 
 # Compose
 # using beta to fix https://slack-chats.kotlinlang.org/t/29844860/hello-everyone-in-my-team-we-are-having-a-big-problem-with-t
-compose = "1.9.1" # https://github.com/JetBrains/compose-multiplatform
+compose = "1.9.3" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
 koin = "4.1.1" # https://github.com/InsertKoinIO/koin
