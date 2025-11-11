@@ -11,4 +11,9 @@ class MockzillaMobileUiAndroidAndiOS extends MockzillaUiMobilePlatform {
   void launchManagementUi() {
     hostBridge.launchManagementUi();
   }
+
+  @override
+  void preloadAssets() {
+    // No need to preload assets on Android or iOS
+  }
 }

@@ -61,5 +61,9 @@ class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
     dynamic root =  web.window["mockzilla-mobile-ui"];
     root.com.apadmi.mockzilla.launchManagementUi();
   }
+
+  @override
+  void preloadAssets() async {
+    await _ensureScriptLoaded();
+  }
 }
-//window["mockzilla-mobile-ui"].com.apadmi.mockzilla.launchManagementUi()

@@ -17,4 +17,5 @@ import 'package:pigeon/pigeon.dart';
 @HostApi()
 abstract class MockzillaUiMobileHostApi {
   void launchManagementUi();
+  void preloadAssets();
 }

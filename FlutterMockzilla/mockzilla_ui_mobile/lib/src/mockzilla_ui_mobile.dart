@@ -5,6 +5,10 @@ class MockzillaUiMobile {
   static void launchManagementUi() {
     MockzillaUiMobilePlatform.instance.launchManagementUi();
   }
+
+  static void preloadAssets() {
+    MockzillaUiMobilePlatform.instance.preloadAssets();
+  }
 }
 
 abstract class MockzillaUiMobilePlatform extends PlatformInterface {
@@ -26,5 +30,9 @@ abstract class MockzillaUiMobilePlatform extends PlatformInterface {
 
   void launchManagementUi() {
     throw UnimplementedError('launchManagementUi() has not been implemented.');
+  }
+
+  void preloadAssets() {
+    throw UnimplementedError('preloadAssets() has not been implemented.');
   }
 }

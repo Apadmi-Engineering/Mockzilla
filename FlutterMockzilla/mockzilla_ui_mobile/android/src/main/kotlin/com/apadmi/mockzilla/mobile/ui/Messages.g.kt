@@ -57,6 +57,7 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface MockzillaUiMobileHostApi {
   fun launchManagementUi()
+  fun preloadAssets()
 
   companion object {
     /** The codec used by MockzillaUiMobileHostApi. */
@@ -73,6 +74,22 @@ interface MockzillaUiMobileHostApi {
           channel.setMessageHandler { _, reply ->
             val wrapped: List<Any?> = try {
               api.launchManagementUi()
+              listOf(null)
+            } catch (exception: Throwable) {
+              wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.mockzilla_ui_mobile.MockzillaUiMobileHostApi.preloadAssets$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              api.preloadAssets()
               listOf(null)
             } catch (exception: Throwable) {
               wrapError(exception)

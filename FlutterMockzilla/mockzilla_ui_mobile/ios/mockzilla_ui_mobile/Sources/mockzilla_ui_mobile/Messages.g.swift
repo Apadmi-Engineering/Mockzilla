@@ -87,6 +87,7 @@ class MessagesPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendable {
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol MockzillaUiMobileHostApi {
   func launchManagementUi() throws
+  func preloadAssets() throws
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -107,6 +108,19 @@ class MockzillaUiMobileHostApiSetup {
       }
     } else {
       launchManagementUiChannel.setMessageHandler(nil)
+    }
+    let preloadAssetsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.mockzilla_ui_mobile.MockzillaUiMobileHostApi.preloadAssets\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      preloadAssetsChannel.setMessageHandler { _, reply in
+        do {
+          try api.preloadAssets()
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      preloadAssetsChannel.setMessageHandler(nil)
     }
   }
 }

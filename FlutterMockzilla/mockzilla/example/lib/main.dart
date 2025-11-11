@@ -9,6 +9,8 @@ import 'engine/config/mockzilla_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  MockzillaUiMobile.preloadAssets();
   final params = await Mockzilla.startMockzilla(mockzillaConfig);
   debugPrint("""
     +----------------+-----------------------------------+
