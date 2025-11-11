@@ -11,6 +11,16 @@ final mockzillaConfig = const MockzillaConfig(logLevel: LogLevel.verbose).addEnd
     defaultHandler: (_) async => defaultResponse,
     errorHandler: (_) async => errorResponse,
     shouldFail: false,
+    dashboardOptionsConfig: DashboardOptionsConfig(successPresets: [
+        DashboardOverridePreset(
+            name: "Error Preset",
+            description: "Error Preset Example",
+            response: MockzillaHttpResponse(
+              statusCode: 404,
+              headers: {},
+              body: "No body",
+            ))
+      ])
   ),
 );
 
