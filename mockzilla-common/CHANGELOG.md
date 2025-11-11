@@ -1,26 +1,23 @@
 # Changelog
 
-## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.4.1...mockzilla-common-v3.0.0) (2025-11-06)
-
+## [3.0.0-alpha1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.4.1...mockzilla-common-v3.0.0-alpha1) (2025-11-06)
 
 ### ⚠ BREAKING CHANGES
 
-* support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509))
-* remove the obsolete web apis and perform general tidy up of warnings ([#466](https://github.com/Apadmi-Engineering/Mockzilla/issues/466))
+* Support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509))
+* Default & Error handlers are now suspend functions
+* Removed the `body` property on Mockzilla requests (previously deprecated)
+* Make the accessors for the request body suspend functions
+* Remove the obsolete web apis ([#466](https://github.com/Apadmi-Engineering/Mockzilla/issues/466))
 
 ### Features
 
-* first pass reworking the desktop UI to work on mobile ([149ef73](https://github.com/Apadmi-Engineering/Mockzilla/commit/149ef73cc1e78fa3598fecf89ddab685e652ec9e))
-* first pass reworking the desktop UI to work on mobile ([6c599c2](https://github.com/Apadmi-Engineering/Mockzilla/commit/6c599c28a3f990619ca9df9af4db92a0b4f9c9b0))
-* remove the obsolete web apis and perform general tidy up of warnings ([#466](https://github.com/Apadmi-Engineering/Mockzilla/issues/466)) ([362cd45](https://github.com/Apadmi-Engineering/Mockzilla/commit/362cd450f45999c2b3e9f30b28b5a35ae6bf719c))
-* setup flutter wrapper and deployments ([86fa014](https://github.com/Apadmi-Engineering/Mockzilla/commit/86fa0140f5b3de8c716f5c1cdd3e088b992a78ba))
-* support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509)) ([2d6a9bb](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d6a9bbec08baa6c377e0a7ac57166086dabfd22))
+* Re-work Mockzilla internals to support mobile UI ([6c599c2](https://github.com/Apadmi-Engineering/Mockzilla/commit/6c599c28a3f990619ca9df9af4db92a0b4f9c9b0))
 
 
 ### Bug Fixes
 
-* make use of port re-binding ([1f5ac15](https://github.com/Apadmi-Engineering/Mockzilla/commit/1f5ac15eb3c071e95857917d3e49cb732e186307))
-* make use of port re-binding ([a6ba694](https://github.com/Apadmi-Engineering/Mockzilla/commit/a6ba6941c5a8488db86369a921cab95b2e685b85))
+* Make use of port re-binding ([a6ba694](https://github.com/Apadmi-Engineering/Mockzilla/commit/a6ba6941c5a8488db86369a921cab95b2e685b85))
 * Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
 
 ## [2.3.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.2.3...mockzilla-common-v2.3.2) (2025-09-16)
