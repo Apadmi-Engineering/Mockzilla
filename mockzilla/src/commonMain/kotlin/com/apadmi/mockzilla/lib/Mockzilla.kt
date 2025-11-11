@@ -24,14 +24,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-/**
- * Stops the Mockzilla server,
- */
-fun stopMockzilla() {
-    stopServer()
-}
-
-internal fun startMockzilla(
+internal suspend fun startMockzilla(
     config: MockzillaConfig,
     metaData: MetaData,
     fileIo: FileIo,
@@ -56,12 +49,13 @@ internal fun prepareMockzilla(
     config.validate()
 }
 
-internal fun startMockzilla(
+internal suspend fun startMockzilla(
     config: MockzillaConfig,
     di: DependencyInjector,
     scope: CoroutineScope = GlobalScope
 ): MockzillaRuntimeParams {
     scope.launch { di.localCacheService.clearStaleCaches(config.endpoints) }
+
     return startServer(config.port, di).also {
         scope.launch {
             di.sharedStateHandler.setSharedProcessState(

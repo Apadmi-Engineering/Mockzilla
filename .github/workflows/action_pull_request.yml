@@ -143,6 +143,7 @@ jobs:
         run: |
           bundle exec fastlane android lib_mockzilla_pull_request
           bundle exec fastlane ios lib_mockzilla_pull_request
+          bundle exec fastlane js lib_mockzilla_pull_request
           bundle exec fastlane publish_to_maven_local
 
   mockzilla-management:

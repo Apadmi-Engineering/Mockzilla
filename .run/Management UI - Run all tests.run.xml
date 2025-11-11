@@ -10,7 +10,6 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":mockzilla-management-ui:mockzilla-desktop:assembleDebug" />
           <option value=":mockzilla-management-ui:mockzilla-desktop:desktopTest" />
           <option value=":mockzilla-management-ui:mockzilla-management-ui-common:desktopTest" />
           <option value=":mockzilla-management-ui:mockzilla-mobile-ui:testDebugUnitTest" />

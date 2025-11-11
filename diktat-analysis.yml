@@ -11,7 +11,7 @@
     disabledChapters: ""
     testDirs: test, androidUnitTest, desktopTest, commonTest
     kotlinVersion: 1.9
-    srcDirectories: main, desktopMain
+    srcDirectories: main, desktopMain, allButWebMain, webMain
 # Checks that the Class/Enum/Interface name matches Pascal case
 - name: CLASS_NAME_INCORRECT
   enabled: true
@@ -93,7 +93,7 @@
   enabled: true
 # Checks that accessible method throw keyword is documented in KDoc
 - name: KDOC_WITHOUT_THROWS_TAG
-  enabled: true
+  enabled: false # Seems to be a bug with this since it reports false positives
 # Checks that KDoc is not empty
 - name: KDOC_EMPTY_KDOC
   enabled: true

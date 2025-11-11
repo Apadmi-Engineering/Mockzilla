@@ -8,6 +8,7 @@ object Config {
         Platform.Desktop -> Version.parse("1.99.99")
         Platform.Android,
         Platform.Ios -> Version.parse("2.3.0")
+        Platform.Js -> Version.parse("3.0.0")
         else -> throw IllegalStateException("Unsupported platform ${Platform.current}")
     }
 }

@@ -43,6 +43,11 @@ kotlin {
     jvm()
     jvmToolchain(JavaConfig.toolchain)
 
+    js {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         all {
             languageSettings.optIn("kotlin.RequiresOptIn")
@@ -54,7 +59,6 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
 
             /* Ktor */
-            implementation(libs.ktor.client.core)
             implementation(libs.ktor.server.core)
 
             /* Serialization */

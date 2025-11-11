@@ -61,6 +61,11 @@ kotlin {
         }
     }
 
+    js {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         all {
             languageSettings.optIn("kotlin.time.ExperimentalTime")
@@ -72,6 +77,8 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
             implementation(libs.navigation.compose)
+            implementation(compose.components.uiToolingPreview)
+
 
             /* Localisable Strings */
             implementation(libs.lyricist.library)
@@ -112,6 +119,9 @@ kotlin {
             implementation(libs.androidx.compose.activity)
             implementation(compose.preview)
             implementation(compose.components.uiToolingPreview)
+        }
+        jsMain.dependencies {
+            implementation(compose.html.core)
         }
         val androidUnitTest by getting {
             dependencies {

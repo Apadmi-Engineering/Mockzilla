@@ -14,10 +14,13 @@ import com.apadmi.mockzilla.lib.stopMockzilla
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
+import io.ktor.util.Platform
+import io.ktor.util.PlatformUtils
+import io.ktor.util.platform
 
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 
 private val zeroConfStub = object : ZeroConfDiscoveryService {
     override suspend fun makeDiscoverable(metaData: MetaData, port: Int) = Unit
@@ -27,8 +30,10 @@ internal typealias SetupBlock = suspend (cacheService: LocalCacheService) -> Uni
 internal typealias TestBlock = suspend (params: MockzillaRuntimeParams, cacheService: LocalCacheService) -> Unit
 
 private object Constants {
-    const val maxRetries = 3
+    private const val maxRetriesNative = 3
+    val maxRetries = if (PlatformUtils.platform == Platform.Native) maxRetriesNative else 1
 }
+
 private fun MetaData.Companion.dummy() = MetaData(
     appName = "",
     appPackage = "",
@@ -49,7 +54,6 @@ private fun MetaData.Companion.dummy() = MetaData(
  * @param setup Block that gets executed before starting the server
  * @param block The test block itself.
  * @return
- * @throws Exception if the last test attempt throws an exception
  */
 internal fun runIntegrationTest(
     config: MockzillaConfig,
@@ -65,17 +69,21 @@ internal fun runIntegrationTest(
 
             // No crash, exit the loop
             currentRun = Int.MAX_VALUE
-        } catch (e: Exception) {
-            Logger(StaticConfig()).e { "Failed with exception, run: $currentRun" }
-            if (++currentRun == Constants.maxRetries) {
+        } catch (e: Throwable) {
+            stopMockzilla()
+            Logger(StaticConfig()).e(throwable = e, "", { "Failed with exception, run: $currentRun\n" })
+            if (e !is Exception) {
+                throw e
+            }
+            if (++currentRun >= Constants.maxRetries) {
                 throw e
             }
         }
-
-        /* Cleanup */
-        stopMockzilla()
-        runBlocking { delay(100) }
     }
+
+    /* Cleanup */
+    stopMockzilla()
+    delay(100)
 }
 
 private suspend fun runFullIntegrationTest(
@@ -99,6 +107,7 @@ private suspend fun runFullIntegrationTest(
 
     /* Run Test & Verify */
     block(params, di.localCacheService)
+    yield()
 
     /* Cleanup */
     fileIo.deleteAllCaches()

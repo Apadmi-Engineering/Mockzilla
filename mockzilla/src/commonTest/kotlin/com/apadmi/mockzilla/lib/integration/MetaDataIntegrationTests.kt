@@ -8,7 +8,6 @@ import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -42,7 +41,7 @@ class MetaDataIntegrationTests {
         metaData = metaData
     ) { params, _ ->
         /* Run Test */
-        val response = HttpClient(CIO).get("${params.apiBaseUrl}/meta")
+        val response = HttpClient().get("${params.apiBaseUrl}/meta")
 
         /* Verify */
         assertEquals(

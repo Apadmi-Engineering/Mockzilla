@@ -34,10 +34,10 @@ sealed class DataResult<out T, out E> {
     companion object
 }
 
-class Repository(private val baseUrl: String) {
+class Repository(private val baseUrl: () -> String) {
     suspend fun getCow(someRequestValue: String): DataResult<CowDto, String> {
-        val response = HttpClient(CIO).post(
-            "$baseUrl/cow") {
+        val response = HttpClient().post(
+            "${baseUrl()}/cow") {
             contentType(ContentType.Application.Json)
             setBody(Json.encodeToString(GetCowRequestDto(someRequestValue)))
         }
