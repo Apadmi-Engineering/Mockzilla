@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -16,23 +17,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_accent
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_background_dark
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_success
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning
-import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
-import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SolidButton(
     modifier: Modifier = Modifier,
     label: String,
-    leadingIcon: Painter? = null,
+    leadingIcon: ImageVector? = null,
     backgroundColor: Color,
     contentColor: Color,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
@@ -52,7 +51,7 @@ fun SolidButton(
     leadingIcon?.let { icon ->
         Icon(
             modifier = Modifier.size(16.dp),
-            painter = icon,
+            imageVector = icon,
             contentDescription = null
         )
         Spacer(modifier = Modifier.width(10.dp))
@@ -75,7 +74,7 @@ private fun SolidButtonPreview() = PreviewSurface {
         )
         SolidButton(
             label = "Click me",
-            leadingIcon = painterResource(resource = Res.drawable.lightning_bolt),
+            leadingIcon = Icons.LightningBolt,
             backgroundColor = theme_background_dark,
             contentColor = theme_accent,
             onClick = {}

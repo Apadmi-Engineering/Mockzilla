@@ -1,7 +1,5 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 
-import androidx.compose.runtime.mutableStateOf
-
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -14,6 +12,7 @@ import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -31,10 +30,7 @@ class EndpointDetailsViewModel(
     private val eventBus: EventBus,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
-    // using mutableStateOf here to avoid latency issues with text input
-    // see https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
-    // for reasons
-    val state = mutableStateOf<State>(State.Empty)
+    val state = MutableStateFlow<State>(State.Empty)
     private var delayDebounceJob: Job? = null
 
     init {
@@ -164,7 +160,9 @@ class EndpointDetailsViewModel(
                     device,
                     config.key,
                     dashboardOverridePreset
-                )
+                ).onSuccess {
+                    eventBus.send(EventBus.Event.PresetApplied)
+                }
             )
         }
     })

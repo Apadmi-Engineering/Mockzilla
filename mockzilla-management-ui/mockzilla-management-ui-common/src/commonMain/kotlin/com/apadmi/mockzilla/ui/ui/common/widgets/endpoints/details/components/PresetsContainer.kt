@@ -30,6 +30,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.endpointDetailsWidgetSuccessState
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.mockPresets
@@ -88,7 +89,11 @@ internal fun PresetsContainer(
                     style = MaterialTheme.typography.bodySmall
                 )
                 Spacer(modifier = Modifier.size(4.dp))
-                CustomOutlineButton(label = "More Information", onClick = onPresetMoreInfoClicked)
+                CustomOutlineButton(
+                    label = "More Information",
+                    onClick = onPresetMoreInfoClicked,
+                    variant = OutlineButtonVariant.Secondary,
+                )
             }
         }
     }

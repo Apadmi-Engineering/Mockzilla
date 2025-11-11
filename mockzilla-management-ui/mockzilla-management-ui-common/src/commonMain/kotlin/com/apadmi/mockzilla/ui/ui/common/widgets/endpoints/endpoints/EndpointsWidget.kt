@@ -43,10 +43,8 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
-import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import org.koin.core.parameter.parametersOf
@@ -168,7 +166,7 @@ private fun EndpointCard(
                             shape = RoundedCornerShape(4.dp)
                         )
                         .padding(horizontal = 12.dp, vertical = 2.dp),
-                    painter = painterResource(resource = Res.drawable.lightning_bolt),
+                    imageVector = Icons.LightningBolt,
                     contentDescription = null,
                     tint = Color.White
                 )

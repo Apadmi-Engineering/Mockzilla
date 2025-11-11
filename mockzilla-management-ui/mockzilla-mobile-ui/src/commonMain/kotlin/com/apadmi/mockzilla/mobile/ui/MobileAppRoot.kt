@@ -42,6 +42,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.widgets.debug.DebugWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsWidget
@@ -136,6 +137,12 @@ private fun ConnectedState(
                 activeEndpoint = EndpointConfiguration.Key(
                     backStackEntry.toRoute<Destination.EndpointDetails>().key
                 ),
+                onCreatePreset = {
+                    navController.navigate(Destination.CreateEditPreset(it.raw, true))
+                },
+                onEditPreset = {
+                    navController.navigate(Destination.CreateEditPreset(it.raw, false))
+                },
             )
         }
     }
@@ -160,6 +167,18 @@ private fun ConnectedState(
         Surface {
             GlobalControlsWidget(
                 device = currentState.activeDevice.device,
+            )
+        }
+    }
+
+    composable<Destination.CreateEditPreset> { backStackEntry ->
+        Surface {
+            CreateEditPresetWidget(
+                device = currentState.activeDevice.device,
+                activeEndpoint = EndpointConfiguration.Key(
+                    backStackEntry.toRoute<Destination.CreateEditPreset>().key,
+                ),
+                creatingNewPreset = backStackEntry.toRoute<Destination.CreateEditPreset>().creatingNewPreset,
             )
         }
     }

@@ -8,16 +8,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -46,6 +44,7 @@ fun MainContent(
         modifier = Modifier
             .fillMaxSize(1f)
             .verticalScroll(rememberScrollState())
+            .navigationBarsPadding()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -63,28 +62,35 @@ fun MainContent(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Text(text = "Refresh")
-                Spacer(modifier = Modifier.width(2.dp))
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = null
-                )
             }
         }
         
         when (state) {
-            is MainViewModel.State.Fetching -> {
+            is MainViewModel.State.FetchError -> ErrorContent(state = state)
+            is MainViewModel.State.Success -> SuccessContent(
+                state = state,
+                setRequestText = setRequestText
+            )
+            else -> {
                 Spacer(modifier = Modifier.weight(1f))
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }
-            is MainViewModel.State.FetchError -> ErrorContent(state = state)
-            is MainViewModel.State.Success -> SuccessContent(
-                state = state,
-                setRequestText = setRequestText,
-                launchManagementUi = launchManagementUi
+        }
+
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = launchManagementUi,
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Text(text = "Launch Mockzilla Management UI")
+            Spacer(modifier = Modifier.width(8.dp))
+            Image(
+                modifier = Modifier.size(20.dp),
+                painter = painterResource(id = R.drawable.mockzilla_logo),
+                contentDescription = "Launch Mockzilla Management UI"
             )
         }
     }
@@ -93,8 +99,7 @@ fun MainContent(
 @Composable
 private fun SuccessContent(
     state: MainViewModel.State.Success,
-    setRequestText: (request: String) -> Unit,
-    launchManagementUi: () -> Unit
+    setRequestText: (request: String) -> Unit
 ) = Column(
     modifier = Modifier.fillMaxWidth(),
     verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -122,20 +127,6 @@ private fun SuccessContent(
     state.pigResult?.let { pig ->
         AnimalCard(animal = pig)
     } ?: Text(text = "No pig found")
-
-    Button(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = launchManagementUi,
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Text(text = "Launch Mockzilla Management UI")
-        Spacer(modifier = Modifier.width(8.dp))
-        Image(
-            modifier = Modifier.size(20.dp),
-            painter = painterResource(id = R.drawable.mockzilla_logo),
-            contentDescription = "Launch Mockzilla Management UI"
-        )
-    }
 }
 
 @Composable

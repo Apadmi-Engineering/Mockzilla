@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,15 +26,14 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.CircleCheck
+import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
+import com.apadmi.mockzilla.ui.ui.common.assets.Play
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
 import com.apadmi.mockzilla.ui.ui.common.theme.partialFailure
 import com.apadmi.mockzilla.ui.ui.common.theme.success
-import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
-import com.apadmi.mockzilla_management_ui_common.generated.resources.circle_check
-import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
-import com.apadmi.mockzilla_management_ui_common.generated.resources.play
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val overlayAlpha = 0.1f
@@ -78,9 +77,8 @@ internal fun ForceFailureBanner(
 
     val bannerIcon = when (state) {
         ForceFailureBannerState.FullFailure,
-        ForceFailureBannerState.PartialFailure -> Res.drawable.lightning_bolt
-
-        ForceFailureBannerState.Normal -> Res.drawable.circle_check
+        ForceFailureBannerState.PartialFailure -> Icons.LightningBolt
+        ForceFailureBannerState.Normal -> Icons.CircleCheck
     }
 
     Column(
@@ -107,7 +105,7 @@ internal fun ForceFailureBanner(
         ) {
             Icon(
                 modifier = Modifier.size(20.dp),
-                painter = painterResource(resource = bannerIcon),
+                imageVector = bannerIcon,
                 contentDescription = null,
                 tint = borderAndTextColor
             )
@@ -135,14 +133,9 @@ internal fun ForceFailureBanner(
                 // Force Fail Button
                 CustomOutlineButton(
                     label = strings.widgets.globalControls.failButtonLabel,
-                    borderColor = MaterialTheme.colorScheme.error,
-                    colors = ButtonDefaults.outlinedButtonColors().copy(
-                        contentColor = MaterialTheme.colorScheme.error,
-                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.05f)
-                            .compositeOver(MaterialTheme.colorScheme.surface)
-                    ),
-                    leadingIcon = painterResource(resource = Res.drawable.lightning_bolt),
+                    leadingIcon = Icons.LightningBolt,
                     contentPadding = PaddingValues(12.dp),
+                    variant = OutlineButtonVariant.Error,
                     onClick = onForceFailureClicked
                 )
             }
@@ -151,7 +144,7 @@ internal fun ForceFailureBanner(
                 // Restore Api Button
                 SolidButton(
                     label = strings.widgets.globalControls.restoreButtonLabel,
-                    leadingIcon = painterResource(resource = Res.drawable.play),
+                    leadingIcon = Icons.Play,
                     backgroundColor = Color(0xFF_00_A6_3E),
                     contentColor = Color.White,
                     contentPadding = PaddingValues(12.dp),

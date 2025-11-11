@@ -33,6 +33,7 @@ import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsWidget
@@ -40,9 +41,13 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols.MiscControlsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsWidget
+import kotlin.collections.buildList
+import kotlin.let
 
 private const val endpointDetailsWidgetId = "endpoint-details"
 private const val logDetailsWidgetId = "log-details"
+private const val editPresetWidgetId = "edit-preset"
+private const val createPresetWidgetId = "create-preset"
 
 @Composable
 fun DesktopApp(
@@ -55,13 +60,34 @@ fun DesktopApp(
         var openWidgets by remember { mutableStateOf(emptySet<String>()) }
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
+        val rightWidgets = rightPanelWidgets(
+            state = state,
+            logDetail = logDetail,
+            strings = strings,
+            onCreatePreset = {
+                viewModel.setSelectedEndpoint(it)
+                openWidgets = openWidgets.minus(editPresetWidgetId)
+                openWidgets = openWidgets.plus(createPresetWidgetId)
+            },
+            onEditPreset = {
+                viewModel.setSelectedEndpoint(it)
+                openWidgets = openWidgets.minus(createPresetWidgetId)
+                openWidgets = openWidgets.plus(editPresetWidgetId)
+            },
+        )
+
         WidgetScaffold(
             modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
             openWidgets = openWidgets,
             top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
             left = leftPanelWidgets(state, strings),
-            right = rightPanelWidgets(state = state, logDetail = logDetail, strings = strings),
-            middle = middleWidgets(state) {
+            right = rightWidgets,
+            middle = middleWidgets(
+                state, openWidgets, onCloseEditor = {
+                    openWidgets.minus(editPresetWidgetId)
+                    openWidgets = openWidgets.minus(createPresetWidgetId)
+                }
+            ) {
                 viewModel.setSelectedEndpoint(it)
                 openWidgets = openWidgets.plus(endpointDetailsWidgetId)
             },
@@ -109,26 +135,36 @@ private fun bottomPanelWidgets(
 @Suppress("diktat") // Diktat generates an invalid else block for some reason
 private fun middleWidgets(
     state: AppRootViewModel.State,
-    onEndpointClicked: (EndpointConfiguration.Key) -> Unit
+    openWidgets: Set<String>,
+    onCloseEditor: () -> Unit,
+    onEndpointClicked: (EndpointConfiguration.Key) -> Unit,
 ) = listOf(when (state) {
     is AppRootViewModel.State.Connected -> Widget(id = "endpoints") {
         val isGlobalControlsOpen = remember { mutableStateOf(false) }
-
-        if (isGlobalControlsOpen.value) {
-            Column {
-                IconButton(modifier = Modifier.align(Alignment.End), onClick = {
-                    isGlobalControlsOpen.value = false
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        contentDescription = LocalStrings.current.common.backDescription
-                    )
-                }
+        val selectedEndpoint = state.selectedEndpoint
+        when {
+            (createPresetWidgetId in openWidgets || editPresetWidgetId in openWidgets)
+                    && selectedEndpoint != null -> Column {
+                IconButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = onCloseEditor,
+                ) { CloseButtonIcon() }
+                CreateEditPresetWidget(
+                    device = state.activeDevice.device,
+                    activeEndpoint = selectedEndpoint,
+                    creatingNewPreset = createPresetWidgetId in openWidgets
+                )
+            }
+            isGlobalControlsOpen.value -> Column {
+                IconButton(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = {
+                        isGlobalControlsOpen.value = false
+                    }) { CloseButtonIcon() }
                 GlobalControlsWidget(state.activeDevice.device)
             }
-        } else {
-            EndpointsWidget(
+
+            else -> EndpointsWidget(
                 state.activeDevice.device,
                 onEndpointClicked,
                 { isGlobalControlsOpen.value = true }
@@ -148,27 +184,36 @@ private fun middleWidgets(
 private fun rightPanelWidgets(
     state: AppRootViewModel.State,
     logDetail: LogEvent?,
-    strings: Strings
+    strings: Strings,
+    onCreatePreset: (EndpointConfiguration.Key) -> Unit,
+    onEditPreset: (EndpointConfiguration.Key) -> Unit
+
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
-    listOf(
-        Widget(
-            id = endpointDetailsWidgetId,
-            title = strings.widgets.endpointDetails.title
-        ) {
-            Crossfade(
-                targetState = connectedState,
-                animationSpec = tween(durationMillis = 200)
-            ) { newState ->
-                EndpointDetailsWidget(newState.activeDevice.device, newState.selectedEndpoint)
+    buildList {
+        add(
+            Widget(
+                id = endpointDetailsWidgetId, title = strings.widgets.endpointDetails.title
+            ) {
+                Crossfade(
+                    targetState = connectedState, animationSpec = tween(durationMillis = 200)
+                ) { newState ->
+                    EndpointDetailsWidget(
+                        device = newState.activeDevice.device,
+                        activeEndpoint = newState.selectedEndpoint,
+                        onCreatePreset = onCreatePreset,
+                        onEditPreset = onEditPreset
+                    )
+                }
             }
-        },
-        Widget(
-            id = logDetailsWidgetId,
-            title = strings.widgets.logDetails.title
-        ) {
-            MonitorLogDetailsWidget(logDetail)
-        }
-    )
+        )
+        add(
+            Widget(
+                id = logDetailsWidgetId, title = strings.widgets.logDetails.title
+            ) {
+                MonitorLogDetailsWidget(logDetail)
+            }
+        )
+    }
 } ?: emptyList()
 
 private fun leftPanelWidgets(
@@ -183,3 +228,10 @@ private fun leftPanelWidgets(
             MiscControlsWidget(connectedState.activeDevice.device)
         })
 } ?: emptyList()
+
+@Composable
+private fun CloseButtonIcon() = Icon(
+    imageVector = Icons.Filled.Close,
+    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+    contentDescription = LocalStrings.current.common.backDescription
+)

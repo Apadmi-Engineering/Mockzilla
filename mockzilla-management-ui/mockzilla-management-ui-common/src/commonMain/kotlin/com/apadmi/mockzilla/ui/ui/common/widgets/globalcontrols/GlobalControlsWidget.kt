@@ -34,6 +34,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
 import com.apadmi.mockzilla.ui.ui.common.components.SurfaceHeader
 import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.*
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -113,7 +114,8 @@ internal fun GlobalControlsWidgetIdleContent(
             CustomOutlineButton(
                 label = strings.widgets.globalControls.resetAllLabel,
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-                onClick = onResetClicked
+                onClick = onResetClicked,
+                variant = OutlineButtonVariant.Secondary
             )
         }
 

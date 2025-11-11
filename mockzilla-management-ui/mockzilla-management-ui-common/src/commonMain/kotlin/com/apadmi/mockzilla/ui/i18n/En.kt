@@ -12,7 +12,8 @@ val EnStrings = Strings(
         closeDescription = "Close",
         backDescription = "Back",
         debugDescription = "Debug",
-        resetDescription = "Reset"
+        resetDescription = "Reset",
+        deleteDescription = "Delete"
     ),
     widgets = Strings.Widgets(
         deviceConnection = Strings.Widgets.DeviceConnection(
@@ -122,51 +123,10 @@ val EnStrings = Strings(
             title = "Editor",
             subtitle = "Configure HTTP response",
             none = "No endpoint selected",
-            useErrorResponse = "Return failure response",
-            defaultDataTab = "Default Response",
-            errorDataTab = "Error Response",
-            generalTab = "General",
-            noOverrideStatusCode = "Unset",
-            statusCodeLabel = { statusCode: HttpStatusCode ->
-                "${statusCode.value} ${statusCode.description}"
-            },
             statusCode = "Status code",
             edit = "Edit",
             reset = "Reset",
             resetUseErrorResponse = "Reset",
-            bodyLabel = "Response body",
-            bodyUnset = "Response body unset",
-            delayLabel = "Delay (milliseconds)",
-            jsonEditingLabel = { enabled: Boolean ->
-                if (enabled) {
-                    "JSON"
-                } else {
-                    "Text"
-                }
-            },
-            invalidJson = "Invalid JSON",
-            failOptionsLabel = "User Error Response:",
-            failLabel = { shouldFail: Boolean? ->
-                when (shouldFail) {
-                    null -> "Unset"
-                    true -> "Fail"
-                    false -> "Default"
-                }
-            },
-            responseDelay = "Response delay:",
-            noOverrideResponseDelay = "Unset",
-            customResponseDelay = "Custom",
-            responseDelayUnits = "ms",
-            responseDelayLabel = "Delay",
-            resetAll = "Reset all overrides",
-            headersLabel = "Headers:",
-            headerKeyLabel = "Key",
-            headerValueLabel = "Value",
-            headerDeleteContentDescription = "Delete header",
-            addHeader = "Add header",
-            editHeaders = "Edit headers",
-            resetHeaders = "Reset all headers",
-            noHeaders = "Headers set to an empty list",
             headersUnset = "Headers unset",
             emptyTitle = "\uD83D\uDC48",
             emptyDescription = "Choose an Endpoint to start editing",
@@ -212,6 +172,31 @@ val EnStrings = Strings(
             connectionLost = "Connection Lost: Please check your app is in the foreground",
             unknownError = "Something went wrong, try refreshing everything \uD83D\uDC49",
             refreshButton = "Refresh"
+        ),
+        createEditPreset = Strings.Widgets.CreateEditPreset(
+            createTitle = "Create Preset",
+            editTitle = "Edit Preset",
+            statusCodeTitle = "HTTP Status Code",
+            noOverrideStatusCode = "Unset",
+            statusCodeLabel = { statusCode: HttpStatusCode ->
+                "${statusCode.value} ${statusCode.description}"
+            },
+            bodyTitle = "Response Body",
+            bodyTypeJson = "JSON",
+            bodyTypePlain = "Plain Text",
+            responseBodyFormat = "Format",
+            responseBodyCopy = "Copy",
+            responseBodyPlaceholder = "Enter response body...",
+            responseCharacters = { chars -> "$chars characters" },
+            validLabel = "Valid",
+            invalidLabel = "Invalid",
+            headersTitle = "Headers",
+            addHeaderTitle = "Add New Header",
+            addHeaderButton = "Add Header",
+            save = "Save",
+            addHeaderKeyPlaceholder = "Header name",
+            addHeaderValuePlaceholder = "Header value",
+            unset = "Unset"
         )
     )
 )
