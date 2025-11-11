@@ -33,9 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
-import com.apadmi.mockzilla_management_ui_common.generated.resources.clock
-import org.jetbrains.compose.resources.painterResource
+import com.apadmi.mockzilla.ui.ui.common.assets.Clock
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.max
 import kotlin.math.min
@@ -86,8 +84,8 @@ internal fun ResponseLatencyCard(
         ) {
             Icon(
                 modifier = Modifier.size(20.dp),
-                painter = painterResource(resource = Res.drawable.clock),
-                contentDescription = null
+                imageVector = Icons.Clock,
+                contentDescription = null,
             )
             Text(
                 modifier = Modifier.weight(1f),
@@ -160,7 +158,7 @@ internal fun ResponseLatencyCard(
                         .size(20.dp)
                         .align(Alignment.Center)
                         .alpha(if ((value ?: 0) > sliderMax) 1f else 0f),
-                    painter = painterResource(resource = Res.drawable.clock),
+                    imageVector = Icons.Clock,
                     contentDescription = null
                 )
             }

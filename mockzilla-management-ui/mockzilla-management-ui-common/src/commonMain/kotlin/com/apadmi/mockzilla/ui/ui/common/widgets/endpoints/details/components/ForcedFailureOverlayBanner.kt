@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,10 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
-import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Suppress("COMPLEX_EXPRESSION")
@@ -66,7 +65,7 @@ internal fun ForcedFailureOverlayBanner(
     ) {
         Icon(
             modifier = Modifier.size(20.dp),
-            painter = painterResource(resource = Res.drawable.lightning_bolt),
+            imageVector = Icons.LightningBolt,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error
         )

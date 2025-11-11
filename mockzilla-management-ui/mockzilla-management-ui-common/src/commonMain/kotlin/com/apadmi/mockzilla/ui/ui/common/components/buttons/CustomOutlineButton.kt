@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -20,12 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
-import com.apadmi.mockzilla_management_ui_common.generated.resources.lightning_bolt
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val surfaceAlpha = 0.05f
@@ -62,7 +61,7 @@ internal enum class OutlineButtonVariant {
 internal fun CustomOutlineButton(
     modifier: Modifier = Modifier,
     label: String,
-    leadingIcon: Painter? = null,
+    leadingIcon: ImageVector? = null,
     enabled: Boolean = true,
     variant: OutlineButtonVariant,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
@@ -85,7 +84,7 @@ internal fun CustomOutlineButton(
     leadingIcon?.let { icon ->
         Icon(
             modifier = Modifier.size(16.dp),
-            painter = icon,
+            imageVector = icon,
             contentDescription = null
         )
         Spacer(modifier = Modifier.width(10.dp))
@@ -107,7 +106,7 @@ private fun CustomOutlineButtonPreview() = PreviewSurface {
         )
         CustomOutlineButton(
             label = "Click me",
-            leadingIcon = painterResource(resource = Res.drawable.lightning_bolt),
+            leadingIcon = Icons.LightningBolt,
             variant = OutlineButtonVariant.Secondary,
             onClick = {}
         )

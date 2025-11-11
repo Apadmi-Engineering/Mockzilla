@@ -160,7 +160,9 @@ class EndpointDetailsViewModel(
                     device,
                     config.key,
                     dashboardOverridePreset
-                )
+                ).onSuccess {
+                    eventBus.send(EventBus.Event.PresetApplied)
+                }
             )
         }
     })

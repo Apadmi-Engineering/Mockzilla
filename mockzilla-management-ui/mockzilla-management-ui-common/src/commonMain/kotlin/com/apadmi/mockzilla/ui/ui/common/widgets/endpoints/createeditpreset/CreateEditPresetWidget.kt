@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -41,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -203,6 +204,7 @@ fun CreateEditPresetWidgetContent(
 ) = Column(
     modifier = Modifier
         .fillMaxSize()
+        .verticalScroll(rememberScrollState())
         .background(color = MaterialTheme.colorScheme.background)
         .navigationBarsPadding()
         .padding(bottom = 12.dp),
@@ -387,7 +389,7 @@ private fun EditHeaders(
 
         CustomOutlineButton(
             modifier = Modifier.fillMaxWidth(),
-            leadingIcon = rememberVectorPainter(Icons.Default.Add),
+            leadingIcon = Icons.Default.Add,
             label = strings.widgets.createEditPreset.addHeaderButton,
             variant = OutlineButtonVariant.Secondary,
             onClick = onAddHeader

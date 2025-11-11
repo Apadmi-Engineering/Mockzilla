@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
 import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
@@ -15,6 +16,9 @@ import io.ktor.http.HttpStatusCode
 
 import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
@@ -36,6 +40,13 @@ class CreateEditPresetViewModel(
         viewModelScope.launch {
             loadIncumbentValues(key)
         }
+        eventBus.events.filter {
+            it is Event.PresetApplied
+        }
+            .onEach {
+                loadIncumbentValues(key)
+            }
+            .launchIn(viewModelScope)
     }
 
     private suspend fun loadIncumbentValues(key: EndpointConfiguration.Key) {
