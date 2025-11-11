@@ -37,6 +37,22 @@ Flutter target for the lib
 
 
 
+### download_mockzilla_js_assets
+
+```sh
+[bundle exec] fastlane download_mockzilla_js_assets
+```
+
+
+
+### download_mockzilla_ui_mobile_js_assets
+
+```sh
+[bundle exec] fastlane download_mockzilla_ui_mobile_js_assets
+```
+
+
+
 ### publish_to_maven_local
 
 ```sh
@@ -52,6 +68,14 @@ Publish to maven local
 ```
 
 Publish to maven remote
+
+### build_js_artifacts
+
+```sh
+[bundle exec] fastlane build_js_artifacts
+```
+
+Generate JavaScript artifacts
 
 ### get_core_mockzilla_version_name
 
@@ -84,6 +108,14 @@ Publish to maven local
 ```
 
 Publish to maven remote
+
+### build_mobile_ui_js_artifacts
+
+```sh
+[bundle exec] fastlane build_mobile_ui_js_artifacts
+```
+
+Generate JavaScript artifacts
 
 ### management_ui_pre_deploy_checks
 
@@ -210,7 +242,7 @@ Android target for the pure android demo
 [bundle exec] fastlane js lib_mockzilla_pull_request
 ```
 
-Js target for the lib
+JavaScript target for the lib
 
 ----
 
