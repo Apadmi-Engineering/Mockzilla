@@ -1,5 +1,11 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,7 +59,9 @@ internal fun EditResponseBody(
     onResetResponseBody: () -> Unit,
     strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset
 ) = Column(
-    modifier = modifier.card().padding(bottom = 8.dp)
+    modifier = modifier.card()
+        .padding(bottom = 8.dp)
+        .animateContentSize()
 ) {
     TitleRow(
         isSet = state.body != null,
@@ -122,7 +130,11 @@ internal fun EditResponseBody(
             modifier = Modifier.align(Alignment.End),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            if (state.responseType == State.Editing.ResponseType.Json) {
+            AnimatedVisibility(
+                enter = slideInVertically() + expandVertically(),
+                exit = slideOutVertically() + shrinkVertically(),
+                visible = state.responseType == State.Editing.ResponseType.Json
+            ) {
                 CustomOutlineButton(
                     leadingIcon = Icons.Default.AlignVerticalTop,
                     label = strings.responseBodyFormat,

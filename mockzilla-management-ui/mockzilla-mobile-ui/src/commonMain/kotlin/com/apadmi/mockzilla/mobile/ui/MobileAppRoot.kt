@@ -2,6 +2,12 @@
 
 package com.apadmi.mockzilla.mobile.ui
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -66,7 +72,7 @@ internal fun MobileAppRoot(
                 .statusBarsPadding(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (showBackButton) {
+            AnimatedVisibility(showBackButton) {
                 IconButton(onClick = navController::navigateUp) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -124,7 +130,31 @@ private fun ConnectedState(
 ) = NavHost(
     modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
     navController = navController,
-    startDestination = Destination.EndpointList
+    startDestination = Destination.EndpointList,
+    enterTransition = {
+        slideIntoContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.Start,
+            animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+        ) + fadeIn(animationSpec = tween(300))
+    },
+    exitTransition = {
+        slideOutOfContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.Start,
+            animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+        ) + fadeOut(animationSpec = tween(300))
+    },
+    popEnterTransition = {
+        slideIntoContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.End,
+            animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+        ) + fadeIn(animationSpec = tween(300))
+    },
+    popExitTransition = {
+        slideOutOfContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.End,
+            animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+        ) + fadeOut(animationSpec = tween(300))
+    }
 ) {
     composable<Destination.EndpointDetails> { backStackEntry ->
         Surface(
