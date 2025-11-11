@@ -1,7 +1,6 @@
 @JS('mockzilla.com.apadmi.mockzilla.lib.internal.jsinterface')
 library mockzilla_js_interop;
 
-import 'dart:js';
 import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
 

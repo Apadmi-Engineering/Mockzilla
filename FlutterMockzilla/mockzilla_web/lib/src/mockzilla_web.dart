@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart' as web;
-import 'package:flutter/services.dart';
 
 import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
