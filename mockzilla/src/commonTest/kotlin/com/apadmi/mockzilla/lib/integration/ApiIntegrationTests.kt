@@ -12,7 +12,6 @@ import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -54,7 +53,7 @@ class ApiIntegrationTests {
             .build()
     ) { params, _ ->
         /* Run Test */
-        val response = HttpClient(CIO).get("${params.apiBaseUrl}/mock-data")
+        val response = HttpClient().get("${params.apiBaseUrl}/mock-data")
 
         /* Verify */
         assertEquals(
@@ -99,7 +98,7 @@ class ApiIntegrationTests {
             .build()
     ) { params, _ ->
         /* Run Test */
-        val response = HttpClient(CIO).get("${params.apiBaseUrl}/mock-data/my-id/dashboard-config")
+        val response = HttpClient().get("${params.apiBaseUrl}/mock-data/my-id/dashboard-config")
 
         /* Verify */
         assertEquals(
@@ -151,7 +150,7 @@ class ApiIntegrationTests {
         check(cacheService.getLocalCache(EndpointConfiguration.Key("id")) != null)
 
         /* Run Test */
-        val response = HttpClient(CIO).delete("${params.apiBaseUrl}/mock-data/all")
+        val response = HttpClient().delete("${params.apiBaseUrl}/mock-data/all")
 
         /* Verify */
         assertNull(cacheService.getLocalCache(EndpointConfiguration.Key("id")))
@@ -187,7 +186,7 @@ class ApiIntegrationTests {
         check(cacheService.getLocalCache(EndpointConfiguration.Key("id")) != null)
 
         /* Run Test */
-        val response = HttpClient(CIO).delete("${params.apiBaseUrl}/mock-data") {
+        val response = HttpClient().delete("${params.apiBaseUrl}/mock-data") {
             contentType(ContentType.Application.Json)
             setBody(
                 Json.encodeToString(ClearCachesRequestDto(listOf(EndpointConfiguration.Key("id"))))
@@ -211,7 +210,7 @@ class ApiIntegrationTests {
                 .build()
         ) { params, cacheService ->
             /* Run Test */
-            val response = HttpClient(CIO).patch(
+            val response = HttpClient().patch(
                 "${params.apiBaseUrl}/mock-data"
             ) {
                 contentType(ContentType.Application.Json)
@@ -262,10 +261,10 @@ class ApiIntegrationTests {
     ) { params, _ ->
         // Make a call to the mock server to create a log entry
         val timestamp = epochMillis()
-        HttpClient(CIO).get("${params.mockBaseUrl}/my-id")
+        HttpClient().get("${params.mockBaseUrl}/my-id")
 
         /* Run Test */
-        val response = HttpClient(CIO).get("${params.apiBaseUrl}/monitor-logs")
+        val response = HttpClient().get("${params.apiBaseUrl}/monitor-logs")
         val responseBody: MonitorLogsResponse =
             JsonProvider.json.decodeFromString(response.bodyAsText())
 

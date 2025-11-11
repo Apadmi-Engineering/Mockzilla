@@ -6,13 +6,15 @@ import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 
 class MockzillaSharedProcessStateHandlerTests {
     @Test
-    fun `read and write - hits caches - works correctly`() = runBlocking {
+    fun `read and write - hits caches - works correctly`() = runTest {
         /* Setup */
-        val sut = MockzillaSharedProcessStateHandler(createFileIoforTesting())
+        val fileIo = createFileIoforTesting().apply { deleteAllCaches() }
+
+        val sut = MockzillaSharedProcessStateHandler(fileIo)
         val dummy = MockzillaSharedProcessState("this is a test ip", 98_249_283)
 
         /* Run Test */
@@ -23,9 +25,9 @@ class MockzillaSharedProcessStateHandlerTests {
     }
 
     @Test
-    fun `read and write - without caches - works correctly`() = runBlocking {
+    fun `read and write - without caches - works correctly`() = runTest {
         /* Setup */
-        val fileIo = createFileIoforTesting()
+        val fileIo = createFileIoforTesting().apply { deleteAllCaches() }
 
         // Two SUTs to ensure caching is backed onto disk
         val sut = MockzillaSharedProcessStateHandler(fileIo)
@@ -40,9 +42,9 @@ class MockzillaSharedProcessStateHandlerTests {
     }
 
     @Test
-    fun `read - nothing written - returns null`() = runBlocking {
+    fun `read - nothing written - returns null`() = runTest {
         /* Setup */
-        val fileIo = createFileIoforTesting()
+        val fileIo = createFileIoforTesting().apply { deleteAllCaches() }
         val sut = MockzillaSharedProcessStateHandler(fileIo)
 
         /* Run Test & Verify */

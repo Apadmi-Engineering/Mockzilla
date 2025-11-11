@@ -118,6 +118,7 @@ val LocalForceDarkMode = compositionLocalOf { false }
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalSetScaleFactor = compositionLocalOf<(Float) -> Unit> { { /* noop */ } }
 
+
 /**
  * @property primary
  * @property container
@@ -157,7 +158,6 @@ fun AppTheme(
         lightColors
     }
 
-    var scaleFactor by rememberSaveable { mutableFloatStateOf(ScaleFactor.default) }
     ProvideLocalisableStrings {
         CompositionLocalProvider(
             LocalSetScaleFactor provides { scale -> scaleFactor = scale },

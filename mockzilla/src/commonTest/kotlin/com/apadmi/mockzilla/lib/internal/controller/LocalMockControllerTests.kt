@@ -9,6 +9,7 @@ import com.apadmi.mockzilla.testutils.fakes.FakeMockServerMonitor
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
+import io.ktor.client.request.get
 import io.ktor.http.*
 
 import kotlin.test.Test

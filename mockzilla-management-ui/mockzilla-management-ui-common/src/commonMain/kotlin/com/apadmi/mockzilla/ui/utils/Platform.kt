@@ -4,6 +4,7 @@ expect enum class Platform {
     Android,
     Desktop,
     Ios,
+    Js,
     ;
 
     companion object {

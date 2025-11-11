@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         let params = MockServerKt.startMockServer()
-        AppDelegate.repository = Repository(baseUrl: params.mockBaseUrl)
+        AppDelegate.repository = Repository { params.mockBaseUrl }
    
         return true
     }

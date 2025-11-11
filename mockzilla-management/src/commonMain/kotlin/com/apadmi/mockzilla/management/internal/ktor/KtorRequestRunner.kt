@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.management.internal.ktor
 
+import com.apadmi.mockzilla.lib.internal.utils.multiPlatformIo
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 
 import io.ktor.client.HttpClient
@@ -14,7 +15,6 @@ import io.ktor.http.isSuccess
 
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 internal class KtorRequestRunner(private val client: HttpClient) {
@@ -32,7 +32,7 @@ internal class KtorRequestRunner(private val client: HttpClient) {
     }
 
     private suspend inline fun <reified SuccessType : Any> HttpResponse.toResult() =
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.multiPlatformIo) {
             if (this@toResult.status.isSuccess()) {
                 kotlin.runCatching { body<SuccessType>() }
             } else {

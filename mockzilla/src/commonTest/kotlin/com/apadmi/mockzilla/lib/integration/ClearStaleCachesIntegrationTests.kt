@@ -16,7 +16,6 @@ import com.apadmi.mockzilla.lib.stopMockzilla
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.patch
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -28,7 +27,6 @@ import kotlin.test.assertNull
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Suppress("TOO_LONG_FUNCTION")
@@ -66,7 +64,7 @@ class ClearStaleCachesIntegrationTests {
         val params = startMockzilla(di.config, di, this)
 
         // Run a patch to populate the caches for both test endpoints
-        HttpClient(CIO).patch(
+        HttpClient().patch(
             "${params.apiBaseUrl}/mock-data"
         ) {
             contentType(ContentType.Application.Json)
@@ -105,5 +103,7 @@ class ClearStaleCachesIntegrationTests {
         /* Verify */
         assertNotNull(di2.localCacheService.getLocalCache(EndpointConfiguration.Key("will not be stale")))
         assertNull(di2.localCacheService.getLocalCache(EndpointConfiguration.Key("will be stale")))
+
+        stopMockzilla()
     }
 }

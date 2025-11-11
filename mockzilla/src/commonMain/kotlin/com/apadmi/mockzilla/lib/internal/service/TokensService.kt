@@ -14,7 +14,10 @@ internal interface TokensService {
     suspend fun isTokenValid(tokenString: String): Boolean
 }
 
-internal class TokensServiceImpl(private val tokenLifeSpan: Duration) : TokensService {
+internal class TokensServiceImpl @OptIn(ExperimentalTime::class) constructor(
+    private val tokenLifeSpan: Duration,
+    private val clock: Clock = Clock.System
+) : TokensService {
     private val mutex = Mutex()
     private val tokens: MutableSet<Token> = mutableSetOf()
 
@@ -28,12 +31,12 @@ internal class TokensServiceImpl(private val tokenLifeSpan: Duration) : TokensSe
         val token = tokens.firstOrNull { it.value == tokenString } ?: return false
         mutex.withLock { tokens.remove(token) }
 
-        return token.expiry > Clock.System.now()
+        return token.expiry > clock.now()
     }
 
     @OptIn(ExperimentalTime::class)
     private fun newToken() = Token(
-        Clock.System.now().plus(tokenLifeSpan),
+        clock.now().plus(tokenLifeSpan),
         generateUuid()
     )
     /**

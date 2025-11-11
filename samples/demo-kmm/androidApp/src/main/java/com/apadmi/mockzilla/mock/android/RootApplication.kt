@@ -12,6 +12,6 @@ class RootApplication : Application() {
         super.onCreate()
 
         val params = startMockzilla(mockzillaConfig, this)
-        repository = Repository(params.mockBaseUrl)
+        repository = Repository({ params.mockBaseUrl })
     }
 }

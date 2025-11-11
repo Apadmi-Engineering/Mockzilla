@@ -201,6 +201,19 @@ Android target for the pure android demo
 
 ----
 
+
+## js
+
+### js lib_mockzilla_pull_request
+
+```sh
+[bundle exec] fastlane js lib_mockzilla_pull_request
+```
+
+Js target for the lib
+
+----
+
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 
 More information about _fastlane_ can be found on [fastlane.tools](https://fastlane.tools).

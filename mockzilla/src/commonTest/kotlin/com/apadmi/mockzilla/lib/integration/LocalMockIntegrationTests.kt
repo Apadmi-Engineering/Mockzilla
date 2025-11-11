@@ -8,12 +8,14 @@ import com.apadmi.mockzilla.testutils.currentWorkingDirectory
 import com.apadmi.mockzilla.testutils.readBytes
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.util.Platform
+import io.ktor.util.PlatformUtils
+import io.ktor.util.platform
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -32,7 +34,7 @@ class LocalMockIntegrationTests {
             .build()
     ) { params, _ ->
         /* Run Test */
-        val response = HttpClient(CIO).get("${params.mockBaseUrl}/does-not-exist")
+        val response = HttpClient().get("${params.mockBaseUrl}/does-not-exist")
 
         /* Verify */
         assertEquals(
@@ -58,7 +60,7 @@ class LocalMockIntegrationTests {
             .build()
         ) { params, _ ->
             /* Run Test */
-            val response = HttpClient(CIO).get("${params.mockBaseUrl}/test/my-id/")
+            val response = HttpClient().get("${params.mockBaseUrl}/test/my-id/")
 
             /* Verify */
             assertEquals(
@@ -89,7 +91,7 @@ class LocalMockIntegrationTests {
             .build()
         ) { params, _ ->
             /* Run Test */
-            val response = HttpClient(CIO).post("${params.mockBaseUrl}/test/my-id") {
+            val response = HttpClient().post("${params.mockBaseUrl}/test/my-id") {
                 setBody("Body from request")
             }
 
@@ -129,7 +131,7 @@ class LocalMockIntegrationTests {
             .build()
         ) { params, _ ->
             /* Run Test */
-            val response = HttpClient(CIO).get("${params.mockBaseUrl}/test/my-id") {
+            val response = HttpClient().get("${params.mockBaseUrl}/test/my-id") {
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
             }
 
@@ -151,6 +153,11 @@ class LocalMockIntegrationTests {
             )
             .build()
         ) { params, _ ->
+            if (PlatformUtils.platform is Platform.Js) {
+                // File upload needs JS specific apis for testing, see js test target
+                return@runIntegrationTest
+            }
+
             /* Setup */
             val fileIo = createFileIoforTesting()
             fileIo.saveToCache("test-file", "this is some contents")
@@ -160,7 +167,7 @@ class LocalMockIntegrationTests {
 
             /* Run Test */
             val fileBytes = readBytes(invalidUtf8TestFile)
-            val response = HttpClient(CIO).submitFormWithBinaryData(
+            val response = HttpClient().submitFormWithBinaryData(
                 "${params.mockBaseUrl}/test/my-id",
                 formData = formData {
                     append(

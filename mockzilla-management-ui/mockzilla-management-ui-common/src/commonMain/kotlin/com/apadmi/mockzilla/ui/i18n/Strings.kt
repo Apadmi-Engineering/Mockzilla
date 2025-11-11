@@ -142,6 +142,7 @@ data class Strings(
          * @property android
          * @property ios
          * @property jvm
+         * @property js
          */
         data class MetaData(
             val title: String,
@@ -156,6 +157,7 @@ data class Strings(
             val android: String,
             val ios: String,
             val jvm: String,
+            val js: String,
         )
 
         /**

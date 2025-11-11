@@ -40,3 +40,5 @@ output/
 SwiftMockzillaMobileUi/SwiftMockzillaMobileUi.podspec
 
 mockzilla-management-ui/mockzilla-mobile-ui/SwiftMockzillaMobileUi.podspec
+**/jsTest/resources/mockServiceWorker.js
+**/karma.config.d/*

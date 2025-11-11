@@ -41,6 +41,11 @@ kotlin {
         }
     }
 
+    js {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         all {
             languageSettings.optIn("kotlin.time.ExperimentalTime")
@@ -141,7 +146,7 @@ dependencies {
 }
 
 android {
-    namespace = "$group.mockzilla.mobile.ui"
+    namespace = "$group.mockzilla.mobile.ui.common"
     compileSdk = AndroidConfig.targetSdk
     defaultConfig {
         minSdk = AndroidConfig.minSdk

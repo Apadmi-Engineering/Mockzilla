@@ -28,7 +28,7 @@ private fun EndpointConfiguration.validate() {
     check(key.raw.none { invalidEndpointIdChars.contains(it) }) {
         "Endpoint IDs cannot contain any of the following characters: $invalidEndpointIdChars"
     }
-    check((0..Constants.maxDelayMean).contains(delay)) {
+    check(delay == null || (0..Constants.maxDelayMean).contains(delay)) {
         "$errorPrefix Delay mean must be in range 0 to ${Int.MAX_VALUE / 2 - 1}"
     }
 }

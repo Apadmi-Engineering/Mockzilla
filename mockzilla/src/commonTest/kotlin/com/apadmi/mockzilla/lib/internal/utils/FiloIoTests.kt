@@ -19,7 +19,7 @@ internal class FiloIoTests {
 
     private suspend fun readWriteAndDelete(fileName: String) {
         /* Setup */
-        val sut = createFileIoforTesting()
+        val sut = createFileIoforTesting().apply { deleteAllCaches() }
 
         /* Run Test */
         sut.saveToCache(fileName, "my contents")
@@ -35,7 +35,7 @@ internal class FiloIoTests {
     @Test
     fun `read and overwrite - as expected`() = runTest {
         /* Setup */
-        val sut = createFileIoforTesting()
+        val sut = createFileIoforTesting().apply { deleteAllCaches() }
 
         /* Run Test */
         sut.saveToCache("file.txt", "my contents")
@@ -50,7 +50,7 @@ internal class FiloIoTests {
     @Test
     fun `deleteAllCaches- as expected`() = runTest {
         /* Setup */
-        val sut = createFileIoforTesting()
+        val sut = createFileIoforTesting().apply { deleteAllCaches() }
         sut.saveToCache("file1.txt", "my contents 1")
         sut.saveToCache("file2.txt", "my contents 2")
 
@@ -65,7 +65,7 @@ internal class FiloIoTests {
     @Test
     fun `deleteAllCaches - read write still works as expected`() = runTest {
         /* Setup */
-        val sut = createFileIoforTesting()
+        val sut = createFileIoforTesting().apply { deleteAllCaches() }
         sut.saveToCache("file1.txt", "my contents 1")
 
         /* Run Test */

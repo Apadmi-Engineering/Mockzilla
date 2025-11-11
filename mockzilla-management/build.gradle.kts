@@ -3,6 +3,9 @@ import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.configureCommonProperties
 import com.apadmi.mockzilla.isSigningEnabled
+import com.apadmi.mockzilla.karmaDirName
+import com.apadmi.mockzilla.prepareKarmaFile
+import com.apadmi.mockzilla.serviceWorkerFileName
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 
@@ -39,7 +42,25 @@ kotlin {
     }
     jvmToolchain(JavaConfig.toolchain)
 
+    js {
+        browser()
+        binaries.executable()
+
+        browser {
+            testTask {
+                doFirst { prepareKarmaFile() }
+                useKarma {
+                    useConfigDirectory(File(projectDir, karmaDirName))
+                    useChromeHeadless()
+                }
+            }
+            binaries.executable()
+        }
+    }
+
+    applyDefaultHierarchyTemplate()
     sourceSets {
+
         commonMain.dependencies {
             /* Kotlin */
             implementation(libs.kotlinx.coroutines.core)
@@ -64,6 +85,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
 
             /* Mockzilla */
             implementation(project(":mockzilla"))
@@ -73,6 +95,16 @@ kotlin {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
     }
 }
+
+val copyServiceWorker = tasks.register<Copy>("copyServiceWorker") {
+    from(rootProject.rootDir.resolve("js-scripts/")) {
+        include(serviceWorkerFileName)
+    }
+    into(layout.projectDirectory.dir("src/jsTest/resources/"))
+    description = "Copies the service worker file for JS testing."
+}
+
+tasks.getByPath(":mockzilla-management:jsTestProcessResources").dependsOn(copyServiceWorker)
 
 private val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
