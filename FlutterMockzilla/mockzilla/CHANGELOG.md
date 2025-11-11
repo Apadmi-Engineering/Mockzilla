@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v1.3.0...flutter_mockzilla-v1.4.0) (2025-11-11)
+
+
+### Features
+
+* move docs to cloud pages ([#465](https://github.com/Apadmi-Engineering/Mockzilla/issues/465)) ([d64dd4c](https://github.com/Apadmi-Engineering/Mockzilla/commit/d64dd4c522bbb5b09de79055e9ccf4c5f5b8c2c1))
+
 ## [1.3.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v1.2.0...flutter_mockzilla-v1.3.0) (2025-10-01)
 
 
