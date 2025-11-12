@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:mockzilla_web/src/version_json_utils.dart';
 import 'package:web/web.dart' as web;
 
 import 'dart:js_interop';
@@ -54,10 +55,11 @@ class MockzillaWeb extends MockzillaPlatform {
     await _ensureScriptLoaded();
 
     final jsConfig = _toJsConfig(config);
+    final versionJson = await VersionJsonUtils.getVersionJson();
 
     final jsResult = await startMockzillaJs(
-      'FlutterApp', // TODO: Derive this correctly
-      '1.0.0',
+      versionJson["app_name"],
+      versionJson["version"],
       jsConfig,
     );
 
