@@ -1,13 +1,9 @@
 import 'package:mockzilla_ui_mobile/mockzilla_ui_mobile.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart' as web;
-import 'package:flutter/services.dart';
 import 'dart:async';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'dart:js_interop';
-import 'dart:js_interop_unsafe';
 
 class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
 

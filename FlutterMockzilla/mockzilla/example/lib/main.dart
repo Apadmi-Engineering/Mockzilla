@@ -60,7 +60,7 @@ class _PackagesListState extends State<PackagesList> {
     fetchPackages();
   }
 
-  fetchPackages() {
+  void fetchPackages() {
     setState(() {
       _future = _packagesClient.fetchPackages(
         const FetchPackagesRequest(query: "mockzilla"),

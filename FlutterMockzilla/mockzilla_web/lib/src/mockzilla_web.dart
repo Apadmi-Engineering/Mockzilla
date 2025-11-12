@@ -3,7 +3,6 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart' as web;
 
 import 'dart:js_interop';
-import 'dart:js_interop_unsafe';
 import 'dart:convert';
 
 
@@ -171,25 +170,6 @@ class MockzillaWeb extends MockzillaPlatform {
         return JsLogLevels.Warn;
       case LogLevel.assertion:
         return JsLogLevels.Assert;
-    }
-  }
-
-  LogLevel _fromJsLogLevel(String level) {
-    switch (level.toLowerCase()) {
-      case 'debug':
-        return LogLevel.debug;
-      case 'error':
-        return LogLevel.error;
-      case 'info':
-        return LogLevel.info;
-      case 'verbose':
-        return LogLevel.verbose;
-      case 'warn':
-        return LogLevel.warn;
-      case 'assert':
-        return LogLevel.assertion;
-      default:
-        return LogLevel.info;
     }
   }
 }

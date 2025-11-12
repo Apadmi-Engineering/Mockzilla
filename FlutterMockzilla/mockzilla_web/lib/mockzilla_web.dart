@@ -1,1 +1,1 @@
-export 'src/mockzilla_web.dart' hide FlutterCallbackProvider;
+export 'src/mockzilla_web.dart';

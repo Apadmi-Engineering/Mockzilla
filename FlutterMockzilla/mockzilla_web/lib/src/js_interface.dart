@@ -1,5 +1,8 @@
+// Ignoring incorrect variable names since this is the JS bridge and must match the JS properties
+// ignore_for_file: non_constant_identifier_names
+
 @JS('mockzilla.com.apadmi.mockzilla.lib.internal.jsinterface')
-library mockzilla_js_interop;
+library;
 
 import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
