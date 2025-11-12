@@ -5,7 +5,6 @@ import 'package:web/web.dart' as web;
 import 'dart:js_interop';
 import 'dart:convert';
 
-
 import 'package:mockzilla_web/src/js_interface.dart';
 import 'package:mockzilla_platform_interface/mockzilla_platform_interface.dart';
 
@@ -21,7 +20,8 @@ class MockzillaWeb extends MockzillaPlatform {
 
     final web.Document document = web.window.document;
 
-    final web.HTMLScriptElement script = document.createElement('script') as web.HTMLScriptElement;
+    final web.HTMLScriptElement script =
+        document.createElement('script') as web.HTMLScriptElement;
     script.src = 'packages/mockzilla_web/assets/mockzilla.js';
     script.type = 'text/javascript';
 
@@ -31,7 +31,8 @@ class MockzillaWeb extends MockzillaPlatform {
     }).toJS;
 
     script.onerror = ((web.Event error) {
-      completer.completeError(Exception('Failed to load mockzilla.js: ${error.toString()}'));
+      completer.completeError(
+          Exception('Failed to load mockzilla.js: ${error.toString()}'));
     }).toJS;
 
     final web.HTMLElement? head = document.head;
@@ -40,7 +41,8 @@ class MockzillaWeb extends MockzillaPlatform {
       head.appendChild(script);
       await completer.future;
     } else {
-      completer.completeError(Exception('Could not find the document head element.'));
+      completer.completeError(
+          Exception('Could not find the document head element.'));
       await completer.future;
     }
 
@@ -84,9 +86,9 @@ class MockzillaWeb extends MockzillaPlatform {
 
     JSPromise<JSAny?> endpointMatcher(JsMockzillaHttpRequest req) =>
         Future<JSBoolean>(() async {
-            final dartReq = await _toDartRequest(req);
-            final res = await endpoint.endpointMatcher(dartReq);
-            return res.toJS;
+          final dartReq = await _toDartRequest(req);
+          final res = await endpoint.endpointMatcher(dartReq);
+          return res.toJS;
         }).toJS;
 
     JSPromise<JSAny?> defaultHandler(JsMockzillaHttpRequest req) =>
@@ -116,7 +118,8 @@ class MockzillaWeb extends MockzillaPlatform {
     );
   }
 
-  Future<MockzillaHttpRequest> _toDartRequest(JsMockzillaHttpRequest req) async {
+  Future<MockzillaHttpRequest> _toDartRequest(
+      JsMockzillaHttpRequest req) async {
     final stringMap = Map.castFrom(json.decode(req.headers)).map((key, value) {
       return MapEntry(key.toString(), value.toString());
     });
@@ -124,7 +127,7 @@ class MockzillaWeb extends MockzillaPlatform {
       uri: req.uri,
       headers: stringMap,
       method: HttpMethod.values.firstWhere(
-            (m) => m.name.toUpperCase() == req.method.toUpperCase(),
+        (m) => m.name.toUpperCase() == req.method.toUpperCase(),
         orElse: () => HttpMethod.get,
       ),
       body: await req.bodyAsStringFuture(),
@@ -147,7 +150,8 @@ class MockzillaWeb extends MockzillaPlatform {
     );
   }
 
-  MockzillaRuntimeParams _fromJsRuntimeParams(MockzillaConfig config, JsMockzillaRuntimeParams js) {
+  MockzillaRuntimeParams _fromJsRuntimeParams(
+      MockzillaConfig config, JsMockzillaRuntimeParams js) {
     return MockzillaRuntimeParams(
       config: config,
       mockBaseUrl: js.mockBaseUrl,

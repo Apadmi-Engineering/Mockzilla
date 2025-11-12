@@ -19,4 +19,8 @@ class MockzillaUiMobileAndroid(
         }
         val nativeRuntimeParams = launchManagementUiKt(activity)
     }
+
+    override fun preloadAssets() {
+        /* No-Op */
+    }
 }

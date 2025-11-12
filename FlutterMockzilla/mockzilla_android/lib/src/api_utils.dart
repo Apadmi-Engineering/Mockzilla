@@ -106,8 +106,10 @@ extension DashboardOverrideConfigBridge on DashboardOptionsConfig {
 extension BridgeEndpointConfigBridge on BridgeEndpointConfig {
   EndpointConfig toDart(
     Future<bool> Function(MockzillaHttpRequest request) endpointMatcher,
-    Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request) defaultHandler,
-    Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request) errorHandler,
+    Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+        defaultHandler,
+    Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+        errorHandler,
   ) =>
       EndpointConfig(
         name: name,

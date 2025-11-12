@@ -8,16 +8,20 @@ import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
 
 @JS('startMockzillaJs')
-external JSPromise<JsMockzillaRuntimeParams> _startMockzillaJs(String appName,
-    String appVersion,
-    JsMockzillaConfig config,);
+external JSPromise<JsMockzillaRuntimeParams> _startMockzillaJs(
+  String appName,
+  String appVersion,
+  JsMockzillaConfig config,
+);
 
 @JS('stopMockzilla')
 external JSPromise _stopMockzilla();
 
-Future<JsMockzillaRuntimeParams> startMockzillaJs(String appName,
-    String appVersion,
-    JsMockzillaConfig config,) =>
+Future<JsMockzillaRuntimeParams> startMockzillaJs(
+  String appName,
+  String appVersion,
+  JsMockzillaConfig config,
+) =>
     _startMockzillaJs(appName, appVersion, config).toDart;
 
 Future<void> stopMockzillaJs() => _stopMockzilla().toDart;
@@ -62,7 +66,8 @@ extension type JsMap<K extends JSAny, V extends JSAny>._(JSObject _) {
 
 @JS('JsMockzillaHttpResponse')
 extension type JsMockzillaHttpResponse._(JSObject _) implements JSObject {
-  external JsMockzillaHttpResponse(int statusCode, JSObject? headers, String? body);
+  external JsMockzillaHttpResponse(
+      int statusCode, JSObject? headers, String? body);
 
   external int get statusCode;
   external JsMap get headers; // JS object (map-like)
@@ -71,10 +76,11 @@ extension type JsMockzillaHttpResponse._(JSObject _) implements JSObject {
 
 @JS('JsDashboardOverridePreset')
 extension type JsDashboardOverridePreset._(JSObject _) implements JSObject {
-  external JsDashboardOverridePreset(String name,
-      String? description,
-      JsMockzillaHttpResponse response,);
-
+  external JsDashboardOverridePreset(
+    String name,
+    String? description,
+    JsMockzillaHttpResponse response,
+  );
 
   external String get name;
   external String? get description;
@@ -90,21 +96,22 @@ extension type JsDashboardOptionsConfig._(JSObject _) implements JSObject {
 
 typedef JsEndpointMatcher = Future<bool> Function(JsMockzillaHttpRequest req);
 typedef JsEndpointHandler = JsMockzillaHttpResponse Function(
-    JsMockzillaHttpRequest req,
-    );
+  JsMockzillaHttpRequest req,
+);
 
 @JS('JsEndpointConfiguration')
 extension type JsEndpointConfiguration._(JSObject _) implements JSObject {
-  external JsEndpointConfiguration(String name,
-      String key,
-      bool shouldFail,
-      int? delay,
-      JsDashboardOptionsConfig dashboardOptionsConfig,
-      int versionCode,
-      JSExportedDartFunction endpointMatcher,
-      JSExportedDartFunction defaultHandler,
-      JSExportedDartFunction errorHandler,);
-
+  external JsEndpointConfiguration(
+    String name,
+    String key,
+    bool shouldFail,
+    int? delay,
+    JsDashboardOptionsConfig dashboardOptionsConfig,
+    int versionCode,
+    JSExportedDartFunction endpointMatcher,
+    JSExportedDartFunction defaultHandler,
+    JSExportedDartFunction errorHandler,
+  );
 
   external String get name;
 
@@ -128,7 +135,8 @@ extension type JsEndpointConfiguration._(JSObject _) implements JSObject {
 /// JsMockzillaConfig
 @JS('JsMockzillaConfig')
 extension type JsMockzillaConfig._(JSObject _) implements JSObject {
-  external JsMockzillaConfig(JSArray<JsEndpointConfiguration> endpoints, String logLevel);
+  external JsMockzillaConfig(
+      JSArray<JsEndpointConfiguration> endpoints, String logLevel);
 
   external JSArray<JsEndpointConfiguration> get endpoints;
 
@@ -163,16 +171,19 @@ JsMockzillaHttpResponse buildResponse({
 }
 
 JsDashboardOptionsConfig buildDashboardOptions(
-    List<JsDashboardOverridePreset> presets,) =>
+  List<JsDashboardOverridePreset> presets,
+) =>
     JsDashboardOptionsConfig(presets.toJS);
 
 JsDashboardOverridePreset buildPreset({
   required String name,
   String? description,
   required JsMockzillaHttpResponse response,
-}) => JsDashboardOverridePreset(name, description, response);
+}) =>
+    JsDashboardOverridePreset(name, description, response);
 
 JsMockzillaConfig buildConfig({
   required List<JsEndpointConfiguration> endpoints,
   required String logLevel,
-}) => JsMockzillaConfig(endpoints.toJS, logLevel);
+}) =>
+    JsMockzillaConfig(endpoints.toJS, logLevel);
