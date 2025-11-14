@@ -14,8 +14,8 @@ concurrency:
 
 jobs:
   deploy-flutter:
-    runs-on: macos-14
     needs: [deploy-kotlin, deploy-swift]
+    runs-on: macos-14
     if: ${{ github.ref_type != 'branch' }}
     permissions:
       id-token: write
@@ -26,10 +26,10 @@ jobs:
         run: |
           export GPG_TTY=$(tty)
           bundle exec fastlane download_mockzilla_ui_mobile_js_assets
-      - uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
-        with:
-          working-directory: FlutterMockzilla/mockzilla_ui_mobile
-          environment: production
+      - uses: dart-lang/setup-dart@v1
+      - run: cd mockzilla_ui_mobile; flutter pub get
+      - name: Publish
+        run: cd mockzilla_ui_mobile; dart pub publish --force
   release-please:
     needs: [deploy-flutter]
     runs-on: macos-14
