@@ -9,7 +9,6 @@ import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepositoryImpl
 import com.apadmi.mockzilla.management.internal.service.UpdateServiceImpl
-import io.ktor.http.HttpStatusCode
 
 interface MockzillaManagement {
     /**
@@ -52,49 +51,7 @@ interface MockzillaManagement {
             delayMs: Int?
         ): Result<Unit>
 
-        suspend fun setDefaultHeaders(
-            connection: MockzillaConnectionConfig,
-            key: EndpointConfiguration.Key,
-            headers: Map<String, String>?
-        ): Result<Unit>
-
-        suspend fun setDefaultBody(
-            connection: MockzillaConnectionConfig,
-            key: EndpointConfiguration.Key,
-            body: String?
-        ): Result<Unit>
-
-        suspend fun setDefaultStatus(
-            connection: MockzillaConnectionConfig,
-            key: EndpointConfiguration.Key,
-            statusCode: HttpStatusCode?
-        ): Result<Unit>
-
-        suspend fun setErrorBody(
-            connection: MockzillaConnectionConfig,
-            key: EndpointConfiguration.Key,
-            body: String?
-        ): Result<Unit>
-
-        suspend fun setErrorHeaders(
-            connection: MockzillaConnectionConfig,
-            key: EndpointConfiguration.Key,
-            headers: Map<String, String>?
-        ): Result<Unit>
-
-        suspend fun setErrorStatus(
-            connection: MockzillaConnectionConfig,
-            key: EndpointConfiguration.Key,
-            statusCode: HttpStatusCode?
-        ): Result<Unit>
-
-        suspend fun setDefaultPreset(
-            connection: MockzillaConnectionConfig,
-            key: EndpointConfiguration.Key,
-            dashboardOverridePreset: DashboardOverridePreset
-        ): Result<Unit>
-
-        suspend fun setErrorPreset(
+        suspend fun applyPreset(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
             dashboardOverridePreset: DashboardOverridePreset

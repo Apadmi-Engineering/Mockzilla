@@ -2,13 +2,16 @@ package com.apadmi.mockzilla.ui.ui.widgets.endpoints.details
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
 
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
@@ -39,11 +42,11 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
     private fun createSut() = EndpointDetailsViewModel(
         key = EndpointConfiguration.Key("key"),
         device = dummyActiveDevice,
-        endpointsServiceMock,
-        updateServiceMock,
-        clearingServiceMock,
-        eventBusMock,
-        testScope.backgroundScope
+        endpointsService = endpointsServiceMock,
+        updateService = updateServiceMock,
+        clearingService = clearingServiceMock,
+        eventBus = eventBusMock,
+        scope = testScope.backgroundScope
     )
 
     @Test
@@ -64,13 +67,19 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
             errorHeaders = mapOf(),
             errorBody = "{}",
             errorStatus = HttpStatusCode.BadRequest,
+            appliedPresetOverride = null
         )
         val presets = DashboardOptionsConfig.Builder().build()
+
         every { eventBusMock.events }.returns(emptyFlow())
-        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice) }
-            .returns(Result.success(listOf(config)))
-        coEvery { endpointsServiceMock.fetchDashboardOptionsConfig(dummyActiveDevice, dummyKey) }
-            .returns(Result.success(presets))
+
+        coEvery {
+            endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice)
+        }.returns(Result.success(listOf(config)))
+
+        coEvery {
+            endpointsServiceMock.fetchDashboardOptionsConfig(dummyActiveDevice, dummyKey)
+        }.returns(Result.success(presets))
 
         /* Run Test */
         val sut = createSut()
@@ -78,21 +87,19 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
         yield()
 
         /* Verify */
-        assertEquals(EndpointDetailsViewModel.State.Empty, initialState)
+        assertEquals(State.Empty, initialState)
         assertEquals(
-            EndpointDetailsViewModel.State.Endpoint(
+            State.Endpoint(
                 config = config,
-                defaultBody = "{}",
-                defaultStatus = HttpStatusCode.OK,
-                defaultHeaders = listOf(),
-                errorBody = "{}",
-                errorStatus = HttpStatusCode.BadRequest,
-                errorHeaders = listOf(),
                 fail = false,
-                delayMillis = "50",
-                jsonEditingDefault = true,
-                jsonEditingError = true,
-                presets = presets,
+                delayMillis = 50,
+                isLoading = false,
+                presets = State.Endpoint.Presets(
+                    appliedPreset = null,
+                    visiblePresets = presets.presets,
+                    allPresets = presets.presets,
+                    filter = ""
+                ),
             ),
             sut.state.value
         )
@@ -110,32 +117,36 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
             versionCode = dummyVersion
         )
         val presets = DashboardOptionsConfig.Builder().build()
+
+        every {
+            eventBusMock.send(
+                EventBus.Event.EndpointDataChanged(listOf(EndpointConfiguration.Key(raw = "key")))
+            )
+        }.returns(Unit)
+
         coEvery {
-            updateServiceMock.setDefaultBody(
-                dummyActiveDevice,
-                config.key,
-                "not json"
+            updateServiceMock.setShouldFail(
+                dummyActiveDevice, listOf(config.key), true
             )
         }.returns(Result.success(Unit))
-        every { eventBusMock.send(EventBus.Event.EndpointDataChanged(listOf(EndpointConfiguration.Key(raw = "key")))) }
-            .returns(Unit)
-        coEvery { updateServiceMock.setErrorStatus(dummyActiveDevice, config.key, HttpStatusCode.Unauthorized) }
-            .returns(Result.success(Unit))
-        coEvery { updateServiceMock.setShouldFail(dummyActiveDevice, listOf(config.key), true) }
-            .returns(Result.success(Unit))
-        coEvery { updateServiceMock.setDefaultStatus(dummyActiveDevice, config.key, HttpStatusCode.Accepted) }
-            .returns(Result.success(Unit))
-        coEvery { updateServiceMock.setErrorBody(dummyActiveDevice, config.key, "unauthorized") }
-            .returns(Result.success(Unit))
-        coEvery { updateServiceMock.setDefaultHeaders(dummyActiveDevice, config.key, listOf("" to "").toMap()) }
-            .returns(Result.success(Unit))
-        coEvery { updateServiceMock.setErrorHeaders(dummyActiveDevice, config.key, listOf("" to "").toMap()) }
-            .returns(Result.success(Unit))
+
+        coEvery {
+            updateServiceMock.applyPreset(
+                dummyActiveDevice, config.key, any()
+            )
+        }.returns(Result.success(Unit))
+
         every { eventBusMock.events }.returns(emptyFlow())
-        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice) }
-            .returns(Result.success(listOf(config)))
-        coEvery { endpointsServiceMock.fetchDashboardOptionsConfig(dummyActiveDevice, EndpointConfiguration.Key(dummyKey)) }
-            .returns(Result.success(presets))
+
+        coEvery {
+            endpointsServiceMock.fetchAllEndpointConfigs(dummyActiveDevice)
+        }.returns(Result.success(listOf(config)))
+
+        coEvery {
+            endpointsServiceMock.fetchDashboardOptionsConfig(
+                dummyActiveDevice, EndpointConfiguration.Key(dummyKey)
+            )
+        }.returns(Result.success(presets))
 
         /* Run Test */
         val sut = createSut()
@@ -143,59 +154,55 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
         val initialState = sut.state.value
         repeat(10) { yield() }
 
-        sut.onDefaultBodyChange("not json")
+        sut.onPresetSelected(
+            DashboardOverridePreset(
+                name = "Preset name",
+                description = null,
+                type = DashboardOverridePreset.Type.Informational,
+                response = PartialMockzillaHttpResponse(body = "hello")
+            )
+        )
         yield()
-        sut.onDefaultStatusChange(HttpStatusCode.Accepted)
+        sut.updateLatency(100)
         yield()
-        sut.onDelayChange("100")
-        yield()
-        sut.onErrorBodyChange("unauthorized")
-        yield()
-        sut.onErrorStatusChange(HttpStatusCode.Unauthorized)
         yield()
         sut.onFailChange(true)
-        yield()
-        sut.onJsonDefaultEditingChange(false)
-        yield()
-        sut.onJsonErrorEditingChange(false)
-        yield()
-        sut.onDefaultHeadersChange(listOf("" to ""))
-        yield()
-        sut.onErrorHeadersChange(listOf())
         yield()
 
         /* Verify */
         assertEquals(
-            EndpointDetailsViewModel.State.Endpoint(
+            State.Endpoint(
                 config = config,
-                defaultBody = null,
-                defaultStatus = null,
-                defaultHeaders = null,
-                errorBody = null,
-                errorStatus = null,
-                errorHeaders = null,
                 fail = null,
                 delayMillis = null,
-                jsonEditingDefault = false,
-                jsonEditingError = false,
-                presets = presets,
+                isLoading = false,
+                presets = State.Endpoint.Presets(
+                    appliedPreset = null,
+                    visiblePresets = presets.presets,
+                    allPresets = presets.presets,
+                    filter = ""
+                ),
             ),
             initialState
         )
+
         assertEquals(
-            EndpointDetailsViewModel.State.Endpoint(
+            State.Endpoint(
                 config = config,
-                defaultBody = "not json",
-                defaultStatus = HttpStatusCode.Accepted,
-                defaultHeaders = listOf("" to ""),
-                errorBody = "unauthorized",
-                errorStatus = HttpStatusCode.Unauthorized,
-                errorHeaders = listOf(),
                 fail = true,
-                delayMillis = "100",
-                jsonEditingDefault = false,
-                jsonEditingError = false,
-                presets = presets,
+                delayMillis = 100,
+                isLoading = true,
+                presets = State.Endpoint.Presets(
+                    appliedPreset = DashboardOverridePreset(
+                        name = "Preset name",
+                        description = null,
+                        type = DashboardOverridePreset.Type.Informational,
+                        response = PartialMockzillaHttpResponse(body = "hello"),
+                    ),
+                    visiblePresets = presets.presets,
+                    allPresets = presets.presets,
+                    filter = ""
+                ),
             ),
             sut.state.value
         )

@@ -3,8 +3,11 @@ import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.configureCommonProperties
 import com.apadmi.mockzilla.injectedVersion
+import com.apadmi.mockzilla.isDevelopmentBuild
 import com.apadmi.mockzilla.isSigningEnabled
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+
 
 plugins {
     alias(libs.plugins.android.library)
@@ -12,6 +15,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.vanniktechPublish)
+    alias(libs.plugins.buildKonfig)
 }
 
 val artifactName = "mockzilla-common"
@@ -96,6 +100,15 @@ android {
 private val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
     from(tasks.dokkaHtml)
+}
+
+buildkonfig {
+    packageName = "$group.mockzilla.lib"
+    exposeObjectWithName = "MockzillaBuildConfig"
+
+    defaultConfigs {
+        buildConfigField(BOOLEAN, "isDevelopmentBuild", isDevelopmentBuild().toString())
+    }
 }
 
 mavenPublishing {

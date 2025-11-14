@@ -13,6 +13,7 @@ interface EventBus {
     fun send(event: Event)
 
     sealed interface Event {
+        data object PresetApplied : Event
         data object GenericError : Event
         data object FullRefresh : Event
         /**

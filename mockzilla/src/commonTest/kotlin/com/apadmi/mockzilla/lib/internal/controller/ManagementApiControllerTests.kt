@@ -7,6 +7,7 @@ import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.testutils.fakes.FakeLocalCacheService
 import com.apadmi.mockzilla.testutils.fakes.FakeMockServerMonitor
 
@@ -30,21 +31,25 @@ class ManagementApiControllerTests {
         EndpointConfiguration.Builder("my-second-id")
             .setPatternMatcher { uri.endsWith("my-second-id") }
             .configureDashboardOverrides {
-                addSuccessPreset(
+                addPreset(
                     MockzillaHttpResponse(
                         statusCode = HttpStatusCode.Created,
                         headers = mapOf("test-header" to "test-value"),
                         body = "my response body"
-                    ), name = "p1", description = "p2"
+                    ),
+                    name = "p1",
+                    description = "p2",
+                    type = DashboardOverridePreset.Type.Informational
                 )
-                addErrorPreset(
+                addPreset(
                     MockzillaHttpResponse(
                         statusCode = HttpStatusCode.Created,
                         headers = mapOf("test-header" to "test-value"),
                         body = "my response body2"
-                    )
+                    ),
+                    name = "Error Preset 1"
                 )
-                addSuccessPreset(
+                addPreset(
                     MockzillaHttpResponse(
                         statusCode = HttpStatusCode.Created,
                         headers = mapOf("test-header" to "test-value"),
@@ -195,31 +200,36 @@ class ManagementApiControllerTests {
         /* Verify */
         assertEquals(
             DashboardOptionsConfig(
-                errorPresets = listOf(
-                    DashboardOverridePreset(
-                        response = MockzillaHttpResponse(
-                            statusCode = HttpStatusCode.Created,
-                            headers = mapOf("test-header" to "test-value"),
-                            body = "my response body2"
-                        ), name = "Error Preset 1",
-                        description = null
-                    )
-                ),
+                errorPresets = listOf(),
                 successPresets = listOf(
                     DashboardOverridePreset(
-                        response = MockzillaHttpResponse(
+                        response = PartialMockzillaHttpResponse(
                             statusCode = HttpStatusCode.Created,
                             headers = mapOf("test-header" to "test-value"),
                             body = "my response body"
-                        ), name = "p1", description = "p2"
-                    ), DashboardOverridePreset(
-                        response = MockzillaHttpResponse(
+                        ), name = "p1",
+                        description = "p2",
+                        type = DashboardOverridePreset.Type.Informational
+                    ),
+                    DashboardOverridePreset(
+                        response = PartialMockzillaHttpResponse(
+                            statusCode = HttpStatusCode.Created,
+                            headers = mapOf("test-header" to "test-value"),
+                            body = "my response body2"
+                        ),
+                        name = "Error Preset 1",
+                        description = null,
+                        type = null
+                    ),
+                    DashboardOverridePreset(
+                        response = PartialMockzillaHttpResponse(
                             statusCode = HttpStatusCode.Created,
                             headers = mapOf("test-header" to "test-value"),
                             body = "my response body3"
                         ),
-                        name = "Preset 2",
-                        description = null
+                        name = "Preset 3",
+                        description = null,
+                        type = null
                     )
                 )
             ),

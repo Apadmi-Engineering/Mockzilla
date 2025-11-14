@@ -24,10 +24,16 @@ data class Strings(
     /**
      * @property closeDescription
      * @property backDescription
+     * @property debugDescription
+     * @property resetDescription
+     * @property deleteDescription
      */
     data class Common(
         val closeDescription: String,
         val backDescription: String,
+        val debugDescription: String,
+        val resetDescription: String,
+        val deleteDescription: String
     )
     /**
      * @property deviceConnection
@@ -40,6 +46,9 @@ data class Strings(
      * @property miscControls
      * @property unsupportedMockzilla
      * @property errorBanner
+     * @property globalControls
+     * @property latency
+     * @property createEditPreset
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -48,10 +57,13 @@ data class Strings(
         val logs: Logs,
         val logDetails: LogDetails,
         val endpointDetails: EndpointDetails,
+        val createEditPreset: CreateEditPreset,
         val endpoints: Endpoints,
+        val globalControls: GlobalControls,
         val miscControls: MiscControls,
         val unsupportedMockzilla: UnsupportedMockzillaVersion,
-        val errorBanner: ErrorBanner
+        val errorBanner: ErrorBanner,
+        val latency: Latency
     ) {
         /**
          * @property connectionLost
@@ -206,95 +218,185 @@ data class Strings(
         )
 
         /**
-         * @property selectAllTooltip
-         * @property errorSwitchLabel
-         * @property valuesOverriddenIndicatorTooltip
-         * @property filterLabel
-         * @property filterClear
+         * @property filterPlaceholder
+         * @property numberOfEndpointsShown
+         * @property overrides
          */
         data class Endpoints(
-            val selectAllTooltip: String,
-            val errorSwitchLabel: String,
-            val valuesOverriddenIndicatorTooltip: String,
-            val filterLabel: String,
-            val filterClear: String
+            val filterPlaceholder: String,
+            val numberOfEndpointsShown: (shown: Int, max: Int) -> String,
+            val overrides: (number: Int) -> String
+        )
+
+        /**
+         * @property title
+         * @property subtitle
+         * @property resetAllLabel
+         * @property normalBehaviourBannerConfig
+         * @property forcedFailureBannerConfig
+         * @property partialFailureBannerConfig
+         * @property failButtonLabel
+         * @property restoreButtonLabel
+         */
+        data class GlobalControls(
+            val title: String,
+            val subtitle: String,
+            val resetAllLabel: String,
+            val normalBehaviourBannerConfig: GlobalConfigBanner,
+            val forcedFailureBannerConfig: GlobalConfigBanner,
+            val partialFailureBannerConfig: GlobalConfigBanner,
+            val failButtonLabel: String,
+            val restoreButtonLabel: String,
+        ) {
+            /**
+             * @property title
+             * @property subtitle
+             */
+            data class GlobalConfigBanner(
+                val title: String,
+                val subtitle: String,
+            )
+        }
+
+        /**
+         * @property title
+         * @property millisecondLabel
+         * @property sliderMin
+         * @property sliderMax
+         */
+        data class Latency(
+            val title: String,
+            val millisecondLabel: String,
+            val sliderMin: String,
+            val sliderMax: String
         )
 
         /**
          * @property none
-         * @property useErrorResponse
-         * @property defaultDataTab
-         * @property errorDataTab
-         * @property generalTab
-         * @property noOverrideStatusCode
-         * @property statusCodeLabel
          * @property statusCode
          * @property edit
          * @property reset
          * @property resetUseErrorResponse
-         * @property bodyLabel
-         * @property bodyUnset
-         * @property delayLabel
-         * @property jsonEditingLabel
-         * @property invalidJson
-         * @property failOptionsLabel
-         * @property failLabel
-         * @property responseDelay
-         * @property noOverrideResponseDelay
-         * @property customResponseDelay
-         * @property responseDelayUnits
-         * @property responseDelayLabel
-         * @property resetAll
-         * @property headersLabel
-         * @property headerKeyLabel
-         * @property headerValueLabel
-         * @property headerDeleteContentDescription
-         * @property addHeader
-         * @property editHeaders
-         * @property resetHeaders
-         * @property noHeaders
          * @property headersUnset
-         * @property title
+         * @property subtitle
          * @property emptyTitle
          * @property emptyDescription
+         * @property title
+         * @property forcedApiFailureBannerTitle
+         * @property forcedApiFailureBannerSubtitle
+         * @property presets
          */
         data class EndpointDetails(
             val title: String,
+            val subtitle: String,
             val none: String,
-            val useErrorResponse: String,
-            val defaultDataTab: String,
-            val errorDataTab: String,
-            val generalTab: String,
-            val noOverrideStatusCode: String,
-            val statusCodeLabel: (HttpStatusCode) -> String,
             val statusCode: String,
             val edit: String,
             val reset: String,
             val resetUseErrorResponse: String,
-            val bodyLabel: String,
-            val bodyUnset: String,
-            val delayLabel: String,
-            val jsonEditingLabel: (Boolean) -> String,
-            val invalidJson: String,
-            val failOptionsLabel: String,
-            val failLabel: (Boolean?) -> String,
-            val responseDelay: String,
-            val noOverrideResponseDelay: String,
-            val customResponseDelay: String,
-            val responseDelayUnits: String,
-            val responseDelayLabel: String,
-            val resetAll: String,
-            val headersLabel: String,
-            val headerKeyLabel: String,
-            val headerValueLabel: String,
-            val headerDeleteContentDescription: String,
-            val addHeader: String,
-            val editHeaders: String,
-            val resetHeaders: String,
-            val noHeaders: String,
             val headersUnset: String,
             val emptyTitle: String,
-            val emptyDescription: String
+            val emptyDescription: String,
+            val forcedApiFailureBannerTitle: String,
+            val forcedApiFailureBannerSubtitle: String,
+            val presets: Presets
+        ) {
+            /**
+             * @property noPresetTitle
+             * @property noPresetBody
+             * @property typeDescriptions
+             * @property title
+             * @property noAvailablePresetsTitle
+             * @property noAvailablePresetsBody
+             * @property moreInfoButton
+             * @property activePresetTitle
+             * @property createCustomButton
+             * @property filterPlaceholder
+             * @property filterPlaceholderEmpty
+             * @property statusCodeFallback
+             * @property applyLabel
+             * @property appliedLabel
+             * @property editLabel
+             */
+            data class Presets(
+                val noPresetTitle: String,
+                val noPresetBody: String,
+                val typeDescriptions: TypeDescriptions,
+                val title: String,
+                val noAvailablePresetsTitle: String,
+                val noAvailablePresetsBody: String,
+                val moreInfoButton: String,
+                val activePresetTitle: String,
+                val createCustomButton: String,
+                val filterPlaceholder: String,
+                val filterPlaceholderEmpty: String,
+                val statusCodeFallback: String,
+                val applyLabel: String,
+                val appliedLabel: String,
+                val editLabel: String
+            ) {
+                /**
+                 * @property error
+                 * @property informational
+                 * @property other
+                 * @property redirect
+                 * @property success
+                 */
+                data class TypeDescriptions(
+                    val error: String,
+                    val informational: String,
+                    val other: String,
+                    val redirect: String,
+                    val success: String
+                )
+            }
+        }
+
+        /**
+         * @property createTitle
+         * @property editTitle
+         * @property statusCodeTitle
+         * @property noOverrideStatusCode
+         * @property statusCodeLabel
+         * @property bodyTitle
+         * @property bodyTypeJson
+         * @property bodyTypePlain
+         * @property responseBodyFormat
+         * @property responseBodyCopy
+         * @property responseCharacters
+         * @property validLabel
+         * @property invalidLabel
+         * @property headersTitle
+         * @property addHeaderTitle
+         * @property addHeaderButton
+         * @property responseBodyPlaceholder
+         * @property addHeaderKeyPlaceholder
+         * @property addHeaderValuePlaceholder
+         * @property save
+         * @property unset
+         */
+        data class CreateEditPreset(
+            val createTitle: String,
+            val editTitle: String,
+            val statusCodeTitle: String,
+            val noOverrideStatusCode: String,
+            val statusCodeLabel: (HttpStatusCode) -> String,
+            val bodyTitle: String,
+            val bodyTypeJson: String,
+            val bodyTypePlain: String,
+            val responseBodyFormat: String,
+            val responseBodyCopy: String,
+            val responseCharacters: (numChars: Int) -> String,
+            val validLabel: String,
+            val invalidLabel: String,
+            val headersTitle: String,
+            val addHeaderTitle: String,
+            val addHeaderButton: String,
+            val responseBodyPlaceholder: String,
+            val addHeaderKeyPlaceholder: String,
+            val addHeaderValuePlaceholder: String,
+            val unset: String,
+            val save: String,
         )
 
         /**

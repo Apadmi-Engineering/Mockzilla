@@ -85,7 +85,7 @@ fun MiscControlsWidgetContent(
             if (presentationModeEnabled) {
                 setScaleFactor(presentationModeScaleFactor)
             } else {
-                setScaleFactor(ScaleFactor.DEFAULT)
+                setScaleFactor(ScaleFactor.default)
             }
         },
         presentationModeScaleFactor = presentationModeScaleFactor,

@@ -27,7 +27,7 @@ android {
 
     buildTypes {
         getByName("debug") {
-            isMinifyEnabled = true
+//            isMinifyEnabled = true
         }
     }
 
@@ -44,15 +44,6 @@ android {
         resources {
             excludes.add("/META-INF/*")
         }
-    }
-}
-
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute(module("com.apadmi:mockzilla-management"))
-            .using(project(":mockzilla-management"))
-        substitute(module("com.apadmi:mockzilla-common"))
-            .using(project(":mockzilla-common"))
     }
 }
 

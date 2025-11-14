@@ -187,6 +187,7 @@ buildkonfig {
         buildConfigField(STRING, "VERSION_NAME", version.toString())
     }
 }
+
 private val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
     from(tasks.dokkaHtml)

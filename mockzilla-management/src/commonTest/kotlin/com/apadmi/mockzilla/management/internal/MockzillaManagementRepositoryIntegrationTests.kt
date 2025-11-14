@@ -13,6 +13,7 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.testutils.runIntegrationTest
@@ -194,7 +195,7 @@ class MockzillaManagementRepositoryIntegrationTests {
                 .addEndpoint(
                     EndpointConfiguration.Builder("my key")
                         .configureDashboardOverrides {
-                            addSuccessPreset(MockzillaHttpResponse(body = "preset"), "name", "desc")
+                            addPreset(PartialMockzillaHttpResponse(body = "preset"), "name", "desc")
                         }.build()
                 )
                 .build()
@@ -210,7 +211,8 @@ class MockzillaManagementRepositoryIntegrationTests {
                         DashboardOverridePreset(
                             "name",
                             "desc",
-                            MockzillaHttpResponse(body = "preset")
+                            response = PartialMockzillaHttpResponse(body = "preset"),
+                            type = null
                         )
                     ),
                     errorPresets = emptyList()

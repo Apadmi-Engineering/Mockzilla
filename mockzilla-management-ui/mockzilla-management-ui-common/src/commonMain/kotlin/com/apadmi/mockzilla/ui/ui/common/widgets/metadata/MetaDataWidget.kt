@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -27,11 +28,8 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-
-import com.apadmi.mockzilla_management_ui_common.generated.resources.Res
-import com.apadmi.mockzilla_management_ui_common.generated.resources.mockzilla_logo
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
@@ -84,7 +82,7 @@ fun MetaDataListView(
             .align(Alignment.CenterHorizontally)
             .padding(vertical = 16.dp)
             .height(50.dp),
-        painter = painterResource(Res.drawable.mockzilla_logo),
+        imageVector = Icons.MockzillaLogo,
         contentDescription = null
     )
     MetaDataRow(strings.widgets.metaData.appName, metaData.appName)

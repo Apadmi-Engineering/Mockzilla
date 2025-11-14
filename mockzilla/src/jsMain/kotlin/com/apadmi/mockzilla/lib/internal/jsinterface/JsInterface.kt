@@ -11,6 +11,7 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.lib.startMockzilla
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -28,6 +29,17 @@ object JsLogLevels {
     const val Info = "Info"
     const val Verbose = "Verbose"
     const val Warn = "Warn"
+}
+
+@JsExport
+@Suppress("unused")
+object JsPresetType {
+    const val ClientError = "ClientError"
+    const val Informational = "Informational"
+    const val Other = "Other"
+    const val Redirect = "Redirect"
+    const val ServerError = "ServerError"
+    const val Success = "Success"
 }
 
 @JsExport
@@ -82,11 +94,22 @@ data class JsDashboardOptionsConfig(
 ) {
     internal fun fromJs() = DashboardOptionsConfig(
         errorPresets = emptyList(),
-        successPresets = presets.toList().map {
+        successPresets = presets.toList().map { js ->
             DashboardOverridePreset(
-                name = it.name,
-                description = it.description,
-                response = it.response.fromJs()
+                name = js.name,
+                description = js.description,
+                response = js.response.fromJs(),
+                type = js.type?.let {
+                    when(it) {
+                        "ClientError" -> DashboardOverridePreset.Type.ClientError
+                        "Informational" -> DashboardOverridePreset.Type.Informational
+                        "Other" -> DashboardOverridePreset.Type.Other
+                        "Redirect" -> DashboardOverridePreset.Type.Redirect
+                        "ServerError" -> DashboardOverridePreset.Type.ServerError
+                        "Success" -> DashboardOverridePreset.Type.Success
+                        else -> null
+                    }
+                }
             )
         }
     )
@@ -111,7 +134,8 @@ data class JsDashboardOptionsConfig(
 data class JsDashboardOverridePreset(
     val name: String,
     val description: String?,
-    val response: JsMockzillaHttpResponse
+    val response: JsPartialMockzillaHttpResponse,
+    val type: String? // JsPresetType
 )
 
 fun entriesOf(jsObject: dynamic): List<Pair<String, String>> =
@@ -131,6 +155,19 @@ data class JsMockzillaHttpResponse(
     internal fun fromJs() = MockzillaHttpResponse(
         HttpStatusCode.fromValue(statusCode),
         mapFrom(headers),
+        body
+    )
+}
+
+@JsExport
+data class JsPartialMockzillaHttpResponse(
+    val statusCode: Int?,
+    val headers: dynamic?,
+    val body: String?,
+) {
+    internal fun fromJs() = PartialMockzillaHttpResponse(
+        statusCode?.let { HttpStatusCode.fromValue(statusCode) },
+        headers?.let { mapFrom(headers) },
         body
     )
 }
