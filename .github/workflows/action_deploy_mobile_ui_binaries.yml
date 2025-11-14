@@ -124,8 +124,7 @@ jobs:
         run: |
           mv mockzilla-management-ui/mockzilla-mobile-ui/build/kotlin-webpack/js/developmentExecutable javascript_output
           zip -r javascript_output.zip javascript_output
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+      - uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: javascript_output.zip

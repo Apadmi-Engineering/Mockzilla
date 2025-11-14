@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-v2.4.1...mockzilla-management-v3.0.0) (2025-11-06)
+
+### Features
+
+* Support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509)) ([2d6a9bb](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d6a9bbec08baa6c377e0a7ac57166086dabfd22))
+    * Apis are still backward compatible for use by old version of the desktop app
+
+### Bug Fixes
+
+* Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
+
 ## [2.3.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-v2.2.3...mockzilla-management-v2.3.2) (2025-09-16)
 
 ### Bug Fixes

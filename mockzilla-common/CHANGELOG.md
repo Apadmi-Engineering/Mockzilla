@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.0.0-alpha1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.4.1...mockzilla-common-v3.0.0-alpha1) (2025-11-06)
+
+### ⚠ BREAKING CHANGES
+
+* Support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509))
+* Default & Error handlers are now suspend functions
+* Removed the `body` property on Mockzilla requests (previously deprecated)
+* Make the accessors for the request body suspend functions
+* Remove the obsolete web apis ([#466](https://github.com/Apadmi-Engineering/Mockzilla/issues/466))
+
+### Features
+
+* Re-work Mockzilla internals to support mobile UI ([6c599c2](https://github.com/Apadmi-Engineering/Mockzilla/commit/6c599c28a3f990619ca9df9af4db92a0b4f9c9b0))
+
+
+### Bug Fixes
+
+* Make use of port re-binding ([a6ba694](https://github.com/Apadmi-Engineering/Mockzilla/commit/a6ba6941c5a8488db86369a921cab95b2e685b85))
+* Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
+
 ## [2.3.2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v2.2.3...mockzilla-common-v2.3.2) (2025-09-16)
 
 
