@@ -1441,7 +1441,7 @@ mixin _$EndpointConfig {
 
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
-  Future<bool> Function(MockzillaHttpRequest request) get endpointMatcher;
+  FutureOr<bool> Function(MockzillaHttpRequest request) get endpointMatcher;
 
   /// Optional, configures the preset responses for the endpoint in the
   /// Mockzilla dashboard.
@@ -1450,12 +1450,12 @@ mixin _$EndpointConfig {
   /// This function is called when a network request is made to this endpoint,
   /// note that if an error is being returned due to [shouldFail] then
   /// `errorHandler` is used instead.
-  Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+  FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
       get defaultHandler;
 
   /// This function is called when, in response to a network request, the
   /// server returns an error due to [shouldFail].
-  Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+  FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
       get errorHandler;
 
   /// Create a copy of EndpointConfig
@@ -1520,11 +1520,11 @@ abstract mixin class $EndpointConfigCopyWith<$Res> {
       bool shouldFail,
       Duration delay,
       int versionCode,
-      Future<bool> Function(MockzillaHttpRequest request) endpointMatcher,
+      FutureOr<bool> Function(MockzillaHttpRequest request) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
-      Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+      FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
           defaultHandler,
-      Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+      FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
           errorHandler});
 
   $DashboardOptionsConfigCopyWith<$Res> get dashboardOptionsConfig;
@@ -1577,7 +1577,7 @@ class _$EndpointConfigCopyWithImpl<$Res>
       endpointMatcher: null == endpointMatcher
           ? _self.endpointMatcher
           : endpointMatcher // ignore: cast_nullable_to_non_nullable
-              as Future<bool> Function(MockzillaHttpRequest request),
+              as FutureOr<bool> Function(MockzillaHttpRequest request),
       dashboardOptionsConfig: null == dashboardOptionsConfig
           ? _self.dashboardOptionsConfig
           : dashboardOptionsConfig // ignore: cast_nullable_to_non_nullable
@@ -1585,12 +1585,12 @@ class _$EndpointConfigCopyWithImpl<$Res>
       defaultHandler: null == defaultHandler
           ? _self.defaultHandler
           : defaultHandler // ignore: cast_nullable_to_non_nullable
-              as Future<MockzillaHttpResponse> Function(
+              as FutureOr<MockzillaHttpResponse> Function(
                   MockzillaHttpRequest request),
       errorHandler: null == errorHandler
           ? _self.errorHandler
           : errorHandler // ignore: cast_nullable_to_non_nullable
-              as Future<MockzillaHttpResponse> Function(
+              as FutureOr<MockzillaHttpResponse> Function(
                   MockzillaHttpRequest request),
     ));
   }
@@ -1706,11 +1706,14 @@ extension EndpointConfigPatterns on EndpointConfig {
             bool shouldFail,
             Duration delay,
             int versionCode,
-            Future<bool> Function(MockzillaHttpRequest request) endpointMatcher,
+            FutureOr<bool> Function(MockzillaHttpRequest request)
+                endpointMatcher,
             DashboardOptionsConfig dashboardOptionsConfig,
-            Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
                 defaultHandler,
-            Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
                 errorHandler)?
         $default, {
     required TResult orElse(),
@@ -1754,11 +1757,14 @@ extension EndpointConfigPatterns on EndpointConfig {
             bool shouldFail,
             Duration delay,
             int versionCode,
-            Future<bool> Function(MockzillaHttpRequest request) endpointMatcher,
+            FutureOr<bool> Function(MockzillaHttpRequest request)
+                endpointMatcher,
             DashboardOptionsConfig dashboardOptionsConfig,
-            Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
                 defaultHandler,
-            Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
                 errorHandler)
         $default,
   ) {
@@ -1800,11 +1806,14 @@ extension EndpointConfigPatterns on EndpointConfig {
             bool shouldFail,
             Duration delay,
             int versionCode,
-            Future<bool> Function(MockzillaHttpRequest request) endpointMatcher,
+            FutureOr<bool> Function(MockzillaHttpRequest request)
+                endpointMatcher,
             DashboardOptionsConfig dashboardOptionsConfig,
-            Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
                 defaultHandler,
-            Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
                 errorHandler)?
         $default,
   ) {
@@ -1871,7 +1880,7 @@ class _EndpointConfig extends EndpointConfig {
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
   @override
-  final Future<bool> Function(MockzillaHttpRequest request) endpointMatcher;
+  final FutureOr<bool> Function(MockzillaHttpRequest request) endpointMatcher;
 
   /// Optional, configures the preset responses for the endpoint in the
   /// Mockzilla dashboard.
@@ -1883,13 +1892,13 @@ class _EndpointConfig extends EndpointConfig {
   /// note that if an error is being returned due to [shouldFail] then
   /// `errorHandler` is used instead.
   @override
-  final Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+  final FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
       defaultHandler;
 
   /// This function is called when, in response to a network request, the
   /// server returns an error due to [shouldFail].
   @override
-  final Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+  final FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
       errorHandler;
 
   /// Create a copy of EndpointConfig
@@ -1956,11 +1965,11 @@ abstract mixin class _$EndpointConfigCopyWith<$Res>
       bool shouldFail,
       Duration delay,
       int versionCode,
-      Future<bool> Function(MockzillaHttpRequest request) endpointMatcher,
+      FutureOr<bool> Function(MockzillaHttpRequest request) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
-      Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+      FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
           defaultHandler,
-      Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+      FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
           errorHandler});
 
   @override
@@ -2014,7 +2023,7 @@ class __$EndpointConfigCopyWithImpl<$Res>
       endpointMatcher: null == endpointMatcher
           ? _self.endpointMatcher
           : endpointMatcher // ignore: cast_nullable_to_non_nullable
-              as Future<bool> Function(MockzillaHttpRequest request),
+              as FutureOr<bool> Function(MockzillaHttpRequest request),
       dashboardOptionsConfig: null == dashboardOptionsConfig
           ? _self.dashboardOptionsConfig
           : dashboardOptionsConfig // ignore: cast_nullable_to_non_nullable
@@ -2022,12 +2031,12 @@ class __$EndpointConfigCopyWithImpl<$Res>
       defaultHandler: null == defaultHandler
           ? _self.defaultHandler
           : defaultHandler // ignore: cast_nullable_to_non_nullable
-              as Future<MockzillaHttpResponse> Function(
+              as FutureOr<MockzillaHttpResponse> Function(
                   MockzillaHttpRequest request),
       errorHandler: null == errorHandler
           ? _self.errorHandler
           : errorHandler // ignore: cast_nullable_to_non_nullable
-              as Future<MockzillaHttpResponse> Function(
+              as FutureOr<MockzillaHttpResponse> Function(
                   MockzillaHttpRequest request),
     ));
   }

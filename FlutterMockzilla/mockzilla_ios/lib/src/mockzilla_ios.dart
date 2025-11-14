@@ -66,27 +66,25 @@ class CallbackProvider extends MockzillaFlutterApi {
 
   /// Calls the matcher on the specified endpoint.
   @override
-  Future<bool> endpointMatcher(BridgeMockzillaHttpRequest request, String key) {
+  Future<bool> endpointMatcher(BridgeMockzillaHttpRequest request, String key) async {
     return _determineEndpoint(key).endpointMatcher(request.toDart());
   }
 
   /// Returns the default response for the endpoint associated with [key].
   @override
   Future<BridgeMockzillaHttpResponse> defaultHandler(
-      BridgeMockzillaHttpRequest request, String key) {
-    return _determineEndpoint(key)
-        .defaultHandler(request.toDart())
-        .then((it) => it.toBridge());
+      BridgeMockzillaHttpRequest request, String key) async {
+    final response = await _determineEndpoint(key).defaultHandler(request.toDart());
+    return response.toBridge();
   }
 
   /// Returns the default error response for the endpoint associated with
   /// [key].
   @override
   Future<BridgeMockzillaHttpResponse> errorHandler(
-      BridgeMockzillaHttpRequest request, String key) {
-    return _determineEndpoint(key)
-        .errorHandler(request.toDart())
-        .then((it) => it.toBridge());
+      BridgeMockzillaHttpRequest request, String key) async {
+    final response = await _determineEndpoint(key).errorHandler(request.toDart());
+    return response.toBridge();
   }
 
   @override

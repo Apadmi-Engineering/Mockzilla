@@ -72,9 +72,8 @@ class CallbackProvider extends MockzillaFlutterApi {
   @override
   Future<BridgeMockzillaHttpResponse> defaultHandler(
       BridgeMockzillaHttpRequest request, String key) async {
-    return _determineEndpoint(key)
-        .defaultHandler(request.toDart())
-        .then((it) => it.toBridge());
+    final response = await _determineEndpoint(key).defaultHandler(request.toDart());
+    return response.toBridge();
   }
 
   /// Returns the default error response for the endpoint associated with
@@ -82,9 +81,8 @@ class CallbackProvider extends MockzillaFlutterApi {
   @override
   Future<BridgeMockzillaHttpResponse> errorHandler(
       BridgeMockzillaHttpRequest request, String key) async {
-    return _determineEndpoint(key)
-        .errorHandler(request.toDart())
-        .then((it) => it.toBridge());
+    final response = await _determineEndpoint(key).errorHandler(request.toDart());
+    return response.toBridge();
   }
 
   @override

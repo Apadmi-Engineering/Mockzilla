@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -101,7 +102,7 @@ abstract class EndpointConfig with _$EndpointConfig {
 
     /// Used to determine whether a particular `request` should be evaluated by
     /// this endpoint.
-    required Future<bool> Function(MockzillaHttpRequest request)
+    required FutureOr<bool> Function(MockzillaHttpRequest request)
         endpointMatcher,
 
     /// Optional, configures the preset responses for the endpoint in the
@@ -112,13 +113,13 @@ abstract class EndpointConfig with _$EndpointConfig {
     /// This function is called when a network request is made to this endpoint,
     /// note that if an error is being returned due to [shouldFail] then
     /// `errorHandler` is used instead.
-    required Future<MockzillaHttpResponse> Function(
+    required FutureOr<MockzillaHttpResponse> Function(
             MockzillaHttpRequest request)
         defaultHandler,
 
     /// This function is called when, in response to a network request, the
     /// server returns an error due to [shouldFail].
-    required Future<MockzillaHttpResponse> Function(
+    required FutureOr<MockzillaHttpResponse> Function(
             MockzillaHttpRequest request)
         errorHandler,
   }) = _EndpointConfig;
