@@ -108,7 +108,7 @@ data class EndpointConfiguration(
          *
          * @param handler
          */
-        fun setErrorHandler(handler: MockzillaHttpRequest.() -> MockzillaHttpResponse) = apply {
+        fun setErrorHandler(handler: suspend MockzillaHttpRequest.() -> MockzillaHttpResponse) = apply {
             config = config.copy(errorHandler = handler)
         }
 
@@ -154,7 +154,7 @@ data class EndpointConfiguration(
          *
          * @param matcher Used to map an incoming network request to the correct endpoint.
          */
-        fun setPatternMatcher(matcher: MockzillaHttpRequest.() -> Boolean) = apply {
+        fun setPatternMatcher(matcher: suspend MockzillaHttpRequest.() -> Boolean) = apply {
             config = config.copy(endpointMatcher = matcher)
         }
 
