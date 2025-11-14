@@ -73,7 +73,7 @@ end
 lane :download_mockzilla_ui_mobile_js_assets do
     version = extract_pubspec_property(
         "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_ui_mobile/pubspec.yaml",
-         "mockzilla_js_version"
+         "version"
     )
     download_and_unzip_release_asset(
         "mockzilla-mobile-ui-v#{version}",

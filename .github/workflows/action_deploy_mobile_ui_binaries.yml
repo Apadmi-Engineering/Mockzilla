@@ -20,6 +20,7 @@ jobs:
     permissions:
       id-token: write
     steps:
+      - uses: actions/checkout@v5
       - name: Install dependencies
         run: bundle install
       - name: Download JS assets
