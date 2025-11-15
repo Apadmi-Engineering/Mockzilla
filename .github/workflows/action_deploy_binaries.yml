@@ -69,6 +69,7 @@ jobs:
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           IOS_DEPLOY_URL: ${{ secrets.IOS_DEPLOY_URL }}
+
   deploy-js:
     name: Publish JS files to GitHub release
     runs-on: macos-14

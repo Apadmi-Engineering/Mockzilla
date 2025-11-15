@@ -1,6 +1,13 @@
 # Changelog
 
-## [0.0.5](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.4...flutter_mockzilla_ui_mobile-v0.0.5) (2025-09-30)
+## [0.0.7](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v0.0.5...mockzilla-mobile-ui-v0.0.7) (2025-11-14)
+
+### Features
+
+* expose mockzilla apis to JS ([#513](https://github.com/Apadmi-Engineering/Mockzilla/issues/513)) ([5ae0315](https://github.com/Apadmi-Engineering/Mockzilla/commit/5ae03152447b0703c521e6e95c71161b002e9e1d))
+* support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509)) ([2d6a9bb](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d6a9bbec08baa6c377e0a7ac57166086dabfd22))
+
+## [0.0.6](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.4...flutter_mockzilla_ui_mobile-v0.0.6) (2025-09-30)
 
 ### Features
 
