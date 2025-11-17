@@ -11,6 +11,7 @@ import SwiftMockzilla
 
 enum MockzillaError: Error {
     case argumentError
+    case argumentTypeError
 }
 
 extension BridgeHttpMethod {
@@ -66,11 +67,11 @@ extension BridgeLogLevel {
 }
 
 extension BridgeMockzillaHttpRequest {
-    static func fromNative(_ request: MockzillaHttpRequest) throws -> BridgeMockzillaHttpRequest {
+    static func fromNative(_ request: MockzillaHttpRequest) async throws -> BridgeMockzillaHttpRequest {
         return try BridgeMockzillaHttpRequest(
             uri: request.uri,
             headers: request.headers,
-            body: request.bodyAsString(),
+            body: await request.bodyAsString(),
             method: BridgeHttpMethod.fromNative(request.method)
         )
     }
@@ -136,11 +137,49 @@ extension BridgeDashboardOptionsConfig {
     }
 }
 
+class SwiftEndpointMatcher: KotlinSuspendFunction1 {
+    let key: String
+    let block: (_ key: String, _ request: MockzillaHttpRequest) async -> Bool
+    
+    init(key: String, block: @escaping (_: String, _: MockzillaHttpRequest) async -> Bool) {
+        self.key = key
+        self.block = block
+    }
+    
+    func invoke(p1: Any?, completionHandler: @escaping (Any?, (any Error)?) -> Void) {
+        if !(p1 is MockzillaHttpRequest) {
+            completionHandler(nil, MockzillaError.argumentTypeError)
+        }
+        Task {
+            completionHandler(await block(key, p1 as! MockzillaHttpRequest), nil)
+        }
+    }
+}
+
+class SwiftHandler: KotlinSuspendFunction1 {
+    let key: String
+    let block: (_ key: String, _ request: MockzillaHttpRequest) async -> MockzillaHttpResponse
+    
+    init(key: String, block: @escaping (_: String, _: MockzillaHttpRequest) async -> MockzillaHttpResponse) {
+        self.key = key
+        self.block = block
+    }
+    
+    func invoke(p1: Any?, completionHandler: @escaping (Any?, (any Error)?) -> Void) {
+        if !(p1 is MockzillaHttpRequest) {
+            completionHandler(nil, MockzillaError.argumentTypeError)
+        }
+        Task {
+            completionHandler(await block(key, p1 as! MockzillaHttpRequest), nil)
+        }
+    }
+}
+
 extension BridgeEndpointConfig {
     func toNative(
-        endpointMatcher: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> Bool,
-        defaultHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse,
-        errorHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse
+        endpointMatcher: @escaping (_ key: String, _ request: MockzillaHttpRequest) async -> Bool,
+        defaultHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) async -> MockzillaHttpResponse,
+        errorHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) async  -> MockzillaHttpResponse
     ) -> EndpointConfiguration {
 
         return EndpointConfiguration(
@@ -150,9 +189,9 @@ extension BridgeEndpointConfig {
             delay: KotlinInt(int: Int32(delayMs)),
             dashboardOptionsConfig: config.toNative(),
             versionCode: Int32(truncatingIfNeeded: versionCode),
-            endpointMatcher: { request in KotlinBoolean(value: endpointMatcher(key, request))},
-            defaultHandler: { request in defaultHandler(key, request) },
-            errorHandler: { request in errorHandler(key, request) }
+            endpointMatcher: SwiftEndpointMatcher(key: key, block: endpointMatcher),
+            defaultHandler: SwiftHandler(key: key, block: defaultHandler),
+            errorHandler: SwiftHandler(key: key, block: errorHandler)
         )
     }
     
@@ -170,9 +209,9 @@ extension BridgeEndpointConfig {
 
 extension BridgeMockzillaConfig {
     func toNative(
-        endpointMatcher: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> Bool,
-        defaultHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse,
-        errorHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) -> MockzillaHttpResponse,
+        endpointMatcher: @escaping (_ key: String, _ request: MockzillaHttpRequest) async -> Bool,
+        defaultHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) async -> MockzillaHttpResponse,
+        errorHandler: @escaping (_ key: String, _ request: MockzillaHttpRequest) async -> MockzillaHttpResponse,
         proxyLogger: ProxyMockzillaLogger
     ) -> MockzillaConfig {
         return MockzillaConfig(

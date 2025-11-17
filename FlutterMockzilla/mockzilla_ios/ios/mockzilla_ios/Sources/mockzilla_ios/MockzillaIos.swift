@@ -33,7 +33,7 @@ class MockzillaIos: Thread, MockzillaHostApi {
                 do {
                     let matcherSemaphore = DispatchSemaphore(value: 0)
                     var result: Result<Bool, PigeonError>!
-                    let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
+                    let nativeRequest = try await BridgeMockzillaHttpRequest.fromNative(request)
                     DispatchQueue.main.async {
                         self.handler.endpointMatcher(
                             request: nativeRequest,
@@ -54,7 +54,7 @@ class MockzillaIos: Thread, MockzillaHostApi {
                 do {
                     let handlerSemaphore = DispatchSemaphore(value: 0)
                     var result: Result<BridgeMockzillaHttpResponse, PigeonError>!
-                    let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
+                    let nativeRequest = try await BridgeMockzillaHttpRequest.fromNative(request)
                     DispatchQueue.main.async {
                         self.handler.defaultHandler(
                             request: nativeRequest,
@@ -75,7 +75,7 @@ class MockzillaIos: Thread, MockzillaHostApi {
                 do {
                     let errorHandlerSemaphore = DispatchSemaphore(value: 0)
                     var result: Result<BridgeMockzillaHttpResponse, PigeonError>!
-                    let nativeRequest = try BridgeMockzillaHttpRequest.fromNative(request)
+                    let nativeRequest = try await BridgeMockzillaHttpRequest.fromNative(request)
                     DispatchQueue.main.async {
                         self.handler.errorHandler(
                             request: nativeRequest,
@@ -89,7 +89,12 @@ class MockzillaIos: Thread, MockzillaHostApi {
                     errorHandlerSemaphore.wait()
                     return try result.map { response in response.toNative() }.get()
                 } catch {
-                    return MockzillaHttpResponse(statusCode: HttpStatusCode.InternalServerError, headers: [:], body: "")
+                    return MockzillaHttpResponse(
+                        statusCode: HttpStatusCode.InternalServerError,
+                        headers: [:],
+                        body: ""
+                    
+                    )
                 }
             },
             proxyLogger: proxyLogger

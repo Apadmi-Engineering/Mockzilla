@@ -17,7 +17,8 @@ abstract class MockzillaUiMobilePlatform extends PlatformInterface {
   static final Object _token = Object();
 
   // The static instance that the main library will call.
-  static MockzillaUiMobilePlatform _instance = MockzillaMobileUiAndroidAndiOS.instance;
+  static MockzillaUiMobilePlatform _instance =
+      MockzillaMobileUiAndroidAndiOS.instance;
 
   static MockzillaUiMobilePlatform get instance => _instance;
 

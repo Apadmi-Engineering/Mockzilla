@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:js_interop';
 
 class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
-
   static void registerWith(Registrar registrar) {
     MockzillaUiMobilePlatform.instance = MockzillaMobileUiWeb();
   }
@@ -18,8 +17,8 @@ class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
 
     final web.Document document = web.window.document;
 
-    final web.HTMLScriptElement script = document.createElement('script') as web
-        .HTMLScriptElement;
+    final web.HTMLScriptElement script =
+        document.createElement('script') as web.HTMLScriptElement;
     script.src = 'packages/mockzilla_ui_mobile/assets/mockzilla-mobile-ui.js';
     script.type = 'text/javascript';
 
@@ -54,7 +53,7 @@ class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
   void launchManagementUi() async {
     await _ensureScriptLoaded();
 
-    dynamic root =  web.window["mockzilla-mobile-ui"];
+    dynamic root = web.window["mockzilla-mobile-ui"];
     root.com.apadmi.mockzilla.launchManagementUi();
   }
 

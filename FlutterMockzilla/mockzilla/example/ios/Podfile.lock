@@ -2,12 +2,12 @@ PODS:
   - Flutter (1.0.0)
   - mockzilla_ios (0.0.1):
     - Flutter
-    - SwiftMockzilla (= 2.4.1)
-  - mockzilla_ui_mobile (0.0.1):
+    - SwiftMockzilla (= 3.0.0-alpha1)
+  - mockzilla_ui_mobile (0.0.7):
     - Flutter
-    - SwiftMockzillaMobileUi (= 0.0.5)
-  - SwiftMockzilla (2.4.1)
-  - SwiftMockzillaMobileUi (0.0.5)
+    - SwiftMockzillaMobileUi (= 0.0.7)
+  - SwiftMockzilla (3.0.0-alpha1)
+  - SwiftMockzillaMobileUi (0.0.7)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -29,10 +29,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  mockzilla_ios: 2c1bf1a2802d6bedce20e9cf8d7f56406e1ab6ef
-  mockzilla_ui_mobile: 5088f8ac69ac4e92ee330c084b1a1b9e6539be48
-  SwiftMockzilla: d1040d55169fe2f413991f5dcab56427ae260416
-  SwiftMockzillaMobileUi: bf8e897be31be79a866f2646ee85921be3dd7037
+  mockzilla_ios: 03a44abc736a13fc99576169707fcb1fbb62ec69
+  mockzilla_ui_mobile: 09e23300706bf46e5450cbc2d505396174836a85
+  SwiftMockzilla: e1415c8b30a3d1c097c4a1051668ae912b61a68d
+  SwiftMockzillaMobileUi: 1949158cd17a1e4f907735c9e85dfbdbc5ed7f04
 
 PODFILE CHECKSUM: 4f1c12611da7338d21589c0b2ecd6bd20b109694
 

@@ -2,8 +2,8 @@ PODS:
   - Flutter (1.0.0)
   - mockzilla_ios (0.0.1):
     - Flutter
-    - SwiftMockzilla (= 2.4.1)
-  - SwiftMockzilla (2.4.1)
+    - SwiftMockzilla (= 3.0.0-alpha1)
+  - SwiftMockzilla (3.0.0-alpha1)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -21,8 +21,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  mockzilla_ios: aff11ce1af23c04024b5cf41fb9f4d14b9438735
-  SwiftMockzilla: d1040d55169fe2f413991f5dcab56427ae260416
+  mockzilla_ios: 03a44abc736a13fc99576169707fcb1fbb62ec69
+  SwiftMockzilla: e1415c8b30a3d1c097c4a1051668ae912b61a68d
 
 PODFILE CHECKSUM: 4f1c12611da7338d21589c0b2ecd6bd20b109694
 

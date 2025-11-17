@@ -135,14 +135,14 @@ class MockEndpointConfig extends _i1.Mock implements _i2.EndpointConfig {
       ) as int);
 
   @override
-  _i4.Future<bool> Function(_i2.MockzillaHttpRequest) get endpointMatcher =>
+  _i4.FutureOr<bool> Function(_i2.MockzillaHttpRequest) get endpointMatcher =>
       (super.noSuchMethod(
         Invocation.getter(#endpointMatcher),
         returnValue: (_i2.MockzillaHttpRequest request) =>
             _i4.Future<bool>.value(false),
         returnValueForMissingStub: (_i2.MockzillaHttpRequest request) =>
             _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool> Function(_i2.MockzillaHttpRequest));
+      ) as _i4.FutureOr<bool> Function(_i2.MockzillaHttpRequest));
 
   @override
   _i2.DashboardOptionsConfig get dashboardOptionsConfig => (super.noSuchMethod(
@@ -158,7 +158,7 @@ class MockEndpointConfig extends _i1.Mock implements _i2.EndpointConfig {
       ) as _i2.DashboardOptionsConfig);
 
   @override
-  _i4.Future<_i2.MockzillaHttpResponse> Function(_i2.MockzillaHttpRequest)
+  _i4.FutureOr<_i2.MockzillaHttpResponse> Function(_i2.MockzillaHttpRequest)
       get defaultHandler => (super.noSuchMethod(
             Invocation.getter(#defaultHandler),
             returnValue: (_i2.MockzillaHttpRequest request) =>
@@ -173,11 +173,11 @@ class MockEndpointConfig extends _i1.Mock implements _i2.EndpointConfig {
               this,
               Invocation.getter(#defaultHandler),
             )),
-          ) as _i4.Future<_i2.MockzillaHttpResponse> Function(
+          ) as _i4.FutureOr<_i2.MockzillaHttpResponse> Function(
               _i2.MockzillaHttpRequest));
 
   @override
-  _i4.Future<_i2.MockzillaHttpResponse> Function(_i2.MockzillaHttpRequest)
+  _i4.FutureOr<_i2.MockzillaHttpResponse> Function(_i2.MockzillaHttpRequest)
       get errorHandler => (super.noSuchMethod(
             Invocation.getter(#errorHandler),
             returnValue: (_i2.MockzillaHttpRequest request) =>
@@ -192,7 +192,7 @@ class MockEndpointConfig extends _i1.Mock implements _i2.EndpointConfig {
               this,
               Invocation.getter(#errorHandler),
             )),
-          ) as _i4.Future<_i2.MockzillaHttpResponse> Function(
+          ) as _i4.FutureOr<_i2.MockzillaHttpResponse> Function(
               _i2.MockzillaHttpRequest));
 
   @override

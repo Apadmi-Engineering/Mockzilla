@@ -1,6 +1,7 @@
 **/.DS_STORE
 .DS_STORE
 fastlane/report.xml
+fastlane/test_output
 
 *.xcframework*
 fastlane/apadmi-mockzilla-ios
