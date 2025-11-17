@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -98,6 +97,169 @@ class _$MockzillaHttpRequestCopyWithImpl<$Res>
           : method // ignore: cast_nullable_to_non_nullable
               as HttpMethod,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [MockzillaHttpRequest].
+extension MockzillaHttpRequestPatterns on MockzillaHttpRequest {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MockzillaHttpRequest value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpRequest() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MockzillaHttpRequest value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpRequest():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_MockzillaHttpRequest value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpRequest() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(String uri, Map<String, String> headers, String body,
+            HttpMethod method)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpRequest() when $default != null:
+        return $default(_that.uri, _that.headers, _that.body, _that.method);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(String uri, Map<String, String> headers, String body,
+            HttpMethod method)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpRequest():
+        return $default(_that.uri, _that.headers, _that.body, _that.method);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(String uri, Map<String, String> headers, String body,
+            HttpMethod method)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpRequest() when $default != null:
+        return $default(_that.uri, _that.headers, _that.body, _that.method);
+      case _:
+        return null;
+    }
   }
 }
 
@@ -291,6 +453,166 @@ class _$MockzillaHttpResponseCopyWithImpl<$Res>
           : body // ignore: cast_nullable_to_non_nullable
               as String,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [MockzillaHttpResponse].
+extension MockzillaHttpResponsePatterns on MockzillaHttpResponse {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MockzillaHttpResponse value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpResponse() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MockzillaHttpResponse value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpResponse():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_MockzillaHttpResponse value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpResponse() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(int statusCode, Map<String, String> headers, String body)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpResponse() when $default != null:
+        return $default(_that.statusCode, _that.headers, _that.body);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(int statusCode, Map<String, String> headers, String body)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpResponse():
+        return $default(_that.statusCode, _that.headers, _that.body);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(int statusCode, Map<String, String> headers, String body)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaHttpResponse() when $default != null:
+        return $default(_that.statusCode, _that.headers, _that.body);
+      case _:
+        return null;
+    }
   }
 }
 
@@ -493,6 +815,169 @@ class _$DashboardOverridePresetCopyWithImpl<$Res>
   }
 }
 
+/// Adds pattern-matching-related methods to [DashboardOverridePreset].
+extension DashboardOverridePresetPatterns on DashboardOverridePreset {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_DashboardOverridePreset value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOverridePreset() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_DashboardOverridePreset value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOverridePreset():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_DashboardOverridePreset value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOverridePreset() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String name, String? description, MockzillaHttpResponse response)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOverridePreset() when $default != null:
+        return $default(_that.name, _that.description, _that.response);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String name, String? description, MockzillaHttpResponse response)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOverridePreset():
+        return $default(_that.name, _that.description, _that.response);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            String name, String? description, MockzillaHttpResponse response)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOverridePreset() when $default != null:
+        return $default(_that.name, _that.description, _that.response);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 
 class _DashboardOverridePreset implements DashboardOverridePreset {
@@ -670,6 +1155,169 @@ class _$DashboardOptionsConfigCopyWithImpl<$Res>
   }
 }
 
+/// Adds pattern-matching-related methods to [DashboardOptionsConfig].
+extension DashboardOptionsConfigPatterns on DashboardOptionsConfig {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_DashboardOptionsConfig value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOptionsConfig() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_DashboardOptionsConfig value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOptionsConfig():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_DashboardOptionsConfig value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOptionsConfig() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(List<DashboardOverridePreset> successPresets,
+            List<DashboardOverridePreset> errorPresets)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOptionsConfig() when $default != null:
+        return $default(_that.successPresets, _that.errorPresets);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(List<DashboardOverridePreset> successPresets,
+            List<DashboardOverridePreset> errorPresets)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOptionsConfig():
+        return $default(_that.successPresets, _that.errorPresets);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(List<DashboardOverridePreset> successPresets,
+            List<DashboardOverridePreset> errorPresets)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _DashboardOptionsConfig() when $default != null:
+        return $default(_that.successPresets, _that.errorPresets);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 
 class _DashboardOptionsConfig implements DashboardOptionsConfig {
@@ -793,7 +1441,7 @@ mixin _$EndpointConfig {
 
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
-  bool Function(MockzillaHttpRequest request) get endpointMatcher;
+  FutureOr<bool> Function(MockzillaHttpRequest request) get endpointMatcher;
 
   /// Optional, configures the preset responses for the endpoint in the
   /// Mockzilla dashboard.
@@ -802,12 +1450,13 @@ mixin _$EndpointConfig {
   /// This function is called when a network request is made to this endpoint,
   /// note that if an error is being returned due to [shouldFail] then
   /// `errorHandler` is used instead.
-  MockzillaHttpResponse Function(MockzillaHttpRequest request)
+  FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
       get defaultHandler;
 
   /// This function is called when, in response to a network request, the
   /// server returns an error due to [shouldFail].
-  MockzillaHttpResponse Function(MockzillaHttpRequest request) get errorHandler;
+  FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+      get errorHandler;
 
   /// Create a copy of EndpointConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -871,11 +1520,11 @@ abstract mixin class $EndpointConfigCopyWith<$Res> {
       bool shouldFail,
       Duration delay,
       int versionCode,
-      bool Function(MockzillaHttpRequest request) endpointMatcher,
+      FutureOr<bool> Function(MockzillaHttpRequest request) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
-      MockzillaHttpResponse Function(MockzillaHttpRequest request)
+      FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
           defaultHandler,
-      MockzillaHttpResponse Function(MockzillaHttpRequest request)
+      FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
           errorHandler});
 
   $DashboardOptionsConfigCopyWith<$Res> get dashboardOptionsConfig;
@@ -928,7 +1577,7 @@ class _$EndpointConfigCopyWithImpl<$Res>
       endpointMatcher: null == endpointMatcher
           ? _self.endpointMatcher
           : endpointMatcher // ignore: cast_nullable_to_non_nullable
-              as bool Function(MockzillaHttpRequest request),
+              as FutureOr<bool> Function(MockzillaHttpRequest request),
       dashboardOptionsConfig: null == dashboardOptionsConfig
           ? _self.dashboardOptionsConfig
           : dashboardOptionsConfig // ignore: cast_nullable_to_non_nullable
@@ -936,11 +1585,13 @@ class _$EndpointConfigCopyWithImpl<$Res>
       defaultHandler: null == defaultHandler
           ? _self.defaultHandler
           : defaultHandler // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse Function(MockzillaHttpRequest request),
+              as FutureOr<MockzillaHttpResponse> Function(
+                  MockzillaHttpRequest request),
       errorHandler: null == errorHandler
           ? _self.errorHandler
           : errorHandler // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse Function(MockzillaHttpRequest request),
+              as FutureOr<MockzillaHttpResponse> Function(
+                  MockzillaHttpRequest request),
     ));
   }
 
@@ -953,6 +1604,235 @@ class _$EndpointConfigCopyWithImpl<$Res>
         (value) {
       return _then(_self.copyWith(dashboardOptionsConfig: value));
     });
+  }
+}
+
+/// Adds pattern-matching-related methods to [EndpointConfig].
+extension EndpointConfigPatterns on EndpointConfig {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_EndpointConfig value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _EndpointConfig() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_EndpointConfig value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _EndpointConfig():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_EndpointConfig value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _EndpointConfig() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String? customKey,
+            bool shouldFail,
+            Duration delay,
+            int versionCode,
+            FutureOr<bool> Function(MockzillaHttpRequest request)
+                endpointMatcher,
+            DashboardOptionsConfig dashboardOptionsConfig,
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
+                defaultHandler,
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
+                errorHandler)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _EndpointConfig() when $default != null:
+        return $default(
+            _that.name,
+            _that.customKey,
+            _that.shouldFail,
+            _that.delay,
+            _that.versionCode,
+            _that.endpointMatcher,
+            _that.dashboardOptionsConfig,
+            _that.defaultHandler,
+            _that.errorHandler);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String name,
+            String? customKey,
+            bool shouldFail,
+            Duration delay,
+            int versionCode,
+            FutureOr<bool> Function(MockzillaHttpRequest request)
+                endpointMatcher,
+            DashboardOptionsConfig dashboardOptionsConfig,
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
+                defaultHandler,
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
+                errorHandler)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _EndpointConfig():
+        return $default(
+            _that.name,
+            _that.customKey,
+            _that.shouldFail,
+            _that.delay,
+            _that.versionCode,
+            _that.endpointMatcher,
+            _that.dashboardOptionsConfig,
+            _that.defaultHandler,
+            _that.errorHandler);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            String name,
+            String? customKey,
+            bool shouldFail,
+            Duration delay,
+            int versionCode,
+            FutureOr<bool> Function(MockzillaHttpRequest request)
+                endpointMatcher,
+            DashboardOptionsConfig dashboardOptionsConfig,
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
+                defaultHandler,
+            FutureOr<MockzillaHttpResponse> Function(
+                    MockzillaHttpRequest request)
+                errorHandler)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _EndpointConfig() when $default != null:
+        return $default(
+            _that.name,
+            _that.customKey,
+            _that.shouldFail,
+            _that.delay,
+            _that.versionCode,
+            _that.endpointMatcher,
+            _that.dashboardOptionsConfig,
+            _that.defaultHandler,
+            _that.errorHandler);
+      case _:
+        return null;
+    }
   }
 }
 
@@ -1000,7 +1880,7 @@ class _EndpointConfig extends EndpointConfig {
   /// Used to determine whether a particular `request` should be evaluated by
   /// this endpoint.
   @override
-  final bool Function(MockzillaHttpRequest request) endpointMatcher;
+  final FutureOr<bool> Function(MockzillaHttpRequest request) endpointMatcher;
 
   /// Optional, configures the preset responses for the endpoint in the
   /// Mockzilla dashboard.
@@ -1012,13 +1892,13 @@ class _EndpointConfig extends EndpointConfig {
   /// note that if an error is being returned due to [shouldFail] then
   /// `errorHandler` is used instead.
   @override
-  final MockzillaHttpResponse Function(MockzillaHttpRequest request)
+  final FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
       defaultHandler;
 
   /// This function is called when, in response to a network request, the
   /// server returns an error due to [shouldFail].
   @override
-  final MockzillaHttpResponse Function(MockzillaHttpRequest request)
+  final FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
       errorHandler;
 
   /// Create a copy of EndpointConfig
@@ -1085,11 +1965,11 @@ abstract mixin class _$EndpointConfigCopyWith<$Res>
       bool shouldFail,
       Duration delay,
       int versionCode,
-      bool Function(MockzillaHttpRequest request) endpointMatcher,
+      FutureOr<bool> Function(MockzillaHttpRequest request) endpointMatcher,
       DashboardOptionsConfig dashboardOptionsConfig,
-      MockzillaHttpResponse Function(MockzillaHttpRequest request)
+      FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
           defaultHandler,
-      MockzillaHttpResponse Function(MockzillaHttpRequest request)
+      FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
           errorHandler});
 
   @override
@@ -1143,7 +2023,7 @@ class __$EndpointConfigCopyWithImpl<$Res>
       endpointMatcher: null == endpointMatcher
           ? _self.endpointMatcher
           : endpointMatcher // ignore: cast_nullable_to_non_nullable
-              as bool Function(MockzillaHttpRequest request),
+              as FutureOr<bool> Function(MockzillaHttpRequest request),
       dashboardOptionsConfig: null == dashboardOptionsConfig
           ? _self.dashboardOptionsConfig
           : dashboardOptionsConfig // ignore: cast_nullable_to_non_nullable
@@ -1151,11 +2031,13 @@ class __$EndpointConfigCopyWithImpl<$Res>
       defaultHandler: null == defaultHandler
           ? _self.defaultHandler
           : defaultHandler // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse Function(MockzillaHttpRequest request),
+              as FutureOr<MockzillaHttpResponse> Function(
+                  MockzillaHttpRequest request),
       errorHandler: null == errorHandler
           ? _self.errorHandler
           : errorHandler // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse Function(MockzillaHttpRequest request),
+              as FutureOr<MockzillaHttpResponse> Function(
+                  MockzillaHttpRequest request),
     ));
   }
 
@@ -1295,6 +2177,187 @@ class _$MockzillaConfigCopyWithImpl<$Res>
           : loggers // ignore: cast_nullable_to_non_nullable
               as List<MockzillaLogger>,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [MockzillaConfig].
+extension MockzillaConfigPatterns on MockzillaConfig {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MockzillaConfig value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaConfig() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MockzillaConfig value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaConfig():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_MockzillaConfig value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaConfig() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            int port,
+            List<EndpointConfig> endpoints,
+            bool localHostOnly,
+            LogLevel logLevel,
+            bool isNetworkDiscoveryEnabled,
+            List<MockzillaLogger> loggers)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaConfig() when $default != null:
+        return $default(_that.port, _that.endpoints, _that.localHostOnly,
+            _that.logLevel, _that.isNetworkDiscoveryEnabled, _that.loggers);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            int port,
+            List<EndpointConfig> endpoints,
+            bool localHostOnly,
+            LogLevel logLevel,
+            bool isNetworkDiscoveryEnabled,
+            List<MockzillaLogger> loggers)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaConfig():
+        return $default(_that.port, _that.endpoints, _that.localHostOnly,
+            _that.logLevel, _that.isNetworkDiscoveryEnabled, _that.loggers);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            int port,
+            List<EndpointConfig> endpoints,
+            bool localHostOnly,
+            LogLevel logLevel,
+            bool isNetworkDiscoveryEnabled,
+            List<MockzillaLogger> loggers)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaConfig() when $default != null:
+        return $default(_that.port, _that.endpoints, _that.localHostOnly,
+            _that.logLevel, _that.isNetworkDiscoveryEnabled, _that.loggers);
+      case _:
+        return null;
+    }
   }
 }
 
@@ -1565,6 +2628,172 @@ class _$MockzillaRuntimeParamsCopyWithImpl<$Res>
     return $MockzillaConfigCopyWith<$Res>(_self.config, (value) {
       return _then(_self.copyWith(config: value));
     });
+  }
+}
+
+/// Adds pattern-matching-related methods to [MockzillaRuntimeParams].
+extension MockzillaRuntimeParamsPatterns on MockzillaRuntimeParams {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_MockzillaRuntimeParams value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaRuntimeParams() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_MockzillaRuntimeParams value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaRuntimeParams():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_MockzillaRuntimeParams value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaRuntimeParams() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(MockzillaConfig config, String mockBaseUrl,
+            String apiBaseUrl, int port)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaRuntimeParams() when $default != null:
+        return $default(
+            _that.config, _that.mockBaseUrl, _that.apiBaseUrl, _that.port);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(MockzillaConfig config, String mockBaseUrl,
+            String apiBaseUrl, int port)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaRuntimeParams():
+        return $default(
+            _that.config, _that.mockBaseUrl, _that.apiBaseUrl, _that.port);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(MockzillaConfig config, String mockBaseUrl,
+            String apiBaseUrl, int port)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _MockzillaRuntimeParams() when $default != null:
+        return $default(
+            _that.config, _that.mockBaseUrl, _that.apiBaseUrl, _that.port);
+      case _:
+        return null;
+    }
   }
 }
 

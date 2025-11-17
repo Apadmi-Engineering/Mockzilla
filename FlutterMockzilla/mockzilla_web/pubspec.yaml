@@ -1,0 +1,54 @@
+name: mockzilla_web
+description: The Web implementation for the mockzilla plugin.
+# x-release-please-start-version
+version: 0.0.1
+# x-release-please-end
+homepage: https://mockzilla.apadmi.dev/
+repository: https://github.com/Apadmi-Engineering/Mockzilla
+issue_tracker: https://github.com/Apadmi-Engineering/Mockzilla/issues
+documentation: https://mockzilla.apadmi.dev/
+topics:
+  - http
+  - server
+  - tool
+  - mockzilla
+
+#
+# At build time the JS assets for this mockzilla assets are downloaded and bundle with this
+# package.
+
+# Update the version here when needed
+#
+mockzilla_js_version: 3.0.0-alpha1
+
+environment:
+  sdk: '>=3.6.0 <4.0.0'
+  flutter: '>=3.27.0'
+
+flutter:
+  plugin:
+    implements: mockzilla
+    platforms:
+      web:
+        pluginClass: MockzillaWeb
+        fileName: mockzilla_web.dart
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  meta: ^1.15.0
+  mockzilla_platform_interface: ^1.1.1
+  web: ">=0.5.1 <2.0.0"
+
+assets:
+  - lib/assets/
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  pigeon: ^22.6.0
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.13
+  mockito: ^5.4.4

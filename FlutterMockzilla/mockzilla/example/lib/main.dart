@@ -9,6 +9,8 @@ import 'engine/config/mockzilla_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  MockzillaUiMobile.preloadAssets();
   final params = await Mockzilla.startMockzilla(mockzillaConfig);
   debugPrint("""
     +----------------+-----------------------------------+
@@ -58,7 +60,7 @@ class _PackagesListState extends State<PackagesList> {
     fetchPackages();
   }
 
-  fetchPackages() {
+  void fetchPackages() {
     setState(() {
       _future = _packagesClient.fetchPackages(
         const FetchPackagesRequest(query: "mockzilla"),

@@ -66,23 +66,28 @@ class CallbackProvider extends MockzillaFlutterApi {
 
   /// Calls the matcher on the specified endpoint.
   @override
-  bool endpointMatcher(BridgeMockzillaHttpRequest request, String key) {
+  Future<bool> endpointMatcher(
+      BridgeMockzillaHttpRequest request, String key) async {
     return _determineEndpoint(key).endpointMatcher(request.toDart());
   }
 
   /// Returns the default response for the endpoint associated with [key].
   @override
-  BridgeMockzillaHttpResponse defaultHandler(
-      BridgeMockzillaHttpRequest request, String key) {
-    return _determineEndpoint(key).defaultHandler(request.toDart()).toBridge();
+  Future<BridgeMockzillaHttpResponse> defaultHandler(
+      BridgeMockzillaHttpRequest request, String key) async {
+    final response =
+        await _determineEndpoint(key).defaultHandler(request.toDart());
+    return response.toBridge();
   }
 
   /// Returns the default error response for the endpoint associated with
   /// [key].
   @override
-  BridgeMockzillaHttpResponse errorHandler(
-      BridgeMockzillaHttpRequest request, String key) {
-    return _determineEndpoint(key).errorHandler(request.toDart()).toBridge();
+  Future<BridgeMockzillaHttpResponse> errorHandler(
+      BridgeMockzillaHttpRequest request, String key) async {
+    final response =
+        await _determineEndpoint(key).errorHandler(request.toDart());
+    return response.toBridge();
   }
 
   @override
@@ -105,17 +110,18 @@ class CallbackProvider extends MockzillaFlutterApi {
 
 @internal
 extension FlutterCallbackProvider on CallbackProvider {
-  bool flutterEndpointMatcher(MockzillaHttpRequest request, String key) {
+  Future<bool> flutterEndpointMatcher(
+      MockzillaHttpRequest request, String key) {
     return endpointMatcher(request.toBridge(), key);
   }
 
-  MockzillaHttpResponse flutterDefaultHandler(
+  Future<MockzillaHttpResponse> flutterDefaultHandler(
       MockzillaHttpRequest request, String key) {
-    return defaultHandler(request.toBridge(), key).toDart();
+    return defaultHandler(request.toBridge(), key).then((it) => it.toDart());
   }
 
-  MockzillaHttpResponse flutterErrorHandler(
+  Future<MockzillaHttpResponse> flutterErrorHandler(
       MockzillaHttpRequest request, String key) {
-    return errorHandler(request.toBridge(), key).toDart();
+    return errorHandler(request.toBridge(), key).then((it) => it.toDart());
   }
 }

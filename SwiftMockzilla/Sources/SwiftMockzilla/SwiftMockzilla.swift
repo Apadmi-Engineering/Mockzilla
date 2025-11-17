@@ -26,10 +26,34 @@ public func stopMockzilla() {
 }
 
 public extension EndpointConfigurationBuilder {
-    func setSwiftPatternMatcher(block: @escaping (MockzillaHttpRequest) -> Bool) -> EndpointConfigurationBuilder {
-        setPatternMatcher {
-            KotlinBoolean(bool: block($0))
+    func setSwiftPatternMatcher(block: @escaping (MockzillaHttpRequest) async -> Bool) -> EndpointConfigurationBuilder {
+        AsyncUtilsKt.setPatternMatcherCallback(builder: self) { request, callback in
+            Task {
+                let result = await block(request)
+                callback(KotlinBoolean(bool: result))
+            }
         }
+        return self
+    }
+    
+    func setSwiftDefaultHandler(block: @escaping (MockzillaHttpRequest) async -> MockzillaHttpResponse) -> EndpointConfigurationBuilder {
+        AsyncUtilsKt.setDefaultHandlerCallback(builder: self) { request, callback in
+            Task {
+                let result = await block(request)
+                callback(result)
+            }
+        }
+        return self
+    }
+    
+    func setSwiftErrorHandler(block: @escaping (MockzillaHttpRequest) async -> MockzillaHttpResponse) -> EndpointConfigurationBuilder {
+        AsyncUtilsKt.setErrorHandlerCallback(builder: self) { request, callback in
+            Task {
+                let result = await block(request)
+                callback(result)
+            }
+        }
+        return self
     }
 }
 

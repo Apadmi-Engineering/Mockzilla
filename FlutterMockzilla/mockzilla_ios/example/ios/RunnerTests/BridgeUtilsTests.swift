@@ -181,9 +181,9 @@ class BridgeUtilsTests: XCTestCase {
     
     func testEndpointConfigMarshalling() throws {
         
-        let endpointMatcher = { (request: MockzillaHttpRequest) in KotlinBoolean(bool: true)}
-        let defaultHandler = { (request: MockzillaHttpRequest) in MockzillaHttpResponse() }
-        let errorHandler = { (request: MockzillaHttpRequest) in MockzillaHttpResponse() }
+        let endpointMatcher = { (key: String, request: MockzillaHttpRequest) in true}
+        let defaultHandler = { (key: String, request: MockzillaHttpRequest) in MockzillaHttpResponse() }
+        let errorHandler = { (key: String, request: MockzillaHttpRequest) in MockzillaHttpResponse() }
         
         let nativeToBridge = [
             EndpointConfiguration(
@@ -195,9 +195,9 @@ class BridgeUtilsTests: XCTestCase {
                     errorPresets: [], successPresets: []
                 ),
                 versionCode: 1,
-                endpointMatcher: endpointMatcher,
-                defaultHandler: defaultHandler,
-                errorHandler: errorHandler
+                endpointMatcher: SwiftEndpointMatcher(key: "endpoint", block: endpointMatcher),
+                defaultHandler: SwiftHandler(key: "endpoint", block: defaultHandler),
+                errorHandler: SwiftHandler(key: "endpoint", block: errorHandler)
             ) : BridgeEndpointConfig(
                 name: "Endpoint",
                 key: "endpoint",
@@ -211,9 +211,9 @@ class BridgeUtilsTests: XCTestCase {
         nativeToBridge.forEach { (native, bridge) in
             // From bridge to native
             let actualNative = bridge.toNative(
-                endpointMatcher: { (key, request) in endpointMatcher(request) as! Bool},
-                defaultHandler: { (key, request) in MockzillaHttpResponse() },
-                errorHandler: { (key, request) in errorHandler(request)}
+                endpointMatcher: endpointMatcher,
+                defaultHandler: defaultHandler,
+                errorHandler: errorHandler
             )
             XCTAssertEqual(actualNative.key as! String, native.key as! String)
             XCTAssertEqual(actualNative.name, native.name)
@@ -235,6 +235,10 @@ class BridgeUtilsTests: XCTestCase {
     }
     
     func testMockzillaConfigMarshalling() throws {
+        let endpointMatcher = { (key: String, request: MockzillaHttpRequest) in true}
+        let defaultHandler = { (key: String, request: MockzillaHttpRequest) in MockzillaHttpResponse() }
+        let errorHandler = { (key: String, request: MockzillaHttpRequest) in MockzillaHttpResponse() }
+
         let native = MockzillaConfig(
             port: 8080,
             endpoints: [
@@ -245,9 +249,9 @@ class BridgeUtilsTests: XCTestCase {
                     delay: KotlinInt(int: 100),
                     dashboardOptionsConfig: Mockzilla_commonDashboardOptionsConfig(errorPresets: [], successPresets: []),
                     versionCode: 1,
-                    endpointMatcher: { (request) in true },
-                    defaultHandler: { (request) in MockzillaHttpResponse()},
-                    errorHandler: { (request) in MockzillaHttpResponse()}
+                    endpointMatcher: SwiftEndpointMatcher(key: "endpoint", block: endpointMatcher),
+                    defaultHandler: SwiftHandler(key: "endpoint", block: defaultHandler),
+                    errorHandler: SwiftHandler(key: "endpoint", block: errorHandler)
                 )
             ],
             isRelease: false,

@@ -3,7 +3,7 @@ package com.apadmi.mockzilla
 import org.gradle.api.Project
 
 object MobileUiConfig {
-    const val coreVersionForManagementUi = "UNKNOWN" // TODO: Update this when next version of mobile UI is ready
+    const val coreVersionForManagementUi = "3.0.0-alpha1"
 }
 
 fun Project.isMobileUiDeployBuild() = properties["is_building_for_deployment"].toString().toBoolean()

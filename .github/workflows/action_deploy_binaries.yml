@@ -69,6 +69,7 @@ jobs:
         env:
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
           IOS_DEPLOY_URL: ${{ secrets.IOS_DEPLOY_URL }}
+
   deploy-js:
     name: Publish JS files to GitHub release
     runs-on: macos-14
@@ -85,7 +86,7 @@ jobs:
         run: bundle exec fastlane build_js_artifacts
       - name: Zip up assets
         run: |
-          mv mockzilla/build/kotlin-webpack/js/productionExecutable javascript_output
+          mv mockzilla/build/kotlin-webpack/js/developmentExecutable javascript_output
           zip -r javascript_output.zip javascript_output
       - uses: svenstaro/upload-release-action@v2
         with:

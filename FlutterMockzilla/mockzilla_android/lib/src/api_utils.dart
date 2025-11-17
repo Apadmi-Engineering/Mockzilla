@@ -105,9 +105,11 @@ extension DashboardOverrideConfigBridge on DashboardOptionsConfig {
 @internal
 extension BridgeEndpointConfigBridge on BridgeEndpointConfig {
   EndpointConfig toDart(
-    bool Function(MockzillaHttpRequest request) endpointMatcher,
-    MockzillaHttpResponse Function(MockzillaHttpRequest request) defaultHandler,
-    MockzillaHttpResponse Function(MockzillaHttpRequest request) errorHandler,
+    Future<bool> Function(MockzillaHttpRequest request) endpointMatcher,
+    Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+        defaultHandler,
+    Future<MockzillaHttpResponse> Function(MockzillaHttpRequest request)
+        errorHandler,
   ) =>
       EndpointConfig(
         name: name,
@@ -152,12 +154,12 @@ extension MockzillaConfigBridge on MockzillaConfig {
 @internal
 extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
   MockzillaConfig toDart({
-    required bool Function(MockzillaHttpRequest request, String key)
+    required Future<bool> Function(MockzillaHttpRequest request, String key)
         endpointMatcher,
-    required MockzillaHttpResponse Function(
+    required Future<MockzillaHttpResponse> Function(
             MockzillaHttpRequest request, String key)
         defaultHandler,
-    required MockzillaHttpResponse Function(
+    required Future<MockzillaHttpResponse> Function(
             MockzillaHttpRequest request, String key)
         errorHandler,
   }) =>
@@ -181,12 +183,12 @@ extension BridgeMockzillaConfigBridge on BridgeMockzillaConfig {
 @internal
 extension BridgeMockzillaRuntimeParamsBridge on BridgeMockzillaRuntimeParams {
   MockzillaRuntimeParams toDart({
-    required bool Function(MockzillaHttpRequest request, String key)
+    required Future<bool> Function(MockzillaHttpRequest request, String key)
         endpointMatcher,
-    required MockzillaHttpResponse Function(
+    required Future<MockzillaHttpResponse> Function(
             MockzillaHttpRequest request, String key)
         defaultHandler,
-    required MockzillaHttpResponse Function(
+    required Future<MockzillaHttpResponse> Function(
             MockzillaHttpRequest request, String key)
         errorHandler,
   }) =>

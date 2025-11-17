@@ -12,4 +12,8 @@ class MockzillaUiMobile: Thread, MockzillaUiMobileHostApi {
     func launchManagementUi() {
         launchManagementUiSwift()
     }
+
+    func preloadAssets() {
+        /* No-Op */
+    }
 }

@@ -15,10 +15,7 @@ extension MockzillaConfig {
     static func createConfig() -> MockzillaConfig {
         MockzillaConfig.Builder()
            .setPort(port: 8034)
-           .setFailureProbabilityPercentage(percentage: 0)
            .setIsReleaseModeEnabled(isRelease: false) // Change to true to test release mode
-           .setMeanDelayMillis(delay: 100)
-           .setDelayVarianceMillis(variance: 40)
            .setLogLevel(level: LogLevel.verbose)
            .addEndpoint(endpoint: getCowEndpoint)
            .build()
@@ -32,15 +29,12 @@ fileprivate extension MockzillaConfig {
                 .setSwiftPatternMatcher {
                     $0.uri.hasSuffix("cow")
                 }
-                .setErrorHandler { _ in
+                .setSwiftErrorHandler { _ in
                     MockzillaHttpResponse(status: HttpStatusCode.InternalServerError)
                 }
-                .setFailureProbability(percentage: 0)
-                .setMeanDelayMillis(delay: 10)
-                .setDelayVarianceMillis(variance: 0)
-                .setDefaultHandler { request in
-                    let request = try! GetCowRequestDto.fromJson(
-                        data: request.body.data(using: .utf8)!
+                .setSwiftDefaultHandler { request in
+                    let request = try! await GetCowRequestDto.fromJson(
+                        data: request.bodyAsString().data(using: .utf8)!
                     )
                     
                     return MockzillaHttpResponse(

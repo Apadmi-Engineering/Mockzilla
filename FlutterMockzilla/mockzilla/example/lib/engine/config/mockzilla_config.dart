@@ -3,15 +3,25 @@ import 'dart:convert';
 import 'package:mockzilla/mockzilla.dart';
 import 'package:mockzilla_example/engine/feature/packages/models.dart';
 
-final mockzillaConfig = const MockzillaConfig().addEndpoint(
+final mockzillaConfig =
+    const MockzillaConfig(logLevel: LogLevel.verbose).addEndpoint(
   () => EndpointConfig(
-    name: "Fetch Packages",
-    endpointMatcher: (request) =>
-        request.uri.endsWith("packages") && request.method == HttpMethod.get,
-    defaultHandler: (_) => defaultResponse,
-    errorHandler: (_) => errorResponse,
-    shouldFail: false,
-  ),
+      name: "Fetch Packages",
+      endpointMatcher: (request) async =>
+          request.uri.endsWith("packages") && request.method == HttpMethod.post,
+      defaultHandler: (_) async => defaultResponse,
+      errorHandler: (_) async => errorResponse,
+      shouldFail: false,
+      dashboardOptionsConfig: DashboardOptionsConfig(successPresets: [
+        DashboardOverridePreset(
+            name: "Error Preset",
+            description: "Error Preset Example",
+            response: MockzillaHttpResponse(
+              statusCode: 404,
+              headers: {},
+              body: "No body",
+            ))
+      ])),
 );
 
 final defaultResponse = MockzillaHttpResponse(

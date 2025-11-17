@@ -1,7 +1,7 @@
 name: mockzilla_ui_mobile
 description: "Embedded UI for controlling the mockzilla server at runtime"
 # x-release-please-start-version
-version: 0.0.5
+version: 0.0.7
 # x-release-please-end
 homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
@@ -15,7 +15,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
   plugin_platform_interface: ^2.0.2
+  web: ">=0.5.1 <2.0.0"
 
 dev_dependencies:
   flutter_test:
@@ -31,3 +34,9 @@ flutter:
         pluginClass: MockzillaUiMobilePlugin
       ios:
         pluginClass: MockzillaUiMobilePlugin
+      web:
+        pluginClass: MockzillaMobileUiWeb
+        fileName: src/web.dart
+
+assets:
+  - lib/assets/

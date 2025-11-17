@@ -5,7 +5,7 @@ part 'models.freezed.dart';
 part 'models.g.dart';
 
 @freezed
-class FetchPackagesRequest with _$FetchPackagesRequest {
+abstract class FetchPackagesRequest with _$FetchPackagesRequest {
   const factory FetchPackagesRequest({
     required String query,
   }) = _FetchPackagesRequest;
@@ -15,7 +15,7 @@ class FetchPackagesRequest with _$FetchPackagesRequest {
 }
 
 @freezed
-class FetchPackagesResponse with _$FetchPackagesResponse {
+abstract class FetchPackagesResponse with _$FetchPackagesResponse {
   const factory FetchPackagesResponse({
     required List<Package> packages,
   }) = _FetchPackagesResponse;
@@ -25,7 +25,7 @@ class FetchPackagesResponse with _$FetchPackagesResponse {
 }
 
 @freezed
-class Package with _$Package {
+abstract class Package with _$Package {
   const factory Package({
     required String name,
     required String description,

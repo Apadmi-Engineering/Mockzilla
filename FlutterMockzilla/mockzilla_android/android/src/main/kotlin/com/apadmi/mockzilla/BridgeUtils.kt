@@ -65,7 +65,7 @@ fun BridgeLogLevel.Companion.fromNative(
     MockzillaConfig.LogLevel.Assert -> BridgeLogLevel.ASSERTION
 }
 
-fun BridgeMockzillaHttpRequest.Companion.fromNative(
+suspend fun BridgeMockzillaHttpRequest.Companion.fromNative(
     data: MockzillaHttpRequest
 ) = BridgeMockzillaHttpRequest(
     data.uri,
@@ -113,9 +113,9 @@ fun BridgeDashboardOptionsConfig.Companion.fromNative(data: DashboardOptionsConf
     )
 
 fun BridgeEndpointConfig.toNative(
-    endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
-    defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
-    errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
+    endpointMatcher: suspend MockzillaHttpRequest.(key: String) -> Boolean,
+    defaultHandler: suspend MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
+    errorHandler: suspend MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
 ): EndpointConfiguration = EndpointConfiguration(
     this.name,
     EndpointConfiguration.Key(this.key),
@@ -141,9 +141,9 @@ fun BridgeEndpointConfig.Companion.fromNative(
 
 
 fun BridgeMockzillaConfig.toNative(
-    endpointMatcher: MockzillaHttpRequest.(key: String) -> Boolean,
-    defaultHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
-    errorHandler: MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
+    endpointMatcher: suspend MockzillaHttpRequest.(key: String) -> Boolean,
+    defaultHandler: suspend MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
+    errorHandler: suspend MockzillaHttpRequest.(key: String) -> MockzillaHttpResponse,
     proxyMockzillaLogger: ProxyMockzillaLogger,
 ) = MockzillaConfig(
     this.port.toInt(),

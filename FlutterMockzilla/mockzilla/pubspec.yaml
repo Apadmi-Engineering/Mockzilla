@@ -23,6 +23,7 @@ dependencies:
   mockzilla_platform_interface: ^1.1.1
   mockzilla_android: ^1.2.1
   mockzilla_ios: ^1.2.1
+  mockzilla_web: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -36,3 +37,5 @@ flutter:
         default_package: mockzilla_android
       ios:
         default_package: mockzilla_ios
+      web:
+        default_package: mockzilla_web

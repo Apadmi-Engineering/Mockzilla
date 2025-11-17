@@ -7,6 +7,8 @@ packages:
   - mockzilla_android/**
   - mockzilla_ios
   - mockzilla_ios/**
+  - mockzilla_web
+  - mockzilla_web/**
   - mockzilla_platform_interface
 
 scripts:

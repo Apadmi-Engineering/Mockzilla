@@ -40,56 +40,62 @@ class MockzillaAndroid(
         stopMockzilla()
     }
 
-    private fun isMatchedEndpoint(request: MockzillaHttpRequest, key: String): Boolean {
+    private suspend fun isMatchedEndpoint(request: MockzillaHttpRequest, key: String): Boolean {
         val completer: CompletableDeferred<Boolean> = CompletableDeferred()
         uiThreadHandler.post {
-            flutterApi.endpointMatcher(BridgeMockzillaHttpRequest.fromNative(request), key) {
-                // Return default of `false` if error occurs.
-                completer.complete(it.getOrElse { false })
+            runBlocking {
+                flutterApi.endpointMatcher(BridgeMockzillaHttpRequest.fromNative(request), key) {
+                    // Return default of `false` if error occurs.
+                    completer.complete(it.getOrElse { false })
+                }
             }
         }
-        return runBlocking { completer.await() }
+        return completer.await()
     }
 
-    private fun callDefaultHandler(
+    private suspend fun callDefaultHandler(
         request: MockzillaHttpRequest,
         key: String
     ): MockzillaHttpResponse {
         val completer: CompletableDeferred<MockzillaHttpResponse> = CompletableDeferred()
         uiThreadHandler.post {
-            flutterApi.defaultHandler(
-                BridgeMockzillaHttpRequest.fromNative(request),
-                key
-            ) { bridgeResult ->
-                // Return default of 500 error if error occurs.
-                completer.complete(bridgeResult.map {
-                    it.toNative()
-                }.getOrElse {
-                    MockzillaHttpResponse(statusCode = HttpStatusCode.InternalServerError)
-                })
+            runBlocking {
+                flutterApi.defaultHandler(
+                    BridgeMockzillaHttpRequest.fromNative(request),
+                    key
+                ) { bridgeResult ->
+                    // Return default of 500 error if error occurs.
+                    completer.complete(bridgeResult.map {
+                        it.toNative()
+                    }.getOrElse {
+                        MockzillaHttpResponse(statusCode = HttpStatusCode.InternalServerError)
+                    })
+                }
             }
         }
-        return runBlocking { completer.await() }
+        return completer.await()
     }
 
-    private fun callErrorHandler(
+    private suspend fun callErrorHandler(
         request: MockzillaHttpRequest,
         key: String
     ): MockzillaHttpResponse {
         val completer: CompletableDeferred<MockzillaHttpResponse> = CompletableDeferred()
         uiThreadHandler.post {
-            flutterApi.errorHandler(
-                BridgeMockzillaHttpRequest.fromNative(request),
-                key
-            ) { bridgeResult ->
-                // Return default of 500 error if error occurs.
-                completer.complete(bridgeResult.map {
-                    it.toNative()
-                }.getOrElse {
-                    MockzillaHttpResponse(statusCode = HttpStatusCode.InternalServerError)
-                })
+            runBlocking {
+                flutterApi.errorHandler(
+                    BridgeMockzillaHttpRequest.fromNative(request),
+                    key
+                ) { bridgeResult ->
+                    // Return default of 500 error if error occurs.
+                    completer.complete(bridgeResult.map {
+                        it.toNative()
+                    }.getOrElse {
+                        MockzillaHttpResponse(statusCode = HttpStatusCode.InternalServerError)
+                    })
+                }
             }
         }
-        return runBlocking { completer.await() }
+        return completer.await()
     }
 }

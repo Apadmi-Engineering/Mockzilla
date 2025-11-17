@@ -435,12 +435,12 @@ class MockzillaHostApi {
 abstract class MockzillaFlutterApi {
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
-  bool endpointMatcher(BridgeMockzillaHttpRequest request, String key);
+  Future<bool> endpointMatcher(BridgeMockzillaHttpRequest request, String key);
 
-  BridgeMockzillaHttpResponse defaultHandler(
+  Future<BridgeMockzillaHttpResponse> defaultHandler(
       BridgeMockzillaHttpRequest request, String key);
 
-  BridgeMockzillaHttpResponse errorHandler(
+  Future<BridgeMockzillaHttpResponse> errorHandler(
       BridgeMockzillaHttpRequest request, String key);
 
   void log(
@@ -475,7 +475,8 @@ abstract class MockzillaFlutterApi {
           assert(arg_key != null,
               'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.endpointMatcher was null, expected non-null String.');
           try {
-            final bool output = api.endpointMatcher(arg_request!, arg_key!);
+            final bool output =
+                await api.endpointMatcher(arg_request!, arg_key!);
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
@@ -509,7 +510,7 @@ abstract class MockzillaFlutterApi {
               'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.defaultHandler was null, expected non-null String.');
           try {
             final BridgeMockzillaHttpResponse output =
-                api.defaultHandler(arg_request!, arg_key!);
+                await api.defaultHandler(arg_request!, arg_key!);
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
@@ -543,7 +544,7 @@ abstract class MockzillaFlutterApi {
               'Argument for dev.flutter.pigeon.mockzilla_android.MockzillaFlutterApi.errorHandler was null, expected non-null String.');
           try {
             final BridgeMockzillaHttpResponse output =
-                api.errorHandler(arg_request!, arg_key!);
+                await api.errorHandler(arg_request!, arg_key!);
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
