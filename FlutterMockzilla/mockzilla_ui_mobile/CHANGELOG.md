@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.8](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.7...flutter_mockzilla_ui_mobile-v0.0.8) (2025-11-18)
+
+### Features
+
+* Support preloading assets (used to speed up web first launch)
+
 ## [0.0.7](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.6...flutter_mockzilla_ui_mobile-v0.0.7) (2025-11-14)
 
 # Features

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'flutter_mockzilla_web-v[0-9]+.[0-9]+.[0-9]+'
+      - flutter_mockzilla_web-v**
 
 # Publish using the reusable workflow from dart-lang.
 jobs:
@@ -12,14 +12,21 @@ jobs:
     runs-on: macos-14
     permissions:
       id-token: write
+    environment: production
     steps:
       - name: Install dependencies
         run: bundle install
       - name: Download JS assets
         run: |
           export GPG_TTY=$(tty)
-          bundle exec fastlane download_mockzilla_ui_mobile_js_assets
-      - uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+          bundle exec fastlane download_mockzilla_js_assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: dart-lang/setup-dart@v1
+      - uses: subosito/flutter-action@v2
         with:
-          working-directory: FlutterMockzilla/mockzilla_web
-          environment: production
+          flutter-version: '3.35.0'
+          channel: 'stable'
+      - run: cd FlutterMockzilla/mockzilla_web; flutter pub get
+      - name: Publish
+        run: cd FlutterMockzilla/mockzilla_web; flutter pub publish --force

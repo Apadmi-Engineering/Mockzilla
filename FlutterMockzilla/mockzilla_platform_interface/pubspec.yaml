@@ -1,7 +1,7 @@
 name: mockzilla_platform_interface
 description: A common interface for the mockzilla plugin.
 # x-release-please-start-version
-version: 1.1.1
+version: 2.0.0-dev.1
 # x-release-please-end
 homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla

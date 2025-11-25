@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.8](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v0.0.7...mockzilla-mobile-ui-v0.0.8) (2025-11-14)
+
+### Features
+
+* Bump underlying mockzilla-common versions
+
 ## [0.0.7](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v0.0.5...mockzilla-mobile-ui-v0.0.7) (2025-11-14)
 
 ### Features

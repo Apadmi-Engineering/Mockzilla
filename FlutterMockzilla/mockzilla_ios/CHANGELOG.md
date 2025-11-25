@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.0-dev.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.1.1...flutter_mockzilla_ios-v2.0.0-dev.1) (2025-11-18)
+
+### Features
+
+* Handle default handlers, error handlers and pattern matchers being asynchronous
+
 ## [1.2.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.2.0...flutter_mockzilla_ios-v1.2.1) (2025-09-30)
 
 

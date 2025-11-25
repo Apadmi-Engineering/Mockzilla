@@ -13,6 +13,7 @@ def download_and_unzip_release_asset(tag, asset_name, unzip_dir)
   repo = "Mockzilla"
   api_url = "https://api.github.com/repos/#{owner}/#{repo}/releases/tags/#{tag}"
   download_filename = asset_name
+  github_token = ENV['GITHUB_TOKEN']
 
   puts "Starting process for asset '#{asset_name}' in tag '#{tag}'..."
 
@@ -23,6 +24,7 @@ def download_and_unzip_release_asset(tag, asset_name, unzip_dir)
   request = Net::HTTP::Get.new(uri)
   request['Accept'] = 'application/vnd.github+json'
   request['X-GitHub-Api-Version'] = '2022-11-28'
+  request['Authorization'] = "Bearer #{github_token}" if github_token
 
   begin
     response = http.request(request)
