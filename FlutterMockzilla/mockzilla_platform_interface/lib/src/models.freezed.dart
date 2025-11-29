@@ -726,6 +726,347 @@ class __$MockzillaHttpResponseCopyWithImpl<$Res>
 }
 
 /// @nodoc
+mixin _$PartialMockzillaHttpResponse {
+  int? get statusCode;
+  Map<String, String>? get headers;
+  String? get body;
+
+  /// Create a copy of PartialMockzillaHttpResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PartialMockzillaHttpResponseCopyWith<PartialMockzillaHttpResponse>
+      get copyWith => _$PartialMockzillaHttpResponseCopyWithImpl<
+              PartialMockzillaHttpResponse>(
+          this as PartialMockzillaHttpResponse, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is PartialMockzillaHttpResponse &&
+            (identical(other.statusCode, statusCode) ||
+                other.statusCode == statusCode) &&
+            const DeepCollectionEquality().equals(other.headers, headers) &&
+            (identical(other.body, body) || other.body == body));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, statusCode,
+      const DeepCollectionEquality().hash(headers), body);
+
+  @override
+  String toString() {
+    return 'PartialMockzillaHttpResponse(statusCode: $statusCode, headers: $headers, body: $body)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $PartialMockzillaHttpResponseCopyWith<$Res> {
+  factory $PartialMockzillaHttpResponseCopyWith(
+          PartialMockzillaHttpResponse value,
+          $Res Function(PartialMockzillaHttpResponse) _then) =
+      _$PartialMockzillaHttpResponseCopyWithImpl;
+  @useResult
+  $Res call({int? statusCode, Map<String, String>? headers, String? body});
+}
+
+/// @nodoc
+class _$PartialMockzillaHttpResponseCopyWithImpl<$Res>
+    implements $PartialMockzillaHttpResponseCopyWith<$Res> {
+  _$PartialMockzillaHttpResponseCopyWithImpl(this._self, this._then);
+
+  final PartialMockzillaHttpResponse _self;
+  final $Res Function(PartialMockzillaHttpResponse) _then;
+
+  /// Create a copy of PartialMockzillaHttpResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? statusCode = freezed,
+    Object? headers = freezed,
+    Object? body = freezed,
+  }) {
+    return _then(_self.copyWith(
+      statusCode: freezed == statusCode
+          ? _self.statusCode
+          : statusCode // ignore: cast_nullable_to_non_nullable
+              as int?,
+      headers: freezed == headers
+          ? _self.headers
+          : headers // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>?,
+      body: freezed == body
+          ? _self.body
+          : body // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [PartialMockzillaHttpResponse].
+extension PartialMockzillaHttpResponsePatterns on PartialMockzillaHttpResponse {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_PartialMockzillaHttpResponse value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _PartialMockzillaHttpResponse() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_PartialMockzillaHttpResponse value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _PartialMockzillaHttpResponse():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_PartialMockzillaHttpResponse value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _PartialMockzillaHttpResponse() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            int? statusCode, Map<String, String>? headers, String? body)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _PartialMockzillaHttpResponse() when $default != null:
+        return $default(_that.statusCode, _that.headers, _that.body);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            int? statusCode, Map<String, String>? headers, String? body)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _PartialMockzillaHttpResponse():
+        return $default(_that.statusCode, _that.headers, _that.body);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            int? statusCode, Map<String, String>? headers, String? body)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _PartialMockzillaHttpResponse() when $default != null:
+        return $default(_that.statusCode, _that.headers, _that.body);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+
+class _PartialMockzillaHttpResponse implements PartialMockzillaHttpResponse {
+  const _PartialMockzillaHttpResponse(
+      {this.statusCode, final Map<String, String>? headers, this.body})
+      : _headers = headers;
+
+  @override
+  final int? statusCode;
+  final Map<String, String>? _headers;
+  @override
+  Map<String, String>? get headers {
+    final value = _headers;
+    if (value == null) return null;
+    if (_headers is EqualUnmodifiableMapView) return _headers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
+  @override
+  final String? body;
+
+  /// Create a copy of PartialMockzillaHttpResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PartialMockzillaHttpResponseCopyWith<_PartialMockzillaHttpResponse>
+      get copyWith => __$PartialMockzillaHttpResponseCopyWithImpl<
+          _PartialMockzillaHttpResponse>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _PartialMockzillaHttpResponse &&
+            (identical(other.statusCode, statusCode) ||
+                other.statusCode == statusCode) &&
+            const DeepCollectionEquality().equals(other._headers, _headers) &&
+            (identical(other.body, body) || other.body == body));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, statusCode,
+      const DeepCollectionEquality().hash(_headers), body);
+
+  @override
+  String toString() {
+    return 'PartialMockzillaHttpResponse(statusCode: $statusCode, headers: $headers, body: $body)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$PartialMockzillaHttpResponseCopyWith<$Res>
+    implements $PartialMockzillaHttpResponseCopyWith<$Res> {
+  factory _$PartialMockzillaHttpResponseCopyWith(
+          _PartialMockzillaHttpResponse value,
+          $Res Function(_PartialMockzillaHttpResponse) _then) =
+      __$PartialMockzillaHttpResponseCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int? statusCode, Map<String, String>? headers, String? body});
+}
+
+/// @nodoc
+class __$PartialMockzillaHttpResponseCopyWithImpl<$Res>
+    implements _$PartialMockzillaHttpResponseCopyWith<$Res> {
+  __$PartialMockzillaHttpResponseCopyWithImpl(this._self, this._then);
+
+  final _PartialMockzillaHttpResponse _self;
+  final $Res Function(_PartialMockzillaHttpResponse) _then;
+
+  /// Create a copy of PartialMockzillaHttpResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? statusCode = freezed,
+    Object? headers = freezed,
+    Object? body = freezed,
+  }) {
+    return _then(_PartialMockzillaHttpResponse(
+      statusCode: freezed == statusCode
+          ? _self.statusCode
+          : statusCode // ignore: cast_nullable_to_non_nullable
+              as int?,
+      headers: freezed == headers
+          ? _self._headers
+          : headers // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>?,
+      body: freezed == body
+          ? _self.body
+          : body // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
 mixin _$DashboardOverridePreset {
   String get name;
   String? get description;
@@ -1081,8 +1422,12 @@ class __$DashboardOverridePresetCopyWithImpl<$Res>
 
 /// @nodoc
 mixin _$DashboardOptionsConfig {
+  @Deprecated(
+      "Success/Error presets are now just one flat list, so use `presets` property")
   List<DashboardOverridePreset> get successPresets;
+  @Deprecated("Error Presets will be removed in a future version")
   List<DashboardOverridePreset> get errorPresets;
+  List<DashboardOverridePreset> get presets;
 
   /// Create a copy of DashboardOptionsConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -1100,18 +1445,20 @@ mixin _$DashboardOptionsConfig {
             const DeepCollectionEquality()
                 .equals(other.successPresets, successPresets) &&
             const DeepCollectionEquality()
-                .equals(other.errorPresets, errorPresets));
+                .equals(other.errorPresets, errorPresets) &&
+            const DeepCollectionEquality().equals(other.presets, presets));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(successPresets),
-      const DeepCollectionEquality().hash(errorPresets));
+      const DeepCollectionEquality().hash(errorPresets),
+      const DeepCollectionEquality().hash(presets));
 
   @override
   String toString() {
-    return 'DashboardOptionsConfig(successPresets: $successPresets, errorPresets: $errorPresets)';
+    return 'DashboardOptionsConfig(successPresets: $successPresets, errorPresets: $errorPresets, presets: $presets)';
   }
 }
 
@@ -1122,8 +1469,12 @@ abstract mixin class $DashboardOptionsConfigCopyWith<$Res> {
       _$DashboardOptionsConfigCopyWithImpl;
   @useResult
   $Res call(
-      {List<DashboardOverridePreset> successPresets,
-      List<DashboardOverridePreset> errorPresets});
+      {@Deprecated(
+          "Success/Error presets are now just one flat list, so use `presets` property")
+      List<DashboardOverridePreset> successPresets,
+      @Deprecated("Error Presets will be removed in a future version")
+      List<DashboardOverridePreset> errorPresets,
+      List<DashboardOverridePreset> presets});
 }
 
 /// @nodoc
@@ -1141,6 +1492,7 @@ class _$DashboardOptionsConfigCopyWithImpl<$Res>
   $Res call({
     Object? successPresets = null,
     Object? errorPresets = null,
+    Object? presets = null,
   }) {
     return _then(_self.copyWith(
       successPresets: null == successPresets
@@ -1150,6 +1502,10 @@ class _$DashboardOptionsConfigCopyWithImpl<$Res>
       errorPresets: null == errorPresets
           ? _self.errorPresets
           : errorPresets // ignore: cast_nullable_to_non_nullable
+              as List<DashboardOverridePreset>,
+      presets: null == presets
+          ? _self.presets
+          : presets // ignore: cast_nullable_to_non_nullable
               as List<DashboardOverridePreset>,
     ));
   }
@@ -1248,15 +1604,21 @@ extension DashboardOptionsConfigPatterns on DashboardOptionsConfig {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(List<DashboardOverridePreset> successPresets,
-            List<DashboardOverridePreset> errorPresets)?
+    TResult Function(
+            @Deprecated(
+                "Success/Error presets are now just one flat list, so use `presets` property")
+            List<DashboardOverridePreset> successPresets,
+            @Deprecated("Error Presets will be removed in a future version")
+            List<DashboardOverridePreset> errorPresets,
+            List<DashboardOverridePreset> presets)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _DashboardOptionsConfig() when $default != null:
-        return $default(_that.successPresets, _that.errorPresets);
+        return $default(
+            _that.successPresets, _that.errorPresets, _that.presets);
       case _:
         return orElse();
     }
@@ -1277,14 +1639,20 @@ extension DashboardOptionsConfigPatterns on DashboardOptionsConfig {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(List<DashboardOverridePreset> successPresets,
-            List<DashboardOverridePreset> errorPresets)
+    TResult Function(
+            @Deprecated(
+                "Success/Error presets are now just one flat list, so use `presets` property")
+            List<DashboardOverridePreset> successPresets,
+            @Deprecated("Error Presets will be removed in a future version")
+            List<DashboardOverridePreset> errorPresets,
+            List<DashboardOverridePreset> presets)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DashboardOptionsConfig():
-        return $default(_that.successPresets, _that.errorPresets);
+        return $default(
+            _that.successPresets, _that.errorPresets, _that.presets);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -1304,14 +1672,20 @@ extension DashboardOptionsConfigPatterns on DashboardOptionsConfig {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(List<DashboardOverridePreset> successPresets,
-            List<DashboardOverridePreset> errorPresets)?
+    TResult? Function(
+            @Deprecated(
+                "Success/Error presets are now just one flat list, so use `presets` property")
+            List<DashboardOverridePreset> successPresets,
+            @Deprecated("Error Presets will be removed in a future version")
+            List<DashboardOverridePreset> errorPresets,
+            List<DashboardOverridePreset> presets)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DashboardOptionsConfig() when $default != null:
-        return $default(_that.successPresets, _that.errorPresets);
+        return $default(
+            _that.successPresets, _that.errorPresets, _that.presets);
       case _:
         return null;
     }
@@ -1322,14 +1696,21 @@ extension DashboardOptionsConfigPatterns on DashboardOptionsConfig {
 
 class _DashboardOptionsConfig implements DashboardOptionsConfig {
   const _DashboardOptionsConfig(
-      {final List<DashboardOverridePreset> successPresets = const [],
-      final List<DashboardOverridePreset> errorPresets = const []})
+      {@Deprecated(
+          "Success/Error presets are now just one flat list, so use `presets` property")
+      final List<DashboardOverridePreset> successPresets = const [],
+      @Deprecated("Error Presets will be removed in a future version")
+      final List<DashboardOverridePreset> errorPresets = const [],
+      final List<DashboardOverridePreset> presets = const []})
       : _successPresets = successPresets,
-        _errorPresets = errorPresets;
+        _errorPresets = errorPresets,
+        _presets = presets;
 
   final List<DashboardOverridePreset> _successPresets;
   @override
   @JsonKey()
+  @Deprecated(
+      "Success/Error presets are now just one flat list, so use `presets` property")
   List<DashboardOverridePreset> get successPresets {
     if (_successPresets is EqualUnmodifiableListView) return _successPresets;
     // ignore: implicit_dynamic_type
@@ -1339,10 +1720,20 @@ class _DashboardOptionsConfig implements DashboardOptionsConfig {
   final List<DashboardOverridePreset> _errorPresets;
   @override
   @JsonKey()
+  @Deprecated("Error Presets will be removed in a future version")
   List<DashboardOverridePreset> get errorPresets {
     if (_errorPresets is EqualUnmodifiableListView) return _errorPresets;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_errorPresets);
+  }
+
+  final List<DashboardOverridePreset> _presets;
+  @override
+  @JsonKey()
+  List<DashboardOverridePreset> get presets {
+    if (_presets is EqualUnmodifiableListView) return _presets;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_presets);
   }
 
   /// Create a copy of DashboardOptionsConfig
@@ -1362,18 +1753,20 @@ class _DashboardOptionsConfig implements DashboardOptionsConfig {
             const DeepCollectionEquality()
                 .equals(other._successPresets, _successPresets) &&
             const DeepCollectionEquality()
-                .equals(other._errorPresets, _errorPresets));
+                .equals(other._errorPresets, _errorPresets) &&
+            const DeepCollectionEquality().equals(other._presets, _presets));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_successPresets),
-      const DeepCollectionEquality().hash(_errorPresets));
+      const DeepCollectionEquality().hash(_errorPresets),
+      const DeepCollectionEquality().hash(_presets));
 
   @override
   String toString() {
-    return 'DashboardOptionsConfig(successPresets: $successPresets, errorPresets: $errorPresets)';
+    return 'DashboardOptionsConfig(successPresets: $successPresets, errorPresets: $errorPresets, presets: $presets)';
   }
 }
 
@@ -1386,8 +1779,12 @@ abstract mixin class _$DashboardOptionsConfigCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<DashboardOverridePreset> successPresets,
-      List<DashboardOverridePreset> errorPresets});
+      {@Deprecated(
+          "Success/Error presets are now just one flat list, so use `presets` property")
+      List<DashboardOverridePreset> successPresets,
+      @Deprecated("Error Presets will be removed in a future version")
+      List<DashboardOverridePreset> errorPresets,
+      List<DashboardOverridePreset> presets});
 }
 
 /// @nodoc
@@ -1405,6 +1802,7 @@ class __$DashboardOptionsConfigCopyWithImpl<$Res>
   $Res call({
     Object? successPresets = null,
     Object? errorPresets = null,
+    Object? presets = null,
   }) {
     return _then(_DashboardOptionsConfig(
       successPresets: null == successPresets
@@ -1414,6 +1812,10 @@ class __$DashboardOptionsConfigCopyWithImpl<$Res>
       errorPresets: null == errorPresets
           ? _self._errorPresets
           : errorPresets // ignore: cast_nullable_to_non_nullable
+              as List<DashboardOverridePreset>,
+      presets: null == presets
+          ? _self._presets
+          : presets // ignore: cast_nullable_to_non_nullable
               as List<DashboardOverridePreset>,
     ));
   }

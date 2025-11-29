@@ -69,6 +69,24 @@ extension MockzillaHttpResponseBridge on MockzillaHttpResponse {
 }
 
 @internal
+extension BridgePartialMockzillaHttpResponseBridge on BridgePartialMockzillaHttpResponse {
+  PartialMockzillaHttpResponse toDart() => PartialMockzillaHttpResponse(
+    statusCode: statusCode,
+    headers: headers,
+    body: body,
+  );
+}
+
+@internal
+extension PartialMockzillaHttpResponseBridge on PartialMockzillaHttpResponse {
+  BridgePartialMockzillaHttpResponse toBridge() => BridgePartialMockzillaHttpResponse(
+    statusCode: statusCode,
+    headers: headers,
+    body: body,
+  );
+}
+
+@internal
 extension BridgeDashboardOverridePresetBridge on BridgeDashboardOverridePreset {
   DashboardOverridePreset toDart() => DashboardOverridePreset(
         name: name,
@@ -88,17 +106,21 @@ extension DashboardOverridePresetBridge on DashboardOverridePreset {
 
 @internal
 extension BridgeDashboardOverrideConfigBridge on BridgeDashboardOptionsConfig {
-  DashboardOptionsConfig toDart() => DashboardOptionsConfig(
-        successPresets: successPresets.map((it) => it.toDart()).toList(),
-        errorPresets: errorPresets.map((it) => it.toDart()).toList(),
+  DashboardOptionsConfig toDart() =>
+      DashboardOptionsConfig(
+        presets: presets.map((it) => it.toDart()).toList(),
       );
 }
 
 @internal
 extension DashboardOverrideConfigBridge on DashboardOptionsConfig {
-  BridgeDashboardOptionsConfig toBridge() => BridgeDashboardOptionsConfig(
-        successPresets: successPresets.map((it) => it.toBridge()).toList(),
-        errorPresets: errorPresets.map((it) => it.toBridge()).toList(),
+  BridgeDashboardOptionsConfig toBridge() =>
+      BridgeDashboardOptionsConfig(
+        presets: [
+          ...errorPresets,
+          ...successPresets,
+          ...presets,
+        ].map((it) => it.toBridge()).toList(),
       );
 }
 

@@ -450,14 +450,14 @@ packages:
       path: "../../mockzilla_ui_mobile"
       relative: true
     source: path
-    version: "0.0.8"
+    version: "0.0.9"
   mockzilla_web:
     dependency: "direct overridden"
     description:
       path: "../../mockzilla_web"
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.2-dev.1"
   package_config:
     dependency: transitive
     description:

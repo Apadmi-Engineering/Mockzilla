@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 
 import BridgeEndpointConfig
@@ -88,28 +89,36 @@ fun BridgeMockzillaHttpResponse.Companion.fromNative(
     data.body,
 )
 
+fun BridgePartialMockzillaHttpResponse.Companion.fromNative(
+    data: PartialMockzillaHttpResponse
+) = BridgeMockzillaHttpResponse(
+    data.statusCode?.value?.toLong() ?: 200,
+    data.headers ?: emptyMap(),
+    data.body ?: "",
+)
+
 fun BridgeDashboardOverridePreset.Companion.fromNative(data: DashboardOverridePreset) =
     BridgeDashboardOverridePreset(
         data.name,
         data.description,
-        BridgeMockzillaHttpResponse.fromNative(data.response),
+        BridgePartialMockzillaHttpResponse.fromNative(data.response)
     )
 
 fun BridgeDashboardOverridePreset.toNative() = DashboardOverridePreset(
     this.name,
     this.description,
-    this.response.toNative(),
+    null,
+    this.response.toNative().toPartial(),
 )
 
 fun BridgeDashboardOptionsConfig.toNative() = DashboardOptionsConfig(
-    successPresets = successPresets.map { it.toNative() },
-    errorPresets = errorPresets.map { it.toNative() }
+    successPresets = presets.map { it.toNative() },
+    errorPresets = emptyList()
 )
 
 fun BridgeDashboardOptionsConfig.Companion.fromNative(data: DashboardOptionsConfig) =
     BridgeDashboardOptionsConfig(
-        successPresets = data.successPresets.map { BridgeDashboardOverridePreset.fromNative(it) },
-        errorPresets = data.errorPresets.map { BridgeDashboardOverridePreset.fromNative(it) }
+        presets = data.presets.map { BridgeDashboardOverridePreset.fromNative(it) },
     )
 
 fun BridgeEndpointConfig.toNative(

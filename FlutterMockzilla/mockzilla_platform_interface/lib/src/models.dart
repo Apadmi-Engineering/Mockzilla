@@ -51,6 +51,16 @@ abstract class MockzillaHttpResponse with _$MockzillaHttpResponse {
   }) = _MockzillaHttpResponse;
 }
 
+/// Used to define partial overrides of standard responses in Dashboard overrides
+@freezed
+abstract class PartialMockzillaHttpResponse with _$PartialMockzillaHttpResponse {
+  const factory PartialMockzillaHttpResponse({
+    int? statusCode,
+    Map<String, String>? headers,
+    String? body,
+  }) = _PartialMockzillaHttpResponse;
+}
+
 /// Definition for a preset response that can be selected in the desktop
 /// management app.
 @freezed
@@ -67,8 +77,11 @@ abstract class DashboardOverridePreset with _$DashboardOverridePreset {
 @freezed
 abstract class DashboardOptionsConfig with _$DashboardOptionsConfig {
   const factory DashboardOptionsConfig({
+    @Deprecated("Success/Error presets are now just one flat list, so use `presets` property")
     @Default([]) List<DashboardOverridePreset> successPresets,
+    @Deprecated("Error Presets will be removed in a future version")
     @Default([]) List<DashboardOverridePreset> errorPresets,
+    @Default([]) List<DashboardOverridePreset> presets,
   }) = _DashboardOptionsConfig;
 }
 
