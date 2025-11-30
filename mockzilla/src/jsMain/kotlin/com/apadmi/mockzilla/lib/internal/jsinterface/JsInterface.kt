@@ -167,7 +167,11 @@ data class JsPartialMockzillaHttpResponse(
 ) {
     internal fun fromJs() = PartialMockzillaHttpResponse(
         statusCode?.let { HttpStatusCode.fromValue(statusCode) },
-        headers?.let { mapFrom(headers) },
+        if (headers == null || headers == undefined) {
+            null
+        } else {
+            mapFrom(headers)
+        },
         body
     )
 }

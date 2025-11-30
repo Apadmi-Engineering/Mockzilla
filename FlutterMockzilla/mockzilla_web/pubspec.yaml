@@ -19,7 +19,7 @@ topics:
 
 # Update the version here when needed
 #
-mockzilla_js_version: 3.0.0-alpha1
+mockzilla_js_version: 3.0.0-alpha2
 
 environment:
   sdk: '>=3.6.0 <4.0.0'

@@ -82,6 +82,7 @@ class MockzillaWeb extends MockzillaPlatform {
     final dashboardPresets = [
       ...endpoint.dashboardOptionsConfig.successPresets.map(_toJsPreset),
       ...endpoint.dashboardOptionsConfig.errorPresets.map(_toJsPreset),
+      ...endpoint.dashboardOptionsConfig.presets.map(_toJsPreset),
     ];
 
     final jsDashboard = buildDashboardOptions(dashboardPresets);
@@ -148,7 +149,11 @@ class MockzillaWeb extends MockzillaPlatform {
     return buildPreset(
       name: preset.name,
       description: preset.description,
-      response: _toJsResponse(preset.response),
+      response: buildPartialResponse(
+        statusCode: preset.response.statusCode,
+        headers: preset.response.headers,
+        body: preset.response.body,
+      ),
     );
   }
 

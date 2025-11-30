@@ -5,7 +5,7 @@
 Pod::Spec.new do |s|
   s.name             = 'mockzilla_ui_mobile'
   # x-release-please-start-version
-  s.version          = '0.0.8'
+  s.version          = '0.0.9'
   # x-release-please-end
   s.summary          = 'The iOS implementation for the mockzilla mobile ui plugin.'
   s.description      = <<-DESC
@@ -26,6 +26,6 @@ The iOS implementation for the mockzilla mobile ui plugin.
   # Since this Flutter wrapper is so thin it's deployed along with each Kotlin update so
   # they share versions
   # x-release-please-start-version
-  s.dependency 'SwiftMockzillaMobileUi', '0.0.8'
+  s.dependency 'SwiftMockzillaMobileUi', '0.0.9'
   # x-release-please-end
 end

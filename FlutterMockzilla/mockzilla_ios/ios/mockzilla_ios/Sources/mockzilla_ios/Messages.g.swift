@@ -177,24 +177,20 @@ struct BridgeDashboardOverridePreset {
 
 /// Generated class from Pigeon that represents data sent in messages.
 struct BridgeDashboardOptionsConfig {
-  var successPresets: [BridgeDashboardOverridePreset]
-  var errorPresets: [BridgeDashboardOverridePreset]
+  var presets: [BridgeDashboardOverridePreset]
 
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
   static func fromList(_ pigeonVar_list: [Any?]) -> BridgeDashboardOptionsConfig? {
-    let successPresets = pigeonVar_list[0] as! [BridgeDashboardOverridePreset]
-    let errorPresets = pigeonVar_list[1] as! [BridgeDashboardOverridePreset]
+    let presets = pigeonVar_list[0] as! [BridgeDashboardOverridePreset]
 
     return BridgeDashboardOptionsConfig(
-      successPresets: successPresets,
-      errorPresets: errorPresets
+      presets: presets
     )
   }
   func toList() -> [Any?] {
     return [
-      successPresets,
-      errorPresets,
+      presets
     ]
   }
 }

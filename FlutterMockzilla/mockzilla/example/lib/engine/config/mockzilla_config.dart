@@ -12,7 +12,7 @@ final mockzillaConfig =
       defaultHandler: (_) async => defaultResponse,
       errorHandler: (_) async => errorResponse,
       shouldFail: false,
-      dashboardOptionsConfig: DashboardOptionsConfig(successPresets: [
+      dashboardOptionsConfig: DashboardOptionsConfig(presets: [
         DashboardOverridePreset(
             name: "Error Preset",
             description: "Error Preset Example",

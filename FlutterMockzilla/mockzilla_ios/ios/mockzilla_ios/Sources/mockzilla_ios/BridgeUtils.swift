@@ -93,6 +93,14 @@ extension BridgeMockzillaHttpResponse {
             body: response.body
         )
     }
+
+    static func fromNative(_ response: Mockzilla_commonPartialMockzillaHttpResponse) -> BridgeMockzillaHttpResponse {
+        return BridgeMockzillaHttpResponse(
+            statusCode: Int64(response.statusCode?.value ?? 200),
+            headers: response.headers ?? [:],
+            body: response.body ?? ""
+        )
+    }
 }
 
 extension BridgeDashboardOverridePreset {
@@ -100,7 +108,9 @@ extension BridgeDashboardOverridePreset {
         return Mockzilla_commonDashboardOverridePreset(
             name: name,
             description: description,
-            response: response.toNative()
+            type: nil,
+            response: response.toNative().toPartial(),
+            isManagementUiDefinedCustomPreset: false
         )
     }
     
@@ -116,10 +126,8 @@ extension BridgeDashboardOverridePreset {
 extension BridgeDashboardOptionsConfig {
     func toNative() -> Mockzilla_commonDashboardOptionsConfig {
         return Mockzilla_commonDashboardOptionsConfig(
-            errorPresets: errorPresets.map {
-                preset in preset.toNative()
-            } as! Array<Mockzilla_commonDashboardOverridePreset>,
-            successPresets: successPresets.map {
+            errorPresets: [],
+            successPresets: presets.map {
                 preset in preset.toNative()
             } as! Array<Mockzilla_commonDashboardOverridePreset>
         )
@@ -127,10 +135,7 @@ extension BridgeDashboardOptionsConfig {
     
     static func fromNative(_ data: Mockzilla_commonDashboardOptionsConfig) -> BridgeDashboardOptionsConfig {
         return BridgeDashboardOptionsConfig(
-            successPresets: data.successPresets.map {
-                it in BridgeDashboardOverridePreset.fromNative(it)
-            },
-            errorPresets: data.errorPresets.map {
+            presets: data.presets.map {
                 it in BridgeDashboardOverridePreset.fromNative(it)
             }
         )

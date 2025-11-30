@@ -67,12 +67,10 @@ class BridgeDashboardOverridePreset {
 }
 
 class BridgeDashboardOptionsConfig {
-  final List<BridgeDashboardOverridePreset> successPresets;
-  final List<BridgeDashboardOverridePreset> errorPresets;
+  final List<BridgeDashboardOverridePreset> presets;
 
   const BridgeDashboardOptionsConfig({
-    required this.successPresets,
-    required this.errorPresets,
+    required this.presets,
   });
 }
 

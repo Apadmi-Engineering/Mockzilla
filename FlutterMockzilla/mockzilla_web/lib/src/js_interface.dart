@@ -74,17 +74,29 @@ extension type JsMockzillaHttpResponse._(JSObject _) implements JSObject {
   external String get body;
 }
 
+@JS('JsPartialMockzillaHttpResponse')
+extension type JsPartialMockzillaHttpResponse._(JSObject _) implements JSObject {
+  external JsPartialMockzillaHttpResponse(
+      int? statusCode, JSObject? headers, String? body);
+
+  external int? get statusCode;
+  external JsMap get headers; // JS object (map-like)
+  external String? get body;
+}
+
 @JS('JsDashboardOverridePreset')
 extension type JsDashboardOverridePreset._(JSObject _) implements JSObject {
   external JsDashboardOverridePreset(
     String name,
     String? description,
-    JsMockzillaHttpResponse response,
+    JsPartialMockzillaHttpResponse response,
+    String? type,
   );
 
   external String get name;
   external String? get description;
-  external JsMockzillaHttpResponse get response;
+  external JsPartialMockzillaHttpResponse get response;
+  external String? get type;
 }
 
 @JS('JsDashboardOptionsConfig')
@@ -170,6 +182,18 @@ JsMockzillaHttpResponse buildResponse({
   return JsMockzillaHttpResponse(statusCode, jsHeaders, body);
 }
 
+JsPartialMockzillaHttpResponse buildPartialResponse({
+  required int statusCode,
+  required Map<String, String> headers,
+  required String body,
+}) {
+  final jsHeaders = JSObject();
+  headers.forEach((key, value) {
+    jsHeaders[key] = value.toJS;
+  });
+  return JsPartialMockzillaHttpResponse(statusCode, jsHeaders, body);
+}
+
 JsDashboardOptionsConfig buildDashboardOptions(
   List<JsDashboardOverridePreset> presets,
 ) =>
@@ -178,9 +202,10 @@ JsDashboardOptionsConfig buildDashboardOptions(
 JsDashboardOverridePreset buildPreset({
   required String name,
   String? description,
-  required JsMockzillaHttpResponse response,
+  required JsPartialMockzillaHttpResponse response,
+  String? type,
 }) =>
-    JsDashboardOverridePreset(name, description, response);
+    JsDashboardOverridePreset(name, description, response, type);
 
 JsMockzillaConfig buildConfig({
   required List<JsEndpointConfiguration> endpoints,
