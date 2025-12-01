@@ -39,7 +39,9 @@ abstract class MockzillaHttpRequest with _$MockzillaHttpRequest {
 /// Created and returned by an endpoint handler in response to an incoming
 /// HTTP request.
 @freezed
-abstract class MockzillaHttpResponse with _$MockzillaHttpResponse implements CommonPartialMockzillaHttpResponse  {
+abstract class MockzillaHttpResponse
+    with _$MockzillaHttpResponse
+    implements CommonPartialMockzillaHttpResponse {
   const MockzillaHttpResponse._();
 
   const factory MockzillaHttpResponse({
@@ -64,13 +66,15 @@ abstract class MockzillaHttpResponse with _$MockzillaHttpResponse implements Com
 
 /// Used to define partial overrides of standard responses in Dashboard overrides
 abstract class CommonPartialMockzillaHttpResponse {
-    int? nullableStatusCode();
-    Map<String, String>? nullableHeaders();
-    String? nullableBody();
+  int? nullableStatusCode();
+  Map<String, String>? nullableHeaders();
+  String? nullableBody();
 }
 
 @freezed
-abstract class PartialMockzillaHttpResponse with _$PartialMockzillaHttpResponse implements CommonPartialMockzillaHttpResponse  {
+abstract class PartialMockzillaHttpResponse
+    with _$PartialMockzillaHttpResponse
+    implements CommonPartialMockzillaHttpResponse {
   const PartialMockzillaHttpResponse._();
 
   const factory PartialMockzillaHttpResponse({
@@ -105,10 +109,13 @@ abstract class DashboardOverridePreset with _$DashboardOverridePreset {
 @freezed
 abstract class DashboardOptionsConfig with _$DashboardOptionsConfig {
   const factory DashboardOptionsConfig({
-    @Deprecated("Success/Error presets are now just one flat list, so use `presets` property")
-    @Default([]) List<DashboardOverridePreset> successPresets,
+    @Deprecated(
+        "Success/Error presets are now just one flat list, so use `presets` property")
+    @Default([])
+    List<DashboardOverridePreset> successPresets,
     @Deprecated("Error Presets will be removed in a future version")
-    @Default([]) List<DashboardOverridePreset> errorPresets,
+    @Default([])
+    List<DashboardOverridePreset> errorPresets,
     @Default([]) List<DashboardOverridePreset> presets,
   }) = _DashboardOptionsConfig;
 }

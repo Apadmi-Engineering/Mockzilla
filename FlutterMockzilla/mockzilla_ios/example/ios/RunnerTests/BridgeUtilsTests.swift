@@ -76,14 +76,16 @@ class BridgeUtilsTests: XCTestCase {
             Mockzilla_commonDashboardOverridePreset(
                 name: "Default response",
                 description: nil,
-                response: MockzillaHttpResponse(
+                type: nil,
+                response: Mockzilla_commonPartialMockzillaHttpResponse(
                     statusCode: HttpStatusCode.OK,
                     headers: ["content-type": "text/plain"],
                     body: "Hello world"
-                )
+                ),
+                isManagementUiDefinedCustomPreset: false
             ): BridgeDashboardOverridePreset(
                 name: "Default response",
-                response: BridgeMockzillaHttpResponse(
+                response: BridgePartialMockzillaHttpResponse(
                     statusCode: 200,
                     headers: ["content-type": "text/plain"],
                     body: "Hello world"
@@ -92,15 +94,17 @@ class BridgeUtilsTests: XCTestCase {
             Mockzilla_commonDashboardOverridePreset(
                 name: "Error response",
                 description: "Unauthorized response",
-                response: MockzillaHttpResponse(
+                type: nil,
+                response: Mockzilla_commonPartialMockzillaHttpResponse(
                     statusCode: HttpStatusCode.Unauthorized,
                     headers: ["content-type":"application/json"],
                     body: ""
-                )
+                ),
+                isManagementUiDefinedCustomPreset: false
             ): BridgeDashboardOverridePreset(
                 name: "Error response",
                 description: "Unauthorized response",
-                response: BridgeMockzillaHttpResponse(
+                response: BridgePartialMockzillaHttpResponse(
                     statusCode: 401,
                     headers: ["content-type":"application/json"],
                     body: ""
@@ -122,45 +126,48 @@ class BridgeUtilsTests: XCTestCase {
     func testDashboardOptionsConfigMarshalling() throws {
         let nativeToBridge = [
             Mockzilla_commonDashboardOptionsConfig(
-                errorPresets: [
-                    Mockzilla_commonDashboardOverridePreset(
-                        name: "Error response",
-                        description: nil,
-                        response: MockzillaHttpResponse(
-                            status: HttpStatusCode.InternalServerError,
-                            body: ""
-                        )
-                    )
-                ],
+                errorPresets: [],
                 successPresets: [
                     Mockzilla_commonDashboardOverridePreset(
                         name: "Default response",
                         description: "Description",
-                        response: MockzillaHttpResponse(
-                            status: HttpStatusCode.OK,
+                        type: nil,
+                        response: Mockzilla_commonPartialMockzillaHttpResponse(
+                            statusCode: HttpStatusCode.OK,
+                            headers: nil,
                             body: ""
-                        )
+                        ),
+                        isManagementUiDefinedCustomPreset: false
+                    ),
+                    Mockzilla_commonDashboardOverridePreset(
+                        name: "Error response",
+                        description: nil,
+                        type: nil,
+                        response: Mockzilla_commonPartialMockzillaHttpResponse(
+                            statusCode: HttpStatusCode.InternalServerError,
+                            headers: nil,
+                            body: ""
+                        ),
+                        isManagementUiDefinedCustomPreset: false
                     )
                 ]
             ): BridgeDashboardOptionsConfig(
-                successPresets: [
+                presets: [
                     BridgeDashboardOverridePreset(
                         name: "Default response",
                         description: "Description",
-                        response: BridgeMockzillaHttpResponse(
+                        response: BridgePartialMockzillaHttpResponse(
                             statusCode: 200,
-                            headers: [:],
+                            headers: nil,
                             body: ""
                         )
-                    )
-                ],
-                errorPresets: [
+                    ),
                     BridgeDashboardOverridePreset(
                         name: "Error response",
                         description: nil,
-                        response: BridgeMockzillaHttpResponse(
+                        response: BridgePartialMockzillaHttpResponse(
                             statusCode: 500,
-                            headers: [:],
+                            headers: nil,
                             body: ""
                         )
                     )
@@ -172,10 +179,8 @@ class BridgeUtilsTests: XCTestCase {
             XCTAssertEqual(bridge.toNative(), native)
             
             let actualBridge = BridgeDashboardOptionsConfig.fromNative(native)
-            XCTAssertEqual(actualBridge.successPresets.count, bridge.successPresets.count)
-            XCTAssertEqual(actualBridge.successPresets.first?.name, bridge.successPresets.first?.name)
-            XCTAssertEqual(actualBridge.errorPresets.count, bridge.errorPresets.count)
-            XCTAssertEqual(actualBridge.errorPresets.first?.name, bridge.errorPresets.first?.name)
+            XCTAssertEqual(actualBridge.presets.count, bridge.presets.count)
+            XCTAssertEqual(actualBridge.presets.first?.name, bridge.presets.first?.name)
         }
     }
     
@@ -204,7 +209,7 @@ class BridgeUtilsTests: XCTestCase {
                 shouldFail: false,
                 delayMs: 1000,
                 versionCode: 1,
-                config: BridgeDashboardOptionsConfig(successPresets: [], errorPresets: [])
+                config: BridgeDashboardOptionsConfig(presets: [])
             )
         ]
         
@@ -229,8 +234,7 @@ class BridgeUtilsTests: XCTestCase {
             XCTAssertEqual(actualBridge.shouldFail, bridge.shouldFail)
             XCTAssertEqual(actualBridge.delayMs, bridge.delayMs)
             XCTAssertEqual(actualBridge.versionCode, bridge.versionCode)
-            XCTAssertEqual(actualBridge.config.successPresets.first?.name, bridge.config.successPresets.first?.name)
-            XCTAssertEqual(actualBridge.config.errorPresets.first?.name, bridge.config.errorPresets.first?.name)
+            XCTAssertEqual(actualBridge.config.presets.first?.name, bridge.config.presets.first?.name)
         }
     }
     
@@ -275,7 +279,7 @@ class BridgeUtilsTests: XCTestCase {
                     shouldFail: false,
                     delayMs: 1000,
                     versionCode: 1,
-                    config: BridgeDashboardOptionsConfig(successPresets: [], errorPresets: [])
+                    config: BridgeDashboardOptionsConfig(presets: [])
                 )
             ],
             localHostOnly: false,

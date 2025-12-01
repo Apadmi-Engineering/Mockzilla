@@ -7,12 +7,14 @@ import BridgeHttpMethod
 import BridgeLogLevel
 import BridgeMockzillaConfig
 import BridgeMockzillaHttpResponse
+import BridgePartialMockzillaHttpResponse
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
+import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import kotlin.test.Test
@@ -81,21 +83,21 @@ internal class BridgeUtilsTest {
         // Setup
         val bridgeToNative = mapOf(
             BridgeDashboardOverridePreset(
-                "Default response", null, BridgeMockzillaHttpResponse(
+                "Default response", null, BridgePartialMockzillaHttpResponse(
                     200,
                     emptyMap(),
                     "",
                 )
             ) to DashboardOverridePreset(
-                "Default response", null, MockzillaHttpResponse(
+                "Default response", null, null, PartialMockzillaHttpResponse(
                     HttpStatusCode.OK, emptyMap(), ""
                 )
             ), BridgeDashboardOverridePreset(
-                "Error response", "Unauthorized response", BridgeMockzillaHttpResponse(
+                "Error response", "Unauthorized response", BridgePartialMockzillaHttpResponse(
                     401, emptyMap(), ""
                 )
             ) to DashboardOverridePreset(
-                "Error response", "Unauthorized response", MockzillaHttpResponse(
+                "Error response", "Unauthorized response", null, PartialMockzillaHttpResponse(
                     HttpStatusCode.Unauthorized, emptyMap(), ""
                 )
             )
@@ -112,34 +114,38 @@ internal class BridgeUtilsTest {
     fun dashboardOptionsConfigMarshallingReturnsExpectedValue() {
         // Setup
         val bridgeToNative = mapOf(
-            BridgeDashboardOptionsConfig(
-                emptyList(), emptyList()
-            ) to DashboardOptionsConfig(
+            BridgeDashboardOptionsConfig(emptyList())
+                    to DashboardOptionsConfig(
                 emptyList(), emptyList()
             ), BridgeDashboardOptionsConfig(
                 listOf(
                     BridgeDashboardOverridePreset(
-                        "Default response", null, BridgeMockzillaHttpResponse(200, emptyMap(), "")
-                    )
-                ), listOf(
+                        "Default response", null, BridgePartialMockzillaHttpResponse(200, emptyMap(), "")
+                    ),
                     BridgeDashboardOverridePreset(
-                        "Error response", null, BridgeMockzillaHttpResponse(500, emptyMap(), "")
+                        "Error response", null, BridgePartialMockzillaHttpResponse(500, emptyMap(), "")
                     )
-                )
+                ),
             ) to DashboardOptionsConfig(
                 successPresets = listOf(
                     DashboardOverridePreset(
                         "Default response",
                         null,
-                        MockzillaHttpResponse(HttpStatusCode.OK, emptyMap(), "")
-                    )
-                ), errorPresets = listOf(
+                        null,
+                        PartialMockzillaHttpResponse(HttpStatusCode.OK, emptyMap(), "")
+                    ),
                     DashboardOverridePreset(
                         "Error response",
                         null,
-                        MockzillaHttpResponse(HttpStatusCode.InternalServerError, emptyMap(), "")
+                        null,
+                        PartialMockzillaHttpResponse(
+                            HttpStatusCode.InternalServerError,
+                            emptyMap(),
+                            ""
+                        )
                     )
-                )
+                ),
+                errorPresets = emptyList()
             )
         )
 
@@ -165,7 +171,7 @@ internal class BridgeUtilsTest {
                 false,
                 200,
                 1,
-                BridgeDashboardOptionsConfig(emptyList(), emptyList())
+                BridgeDashboardOptionsConfig(emptyList())
             ) to EndpointConfiguration(
                 "MyEndpoint", EndpointConfiguration.Key("my-endpoint"), false, 200,
                 DashboardOptionsConfig(emptyList(), emptyList()),
@@ -204,9 +210,7 @@ internal class BridgeUtilsTest {
             8080L, listOf(
                 BridgeEndpointConfig(
                     "name", "key", false, 100, 1,
-                    BridgeDashboardOptionsConfig(
-                        emptyList(), emptyList()
-                    ),
+                    BridgeDashboardOptionsConfig(emptyList()),
                 )
             ), localHostOnly = false, BridgeLogLevel.INFO, false
         ) to MockzillaConfig(

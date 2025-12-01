@@ -75,7 +75,8 @@ extension type JsMockzillaHttpResponse._(JSObject _) implements JSObject {
 }
 
 @JS('JsPartialMockzillaHttpResponse')
-extension type JsPartialMockzillaHttpResponse._(JSObject _) implements JSObject {
+extension type JsPartialMockzillaHttpResponse._(JSObject _)
+    implements JSObject {
   external JsPartialMockzillaHttpResponse(
       int? statusCode, JSObject? headers, String? body);
 

@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mockzilla/mockzilla.dart';
 
 part 'models.freezed.dart';
 

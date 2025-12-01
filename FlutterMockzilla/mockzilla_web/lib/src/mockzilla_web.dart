@@ -80,7 +80,9 @@ class MockzillaWeb extends MockzillaPlatform {
 
   JsEndpointConfiguration _toJsEndpoint(EndpointConfig endpoint) {
     final dashboardPresets = [
+      // ignore: deprecated_member_use
       ...endpoint.dashboardOptionsConfig.successPresets.map(_toJsPreset),
+      // ignore: deprecated_member_use
       ...endpoint.dashboardOptionsConfig.errorPresets.map(_toJsPreset),
       ...endpoint.dashboardOptionsConfig.presets.map(_toJsPreset),
     ];
