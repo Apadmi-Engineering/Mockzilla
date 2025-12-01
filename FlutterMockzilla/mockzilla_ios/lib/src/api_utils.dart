@@ -60,12 +60,30 @@ extension BridgeMockzillaHttpResponseBridge on BridgeMockzillaHttpResponse {
 }
 
 @internal
+extension BridgePartialMockzillaHttpResponseBridge on BridgePartialMockzillaHttpResponse {
+  PartialMockzillaHttpResponse toDart() => PartialMockzillaHttpResponse(
+        statusCode: statusCode,
+        headers: headers,
+        body: body,
+      );
+}
+
+@internal
 extension MockzillaHttpResponseBridge on MockzillaHttpResponse {
   BridgeMockzillaHttpResponse toBridge() => BridgeMockzillaHttpResponse(
         statusCode: statusCode,
         headers: headers,
         body: body,
       );
+}
+
+@internal
+extension PartialMockzillaHttpResponseBridge on CommonPartialMockzillaHttpResponse {
+  BridgePartialMockzillaHttpResponse toBridge() => BridgePartialMockzillaHttpResponse(
+    statusCode: nullableStatusCode(),
+    headers: nullableHeaders(),
+    body: nullableBody(),
+  );
 }
 
 @internal

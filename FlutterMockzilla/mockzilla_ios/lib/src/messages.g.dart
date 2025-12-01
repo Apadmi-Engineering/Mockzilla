@@ -111,6 +111,37 @@ class BridgeMockzillaHttpResponse {
   }
 }
 
+class BridgePartialMockzillaHttpResponse {
+  BridgePartialMockzillaHttpResponse({
+    this.statusCode,
+    this.headers,
+    this.body,
+  });
+
+  int? statusCode;
+
+  Map<String, String>? headers;
+
+  String? body;
+
+  Object encode() {
+    return <Object?>[
+      statusCode,
+      headers,
+      body,
+    ];
+  }
+
+  static BridgePartialMockzillaHttpResponse decode(Object result) {
+    result as List<Object?>;
+    return BridgePartialMockzillaHttpResponse(
+      statusCode: result[0] as int?,
+      headers: (result[1] as Map<Object?, Object?>?)?.cast<String, String>(),
+      body: result[2] as String?,
+    );
+  }
+}
+
 class BridgeDashboardOverridePreset {
   BridgeDashboardOverridePreset({
     required this.name,
@@ -122,7 +153,7 @@ class BridgeDashboardOverridePreset {
 
   String? description;
 
-  BridgeMockzillaHttpResponse response;
+  BridgePartialMockzillaHttpResponse response;
 
   Object encode() {
     return <Object?>[
@@ -137,7 +168,7 @@ class BridgeDashboardOverridePreset {
     return BridgeDashboardOverridePreset(
       name: result[0]! as String,
       description: result[1] as String?,
-      response: result[2]! as BridgeMockzillaHttpResponse,
+      response: result[2]! as BridgePartialMockzillaHttpResponse,
     );
   }
 }
@@ -306,20 +337,23 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is BridgeMockzillaHttpResponse) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeDashboardOverridePreset) {
+    }    else if (value is BridgePartialMockzillaHttpResponse) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeDashboardOptionsConfig) {
+    }    else if (value is BridgeDashboardOverridePreset) {
       buffer.putUint8(134);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeEndpointConfig) {
+    }    else if (value is BridgeDashboardOptionsConfig) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeMockzillaConfig) {
+    }    else if (value is BridgeEndpointConfig) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    }    else if (value is BridgeMockzillaRuntimeParams) {
+    }    else if (value is BridgeMockzillaConfig) {
       buffer.putUint8(137);
+      writeValue(buffer, value.encode());
+    }    else if (value is BridgeMockzillaRuntimeParams) {
+      buffer.putUint8(138);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -340,14 +374,16 @@ class _PigeonCodec extends StandardMessageCodec {
       case 132: 
         return BridgeMockzillaHttpResponse.decode(readValue(buffer)!);
       case 133: 
-        return BridgeDashboardOverridePreset.decode(readValue(buffer)!);
+        return BridgePartialMockzillaHttpResponse.decode(readValue(buffer)!);
       case 134: 
-        return BridgeDashboardOptionsConfig.decode(readValue(buffer)!);
+        return BridgeDashboardOverridePreset.decode(readValue(buffer)!);
       case 135: 
-        return BridgeEndpointConfig.decode(readValue(buffer)!);
+        return BridgeDashboardOptionsConfig.decode(readValue(buffer)!);
       case 136: 
-        return BridgeMockzillaConfig.decode(readValue(buffer)!);
+        return BridgeEndpointConfig.decode(readValue(buffer)!);
       case 137: 
+        return BridgeMockzillaConfig.decode(readValue(buffer)!);
+      case 138: 
         return BridgeMockzillaRuntimeParams.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);

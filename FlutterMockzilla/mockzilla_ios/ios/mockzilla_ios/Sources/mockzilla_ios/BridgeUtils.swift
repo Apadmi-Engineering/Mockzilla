@@ -77,6 +77,26 @@ extension BridgeMockzillaHttpRequest {
     }
 }
 
+extension BridgePartialMockzillaHttpResponse {
+    func toNative() -> Mockzilla_commonPartialMockzillaHttpResponse {
+        return Mockzilla_commonPartialMockzillaHttpResponse(
+            statusCode: self.statusCode.flatMap { code in
+                Ktor_httpHttpStatusCode.init(value: Int32(code), description: "")
+            },
+            headers: self.headers,
+            body: self.body
+        )
+    }
+
+    static func fromNative(_ response: Mockzilla_commonPartialMockzillaHttpResponse) -> BridgePartialMockzillaHttpResponse {
+        return BridgePartialMockzillaHttpResponse(
+            statusCode: response.statusCode?.value == nil ? nil : Int64(response.statusCode!.value),
+            headers: response.headers,
+            body: response.body
+        )
+    }
+}
+
 extension BridgeMockzillaHttpResponse {
     func toNative() -> MockzillaHttpResponse {
         return MockzillaHttpResponse(
@@ -93,14 +113,6 @@ extension BridgeMockzillaHttpResponse {
             body: response.body
         )
     }
-
-    static func fromNative(_ response: Mockzilla_commonPartialMockzillaHttpResponse) -> BridgeMockzillaHttpResponse {
-        return BridgeMockzillaHttpResponse(
-            statusCode: Int64(response.statusCode?.value ?? 200),
-            headers: response.headers ?? [:],
-            body: response.body ?? ""
-        )
-    }
 }
 
 extension BridgeDashboardOverridePreset {
@@ -109,7 +121,7 @@ extension BridgeDashboardOverridePreset {
             name: name,
             description: description,
             type: nil,
-            response: response.toNative().toPartial(),
+            response: response.toNative(),
             isManagementUiDefinedCustomPreset: false
         )
     }
@@ -118,7 +130,7 @@ extension BridgeDashboardOverridePreset {
         return BridgeDashboardOverridePreset(
             name: data.name,
             description: data.description_,
-            response: BridgeMockzillaHttpResponse.fromNative(data.response)
+            response: BridgePartialMockzillaHttpResponse.fromNative(data.response)
         )
     }
 }

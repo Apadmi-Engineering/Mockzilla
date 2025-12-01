@@ -54,10 +54,22 @@ class BridgeMockzillaHttpResponse {
   ]);
 }
 
+class BridgePartialMockzillaHttpResponse {
+  final int? statusCode;
+  final Map<String, String>? headers;
+  final String? body;
+
+  const BridgePartialMockzillaHttpResponse([
+    this.statusCode,
+    this.headers,
+    this.body,
+  ]);
+}
+
 class BridgeDashboardOverridePreset {
   final String name;
   final String? description;
-  final BridgeMockzillaHttpResponse response;
+  final BridgePartialMockzillaHttpResponse response;
 
   const BridgeDashboardOverridePreset({
     required this.name,
