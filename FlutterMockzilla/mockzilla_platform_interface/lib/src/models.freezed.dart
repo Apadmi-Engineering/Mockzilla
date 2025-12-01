@@ -618,14 +618,15 @@ extension MockzillaHttpResponsePatterns on MockzillaHttpResponse {
 
 /// @nodoc
 
-class _MockzillaHttpResponse implements MockzillaHttpResponse {
+class _MockzillaHttpResponse extends MockzillaHttpResponse {
   const _MockzillaHttpResponse(
       {this.statusCode = HttpStatus.ok,
       final Map<String, String> headers = const {
         "Content-Type": "application/json"
       },
       this.body = ""})
-      : _headers = headers;
+      : _headers = headers,
+        super._();
 
   /// The HTTP status to use for the response, defaults to 200 - OK.
   @override
@@ -970,10 +971,11 @@ extension PartialMockzillaHttpResponsePatterns on PartialMockzillaHttpResponse {
 
 /// @nodoc
 
-class _PartialMockzillaHttpResponse implements PartialMockzillaHttpResponse {
+class _PartialMockzillaHttpResponse extends PartialMockzillaHttpResponse {
   const _PartialMockzillaHttpResponse(
       {this.statusCode, final Map<String, String>? headers, this.body})
-      : _headers = headers;
+      : _headers = headers,
+        super._();
 
   @override
   final int? statusCode;
@@ -1070,7 +1072,7 @@ class __$PartialMockzillaHttpResponseCopyWithImpl<$Res>
 mixin _$DashboardOverridePreset {
   String get name;
   String? get description;
-  MockzillaHttpResponse get response;
+  CommonPartialMockzillaHttpResponse get response;
 
   /// Create a copy of DashboardOverridePreset
   /// with the given fields replaced by the non-null parameter values.
@@ -1107,9 +1109,10 @@ abstract mixin class $DashboardOverridePresetCopyWith<$Res> {
           $Res Function(DashboardOverridePreset) _then) =
       _$DashboardOverridePresetCopyWithImpl;
   @useResult
-  $Res call({String name, String? description, MockzillaHttpResponse response});
-
-  $MockzillaHttpResponseCopyWith<$Res> get response;
+  $Res call(
+      {String name,
+      String? description,
+      CommonPartialMockzillaHttpResponse response});
 }
 
 /// @nodoc
@@ -1141,18 +1144,8 @@ class _$DashboardOverridePresetCopyWithImpl<$Res>
       response: null == response
           ? _self.response
           : response // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse,
+              as CommonPartialMockzillaHttpResponse,
     ));
-  }
-
-  /// Create a copy of DashboardOverridePreset
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $MockzillaHttpResponseCopyWith<$Res> get response {
-    return $MockzillaHttpResponseCopyWith<$Res>(_self.response, (value) {
-      return _then(_self.copyWith(response: value));
-    });
   }
 }
 
@@ -1249,8 +1242,8 @@ extension DashboardOverridePresetPatterns on DashboardOverridePreset {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            String name, String? description, MockzillaHttpResponse response)?
+    TResult Function(String name, String? description,
+            CommonPartialMockzillaHttpResponse response)?
         $default, {
     required TResult orElse(),
   }) {
@@ -1278,8 +1271,8 @@ extension DashboardOverridePresetPatterns on DashboardOverridePreset {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            String name, String? description, MockzillaHttpResponse response)
+    TResult Function(String name, String? description,
+            CommonPartialMockzillaHttpResponse response)
         $default,
   ) {
     final _that = this;
@@ -1305,8 +1298,8 @@ extension DashboardOverridePresetPatterns on DashboardOverridePreset {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            String name, String? description, MockzillaHttpResponse response)?
+    TResult? Function(String name, String? description,
+            CommonPartialMockzillaHttpResponse response)?
         $default,
   ) {
     final _that = this;
@@ -1330,7 +1323,7 @@ class _DashboardOverridePreset implements DashboardOverridePreset {
   @override
   final String? description;
   @override
-  final MockzillaHttpResponse response;
+  final CommonPartialMockzillaHttpResponse response;
 
   /// Create a copy of DashboardOverridePreset
   /// with the given fields replaced by the non-null parameter values.
@@ -1370,10 +1363,10 @@ abstract mixin class _$DashboardOverridePresetCopyWith<$Res>
       __$DashboardOverridePresetCopyWithImpl;
   @override
   @useResult
-  $Res call({String name, String? description, MockzillaHttpResponse response});
-
-  @override
-  $MockzillaHttpResponseCopyWith<$Res> get response;
+  $Res call(
+      {String name,
+      String? description,
+      CommonPartialMockzillaHttpResponse response});
 }
 
 /// @nodoc
@@ -1405,18 +1398,8 @@ class __$DashboardOverridePresetCopyWithImpl<$Res>
       response: null == response
           ? _self.response
           : response // ignore: cast_nullable_to_non_nullable
-              as MockzillaHttpResponse,
+              as CommonPartialMockzillaHttpResponse,
     ));
-  }
-
-  /// Create a copy of DashboardOverridePreset
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $MockzillaHttpResponseCopyWith<$Res> get response {
-    return $MockzillaHttpResponseCopyWith<$Res>(_self.response, (value) {
-      return _then(_self.copyWith(response: value));
-    });
   }
 }
 

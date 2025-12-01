@@ -153,7 +153,7 @@ class BridgeDashboardOverridePreset {
 
   String? description;
 
-  BridgeMockzillaHttpResponse response;
+  BridgePartialMockzillaHttpResponse response;
 
   Object encode() {
     return <Object?>[
@@ -168,7 +168,7 @@ class BridgeDashboardOverridePreset {
     return BridgeDashboardOverridePreset(
       name: result[0]! as String,
       description: result[1] as String?,
-      response: result[2]! as BridgeMockzillaHttpResponse,
+      response: result[2]! as BridgePartialMockzillaHttpResponse,
     );
   }
 }

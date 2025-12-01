@@ -78,11 +78,11 @@ extension BridgePartialMockzillaHttpResponseBridge on BridgePartialMockzillaHttp
 }
 
 @internal
-extension PartialMockzillaHttpResponseBridge on PartialMockzillaHttpResponse {
+extension PartialMockzillaHttpResponseBridge on CommonPartialMockzillaHttpResponse {
   BridgePartialMockzillaHttpResponse toBridge() => BridgePartialMockzillaHttpResponse(
-    statusCode: statusCode,
-    headers: headers,
-    body: body,
+    statusCode: nullableStatusCode(),
+    headers: nullableHeaders(),
+    body: nullableBody(),
   );
 }
 

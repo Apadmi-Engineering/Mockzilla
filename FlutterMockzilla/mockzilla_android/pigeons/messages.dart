@@ -70,7 +70,7 @@ class BridgePartialMockzillaHttpResponse {
 class BridgeDashboardOverridePreset {
   final String name;
   final String? description;
-  final BridgeMockzillaHttpResponse response;
+  final BridgePartialMockzillaHttpResponse response;
 
   const BridgeDashboardOverridePreset({
     required this.name,

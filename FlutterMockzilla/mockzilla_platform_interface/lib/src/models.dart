@@ -39,7 +39,9 @@ abstract class MockzillaHttpRequest with _$MockzillaHttpRequest {
 /// Created and returned by an endpoint handler in response to an incoming
 /// HTTP request.
 @freezed
-abstract class MockzillaHttpResponse with _$MockzillaHttpResponse {
+abstract class MockzillaHttpResponse with _$MockzillaHttpResponse implements CommonPartialMockzillaHttpResponse  {
+  const MockzillaHttpResponse._();
+
   const factory MockzillaHttpResponse({
     /// The HTTP status to use for the response, defaults to 200 - OK.
     @Default(HttpStatus.ok) int statusCode,
@@ -49,16 +51,42 @@ abstract class MockzillaHttpResponse with _$MockzillaHttpResponse {
     @Default({"Content-Type": "application/json"}) Map<String, String> headers,
     @Default("") String body,
   }) = _MockzillaHttpResponse;
+
+  @override
+  int? nullableStatusCode() => statusCode;
+
+  @override
+  Map<String, String>? nullableHeaders() => headers;
+
+  @override
+  String? nullableBody() => body;
 }
 
 /// Used to define partial overrides of standard responses in Dashboard overrides
+abstract class CommonPartialMockzillaHttpResponse {
+    int? nullableStatusCode();
+    Map<String, String>? nullableHeaders();
+    String? nullableBody();
+}
+
 @freezed
-abstract class PartialMockzillaHttpResponse with _$PartialMockzillaHttpResponse {
+abstract class PartialMockzillaHttpResponse with _$PartialMockzillaHttpResponse implements CommonPartialMockzillaHttpResponse  {
+  const PartialMockzillaHttpResponse._();
+
   const factory PartialMockzillaHttpResponse({
     int? statusCode,
     Map<String, String>? headers,
     String? body,
   }) = _PartialMockzillaHttpResponse;
+
+  @override
+  int? nullableStatusCode() => statusCode;
+
+  @override
+  Map<String, String>? nullableHeaders() => headers;
+
+  @override
+  String? nullableBody() => body;
 }
 
 /// Definition for a preset response that can be selected in the desktop
@@ -68,7 +96,7 @@ abstract class DashboardOverridePreset with _$DashboardOverridePreset {
   const factory DashboardOverridePreset({
     required String name,
     required String? description,
-    required MockzillaHttpResponse response,
+    required CommonPartialMockzillaHttpResponse response,
   }) = _DashboardOverridePreset;
 }
 

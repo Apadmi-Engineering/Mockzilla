@@ -15,6 +15,7 @@ import BridgeLogLevel
 import BridgeMockzillaConfig
 import BridgeMockzillaHttpRequest
 import BridgeMockzillaHttpResponse
+import BridgePartialMockzillaHttpResponse
 import BridgeMockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
@@ -81,6 +82,12 @@ fun BridgeMockzillaHttpResponse.toNative() = MockzillaHttpResponse(
     this.body,
 )
 
+fun BridgePartialMockzillaHttpResponse.toNative() = PartialMockzillaHttpResponse(
+    this.statusCode?.toInt()?.let { HttpStatusCode.fromValue(it) },
+    this.headers,
+    this.body,
+)
+
 fun BridgeMockzillaHttpResponse.Companion.fromNative(
     data: MockzillaHttpResponse
 ) = BridgeMockzillaHttpResponse(
@@ -91,10 +98,10 @@ fun BridgeMockzillaHttpResponse.Companion.fromNative(
 
 fun BridgePartialMockzillaHttpResponse.Companion.fromNative(
     data: PartialMockzillaHttpResponse
-) = BridgeMockzillaHttpResponse(
-    data.statusCode?.value?.toLong() ?: 200,
-    data.headers ?: emptyMap(),
-    data.body ?: "",
+) = BridgePartialMockzillaHttpResponse(
+    data.statusCode?.value?.toLong(),
+    data.headers,
+    data.body,
 )
 
 fun BridgeDashboardOverridePreset.Companion.fromNative(data: DashboardOverridePreset) =
@@ -108,7 +115,7 @@ fun BridgeDashboardOverridePreset.toNative() = DashboardOverridePreset(
     this.name,
     this.description,
     null,
-    this.response.toNative().toPartial(),
+    this.response.toNative(),
 )
 
 fun BridgeDashboardOptionsConfig.toNative() = DashboardOptionsConfig(

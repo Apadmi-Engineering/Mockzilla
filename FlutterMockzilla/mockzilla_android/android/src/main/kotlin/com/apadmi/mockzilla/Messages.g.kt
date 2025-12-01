@@ -158,14 +158,14 @@ data class BridgePartialMockzillaHttpResponse (
 data class BridgeDashboardOverridePreset (
   val name: String,
   val description: String? = null,
-  val response: BridgeMockzillaHttpResponse
+  val response: BridgePartialMockzillaHttpResponse
 )
  {
   companion object {
     fun fromList(pigeonVar_list: List<Any?>): BridgeDashboardOverridePreset {
       val name = pigeonVar_list[0] as String
       val description = pigeonVar_list[1] as String?
-      val response = pigeonVar_list[2] as BridgeMockzillaHttpResponse
+      val response = pigeonVar_list[2] as BridgePartialMockzillaHttpResponse
       return BridgeDashboardOverridePreset(name, description, response)
     }
   }
