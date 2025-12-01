@@ -150,9 +150,9 @@ class MockzillaWeb extends MockzillaPlatform {
       name: preset.name,
       description: preset.description,
       response: buildPartialResponse(
-        statusCode: preset.response.statusCode,
-        headers: preset.response.headers,
-        body: preset.response.body,
+        statusCode: preset.response.nullableStatusCode(),
+        headers: preset.response.nullableHeaders(),
+        body: preset.response.nullableBody(),
       ),
     );
   }

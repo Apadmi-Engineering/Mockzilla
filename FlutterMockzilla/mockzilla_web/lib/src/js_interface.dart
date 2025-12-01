@@ -183,12 +183,12 @@ JsMockzillaHttpResponse buildResponse({
 }
 
 JsPartialMockzillaHttpResponse buildPartialResponse({
-  required int statusCode,
-  required Map<String, String> headers,
-  required String body,
+  required int? statusCode,
+  required Map<String, String>? headers,
+  required String? body,
 }) {
   final jsHeaders = JSObject();
-  headers.forEach((key, value) {
+  headers?.forEach((key, value) {
     jsHeaders[key] = value.toJS;
   });
   return JsPartialMockzillaHttpResponse(statusCode, jsHeaders, body);
