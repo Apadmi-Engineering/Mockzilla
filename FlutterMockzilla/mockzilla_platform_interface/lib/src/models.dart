@@ -24,6 +24,16 @@ enum LogLevel {
   assertion;
 }
 
+enum DashboardOverridePresetType {
+  clientError,
+  informational,
+  other,
+  redirect,
+  serverError,
+  success,
+}
+
+
 /// A representation of a request to the Mockzilla server; this is passed to
 /// an endpoint handler in order to generate an appropriate response.
 @freezed
@@ -101,6 +111,7 @@ abstract class DashboardOverridePreset with _$DashboardOverridePreset {
     required String name,
     required String? description,
     required CommonPartialMockzillaHttpResponse response,
+    DashboardOverridePresetType? type
   }) = _DashboardOverridePreset;
 }
 

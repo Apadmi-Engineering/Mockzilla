@@ -79,6 +79,21 @@ enum class BridgeLogLevel(val raw: Int) {
   }
 }
 
+enum class BridgeDashboardOverridePresetType(val raw: Int) {
+  CLIENT_ERROR(0),
+  INFORMATIONAL(1),
+  OTHER(2),
+  REDIRECT(3),
+  SERVER_ERROR(4),
+  SUCCESS(5);
+
+  companion object {
+    fun ofRaw(raw: Int): BridgeDashboardOverridePresetType? {
+      return values().firstOrNull { it.raw == raw }
+    }
+  }
+}
+
 /** Generated class from Pigeon that represents data sent in messages. */
 data class BridgeMockzillaHttpRequest (
   val uri: String,
@@ -158,7 +173,8 @@ data class BridgePartialMockzillaHttpResponse (
 data class BridgeDashboardOverridePreset (
   val name: String,
   val description: String? = null,
-  val response: BridgePartialMockzillaHttpResponse
+  val response: BridgePartialMockzillaHttpResponse,
+  val type: BridgeDashboardOverridePresetType? = null
 )
  {
   companion object {
@@ -166,7 +182,8 @@ data class BridgeDashboardOverridePreset (
       val name = pigeonVar_list[0] as String
       val description = pigeonVar_list[1] as String?
       val response = pigeonVar_list[2] as BridgePartialMockzillaHttpResponse
-      return BridgeDashboardOverridePreset(name, description, response)
+      val type = pigeonVar_list[3] as BridgeDashboardOverridePresetType?
+      return BridgeDashboardOverridePreset(name, description, response, type)
     }
   }
   fun toList(): List<Any?> {
@@ -174,6 +191,7 @@ data class BridgeDashboardOverridePreset (
       name,
       description,
       response,
+      type,
     )
   }
 }
@@ -299,41 +317,46 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         }
       }
       131.toByte() -> {
-        return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeMockzillaHttpRequest.fromList(it)
+        return (readValue(buffer) as Long?)?.let {
+          BridgeDashboardOverridePresetType.ofRaw(it.toInt())
         }
       }
       132.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeMockzillaHttpResponse.fromList(it)
+          BridgeMockzillaHttpRequest.fromList(it)
         }
       }
       133.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgePartialMockzillaHttpResponse.fromList(it)
+          BridgeMockzillaHttpResponse.fromList(it)
         }
       }
       134.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeDashboardOverridePreset.fromList(it)
+          BridgePartialMockzillaHttpResponse.fromList(it)
         }
       }
       135.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeDashboardOptionsConfig.fromList(it)
+          BridgeDashboardOverridePreset.fromList(it)
         }
       }
       136.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeEndpointConfig.fromList(it)
+          BridgeDashboardOptionsConfig.fromList(it)
         }
       }
       137.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          BridgeMockzillaConfig.fromList(it)
+          BridgeEndpointConfig.fromList(it)
         }
       }
       138.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          BridgeMockzillaConfig.fromList(it)
+        }
+      }
+      139.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
           BridgeMockzillaRuntimeParams.fromList(it)
         }
@@ -351,36 +374,40 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(130)
         writeValue(stream, value.raw)
       }
-      is BridgeMockzillaHttpRequest -> {
+      is BridgeDashboardOverridePresetType -> {
         stream.write(131)
-        writeValue(stream, value.toList())
+        writeValue(stream, value.raw)
       }
-      is BridgeMockzillaHttpResponse -> {
+      is BridgeMockzillaHttpRequest -> {
         stream.write(132)
         writeValue(stream, value.toList())
       }
-      is BridgePartialMockzillaHttpResponse -> {
+      is BridgeMockzillaHttpResponse -> {
         stream.write(133)
         writeValue(stream, value.toList())
       }
-      is BridgeDashboardOverridePreset -> {
+      is BridgePartialMockzillaHttpResponse -> {
         stream.write(134)
         writeValue(stream, value.toList())
       }
-      is BridgeDashboardOptionsConfig -> {
+      is BridgeDashboardOverridePreset -> {
         stream.write(135)
         writeValue(stream, value.toList())
       }
-      is BridgeEndpointConfig -> {
+      is BridgeDashboardOptionsConfig -> {
         stream.write(136)
         writeValue(stream, value.toList())
       }
-      is BridgeMockzillaConfig -> {
+      is BridgeEndpointConfig -> {
         stream.write(137)
         writeValue(stream, value.toList())
       }
-      is BridgeMockzillaRuntimeParams -> {
+      is BridgeMockzillaConfig -> {
         stream.write(138)
+        writeValue(stream, value.toList())
+      }
+      is BridgeMockzillaRuntimeParams -> {
+        stream.write(139)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)

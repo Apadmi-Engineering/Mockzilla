@@ -1073,6 +1073,7 @@ mixin _$DashboardOverridePreset {
   String get name;
   String? get description;
   CommonPartialMockzillaHttpResponse get response;
+  DashboardOverridePresetType? get type;
 
   /// Create a copy of DashboardOverridePreset
   /// with the given fields replaced by the non-null parameter values.
@@ -1091,15 +1092,17 @@ mixin _$DashboardOverridePreset {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.response, response) ||
-                other.response == response));
+                other.response == response) &&
+            (identical(other.type, type) || other.type == type));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, description, response);
+  int get hashCode =>
+      Object.hash(runtimeType, name, description, response, type);
 
   @override
   String toString() {
-    return 'DashboardOverridePreset(name: $name, description: $description, response: $response)';
+    return 'DashboardOverridePreset(name: $name, description: $description, response: $response, type: $type)';
   }
 }
 
@@ -1112,7 +1115,8 @@ abstract mixin class $DashboardOverridePresetCopyWith<$Res> {
   $Res call(
       {String name,
       String? description,
-      CommonPartialMockzillaHttpResponse response});
+      CommonPartialMockzillaHttpResponse response,
+      DashboardOverridePresetType? type});
 }
 
 /// @nodoc
@@ -1131,6 +1135,7 @@ class _$DashboardOverridePresetCopyWithImpl<$Res>
     Object? name = null,
     Object? description = freezed,
     Object? response = null,
+    Object? type = freezed,
   }) {
     return _then(_self.copyWith(
       name: null == name
@@ -1145,6 +1150,10 @@ class _$DashboardOverridePresetCopyWithImpl<$Res>
           ? _self.response
           : response // ignore: cast_nullable_to_non_nullable
               as CommonPartialMockzillaHttpResponse,
+      type: freezed == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as DashboardOverridePresetType?,
     ));
   }
 }
@@ -1242,15 +1251,19 @@ extension DashboardOverridePresetPatterns on DashboardOverridePreset {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String name, String? description,
-            CommonPartialMockzillaHttpResponse response)?
+    TResult Function(
+            String name,
+            String? description,
+            CommonPartialMockzillaHttpResponse response,
+            DashboardOverridePresetType? type)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _DashboardOverridePreset() when $default != null:
-        return $default(_that.name, _that.description, _that.response);
+        return $default(
+            _that.name, _that.description, _that.response, _that.type);
       case _:
         return orElse();
     }
@@ -1271,14 +1284,18 @@ extension DashboardOverridePresetPatterns on DashboardOverridePreset {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String name, String? description,
-            CommonPartialMockzillaHttpResponse response)
+    TResult Function(
+            String name,
+            String? description,
+            CommonPartialMockzillaHttpResponse response,
+            DashboardOverridePresetType? type)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DashboardOverridePreset():
-        return $default(_that.name, _that.description, _that.response);
+        return $default(
+            _that.name, _that.description, _that.response, _that.type);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -1298,14 +1315,18 @@ extension DashboardOverridePresetPatterns on DashboardOverridePreset {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String name, String? description,
-            CommonPartialMockzillaHttpResponse response)?
+    TResult? Function(
+            String name,
+            String? description,
+            CommonPartialMockzillaHttpResponse response,
+            DashboardOverridePresetType? type)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DashboardOverridePreset() when $default != null:
-        return $default(_that.name, _that.description, _that.response);
+        return $default(
+            _that.name, _that.description, _that.response, _that.type);
       case _:
         return null;
     }
@@ -1316,7 +1337,10 @@ extension DashboardOverridePresetPatterns on DashboardOverridePreset {
 
 class _DashboardOverridePreset implements DashboardOverridePreset {
   const _DashboardOverridePreset(
-      {required this.name, required this.description, required this.response});
+      {required this.name,
+      required this.description,
+      required this.response,
+      this.type});
 
   @override
   final String name;
@@ -1324,6 +1348,8 @@ class _DashboardOverridePreset implements DashboardOverridePreset {
   final String? description;
   @override
   final CommonPartialMockzillaHttpResponse response;
+  @override
+  final DashboardOverridePresetType? type;
 
   /// Create a copy of DashboardOverridePreset
   /// with the given fields replaced by the non-null parameter values.
@@ -1343,15 +1369,17 @@ class _DashboardOverridePreset implements DashboardOverridePreset {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.response, response) ||
-                other.response == response));
+                other.response == response) &&
+            (identical(other.type, type) || other.type == type));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, name, description, response);
+  int get hashCode =>
+      Object.hash(runtimeType, name, description, response, type);
 
   @override
   String toString() {
-    return 'DashboardOverridePreset(name: $name, description: $description, response: $response)';
+    return 'DashboardOverridePreset(name: $name, description: $description, response: $response, type: $type)';
   }
 }
 
@@ -1366,7 +1394,8 @@ abstract mixin class _$DashboardOverridePresetCopyWith<$Res>
   $Res call(
       {String name,
       String? description,
-      CommonPartialMockzillaHttpResponse response});
+      CommonPartialMockzillaHttpResponse response,
+      DashboardOverridePresetType? type});
 }
 
 /// @nodoc
@@ -1385,6 +1414,7 @@ class __$DashboardOverridePresetCopyWithImpl<$Res>
     Object? name = null,
     Object? description = freezed,
     Object? response = null,
+    Object? type = freezed,
   }) {
     return _then(_DashboardOverridePreset(
       name: null == name
@@ -1399,6 +1429,10 @@ class __$DashboardOverridePresetCopyWithImpl<$Res>
           ? _self.response
           : response // ignore: cast_nullable_to_non_nullable
               as CommonPartialMockzillaHttpResponse,
+      type: freezed == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as DashboardOverridePresetType?,
     ));
   }
 }

@@ -17,6 +17,7 @@ import BridgeMockzillaHttpRequest
 import BridgeMockzillaHttpResponse
 import BridgePartialMockzillaHttpResponse
 import BridgeMockzillaRuntimeParams
+import BridgeDashboardOverridePresetType
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import io.ktor.http.HttpMethod
@@ -67,6 +68,28 @@ fun BridgeLogLevel.Companion.fromNative(
     MockzillaConfig.LogLevel.Assert -> BridgeLogLevel.ASSERTION
 }
 
+fun BridgeDashboardOverridePresetType.toNative() = when (this) {
+    BridgeDashboardOverridePresetType.CLIENT_ERROR -> DashboardOverridePreset.Type.ClientError
+    BridgeDashboardOverridePresetType.INFORMATIONAL -> DashboardOverridePreset.Type.Informational
+    BridgeDashboardOverridePresetType.OTHER -> DashboardOverridePreset.Type.Other
+    BridgeDashboardOverridePresetType.REDIRECT -> DashboardOverridePreset.Type.Redirect
+    BridgeDashboardOverridePresetType.SERVER_ERROR -> DashboardOverridePreset.Type.ServerError
+    BridgeDashboardOverridePresetType.SUCCESS -> DashboardOverridePreset.Type.Success
+}
+
+fun BridgeDashboardOverridePresetType.Companion.fromNative(
+    data: DashboardOverridePreset.Type?
+) = when (data) {
+    DashboardOverridePreset.Type.ClientError -> BridgeDashboardOverridePresetType.CLIENT_ERROR
+    DashboardOverridePreset.Type.Informational -> BridgeDashboardOverridePresetType.INFORMATIONAL
+    DashboardOverridePreset.Type.Other -> BridgeDashboardOverridePresetType.OTHER
+    DashboardOverridePreset.Type.Redirect -> BridgeDashboardOverridePresetType.REDIRECT
+    DashboardOverridePreset.Type.ServerError -> BridgeDashboardOverridePresetType.SERVER_ERROR
+    DashboardOverridePreset.Type.Success -> BridgeDashboardOverridePresetType.SUCCESS
+    null -> null
+}
+
+
 suspend fun BridgeMockzillaHttpRequest.Companion.fromNative(
     data: MockzillaHttpRequest
 ) = BridgeMockzillaHttpRequest(
@@ -108,14 +131,15 @@ fun BridgeDashboardOverridePreset.Companion.fromNative(data: DashboardOverridePr
     BridgeDashboardOverridePreset(
         data.name,
         data.description,
-        BridgePartialMockzillaHttpResponse.fromNative(data.response)
+        BridgePartialMockzillaHttpResponse.fromNative(data.response),
+        BridgeDashboardOverridePresetType.fromNative(data.type)
     )
 
 fun BridgeDashboardOverridePreset.toNative() = DashboardOverridePreset(
     this.name,
     this.description,
-    null,
-    this.response.toNative(),
+    this.type?.toNative(),
+    this.response.toNative()
 )
 
 fun BridgeDashboardOptionsConfig.toNative() = DashboardOptionsConfig(

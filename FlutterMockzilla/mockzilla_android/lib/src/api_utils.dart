@@ -31,6 +31,20 @@ extension LogLevelBridge on LogLevel {
 }
 
 @internal
+extension BridgeDashboardOverridePresetTypeBridge on BridgeDashboardOverridePresetType {
+  DashboardOverridePresetType toDart() => DashboardOverridePresetType.values.firstWhere(
+        (element) => element.name == name,
+  );
+}
+
+@internal
+extension DashboardOverridePresetTypeBridge on DashboardOverridePresetType {
+  BridgeDashboardOverridePresetType toBridge() => BridgeDashboardOverridePresetType.values.firstWhere(
+        (element) => element.name == name,
+  );
+}
+
+@internal
 extension BridgeMockzillaHttpRequestBridge on BridgeMockzillaHttpRequest {
   MockzillaHttpRequest toDart() => MockzillaHttpRequest(
         uri: uri,
@@ -95,6 +109,7 @@ extension BridgeDashboardOverridePresetBridge on BridgeDashboardOverridePreset {
         name: name,
         description: description,
         response: response.toDart(),
+        type: type?.toDart()
       );
 }
 
@@ -104,6 +119,7 @@ extension DashboardOverridePresetBridge on DashboardOverridePreset {
         name: name,
         description: description,
         response: response.toBridge(),
+        type: type?.toBridge()
       );
 }
 
