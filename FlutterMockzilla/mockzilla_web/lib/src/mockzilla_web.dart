@@ -149,15 +149,14 @@ class MockzillaWeb extends MockzillaPlatform {
 
   JsDashboardOverridePreset _toJsPreset(DashboardOverridePreset preset) {
     return buildPreset(
-      name: preset.name,
-      description: preset.description,
-      response: buildPartialResponse(
-        statusCode: preset.response.nullableStatusCode(),
-        headers: preset.response.nullableHeaders(),
-        body: preset.response.nullableBody(),
-      ),
-      type: _toJsType(preset.type)
-    );
+        name: preset.name,
+        description: preset.description,
+        response: buildPartialResponse(
+          statusCode: preset.response.nullableStatusCode(),
+          headers: preset.response.nullableHeaders(),
+          body: preset.response.nullableBody(),
+        ),
+        type: _toJsType(preset.type));
   }
 
   String? _toJsType(DashboardOverridePresetType? type) {
@@ -174,7 +173,8 @@ class MockzillaWeb extends MockzillaPlatform {
         return "ServerError";
       case DashboardOverridePresetType.success:
         return "Success";
-      case null: return null;
+      case null:
+        return null;
     }
   }
 

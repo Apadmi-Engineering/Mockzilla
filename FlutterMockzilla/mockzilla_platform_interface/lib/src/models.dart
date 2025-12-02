@@ -33,7 +33,6 @@ enum DashboardOverridePresetType {
   success,
 }
 
-
 /// A representation of a request to the Mockzilla server; this is passed to
 /// an endpoint handler in order to generate an appropriate response.
 @freezed
@@ -107,12 +106,11 @@ abstract class PartialMockzillaHttpResponse
 /// management app.
 @freezed
 abstract class DashboardOverridePreset with _$DashboardOverridePreset {
-  const factory DashboardOverridePreset({
-    required String name,
-    required String? description,
-    required CommonPartialMockzillaHttpResponse response,
-    DashboardOverridePresetType? type
-  }) = _DashboardOverridePreset;
+  const factory DashboardOverridePreset(
+      {required String name,
+      required String? description,
+      required CommonPartialMockzillaHttpResponse response,
+      DashboardOverridePresetType? type}) = _DashboardOverridePreset;
 }
 
 /// A collection of preset responses from an endpoint that can be selected in

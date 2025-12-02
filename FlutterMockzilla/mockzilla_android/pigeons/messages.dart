@@ -82,12 +82,11 @@ class BridgeDashboardOverridePreset {
   final BridgePartialMockzillaHttpResponse response;
   final BridgeDashboardOverridePresetType? type;
 
-  const BridgeDashboardOverridePreset({
-    required this.name,
-    this.description,
-    required this.response,
-    required this.type
-  });
+  const BridgeDashboardOverridePreset(
+      {required this.name,
+      this.description,
+      required this.response,
+      required this.type});
 }
 
 class BridgeDashboardOptionsConfig {
