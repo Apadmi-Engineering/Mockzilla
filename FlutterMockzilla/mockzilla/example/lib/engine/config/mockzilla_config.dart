@@ -16,6 +16,7 @@ final mockzillaConfig =
         DashboardOverridePreset(
             name: "Error Preset",
             description: "Error Preset Example",
+            type: DashboardOverridePresetType.success,
             response: MockzillaHttpResponse(
               statusCode: 404,
               headers: {},

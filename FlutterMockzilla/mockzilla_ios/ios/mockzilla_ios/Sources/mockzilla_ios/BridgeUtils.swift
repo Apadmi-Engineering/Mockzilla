@@ -14,6 +14,37 @@ enum MockzillaError: Error {
     case argumentTypeError
 }
 
+extension BridgeDashboardOverridePresetType {
+    func toNative() -> Mockzilla_commonDashboardOverridePreset.Type_ {
+        return switch self {
+            case BridgeDashboardOverridePresetType.clientError: Mockzilla_commonDashboardOverridePreset.Type_.clienterror
+            case BridgeDashboardOverridePresetType.informational: Mockzilla_commonDashboardOverridePreset.Type_.informational
+            case BridgeDashboardOverridePresetType.other: Mockzilla_commonDashboardOverridePreset.Type_.other
+            case BridgeDashboardOverridePresetType.redirect: Mockzilla_commonDashboardOverridePreset.Type_.redirect
+            case BridgeDashboardOverridePresetType.serverError: Mockzilla_commonDashboardOverridePreset.Type_.servererror
+            case BridgeDashboardOverridePresetType.success: Mockzilla_commonDashboardOverridePreset.Type_.success
+        }
+    }
+
+    static func fromNative(
+        _ data: Mockzilla_commonDashboardOverridePreset.Type_?
+    ) -> BridgeDashboardOverridePresetType? {
+        if data == nil {
+            return nil
+        }
+        
+        return switch (data!) {
+        case Mockzilla_commonDashboardOverridePreset.Type_.clienterror: BridgeDashboardOverridePresetType.clientError
+        case Mockzilla_commonDashboardOverridePreset.Type_.informational: BridgeDashboardOverridePresetType.informational
+        case Mockzilla_commonDashboardOverridePreset.Type_.other: BridgeDashboardOverridePresetType.other
+        case Mockzilla_commonDashboardOverridePreset.Type_.redirect: BridgeDashboardOverridePresetType.redirect
+        case Mockzilla_commonDashboardOverridePreset.Type_.servererror: BridgeDashboardOverridePresetType.serverError
+        case Mockzilla_commonDashboardOverridePreset.Type_.success: BridgeDashboardOverridePresetType.success
+        default: nil
+        }
+    }
+}
+
 extension BridgeHttpMethod {
     func toNative() -> Ktor_httpHttpMethod {
         return switch self {
@@ -120,7 +151,7 @@ extension BridgeDashboardOverridePreset {
         return Mockzilla_commonDashboardOverridePreset(
             name: name,
             description: description,
-            type: nil,
+            type: type?.toNative(),
             response: response.toNative(),
             isManagementUiDefinedCustomPreset: false
         )
@@ -130,7 +161,8 @@ extension BridgeDashboardOverridePreset {
         return BridgeDashboardOverridePreset(
             name: data.name,
             description: data.description_,
-            response: BridgePartialMockzillaHttpResponse.fromNative(data.response)
+            response: BridgePartialMockzillaHttpResponse.fromNative(data.response),
+            type: BridgeDashboardOverridePresetType.fromNative(data.type)
         )
     }
 }

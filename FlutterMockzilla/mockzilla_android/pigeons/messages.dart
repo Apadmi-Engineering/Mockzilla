@@ -88,7 +88,6 @@ class BridgeDashboardOverridePreset {
     required this.response,
     required this.type
   });
-
 }
 
 class BridgeDashboardOptionsConfig {
