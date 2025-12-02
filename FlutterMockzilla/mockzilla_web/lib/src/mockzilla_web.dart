@@ -156,7 +156,26 @@ class MockzillaWeb extends MockzillaPlatform {
         headers: preset.response.nullableHeaders(),
         body: preset.response.nullableBody(),
       ),
+      type: _toJsType(preset.type)
     );
+  }
+
+  String? _toJsType(DashboardOverridePresetType? type) {
+    switch (type) {
+      case DashboardOverridePresetType.clientError:
+        return "ClientError";
+      case DashboardOverridePresetType.informational:
+        return "Informational";
+      case DashboardOverridePresetType.other:
+        return "Other";
+      case DashboardOverridePresetType.redirect:
+        return "Redirect";
+      case DashboardOverridePresetType.serverError:
+        return "ServerError";
+      case DashboardOverridePresetType.success:
+        return "Success";
+      case null: return null;
+    }
   }
 
   MockzillaRuntimeParams _fromJsRuntimeParams(
