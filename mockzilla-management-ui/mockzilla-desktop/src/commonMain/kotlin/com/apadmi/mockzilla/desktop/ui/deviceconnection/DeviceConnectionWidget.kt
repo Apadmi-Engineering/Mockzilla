@@ -31,6 +31,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
 import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
 import com.apadmi.mockzilla.ui.utils.Platform
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -98,11 +99,11 @@ fun DeviceConnectionContent(
 
         Spacer(Modifier.height(4.dp))
         if (Platform.current == Platform.Android) {
-            Button(onClick = {
-                onIpAndPortChanged("127.0.0.1:5614")
-            }) {
-                Text(strings.widgets.deviceConnection.androidDevConnectButton)
-            }
+            SolidButton(
+                onClick = { onIpAndPortChanged("127.0.0.1:5614") },
+                label = strings.widgets.deviceConnection.androidDevConnectButton
+            )
+
         }
 
         AnimatedContent(
@@ -200,9 +201,10 @@ private fun DevicesList(
             if (device.state == DetectedDevice.State.Resolving) {
                 CircularProgressIndicator(Modifier.padding(end = 8.dp).size(20.dp))
             } else {
-                Button(onClick = { onTapDevice(device) }) {
-                    Text(strings.widgets.deviceConnection.autoConnectButton)
-                }
+                SolidButton(
+                    onClick = { onTapDevice(device) },
+                    label = strings.widgets.deviceConnection.autoConnectButton
+                )
             }
         }
     }

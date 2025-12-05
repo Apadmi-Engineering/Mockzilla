@@ -13,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,6 +27,23 @@ import com.apadmi.mockzilla.ui.ui.common.theme.theme_background_dark
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_success
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun SolidButton(
+    modifier: Modifier = Modifier,
+    label: String,
+    leadingIcon: ImageVector? = null,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    onClick: () -> Unit
+) = SolidButton(
+    modifier,
+    label,
+    leadingIcon,
+    backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+    contentPadding,
+    onClick
+)
 
 @Composable
 fun SolidButton(
