@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset
 
 import androidx.compose.runtime.mutableStateOf
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -55,7 +56,7 @@ class CreateEditPresetViewModel(
         }
 
         state.value = endpoint.mapCatching { config ->
-            val current = config?.appliedPresetOverride
+            val current = config?.appliedPresetOverride ?: config?.deriveLegacyPreset()
             val isEditing = variant == State.Editing.Variant.Edit
             State.Editing(
                 isSaving = false,
@@ -75,7 +76,7 @@ class CreateEditPresetViewModel(
         }.fold(
             onSuccess = { it },
             onFailure = {
-                eventBus.send(EventBus.Event.GenericError)
+                eventBus.send(Event.GenericError)
                 State.Loading
             }
         )
@@ -115,10 +116,10 @@ class CreateEditPresetViewModel(
                 isManagementUiDefinedCustomPreset = true
             )
         ).onSuccess {
-            eventBus.send(EventBus.Event.EndpointDataChanged(listOf(key)))
+            eventBus.send(Event.EndpointDataChanged(listOf(key)))
             state.value = currentState.copy(isSaving = false)
         }.onFailure {
-            eventBus.send(EventBus.Event.GenericError)
+            eventBus.send(Event.GenericError)
         }
     }
 
@@ -256,4 +257,34 @@ class CreateEditPresetViewModel(
             )
         }
     }
+}
+
+// Used for backward compatibility so that old versions of the Mockzilla SDK used with new desktop app
+// where they're not sending the `appliedPresetOverride` field.
+internal fun SerializableEndpointConfig.deriveLegacyPreset(): DashboardOverridePreset? {
+    val response =  PartialMockzillaHttpResponse(
+        statusCode = defaultStatus,
+        headers = defaultHeaders,
+        body = defaultBody
+    ).takeIf { listOf(defaultStatus, defaultHeaders, defaultBody).any {
+        it != null }
+    } ?:  PartialMockzillaHttpResponse(
+        statusCode = errorStatus,
+        headers = errorHeaders,
+        body = errorBody
+    ).takeIf { listOf(errorStatus, errorHeaders, errorBody).any {
+        it != null }
+    }
+
+    if (response != null) {
+        return DashboardOverridePreset(
+            name = "Derived preset",
+            description = null,
+            type = null,
+            response = response,
+            isManagementUiDefinedCustomPreset = false
+        )
+    }
+
+    return null
 }

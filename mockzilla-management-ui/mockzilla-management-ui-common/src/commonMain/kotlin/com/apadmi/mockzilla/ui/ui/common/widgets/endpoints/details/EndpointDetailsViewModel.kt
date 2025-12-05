@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.deriveLegacyPreset
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
@@ -66,11 +67,7 @@ class EndpointDetailsViewModel(
                                 presets = State.Endpoint.Presets(
                                     appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
                                         // Remove all this once deprecated properties are removed
-                                        it.response == PartialMockzillaHttpResponse(
-                                            body = config.defaultBody,
-                                            statusCode = config.defaultStatus,
-                                            headers = config.defaultHeaders
-                                        )
+                                        it.response == config.deriveLegacyPreset()?.response
                                     },
                                     visiblePresets = presets.presets.filter(filter),
                                     allPresets = presets.presets,
