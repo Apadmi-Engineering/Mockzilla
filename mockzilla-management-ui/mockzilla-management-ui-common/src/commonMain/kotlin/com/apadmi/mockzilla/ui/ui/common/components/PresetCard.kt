@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
@@ -108,6 +109,7 @@ internal fun PresetCard(
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) = Column(
     Modifier.fillMaxWidth()
+        .clip(shape = RoundedCornerShape(12.dp))
         .clickable {
             onClicked(preset)
         }.border(
@@ -268,12 +270,16 @@ private fun ExpandableResponseBody(body: String) {
     var isExpanded by remember { mutableStateOf(false) }
     var canExpand by remember { mutableStateOf(false) }
     Box(
-        Modifier.fillMaxWidth().background(
-            MaterialTheme.colorScheme.surfaceContainerHigh,
-            shape = RoundedCornerShape(8.dp)
-        ).clickable(enabled = canExpand || isExpanded) {
-            isExpanded = !isExpanded
-        },
+        Modifier
+            .fillMaxWidth()
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clip(shape = RoundedCornerShape(8.dp))
+            .clickable(enabled = canExpand || isExpanded) {
+                isExpanded = !isExpanded
+            },
     ) {
         Text(
             modifier = Modifier.padding(8.dp),
