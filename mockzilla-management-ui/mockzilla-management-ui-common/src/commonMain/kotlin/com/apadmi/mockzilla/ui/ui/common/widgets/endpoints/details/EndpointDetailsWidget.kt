@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -106,11 +107,14 @@ private fun ColumnScope.PopulatedState(
     )
 
     PresetsContainer(
+        modifier = Modifier.padding(horizontal = 12.dp),
         state = state,
         onPresetFilterChanged = onFilterPresetChanged,
         onDefaultPresetSelected = onDefaultPresetSelected,
         onPresetMoreInfoClicked = onPresetMoreInfoClicked
     )
+
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable
