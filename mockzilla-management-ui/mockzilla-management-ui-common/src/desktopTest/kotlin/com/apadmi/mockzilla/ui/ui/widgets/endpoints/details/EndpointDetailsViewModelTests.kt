@@ -95,7 +95,16 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 delayMillis = 50,
                 isLoading = false,
                 presets = State.Endpoint.Presets(
-                    appliedPreset = null,
+                    appliedPreset = DashboardOverridePreset(
+                        name = "Derived preset",
+                        description = null,
+                        type = null,
+                        response = PartialMockzillaHttpResponse(
+                            statusCode = HttpStatusCode.OK,
+                            headers = emptyMap(),
+                            body = "{}"),
+                        isManagementUiDefinedCustomPreset = false
+                    ),
                     visiblePresets = presets.presets,
                     allPresets = presets.presets,
                     filter = ""

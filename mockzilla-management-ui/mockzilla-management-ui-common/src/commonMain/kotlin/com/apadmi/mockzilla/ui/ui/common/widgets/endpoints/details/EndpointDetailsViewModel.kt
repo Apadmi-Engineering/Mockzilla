@@ -68,7 +68,7 @@ class EndpointDetailsViewModel(
                                     appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
                                         // Remove all this once deprecated properties are removed
                                         it.response == config.deriveLegacyPreset()?.response
-                                    },
+                                    } ?: config.deriveLegacyPreset(),
                                     visiblePresets = presets.presets.filter(filter),
                                     allPresets = presets.presets,
                                     filter = filter ?: ""
