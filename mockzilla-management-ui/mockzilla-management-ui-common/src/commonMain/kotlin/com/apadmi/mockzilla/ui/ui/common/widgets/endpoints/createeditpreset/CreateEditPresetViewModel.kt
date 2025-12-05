@@ -61,10 +61,15 @@ class CreateEditPresetViewModel(
                 isSaving = false,
                 statusCode = current?.response?.statusCode.takeIf { isEditing },
                 body = current?.response?.body.takeIf { isEditing },
+                // Always starts as false because we assume plaintext if parsing
+                // the body as JSON fails
+                hasBodyError = false,
                 headers = current?.response?.headers
                     ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
                     .takeIf { isEditing } ?: emptyList(),
-                responseType = State.Editing.ResponseType.PlainText,
+                responseType = inferResponseTypeFromBody(
+                    current?.response?.body.takeIf { isEditing }
+                ),
                 variant = variant
             )
         }.fold(
@@ -74,6 +79,17 @@ class CreateEditPresetViewModel(
                 State.Loading
             }
         )
+    }
+
+    private fun inferResponseTypeFromBody(
+        body: String?
+    ): State.Editing.ResponseType {
+        return try {
+            Json.parseToJsonElement(body ?: return State.Editing.ResponseType.PlainText)
+            State.Editing.ResponseType.Json
+        } catch (_: Exception) {
+            State.Editing.ResponseType.PlainText
+        }
     }
 
     fun save() = viewModelScope.launch {

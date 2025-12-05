@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlignVerticalTop
 import androidx.compose.material.icons.filled.Code
@@ -99,31 +100,33 @@ internal fun EditResponseBody(
             )
 
             Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                modifier = Modifier.height(16.dp),
-                imageVector = when (state.hasBodyError) {
-                    false -> Icons.Default.Done
-                    true -> Icons.Default.ErrorOutline
-                },
-                contentDescription = null,
-                tint = when (state.hasBodyError) {
-                    true -> MaterialTheme.colorScheme.error
-                    false -> MaterialTheme.colorScheme.success.primary
-                }
-            )
 
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = when (state.hasBodyError) {
-                    true -> strings.invalidLabel
-                    false -> strings.validLabel
-                },
-                style = MaterialTheme.typography.labelMedium,
-                color = when (state.hasBodyError) {
-                    true -> MaterialTheme.colorScheme.error
-                    false -> MaterialTheme.colorScheme.success.primary
-                }
-            )
+            if (state.responseType == State.Editing.ResponseType.Json) {
+                Icon(
+                    modifier = Modifier.height(16.dp),
+                    imageVector = when (state.hasBodyError) {
+                        false -> Icons.Default.Done
+                        true -> Icons.Default.ErrorOutline
+                    },
+                    contentDescription = null,
+                    tint = when (state.hasBodyError) {
+                        true -> MaterialTheme.colorScheme.error
+                        false -> MaterialTheme.colorScheme.success.primary
+                    }
+                )
+                Spacer(modifier = Modifier.width(2.dp))
+                Text(
+                    text = when (state.hasBodyError) {
+                        true -> strings.invalidLabel
+                        false -> strings.validLabel
+                    },
+                    style = MaterialTheme.typography.labelMedium,
+                    color = when (state.hasBodyError) {
+                        true -> MaterialTheme.colorScheme.error
+                        false -> MaterialTheme.colorScheme.success.primary
+                    }
+                )
+            }
         }
 
         Row(
