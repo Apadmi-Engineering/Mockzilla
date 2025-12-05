@@ -84,8 +84,9 @@ fun DesktopApp(
             right = rightWidgets,
             middle = middleWidgets(
                 state, openWidgets, onCloseEditor = {
-                    openWidgets.minus(editPresetWidgetId)
-                    openWidgets = openWidgets.minus(createPresetWidgetId)
+                    openWidgets = openWidgets
+                        .minus(editPresetWidgetId)
+                        .minus(createPresetWidgetId)
                 }
             ) {
                 viewModel.setSelectedEndpoint(it)
