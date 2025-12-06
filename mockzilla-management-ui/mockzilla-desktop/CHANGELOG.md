@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-desktop-v1.2.2...mockzilla-desktop-v2.0.0) (2025-12-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* Update embedded UI with complete re-skin ([#524](https://github.com/Apadmi-Engineering/Mockzilla/issues/524))
+* support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509))
+
+### Features
+
+* support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509)) ([2d6a9bb](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d6a9bbec08baa6c377e0a7ac57166086dabfd22))
+* Update embedded UI with complete re-skin ([#524](https://github.com/Apadmi-Engineering/Mockzilla/issues/524)) ([46bebc8](https://github.com/Apadmi-Engineering/Mockzilla/commit/46bebc80bb5646207266ac0062dfede9b38ccbb9))
+
 ## 1.2.2 (2025-10-13)
 
 ### Features
