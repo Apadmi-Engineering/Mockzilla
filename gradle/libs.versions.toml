@@ -2,7 +2,7 @@
 
 # Kotlin
 adam = "0.5.10" # https://github.com/Malinskiy/adam
-jmdns = "3.6.2" # https://github.com/jmdns/jmdns
+jmdns = "3.6.3" # https://github.com/jmdns/jmdns
 kotlin = "2.2.20" # https://github.com/JetBrains/kotlin
 agp = "8.13.0" # https://developer.android.com/build/releases/gradle-plugin
 kotlinxBrowser = "0.5.0" # https://github.com/Kotlin/kotlinx-browser
@@ -21,7 +21,7 @@ dokka = "2.0.0" # https://github.com/Kotlin/dokka
 lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
-ktor = "3.3.1" # https://github.com/ktorio/ktor
+ktor = "3.3.3" # https://github.com/ktorio/ktor
 
 # Compose
 compose = "1.9.3" # https://github.com/JetBrains/compose-multiplatform
@@ -37,7 +37,7 @@ kotlinx-serialization = "1.9.0" # https://github.com/Kotlin/kotlinx.serializatio
 # AndroidX
 lifecycle = "2.9.4" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 compose-activity = "1.11.0" # https://developer.android.com/jetpack/androidx/releases/activity
-mockk = "1.14.6"
+mockk = "1.14.7"
 navigationCompose = "2.9.1"
 playServicesAdsIdentifier = "18.2.0"
 
