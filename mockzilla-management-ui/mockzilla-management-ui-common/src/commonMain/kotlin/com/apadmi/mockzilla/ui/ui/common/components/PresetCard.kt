@@ -133,9 +133,10 @@ internal fun PresetCard(
         )
         Spacer(Modifier.size(8.dp))
         Text(
+            modifier = Modifier.weight(1f),
             text = preset.name, style = MaterialTheme.typography.labelLarge
         )
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.size(8.dp))
         Tag(
             label = when (variant) {
                 PresetCardVariant.Selected -> strings.appliedLabel
