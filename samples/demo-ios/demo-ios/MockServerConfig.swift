@@ -32,6 +32,25 @@ fileprivate extension MockzillaConfig {
                 .setSwiftErrorHandler { _ in
                     MockzillaHttpResponse(status: HttpStatusCode.InternalServerError)
                 }
+                .configureDashboardOverrides { builder in
+                    builder.addPreset(
+                        response: MockzillaHttpResponse(
+                            status: HttpStatusCode.OK,
+                            headers: [:],
+                            body: CowDto(
+                                name: "Another Cow",
+                                age: 921,
+                                likesGrass: true,
+                                hasHorns: false,
+                                mooSample: "Moo",
+                                someValueFromRequest: ""
+                            ).toJson()
+                        ),
+                        name: "George",
+                        description: nil,
+                        type: nil
+                    )
+                }
                 .setSwiftDefaultHandler { request in
                     let request = try! await GetCowRequestDto.fromJson(
                         data: request.bodyAsString().data(using: .utf8)!

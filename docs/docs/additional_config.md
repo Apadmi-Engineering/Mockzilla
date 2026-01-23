@@ -91,3 +91,23 @@ An additional header now needs to be added to each request. The header **changes
     // Generate a new header for each request.
     let header = params.authHeaderProvider.generateHeader()
     ```
+
+## Advanced Usage
+
+When calling the Mockzilla server from your app's code the following happens:
+
+```mermaid
+sequenceDiagram    
+    participant A as Client App
+    participant S as Mockzilla Server
+    A->>S: Network request
+    S->>S: Lookup Endpoint based on pattern matchers (1)
+    S->>S: Delay as long as appropriate (2)
+    S->>S: Decide whether to simulate a failure (3)
+    alt Call should succeed
+    S->>A:Return response by calling block defined by `setDefaultHandler`
+    end
+    alt Call should fail
+    S->>A:Return response by calling block defined by `setErrorHandler`
+    end
+```

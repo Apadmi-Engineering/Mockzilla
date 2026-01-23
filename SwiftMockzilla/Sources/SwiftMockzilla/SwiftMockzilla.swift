@@ -12,6 +12,8 @@ public typealias EndpointConfigurationBuilder = Mockzilla_commonEndpointConfigur
 public typealias AuthHeaderProvider = Mockzilla_commonAuthHeaderProvider
 public typealias ReleaseModeConfig = Mockzilla_commonMockzillaConfig.ReleaseModeConfig
 public typealias MockzillaLogWriter = Mockzilla_commonMockzillaLogWriter
+public typealias MockzillaDashboardOverridePresetType = Mockzilla_commonDashboardOverridePreset.Type_
+
 
 public func startMockzilla(config mockzillaConfig: MockzillaConfig) -> MockzillaRuntimeParams {
     do {

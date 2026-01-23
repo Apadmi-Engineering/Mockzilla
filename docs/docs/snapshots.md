@@ -13,5 +13,11 @@
 
     The latest snapshot can be found by examining the latest build [here](https://github.com/Apadmi-Engineering/Mockzilla/actions/workflows/action_deploy_binaries.yml).
 
+=== "Swift"
+    Snapshots are published to the SPM repos on the branch `deployment/snapshot`:
+
+    - [SwiftMockzilla](https://github.com/Apadmi-Engineering/SwiftMockzilla/commits/deployment/snapshot/) 
+    - [SwiftMockzillaMobileUi](https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi/commits/deployment/snapshot)
+
 === "Flutter"
-    Snapshots are published on [pub.dev](https://pub.dev/packages/mockzilla) as [pre-releases](https://dart.dev/tools/pub/publishing#publishing-prereleases).
+Snapshots are published on [pub.dev](https://pub.dev/packages/mockzilla) as [pre-releases](https://dart.dev/tools/pub/publishing#publishing-prereleases).

@@ -39,12 +39,14 @@ nav:
   - Docs:
     - quick-start.md
     - endpoints.md
-    - additional_config.md
-    - browser_stack.md
-    - snapshots.md
+    - Advanced:
+      - additional_config.md
+      - browser_stack.md
+      - snapshots.md
     - Configuration at Runtime:
       - desktop/overview.md
       - mobile_ui.md
+      - presets.md
   - Contributing:
       - contributing.md
       - Desktop App: desktop_contributing.md

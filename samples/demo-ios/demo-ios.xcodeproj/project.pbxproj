@@ -646,7 +646,7 @@
 			repositoryURL = "https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi/";
 			requirement = {
 				kind = revision;
-				revision = ba06b3820b190593abddc7e9581a11f0ffd8278b;
+				revision = 2c40647db605fdb5f960a756c9fd568bbe3b338e;
 			};
 		};
 		831D0FA92B5191CD0016BD1D /* XCRemoteSwiftPackageReference "SwiftMockzilla" */ = {
@@ -654,7 +654,7 @@
 			repositoryURL = "https://github.com/Apadmi-Engineering/SwiftMockzilla";
 			requirement = {
 				kind = revision;
-				revision = 05432a7419661cac4a312e642c8c6b5c13138eea;
+				revision = f0ea0c072281e33ed4aa4f4315be3e368d73ed88;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
