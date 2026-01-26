@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.1.1...flutter_mockzilla_platform_interface-v2.0.0) (2026-01-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* Default/Error handles are now async functions = ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518))
+
+### Features
+
+* Feature/flutter support new mobile UI ([#532](https://github.com/Apadmi-Engineering/Mockzilla/issues/532)) ([70e0a52](https://github.com/Apadmi-Engineering/Mockzilla/commit/70e0a52276220b97db2d427ec93bc85994c50280))
+* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518)) ([4183f06](https://github.com/Apadmi-Engineering/Mockzilla/commit/4183f0626c5936e0ef213a006a46019e9d08d213))
+
 ## [2.0.0-dev.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.1.1...flutter_mockzilla_platform_interface-v2.0.0-dev.1) (2025-11-18)
 
 ### Features

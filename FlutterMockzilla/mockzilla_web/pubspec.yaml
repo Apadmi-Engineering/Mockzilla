@@ -1,7 +1,7 @@
 name: mockzilla_web
 description: The Web implementation for the mockzilla plugin.
 # x-release-please-start-version
-version: 0.0.2-dev.1
+version: 0.0.3
 # x-release-please-end
 homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
@@ -39,7 +39,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   meta: ^1.15.0
-  mockzilla_platform_interface: ^2.0.0-dev.1
+  mockzilla_platform_interface: ^2.0.0
   web: ">=0.5.1 <2.0.0"
 
 assets:

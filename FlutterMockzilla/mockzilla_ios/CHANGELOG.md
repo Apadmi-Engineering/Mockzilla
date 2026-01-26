@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0-dev.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.1.1...flutter_mockzilla_ios-v2.0.0-dev.1) (2025-11-18)
+## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.1.1...flutter_mockzilla_ios-v2.0.0) (2025-11-18)
 
 ### Features
 
