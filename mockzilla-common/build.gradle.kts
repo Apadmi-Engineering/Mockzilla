@@ -22,7 +22,7 @@ val artifactName = "mockzilla-common"
 
 kotlin {
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "3.0.0" // x-release-please-version
+    version = project.injectedVersion() ?: "4.0.0" // x-release-please-version
     androidTarget {
         publishLibraryVariants()
     }

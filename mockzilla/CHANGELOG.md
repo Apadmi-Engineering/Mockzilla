@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v3.0.0...mockzilla-v4.0.0) (2026-01-26)
+
+
+### Miscellaneous Chores
+
+* **mockzilla:** Synchronize Kmp libs versions
+
 ## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v3.0.0-alpha2...mockzilla-v3.0.0) (2026-01-26)
 
 
