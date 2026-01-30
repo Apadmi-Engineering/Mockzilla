@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.9...flutter_mockzilla_ui_mobile-v1.0.0) (2026-01-30)
+
+### Features
+
+* **mockzilla-mobile-ui:** Synchronize Mockzilla mobile ui versions
+
+### Bug Fixes
+
+* fix minor styling issues 
+
 ## [0.0.9](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v0.0.8...flutter_mockzilla_ui_mobile-v0.0.9) (2025-11-29)
 
 ### Features

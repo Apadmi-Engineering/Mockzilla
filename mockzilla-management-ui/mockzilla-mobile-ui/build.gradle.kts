@@ -27,7 +27,7 @@ val xcFrameworkName = "mockzillamobileui"
 
 kotlin {
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "0.0.9" // x-release-please-version
+    version = project.injectedVersion() ?: "1.0.0" // x-release-please-version
 
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
