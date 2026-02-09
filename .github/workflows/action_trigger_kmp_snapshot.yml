@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check if snapshot is needed
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: release-please--branches--develop--groups--Kmp-libs
       - name: Decide if snapshot should fire
