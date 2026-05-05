@@ -10,15 +10,19 @@ let package = Package(
         .library(name: "mockzilla-ios", targets: ["mockzilla_ios"])
     ],
     dependencies: [
+        .package(name: "FlutterFramework", path: "../FlutterFramework"),
         .package(
             url: "https://github.com/Apadmi-Engineering/SwiftMockzilla.git",
-            .upToNextMajor(from: "2.1.2")
+            .upToNextMajor(from: "3.0.0")
         )
     ],
     targets: [
         .target(
             name: "mockzilla_ios",
-            dependencies: ["SwiftMockzilla"],
+            dependencies: [
+                "SwiftMockzilla",
+                .product(name: "FlutterFramework", package: "FlutterFramework")
+            ],
             resources: []
         )
     ]
