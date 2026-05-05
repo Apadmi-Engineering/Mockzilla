@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swiftmockzilla",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Apadmi-Engineering/SwiftMockzilla.git",
+      "state" : {
+        "revision" : "1bf26b3242b390edca66be06b5b1071b61708c15",
+        "version" : "3.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}
