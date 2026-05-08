@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,10 +29,13 @@ import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
+import com.apadmi.mockzilla.ui.ui.common.components.SectionTitle
 import com.apadmi.mockzilla.ui.ui.common.components.SurfaceHeader
 import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.*
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -60,7 +61,7 @@ fun GlobalControlsWidget(device: Device) {
         onResetLatency = {
             focusManager.clearFocus()
             viewModel.resetLatency()
-        }
+        },
     )
 }
 
@@ -79,15 +80,13 @@ internal fun GlobalControlsWidgetContent(
         onRestoreApiClicked = onRestoreApiClicked,
         onForceFailureClicked = onForceFailureClicked,
         onLatencyChanged = onLatencyChanged,
-        onResetLatency = onResetLatency
+        onResetLatency = onResetLatency,
     )
 
     State.Loading -> Box(
-        modifier = Modifier.fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState()),
+        modifier = Modifier.fillMaxSize().background(color = LocalMockzillaTokens.current.bg0),
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(color = LocalMockzillaTokens.current.accent)
     }
 }
 
@@ -100,49 +99,53 @@ internal fun GlobalControlsWidgetIdleContent(
     onForceFailureClicked: () -> Unit,
     onLatencyChanged: (Int) -> Unit,
     onResetLatency: () -> Unit,
-) = Column(
-    modifier = Modifier.fillMaxSize()
-        .background(color = MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState())
-        .navigationBarsPadding()
 ) {
-    Box {
-        SurfaceHeader(
-            title = strings.widgets.globalControls.title,
-            subtitle = strings.widgets.globalControls.subtitle,
-        ) {
-            CustomOutlineButton(
-                label = strings.widgets.globalControls.resetAllLabel,
-                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-                onClick = onResetClicked,
-                variant = OutlineButtonVariant.Secondary
-            )
-        }
-
-        Box(Modifier.height(12.dp).fillMaxWidth().clipToBounds()) {
-            TogglableProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
-                isLoading = state.isLoading,
-                trackColor = Color.Transparent
-            )
-        }
-    }
-
+    val tokens = LocalMockzillaTokens.current
     Column(
-        modifier = Modifier.padding(horizontal = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = Modifier.fillMaxSize()
+            .background(color = tokens.bg0)
+            .verticalScroll(rememberScrollState())
+            .navigationBarsPadding(),
     ) {
-        ForceFailureBanner(
-            state = state.apiFailureState,
-            onRestoreApiClicked = onRestoreApiClicked,
-            onForceFailureClicked = onForceFailureClicked
-        )
-        ResponseLatencyCard(
-            strings = strings,
-            onChange = onLatencyChanged,
-            onReset = onResetLatency,
-            initialValue = state.initialLatencyMs,
-        )
+        Box {
+            SurfaceHeader(
+                title = strings.widgets.globalControls.title,
+                subtitle = strings.widgets.globalControls.subtitle,
+            ) {
+                BaseButton(
+                    label = strings.widgets.globalControls.resetAllLabel,
+                    variant = ButtonVariant.Soft,
+                    size = ButtonSize.Sm,
+                    onClick = onResetClicked,
+                )
+            }
+
+            Box(Modifier.height(12.dp).fillMaxWidth().clipToBounds()) {
+                TogglableProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    isLoading = state.isLoading,
+                    trackColor = Color.Transparent,
+                )
+            }
+        }
+
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            SectionTitle(label = strings.widgets.globalControls.title)
+            ForceFailureBanner(
+                state = state.apiFailureState,
+                onRestoreApiClicked = onRestoreApiClicked,
+                onForceFailureClicked = onForceFailureClicked,
+            )
+            ResponseLatencyCard(
+                strings = strings,
+                onChange = onLatencyChanged,
+                onReset = onResetLatency,
+                initialValue = state.initialLatencyMs,
+            )
+        }
     }
 }
 
@@ -155,6 +158,19 @@ private fun GlobalControlsWidgetPreview() = PreviewSurface {
         onRestoreApiClicked = {},
         onForceFailureClicked = {},
         onLatencyChanged = {},
-        onResetLatency = {}
+        onResetLatency = {},
+    )
+}
+
+@Preview
+@Composable
+private fun GlobalControlsWidgetDarkPreview() = PreviewSurface(darkTheme = true) {
+    GlobalControlsWidgetContent(
+        State.Idle(0, isLoading = false, apiFailureState = ForceFailureBannerState.Normal),
+        onResetClicked = {},
+        onRestoreApiClicked = {},
+        onForceFailureClicked = {},
+        onLatencyChanged = {},
+        onResetLatency = {},
     )
 }

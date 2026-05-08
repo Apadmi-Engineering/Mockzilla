@@ -23,110 +23,11 @@ import androidx.compose.ui.unit.Density
 import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
 import com.apadmi.mockzilla.ui.utils.Platform
 
-private val lightColors = lightColorScheme(
-    primary = md_theme_light_primary,
-    onPrimary = md_theme_light_onPrimary,
-    primaryContainer = md_theme_light_primaryContainer,
-    onPrimaryContainer = md_theme_light_onPrimaryContainer,
-    secondary = md_theme_light_secondary,
-    onSecondary = md_theme_light_onSecondary,
-    secondaryContainer = md_theme_light_secondaryContainer,
-    onSecondaryContainer = md_theme_light_onSecondaryContainer,
-    tertiary = md_theme_light_tertiary,
-    onTertiary = md_theme_light_onTertiary,
-    tertiaryContainer = md_theme_light_tertiaryContainer,
-    onTertiaryContainer = md_theme_light_onTertiaryContainer,
-    error = md_theme_light_error,
-    errorContainer = md_theme_light_errorContainer,
-    onError = md_theme_light_onError,
-    onErrorContainer = md_theme_light_onErrorContainer,
-    background = md_theme_light_background,
-    onBackground = md_theme_light_onBackground,
-    surface = md_theme_light_surface,
-    surfaceContainer = md_theme_light_surface_container,
-    onSurface = md_theme_light_onSurface,
-    surfaceVariant = md_theme_light_surfaceVariant,
-    onSurfaceVariant = md_theme_light_onSurfaceVariant,
-    outline = md_theme_light_outline,
-    inverseOnSurface = md_theme_light_inverseOnSurface,
-    inverseSurface = md_theme_light_inverseSurface,
-    inversePrimary = md_theme_light_inversePrimary,
-    surfaceTint = md_theme_light_surfaceTint,
-    outlineVariant = md_theme_light_outlineVariant,
-    scrim = md_theme_light_scrim,
-)
-
-private val darkColors = darkColorScheme(
-    primary = md_theme_dark_primary,
-    onPrimary = md_theme_dark_onPrimary,
-    primaryContainer = md_theme_dark_primaryContainer,
-    onPrimaryContainer = md_theme_dark_onPrimaryContainer,
-    secondary = md_theme_dark_secondary,
-    onSecondary = md_theme_dark_onSecondary,
-    secondaryContainer = md_theme_dark_secondaryContainer,
-    onSecondaryContainer = md_theme_dark_onSecondaryContainer,
-    tertiary = md_theme_dark_tertiary,
-    onTertiary = md_theme_dark_onTertiary,
-    tertiaryContainer = md_theme_dark_tertiaryContainer,
-    onTertiaryContainer = md_theme_dark_onTertiaryContainer,
-    error = md_theme_dark_error,
-    errorContainer = md_theme_dark_errorContainer,
-    onError = md_theme_dark_onError,
-    onErrorContainer = md_theme_dark_onErrorContainer,
-    background = md_theme_dark_background,
-    onBackground = md_theme_dark_onBackground,
-    surface = md_theme_dark_surface,
-    onSurface = md_theme_dark_onSurface,
-    surfaceVariant = md_theme_dark_surfaceVariant,
-    onSurfaceVariant = md_theme_dark_onSurfaceVariant,
-    outline = md_theme_dark_outline,
-    inverseOnSurface = md_theme_dark_inverseOnSurface,
-    inverseSurface = md_theme_dark_inverseSurface,
-    inversePrimary = md_theme_dark_inversePrimary,
-    surfaceTint = md_theme_dark_surfaceTint,
-    outlineVariant = md_theme_dark_outlineVariant,
-    scrim = md_theme_dark_scrim,
-)
-
-@get:Composable
-val ColorScheme.success get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
-    true -> StateColors(
-        primary = Color(0xFF_00_E6_5F),
-        container = Color(0xFF_00_82_36).copy(alpha = 0.1f),
-    )
-    false -> StateColors(
-        primary = Color(0xFF_00_82_36),
-        container = Color(0xFF_00_82_36).copy(alpha = 0.1f),
-    )
-}
-
-@get:Composable
-val ColorScheme.partialFailure get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
-    true -> StateColors(
-        primary = Color(0xFF_F0_90_00),
-        container = Color(0xFF_D1_65_00).copy(alpha = 0.1f),
-    )
-    false -> StateColors(
-        primary = Color(0xFF_D1_65_00),
-        container = Color(0xFF_D1_65_00).copy(alpha = 0.1f),
-    )
-}
-
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalForceDarkMode = compositionLocalOf { false }
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalSetScaleFactor = compositionLocalOf<(Float) -> Unit> { { /* noop */ } }
-
-
-/**
- * @property primary
- * @property container
- */
-data class StateColors(
-    val primary: Color,
-    val container: Color
-)
 
 data object ScaleFactor {
     const val DEFAULT_DESKTOP = 0.9F
@@ -147,26 +48,91 @@ fun Modifier.alternatingBackground(index: Int) = background(
     }
 )
 
+private fun buildDarkColorScheme(t: MockzillaTokens): ColorScheme = darkColorScheme(
+    primary = t.accent,
+    onPrimary = t.accentFg,
+    primaryContainer = t.accentSoft,
+    onPrimaryContainer = t.fg0,
+    secondary = t.accent,
+    onSecondary = t.accentFg,
+    secondaryContainer = t.bg3,
+    onSecondaryContainer = t.fg0,
+    tertiary = t.info,
+    onTertiary = t.bg0,
+    tertiaryContainer = t.infoSoft,
+    onTertiaryContainer = t.fg0,
+    error = t.err,
+    errorContainer = t.errSoft,
+    onError = t.bg0,
+    onErrorContainer = t.err,
+    background = t.bg0,
+    onBackground = t.fg0,
+    surface = t.bg1,
+    onSurface = t.fg0,
+    surfaceVariant = t.bg3,
+    surfaceContainer = t.bg2,
+    onSurfaceVariant = t.fg1,
+    outline = t.line1,
+    outlineVariant = t.line2,
+    inverseOnSurface = t.bg0,
+    inverseSurface = t.fg0,
+    inversePrimary = t.accent2,
+    scrim = Color.Black,
+)
+
+private fun buildLightColorScheme(t: MockzillaTokens): ColorScheme = lightColorScheme(
+    primary = t.accent,
+    onPrimary = t.accentFg,
+    primaryContainer = t.accentSoft,
+    onPrimaryContainer = t.fg0,
+    secondary = t.accent,
+    onSecondary = t.accentFg,
+    secondaryContainer = t.bg3,
+    onSecondaryContainer = t.fg0,
+    tertiary = t.info,
+    onTertiary = t.fg0,
+    tertiaryContainer = t.infoSoft,
+    onTertiaryContainer = t.fg0,
+    error = t.err,
+    errorContainer = t.errSoft,
+    onError = t.fg0,
+    onErrorContainer = t.err,
+    background = t.bg0,
+    onBackground = t.fg0,
+    surface = t.bg1,
+    onSurface = t.fg0,
+    surfaceVariant = t.bg3,
+    surfaceContainer = t.bg2,
+    onSurfaceVariant = t.fg1,
+    outline = t.line1,
+    outlineVariant = t.line2,
+    inverseOnSurface = t.fg0,
+    inverseSurface = t.bg0,
+    inversePrimary = t.accent2,
+    scrim = Color.Black,
+)
+
 @Composable
 fun AppTheme(
     useDarkTheme: Boolean = LocalForceDarkMode.current || isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (useDarkTheme) {
-        darkColors
-    } else {
-        lightColors
-    }
-
+    val tokens = if (useDarkTheme) MockzillaTokens.Dark else MockzillaTokens.Light
+    val colorScheme = if (useDarkTheme) buildDarkColorScheme(tokens) else buildLightColorScheme(tokens)
+    val uiFont = mockzillaFontFamily()
+    val monoFont = mockzillaMonoFontFamily()
     var scaleFactor by rememberSaveable { mutableFloatStateOf(ScaleFactor.default) }
     ProvideLocalisableStrings {
         CompositionLocalProvider(
+            LocalMockzillaTokens provides tokens,
+            LocalMonoFontFamily provides monoFont,
             LocalSetScaleFactor provides { scale -> scaleFactor = scale },
         ) {
             ScaledDensity(scaleFactor = scaleFactor) {
                 MaterialTheme(
-                    colorScheme = colors,
-                    content = content
+                    colorScheme = colorScheme,
+                    typography = mockzillaTypography(uiFont),
+                    content = content,
                 )
             }
         }
@@ -178,7 +144,7 @@ fun ScaledDensity(scaleFactor: Float, content: @Composable () -> Unit) {
     val currentDensity = LocalDensity.current
     val scaledDensity = Density(
         density = currentDensity.density * scaleFactor,
-        fontScale = currentDensity.fontScale * scaleFactor
+        fontScale = currentDensity.fontScale * scaleFactor,
     )
     CompositionLocalProvider(LocalDensity provides scaledDensity, content = content)
 }

@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -34,7 +33,8 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.State.*
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning_background
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private fun Connected.ErrorBannerState.bannerText(strings: Strings): String =
@@ -43,11 +43,10 @@ private fun Connected.ErrorBannerState.bannerText(strings: Strings): String =
         Connected.ErrorBannerState.UnknownError -> strings.widgets.errorBanner.unknownError
     }
 
-@Suppress("MAGIC_NUMBER")
 @Composable
 private fun Connected.ErrorBannerState.backgroundColor() = when (this) {
-    Connected.ErrorBannerState.ConnectionLost -> theme_warning_background
-    Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.errorContainer
+    Connected.ErrorBannerState.ConnectionLost -> LocalMockzillaTokens.current.warnSoft
+    Connected.ErrorBannerState.UnknownError -> LocalMockzillaTokens.current.errSoft
 }
 
 @Composable
@@ -103,9 +102,10 @@ fun ErrorBanner(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        val tokens = LocalMockzillaTokens.current
         val onColor = when (state) {
-            Connected.ErrorBannerState.ConnectionLost -> Color.Black
-            Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.onErrorContainer
+            Connected.ErrorBannerState.ConnectionLost -> tokens.warn
+            Connected.ErrorBannerState.UnknownError -> tokens.err
         }
         Icon(
             imageVector = Icons.Outlined.Warning,

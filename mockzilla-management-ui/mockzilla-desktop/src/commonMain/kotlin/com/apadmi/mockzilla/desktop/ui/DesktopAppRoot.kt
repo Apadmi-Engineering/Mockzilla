@@ -2,14 +2,23 @@ package com.apadmi.mockzilla.desktop.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,6 +27,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+
+import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.utils.Platform
 
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionWidget
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsWidget
@@ -43,6 +61,41 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsWidget
 import kotlin.collections.buildList
 import kotlin.let
+
+@Suppress("MAGIC_NUMBER")
+@Composable
+private fun TitleBar() {
+    val tokens = LocalMockzillaTokens.current
+    val monoFont = LocalMonoFontFamily.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(32.dp)
+            .background(Brush.horizontalGradient(listOf(tokens.bg2, tokens.bg1)))
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        if (Platform.current == Platform.Desktop) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(Modifier.size(12.dp).clip(CircleShape).background(Color(0xFFFF5F57)))
+                Box(Modifier.size(12.dp).clip(CircleShape).background(Color(0xFFFFBD2E)))
+                Box(Modifier.size(12.dp).clip(CircleShape).background(Color(0xFF28C840)))
+            }
+        }
+        Icon(
+            modifier = Modifier.size(16.dp),
+            imageVector = Icons.MockzillaLogo,
+            contentDescription = null,
+            tint = tokens.fg0,
+        )
+        Text(
+            text = "Mockzilla",
+            style = MaterialTheme.typography.titleSmall,
+            color = tokens.fg0,
+        )
+    }
+}
 
 private const val endpointDetailsWidgetId = "endpoint-details"
 private const val logDetailsWidgetId = "log-details"
@@ -79,7 +132,12 @@ fun DesktopApp(
         WidgetScaffold(
             modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
             openWidgets = openWidgets,
-            top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
+            top = {
+                Column(Modifier.fillMaxWidth()) {
+                    TitleBar()
+                    DeviceTabsWidget(modifier = Modifier.fillMaxWidth())
+                }
+            },
             left = leftPanelWidgets(state, strings),
             right = rightWidgets,
             middle = middleWidgets(
@@ -232,7 +290,7 @@ private fun leftPanelWidgets(
 
 @Composable
 private fun CloseButtonIcon() = Icon(
-    imageVector = Icons.Filled.Close,
-    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-    contentDescription = LocalStrings.current.common.backDescription
+    imageVector = Icons.Default.Close,
+    tint = LocalMockzillaTokens.current.fg1,
+    contentDescription = LocalStrings.current.common.backDescription,
 )

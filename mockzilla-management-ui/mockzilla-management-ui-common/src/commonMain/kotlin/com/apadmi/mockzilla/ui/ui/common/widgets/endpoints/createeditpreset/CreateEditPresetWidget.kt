@@ -105,10 +105,9 @@ private fun ColumnScope.PopulatedState(
         ) {
             BaseButton(
                 label = strings.widgets.createEditPreset.save,
-                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                onClick = onSave
+                variant = com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant.Solid,
+                size = com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize.Md,
+                onClick = onSave,
             )
         }
 

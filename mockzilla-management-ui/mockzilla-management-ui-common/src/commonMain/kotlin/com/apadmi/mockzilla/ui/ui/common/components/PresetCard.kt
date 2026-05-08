@@ -50,8 +50,9 @@ import com.apadmi.mockzilla.ui.ui.common.assets.ErrorCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.InfoCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.RedirectCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatus_fallback
-import com.apadmi.mockzilla.ui.ui.common.utils.color
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.utils.colorFor
+
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -84,9 +85,11 @@ private fun DashboardOverridePreset.Type.exampleStatusCode() = when (this) {
     DashboardOverridePreset.Type.Success -> HttpStatusCode.OK
 }
 
-private fun DashboardOverridePreset.color() =
-    (type?.exampleStatusCode() ?: response.statusCode)?.color()
-        ?: httpStatus_fallback
+@Composable
+private fun DashboardOverridePreset.color(): androidx.compose.ui.graphics.Color {
+    val tokens = LocalMockzillaTokens.current
+    return (type?.exampleStatusCode() ?: response.statusCode)?.colorFor(tokens) ?: tokens.fg2
+}
 
 private fun DashboardOverridePreset.icon() = if (isManagementUiDefinedCustomPreset) {
     Icons.EditCircle

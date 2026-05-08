@@ -2,6 +2,7 @@
 
 package com.apadmi.mockzilla.desktop.ui.scaffold
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -57,12 +58,12 @@ fun WidgetScaffold(
     // width/height below zero (when the user drags into the tab areas) but visually display the
     // restricted width/height that can't drop below 0. This ensures the dragged divider stays
     // with the cursor at all times.
-    var leftPanelWidth by remember { mutableStateOf(350.dp) }
-    var leftPanelSettledWidth by remember { mutableStateOf(350.dp) }
-    var rightPanelWidth by remember { mutableStateOf(500.dp) }
-    var rightPanelSettledWidth by remember { mutableStateOf(500.dp) }
-    var bottomPanelHeight by remember { mutableStateOf(200.dp) }
-    var bottomPanelSettledHeight by remember { mutableStateOf(200.dp) }
+    var leftPanelWidth by remember { mutableStateOf(230.dp) }
+    var leftPanelSettledWidth by remember { mutableStateOf(230.dp) }
+    var rightPanelWidth by remember { mutableStateOf(280.dp) }
+    var rightPanelSettledWidth by remember { mutableStateOf(280.dp) }
+    var bottomPanelHeight by remember { mutableStateOf(140.dp) }
+    var bottomPanelSettledHeight by remember { mutableStateOf(140.dp) }
 
     // Both of the horizontal panels must collectively not be so large that the center panel
     // runs out of space. We can enforce this by hoisting the width of each panel and preventing
@@ -86,11 +87,12 @@ fun WidgetScaffold(
     }
     val bottomPanelHeightRestriction = { height: Dp -> max(0.dp, height) }
 
-    Surface(
-        modifier = modifier.onSizeChanged { size ->
-            totalWidth = with(density) { size.width.toDp() }
-        },
-        color = MaterialTheme.colorScheme.background
+    Box(
+        modifier = modifier
+            .background(com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens.current.bg0)
+            .onSizeChanged { size ->
+                totalWidth = with(density) { size.width.toDp() }
+            },
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             top()
