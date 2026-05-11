@@ -174,6 +174,12 @@ data class Strings(
          * @property connected
          */
         data class DeviceConnection(
+            val title: String,
+            val subTile: String,
+            val bullet1:String,
+            val bullet2:String,
+            val bullet3:String,
+            val bullet4:String,
             val tabTitle: String,
             val ipInputLabel: String,
             val tooltips: ToolTips,

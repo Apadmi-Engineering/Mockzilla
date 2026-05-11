@@ -4,12 +4,21 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.DragIndicator
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -19,7 +28,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.*
@@ -69,53 +81,94 @@ fun DeviceConnectionContent(
     onIpAndPortChanged: (String) -> Unit,
     onTapDevice: (DetectedDevice) -> Unit,
     strings: Strings = LocalStrings.current,
-) = Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+) = Box(modifier = Modifier.padding(200.dp,0.dp,0.dp,0.dp), contentAlignment = Alignment.CenterStart) {
     Column(
         modifier = Modifier
             .widthIn(max = 500.dp)
-            .padding(top = 100.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(top = 100.dp)
     ) {
-        Image(
+
+        Box(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 16.dp)
-                .height(100.dp),
-            imageVector = Icons.MockzillaLogo,
-            contentDescription = null
-        )
+                .size(72.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(14.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                imageVector = Icons.MockzillaLogo,
+                contentDescription = null
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = strings.widgets.deviceConnection.heading,
-            style = MaterialTheme.typography.headlineLarge
-        )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = state.ipAndPort,
-            onValueChange = onIpAndPortChanged,
-            singleLine = true,
-            label = { Text(strings.widgets.deviceConnection.ipInputLabel) }
+            text = strings.widgets.deviceConnection.title,
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold
         )
 
-        Spacer(Modifier.height(4.dp))
-        if (Platform.current == Platform.Android) {
-            SolidButton(
-                onClick = { onIpAndPortChanged("127.0.0.1:5614") },
-                label = strings.widgets.deviceConnection.androidDevConnectButton
-            )
+        Spacer(modifier = Modifier.height(8.dp))
 
-        }
+        Text(
+            text = strings.widgets.deviceConnection.subTile,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(5.dp))
 
-        AnimatedContent(
-            targetState = state.hasDevices
-        ) {
-            if (it) {
-                DevicesList(
-                    devices = state.devices,
-                    onTapDevice = onTapDevice
-                )
+        BulletItem(
+            icon = Icons.Default.Bolt,
+            text = strings.widgets.deviceConnection.bullet1
+        )
+
+        BulletItem(
+            icon = Icons.Default.DragIndicator,
+            text = strings.widgets.deviceConnection.bullet2
+        )
+
+        BulletItem(
+            icon = Icons.Default.AccessTime,
+            text = strings.widgets.deviceConnection.bullet3
+        )
+
+        BulletItem(
+            icon = Icons.Default.Menu,
+            text = strings.widgets.deviceConnection.bullet4
+        )
             }
         }
+
+@Composable
+private fun BulletItem(
+    icon: ImageVector,
+    text: String
+) {
+    Row(
+        modifier = Modifier.padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = Color(0xFF00ACC1),
+            modifier = Modifier.size(18.dp)
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
