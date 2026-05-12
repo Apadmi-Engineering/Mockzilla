@@ -22,8 +22,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +35,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -97,18 +100,31 @@ fun DeviceConnectionContent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .widthIn(max = 980.dp),
-        horizontalArrangement = Arrangement.spacedBy(96.dp, Alignment.CenterHorizontally),
-        verticalAlignment = Alignment.CenterVertically,
+            .widthIn(max = 1100.dp),
+        horizontalArrangement = Arrangement.spacedBy(96.dp),
+        verticalAlignment = Alignment.Top,
     ) {
-        ProductIntro(strings = strings)
-        ConnectionCard(
-            state = state,
-            onIpAndPortChanged = onIpAndPortChanged,
-            onConnect = { onIpAndPortChanged(state.ipAndPort) },
-            onTapDevice = onTapDevice,
-            strings = strings,
-        )
+        Box(
+            modifier = Modifier
+                .weight(1f),
+                contentAlignment = Alignment.TopEnd,
+        ) {
+            ProductIntro(strings = strings)
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(1f),
+                contentAlignment = Alignment.TopStart,
+        ) {
+            ConnectionCard(
+                state = state,
+                onIpAndPortChanged = onIpAndPortChanged,
+                onConnect = { onIpAndPortChanged(state.ipAndPort) },
+                onTapDevice = onTapDevice,
+                strings = strings,
+            )
+        }
     }
 }
 
@@ -117,7 +133,6 @@ private fun ProductIntro(strings: Strings) {
     Column(
         modifier = Modifier
             .widthIn(max = 500.dp)
-            .padding(top = 100.dp)
     ) {
 
         Box(
@@ -143,6 +158,7 @@ private fun ProductIntro(strings: Strings) {
         Text(
             text = strings.widgets.deviceConnection.title,
             style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold
         )
 
@@ -189,7 +205,7 @@ private fun ConnectionCard(
     Surface(
         modifier = Modifier.widthIn(min = 520.dp, max = 560.dp),
         shape = RoundedCornerShape(8.dp),
-        color = tokens.bg0,
+        color = tokens.bg1,
         border = BorderStroke(1.dp, tokens.line1),
     ) {
         Column(
@@ -198,7 +214,7 @@ private fun ConnectionCard(
         ) {
             Text(
                 text = "MANUAL CONNECTION",
-                color = tokens.fg1,
+                color = tokens.fg0,
                 style = MaterialTheme.typography.labelSmall,
             )
             Text(
@@ -222,7 +238,32 @@ private fun ConnectionCard(
                             tint = tokens.fg2,
                         )
                     },
-                    placeholder = { Text("127.0.0.1:8080") },
+                    placeholder = { Text(text = strings.widgets.deviceConnection.ipAndPort, fontFamily = FontFamily.Monospace) },
+                    colors = OutlinedTextFieldDefaults.colors(
+
+                        // text
+                        focusedTextColor = tokens.fg0,
+                        unfocusedTextColor = tokens.fg0,
+
+                        // container background
+                        focusedContainerColor = tokens.bg2,
+                        unfocusedContainerColor = tokens.bg2,
+
+                        // borders
+                        focusedBorderColor = tokens.line2,
+                        unfocusedBorderColor = tokens.line1,
+
+                        // placeholder
+                        focusedPlaceholderColor = tokens.fg3,
+                        unfocusedPlaceholderColor = tokens.fg3,
+
+                        // cursor
+                        cursorColor = tokens.accent,
+
+                        // icons
+                        focusedLeadingIconColor = tokens.fg2,
+                        unfocusedLeadingIconColor = tokens.fg2,
+                    )
                 )
                 SolidButton(label = "Connect", onClick = onConnect)
             }
@@ -300,7 +341,7 @@ private fun DiscoveredDeviceRow(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(4.dp),
-        color = tokens.bg1,
+        color = tokens.bg2,
         border = BorderStroke(1.dp, tokens.line1),
     ) {
         Row(

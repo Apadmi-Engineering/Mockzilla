@@ -190,7 +190,8 @@ data class Strings(
             val androidDevConnectButton: String,
             val errorTitle: String,
             val errorMessage: String,
-            val connected: String
+            val connected: String,
+            val ipAndPort: String
         ) {
             /**
              * @property notYourSimulator
