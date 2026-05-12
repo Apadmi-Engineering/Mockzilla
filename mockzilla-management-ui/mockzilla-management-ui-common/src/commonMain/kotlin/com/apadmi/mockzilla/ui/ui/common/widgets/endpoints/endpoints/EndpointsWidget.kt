@@ -88,8 +88,8 @@ private fun EndpointsList(
 
     Text(
         text = strings.widgets.endpoints.numberOfEndpointsShown(
-            state.endpoints.filter { it.display }.size,
-            state.endpoints.size
+            state.endpoints.size,
+            state.allEndpoints.size
         ),
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.labelSmall
@@ -97,7 +97,7 @@ private fun EndpointsList(
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    state.endpoints.filter { it.display }.forEach { endpoint ->
+    state.endpoints.forEach { endpoint ->
         EndpointCard(
             endpoint = endpoint,
             onEndpointClicked = onEndpointClicked
@@ -292,7 +292,7 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
     EndpointsWidgetContent(
         state = EndpointsViewModel.State.EndpointsList(
             allEndpoints = listOf(
-                EndpointsViewModel.State.EndpointConfigItem(
+                EndpointsViewModel.State.EndpointConfig(
                     key = Key("1"),
                     name = "FooBar",
                     fail = false,
@@ -301,13 +301,13 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
                         EndpointProperties.Body
                     )
                 ),
-                EndpointsViewModel.State.EndpointConfigItem(
+                EndpointsViewModel.State.EndpointConfig(
                     key = Key("2"),
                     name = "Foo",
                     fail = true,
                     overriddenProperties = emptyList()
                 ),
-                EndpointsViewModel.State.EndpointConfigItem(
+                EndpointsViewModel.State.EndpointConfig(
                     key = Key("3"),
                     name = "FooBuzz",
                     fail = false,
@@ -319,13 +319,13 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
                         EndpointProperties.Headers
                     )
                 ),
-                EndpointsViewModel.State.EndpointConfigItem(
+                EndpointsViewModel.State.EndpointConfig(
                     key = Key("4"),
                     name = "Foobar",
                     fail = false,
                     overriddenProperties = emptyList()
                 ),
-                EndpointsViewModel.State.EndpointConfigItem(
+                EndpointsViewModel.State.EndpointConfig(
                     key = Key("5"),
                     name = "Foobuzz",
                     fail = true,

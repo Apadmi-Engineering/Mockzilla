@@ -9,6 +9,7 @@ import com.apadmi.mockzilla.ui.engine.filter.FuzzyFilter
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel.State
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
+import kotlin.collections.filter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
@@ -39,7 +40,7 @@ class EndpointsViewModel(
                 val filter = currentState?.filter ?: ""
                 State.EndpointsList(
                     allEndpoints = list.map {
-                        State.EndpointConfigItem(
+                        State.EndpointConfig(
                             key = it.key,
                             name = it.name,
                             fail = it.shouldFail == true,
@@ -72,45 +73,25 @@ class EndpointsViewModel(
          * @property name
          * @property fail
          * @property overriddenProperties
-         * @property display
          */
         data class EndpointConfig(
             val key: EndpointConfiguration.Key,
             val name: String,
             val fail: Boolean,
             val overriddenProperties: List<EndpointProperties>,
-            val display: Boolean,
         )
 
         /**
-         * @property key
-         * @property name
-         * @property fail
-         * @property overriddenProperties
-         */
-        data class EndpointConfigItem(
-            val key: EndpointConfiguration.Key,
-            val name: String,
-            val fail: Boolean,
-            val overriddenProperties: List<EndpointProperties>,
-        ) {
-            fun withDisplay(display: Boolean): EndpointConfig = EndpointConfig(
-                key = key,
-                name = name,
-                fail = fail,
-                overriddenProperties = overriddenProperties,
-                display = display
-            )
-        }
-
-        /**
-         * @property allEndpoints
-         * @property filter
+         * @property allEndpoints Endpoints list before applying the filter string
+         * @property filter Filter string
          */
         data class EndpointsList(
-            private val allEndpoints: List<EndpointConfigItem>,
+            val allEndpoints: List<EndpointConfig>,
             val filter: String,
         ) : State() {
+            /**
+             * Filtered endpoints
+             */
             val endpoints: List<EndpointConfig> = filterEndpoints(filter, allEndpoints)
         }
     }
@@ -136,14 +117,6 @@ private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull
 
 private fun filterEndpoints(
     filter: String,
-    endpoints: List<State.EndpointConfigItem>,
-): List<State.EndpointConfig> {
-    val visible = FuzzyFilter
-        .filter(endpoints, filter) { it.name }
-        .map { it.withDisplay(true) }
-    val visibleEndpoints = visible.map { it.key }.toSet()
-    val hidden = endpoints
-        .filter { it.key !in visibleEndpoints }
-        .map { it.withDisplay(false) }
-    return visible + hidden
-}
+    endpoints: List<State.EndpointConfig>,
+): List<State.EndpointConfig> = FuzzyFilter
+    .filter(endpoints, filter) { it.name }

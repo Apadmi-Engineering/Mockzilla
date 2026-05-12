@@ -25,19 +25,19 @@ import kotlinx.coroutines.yield
 class EndpointsViewModelTests : CoroutineTest() {
     private val defaultEndpointList = State.EndpointsList(
         listOf(
-            State.EndpointConfigItem(
+            State.EndpointConfig(
                 key = EndpointConfiguration.Key("Key1"),
                 name = "Name1",
                 fail = false,
                 overriddenProperties = emptyList()
             ),
-            State.EndpointConfigItem(
+            State.EndpointConfig(
                 key = EndpointConfiguration.Key("Key2"),
                 name = "Name2",
                 fail = true,
                 overriddenProperties = emptyList()
             ),
-            State.EndpointConfigItem(
+            State.EndpointConfig(
                 key = EndpointConfiguration.Key("Key3"),
                 name = "Name3",
                 fail = true,
@@ -128,9 +128,9 @@ class EndpointsViewModelTests : CoroutineTest() {
             /* Verify */
             assertEquals(
                 listOf(
-                    defaultEndpointList.endpoints[0].copy(display = true),
-                    defaultEndpointList.endpoints[1].copy(display = true),
-                    defaultEndpointList.endpoints[2].copy(display = true),
+                    defaultEndpointList.endpoints[0],
+                    defaultEndpointList.endpoints[1],
+                    defaultEndpointList.endpoints[2],
                 ),
                 (result1 as State.EndpointsList).endpoints
             )
@@ -141,9 +141,9 @@ class EndpointsViewModelTests : CoroutineTest() {
 
             assertEquals(
                 listOf(
-                    defaultEndpointList.endpoints[1].copy(display = true),
-                    defaultEndpointList.endpoints[0].copy(display = true),
-                    defaultEndpointList.endpoints[2].copy(display = true),
+                    defaultEndpointList.endpoints[1],
+                    defaultEndpointList.endpoints[0],
+                    defaultEndpointList.endpoints[2],
                 ),
                 (result2 as State.EndpointsList).endpoints
             )
@@ -153,11 +153,7 @@ class EndpointsViewModelTests : CoroutineTest() {
             )
 
             assertEquals(
-                listOf(
-                    defaultEndpointList.endpoints[0].copy(display = false),
-                    defaultEndpointList.endpoints[1].copy(display = false),
-                    defaultEndpointList.endpoints[2].copy(display = false),
-                ),
+                listOf(),
                 (result3 as State.EndpointsList).endpoints
             )
             assertEquals(
@@ -169,9 +165,7 @@ class EndpointsViewModelTests : CoroutineTest() {
 
             assertEquals(
                 listOf(
-                    defaultEndpointList.endpoints[1].copy(display = true),
-                    defaultEndpointList.endpoints[0].copy(display = false),
-                    defaultEndpointList.endpoints[2].copy(display = false),
+                    defaultEndpointList.endpoints[1],
                 ),
                 (result5 as State.EndpointsList).endpoints
             )
