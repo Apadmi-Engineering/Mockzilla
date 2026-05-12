@@ -36,6 +36,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 enum class ButtonVariant { Ghost, Outline, Solid, Soft, Danger }
 enum class ButtonSize { Sm, Md, Lg }
+enum class ButtonContentAlignment { Start, Center }
 
 @Suppress("MAGIC_NUMBER")
 @Composable
@@ -45,6 +46,7 @@ fun BaseButton(
     leadingIcon: ImageVector? = null,
     variant: ButtonVariant = ButtonVariant.Solid,
     size: ButtonSize = ButtonSize.Md,
+    contentAlignment: ButtonContentAlignment = ButtonContentAlignment.Center,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -84,6 +86,8 @@ fun BaseButton(
         ButtonSize.Lg -> PaddingValues(vertical = 10.dp, horizontal = 14.dp)
     }
 
+    val iconSize = if (size == ButtonSize.Lg) 18.dp else 14.dp
+
     Button(
         modifier = modifier.alpha(if (enabled) 1f else 0.5f),
         onClick = onClick,
@@ -102,13 +106,16 @@ fun BaseButton(
     ) {
         leadingIcon?.let { icon ->
             Icon(
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(iconSize),
                 imageVector = icon,
                 contentDescription = null,
             )
-            Spacer(Modifier.width(6.dp))
+            Spacer(Modifier.width(8.dp))
         }
         Text(text = label)
+        if (contentAlignment == ButtonContentAlignment.Start) {
+            Spacer(Modifier.weight(1f))
+        }
     }
 }
 

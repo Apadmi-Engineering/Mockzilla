@@ -70,7 +70,8 @@ val EnStrings = Strings(
             android = "Android",
             ios = "iOS",
             jvm = "JVM",
-            js = "Web - JS"
+            js = "Web - JS",
+            deviceSection = "Device"
         ),
         logs = Strings.Widgets.Logs(
             title = "Logs",
@@ -168,6 +169,7 @@ val EnStrings = Strings(
             refreshAll = "Re-sync all",
             clearOverrides = "Reset all overrides",
             title = "Tools",
+            actionsSection = "Actions",
             presentationMode = "Presentation mode",
             fontScaleLabel = { scale -> "${(scale * 100).roundToInt()}%" }
         ),
