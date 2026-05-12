@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -49,6 +50,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.State
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
@@ -103,20 +105,20 @@ fun DeviceConnectionContent(
 ) = Box(
     modifier = Modifier
         .fillMaxSize()
-        .background(LocalMockzillaTokens.current.bg0)
-        .padding(horizontal = 32.dp),
+        .background(LocalMockzillaTokens.current.bg0),
     contentAlignment = Alignment.Center,
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth(0.92f),
-        horizontalArrangement = Arrangement.spacedBy(96.dp),
+            .fillMaxWidth(0.75f)
+        .widthIn(max = 1200.dp),
+        horizontalArrangement = Arrangement.spacedBy(72.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
                 .weight(1f),
-                contentAlignment = Alignment.TopEnd,
+                contentAlignment = Alignment.TopCenter,
         ) {
             ProductIntro(strings = strings)
         }
@@ -235,58 +237,69 @@ private fun ConnectionCard(
                 style = MaterialTheme.typography.bodyMedium,
             )
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 OutlinedTextField(
                     modifier = Modifier
                         .weight(1f)
-                        .height(52.dp),
+                        .height(45.dp),
                     shape = RoundedCornerShape(10.dp),
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = LocalMonoFontFamily.current,
+                        fontSize = 14.sp,
+                        lineHeight = 14.sp,
                     ),
                     value = state.ipAndPort,
                     onValueChange = onIpAndPortChanged,
                     singleLine = true,
+
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Power,
                             contentDescription = null,
                             tint = tokens.fg2,
+                            modifier = Modifier.size(16.dp)
                         )
                     },
-                    placeholder = { Text(text = strings.widgets.deviceConnection.ipAndPort, fontFamily = FontFamily.Monospace) },
-                    colors = OutlinedTextFieldDefaults.colors(
 
-                        // text
+                    placeholder = {
+                        Text(
+                            text = strings.widgets.deviceConnection.ipAndPort,
+                            fontFamily = LocalMonoFontFamily.current,
+                            fontSize = 13.sp,
+                            lineHeight = 13.sp
+                        )
+                    },
+
+                    colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = tokens.fg0,
                         unfocusedTextColor = tokens.fg0,
 
-                        // container background
                         focusedContainerColor = tokens.bg2,
                         unfocusedContainerColor = tokens.bg2,
 
-                        // borders
                         focusedBorderColor = tokens.line2,
                         unfocusedBorderColor = tokens.line1,
 
-                        // placeholder
                         focusedPlaceholderColor = tokens.fg3,
                         unfocusedPlaceholderColor = tokens.fg3,
 
-                        // cursor
                         cursorColor = tokens.accent,
 
-                        // icons
                         focusedLeadingIconColor = tokens.fg2,
                         unfocusedLeadingIconColor = tokens.fg2,
                     )
                 )
                 SolidButton(
-                    modifier = Modifier.height(54.dp),
+                    modifier = Modifier.height(40.dp)
+                    .align(Alignment.CenterVertically),
                     label = "Connect",
                     onClick = onConnect,
+                    contentPadding = PaddingValues(
+                        horizontal = 16.dp,
+                        vertical = 12.dp
+                    )
                 )
             }
             Row(
@@ -478,70 +491,6 @@ private fun BulletItem(
     }
 }
 
-//@OptIn(ExperimentalFoundationApi::class)
-//@Composable
-//private fun DevicesList(
-//    devices: List<DetectedDevice>,
-//    onTapDevice: (DetectedDevice) -> Unit,
-//    strings: Strings = LocalStrings.current,
-//) = LazyColumn {
-//    item {
-//        Column(
-//            verticalArrangement = Arrangement.spacedBy(8.dp)
-//        ) {
-//            Text(
-//                text = strings.widgets.deviceConnection.autoConnectHeading,
-//                style = MaterialTheme.typography.headlineLarge
-//            )
-//            Text(
-//                text = strings.widgets.deviceConnection.autoConnectSubHeading,
-//                style = MaterialTheme.typography.bodySmall
-//            )
-//            Spacer(Modifier.height(8.dp))
-//        }
-//    }
-//
-//    itemsIndexed(devices, key = { _, device -> device.connectionName }) { index, device ->
-//        Row(
-//            modifier = Modifier.animateItem().alternatingBackground(index).fillMaxWidth()
-//                .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            StandardTextTooltip(text = device.state.toolTipText(strings)) {
-//                Canvas(
-//                    modifier = Modifier.padding(end = 16.dp).size(12.dp),
-//                    onDraw = { drawCircle(color = device.state.color()) })
-//            }
-//
-//            Column(
-//                verticalArrangement = Arrangement.spacedBy(4.dp),
-//                modifier = Modifier.weight(1f).padding(end = 14.dp)
-//            ) {
-//                Text(device.prettyName(), maxLines = 1, overflow = TextOverflow.Ellipsis)
-//                Text(
-//                    modifier = Modifier.alpha(0.5f),
-//                    text = buildString {
-//                        device.metaData?.appName?.also {
-//                            append(it)
-//                            append(" | ")
-//                        }
-//                        append("${device.hostAddress}:${device.port}")
-//                    },
-//                    style = MaterialTheme.typography.bodySmall,
-//                )
-//            }
-//
-//            if (device.state == DetectedDevice.State.Resolving) {
-//                CircularProgressIndicator(Modifier.padding(end = 8.dp).size(20.dp))
-//            } else {
-//                SolidButton(
-//                    onClick = { onTapDevice(device) },
-//                    label = strings.widgets.deviceConnection.autoConnectButton
-//                )
-//            }
-//        }
-//    }
-//}
 
 @Preview(
     name = "Medium Tablet",
