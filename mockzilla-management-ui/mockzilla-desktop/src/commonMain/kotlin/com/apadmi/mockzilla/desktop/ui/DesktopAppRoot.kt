@@ -62,41 +62,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogD
 import kotlin.collections.buildList
 import kotlin.let
 
-@Suppress("MAGIC_NUMBER")
-@Composable
-private fun TitleBar() {
-    val tokens = LocalMockzillaTokens.current
-    val monoFont = LocalMonoFontFamily.current
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(32.dp)
-            .background(Brush.horizontalGradient(listOf(tokens.bg2, tokens.bg1)))
-            .padding(horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        if (Platform.current == Platform.Desktop) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(Modifier.size(12.dp).clip(CircleShape).background(Color(0xFFFF5F57)))
-                Box(Modifier.size(12.dp).clip(CircleShape).background(Color(0xFFFFBD2E)))
-                Box(Modifier.size(12.dp).clip(CircleShape).background(Color(0xFF28C840)))
-            }
-        }
-        Icon(
-            modifier = Modifier.size(16.dp),
-            imageVector = Icons.MockzillaLogo,
-            contentDescription = null,
-            tint = tokens.fg0,
-        )
-        Text(
-            text = "Mockzilla",
-            style = MaterialTheme.typography.titleSmall,
-            color = tokens.fg0,
-        )
-    }
-}
-
 private const val endpointDetailsWidgetId = "endpoint-details"
 private const val logDetailsWidgetId = "log-details"
 private const val editPresetWidgetId = "edit-preset"
@@ -133,10 +98,9 @@ fun DesktopApp(
             modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
             openWidgets = openWidgets,
             top = {
-                Column(Modifier.fillMaxWidth()) {
-                    TitleBar()
-                    DeviceTabsWidget(modifier = Modifier.fillMaxWidth())
-                }
+                DeviceTabsWidget(
+                    modifier = Modifier.fillMaxWidth()
+                )
             },
             left = leftPanelWidgets(state, strings),
             right = rightWidgets,

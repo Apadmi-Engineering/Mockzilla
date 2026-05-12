@@ -2,11 +2,24 @@ package com.apadmi.mockzilla.desktop.ui.deviceconnection
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -16,7 +29,7 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.outlined.ElectricalServices
+import androidx.compose.material.icons.outlined.Power
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,24 +38,20 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.*
+import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.State
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
-
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.ui.engine.connection.IpAddress
@@ -54,7 +63,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
-import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private fun DetectedDevice.State.toolTipText(strings: Strings) = when (this) {
@@ -64,12 +72,13 @@ private fun DetectedDevice.State.toolTipText(strings: Strings) = when (this) {
     DetectedDevice.State.Resolving -> strings.widgets.deviceConnection.tooltips.resolving
 }
 
+@Composable
 private fun DetectedDevice.State.color() = when (this) {
-    DetectedDevice.State.ReadyToConnect -> Color.Green
+    DetectedDevice.State.ReadyToConnect -> LocalMockzillaTokens.current.ok
     DetectedDevice.State.Removed,
-    DetectedDevice.State.NotYourSimulator -> Color.Red
+    DetectedDevice.State.NotYourSimulator -> LocalMockzillaTokens.current.err
 
-    DetectedDevice.State.Resolving -> Color.Gray
+    DetectedDevice.State.Resolving -> LocalMockzillaTokens.current.fg2
 }
 
 @Composable
@@ -94,15 +103,15 @@ fun DeviceConnectionContent(
 ) = Box(
     modifier = Modifier
         .fillMaxSize()
-        .padding(horizontal = 48.dp),
+        .background(LocalMockzillaTokens.current.bg0)
+        .padding(horizontal = 32.dp),
     contentAlignment = Alignment.Center,
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .widthIn(max = 1100.dp),
+            .fillMaxWidth(0.92f),
         horizontalArrangement = Arrangement.spacedBy(96.dp),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
@@ -132,17 +141,18 @@ fun DeviceConnectionContent(
 private fun ProductIntro(strings: Strings) {
     Column(
         modifier = Modifier
-            .widthIn(max = 500.dp)
+            .widthIn(max = 620.dp)
     ) {
 
         Box(
             modifier = Modifier
-                .size(72.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(76.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(LocalMockzillaTokens.current.bg1)
                 .border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    shape = RoundedCornerShape(16.dp)
+                    color = LocalMockzillaTokens.current.line1,
+                    shape = RoundedCornerShape(14.dp)
                 )
                 .padding(14.dp),
             contentAlignment = Alignment.Center
@@ -153,23 +163,23 @@ private fun ProductIntro(strings: Strings) {
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(22.dp))
 
         Text(
             text = strings.widgets.deviceConnection.title,
             style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold
+            color = LocalMockzillaTokens.current.fg0,
+            fontWeight = FontWeight.ExtraBold
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(14.dp))
 
         Text(
             text = strings.widgets.deviceConnection.subTile,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = LocalMockzillaTokens.current.fg1
         )
-        Spacer(modifier = Modifier.height(5.dp))
+        Spacer(modifier = Modifier.height(28.dp))
 
         BulletItem(
             icon = Icons.Default.Bolt,
@@ -203,37 +213,45 @@ private fun ConnectionCard(
 ) {
     val tokens = LocalMockzillaTokens.current
     Surface(
-        modifier = Modifier.widthIn(min = 520.dp, max = 560.dp),
-        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.widthIn(min = 620.dp, max = 760.dp),
+        shape = RoundedCornerShape(18.dp),
         color = tokens.bg1,
         border = BorderStroke(1.dp, tokens.line1),
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier.padding(28.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
         ) {
             Text(
                 text = "MANUAL CONNECTION",
-                color = tokens.fg0,
-                style = MaterialTheme.typography.labelSmall,
+                color = tokens.fg1,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
             )
             Text(
                 text = "Enter the IP address and port of the device running your app",
-                color = tokens.fg0,
-                style = MaterialTheme.typography.bodyLarge,
+                color = tokens.fg1,
+                style = MaterialTheme.typography.bodyMedium,
             )
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 OutlinedTextField(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = LocalMonoFontFamily.current,
+                    ),
                     value = state.ipAndPort,
                     onValueChange = onIpAndPortChanged,
                     singleLine = true,
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Outlined.ElectricalServices,
+                            imageVector = Icons.Outlined.Power,
                             contentDescription = null,
                             tint = tokens.fg2,
                         )
@@ -265,11 +283,15 @@ private fun ConnectionCard(
                         unfocusedLeadingIconColor = tokens.fg2,
                     )
                 )
-                SolidButton(label = "Connect", onClick = onConnect)
+                SolidButton(
+                    modifier = Modifier.height(54.dp),
+                    label = "Connect",
+                    onClick = onConnect,
+                )
             }
             Row(
-                modifier = Modifier.padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.padding(vertical = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 HorizontalDivider(Modifier.weight(1f), color = tokens.line1)
@@ -340,47 +362,54 @@ private fun DiscoveredDeviceRow(
     val statusColor = device.state.color()
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(10.dp),
         color = tokens.bg2,
         border = BorderStroke(1.dp, tokens.line1),
     ) {
         Row(
             modifier = Modifier
-                .height(74.dp)
+                .defaultMinSize(minHeight = 88.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier.fillMaxHeight().width(2.dp).background(statusColor),
+                modifier = Modifier.fillMaxHeight().width(3.dp).background(statusColor),
             )
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 14.dp, end = 18.dp, top = 12.dp, bottom = 12.dp),
+                    .padding(horizontal = 18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 StandardTextTooltip(text = device.state.toolTipText(strings)) {
                     Surface(
-                        modifier = Modifier.padding(end = 14.dp).size(16.dp),
+                        modifier = Modifier.size(14.dp),
                         shape = CircleShape,
                         color = statusColor.copy(alpha = 0.16f),
                     ) {
                         Canvas(
-                            modifier = Modifier.padding(4.dp),
+                            modifier = Modifier.padding(3.5.dp),
                             onDraw = { drawCircle(color = statusColor) },
                         )
                     }
                 }
 
+                Spacer(modifier = Modifier.width(14.dp))
+
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(3.dp),
-                    modifier = Modifier.weight(1f).padding(end = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.weight(1f),
                 ) {
                     Text(
-                        text = device.connectionName,
+                        text = if (device.connectionName.length > 25) {
+                            device.connectionName.take(22) + "..."
+                        } else {
+                            device.connectionName
+                        },
                         color = tokens.fg0,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                        ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -399,7 +428,7 @@ private fun DiscoveredDeviceRow(
                     SolidButton(
                         modifier = Modifier.width(132.dp).height(40.dp),
                         onClick = { onTapDevice(device) },
-                        leadingIcon = Icons.Outlined.ElectricalServices,
+                        leadingIcon = Icons.Outlined.Power,
                         label = strings.widgets.deviceConnection.autoConnectButton,
                     )
                 }
@@ -412,9 +441,8 @@ private fun DiscoveredDeviceRow(
 private fun DeviceMetaLine(text: String) {
     val tokens = LocalMockzillaTokens.current
     Text(
-        modifier = Modifier.alpha(0.72f),
         text = text,
-        color = tokens.fg1,
+        color = tokens.fg2,
         style = MaterialTheme.typography.bodySmall,
         fontFamily = LocalMonoFontFamily.current,
         maxLines = 1,
@@ -436,84 +464,84 @@ private fun BulletItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color(0xFF00ACC1),
-            modifier = Modifier.size(18.dp)
+            tint = LocalMockzillaTokens.current.accent,
+            modifier = Modifier.size(16.dp)
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(12.dp))
 
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            style = MaterialTheme.typography.bodyMedium,
+            color = LocalMockzillaTokens.current.fg1
         )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun DevicesList(
-    devices: List<DetectedDevice>,
-    onTapDevice: (DetectedDevice) -> Unit,
-    strings: Strings = LocalStrings.current,
-) = LazyColumn {
-    item {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = strings.widgets.deviceConnection.autoConnectHeading,
-                style = MaterialTheme.typography.headlineLarge
-            )
-            Text(
-                text = strings.widgets.deviceConnection.autoConnectSubHeading,
-                style = MaterialTheme.typography.bodySmall
-            )
-            Spacer(Modifier.height(8.dp))
-        }
-    }
-
-    itemsIndexed(devices, key = { _, device -> device.connectionName }) { index, device ->
-        Row(
-            modifier = Modifier.animateItem().alternatingBackground(index).fillMaxWidth()
-                .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            StandardTextTooltip(text = device.state.toolTipText(strings)) {
-                Canvas(
-                    modifier = Modifier.padding(end = 16.dp).size(12.dp),
-                    onDraw = { drawCircle(color = device.state.color()) })
-            }
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                modifier = Modifier.weight(1f).padding(end = 8.dp)
-            ) {
-                Text(device.prettyName(), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(
-                    modifier = Modifier.alpha(0.5f),
-                    text = buildString {
-                        device.metaData?.appName?.also {
-                            append(it)
-                            append(" | ")
-                        }
-                        append("${device.hostAddress}:${device.port}")
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
-
-            if (device.state == DetectedDevice.State.Resolving) {
-                CircularProgressIndicator(Modifier.padding(end = 8.dp).size(20.dp))
-            } else {
-                SolidButton(
-                    onClick = { onTapDevice(device) },
-                    label = strings.widgets.deviceConnection.autoConnectButton
-                )
-            }
-        }
-    }
-}
+//@OptIn(ExperimentalFoundationApi::class)
+//@Composable
+//private fun DevicesList(
+//    devices: List<DetectedDevice>,
+//    onTapDevice: (DetectedDevice) -> Unit,
+//    strings: Strings = LocalStrings.current,
+//) = LazyColumn {
+//    item {
+//        Column(
+//            verticalArrangement = Arrangement.spacedBy(8.dp)
+//        ) {
+//            Text(
+//                text = strings.widgets.deviceConnection.autoConnectHeading,
+//                style = MaterialTheme.typography.headlineLarge
+//            )
+//            Text(
+//                text = strings.widgets.deviceConnection.autoConnectSubHeading,
+//                style = MaterialTheme.typography.bodySmall
+//            )
+//            Spacer(Modifier.height(8.dp))
+//        }
+//    }
+//
+//    itemsIndexed(devices, key = { _, device -> device.connectionName }) { index, device ->
+//        Row(
+//            modifier = Modifier.animateItem().alternatingBackground(index).fillMaxWidth()
+//                .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            StandardTextTooltip(text = device.state.toolTipText(strings)) {
+//                Canvas(
+//                    modifier = Modifier.padding(end = 16.dp).size(12.dp),
+//                    onDraw = { drawCircle(color = device.state.color()) })
+//            }
+//
+//            Column(
+//                verticalArrangement = Arrangement.spacedBy(4.dp),
+//                modifier = Modifier.weight(1f).padding(end = 14.dp)
+//            ) {
+//                Text(device.prettyName(), maxLines = 1, overflow = TextOverflow.Ellipsis)
+//                Text(
+//                    modifier = Modifier.alpha(0.5f),
+//                    text = buildString {
+//                        device.metaData?.appName?.also {
+//                            append(it)
+//                            append(" | ")
+//                        }
+//                        append("${device.hostAddress}:${device.port}")
+//                    },
+//                    style = MaterialTheme.typography.bodySmall,
+//                )
+//            }
+//
+//            if (device.state == DetectedDevice.State.Resolving) {
+//                CircularProgressIndicator(Modifier.padding(end = 8.dp).size(20.dp))
+//            } else {
+//                SolidButton(
+//                    onClick = { onTapDevice(device) },
+//                    label = strings.widgets.deviceConnection.autoConnectButton
+//                )
+//            }
+//        }
+//    }
+//}
 
 @Preview(
     name = "Medium Tablet",
