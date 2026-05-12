@@ -291,25 +291,23 @@ private fun FilterTextField(
 private fun EndpointsWidgetPreview() = PreviewSurface {
     EndpointsWidgetContent(
         state = EndpointsViewModel.State.EndpointsList(
-            endpoints = listOf(
-                EndpointsViewModel.State.EndpointConfig(
+            allEndpoints = listOf(
+                EndpointsViewModel.State.EndpointConfigItem(
                     key = Key("1"),
                     name = "FooBar",
                     fail = false,
                     overriddenProperties = listOf(
                         EndpointProperties.Delay,
                         EndpointProperties.Body
-                    ),
-                    display = true
+                    )
                 ),
-                EndpointsViewModel.State.EndpointConfig(
+                EndpointsViewModel.State.EndpointConfigItem(
                     key = Key("2"),
                     name = "Foo",
                     fail = true,
-                    overriddenProperties = emptyList(),
-                    display = true
+                    overriddenProperties = emptyList()
                 ),
-                EndpointsViewModel.State.EndpointConfig(
+                EndpointsViewModel.State.EndpointConfigItem(
                     key = Key("3"),
                     name = "FooBuzz",
                     fail = false,
@@ -319,25 +317,22 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
                         EndpointProperties.Delay,
                         EndpointProperties.Body,
                         EndpointProperties.Headers
-                    ),
-                    display = true
+                    )
                 ),
-                EndpointsViewModel.State.EndpointConfig(
+                EndpointsViewModel.State.EndpointConfigItem(
                     key = Key("4"),
                     name = "Foobar",
                     fail = false,
-                    overriddenProperties = emptyList(),
-                    display = true
+                    overriddenProperties = emptyList()
                 ),
-                EndpointsViewModel.State.EndpointConfig(
+                EndpointsViewModel.State.EndpointConfigItem(
                     key = Key("5"),
                     name = "Foobuzz",
                     fail = true,
                     overriddenProperties = listOf(
                         EndpointProperties.Delay,
                         EndpointProperties.Body
-                    ),
-                    display = true
+                    )
                 )
             ),
             filter = "Foo",

@@ -5,6 +5,8 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.engine.filter.FuzzyFilter
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel.State
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
@@ -32,9 +34,20 @@ class EndpointsViewModel(
 
     private suspend fun reloadData() {
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
-            onSuccess = {
+            onSuccess = { list ->
                 val currentState = state.value as? State.EndpointsList
-                State.EndpointsList(it.toConfig(), currentState?.filter ?: "")
+                val filter = currentState?.filter ?: ""
+                State.EndpointsList(
+                    allEndpoints = list.map {
+                        State.EndpointConfigItem(
+                            key = it.key,
+                            name = it.name,
+                            fail = it.shouldFail == true,
+                            overriddenProperties = it.getOverriddenProperties()
+                        )
+                    },
+                    filter
+                )
             },
             onFailure = {
                 eventBus.send(EventBus.Event.GenericError)
@@ -43,32 +56,13 @@ class EndpointsViewModel(
         )
     }
 
-    private fun List<SerializableEndpointConfig>.toConfig(): List<State.EndpointConfig> {
-        val currentState = state.value as? State.EndpointsList
-
-        return map {
-            State.EndpointConfig(
-                key = it.key,
-                name = it.name,
-                fail = it.shouldFail == true,
-                overriddenProperties = it.getOverriddenProperties(),
-                display = filter(currentState?.filter ?: "", it.name)
-            )
-        }
-    }
-
     fun onFilterChanged(value: String) {
         val currentState = state.value as? State.EndpointsList ?: return
 
         state.value = currentState.copy(
-            endpoints = currentState.endpoints.map {
-                it.copy(display = filter(value, it.name))
-            },
             filter = value
         )
     }
-
-    private fun filter(value: String, name: String) = name.lowercase().contains(value.lowercase())
 
     sealed class State {
         data object Loading : State()
@@ -89,13 +83,36 @@ class EndpointsViewModel(
         )
 
         /**
-         * @property endpoints
+         * @property key
+         * @property name
+         * @property fail
+         * @property overriddenProperties
+         */
+        data class EndpointConfigItem(
+            val key: EndpointConfiguration.Key,
+            val name: String,
+            val fail: Boolean,
+            val overriddenProperties: List<EndpointProperties>,
+        ) {
+            fun withDisplay(display: Boolean): EndpointConfig = EndpointConfig(
+                key = key,
+                name = name,
+                fail = fail,
+                overriddenProperties = overriddenProperties,
+                display = display
+            )
+        }
+
+        /**
+         * @property allEndpoints
          * @property filter
          */
         data class EndpointsList(
-            val endpoints: List<EndpointConfig>,
+            private val allEndpoints: List<EndpointConfigItem>,
             val filter: String,
-        ) : State()
+        ) : State() {
+            val endpoints: List<EndpointConfig> = filterEndpoints(filter, allEndpoints)
+        }
     }
 }
 
@@ -116,3 +133,17 @@ private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull
     EndpointProperties.Status.takeIf { defaultStatus != null || appliedPresetOverride?.response?.statusCode != null },
     EndpointProperties.Headers.takeIf { defaultHeaders != null || appliedPresetOverride?.response?.headers != null }
 )
+
+private fun filterEndpoints(
+    filter: String,
+    endpoints: List<State.EndpointConfigItem>,
+): List<State.EndpointConfig> {
+    val visible = FuzzyFilter
+        .filter(endpoints, filter) { it.name }
+        .map { it.withDisplay(true) }
+    val visibleEndpoints = visible.map { it.key }.toSet()
+    val hidden = endpoints
+        .filter { it.key !in visibleEndpoints }
+        .map { it.withDisplay(false) }
+    return visible + hidden
+}
