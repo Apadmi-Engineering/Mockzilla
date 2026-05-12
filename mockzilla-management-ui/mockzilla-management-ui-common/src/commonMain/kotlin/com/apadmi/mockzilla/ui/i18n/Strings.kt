@@ -125,6 +125,7 @@ data class Strings(
             val refreshAll: String,
             val clearOverrides: String,
             val title: String,
+            val actionsSection: String,
             val presentationMode: String,
             val fontScaleLabel: (Float) -> String,
         )
@@ -158,6 +159,7 @@ data class Strings(
             val ios: String,
             val jvm: String,
             val js: String,
+            val deviceSection: String,
         )
 
         /**

@@ -75,7 +75,7 @@ fun DesktopApp(
         val viewModel = getViewModel<AppRootViewModel>()
         val state by viewModel.state.collectAsState()
 
-        var openWidgets by remember { mutableStateOf(emptySet<String>()) }
+        var openWidgets by remember { mutableStateOf(setOf("device-panel")) }
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
         val rightWidgets = rightPanelWidgets(
@@ -241,15 +241,16 @@ private fun rightPanelWidgets(
 
 private fun leftPanelWidgets(
     state: AppRootViewModel.State,
-    strings: Strings
+    @Suppress("UNUSED_PARAMETER") strings: Strings
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
     listOf(
-        Widget(id = "meta-data", strings.widgets.metaData.title) {
-            MetaDataWidget(connectedState.activeDevice.device)
-        },
-        Widget(id = "misc-controls", strings.widgets.miscControls.title) {
-            MiscControlsWidget(connectedState.activeDevice.device)
-        })
+        Widget(id = "device-panel") {
+            Column {
+                MetaDataWidget(connectedState.activeDevice.device)
+                MiscControlsWidget(connectedState.activeDevice.device)
+            }
+        }
+    )
 } ?: emptyList()
 
 @Composable

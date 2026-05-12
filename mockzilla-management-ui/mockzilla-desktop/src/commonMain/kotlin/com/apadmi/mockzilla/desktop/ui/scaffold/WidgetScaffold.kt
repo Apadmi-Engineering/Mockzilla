@@ -224,6 +224,38 @@ private fun LeftPanel(
     defaultWidth: Dp = 100.dp
 ) {
     val density = LocalDensity.current
+
+    val alwaysVisible = content.isNotEmpty() && content.all { it.title == null }
+
+    if (alwaysVisible) {
+        Row(modifier = Modifier.fillMaxHeight()) {
+            Surface(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxHeight()
+                    .width(settledWidth)
+            ) {
+                Column {
+                    content.forEachIndexed { index, widget ->
+                        if (index != 0) {
+                            HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                        }
+                        widget.ui()
+                    }
+                }
+            }
+            HorizontalDraggableDivider(
+                onDrag = { offset ->
+                    with(density) {
+                        onWidthChange(width + offset.toDp())
+                    }
+                },
+                onDragStopped = onDragStopped,
+            )
+        }
+        return
+    }
+
     val selectedWidgets = remember(openWidgets) {
         content.indices.filter { openWidgets.contains(content[it].id) }
     }
