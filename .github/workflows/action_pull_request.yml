@@ -46,6 +46,7 @@ jobs:
               - fastlane/Appfile
               - Gemfile
               - Gemfile.lock
+              - .github/workflows/**
             common-kotlin: &common-kotlin
               - *common-fastlane
               - build-logic/**
@@ -85,6 +86,7 @@ jobs:
               - *mockzilla-server
               - samples/demo-kmm/**
             swagger:
+              - *common-fastlane
               - webapi.yml
 
   docs:
