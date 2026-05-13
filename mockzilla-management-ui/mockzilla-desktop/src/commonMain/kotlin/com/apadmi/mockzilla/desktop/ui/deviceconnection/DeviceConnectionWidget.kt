@@ -198,14 +198,14 @@ private fun ProductIntro(strings: Strings) {
         Box(
             modifier = Modifier
                 .size(76.dp)
-                .clip(RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .background(LocalMockzillaTokens.current.bg1)
                 .border(
                     width = 1.dp,
                     color = LocalMockzillaTokens.current.line1,
-                    shape = RoundedCornerShape(14.dp)
+                    shape = RoundedCornerShape(16.dp)
                 )
-                .padding(14.dp),
+                .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -214,7 +214,7 @@ private fun ProductIntro(strings: Strings) {
             )
         }
 
-        Spacer(modifier = Modifier.height(22.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = strings.widgets.deviceConnection.title,
@@ -223,14 +223,14 @@ private fun ProductIntro(strings: Strings) {
             fontWeight = FontWeight.ExtraBold
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = strings.widgets.deviceConnection.subTile,
             style = MaterialTheme.typography.bodyLarge,
             color = LocalMockzillaTokens.current.fg1
         )
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         BulletItem(
             icon = Icons.Default.Bolt,
@@ -265,23 +265,23 @@ private fun ConnectionCard(
     val tokens = LocalMockzillaTokens.current
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(16.dp),
         color = tokens.bg5,
         border = BorderStroke(1.dp, tokens.line1),
     ) {
         Column(
-            modifier = Modifier.padding(28.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
+            modifier = Modifier.padding(32.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                text = "MANUAL CONNECTION",
+                text = strings.widgets.deviceConnection.networkConnection,
                 color = tokens.fg1,
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Bold,
                 ),
             )
             Text(
-                text = "Enter the IP address and port of the device running your app",
+                text = strings.widgets.deviceConnection.promptToEnterIP,
                 color = tokens.fg1,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -296,13 +296,13 @@ private fun ConnectionCard(
                         .border(
                             width = 0.5.dp,
                             color = tokens.line1,
-                            shape = RoundedCornerShape(10.dp)),
-                    shape = RoundedCornerShape(10.dp),
+                            shape = RoundedCornerShape(8.dp)),
+                    shape = RoundedCornerShape(8.dp),
 
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = LocalMonoFontFamily.current,
-                        fontSize = 14.sp,
-                        lineHeight = 14.sp,
+                        fontSize = 16.sp,
+                        lineHeight = 16.sp,
                     ),
                     value = state.ipAndPort,
                     onValueChange = onIpAndPortChanged,
@@ -321,8 +321,8 @@ private fun ConnectionCard(
                         Text(
                             text = strings.widgets.deviceConnection.ipAndPort,
                             fontFamily = LocalMonoFontFamily.current,
-                            fontSize = 13.sp,
-                            lineHeight = 13.sp
+                            fontSize = 14.sp,
+                            lineHeight = 14.sp
                         )
                     },
 
@@ -346,24 +346,24 @@ private fun ConnectionCard(
                     )
                 )
                 SolidButton(
-                    modifier = Modifier.height(40.dp)
+                    modifier = Modifier.height(32.dp)
                     .align(Alignment.CenterVertically),
-                    label = "Connect",
+                    label = strings.widgets.deviceConnection.connect,
                     onClick = onConnect,
                     contentPadding = PaddingValues(
                         horizontal = 16.dp,
-                        vertical = 12.dp
+                        vertical = 16.dp
                     )
                 )
             }
             Row(
-                modifier = Modifier.padding(vertical = 6.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                modifier = Modifier.padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 HorizontalDivider(Modifier.weight(1f), color = tokens.line1)
                 Text(
-                    text = "or connect automatically",
+                    text = strings.widgets.deviceConnection.connectAutomatically,
                     color = tokens.fg2,
                     style = MaterialTheme.typography.labelMedium,
                 )
@@ -385,20 +385,20 @@ private fun DiscoveredDevicesSection(
     strings: Strings,
 ) {
     val tokens = LocalMockzillaTokens.current
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "DISCOVERED ON NETWORK",
+                text = strings.widgets.deviceConnection.discoveredNetwork,
                 color = tokens.fg1,
                 style = MaterialTheme.typography.labelSmall,
             )
             Spacer(Modifier.width(8.dp))
-            Canvas(Modifier.size(6.dp)) {
+            Canvas(Modifier.size(8.dp)) {
                 drawCircle(tokens.ok)
             }
-            Spacer(Modifier.width(6.dp))
+            Spacer(Modifier.width(8.dp))
             Text(
-                text = "scanning...",
+                text = strings.widgets.deviceConnection.scanning,
                 color = tokens.fg2,
                 style = MaterialTheme.typography.bodySmall,
                 fontFamily = LocalMonoFontFamily.current,
@@ -431,7 +431,7 @@ private fun DiscoveredDeviceRow(
     val statusColor = device.state.color()
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(8.dp),
         color = tokens.bg3,
         border = BorderStroke(1.dp, tokens.line1),
     ) {
@@ -449,8 +449,8 @@ private fun DiscoveredDeviceRow(
                     .background(
                         color = statusColor,
                         shape = RoundedCornerShape(
-                            topStart = 10.dp,
-                            bottomStart = 10.dp
+                            topStart = 8.dp,
+                            bottomStart = 8.dp
                         )
                     ),
             )
@@ -460,12 +460,12 @@ private fun DiscoveredDeviceRow(
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(end = 18.dp),
+                    .padding(end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                     StandardTextTooltip(text = device.state.toolTipText(strings)) {
                         Surface(
-                            modifier = Modifier.size(14.dp),
+                            modifier = Modifier.size(16.dp),
                             shape = CircleShape,
                             color = statusColor.copy(alpha = 0.16f),
                         ) {
@@ -476,15 +476,15 @@ private fun DiscoveredDeviceRow(
                         }
                     }
 
-                    Spacer(modifier = Modifier.width(14.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
 
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.weight(1f),
                     ) {
                         Text(
                             text = if (device.connectionName.length > 25) {
-                                device.connectionName.take(22) + "..."
+                                device.connectionName.take(22) +  strings.widgets.deviceConnection.dot
                             } else {
                                 device.connectionName
                             },
@@ -505,10 +505,10 @@ private fun DiscoveredDeviceRow(
                     }
 
                     if (device.state == DetectedDevice.State.Resolving) {
-                        CircularProgressIndicator(Modifier.size(20.dp))
+                        CircularProgressIndicator(Modifier.size(32.dp))
                     } else {
                         SolidButton(
-                            modifier = Modifier.width(132.dp).height(40.dp),
+                            modifier = Modifier.width(132.dp).height(32.dp),
                             onClick = { onTapDevice(device) },
                             leadingIcon = Icons.Outlined.Power,
                             label = strings.widgets.deviceConnection.autoConnectButton,
@@ -550,7 +550,7 @@ private fun BulletItem(
             modifier = Modifier.size(16.dp)
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
         Text(
             text = text,

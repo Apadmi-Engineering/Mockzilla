@@ -43,6 +43,13 @@ val EnStrings = Strings(
                 resolving = "We're still for this device to come online",
             ),
             ipAndPort = "127.0.0.1:8080",
+            networkConnection = "MANUAL CONNECTION",
+            promptToEnterIP = "Enter the IP address and port of the device running your app",
+            connectAutomatically = "or connect automatically",
+            discoveredNetwork = "DISCOVERED ON NETWORK",
+            scanning = "scanning...",
+            connect = "Connect",
+            dot = "..."
         ),
         deviceTabs = Strings.Widgets.DeviceTabs(
             tabTitle = { "Device $it" },

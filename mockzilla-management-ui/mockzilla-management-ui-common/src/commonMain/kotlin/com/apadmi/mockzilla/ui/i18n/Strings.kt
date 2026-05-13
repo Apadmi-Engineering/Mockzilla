@@ -193,7 +193,14 @@ data class Strings(
             val errorTitle: String,
             val errorMessage: String,
             val connected: String,
-            val ipAndPort: String
+            val ipAndPort: String,
+            val networkConnection: String,
+            val promptToEnterIP: String,
+            val connectAutomatically: String,
+            val discoveredNetwork: String,
+            val scanning: String,
+            val connect: String,
+            val dot: String,
         ) {
             /**
              * @property notYourSimulator

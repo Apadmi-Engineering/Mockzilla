@@ -29,6 +29,15 @@ val LocalForceDarkMode = compositionLocalOf { false }
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalSetScaleFactor = compositionLocalOf<(Float) -> Unit> { { /* noop */ } }
 
+/**
+ * @property primary
+ * @property container
+ */
+data class StateColors(
+    val primary: Color,
+    val container: Color
+)
+
 data object ScaleFactor {
     const val DEFAULT_DESKTOP = 0.9F
     const val DEFAULT_MOBILE = 1.0F

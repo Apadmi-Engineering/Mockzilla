@@ -30,6 +30,8 @@ fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeP
 
 /**
  * Stops the Mockzilla server,
+ *
+ * @return
  */
 fun stopMockzilla() = runBlocking {
     stopServer()
