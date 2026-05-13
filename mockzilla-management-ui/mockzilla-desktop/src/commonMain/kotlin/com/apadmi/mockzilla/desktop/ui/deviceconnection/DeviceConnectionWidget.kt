@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -107,33 +108,82 @@ fun DeviceConnectionContent(
         .background(LocalMockzillaTokens.current.bg0),
     contentAlignment = Alignment.Center,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(0.75f)
-        .widthIn(max = 1200.dp),
-        horizontalArrangement = Arrangement.spacedBy(72.dp),
-        verticalAlignment = Alignment.CenterVertically,
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Box(
-            modifier = Modifier
-                .weight(1f),
-                contentAlignment = Alignment.TopCenter,
-        ) {
-            ProductIntro(strings = strings)
-        }
 
-        Box(
-            modifier = Modifier
-                .weight(1f),
-                contentAlignment = Alignment.TopStart,
-        ) {
-            ConnectionCard(
-                state = state,
-                onIpAndPortChanged = onIpAndPortChanged,
-                onConnect = { onIpAndPortChanged(state.ipAndPort) },
-                onTapDevice = onTapDevice,
-                strings = strings,
-            )
+        val isCompact =  maxWidth < 1100.dp
+
+        if (isCompact) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+
+                val compactWidth = 720.dp
+
+                Box(
+                    modifier = Modifier
+                        .widthIn(max = compactWidth),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    ProductIntro(strings = strings)
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Box(
+                    modifier = Modifier
+                        .widthIn(max = compactWidth),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    ConnectionCard(
+                        state = state,
+                        onIpAndPortChanged = onIpAndPortChanged,
+                        onConnect = { onIpAndPortChanged(state.ipAndPort) },
+                        onTapDevice = onTapDevice,
+                        strings = strings,
+                    )
+                }
+            }
+
+        } else {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .fillMaxHeight(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f),
+                    contentAlignment = Alignment.TopEnd,
+                ) {
+                    ProductIntro(strings = strings)
+                }
+
+                Spacer(modifier = Modifier.width(100.dp))
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f),
+                    contentAlignment = Alignment.TopStart,
+                ) {
+                    ConnectionCard(
+                        state = state,
+                        onIpAndPortChanged = onIpAndPortChanged,
+                        onConnect = { onIpAndPortChanged(state.ipAndPort) },
+                        onTapDevice = onTapDevice,
+                        strings = strings,
+                    )
+                }
+            }
         }
     }
 }
@@ -214,9 +264,9 @@ private fun ConnectionCard(
 ) {
     val tokens = LocalMockzillaTokens.current
     Surface(
-        modifier = Modifier.widthIn(min = 620.dp, max = 760.dp),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
-        color = tokens.bg1,
+        color = tokens.bg5,
         border = BorderStroke(1.dp, tokens.line1),
     ) {
         Column(

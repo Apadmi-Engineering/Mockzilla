@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 
 data class MockzillaTokens(
     // Background layers (0 = deepest, 4 = strongest surface)
-    val bg0: Color, val bg1: Color, val bg2: Color, val bg3: Color, val bg4: Color,
+    val bg0: Color, val bg1: Color, val bg2: Color, val bg3: Color, val bg4: Color, val bg5: Color,
     // Foreground / text
     val fg0: Color, val fg1: Color, val fg2: Color, val fg3: Color,
     // Borders
@@ -23,7 +23,7 @@ data class MockzillaTokens(
 ) {
     companion object {
         val Dark = MockzillaTokens(
-            bg0 = dark_bg0, bg1 = dark_bg1, bg2 = dark_bg2, bg3 = dark_bg3, bg4 = dark_bg4,
+            bg0 = dark_bg0, bg1 = dark_bg1, bg2 = dark_bg2, bg3 = dark_bg3, bg4 = dark_bg4, bg5 = dark_bg5,
             fg0 = dark_fg0, fg1 = dark_fg1, fg2 = dark_fg2, fg3 = dark_fg3,
             line1 = dark_line1, line2 = dark_line2,
             accent = dark_accent, accent2 = dark_accent2, accentFg = dark_accentFg, accentSoft = dark_accentSoft,
@@ -36,7 +36,7 @@ data class MockzillaTokens(
         )
 
         val Light = MockzillaTokens(
-            bg0 = light_bg0, bg1 = light_bg1, bg2 = light_bg2, bg3 = light_bg3, bg4 = light_bg4,
+            bg0 = light_bg0, bg1 = light_bg1, bg2 = light_bg2, bg3 = light_bg3, bg4 = light_bg4, bg5 = light_bg5,
             fg0 = light_fg0, fg1 = light_fg1, fg2 = light_fg2, fg3 = light_fg3,
             line1 = light_line1, line2 = light_line2,
             accent = light_accent, accent2 = light_accent2, accentFg = light_accentFg, accentSoft = light_accentSoft,

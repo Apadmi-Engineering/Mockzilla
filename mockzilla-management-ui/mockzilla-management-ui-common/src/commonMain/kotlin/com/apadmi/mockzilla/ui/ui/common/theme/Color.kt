@@ -11,6 +11,8 @@ val dark_bg2 = Color(0xFF111827)
 val dark_bg3 = Color(0xFF181B1F)
 val dark_bg4 = Color(0xFF1E293B)
 
+val dark_bg5 = Color(0xFF111418)
+
 val dark_fg0 = Color(0xFFF8FAFC) // main white text
 val dark_fg1 = Color(0xFF94A3B8) // secondary text
 val dark_fg2 = Color(0xFF64748B)
@@ -38,9 +40,11 @@ val dark_infoSoft = dark_info.copy(alpha = 0.14f)
 // ── Light theme ───────────────────────────────────────────────────────────────
 val light_bg0 = Color(0xFFF8FAFC) // app background
 val light_bg1 = Color(0xFFFFFFFF) // cards
-val light_bg2 = Color(0xFFFFFFFF)
+val light_bg2 = Color(0xFFF8FAFC)
 val light_bg3 = Color(0xFFE2E8F0)
 val light_bg4 = Color(0xFFCBD5E1)
+
+val light_bg5 = Color(0xFFFDFDFF)
 
 val light_fg0 = Color(0xFF0F172A) // title text
 val light_fg1 = Color(0xFF475569) // secondary text
