@@ -5,10 +5,10 @@ package com.apadmi.mockzilla.ui.ui.common.theme
 import androidx.compose.ui.graphics.Color
 
 // ── Dark theme ────────────────────────────────────────────────────────────────
-val dark_bg0 = Color(0xFF020817) // app background
-val dark_bg1 = Color(0xFF0B1220) // cards
+val dark_bg0 = Color(0xFF0B0D10) // app background
+val dark_bg1 = Color(0xFF0B0D10) // cards
 val dark_bg2 = Color(0xFF111827)
-val dark_bg3 = Color(0xFF1E293B)
+val dark_bg3 = Color(0xFF181B1F)
 val dark_bg4 = Color(0xFF1E293B)
 
 val dark_fg0 = Color(0xFFF8FAFC) // main white text
@@ -16,8 +16,8 @@ val dark_fg1 = Color(0xFF94A3B8) // secondary text
 val dark_fg2 = Color(0xFF64748B)
 val dark_fg3 = Color(0xFF475569)
 
-val dark_line1 = Color(0xFF172033)
-val dark_line2 = Color(0xFF334155)
+val dark_line1 = Color(0xFF302C31)
+val dark_line2 = Color(0xFF00ECF8)
 
 val dark_accent     = Color(0xFF00E5FF)
 val dark_accent2    = Color(0xFF22D3EE)

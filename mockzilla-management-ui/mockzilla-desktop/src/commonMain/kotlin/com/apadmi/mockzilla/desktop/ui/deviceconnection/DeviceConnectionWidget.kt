@@ -46,7 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -243,8 +242,13 @@ private fun ConnectionCard(
                 OutlinedTextField(
                     modifier = Modifier
                         .weight(1f)
-                        .height(45.dp),
+                        .height(45.dp)
+                        .border(
+                            width = 0.5.dp,
+                            color = tokens.line1,
+                            shape = RoundedCornerShape(10.dp)),
                     shape = RoundedCornerShape(10.dp),
+
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = LocalMonoFontFamily.current,
                         fontSize = 14.sp,
@@ -276,8 +280,8 @@ private fun ConnectionCard(
                         focusedTextColor = tokens.fg0,
                         unfocusedTextColor = tokens.fg0,
 
-                        focusedContainerColor = tokens.bg2,
-                        unfocusedContainerColor = tokens.bg2,
+                        focusedContainerColor = tokens.bg3,
+                        unfocusedContainerColor = tokens.bg3,
 
                         focusedBorderColor = tokens.line2,
                         unfocusedBorderColor = tokens.line1,
@@ -353,13 +357,15 @@ private fun DiscoveredDevicesSection(
         LazyColumn(
             modifier = Modifier.heightIn(max = 220.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
+
         ) {
             itemsIndexed(devices, key = { _, device -> device.connectionName }) { _, device ->
-                DiscoveredDeviceRow(
-                    device = device,
-                    onTapDevice = onTapDevice,
-                    strings = strings,
-                )
+
+                    DiscoveredDeviceRow(
+                        device = device,
+                        onTapDevice = onTapDevice,
+                        strings = strings,
+                    )
             }
         }
     }
@@ -376,7 +382,7 @@ private fun DiscoveredDeviceRow(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
-        color = tokens.bg2,
+        color = tokens.bg3,
         border = BorderStroke(1.dp, tokens.line1),
     ) {
         Row(
@@ -385,68 +391,81 @@ private fun DiscoveredDeviceRow(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+
             Box(
-                modifier = Modifier.fillMaxHeight().width(3.dp).background(statusColor),
+                modifier = Modifier
+                    .height(88.dp)
+                    .width(4.dp)
+                    .background(
+                        color = statusColor,
+                        shape = RoundedCornerShape(
+                            topStart = 10.dp,
+                            bottomStart = 10.dp
+                        )
+                    ),
             )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 18.dp),
+                    .padding(end = 18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                StandardTextTooltip(text = device.state.toolTipText(strings)) {
-                    Surface(
-                        modifier = Modifier.size(14.dp),
-                        shape = CircleShape,
-                        color = statusColor.copy(alpha = 0.16f),
+                    StandardTextTooltip(text = device.state.toolTipText(strings)) {
+                        Surface(
+                            modifier = Modifier.size(14.dp),
+                            shape = CircleShape,
+                            color = statusColor.copy(alpha = 0.16f),
+                        ) {
+                            Canvas(
+                                modifier = Modifier.padding(3.5.dp),
+                                onDraw = { drawCircle(color = statusColor) },
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(14.dp))
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.weight(1f),
                     ) {
-                        Canvas(
-                            modifier = Modifier.padding(3.5.dp),
-                            onDraw = { drawCircle(color = statusColor) },
+                        Text(
+                            text = if (device.connectionName.length > 25) {
+                                device.connectionName.take(22) + "..."
+                            } else {
+                                device.connectionName
+                            },
+                            color = tokens.fg0,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        DeviceMetaLine(
+                            device.metaData?.let { "${it.appName} · ${it.appPackage}" }
+                                ?: "${device.hostAddress}:${device.port}",
+                        )
+                        device.metaData?.also {
+                            DeviceMetaLine("${it.operatingSystemVersion} · ${it.deviceModel}")
+                        }
+                    }
+
+                    if (device.state == DetectedDevice.State.Resolving) {
+                        CircularProgressIndicator(Modifier.size(20.dp))
+                    } else {
+                        SolidButton(
+                            modifier = Modifier.width(132.dp).height(40.dp),
+                            onClick = { onTapDevice(device) },
+                            leadingIcon = Icons.Outlined.Power,
+                            label = strings.widgets.deviceConnection.autoConnectButton,
                         )
                     }
                 }
-
-                Spacer(modifier = Modifier.width(14.dp))
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Text(
-                        text = if (device.connectionName.length > 25) {
-                            device.connectionName.take(22) + "..."
-                        } else {
-                            device.connectionName
-                        },
-                        color = tokens.fg0,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.ExtraBold,
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    DeviceMetaLine(
-                        device.metaData?.let { "${it.appName} · ${it.appPackage}" }
-                            ?: "${device.hostAddress}:${device.port}",
-                    )
-                    device.metaData?.also {
-                        DeviceMetaLine("${it.operatingSystemVersion} · ${it.deviceModel}")
-                    }
-                }
-
-                if (device.state == DetectedDevice.State.Resolving) {
-                    CircularProgressIndicator(Modifier.size(20.dp))
-                } else {
-                    SolidButton(
-                        modifier = Modifier.width(132.dp).height(40.dp),
-                        onClick = { onTapDevice(device) },
-                        leadingIcon = Icons.Outlined.Power,
-                        label = strings.widgets.deviceConnection.autoConnectButton,
-                    )
-                }
             }
-        }
     }
 }
 
