@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -103,7 +102,6 @@ fun DeviceConnectionContent(
                 onClick = { onIpAndPortChanged("127.0.0.1:5614") },
                 label = strings.widgets.deviceConnection.androidDevConnectButton
             )
-
         }
 
         AnimatedContent(

@@ -3,13 +3,17 @@ package com.apadmi.mockzilla.lib.internal.utils
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
-@Suppress("unused") // Used from Swift
+import kotlin.coroutines.resume
+import kotlinx.coroutines.suspendCancellableCoroutine
+
+private typealias HandlerCallback = (request: MockzillaHttpRequest, (MockzillaHttpResponse) -> Unit) -> Unit
+private typealias MatcherCallback = (request: MockzillaHttpRequest, (Boolean) -> Unit) -> Unit
+
+@Suppress("unused")  // Used from Swift
 fun setDefaultHandlerCallback(
     builder: EndpointConfiguration.Builder,
-    block: (request: MockzillaHttpRequest, (MockzillaHttpResponse) -> Unit) -> Unit
+    block: HandlerCallback
 ) {
     builder.setDefaultHandler {
         suspendCancellableCoroutine { cont ->
@@ -20,10 +24,10 @@ fun setDefaultHandlerCallback(
     }
 }
 
-@Suppress("unused") // Used from Swift
+@Suppress("unused")  // Used from Swift
 fun setErrorHandlerCallback(
     builder: EndpointConfiguration.Builder,
-    block: (request: MockzillaHttpRequest, (MockzillaHttpResponse) -> Unit) -> Unit
+    block: HandlerCallback
 ) {
     builder.setErrorHandler {
         suspendCancellableCoroutine { cont ->
@@ -34,10 +38,10 @@ fun setErrorHandlerCallback(
     }
 }
 
-@Suppress("unused") // Used from Swift
+@Suppress("unused")  // Used from Swift
 fun setPatternMatcherCallback(
     builder: EndpointConfiguration.Builder,
-    block: (request: MockzillaHttpRequest, (Boolean) -> Unit) -> Unit
+    block: MatcherCallback
 ) {
     builder.setPatternMatcher {
         suspendCancellableCoroutine { cont ->
