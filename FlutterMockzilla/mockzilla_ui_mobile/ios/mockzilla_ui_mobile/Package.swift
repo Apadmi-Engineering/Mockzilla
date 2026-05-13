@@ -10,6 +10,7 @@ let package = Package(
         .library(name: "mockzilla-ui-mobile", targets: ["mockzilla_ui_mobile"])
     ],
     dependencies: [
+        .package(name: "FlutterFramework", path: "../FlutterFramework"),
         .package(
             url: "https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi.git",
             .upToNextMajor(from: "0.0.1")
@@ -17,8 +18,11 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "mockzillauimobile",
-            dependencies: ["SwiftMockzillaMobileUi"],
+            name: "mockzilla_ui_mobile",
+            dependencies: [
+                "SwiftMockzillaMobileUi",
+                .product(name: "FlutterFramework", package: "FlutterFramework")
+            ],
             resources: []
         )
     ]

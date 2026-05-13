@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swiftmockzillamobileui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi.git",
+      "state" : {
+        "revision" : "2c40647db605fdb5f960a756c9fd568bbe3b338e",
+        "version" : "0.0.9"
+      }
+    }
+  ],
+  "version" : 2
+}
