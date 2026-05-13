@@ -46,10 +46,6 @@ internal actual suspend fun startServer(
     )
 }
 
-private fun createWorkerOptions() = js("({})").unsafeCast<StartServiceWorkerOptions>().apply {
-    onUnhandledRequest = "bypass"
-}
-
 internal actual suspend fun stopServer() {
     globalWorker?.resetHandlers()?.await()
     yield()
@@ -58,4 +54,8 @@ internal actual suspend fun stopServer() {
         globalWorker?.stop()
     }
     yield()
+}
+
+private fun createWorkerOptions() = js("({})").unsafeCast<StartServiceWorkerOptions>().apply {
+    onUnhandledRequest = "bypass"
 }
