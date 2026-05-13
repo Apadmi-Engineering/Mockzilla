@@ -36,6 +36,11 @@
       "release-type": "dart",
       "always-update": true
     },
+    "FlutterMockzilla/mockzilla_web": {
+      "component": "flutter_mockzilla_web",
+      "release-type": "dart",
+      "always-update": true
+    },
     "mockzilla-management-ui/mockzilla-desktop": {
       "component": "mockzilla-desktop",
       "extra-files": ["build.gradle.kts"]

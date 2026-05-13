@@ -15,7 +15,7 @@ concurrency:
 jobs:
   deploy-flutter:
     needs: [ deploy-js ]
-    runs-on: macos-14
+    runs-on: macos-26
     if: ${{ github.ref_type != 'branch' }}
     permissions:
       id-token: write
@@ -32,7 +32,7 @@ jobs:
       - uses: dart-lang/setup-dart@v1
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.0'
+          flutter-version: '3.41.9'
           channel: 'stable'
       - run: cd FlutterMockzilla/mockzilla_ui_mobile; flutter pub get
       - name: Publish
@@ -116,7 +116,7 @@ jobs:
   deploy-js:
     name: Publish JS files to GitHub release
     runs-on: macos-14
-    needs: [ deploy-kotlin, deploy-swift, release-please]
+    needs: [ deploy-kotlin, deploy-swift]
     if: ${{ github.ref_type != 'branch' }}
     steps:
       - uses: actions/checkout@v4
