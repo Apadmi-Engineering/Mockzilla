@@ -190,7 +190,7 @@ fun MetaDataRow(
 
 @Composable
 private fun AppHeader(appName: String, appPackage: String) = Row(
-    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(12.dp)
 ) {
@@ -243,7 +243,7 @@ private fun DashedDivider() {
 
 @Preview
 @Composable
-fun MetaDataListViewPreview() = PreviewSurface(darkTheme = true) {
+fun MetaDataListViewPreview() = PreviewSurface() {
     MetaDataListView(
         state = MetaDataWidgetViewModel.State.DisplayMetaData(
             metaData = MetaData(
