@@ -32,6 +32,7 @@ jobs:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
       - run: pip install -r docs/requirements.txt
+      - run: gem install bundler
       - run: bundle install
       - run: bundle exec fastlane generate_docs
       - name: Upload artifact

@@ -99,7 +99,9 @@ jobs:
         with:
           python-version: 3.x
       - name: Setup fastlane
-        run: bundle install
+        run: |
+          gem install bundler
+          bundle install
       - name: Generate Docs
         run: |
           pip install --upgrade setuptools
