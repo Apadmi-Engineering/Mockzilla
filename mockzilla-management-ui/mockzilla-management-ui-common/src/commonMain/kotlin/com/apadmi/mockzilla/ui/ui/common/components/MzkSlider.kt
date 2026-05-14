@@ -17,7 +17,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MzkSlider(
+fun MockzillaSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
@@ -46,9 +46,9 @@ fun MzkSlider(
 
 @Preview
 @Composable
-private fun MzkSliderPreview() = PreviewSurface {
+private fun MockzillaSliderPreview() = PreviewSurface {
     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        MzkSlider(value = 0.3f, onValueChange = {})
-        MzkSlider(value = 0.7f, onValueChange = {}, enabled = false)
+        MockzillaSlider(value = 0.3f, onValueChange = {})
+        MockzillaSlider(value = 0.7f, onValueChange = {}, enabled = false)
     }
 }

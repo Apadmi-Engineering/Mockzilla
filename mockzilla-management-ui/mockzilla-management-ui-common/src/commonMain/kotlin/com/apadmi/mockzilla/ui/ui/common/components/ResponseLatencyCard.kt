@@ -131,7 +131,7 @@ internal fun ResponseLatencyCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = tokens.fg2,
             )
-            MzkSlider(
+            MockzillaSlider(
                 value = value?.toFloat() ?: 0f,
                 valueRange = 0f..sliderMax,
                 modifier = Modifier.weight(1f),
