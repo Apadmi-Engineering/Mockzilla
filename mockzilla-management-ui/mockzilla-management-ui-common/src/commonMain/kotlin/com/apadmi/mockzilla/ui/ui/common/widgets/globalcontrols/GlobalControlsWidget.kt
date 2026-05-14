@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,7 +36,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.*
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -84,9 +84,9 @@ internal fun GlobalControlsWidgetContent(
     )
 
     State.Loading -> Box(
-        modifier = Modifier.fillMaxSize().background(color = LocalMockzillaTokens.current.bg0),
+        modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.background),
     ) {
-        CircularProgressIndicator(color = LocalMockzillaTokens.current.accent)
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -100,10 +100,10 @@ internal fun GlobalControlsWidgetIdleContent(
     onLatencyChanged: (Int) -> Unit,
     onResetLatency: () -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Column(
         modifier = Modifier.fillMaxSize()
-            .background(color = tokens.bg0)
+            .background(color = colorScheme.background)
             .verticalScroll(rememberScrollState())
             .navigationBarsPadding(),
     ) {

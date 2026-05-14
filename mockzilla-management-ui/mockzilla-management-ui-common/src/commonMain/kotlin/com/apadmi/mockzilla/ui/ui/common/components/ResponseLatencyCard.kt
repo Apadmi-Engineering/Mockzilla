@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.Clock
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -61,7 +61,7 @@ internal fun ResponseLatencyCard(
     onReset: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     var value by remember(initialValue) { mutableStateOf(initialValue) }
     val updateValue = remember(initialValue) {
         { it: Int ->
@@ -74,8 +74,8 @@ internal fun ResponseLatencyCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(cardShape)
-            .background(color = tokens.bg2)
-            .border(width = 1.dp, color = tokens.line1, shape = cardShape)
+            .background(color = colorScheme.surfaceContainer)
+            .border(width = 1.dp, color = colorScheme.outline, shape = cardShape)
             .padding(start = 12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
@@ -117,7 +117,7 @@ internal fun ResponseLatencyCard(
                     modifier = Modifier.size(18.dp),
                     imageVector = Icons.Default.Restore,
                     contentDescription = strings.common.resetDescription,
-                    tint = tokens.fg2,
+                    tint = colorScheme.onSurfaceMuted,
                 )
             }
         }
@@ -130,7 +130,7 @@ internal fun ResponseLatencyCard(
                 modifier = Modifier.padding(8.dp),
                 text = strings.widgets.latency.sliderMin,
                 style = MaterialTheme.typography.bodySmall,
-                color = tokens.fg2,
+                color = colorScheme.onSurfaceMuted,
             )
             MockzillaSlider(
                 value = value?.toFloat() ?: 0f,
@@ -145,7 +145,7 @@ internal fun ResponseLatencyCard(
                         .padding(8.dp),
                     text = strings.widgets.latency.sliderMax,
                     style = MaterialTheme.typography.bodySmall,
-                    color = tokens.fg2,
+                    color = colorScheme.onSurfaceMuted,
                 )
                 Icon(
                     modifier = Modifier
@@ -154,7 +154,7 @@ internal fun ResponseLatencyCard(
                         .alpha(if ((value ?: 0) > sliderMax) 1f else 0f),
                     imageVector = Icons.Clock,
                     contentDescription = null,
-                    tint = tokens.fg2,
+                    tint = colorScheme.onSurfaceMuted,
                 )
             }
         }
@@ -168,15 +168,15 @@ private fun SquareIconButton(
     enabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     IconButton(
         onClick = onClick,
         enabled = enabled,
         modifier = Modifier
             .size(30.dp)
             .clip(RoundedCornerShape(6.dp))
-            .background(tokens.bg3)
-            .border(width = 1.dp, color = tokens.line1, shape = RoundedCornerShape(6.dp)),
+            .background(colorScheme.surfaceVariant)
+            .border(width = 1.dp, color = colorScheme.outline, shape = RoundedCornerShape(6.dp)),
         content = content,
     )
 }

@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -35,12 +35,12 @@ fun MzkCard(
     actions: @Composable (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Column(
         modifier = modifier
             .clip(cardShape)
-            .background(color = tokens.bg2)
-            .border(width = 1.dp, color = tokens.line1, shape = cardShape),
+            .background(color = colorScheme.surfaceContainer)
+            .border(width = 1.dp, color = colorScheme.outline, shape = cardShape),
     ) {
         if (title != null || titleIcon != null || actions != null) {
             Row(
@@ -55,14 +55,14 @@ fun MzkCard(
                         Text(
                             text = title,
                             style = MaterialTheme.typography.titleSmall,
-                            color = tokens.fg0,
+                            color = colorScheme.onSurface,
                         )
                     }
                     subtitle?.let {
                         Text(
                             text = subtitle,
                             style = MaterialTheme.typography.bodySmall,
-                            color = tokens.fg2,
+                            color = colorScheme.onSurfaceMuted,
                         )
                     }
                 }

@@ -45,7 +45,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonContentAlignment
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.ScaleFactor
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -155,7 +154,7 @@ private fun PresentationModeSettings(
     onPresentationModeScaleFactorChange: (Float) -> Unit,
     strings: Strings = LocalStrings.current
 ) = Column {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
 
     SectionHeader(title = strings.widgets.miscControls.presentationMode)
 
@@ -198,7 +197,7 @@ private fun PresentationModeSettings(
                         modifier = Modifier
                             .size(16.dp)
                             .clip(CircleShape)
-                            .background(tokens.accent)
+                            .background(colorScheme.primary)
                     )
                 },
                 track = { state ->
@@ -206,8 +205,8 @@ private fun PresentationModeSettings(
                         sliderState = state,
                         modifier = Modifier.height(2.dp),
                         colors = SliderDefaults.colors(
-                            activeTrackColor = tokens.accent,
-                            inactiveTrackColor = tokens.line1,
+                            activeTrackColor = colorScheme.primary,
+                            inactiveTrackColor = colorScheme.outline,
                             activeTickColor = Color.Transparent,
                             inactiveTickColor = Color.Transparent,
                         ),
