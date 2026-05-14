@@ -96,7 +96,6 @@ fun MetaDataListView(
     Spacer(modifier = Modifier.height(16.dp))
 
     SessionSection(
-        uptime = state.uptime,
         requests = state.requestCount?.toString() ?: "–",
         port = device?.port,
     )
@@ -115,7 +114,7 @@ private fun DeviceSection(metaData: MetaData, strings: Strings) = Column {
 }
 
 @Composable
-private fun SessionSection(uptime: String, requests: String, port: String?) = Column {
+private fun SessionSection(requests: String, port: String?) = Column {
     SectionHeader(title = "Session")
     val cardShape = RoundedCornerShape(8.dp)
     Box(
@@ -127,7 +126,6 @@ private fun SessionSection(uptime: String, requests: String, port: String?) = Co
             .padding(16.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            SessionRow(label = "uptime", value = uptime)
             SessionRow(label = "requests", value = requests)
             SessionRow(label = "port", value = port?.let { ":$it" } ?: "–")
         }
@@ -255,7 +253,6 @@ fun MetaDataListViewPreview() = PreviewSurface() {
                 mockzillaVersion = "3.0.0-alpha2",
                 runTarget = RunTarget.IosSimulator
             ),
-            uptime = "5m 42s",
             requestCount = 17,
         ),
         device = Device(ip = "127.0.0.1", port = "49812")

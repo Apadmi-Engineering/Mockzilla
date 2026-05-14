@@ -8,8 +8,6 @@ import com.apadmi.mockzilla.ui.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
-import com.apadmi.mockzilla.ui.utils.formatUptime
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,13 +22,11 @@ class MetaDataWidgetViewModel(
 ) : ViewModel(scope) {
     val state = MutableStateFlow<State>(State.Loading)
 
-    private var elapsedSeconds = 0
     private var latestRequestCount: Int? = null
 
     init {
         viewModelScope.launch {
             reloadData()
-            launch { tickUptime() }
             launch { pollRequests() }
         }
     }
@@ -40,14 +36,6 @@ class MetaDataWidgetViewModel(
             onSuccess = { State.DisplayMetaData(it) },
             onFailure = { State.Error }
         )
-    }
-
-    private suspend fun tickUptime() {
-        while (true) {
-            delay(1_000)
-            elapsedSeconds++
-            updateSessionStats()
-        }
     }
 
     private suspend fun pollRequests() {
@@ -63,7 +51,6 @@ class MetaDataWidgetViewModel(
     private fun updateSessionStats() {
         state.update { current ->
             (current as? State.DisplayMetaData)?.copy(
-                uptime = formatUptime(elapsedSeconds),
                 requestCount = latestRequestCount
             ) ?: current
         }
@@ -75,7 +62,6 @@ class MetaDataWidgetViewModel(
         data object Error : State()
         data class DisplayMetaData(
             val metaData: MetaData,
-            val uptime: String = "0s",
             val requestCount: Int? = null,
         ) : State()
     }
