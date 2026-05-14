@@ -60,7 +60,6 @@ data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
 
     companion object {
         const val maxFieldLength = 254
-
         private val json = Json {
             isLenient = true
             ignoreUnknownKeys = true

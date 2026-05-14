@@ -1,3 +1,4 @@
+@file:Suppress("KDOC_NO_CONSTRUCTOR_PROPERTY_WITH_COMMENT", "COMMENT_WHITE_SPACE")
 @file:OptIn(ExperimentalJsExport::class, ExperimentalWasmJsInterop::class)
 
 package com.apadmi.mockzilla.lib.internal.jsinterface
@@ -13,12 +14,14 @@ import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.lib.startMockzilla
+
 import io.ktor.http.HttpStatusCode
+
+import kotlin.js.Promise
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.await
 import kotlinx.coroutines.promise
-import kotlin.js.Promise
 
 @JsExport
 @Suppress("unused")
@@ -42,23 +45,32 @@ object JsPresetType {
     const val Success = "Success"
 }
 
+/**
+ * @property uri
+ * @property headers
+ * @property bodyAsBytes
+ * @property bodyAsString
+ */
 @JsExport
 data class JsMockzillaHttpRequest(
     val uri: String,
-    val headers: String, // JSON Encoded
+    val headers: String,
+    // JSON Encoded
     val method: String,
     val bodyAsBytes: Promise<ByteArray>,
     val bodyAsString: Promise<String>
 )
 
-fun MockzillaHttpRequest.toJs() = JsMockzillaHttpRequest(
-    uri = uri,
-    headers = JsonProvider.json.encodeToString(headers),
-    method = method.value,
-    bodyAsBytes = GlobalScope.promise { bodyAsBytes() },
-    bodyAsString = GlobalScope.promise { bodyAsString() },
-)
-
+/**
+ * @property name
+ * @property key
+ * @property shouldFail
+ * @property delay
+ * @property dashboardOptionsConfig
+ * @property versionCode
+ * @property defaultHandler
+ * @property errorHandler
+ */
 @JsExport
 data class JsEndpointConfiguration(
     val name: String,
@@ -69,83 +81,81 @@ data class JsEndpointConfiguration(
     val versionCode: Int,
     // Need to use dynamic since the JSExport annotations isn't smart enough to export the declaration
     // correctly
-    val endpointMatcher: (dynamic /* JsMockzillaHttpRequest */) -> Promise<Boolean>,
-    val defaultHandler: (dynamic /* JsMockzillaHttpRequest */) -> Promise<JsMockzillaHttpResponse>,
-    val errorHandler: (dynamic /* JsMockzillaHttpRequest */) -> Promise<JsMockzillaHttpResponse>,
+    val endpointMatcher: (dynamic/* JsMockzillaHttpRequest */) -> Promise<Boolean>,
+    val defaultHandler: (dynamic/* JsMockzillaHttpRequest */) -> Promise<JsMockzillaHttpResponse>,
+    val errorHandler: (dynamic/* JsMockzillaHttpRequest */) -> Promise<JsMockzillaHttpResponse>,
 ) {
-    internal fun fromJs(): EndpointConfiguration {
-        return EndpointConfiguration(
-            name = name,
-            key = EndpointConfiguration.Key(key),
-            shouldFail = shouldFail,
-            delay = delay,
-            dashboardOptionsConfig = dashboardOptionsConfig.fromJs(),
-            versionCode = versionCode,
-            endpointMatcher = { endpointMatcher(toJs()).await() },
-            defaultHandler = { defaultHandler(this.toJs()).await().fromJs() },
-            errorHandler = { errorHandler(this.toJs()).await().fromJs() },
-        )
-    }
+    internal fun fromJs(): EndpointConfiguration = EndpointConfiguration(
+        name = name,
+        key = EndpointConfiguration.Key(key),
+        shouldFail = shouldFail,
+        delay = delay,
+        dashboardOptionsConfig = dashboardOptionsConfig.fromJs(),
+        versionCode = versionCode,
+        endpointMatcher = { endpointMatcher(toJs()).await() },
+        defaultHandler = { defaultHandler(this.toJs()).await().fromJs() },
+        errorHandler = { errorHandler(this.toJs()).await().fromJs() },
+    )
 }
 
+/**
+ * @property presets
+ */
 @JsExport
 data class JsDashboardOptionsConfig(
     val presets: JsArray<JsDashboardOverridePreset>,
 ) {
     internal fun fromJs() = DashboardOptionsConfig(
         errorPresets = emptyList(),
-        successPresets = presets.toList().map { js ->
-            DashboardOverridePreset(
-                name = js.name,
-                description = js.description,
-                response = js.response.fromJs(),
-                type = js.type?.let {
-                    when(it) {
-                        "ClientError" -> DashboardOverridePreset.Type.ClientError
-                        "Informational" -> DashboardOverridePreset.Type.Informational
-                        "Other" -> DashboardOverridePreset.Type.Other
-                        "Redirect" -> DashboardOverridePreset.Type.Redirect
-                        "ServerError" -> DashboardOverridePreset.Type.ServerError
-                        "Success" -> DashboardOverridePreset.Type.Success
-                        else -> null
-                    }
-                }
-            )
-        }
+        successPresets = presets.toList().map { js -> js.fromJs(js) }
     )
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class.js != other::class.js) return false
+        if (this === other) {
+            return true
+        }
+        if (other == null || this::class.js != other::class.js) {
+            return false
+        }
 
         other as JsDashboardOptionsConfig
 
-        if (!presets.contentEquals(other.presets)) return false
+        if (!presets.contentEquals(other.presets)) {
+            return false
+        }
 
         return true
     }
 
-    override fun hashCode(): Int {
-        return presets.contentHashCode()
-    }
+    override fun hashCode(): Int = presets.contentHashCode()
 }
 
+/**
+ * @property name
+ * @property description
+ * @property response
+ * @property type
+ */
 @JsExport
 data class JsDashboardOverridePreset(
     val name: String,
     val description: String?,
     val response: JsPartialMockzillaHttpResponse,
     val type: String? // JsPresetType
-)
+) {
+    internal fun fromJs(js: JsDashboardOverridePreset) = DashboardOverridePreset(
+        name = js.name,
+        description = js.description,
+        response = js.response.fromJs(),
+        type = js.type?.let { DashboardOverridePreset.Type.fromString(it) }
+    )
+}
 
-fun entriesOf(jsObject: dynamic): List<Pair<String, String>> =
-    (js("Object.entries") as (dynamic) -> Array<Array<Any?>>)
-        .invoke(jsObject)
-        .map { entry -> entry[0].toString() to entry[1].toString() }
-
-fun mapFrom(jsObject: dynamic): Map<String, String> =
-    entriesOf(jsObject).toMap()
-
+/**
+ * @property statusCode
+ * @property headers
+ * @property body
+ */
 @JsExport
 data class JsMockzillaHttpResponse(
     val statusCode: Int,
@@ -159,6 +169,11 @@ data class JsMockzillaHttpResponse(
     )
 }
 
+/**
+ * @property statusCode
+ * @property headers
+ * @property body
+ */
 @JsExport
 data class JsPartialMockzillaHttpResponse(
     val statusCode: Int?,
@@ -176,13 +191,16 @@ data class JsPartialMockzillaHttpResponse(
     )
 }
 
+/**
+ * @property endpoints
+ * @property logLevel
+ */
 @OptIn(ExperimentalWasmJsInterop::class)
 @JsExport
 data class JsMockzillaConfig(
     val endpoints: JsArray<JsEndpointConfiguration>,
     val logLevel: String,
 ) {
-
     @OptIn(ExperimentalWasmJsInterop::class)
     internal fun fromJs() = MockzillaConfig(
         port = MockzillaConfig.Builder.defaultPort,
@@ -204,24 +222,36 @@ data class JsMockzillaConfig(
     )
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class.js != other::class.js) return false
+        if (this === other) {
+            return true
+        }
+        if (other == null || this::class.js != other::class.js) {
+            return false
+        }
 
         other as JsMockzillaConfig
 
-        if (!endpoints.contentEquals(other.endpoints)) return false
-        if (logLevel != other.logLevel) return false
+        if (!endpoints.contentEquals(other.endpoints)) {
+            return false
+        }
+        if (logLevel != other.logLevel) {
+            return false
+        }
 
         return true
     }
 
-    override fun hashCode(): Int {
-        var result = endpoints.contentHashCode()
-        result = 31 * result + logLevel.hashCode()
-        return result
-    }
+    override fun hashCode() = 31 * endpoints.contentHashCode() + logLevel.hashCode()
 }
 
+/**
+ * @property config
+ * @property ip
+ * @property mockBaseUrl
+ * @property apiBaseUrl
+ * @property port
+ * @property mockzillaVersion
+ */
 @JsExport
 data class JsMockzillaRuntimeParams(
     val config: JsMockzillaConfig,
@@ -232,6 +262,14 @@ data class JsMockzillaRuntimeParams(
     val mockzillaVersion: String
 )
 
+fun MockzillaHttpRequest.toJs() = JsMockzillaHttpRequest(
+    uri = uri,
+    headers = JsonProvider.json.encodeToString(headers),
+    method = method.value,
+    bodyAsBytes = GlobalScope.promise { bodyAsBytes() },
+    bodyAsString = GlobalScope.promise { bodyAsString() },
+)
+
 fun MockzillaRuntimeParams.toJs(config: JsMockzillaConfig) = JsMockzillaRuntimeParams(
     config = config,
     ip = ip,
@@ -240,6 +278,14 @@ fun MockzillaRuntimeParams.toJs(config: JsMockzillaConfig) = JsMockzillaRuntimeP
     port = port,
     mockzillaVersion = mockzillaVersion
 )
+
+fun entriesOf(jsObject: dynamic): List<Pair<String, String>> =
+    (js("Object.entries") as (dynamic) -> Array<Array<Any?>>)
+        .invoke(jsObject)
+        .map { entry -> entry[0].toString() to entry[1].toString() }
+
+fun mapFrom(jsObject: dynamic): Map<String, String> =
+    entriesOf(jsObject).toMap()
 
 @OptIn(DelicateCoroutinesApi::class)
 @JsExport

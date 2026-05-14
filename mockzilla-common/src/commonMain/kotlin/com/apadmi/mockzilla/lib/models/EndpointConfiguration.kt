@@ -313,5 +313,17 @@ data class DashboardOverridePreset(
         ServerError,
         Success,
         ;
+
+        companion object {
+            fun fromString(str: String) = when (str) {
+                "ClientError" -> ClientError
+                "Informational" -> Informational
+                "Other" -> Other
+                "Redirect" -> Redirect
+                "ServerError" -> ServerError
+                "Success" -> Success
+                else -> null
+            }
+        }
     }
 }

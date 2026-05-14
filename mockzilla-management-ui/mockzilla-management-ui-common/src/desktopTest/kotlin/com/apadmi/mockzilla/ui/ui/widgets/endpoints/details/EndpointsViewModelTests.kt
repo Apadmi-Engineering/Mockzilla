@@ -29,22 +29,19 @@ class EndpointsViewModelTests : CoroutineTest() {
                 key = EndpointConfiguration.Key("Key1"),
                 name = "Name1",
                 fail = false,
-                overriddenProperties = emptyList(),
-                display = true
+                overriddenProperties = emptyList()
             ),
             State.EndpointConfig(
                 key = EndpointConfiguration.Key("Key2"),
                 name = "Name2",
                 fail = true,
-                overriddenProperties = emptyList(),
-                display = true
+                overriddenProperties = emptyList()
             ),
             State.EndpointConfig(
                 key = EndpointConfiguration.Key("Key3"),
                 name = "Name3",
                 fail = true,
-                overriddenProperties = listOf(EndpointProperties.Delay),
-                display = true
+                overriddenProperties = listOf(EndpointProperties.Delay)
             )
         ),
         filter = ""
@@ -119,44 +116,63 @@ class EndpointsViewModelTests : CoroutineTest() {
             sut.onFilterChanged("Name2")
             val result2 = awaitItem()
 
-            sut.onFilterChanged("Name4")
+            sut.onFilterChanged("asdf")
             val result3 = awaitItem()
 
             sut.onFilterChanged("")
             val result4 = awaitItem()
 
+            sut.onFilterChanged("me2")
+            val result5 = awaitItem()
+
             /* Verify */
             assertEquals(
-                defaultEndpointList.copy(
-                    endpoints = defaultEndpointList.endpoints.mapIndexed { index, value ->
-                        value.copy(display = index == 0)
-                    },
-                    filter = "Name1"
+                listOf(
+                    defaultEndpointList.endpoints[0],
+                    defaultEndpointList.endpoints[1],
+                    defaultEndpointList.endpoints[2],
                 ),
-                (result1 as State.EndpointsList)
+                (result1 as State.EndpointsList).endpoints
+            )
+            assertEquals(
+                "Name1",
+                result1.filter
             )
 
             assertEquals(
-                defaultEndpointList.copy(
-                    endpoints = defaultEndpointList.endpoints.mapIndexed { index, value ->
-                        value.copy(display = index == 1)
-                    },
-                    filter = "Name2"
+                listOf(
+                    defaultEndpointList.endpoints[1],
+                    defaultEndpointList.endpoints[0],
+                    defaultEndpointList.endpoints[2],
                 ),
-                (result2 as State.EndpointsList)
+                (result2 as State.EndpointsList).endpoints
+            )
+            assertEquals(
+                "Name2",
+                result2.filter
             )
 
             assertEquals(
-                defaultEndpointList.copy(
-                    endpoints = defaultEndpointList.endpoints.map {
-                        it.copy(display = false)
-                    },
-                    filter = "Name4"
-                ),
-                (result3 as State.EndpointsList)
+                listOf(),
+                (result3 as State.EndpointsList).endpoints
+            )
+            assertEquals(
+                "asdf",
+                result3.filter
             )
 
             assertEquals(defaultEndpointList, (result4 as State.EndpointsList))
+
+            assertEquals(
+                listOf(
+                    defaultEndpointList.endpoints[1],
+                ),
+                (result5 as State.EndpointsList).endpoints
+            )
+            assertEquals(
+                "me2",
+                result5.filter
+            )
         }
     }
 }

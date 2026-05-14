@@ -23,7 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.CircleCheck
@@ -34,7 +36,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
 import com.apadmi.mockzilla.ui.ui.common.theme.partialFailure
 import com.apadmi.mockzilla.ui.ui.common.theme.success
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val overlayAlpha = 0.1f
 
