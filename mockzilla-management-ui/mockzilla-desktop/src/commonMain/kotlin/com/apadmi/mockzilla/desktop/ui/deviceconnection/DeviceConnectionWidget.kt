@@ -479,7 +479,7 @@ private fun DiscoveredDeviceRow(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
                         modifier = Modifier.weight(1f),
                     ) {
                         Text(
@@ -495,6 +495,7 @@ private fun DiscoveredDeviceRow(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
+
                         DeviceMetaLine(
                             device.metaData?.let { "${it.appName} · ${it.appPackage}" }
                                 ?: "${device.hostAddress}:${device.port}",
@@ -503,6 +504,8 @@ private fun DiscoveredDeviceRow(
                             DeviceMetaLine("${it.operatingSystemVersion} · ${it.deviceModel}")
                         }
                     }
+
+                    Spacer(modifier = Modifier.width(32.dp))
 
                     if (device.state == DetectedDevice.State.Resolving) {
                         CircularProgressIndicator(Modifier.size(32.dp))
