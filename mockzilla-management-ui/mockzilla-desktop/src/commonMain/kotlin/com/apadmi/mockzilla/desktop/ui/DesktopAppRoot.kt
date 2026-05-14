@@ -102,7 +102,7 @@ fun DesktopApp(
                     modifier = Modifier.fillMaxWidth()
                 )
             },
-            left = leftPanelWidgets(state, strings),
+            left = leftPanelWidgets(state),
             right = rightWidgets,
             middle = middleWidgets(
                 state, openWidgets, onCloseEditor = {
@@ -241,7 +241,6 @@ private fun rightPanelWidgets(
 
 private fun leftPanelWidgets(
     state: AppRootViewModel.State,
-    @Suppress("UNUSED_PARAMETER") strings: Strings
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
     listOf(
         Widget(id = "device-panel") {
