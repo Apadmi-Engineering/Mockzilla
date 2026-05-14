@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -101,6 +102,60 @@ fun MetaDataListView(
     )
 }
 
+@Composable
+fun MetaDataRow(
+    label: String,
+    value: String,
+    showDivider: Boolean = true
+) = Column(modifier = Modifier.padding(horizontal = 4.dp)) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Start,
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        )
+        Text(
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Start,
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+    if (showDivider) {
+        DashedDivider()
+    }
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
+
+@Suppress("COMPLEX_EXPRESSION")
+@Preview
+@Composable
+fun MetaDataListViewPreview() = PreviewSurface() {
+    MetaDataListView(
+        state = MetaDataWidgetViewModel.State.DisplayMetaData(
+            metaData = MetaData(
+                appName = "Runner",
+                appPackage = "uk.co.homeserve.pega.sus.internal",
+                operatingSystemVersion = "Version 18.5 (Build 22F77)",
+                deviceModel = "iPhone 16 Plus",
+                appVersion = "999.999.1",
+                mockzillaVersion = "3.0.0-alpha2",
+                runTarget = RunTarget.IosSimulator
+            ),
+            requestCount = 17,
+        ),
+        device = Device(ip = "127.0.0.1", port = "49812")
+    )
+}
+
 // ── Sections ─────────────────────────────────────────────────────────────────
 
 @Composable
@@ -113,6 +168,7 @@ private fun DeviceSection(metaData: MetaData, strings: Strings) = Column {
     MetaDataRow(strings.widgets.metaData.mockzillaVersion, metaData.mockzillaVersion)
 }
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 private fun SessionSection(requests: String, port: String?) = Column {
     SectionHeader(title = "Session")
@@ -151,37 +207,6 @@ private fun SessionRow(label: String, value: String) = Row(
         fontFamily = FontFamily.Monospace,
         color = MaterialTheme.colorScheme.onSurface
     )
-}
-
-@Composable
-fun MetaDataRow(
-    label: String,
-    value: String,
-    showDivider: Boolean = true
-) = Column(modifier = Modifier.padding(horizontal = 4.dp)) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Start,
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-        )
-        Text(
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Start,
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-    }
-    if (showDivider) {
-        DashedDivider()
-    }
 }
 
 // ── App header ────────────────────────────────────────────────────────────────
@@ -224,37 +249,17 @@ private fun AppHeader(appName: String, appPackage: String) = Row(
 
 // ── Primitives ────────────────────────────────────────────────────────────────
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 private fun DashedDivider() {
+    val dividerColor = Color.Gray.copy(alpha = 0.25f)
     Canvas(modifier = Modifier.fillMaxWidth().height(1.dp)) {
         drawLine(
-            color = androidx.compose.ui.graphics.Color.Gray.copy(alpha = 0.25f),
+            color = dividerColor,
             start = Offset(0f, size.height / 2),
             end = Offset(size.width, size.height / 2),
             strokeWidth = 1.dp.toPx(),
             pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 8f), 0f)
         )
     }
-}
-
-// ── Preview ───────────────────────────────────────────────────────────────────
-
-@Preview
-@Composable
-fun MetaDataListViewPreview() = PreviewSurface() {
-    MetaDataListView(
-        state = MetaDataWidgetViewModel.State.DisplayMetaData(
-            metaData = MetaData(
-                appName = "Runner",
-                appPackage = "uk.co.homeserve.pega.sus.internal",
-                operatingSystemVersion = "Version 18.5 (Build 22F77)",
-                deviceModel = "iPhone 16 Plus",
-                appVersion = "999.999.1",
-                mockzillaVersion = "3.0.0-alpha2",
-                runTarget = RunTarget.IosSimulator
-            ),
-            requestCount = 17,
-        ),
-        device = Device(ip = "127.0.0.1", port = "49812")
-    )
 }

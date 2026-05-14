@@ -21,7 +21,6 @@ class MetaDataWidgetViewModel(
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
     val state = MutableStateFlow<State>(State.Loading)
-
     private var latestRequestCount: Int? = null
 
     init {
@@ -66,4 +65,3 @@ class MetaDataWidgetViewModel(
         ) : State()
     }
 }
-

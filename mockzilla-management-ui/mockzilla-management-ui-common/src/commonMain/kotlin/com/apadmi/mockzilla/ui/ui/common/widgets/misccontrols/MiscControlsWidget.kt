@@ -2,7 +2,6 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Restore
@@ -34,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -140,6 +137,15 @@ fun MiscControlsWidgetContent(
     )
 }
 
+@Preview
+@Composable
+fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
+    MiscControlsWidgetContent(
+        onRefreshAll = {},
+        onClearAllOverrides = {}
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PresentationModeSettings(
@@ -216,13 +222,4 @@ private fun PresentationModeSettings(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
-    MiscControlsWidgetContent(
-        onRefreshAll = {},
-        onClearAllOverrides = {}
-    )
 }

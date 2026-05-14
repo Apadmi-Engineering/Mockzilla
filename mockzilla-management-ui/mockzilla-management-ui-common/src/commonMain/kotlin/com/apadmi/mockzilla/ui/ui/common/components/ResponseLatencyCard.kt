@@ -48,9 +48,10 @@ private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
 
 @Suppress("MAGIC_NUMBER")
 private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
-private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
+@Suppress("MAGIC_NUMBER")
 private val cardShape = RoundedCornerShape(10.dp)
+private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
 @Composable
 internal fun ResponseLatencyCard(

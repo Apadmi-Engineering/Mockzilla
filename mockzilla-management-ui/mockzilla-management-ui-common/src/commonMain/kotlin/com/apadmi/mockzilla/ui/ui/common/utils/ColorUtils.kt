@@ -26,7 +26,9 @@ fun HttpStatusCode.colorFor(tokens: MockzillaTokens): Color = when (this.value) 
     else -> tokens.fg2
 }
 
-/** Non-composable variant for use in Canvas draw scopes. Uses dark-theme defaults. */
+/** Non-composable variant for use in Canvas draw scopes. Uses dark-theme defaults.
+ *
+ * @return*/
 @Suppress("MAGIC_NUMBER")
 fun HttpStatusCode.colorStatic(): Color = when (this.value) {
     in 100..199 -> dark_info

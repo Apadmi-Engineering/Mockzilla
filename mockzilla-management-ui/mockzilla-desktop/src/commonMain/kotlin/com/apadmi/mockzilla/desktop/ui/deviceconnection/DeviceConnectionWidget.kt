@@ -67,6 +67,9 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+private const val compactLayoutBreakpointDp = 1100
+private const val compactMaxWidthDp = 720
+
 private fun DetectedDevice.State.toolTipText(strings: Strings) = when (this) {
     DetectedDevice.State.NotYourSimulator -> strings.widgets.deviceConnection.tooltips.notYourSimulator
     DetectedDevice.State.ReadyToConnect -> strings.widgets.deviceConnection.tooltips.readyToConnect
@@ -95,7 +98,6 @@ fun DeviceConnectionWidget() {
     )
 }
 
-
 @Composable
 fun DeviceConnectionContent(
     state: State,
@@ -111,11 +113,9 @@ fun DeviceConnectionContent(
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
-
-        val isCompact =  maxWidth < 1100.dp
+        val isCompact = maxWidth < compactLayoutBreakpointDp.dp
 
         if (isCompact) {
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -123,8 +123,7 @@ fun DeviceConnectionContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-
-                val compactWidth = 720.dp
+                val compactWidth = compactMaxWidthDp.dp
 
                 Box(
                     modifier = Modifier
@@ -150,9 +149,7 @@ fun DeviceConnectionContent(
                     )
                 }
             }
-
         } else {
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth(0.75f)
@@ -194,7 +191,6 @@ private fun ProductIntro(strings: Strings) {
         modifier = Modifier
             .widthIn(max = 620.dp)
     ) {
-
         Box(
             modifier = Modifier
                 .size(76.dp)
@@ -281,7 +277,7 @@ private fun ConnectionCard(
                 ),
             )
             Text(
-                text = strings.widgets.deviceConnection.promptToEnterIP,
+                text = strings.widgets.deviceConnection.promptToEnterIp,
                 color = tokens.fg1,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -347,7 +343,7 @@ private fun ConnectionCard(
                 )
                 SolidButton(
                     modifier = Modifier.height(32.dp)
-                    .align(Alignment.CenterVertically),
+                        .align(Alignment.CenterVertically),
                     label = strings.widgets.deviceConnection.connect,
                     onClick = onConnect,
                     contentPadding = PaddingValues(
@@ -411,11 +407,11 @@ private fun DiscoveredDevicesSection(
         ) {
             itemsIndexed(devices, key = { _, device -> device.connectionName }) { _, device ->
 
-                    DiscoveredDeviceRow(
-                        device = device,
-                        onTapDevice = onTapDevice,
-                        strings = strings,
-                    )
+                DiscoveredDeviceRow(
+                    device = device,
+                    onTapDevice = onTapDevice,
+                    strings = strings,
+                )
             }
         }
     }
@@ -441,7 +437,6 @@ private fun DiscoveredDeviceRow(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-
             Box(
                 modifier = Modifier
                     .height(88.dp)
@@ -463,62 +458,62 @@ private fun DiscoveredDeviceRow(
                     .padding(end = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                    StandardTextTooltip(text = device.state.toolTipText(strings)) {
-                        Surface(
-                            modifier = Modifier.size(16.dp),
-                            shape = CircleShape,
-                            color = statusColor.copy(alpha = 0.16f),
-                        ) {
-                            Canvas(
-                                modifier = Modifier.padding(3.5.dp),
-                                onDraw = { drawCircle(color = statusColor) },
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                        modifier = Modifier.weight(1f),
+                StandardTextTooltip(text = device.state.toolTipText(strings)) {
+                    Surface(
+                        modifier = Modifier.size(16.dp),
+                        shape = CircleShape,
+                        color = statusColor.copy(alpha = 0.16f),
                     ) {
-                        Text(
-                            text = if (device.connectionName.length > 25) {
-                                device.connectionName.take(22) +  strings.widgets.deviceConnection.dot
-                            } else {
-                                device.connectionName
-                            },
-                            color = tokens.fg0,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.ExtraBold,
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-
-                        DeviceMetaLine(
-                            device.metaData?.let { "${it.appName} · ${it.appPackage}" }
-                                ?: "${device.hostAddress}:${device.port}",
-                        )
-                        device.metaData?.also {
-                            DeviceMetaLine("${it.operatingSystemVersion} · ${it.deviceModel}")
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.width(32.dp))
-
-                    if (device.state == DetectedDevice.State.Resolving) {
-                        CircularProgressIndicator(Modifier.size(32.dp))
-                    } else {
-                        SolidButton(
-                            modifier = Modifier.width(132.dp).height(32.dp),
-                            onClick = { onTapDevice(device) },
-                            leadingIcon = Icons.Outlined.Power,
-                            label = strings.widgets.deviceConnection.autoConnectButton,
+                        Canvas(
+                            modifier = Modifier.padding(3.5.dp),
+                            onDraw = { drawCircle(color = statusColor) },
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(
+                        text = if (device.connectionName.length > 25) {
+                            device.connectionName.take(22) + strings.widgets.deviceConnection.dot
+                        } else {
+                            device.connectionName
+                        },
+                        color = tokens.fg0,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+
+                    DeviceMetaLine(
+                        device.metaData?.let { "${it.appName} · ${it.appPackage}" }
+                            ?: "${device.hostAddress}:${device.port}",
+                    )
+                    device.metaData?.also {
+                        DeviceMetaLine("${it.operatingSystemVersion} · ${it.deviceModel}")
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(32.dp))
+
+                if (device.state == DetectedDevice.State.Resolving) {
+                    CircularProgressIndicator(Modifier.size(32.dp))
+                } else {
+                    SolidButton(
+                        modifier = Modifier.width(132.dp).height(32.dp),
+                        onClick = { onTapDevice(device) },
+                        leadingIcon = Icons.Outlined.Power,
+                        label = strings.widgets.deviceConnection.autoConnectButton,
+                    )
+                }
             }
+        }
     }
 }
 
@@ -535,7 +530,6 @@ private fun DeviceMetaLine(text: String) {
     )
 }
 
-
 @Composable
 private fun BulletItem(
     icon: ImageVector,
@@ -545,7 +539,6 @@ private fun BulletItem(
         modifier = Modifier.padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Icon(
             imageVector = icon,
             contentDescription = null,
@@ -562,7 +555,6 @@ private fun BulletItem(
         )
     }
 }
-
 
 @Preview(
     name = "Medium Tablet",

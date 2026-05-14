@@ -4,7 +4,6 @@ package com.apadmi.mockzilla.ui.i18n
 
 import cafe.adriel.lyricist.LyricistStrings
 import io.ktor.http.HttpStatusCode
-import kotlin.String
 import kotlin.math.roundToInt
 
 @LyricistStrings(languageTag = "En", default = true)
@@ -18,7 +17,7 @@ val EnStrings = Strings(
     ),
     widgets = Strings.Widgets(
         deviceConnection = Strings.Widgets.DeviceConnection(
-            title =  "Mockzilla",
+            title = "Mockzilla",
             subTile = "Dynamic mock server configuration for Android\n& iOS development",
             bullet1 = "Intercept HTTP at runtime",
             bullet2 = "Switch presets on the fly",
@@ -44,7 +43,7 @@ val EnStrings = Strings(
             ),
             ipAndPort = "127.0.0.1:8080",
             networkConnection = "MANUAL CONNECTION",
-            promptToEnterIP = "Enter the IP address and port of the device running your app",
+            promptToEnterIp = "Enter the IP address and port of the device running your app",
             connectAutomatically = "or connect automatically",
             discoveredNetwork = "DISCOVERED ON NETWORK",
             scanning = "scanning...",

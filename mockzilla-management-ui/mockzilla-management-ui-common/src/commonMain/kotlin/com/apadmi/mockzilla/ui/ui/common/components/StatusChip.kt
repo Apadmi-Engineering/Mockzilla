@@ -1,16 +1,15 @@
 package com.apadmi.mockzilla.ui.ui.common.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,9 +21,20 @@ import com.apadmi.mockzilla.ui.ui.common.theme.MockzillaTokens
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-enum class ChipTone { Ok, Warn, Err, Accent, Info, Neutral }
+enum class ChipTone {
+    Accent, Err, Info, Neutral, Ok, Warn
+}
 
-private data class ChipColors(val border: Color, val background: Color, val text: Color)
+/**
+ * @property border
+ * @property background
+ * @property text
+ */
+private data class ChipColors(
+    val border: Color,
+    val background: Color,
+    val text: Color
+)
 
 private fun MockzillaTokens.chipColors(tone: ChipTone) = when (tone) {
     ChipTone.Ok -> ChipColors(ok, okSoft, ok)

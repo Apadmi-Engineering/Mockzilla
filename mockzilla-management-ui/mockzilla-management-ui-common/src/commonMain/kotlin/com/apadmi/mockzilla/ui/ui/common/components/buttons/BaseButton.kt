@@ -34,9 +34,15 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-enum class ButtonVariant { Ghost, Outline, Solid, Soft, Danger }
-enum class ButtonSize { Sm, Md, Lg }
-enum class ButtonContentAlignment { Start, Center }
+enum class ButtonVariant {
+    Danger, Ghost, Outline, Soft, Solid
+}
+enum class ButtonSize {
+    Lg, Md, Sm
+}
+enum class ButtonContentAlignment {
+    Center, Start
+}
 
 @Suppress("MAGIC_NUMBER")
 @Composable

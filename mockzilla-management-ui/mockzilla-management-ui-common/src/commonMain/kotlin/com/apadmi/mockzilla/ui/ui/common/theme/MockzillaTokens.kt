@@ -3,25 +3,76 @@ package com.apadmi.mockzilla.ui.ui.common.theme
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 
+@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
+val LocalMockzillaTokens = compositionLocalOf { MockzillaTokens.Dark }
+
+/**
+ * @property bg0 Background layers (0 = deepest, 4 = strongest surface)
+ * @property bg1
+ * @property bg2
+ * @property bg3
+ * @property bg4
+ * @property bg5
+ * @property fg0 Foreground / text
+ * @property fg1
+ * @property fg2
+ * @property fg3
+ * @property line1 Borders
+ * @property line2
+ * @property accent Interactive accent
+ * @property accent2
+ * @property accentFg
+ * @property accentSoft
+ * @property ok Semantic status
+ * @property okSoft
+ * @property warn
+ * @property warnSoft
+ * @property err
+ * @property errSoft
+ * @property info
+ * @property infoSoft
+ * @property methodGet HTTP method colours
+ * @property methodPost
+ * @property methodPut
+ * @property methodPatch
+ * @property methodDelete
+ * @property methodOther
+ */
 data class MockzillaTokens(
-    // Background layers (0 = deepest, 4 = strongest surface)
-    val bg0: Color, val bg1: Color, val bg2: Color, val bg3: Color, val bg4: Color, val bg5: Color,
-    // Foreground / text
-    val fg0: Color, val fg1: Color, val fg2: Color, val fg3: Color,
-    // Borders
-    val line1: Color, val line2: Color,
-    // Interactive accent
-    val accent: Color, val accent2: Color, val accentFg: Color, val accentSoft: Color,
-    // Semantic status
-    val ok: Color, val okSoft: Color,
-    val warn: Color, val warnSoft: Color,
-    val err: Color, val errSoft: Color,
-    val info: Color, val infoSoft: Color,
-    // HTTP method colours
-    val methodGet: Color, val methodPost: Color, val methodPut: Color,
-    val methodPatch: Color, val methodDelete: Color, val methodOther: Color,
+    val bg0: Color,
+    val bg1: Color,
+    val bg2: Color,
+    val bg3: Color,
+    val bg4: Color,
+    val bg5: Color,
+    val fg0: Color,
+    val fg1: Color,
+    val fg2: Color,
+    val fg3: Color,
+    val line1: Color,
+    val line2: Color,
+    val accent: Color,
+    val accent2: Color,
+    val accentFg: Color,
+    val accentSoft: Color,
+    val ok: Color,
+    val okSoft: Color,
+    val warn: Color,
+    val warnSoft: Color,
+    val err: Color,
+    val errSoft: Color,
+    val info: Color,
+    val infoSoft: Color,
+    val methodGet: Color,
+    val methodPost: Color,
+    val methodPut: Color,
+    val methodPatch: Color,
+    val methodDelete: Color,
+    val methodOther: Color,
 ) {
+    @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
     companion object {
+        @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
         val Dark = MockzillaTokens(
             bg0 = dark_bg0, bg1 = dark_bg1, bg2 = dark_bg2, bg3 = dark_bg3, bg4 = dark_bg4, bg5 = dark_bg5,
             fg0 = dark_fg0, fg1 = dark_fg1, fg2 = dark_fg2, fg3 = dark_fg3,
@@ -35,6 +86,7 @@ data class MockzillaTokens(
             methodPatch = method_patch, methodDelete = method_delete, methodOther = method_other,
         )
 
+        @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
         val Light = MockzillaTokens(
             bg0 = light_bg0, bg1 = light_bg1, bg2 = light_bg2, bg3 = light_bg3, bg4 = light_bg4, bg5 = light_bg5,
             fg0 = light_fg0, fg1 = light_fg1, fg2 = light_fg2, fg3 = light_fg3,
@@ -49,6 +101,3 @@ data class MockzillaTokens(
         )
     }
 }
-
-@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-val LocalMockzillaTokens = compositionLocalOf { MockzillaTokens.Dark }
