@@ -47,13 +47,6 @@ dokka {
     }
 }
 
-dependencies {
-    dokka(project(":mockzilla"))
-    dokka(project(":mockzilla-common"))
-    dokka(project(":mockzilla-management"))
-    dokka(project(":mockzilla-management-ui"))
-}
-
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
     kotlin {
