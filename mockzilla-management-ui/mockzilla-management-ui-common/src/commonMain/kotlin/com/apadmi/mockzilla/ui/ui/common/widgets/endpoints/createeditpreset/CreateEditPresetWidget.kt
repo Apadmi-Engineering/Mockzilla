@@ -63,7 +63,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.Crea
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.components.EditResponseBody
 
 import io.ktor.http.HttpStatusCode
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 @Composable

@@ -26,7 +26,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.theme_accent
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_background_dark
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_success
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SolidButton(

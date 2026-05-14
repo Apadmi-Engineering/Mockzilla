@@ -35,7 +35,7 @@ import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.State.*
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning_background
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 private fun Connected.ErrorBannerState.bannerText(strings: Strings): String =
     when (this) {

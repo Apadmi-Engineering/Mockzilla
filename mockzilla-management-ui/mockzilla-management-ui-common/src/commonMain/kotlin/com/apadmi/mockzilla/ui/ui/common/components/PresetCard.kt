@@ -53,7 +53,7 @@ import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
 import com.apadmi.mockzilla.ui.ui.common.theme.httpStatus_fallback
 import com.apadmi.mockzilla.ui.ui.common.utils.color
 import io.ktor.http.HttpStatusCode
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 private const val intervalDp = 6
 private const val strokeAlpha = 0.3f

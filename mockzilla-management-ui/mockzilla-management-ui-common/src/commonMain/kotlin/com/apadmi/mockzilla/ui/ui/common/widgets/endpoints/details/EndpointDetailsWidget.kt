@@ -43,7 +43,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetai
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.ActivePresetCard
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
 
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 @Composable
