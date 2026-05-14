@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.conveyor)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dokka) apply true
 }
 
 val artifactName = "mockzilla-management-ui"
