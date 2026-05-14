@@ -5,6 +5,7 @@ import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MetaDataUseCase
+import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
 import com.apadmi.mockzilla.ui.engine.device.StatefulDevice
 import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidgetViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidgetViewModel.*
@@ -21,12 +22,16 @@ class MetaDataViewModelTests : CoroutineTest() {
     @RelaxedMockK
     lateinit var metaDataUseCaseMock: MetaDataUseCase
 
+    @RelaxedMockK
+    lateinit var monitorLogsUseCaseMock: MonitorLogsUseCase
+
     @Test
     fun `getMetaData - state=DisplayMetaData`() = runBlockingTest {
         /* Setup */
         coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device, false) }
             .returns(Result.success(MetaData.dummy()))
-        val sut = MetaDataWidgetViewModel(Device.dummy(), metaDataUseCaseMock, backgroundScope)
+        coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
+        val sut = MetaDataWidgetViewModel(Device.dummy(), metaDataUseCaseMock, monitorLogsUseCaseMock, backgroundScope)
 
         /* Run Test */
         sut.state.test {
@@ -40,8 +45,9 @@ class MetaDataViewModelTests : CoroutineTest() {
     fun `getMetaData - network call fails - state=NoDeviceConnected`() = runBlockingTest {
         /* Setup */
         coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(Result.failure(Exception()))
+        coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
 
-        val sut = MetaDataWidgetViewModel(Device.dummy(), metaDataUseCaseMock, backgroundScope)
+        val sut = MetaDataWidgetViewModel(Device.dummy(), metaDataUseCaseMock, monitorLogsUseCaseMock, backgroundScope)
 
         /* Run Test */
         sut.state.test {

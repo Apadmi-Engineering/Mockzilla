@@ -23,95 +23,6 @@ import androidx.compose.ui.unit.Density
 import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
 import com.apadmi.mockzilla.ui.utils.Platform
 
-private val lightColors = lightColorScheme(
-    primary = md_theme_light_primary,
-    onPrimary = md_theme_light_onPrimary,
-    primaryContainer = md_theme_light_primaryContainer,
-    onPrimaryContainer = md_theme_light_onPrimaryContainer,
-    secondary = md_theme_light_secondary,
-    onSecondary = md_theme_light_onSecondary,
-    secondaryContainer = md_theme_light_secondaryContainer,
-    onSecondaryContainer = md_theme_light_onSecondaryContainer,
-    tertiary = md_theme_light_tertiary,
-    onTertiary = md_theme_light_onTertiary,
-    tertiaryContainer = md_theme_light_tertiaryContainer,
-    onTertiaryContainer = md_theme_light_onTertiaryContainer,
-    error = md_theme_light_error,
-    errorContainer = md_theme_light_errorContainer,
-    onError = md_theme_light_onError,
-    onErrorContainer = md_theme_light_onErrorContainer,
-    background = md_theme_light_background,
-    onBackground = md_theme_light_onBackground,
-    surface = md_theme_light_surface,
-    surfaceContainer = md_theme_light_surface_container,
-    onSurface = md_theme_light_onSurface,
-    surfaceVariant = md_theme_light_surfaceVariant,
-    onSurfaceVariant = md_theme_light_onSurfaceVariant,
-    outline = md_theme_light_outline,
-    inverseOnSurface = md_theme_light_inverseOnSurface,
-    inverseSurface = md_theme_light_inverseSurface,
-    inversePrimary = md_theme_light_inversePrimary,
-    surfaceTint = md_theme_light_surfaceTint,
-    outlineVariant = md_theme_light_outlineVariant,
-    scrim = md_theme_light_scrim,
-)
-
-private val darkColors = darkColorScheme(
-    primary = md_theme_dark_primary,
-    onPrimary = md_theme_dark_onPrimary,
-    primaryContainer = md_theme_dark_primaryContainer,
-    onPrimaryContainer = md_theme_dark_onPrimaryContainer,
-    secondary = md_theme_dark_secondary,
-    onSecondary = md_theme_dark_onSecondary,
-    secondaryContainer = md_theme_dark_secondaryContainer,
-    onSecondaryContainer = md_theme_dark_onSecondaryContainer,
-    tertiary = md_theme_dark_tertiary,
-    onTertiary = md_theme_dark_onTertiary,
-    tertiaryContainer = md_theme_dark_tertiaryContainer,
-    onTertiaryContainer = md_theme_dark_onTertiaryContainer,
-    error = md_theme_dark_error,
-    errorContainer = md_theme_dark_errorContainer,
-    onError = md_theme_dark_onError,
-    onErrorContainer = md_theme_dark_onErrorContainer,
-    background = md_theme_dark_background,
-    onBackground = md_theme_dark_onBackground,
-    surface = md_theme_dark_surface,
-    onSurface = md_theme_dark_onSurface,
-    surfaceVariant = md_theme_dark_surfaceVariant,
-    onSurfaceVariant = md_theme_dark_onSurfaceVariant,
-    outline = md_theme_dark_outline,
-    inverseOnSurface = md_theme_dark_inverseOnSurface,
-    inverseSurface = md_theme_dark_inverseSurface,
-    inversePrimary = md_theme_dark_inversePrimary,
-    surfaceTint = md_theme_dark_surfaceTint,
-    outlineVariant = md_theme_dark_outlineVariant,
-    scrim = md_theme_dark_scrim,
-)
-
-@get:Composable
-val ColorScheme.success get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
-    true -> StateColors(
-        primary = Color(0xFF_00_E6_5F),
-        container = Color(0xFF_00_82_36).copy(alpha = 0.1f),
-    )
-    false -> StateColors(
-        primary = Color(0xFF_00_82_36),
-        container = Color(0xFF_00_82_36).copy(alpha = 0.1f),
-    )
-}
-
-@get:Composable
-val ColorScheme.partialFailure get() = when (LocalForceDarkMode.current || isSystemInDarkTheme()) {
-    true -> StateColors(
-        primary = Color(0xFF_F0_90_00),
-        container = Color(0xFF_D1_65_00).copy(alpha = 0.1f),
-    )
-    false -> StateColors(
-        primary = Color(0xFF_D1_65_00),
-        container = Color(0xFF_D1_65_00).copy(alpha = 0.1f),
-    )
-}
-
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalForceDarkMode = compositionLocalOf { false }
 
@@ -151,21 +62,22 @@ fun AppTheme(
     useDarkTheme: Boolean = LocalForceDarkMode.current || isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (useDarkTheme) {
-        darkColors
-    } else {
-        lightColors
-    }
-
+    val tokens = if (useDarkTheme) MockzillaTokens.Dark else MockzillaTokens.Light
+    val colorScheme = if (useDarkTheme) buildDarkColorScheme(tokens) else buildLightColorScheme(tokens)
+    val uiFont = mockzillaFontFamily()
+    val monoFont = mockzillaMonoFontFamily()
     var scaleFactor by rememberSaveable { mutableFloatStateOf(ScaleFactor.default) }
     ProvideLocalisableStrings {
         CompositionLocalProvider(
+            LocalMockzillaTokens provides tokens,
+            LocalMonoFontFamily provides monoFont,
             LocalSetScaleFactor provides { scale -> scaleFactor = scale },
         ) {
             ScaledDensity(scaleFactor = scaleFactor) {
                 MaterialTheme(
-                    colorScheme = colors,
-                    content = content
+                    colorScheme = colorScheme,
+                    typography = mockzillaTypography(uiFont),
+                    content = content,
                 )
             }
         }
@@ -177,7 +89,71 @@ fun ScaledDensity(scaleFactor: Float, content: @Composable () -> Unit) {
     val currentDensity = LocalDensity.current
     val scaledDensity = Density(
         density = currentDensity.density * scaleFactor,
-        fontScale = currentDensity.fontScale * scaleFactor
+        fontScale = currentDensity.fontScale * scaleFactor,
     )
     CompositionLocalProvider(LocalDensity provides scaledDensity, content = content)
 }
+
+private fun buildDarkColorScheme(tokens: MockzillaTokens): ColorScheme = darkColorScheme(
+    primary = tokens.accent,
+    onPrimary = tokens.accentFg,
+    primaryContainer = tokens.accentSoft,
+    onPrimaryContainer = tokens.fg0,
+    secondary = tokens.accent,
+    onSecondary = tokens.accentFg,
+    secondaryContainer = tokens.bg3,
+    onSecondaryContainer = tokens.fg0,
+    tertiary = tokens.info,
+    onTertiary = tokens.bg0,
+    tertiaryContainer = tokens.infoSoft,
+    onTertiaryContainer = tokens.fg0,
+    error = tokens.err,
+    errorContainer = tokens.errSoft,
+    onError = tokens.bg0,
+    onErrorContainer = tokens.err,
+    background = tokens.bg0,
+    onBackground = tokens.fg0,
+    surface = tokens.bg1,
+    onSurface = tokens.fg0,
+    surfaceVariant = tokens.bg3,
+    surfaceContainer = tokens.bg2,
+    onSurfaceVariant = tokens.fg1,
+    outline = tokens.line1,
+    outlineVariant = tokens.line2,
+    inverseOnSurface = tokens.bg0,
+    inverseSurface = tokens.fg0,
+    inversePrimary = tokens.accent2,
+    scrim = Color.Black,
+)
+
+private fun buildLightColorScheme(tokens: MockzillaTokens): ColorScheme = lightColorScheme(
+    primary = tokens.accent,
+    onPrimary = tokens.accentFg,
+    primaryContainer = tokens.accentSoft,
+    onPrimaryContainer = tokens.fg0,
+    secondary = tokens.accent,
+    onSecondary = tokens.accentFg,
+    secondaryContainer = tokens.bg3,
+    onSecondaryContainer = tokens.fg0,
+    tertiary = tokens.info,
+    onTertiary = tokens.fg0,
+    tertiaryContainer = tokens.infoSoft,
+    onTertiaryContainer = tokens.fg0,
+    error = tokens.err,
+    errorContainer = tokens.errSoft,
+    onError = tokens.fg0,
+    onErrorContainer = tokens.err,
+    background = tokens.bg0,
+    onBackground = tokens.fg0,
+    surface = tokens.bg1,
+    onSurface = tokens.fg0,
+    surfaceVariant = tokens.bg3,
+    surfaceContainer = tokens.bg2,
+    onSurfaceVariant = tokens.fg1,
+    outline = tokens.line1,
+    outlineVariant = tokens.line2,
+    inverseOnSurface = tokens.fg0,
+    inverseSurface = tokens.bg0,
+    inversePrimary = tokens.accent2,
+    scrim = Color.Black,
+)

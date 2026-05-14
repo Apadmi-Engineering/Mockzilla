@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,32 +14,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+
 @Composable
 fun SurfaceHeader(
     title: String,
     subtitle: String?,
-    actions: @Composable () -> Unit
-) = Row(
-    modifier = Modifier
-        .fillMaxWidth()
-        .background(color = MaterialTheme.colorScheme.surface)
-        .padding(vertical = 20.dp, horizontal = 16.dp),
-    horizontalArrangement = Arrangement.spacedBy(4.dp),
-    verticalAlignment = Alignment.CenterVertically
+    actions: @Composable () -> Unit,
 ) {
-    Column(
-        modifier = Modifier.weight(1f)
+    val tokens = LocalMockzillaTokens.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = tokens.bg2)
+            .border(width = 1.dp, color = tokens.line1)
+            .padding(vertical = 10.dp, horizontal = 14.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium
-        )
-        subtitle?.let {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = subtitle,
-                style = MaterialTheme.typography.titleSmall
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                color = tokens.fg0,
             )
+            subtitle?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = tokens.fg2,
+                )
+            }
         }
+        actions()
     }
-    actions()
 }

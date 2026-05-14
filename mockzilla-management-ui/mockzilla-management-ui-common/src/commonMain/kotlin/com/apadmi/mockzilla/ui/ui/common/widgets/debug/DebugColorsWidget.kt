@@ -16,8 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import com.apadmi.mockzilla.ui.ui.common.theme.partialFailure
-import com.apadmi.mockzilla.ui.ui.common.theme.success
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 
 @Composable
 private fun RowScope.ColorCell(
@@ -89,8 +88,8 @@ private fun colors() = mapOf(
     "surfaceContainerHighest" to MaterialTheme.colorScheme.surfaceContainerHighest,
     "surfaceContainerLow" to MaterialTheme.colorScheme.surfaceContainerLow,
     "surfaceContainerLowest" to MaterialTheme.colorScheme.surfaceContainerLowest,
-    "successPrimary" to MaterialTheme.colorScheme.success.primary,
-    "successContainer" to MaterialTheme.colorScheme.success.container,
-    "partialFailurePrimary" to MaterialTheme.colorScheme.partialFailure.primary,
-    "partialFailureContainer" to MaterialTheme.colorScheme.partialFailure.container
+    "ok" to LocalMockzillaTokens.current.ok,
+    "okSoft" to LocalMockzillaTokens.current.okSoft,
+    "warn" to LocalMockzillaTokens.current.warn,
+    "warnSoft" to LocalMockzillaTokens.current.warnSoft
 )

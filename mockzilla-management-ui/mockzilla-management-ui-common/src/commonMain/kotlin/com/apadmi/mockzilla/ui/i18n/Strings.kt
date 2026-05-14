@@ -120,11 +120,13 @@ data class Strings(
          * @property title
          * @property presentationMode
          * @property fontScaleLabel
+         * @property actionsSection
          */
         data class MiscControls(
             val refreshAll: String,
             val clearOverrides: String,
             val title: String,
+            val actionsSection: String,
             val presentationMode: String,
             val fontScaleLabel: (Float) -> String,
         )
@@ -143,6 +145,7 @@ data class Strings(
          * @property ios
          * @property jvm
          * @property js
+         * @property deviceSection
          */
         data class MetaData(
             val title: String,
@@ -158,6 +161,7 @@ data class Strings(
             val ios: String,
             val jvm: String,
             val js: String,
+            val deviceSection: String,
         )
 
         /**
@@ -172,8 +176,28 @@ data class Strings(
          * @property errorTitle
          * @property errorMessage
          * @property connected
+         * @property title
+         * @property subTile
+         * @property bullet1
+         * @property bullet2
+         * @property bullet3
+         * @property bullet4
+         * @property ipAndPort
+         * @property networkConnection
+         * @property promptToEnterIp
+         * @property connectAutomatically
+         * @property discoveredNetwork
+         * @property scanning
+         * @property connect
+         * @property dot
          */
         data class DeviceConnection(
+            val title: String,
+            val subTile: String,
+            val bullet1: String,
+            val bullet2: String,
+            val bullet3: String,
+            val bullet4: String,
             val tabTitle: String,
             val ipInputLabel: String,
             val tooltips: ToolTips,
@@ -184,7 +208,15 @@ data class Strings(
             val androidDevConnectButton: String,
             val errorTitle: String,
             val errorMessage: String,
-            val connected: String
+            val connected: String,
+            val ipAndPort: String,
+            val networkConnection: String,
+            val promptToEnterIp: String,
+            val connectAutomatically: String,
+            val discoveredNetwork: String,
+            val scanning: String,
+            val connect: String,
+            val dot: String,
         ) {
             /**
              * @property notYourSimulator

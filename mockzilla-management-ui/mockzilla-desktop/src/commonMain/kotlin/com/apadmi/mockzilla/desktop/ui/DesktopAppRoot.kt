@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,6 +31,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
@@ -41,9 +41,11 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols.MiscControlsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsWidget
+
 import kotlin.collections.buildList
 import kotlin.let
 
+private const val devicePanelWidgetId = "device-panel"
 private const val endpointDetailsWidgetId = "endpoint-details"
 private const val logDetailsWidgetId = "log-details"
 private const val editPresetWidgetId = "edit-preset"
@@ -57,7 +59,7 @@ fun DesktopApp(
         val viewModel = getViewModel<AppRootViewModel>()
         val state by viewModel.state.collectAsState()
 
-        var openWidgets by remember { mutableStateOf(emptySet<String>()) }
+        var openWidgets by remember { mutableStateOf(setOf(devicePanelWidgetId)) }
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
         val rightWidgets = rightPanelWidgets(
@@ -79,8 +81,12 @@ fun DesktopApp(
         WidgetScaffold(
             modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
             openWidgets = openWidgets,
-            top = { DeviceTabsWidget(modifier = Modifier.fillMaxWidth()) },
-            left = leftPanelWidgets(state, strings),
+            top = {
+                DeviceTabsWidget(
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            left = leftPanelWidgets(state),
             right = rightWidgets,
             middle = middleWidgets(
                 state, openWidgets, onCloseEditor = {
@@ -219,20 +225,20 @@ private fun rightPanelWidgets(
 
 private fun leftPanelWidgets(
     state: AppRootViewModel.State,
-    strings: Strings
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
     listOf(
-        Widget(id = "meta-data", strings.widgets.metaData.title) {
-            MetaDataWidget(connectedState.activeDevice.device)
-        },
-        Widget(id = "misc-controls", strings.widgets.miscControls.title) {
-            MiscControlsWidget(connectedState.activeDevice.device)
-        })
+        Widget(id = devicePanelWidgetId) {
+            Column {
+                MetaDataWidget(connectedState.activeDevice.device)
+                MiscControlsWidget(connectedState.activeDevice.device)
+            }
+        }
+    )
 } ?: emptyList()
 
 @Composable
 private fun CloseButtonIcon() = Icon(
-    imageVector = Icons.Filled.Close,
-    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-    contentDescription = LocalStrings.current.common.backDescription
+    imageVector = Icons.Default.Close,
+    tint = LocalMockzillaTokens.current.fg1,
+    contentDescription = LocalStrings.current.common.backDescription,
 )

@@ -1,18 +1,17 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,13 +30,27 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
-import com.apadmi.mockzilla.ui.ui.common.utils.color
+import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.utils.methodColor
 
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
+
+@Suppress("MAGIC_NUMBER")
+private fun HttpStatusCode.chipTone(): ChipTone = when (this.value) {
+    in 200..299 -> ChipTone.Ok
+    in 400..499 -> ChipTone.Warn
+    in 500..599 -> ChipTone.Err
+    else -> ChipTone.Neutral
+}
 
 @Composable
 fun MonitorLogsWidget(
@@ -50,7 +63,7 @@ fun MonitorLogsWidget(
     MonitorLogsWidgetContent(
         state = state,
         onViewDetail = onViewDetail,
-        onClearAll = viewModel::clearLogs
+        onClearAll = viewModel::clearLogs,
     )
 }
 
@@ -60,35 +73,67 @@ fun MonitorLogsWidgetContent(
     onClearAll: () -> Unit,
     onViewDetail: (LogEvent) -> Unit,
     strings: Strings = LocalStrings.current,
-) = Row {
-    MonitorLogsList(
-        entries = state.entries,
-        onViewDetail = onViewDetail,
-        modifier = Modifier.weight(1F)
-    )
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        Surface(modifier = Modifier.padding(8.dp)) {
-            Button(
+) {
+    val tokens = LocalMockzillaTokens.current
+    Column(modifier = Modifier.background(tokens.bg0)) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = strings.widgets.logs.title,
+                style = MaterialTheme.typography.labelSmall,
+                color = tokens.fg2,
+            )
+            BaseButton(
+                label = strings.widgets.logs.clearAll,
+                variant = ButtonVariant.Soft,
+                size = ButtonSize.Sm,
                 onClick = onClearAll,
-            ) {
-                Text(text = strings.widgets.logs.clearAll)
-            }
+            )
         }
+        MonitorLogsList(
+            entries = state.entries,
+            onViewDetail = onViewDetail,
+            modifier = Modifier.weight(1f),
+        )
     }
 }
 
 @Composable
-fun LogRow(modifier: Modifier, event: LogEvent) =
+fun LogRow(
+    modifier: Modifier,
+    event: LogEvent,
+) {
+    val tokens = LocalMockzillaTokens.current
+    val monoFont = LocalMonoFontFamily.current
     Row(
-        modifier = modifier
-            .padding(2.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Canvas(
-            modifier = Modifier.size(15.dp).padding(end = 4.dp),
-            onDraw = { drawCircle(color = event.status.color()) })
-        Text("${event.status.description} ${event.method}: ${event.url}")
+        StatusChip(label = event.status.value.toString(), tone = event.status.chipTone())
+        Text(
+            text = event.method,
+            style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+            color = event.method.methodColor(tokens),
+        )
+        Spacer(Modifier.width(2.dp))
+        Text(
+            modifier = Modifier.weight(1f),
+            text = event.url,
+            style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
+            color = tokens.fg1,
+            maxLines = 1,
+        )
+        Text(
+            text = "${event.delay}ms",
+            style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+            color = if ((event.delay ?: 0) > 1000) tokens.warn else tokens.fg3,
+        )
     }
+}
 
 @Preview
 @Composable
@@ -98,7 +143,7 @@ fun MonitorLogsWidgetPreview() = PreviewSurface {
             entries = sequenceOf(
                 LogEvent(
                     timestamp = 1000,
-                    url = "https://www.example.com/url",
+                    url = "https://www.example.com/repairs/list",
                     requestBody = "request body",
                     requestHeaders = mapOf(),
                     responseHeaders = mapOf(),
@@ -106,12 +151,24 @@ fun MonitorLogsWidgetPreview() = PreviewSurface {
                     status = HttpStatusCode.OK,
                     delay = 50,
                     method = "GET",
-                    isIntendedFailure = false
-                )
+                    isIntendedFailure = false,
+                ),
+                LogEvent(
+                    timestamp = 2000,
+                    url = "https://www.example.com/auth/login",
+                    requestBody = "{}",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = "{}",
+                    status = HttpStatusCode.NotFound,
+                    delay = 1200,
+                    method = "POST",
+                    isIntendedFailure = true,
+                ),
             ),
         ),
         onClearAll = {},
-        onViewDetail = { _ -> }
+        onViewDetail = { _ -> },
     )
 }
 
@@ -121,6 +178,7 @@ private fun MonitorLogsList(
     onViewDetail: (LogEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val tokens = LocalMockzillaTokens.current
     val state = rememberLazyListState()
     val entryList = entries.toList()
     var previousSize by remember { mutableStateOf(entryList.size) }
@@ -128,12 +186,7 @@ private fun MonitorLogsList(
         val previous = previousSize
         val current = entryList.size
         if (previous != current) {
-            // Because we know entries can only be appended or cleared, we can check if the new
-            // list is bigger than the previous list and infer that a new entry was added to the
-            // end of the sequence if so
             if (current > previous) {
-                // In such a case, if the user was scrolled down to the end of the logs we should
-                // autoscroll them to remain there
                 val previousLastItemIndex = state.layoutInfo.visibleItemsInfo.maxOf { it.index }
                 if (previousLastItemIndex >= previous - 1) {
                     state.scrollToItem(entryList.lastIndex)
@@ -149,8 +202,8 @@ private fun MonitorLogsList(
                     modifier = Modifier
                         .clickable(onClick = { onViewDetail(logEvent) }, role = Role.Button)
                         .fillMaxWidth()
-                        .alternatingBackground(index),
-                    event = logEvent
+                        .background(if (index % 2 == 0) tokens.bg1 else tokens.bg2),
+                    event = logEvent,
                 )
             }
         }

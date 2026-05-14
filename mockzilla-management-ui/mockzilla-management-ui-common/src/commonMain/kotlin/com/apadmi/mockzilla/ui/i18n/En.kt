@@ -17,6 +17,12 @@ val EnStrings = Strings(
     ),
     widgets = Strings.Widgets(
         deviceConnection = Strings.Widgets.DeviceConnection(
+            title = "Mockzilla",
+            subTile = "Dynamic mock server configuration for Android\n& iOS development",
+            bullet1 = "Intercept HTTP at runtime",
+            bullet2 = "Switch presets on the fly",
+            bullet3 = "Simulate network latency",
+            bullet4 = "Inspect request/response logs",
             tabTitle = "Connect Device",
             heading = "Enter IP and port to connect to a device",
             autoConnectHeading = "Or…",
@@ -33,9 +39,16 @@ val EnStrings = Strings(
                 notYourSimulator = "We don't think this is your simulator, but you can try to connect! (Probably won't work)",
                 readyToConnect = "",
                 removed = "This device seems to have disconnected",
-                resolving = "We're still for this device to come online"
-
-            )
+                resolving = "We're still for this device to come online",
+            ),
+            ipAndPort = "127.0.0.1:8080",
+            networkConnection = "MANUAL CONNECTION",
+            promptToEnterIp = "Enter the IP address and port of the device running your app",
+            connectAutomatically = "or connect automatically",
+            discoveredNetwork = "DISCOVERED ON NETWORK",
+            scanning = "scanning...",
+            connect = "Connect",
+            dot = "..."
         ),
         deviceTabs = Strings.Widgets.DeviceTabs(
             tabTitle = { "Device $it" },
@@ -63,7 +76,8 @@ val EnStrings = Strings(
             android = "Android",
             ios = "iOS",
             jvm = "JVM",
-            js = "Web - JS"
+            js = "Web - JS",
+            deviceSection = "Device"
         ),
         logs = Strings.Widgets.Logs(
             title = "Logs",
@@ -161,6 +175,7 @@ val EnStrings = Strings(
             refreshAll = "Re-sync all",
             clearOverrides = "Reset all overrides",
             title = "Tools",
+            actionsSection = "Actions",
             presentationMode = "Presentation mode",
             fontScaleLabel = { scale -> "${(scale * 100).roundToInt()}%" }
         ),

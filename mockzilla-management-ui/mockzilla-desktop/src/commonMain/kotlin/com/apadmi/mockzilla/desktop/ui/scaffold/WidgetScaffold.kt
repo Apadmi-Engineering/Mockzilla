@@ -2,11 +2,11 @@
 
 package com.apadmi.mockzilla.desktop.ui.scaffold
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -21,6 +21,7 @@ import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTabList
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTabList
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 
 /**
  * @property title
@@ -57,12 +58,12 @@ fun WidgetScaffold(
     // width/height below zero (when the user drags into the tab areas) but visually display the
     // restricted width/height that can't drop below 0. This ensures the dragged divider stays
     // with the cursor at all times.
-    var leftPanelWidth by remember { mutableStateOf(350.dp) }
-    var leftPanelSettledWidth by remember { mutableStateOf(350.dp) }
-    var rightPanelWidth by remember { mutableStateOf(500.dp) }
-    var rightPanelSettledWidth by remember { mutableStateOf(500.dp) }
-    var bottomPanelHeight by remember { mutableStateOf(200.dp) }
-    var bottomPanelSettledHeight by remember { mutableStateOf(200.dp) }
+    var leftPanelWidth by remember { mutableStateOf(230.dp) }
+    var leftPanelSettledWidth by remember { mutableStateOf(230.dp) }
+    var rightPanelWidth by remember { mutableStateOf(280.dp) }
+    var rightPanelSettledWidth by remember { mutableStateOf(280.dp) }
+    var bottomPanelHeight by remember { mutableStateOf(140.dp) }
+    var bottomPanelSettledHeight by remember { mutableStateOf(140.dp) }
 
     // Both of the horizontal panels must collectively not be so large that the center panel
     // runs out of space. We can enforce this by hoisting the width of each panel and preventing
@@ -86,11 +87,13 @@ fun WidgetScaffold(
     }
     val bottomPanelHeightRestriction = { height: Dp -> max(0.dp, height) }
 
-    Surface(
-        modifier = modifier.onSizeChanged { size ->
-            totalWidth = with(density) { size.width.toDp() }
-        },
-        color = MaterialTheme.colorScheme.background
+    val tokens = LocalMockzillaTokens.current
+    Box(
+        modifier = modifier
+            .background(tokens.bg0)
+            .onSizeChanged { size ->
+                totalWidth = with(density) { size.width.toDp() }
+            },
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             top()
@@ -222,6 +225,38 @@ private fun LeftPanel(
     defaultWidth: Dp = 100.dp
 ) {
     val density = LocalDensity.current
+
+    val alwaysVisible = content.isNotEmpty() && content.all { it.title == null }
+
+    if (alwaysVisible) {
+        Row(modifier = Modifier.fillMaxHeight()) {
+            Surface(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxHeight()
+                    .width(settledWidth)
+            ) {
+                Column {
+                    content.forEachIndexed { index, widget ->
+                        if (index != 0) {
+                            HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                        }
+                        widget.ui()
+                    }
+                }
+            }
+            HorizontalDraggableDivider(
+                onDrag = { offset ->
+                    with(density) {
+                        onWidthChange(width + offset.toDp())
+                    }
+                },
+                onDragStopped = onDragStopped,
+            )
+        }
+        return
+    }
+
     val selectedWidgets = remember(openWidgets) {
         content.indices.filter { openWidgets.contains(content[it].id) }
     }

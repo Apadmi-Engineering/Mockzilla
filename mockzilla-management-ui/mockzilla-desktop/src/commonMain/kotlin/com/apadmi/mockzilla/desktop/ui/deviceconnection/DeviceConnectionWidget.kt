@@ -1,39 +1,74 @@
 package com.apadmi.mockzilla.desktop.ui.deviceconnection
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.DragIndicator
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.Power
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.*
-
+import androidx.compose.ui.unit.sp
+import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.State
+import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.connection.DetectedDevice
+import com.apadmi.mockzilla.ui.engine.connection.IpAddress
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
-import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
-import com.apadmi.mockzilla.ui.utils.Platform
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+private const val compactLayoutBreakpointDp = 1100
+private const val compactMaxWidthDp = 720
 
 private fun DetectedDevice.State.toolTipText(strings: Strings) = when (this) {
     DetectedDevice.State.NotYourSimulator -> strings.widgets.deviceConnection.tooltips.notYourSimulator
@@ -42,12 +77,13 @@ private fun DetectedDevice.State.toolTipText(strings: Strings) = when (this) {
     DetectedDevice.State.Resolving -> strings.widgets.deviceConnection.tooltips.resolving
 }
 
+@Composable
 private fun DetectedDevice.State.color() = when (this) {
-    DetectedDevice.State.ReadyToConnect -> Color.Green
+    DetectedDevice.State.ReadyToConnect -> LocalMockzillaTokens.current.ok
     DetectedDevice.State.Removed,
-    DetectedDevice.State.NotYourSimulator -> Color.Red
+    DetectedDevice.State.NotYourSimulator -> LocalMockzillaTokens.current.err
 
-    DetectedDevice.State.Resolving -> Color.Gray
+    DetectedDevice.State.Resolving -> LocalMockzillaTokens.current.fg2
 }
 
 @Composable
@@ -68,142 +104,507 @@ fun DeviceConnectionContent(
     onIpAndPortChanged: (String) -> Unit,
     onTapDevice: (DetectedDevice) -> Unit,
     strings: Strings = LocalStrings.current,
-) = Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+) = Box(
+    modifier = Modifier
+        .fillMaxSize()
+        .background(LocalMockzillaTokens.current.bg0),
+    contentAlignment = Alignment.Center,
+) {
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        val isCompact = maxWidth < compactLayoutBreakpointDp.dp
+
+        if (isCompact) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                val compactWidth = compactMaxWidthDp.dp
+
+                Box(
+                    modifier = Modifier
+                        .widthIn(max = compactWidth),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    ProductIntro(strings = strings)
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Box(
+                    modifier = Modifier
+                        .widthIn(max = compactWidth),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    ConnectionCard(
+                        state = state,
+                        onIpAndPortChanged = onIpAndPortChanged,
+                        onConnect = { onIpAndPortChanged(state.ipAndPort) },
+                        onTapDevice = onTapDevice,
+                        strings = strings,
+                    )
+                }
+            }
+        } else {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(0.75f)
+                    .fillMaxHeight(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f),
+                    contentAlignment = Alignment.TopEnd,
+                ) {
+                    ProductIntro(strings = strings)
+                }
+
+                Spacer(modifier = Modifier.width(100.dp))
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f),
+                    contentAlignment = Alignment.TopStart,
+                ) {
+                    ConnectionCard(
+                        state = state,
+                        onIpAndPortChanged = onIpAndPortChanged,
+                        onConnect = { onIpAndPortChanged(state.ipAndPort) },
+                        onTapDevice = onTapDevice,
+                        strings = strings,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProductIntro(strings: Strings) {
     Column(
         modifier = Modifier
-            .widthIn(max = 500.dp)
-            .padding(top = 100.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .widthIn(max = 620.dp)
     ) {
-        Image(
+        Box(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 16.dp)
-                .height(100.dp),
-            imageVector = Icons.MockzillaLogo,
-            contentDescription = null
-        )
+                .size(76.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(LocalMockzillaTokens.current.bg1)
+                .border(
+                    width = 1.dp,
+                    color = LocalMockzillaTokens.current.line1,
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                imageVector = Icons.MockzillaLogo,
+                contentDescription = null
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = strings.widgets.deviceConnection.heading,
-            style = MaterialTheme.typography.headlineLarge
-        )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = state.ipAndPort,
-            onValueChange = onIpAndPortChanged,
-            singleLine = true,
-            label = { Text(strings.widgets.deviceConnection.ipInputLabel) }
+            text = strings.widgets.deviceConnection.title,
+            style = MaterialTheme.typography.headlineLarge,
+            color = LocalMockzillaTokens.current.fg0,
+            fontWeight = FontWeight.ExtraBold
         )
 
-        Spacer(Modifier.height(4.dp))
-        if (Platform.current == Platform.Android) {
-            SolidButton(
-                onClick = { onIpAndPortChanged("127.0.0.1:5614") },
-                label = strings.widgets.deviceConnection.androidDevConnectButton
-            )
-        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        AnimatedContent(
-            targetState = state.hasDevices
+        Text(
+            text = strings.widgets.deviceConnection.subTile,
+            style = MaterialTheme.typography.bodyLarge,
+            color = LocalMockzillaTokens.current.fg1
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+
+        BulletItem(
+            icon = Icons.Default.Bolt,
+            text = strings.widgets.deviceConnection.bullet1
+        )
+
+        BulletItem(
+            icon = Icons.Default.DragIndicator,
+            text = strings.widgets.deviceConnection.bullet2
+        )
+
+        BulletItem(
+            icon = Icons.Default.AccessTime,
+            text = strings.widgets.deviceConnection.bullet3
+        )
+
+        BulletItem(
+            icon = Icons.Default.Menu,
+            text = strings.widgets.deviceConnection.bullet4
+        )
+    }
+}
+
+@Composable
+private fun ConnectionCard(
+    state: State,
+    onIpAndPortChanged: (String) -> Unit,
+    onConnect: () -> Unit,
+    onTapDevice: (DetectedDevice) -> Unit,
+    strings: Strings,
+) {
+    val tokens = LocalMockzillaTokens.current
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = tokens.bg5,
+        border = BorderStroke(1.dp, tokens.line1),
+    ) {
+        Column(
+            modifier = Modifier.padding(32.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (it) {
-                DevicesList(
-                    devices = state.devices,
-                    onTapDevice = onTapDevice
+            Text(
+                text = strings.widgets.deviceConnection.networkConnection,
+                color = tokens.fg1,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
+            )
+            Text(
+                text = strings.widgets.deviceConnection.promptToEnterIp,
+                color = tokens.fg1,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(45.dp)
+                        .border(
+                            width = 0.5.dp,
+                            color = tokens.line1,
+                            shape = RoundedCornerShape(8.dp)),
+                    shape = RoundedCornerShape(8.dp),
+
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = LocalMonoFontFamily.current,
+                        fontSize = 16.sp,
+                        lineHeight = 16.sp,
+                    ),
+                    value = state.ipAndPort,
+                    onValueChange = onIpAndPortChanged,
+                    singleLine = true,
+
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Outlined.Power,
+                            contentDescription = null,
+                            tint = tokens.fg2,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    },
+
+                    placeholder = {
+                        Text(
+                            text = strings.widgets.deviceConnection.ipAndPort,
+                            fontFamily = LocalMonoFontFamily.current,
+                            fontSize = 14.sp,
+                            lineHeight = 14.sp
+                        )
+                    },
+
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = tokens.fg0,
+                        unfocusedTextColor = tokens.fg0,
+
+                        focusedContainerColor = tokens.bg3,
+                        unfocusedContainerColor = tokens.bg3,
+
+                        focusedBorderColor = tokens.line2,
+                        unfocusedBorderColor = tokens.line1,
+
+                        focusedPlaceholderColor = tokens.fg3,
+                        unfocusedPlaceholderColor = tokens.fg3,
+
+                        cursorColor = tokens.accent,
+
+                        focusedLeadingIconColor = tokens.fg2,
+                        unfocusedLeadingIconColor = tokens.fg2,
+                    )
+                )
+                SolidButton(
+                    modifier = Modifier.height(32.dp)
+                        .align(Alignment.CenterVertically),
+                    label = strings.widgets.deviceConnection.connect,
+                    onClick = onConnect,
+                    contentPadding = PaddingValues(
+                        horizontal = 16.dp,
+                        vertical = 16.dp
+                    )
                 )
             }
+            Row(
+                modifier = Modifier.padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                HorizontalDivider(Modifier.weight(1f), color = tokens.line1)
+                Text(
+                    text = strings.widgets.deviceConnection.connectAutomatically,
+                    color = tokens.fg2,
+                    style = MaterialTheme.typography.labelMedium,
+                )
+                HorizontalDivider(Modifier.weight(1f), color = tokens.line1)
+            }
+            DiscoveredDevicesSection(
+                devices = state.devices,
+                onTapDevice = onTapDevice,
+                strings = strings,
+            )
         }
     }
 }
 
-@Preview
 @Composable
-private fun DeviceConnectionWidgetPreview() = PreviewSurface {
-    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-        DeviceConnectionContent(
-            state = State(
-                ipAndPort = "127.0.0.1:60000",
-                connectionState = State.ConnectionState.Connecting,
-                devices = listOf(
-                    DetectedDevice(
-                        connectionName = "iPhone",
-                        metaData = null,
-                        hostAddress = "127.0.0.1",
-                        hostAddresses = listOf(),
-                        port = 60000,
-                        adbConnection = null,
-                        state = DetectedDevice.State.ReadyToConnect
-                    )
-                ),
-            ),
-            onIpAndPortChanged = {},
-            onTapDevice = {}
-        )
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun DevicesList(
+private fun DiscoveredDevicesSection(
     devices: List<DetectedDevice>,
     onTapDevice: (DetectedDevice) -> Unit,
-    strings: Strings = LocalStrings.current,
-) = LazyColumn {
-    item {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+    strings: Strings,
+) {
+    val tokens = LocalMockzillaTokens.current
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = strings.widgets.deviceConnection.discoveredNetwork,
+                color = tokens.fg1,
+                style = MaterialTheme.typography.labelSmall,
+            )
+            Spacer(Modifier.width(8.dp))
+            Canvas(Modifier.size(8.dp)) {
+                drawCircle(tokens.ok)
+            }
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = strings.widgets.deviceConnection.scanning,
+                color = tokens.fg2,
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = LocalMonoFontFamily.current,
+            )
+        }
+        LazyColumn(
+            modifier = Modifier.heightIn(max = 220.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+
         ) {
-            Text(
-                text = strings.widgets.deviceConnection.autoConnectHeading,
-                style = MaterialTheme.typography.headlineLarge
-            )
-            Text(
-                text = strings.widgets.deviceConnection.autoConnectSubHeading,
-                style = MaterialTheme.typography.bodySmall
-            )
-            Spacer(Modifier.height(8.dp))
+            itemsIndexed(devices, key = { _, device -> device.connectionName }) { _, device ->
+
+                DiscoveredDeviceRow(
+                    device = device,
+                    onTapDevice = onTapDevice,
+                    strings = strings,
+                )
+            }
         }
     }
+}
 
-    itemsIndexed(devices, key = { _, device -> device.connectionName }) { index, device ->
+@Composable
+private fun DiscoveredDeviceRow(
+    device: DetectedDevice,
+    onTapDevice: (DetectedDevice) -> Unit,
+    strings: Strings,
+) {
+    val tokens = LocalMockzillaTokens.current
+    val statusColor = device.state.color()
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        color = tokens.bg3,
+        border = BorderStroke(1.dp, tokens.line1),
+    ) {
         Row(
-            modifier = Modifier.animateItem().alternatingBackground(index).fillMaxWidth()
-                .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .defaultMinSize(minHeight = 88.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            StandardTextTooltip(text = device.state.toolTipText(strings)) {
-                Canvas(
-                    modifier = Modifier.padding(end = 16.dp).size(12.dp),
-                    onDraw = { drawCircle(color = device.state.color()) })
-            }
+            Box(
+                modifier = Modifier
+                    .height(88.dp)
+                    .width(4.dp)
+                    .background(
+                        color = statusColor,
+                        shape = RoundedCornerShape(
+                            topStart = 8.dp,
+                            bottomStart = 8.dp
+                        )
+                    ),
+            )
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                modifier = Modifier.weight(1f).padding(end = 8.dp)
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(device.prettyName(), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(
-                    modifier = Modifier.alpha(0.5f),
-                    text = buildString {
-                        device.metaData?.appName?.also {
-                            append(it)
-                            append(" | ")
-                        }
-                        append("${device.hostAddress}:${device.port}")
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
+                StandardTextTooltip(text = device.state.toolTipText(strings)) {
+                    Surface(
+                        modifier = Modifier.size(16.dp),
+                        shape = CircleShape,
+                        color = statusColor.copy(alpha = 0.16f),
+                    ) {
+                        Canvas(
+                            modifier = Modifier.padding(3.5.dp),
+                            onDraw = { drawCircle(color = statusColor) },
+                        )
+                    }
+                }
 
-            if (device.state == DetectedDevice.State.Resolving) {
-                CircularProgressIndicator(Modifier.padding(end = 8.dp).size(20.dp))
-            } else {
-                SolidButton(
-                    onClick = { onTapDevice(device) },
-                    label = strings.widgets.deviceConnection.autoConnectButton
-                )
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(
+                        text = if (device.connectionName.length > 25) {
+                            device.connectionName.take(22) + strings.widgets.deviceConnection.dot
+                        } else {
+                            device.connectionName
+                        },
+                        color = tokens.fg0,
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+
+                    DeviceMetaLine(
+                        device.metaData?.let { "${it.appName} · ${it.appPackage}" }
+                            ?: "${device.hostAddress}:${device.port}",
+                    )
+                    device.metaData?.also {
+                        DeviceMetaLine("${it.operatingSystemVersion} · ${it.deviceModel}")
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(32.dp))
+
+                if (device.state == DetectedDevice.State.Resolving) {
+                    CircularProgressIndicator(Modifier.size(32.dp))
+                } else {
+                    SolidButton(
+                        modifier = Modifier.width(132.dp).height(32.dp),
+                        onClick = { onTapDevice(device) },
+                        leadingIcon = Icons.Outlined.Power,
+                        label = strings.widgets.deviceConnection.autoConnectButton,
+                    )
+                }
             }
         }
     }
+}
+
+@Composable
+private fun DeviceMetaLine(text: String) {
+    val tokens = LocalMockzillaTokens.current
+    Text(
+        text = text,
+        color = tokens.fg2,
+        style = MaterialTheme.typography.bodySmall,
+        fontFamily = LocalMonoFontFamily.current,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
+}
+
+@Composable
+private fun BulletItem(
+    icon: ImageVector,
+    text: String
+) {
+    Row(
+        modifier = Modifier.padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = LocalMockzillaTokens.current.accent,
+            modifier = Modifier.size(16.dp)
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = LocalMockzillaTokens.current.fg1
+        )
+    }
+}
+
+@Preview(
+    name = "Medium Tablet",
+    widthDp = 1280,
+    heightDp = 800,
+)
+@Composable
+private fun DeviceConnectionWidgetMediumTabletPreview() = PreviewSurface {
+    DeviceConnectionContent(
+        state = State(
+            ipAndPort = "127.0.0.1:8080",
+            connectionState = State.ConnectionState.Disconnected,
+            devices = listOf(
+                DetectedDevice(
+                    connectionName = "iosSimulator-iPhone 16 Plus",
+                    metaData = MetaData(
+                        appName = "Runner",
+                        appPackage = "sus.Internal",
+                        operatingSystemVersion = "iOS Version",
+                        deviceModel = "iPhone 16 Plus",
+                        appVersion = "1.0.0",
+                        runTarget = RunTarget.IosSimulator,
+                        mockzillaVersion = "3.0.0-alpha2",
+                    ),
+                    hostAddress = "127.0.0.1",
+                    hostAddresses = listOf(IpAddress("127.0.0.1")),
+                    port = 8080,
+                    adbConnection = null,
+                    state = DetectedDevice.State.ReadyToConnect,
+                ),
+                DetectedDevice(
+                    connectionName = "Pixel 8 Pro",
+                    metaData = MetaData(
+                        appName = "Runner",
+                        appPackage = "sus.Internal",
+                        operatingSystemVersion = "Android 14",
+                        deviceModel = "Pixel 8 Pro",
+                        appVersion = "1.0.0",
+                        runTarget = RunTarget.AndroidDevice,
+                        mockzillaVersion = "3.0.0-alpha2",
+                    ),
+                    hostAddress = "192.168.1.42",
+                    hostAddresses = listOf(IpAddress("192.168.1.42")),
+                    port = 8080,
+                    adbConnection = null,
+                    state = DetectedDevice.State.ReadyToConnect,
+                ),
+            ),
+        ),
+        onIpAndPortChanged = {},
+        onTapDevice = {},
+    )
 }
