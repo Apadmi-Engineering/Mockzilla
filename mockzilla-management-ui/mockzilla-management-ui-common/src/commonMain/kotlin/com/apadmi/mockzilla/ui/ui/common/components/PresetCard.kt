@@ -39,7 +39,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -52,8 +54,8 @@ import com.apadmi.mockzilla.ui.ui.common.assets.RedirectCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
 import com.apadmi.mockzilla.ui.ui.common.theme.httpStatus_fallback
 import com.apadmi.mockzilla.ui.ui.common.utils.color
+
 import io.ktor.http.HttpStatusCode
-import androidx.compose.ui.tooling.preview.Preview
 
 private const val intervalDp = 6
 private const val strokeAlpha = 0.3f

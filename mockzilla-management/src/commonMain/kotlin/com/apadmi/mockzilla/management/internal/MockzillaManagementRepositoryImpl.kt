@@ -63,7 +63,7 @@ MockzillaManagement.CacheClearingService {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/meta" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/meta" }
     }
 
     override suspend fun fetchAllEndpointConfigs(
@@ -71,7 +71,7 @@ MockzillaManagement.CacheClearingService {
     ) = runner<MockDataResponseDto> {
         get(connection, "/api/mock-data")
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
     }.map { it.entries }
 
     override suspend fun fetchDashboardOptionsConfig(
@@ -84,7 +84,7 @@ MockzillaManagement.CacheClearingService {
             }
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data/{key}/dashboard-config" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data/{key}/dashboard-config" }
     }
 
     override suspend fun updateMockDataEntry(
@@ -101,7 +101,7 @@ MockzillaManagement.CacheClearingService {
             setBody(SerializableEndpointConfigPatchRequestDto(entries))
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/monitor-logs" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
     }
 
     override suspend fun fetchMonitorLogsAndClearBuffer(
@@ -112,7 +112,7 @@ MockzillaManagement.CacheClearingService {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/monitor-logs" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
     }
 
     override suspend fun clearAllCaches(
@@ -120,7 +120,7 @@ MockzillaManagement.CacheClearingService {
     ) = runner<Unit> {
         delete(connection, "/api/mock-data/all")
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
     }
 
     override suspend fun clearCaches(
@@ -132,7 +132,7 @@ MockzillaManagement.CacheClearingService {
             setBody(ClearCachesRequestDto(keys))
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
     }
 
     companion object {

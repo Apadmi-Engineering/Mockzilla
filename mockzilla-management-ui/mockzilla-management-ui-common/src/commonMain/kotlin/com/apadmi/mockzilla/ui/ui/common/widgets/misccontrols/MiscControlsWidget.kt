@@ -22,7 +22,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -30,7 +32,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.ScaleFactor
-import androidx.compose.ui.tooling.preview.Preview
+
 import org.koin.core.parameter.parametersOf
 
 private data object PresentationModeScaleFactor {

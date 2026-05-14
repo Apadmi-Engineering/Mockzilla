@@ -19,14 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_accent
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_background_dark
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_success
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SolidButton(

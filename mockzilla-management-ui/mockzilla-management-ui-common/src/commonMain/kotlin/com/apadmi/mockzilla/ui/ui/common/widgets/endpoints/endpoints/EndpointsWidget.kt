@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 
@@ -46,7 +47,6 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import androidx.compose.ui.tooling.preview.Preview
 
 import org.koin.core.parameter.parametersOf
 

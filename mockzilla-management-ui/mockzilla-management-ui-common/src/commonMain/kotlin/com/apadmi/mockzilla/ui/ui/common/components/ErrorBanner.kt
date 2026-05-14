@@ -28,14 +28,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.State.*
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.theme_warning_background
-import androidx.compose.ui.tooling.preview.Preview
 
 private fun Connected.ErrorBannerState.bannerText(strings: Strings): String =
     when (this) {

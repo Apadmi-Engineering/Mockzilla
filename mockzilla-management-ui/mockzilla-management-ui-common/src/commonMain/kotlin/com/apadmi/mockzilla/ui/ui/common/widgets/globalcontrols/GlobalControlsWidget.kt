@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -37,7 +38,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.*
 
-import androidx.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 @Composable

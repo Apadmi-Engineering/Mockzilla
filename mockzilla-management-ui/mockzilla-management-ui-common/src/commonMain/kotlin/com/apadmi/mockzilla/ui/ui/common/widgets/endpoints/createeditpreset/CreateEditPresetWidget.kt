@@ -43,7 +43,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
@@ -63,7 +65,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.Crea
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.components.EditResponseBody
 
 import io.ktor.http.HttpStatusCode
-import androidx.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 @Composable

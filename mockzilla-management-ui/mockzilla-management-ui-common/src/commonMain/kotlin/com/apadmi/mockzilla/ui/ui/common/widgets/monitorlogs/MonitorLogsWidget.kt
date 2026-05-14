@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
@@ -36,7 +37,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
 import com.apadmi.mockzilla.ui.ui.common.utils.color
 
 import io.ktor.http.HttpStatusCode
-import androidx.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 @Composable

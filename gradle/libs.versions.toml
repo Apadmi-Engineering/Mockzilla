@@ -9,7 +9,7 @@ kotlinxBrowser = "0.5.0" # https://github.com/Kotlin/kotlinx-browser
 ksp = "2.2.20-2.0.4" # https://github.com/google/ksp
 
 # Logging
-kermit = "2.0.8" # https://github.com/touchlab/Kermit
+kermit = "2.1.0" # https://github.com/touchlab/Kermit
 
 # Config
 buildKonfig = "0.20.0" # https://github.com/yshrsmz/BuildKonfig
@@ -30,9 +30,9 @@ compose = "1.10.3" # https://github.com/JetBrains/compose-multiplatform
 koin = "4.2.1" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
-kotlinx-coroutines = "1.10.2" # https://github.com/Kotlin/kotlinx.coroutines
-kotlinx-datetime = "0.7.1" # https://github.com/Kotlin/kotlinx-datetime
-kotlinx-serialization = "1.9.0" # https://github.com/Kotlin/kotlinx.serialization
+kotlinx-coroutines = "1.11.0" # https://github.com/Kotlin/kotlinx.coroutines
+kotlinx-datetime = "0.8.0" # https://github.com/Kotlin/kotlinx-datetime
+kotlinx-serialization = "1.11.0" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
 lifecycle = "2.10.0" # https://developer.android.com/jetpack/androidx/releases/lifecycle
