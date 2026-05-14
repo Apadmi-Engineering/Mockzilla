@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,7 +39,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.ActivePresetCard
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
@@ -162,7 +162,7 @@ fun EndpointDetailsWidgetContent(
     modifier = Modifier
         .fillMaxSize()
         .navigationBarsPadding()
-        .background(color = LocalMockzillaTokens.current.bg0),
+        .background(color = MaterialTheme.colorScheme.background),
     verticalArrangement = Arrangement.spacedBy(8.dp)
 ) {
     when (state) {

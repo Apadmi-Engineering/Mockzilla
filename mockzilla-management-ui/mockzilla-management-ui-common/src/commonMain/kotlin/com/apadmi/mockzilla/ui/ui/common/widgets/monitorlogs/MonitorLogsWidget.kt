@@ -36,8 +36,10 @@ import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.utils.methodColor
 
 import io.ktor.http.HttpStatusCode
@@ -74,8 +76,8 @@ fun MonitorLogsWidgetContent(
     onViewDetail: (LogEvent) -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
-    val tokens = LocalMockzillaTokens.current
-    Column(modifier = Modifier.background(tokens.bg0)) {
+    val colorScheme = MaterialTheme.colorScheme
+    Column(modifier = Modifier.background(colorScheme.background)) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -84,7 +86,7 @@ fun MonitorLogsWidgetContent(
             Text(
                 text = strings.widgets.logs.title,
                 style = MaterialTheme.typography.labelSmall,
-                color = tokens.fg2,
+                color = colorScheme.onSurfaceMuted,
             )
             BaseButton(
                 label = strings.widgets.logs.clearAll,
@@ -106,7 +108,7 @@ fun LogRow(
     modifier: Modifier,
     event: LogEvent,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     val monoFont = LocalMonoFontFamily.current
     Row(
         modifier = modifier.padding(horizontal = 10.dp, vertical = 5.dp),
@@ -117,20 +119,20 @@ fun LogRow(
         Text(
             text = event.method,
             style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
-            color = event.method.methodColor(tokens),
+            color = event.method.methodColor(),
         )
         Spacer(Modifier.width(2.dp))
         Text(
             modifier = Modifier.weight(1f),
             text = event.url,
             style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
-            color = tokens.fg1,
+            color = colorScheme.onSurfaceVariant,
             maxLines = 1,
         )
         Text(
             text = "${event.delay}ms",
             style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
-            color = if ((event.delay ?: 0) > 1000) tokens.warn else tokens.fg3,
+            color = if ((event.delay ?: 0) > 1000) colorScheme.warning.primary else colorScheme.onSurfaceFaint,
         )
     }
 }
@@ -178,7 +180,7 @@ private fun MonitorLogsList(
     onViewDetail: (LogEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     val state = rememberLazyListState()
     val entryList = entries.toList()
     var previousSize by remember { mutableStateOf(entryList.size) }
@@ -202,7 +204,7 @@ private fun MonitorLogsList(
                     modifier = Modifier
                         .clickable(onClick = { onViewDetail(logEvent) }, role = Role.Button)
                         .fillMaxWidth()
-                        .background(if (index % 2 == 0) tokens.bg1 else tokens.bg2),
+                        .background(if (index % 2 == 0) colorScheme.surface else colorScheme.surfaceContainer),
                     event = logEvent,
                 )
             }

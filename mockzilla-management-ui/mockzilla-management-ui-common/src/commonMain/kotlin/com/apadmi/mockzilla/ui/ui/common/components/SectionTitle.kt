@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -24,7 +24,7 @@ fun SectionTitle(
     modifier: Modifier = Modifier,
     label: String,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = modifier.fillMaxWidth().padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -35,11 +35,11 @@ fun SectionTitle(
             style = MaterialTheme.typography.labelSmall.copy(
                 letterSpacing = 0.08.em,
             ),
-            color = tokens.fg2,
+            color = colorScheme.onSurfaceMuted,
         )
         HorizontalDivider(
             modifier = Modifier.weight(1f),
-            color = tokens.line1,
+            color = colorScheme.outline,
         )
     }
 }

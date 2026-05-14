@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -21,7 +22,6 @@ import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTabList
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTabList
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 
 /**
  * @property title
@@ -87,10 +87,10 @@ fun WidgetScaffold(
     }
     val bottomPanelHeightRestriction = { height: Dp -> max(0.dp, height) }
 
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Box(
         modifier = modifier
-            .background(tokens.bg0)
+            .background(colorScheme.background)
             .onSizeChanged { size ->
                 totalWidth = with(density) { size.width.toDp() }
             },

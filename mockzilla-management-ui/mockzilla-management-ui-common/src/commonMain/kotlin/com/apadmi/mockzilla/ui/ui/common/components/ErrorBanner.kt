@@ -33,7 +33,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.State.*
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -45,8 +45,8 @@ private fun Connected.ErrorBannerState.bannerText(strings: Strings): String =
 
 @Composable
 private fun Connected.ErrorBannerState.backgroundColor() = when (this) {
-    Connected.ErrorBannerState.ConnectionLost -> LocalMockzillaTokens.current.warnSoft
-    Connected.ErrorBannerState.UnknownError -> LocalMockzillaTokens.current.errSoft
+    Connected.ErrorBannerState.ConnectionLost -> MaterialTheme.colorScheme.warning.container
+    Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.errorContainer
 }
 
 @Composable
@@ -102,10 +102,10 @@ fun ErrorBanner(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val tokens = LocalMockzillaTokens.current
+        val colorScheme = MaterialTheme.colorScheme
         val onColor = when (state) {
-            Connected.ErrorBannerState.ConnectionLost -> tokens.warn
-            Connected.ErrorBannerState.UnknownError -> tokens.err
+            Connected.ErrorBannerState.ConnectionLost -> colorScheme.warning.primary
+            Connected.ErrorBannerState.UnknownError -> colorScheme.error
         }
         Icon(
             imageVector = Icons.Outlined.Warning,

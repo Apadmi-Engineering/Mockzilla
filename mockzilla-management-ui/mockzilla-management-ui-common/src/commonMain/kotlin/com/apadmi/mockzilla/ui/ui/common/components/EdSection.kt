@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -50,7 +50,7 @@ fun EdSection(
     initiallyExpanded: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
     val chevronRotation by animateFloatAsState(
         targetValue = if (expanded) 90f else 0f,
@@ -60,12 +60,12 @@ fun EdSection(
     Column(
         modifier = modifier
             .clip(sectionShape)
-            .border(width = 1.dp, color = tokens.line1, shape = sectionShape),
+            .border(width = 1.dp, color = colorScheme.outline, shape = sectionShape),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(tokens.bg2)
+                .background(colorScheme.surfaceContainer)
                 .clickable { expanded = !expanded }
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -75,21 +75,21 @@ fun EdSection(
                 modifier = Modifier.size(10.dp).rotate(chevronRotation),
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
-                tint = tokens.fg3,
+                tint = colorScheme.onSurfaceFaint,
             )
             icon?.let {
                 Icon(
                     modifier = Modifier.size(12.dp),
                     imageVector = icon,
                     contentDescription = null,
-                    tint = tokens.accent,
+                    tint = colorScheme.primary,
                 )
             }
             Text(
                 modifier = Modifier.weight(1f),
                 text = label.uppercase(),
                 style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.06.em),
-                color = tokens.fg1,
+                color = colorScheme.onSurfaceVariant,
             )
         }
 
@@ -101,7 +101,7 @@ fun EdSection(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(tokens.bg1)
+                    .background(colorScheme.surface)
                     .padding(horizontal = 14.dp, vertical = 12.dp),
             ) {
                 content()
