@@ -36,8 +36,17 @@ subprojects {
     apply(plugin = "org.jetbrains.dokka")
 }
 
-tasks.dokkaHtmlMultiModule {
-    outputDirectory.set(File(System.getProperty("docsOutputDirectory", "temp")))
+dokka {
+    dokkaPublications.html {
+        outputDirectory.set(File(System.getProperty("docsOutputDirectory", "temp")))
+    }
+}
+
+dependencies {
+    dokka(project(":mockzilla"))
+    dokka(project(":mockzilla-common"))
+    dokka(project(":mockzilla-management"))
+    dokka(project(":mockzilla-management-ui"))
 }
 
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
