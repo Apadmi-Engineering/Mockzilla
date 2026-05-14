@@ -62,6 +62,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogD
 import kotlin.collections.buildList
 import kotlin.let
 
+private const val devicePanelWidgetId = "device-panel"
 private const val endpointDetailsWidgetId = "endpoint-details"
 private const val logDetailsWidgetId = "log-details"
 private const val editPresetWidgetId = "edit-preset"
@@ -75,7 +76,7 @@ fun DesktopApp(
         val viewModel = getViewModel<AppRootViewModel>()
         val state by viewModel.state.collectAsState()
 
-        var openWidgets by remember { mutableStateOf(setOf("device-panel")) }
+        var openWidgets by remember { mutableStateOf(setOf(devicePanelWidgetId)) }
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
         val rightWidgets = rightPanelWidgets(
@@ -243,7 +244,7 @@ private fun leftPanelWidgets(
     state: AppRootViewModel.State,
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
     listOf(
-        Widget(id = "device-panel") {
+        Widget(id = devicePanelWidgetId) {
             Column {
                 MetaDataWidget(connectedState.activeDevice.device)
                 MiscControlsWidget(connectedState.activeDevice.device)
