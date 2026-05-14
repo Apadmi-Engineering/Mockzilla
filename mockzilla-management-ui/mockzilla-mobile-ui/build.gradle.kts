@@ -72,12 +72,12 @@ kotlin {
         }
         commonMain.dependencies {
             /* Compose */
-            implementation(compose.runtime)
-            implementation(compose.material3)
-            implementation(compose.components.resources)
-            implementation(compose.materialIconsExtended)
+            implementation(libs.runtime)
+            implementation(libs.material3)
+            implementation(libs.components.resources)
+            implementation(libs.ui.tooling.preview)
+            implementation(libs.material.icons.extended)
             implementation(libs.navigation.compose)
-            implementation(compose.components.uiToolingPreview)
 
 
             /* Localisable Strings */

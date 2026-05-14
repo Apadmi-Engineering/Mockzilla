@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.*
 
@@ -25,7 +26,6 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTabList
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import kotlin.collections.plus
 
