@@ -14,6 +14,7 @@ import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.models.PortConflictException
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.lib.internal.utils.runHandlingPortConflict
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
@@ -25,6 +26,9 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.IgnoreTrailingSlash
 import io.ktor.server.routing.RoutingCall
 import io.ktor.server.routing.RoutingContext
+import io.ktor.util.Platform
+import io.ktor.util.PlatformUtils
+import io.ktor.util.platform
 import io.ktor.utils.io.CancellationException
 
 import kotlinx.coroutines.*
@@ -81,21 +85,10 @@ private fun Application.setupServerEnvironment(job: CompletableJob, di: Dependen
     }
     configureEndpoints(job, di)
 }
-
-private fun EmbeddedServer<*, *>.startWithErrorHandling(di: DependencyInjector) = try {
-    start(wait = false)
-} catch (e: Exception) {
-    if (e.isSomeMatchInChain { it is AddressAlreadyInUseException }) {
-        PortConflictException(di.config.port, e).also { exception ->
-            di.logger.e(exception.message, exception)
-            throw exception
-        }
-    } else {
-        throw e
-    }
-}
-
-internal actual suspend fun startServer(port: Int, di: DependencyInjector): MockzillaRuntimeParams {
+internal actual suspend fun startServer(
+    port: Int,
+    di: DependencyInjector
+): MockzillaRuntimeParams = runHandlingPortConflict(port) {
     stopServer()
 
     val job = SupervisorJob().also { job = it }
@@ -113,7 +106,7 @@ internal actual suspend fun startServer(port: Int, di: DependencyInjector): Mock
     }).apply {
         application.setupServerEnvironment(job = job, di = di)
         server = this.application.engine
-        startWithErrorHandling(di)
+        start(wait = false)
     }
 
     val actualPort = serverEngine.application.engine.resolvedConnectors()
@@ -123,7 +116,7 @@ internal actual suspend fun startServer(port: Int, di: DependencyInjector): Mock
 
     startNetworkDiscoveryBroadcastIfNeeded(job, di, actualPort)
 
-    return MockzillaRuntimeParams(
+    MockzillaRuntimeParams(
         config = di.config,
         ip = "127.0.0.1",
         mockBaseUrl = "http://127.0.0.1:$actualPort/local-mock",
