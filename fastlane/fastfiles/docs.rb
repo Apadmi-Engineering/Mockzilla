@@ -14,7 +14,7 @@ lane :generate_docs do
 
     # Generate Kotlin documentation
     gradle(
-        tasks: [":dokkaGenerate"],
+        tasks: [":dokkaGeneratePublicationHtml"],
         system_properties: {
             "docsOutputDirectory" => "#{lane_context[:repo_root]}/docs/docs/dokka"
         }

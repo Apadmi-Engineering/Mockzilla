@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.vanniktechPublish)
+    alias(libs.plugins.dokka) apply true
     kotlin("native.cocoapods") apply true
 }
 
