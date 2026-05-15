@@ -1,43 +1,18 @@
-import { MockzillaLogoDark, MockzillaLogoLight } from "./ui/icons";
-import {
-    atomOneDark,
-    colorBrewer,
-} from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import { useEffect, useState } from "react";
+import { MockzillaLogoLight } from "./ui/icons";
+import { atomOneDark } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 
 import { ArrowRight } from "lucide-react";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
+import { buttonVariants } from "./ui/button";
+import { cn } from "./ui/utils";
 import SyntaxHighlighter from "react-syntax-highlighter";
 
 export function Hero(props: any) {
-    const [isDark, setIsDark] = useState(false);
-
-    useEffect(() => {
-        // Check initial theme
-        const checkTheme = () => {
-            setIsDark(document.documentElement.classList.contains("dark"));
-        };
-
-        checkTheme();
-
-        // Watch for theme changes
-        const observer = new MutationObserver(checkTheme);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["class"],
-        });
-
-        return () => observer.disconnect();
-    }, []);
-
     return (
         <section
             {...props}
             style={{
-                backgroundImage: isDark
-                    ? MockzillaLogoDark
-                    : MockzillaLogoLight,
+                backgroundImage: MockzillaLogoLight,
                 backgroundSize: "cover",
             }}>
             <div className="py-20 sm:my-6 lg:my-0 lg:py-32 container mx-auto px-4 sm:px-6 lg:px-8 bg-white/60 dark:bg-black/60 lg:bg-transparent lg:dark:bg-transparent sm:rounded-2xl">
@@ -60,9 +35,7 @@ export function Hero(props: any) {
                                         paddingLeft: "0",
                                         paddingRight: "0",
                                     }}
-                                    style={
-                                        isDark ? atomOneDark : colorBrewer
-                                    }>{`// Configure Server
+                                    style={atomOneDark}>{`// Configure Server
 val endpoint = EndpointConfiguration
   .Builder("GET - Customer")
     .setDefaultHandler {
@@ -75,7 +48,7 @@ val endpoint = EndpointConfiguration
 
 val config = MockzillaConfig.Builder()
   .addEndpoint(endpoint)
-  
+
 // Start Server
 startMockzilla(config)`}</SyntaxHighlighter>
                             </pre>
@@ -101,25 +74,23 @@ startMockzilla(config)`}</SyntaxHighlighter>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-2">
-                            <Button
-                                size="lg"
-                                className="w-fit group shadow-xl"
-                                onClick={() =>
-                                    ((window.top || window).location.href =
-                                        "/quick-start")
-                                }>
+                            <a
+                                href="/quick-start"
+                                className={cn(
+                                    buttonVariants({ size: "lg" }),
+                                    "w-fit group shadow-xl button-glow"
+                                )}>
                                 Get Started
                                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="lg"
-                                onClick={() =>
-                                    (window.location.href = "#platform-banner")
-                                }
-                                className="w-fit group backdrop-blur-sm">
+                            </a>
+                            <a
+                                href="#platform-banner"
+                                className={cn(
+                                    buttonVariants({ variant: "outline", size: "lg" }),
+                                    "w-fit group backdrop-blur-sm"
+                                )}>
                                 Learn More
-                            </Button>
+                            </a>
                         </div>
                     </div>
                 </div>

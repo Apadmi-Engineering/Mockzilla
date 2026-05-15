@@ -1,17 +1,17 @@
-This documentation is primarily built using [MkDocs](https://www.mkdocs.org/)
-with the [Material theme](https://squidfunk.github.io/mkdocs-material/).
+This documentation is built using [Zensical](https://zensical.org/), a modern static site
+generator by the team behind Material for MkDocs.
 
-**Their documentation is brilliant so please check their docs if this is not sufficient.**
+**Their documentation is great so check it if this is not sufficient.**
 
 
 ## Working on the HomePage
 
-The homepage is a separate React site which is included in the MkDocs site.
+The homepage is a separate React site which is included in the Zensical site.
 
-In your IDE of choice open `docs/homepage` and treat it as regular standalone react site.
+In your IDE of choice open `docs/homepage` and treat it as a regular standalone React site.
 Install dependencies with `npm install` and run it with `npm run dev`.
 
-Note: Run `npm run build` to get your updates to the homepage reflected in the mkdocs site locally.
+Note: Run `npm run build` to get your updates to the homepage reflected in the docs site locally.
 
 ## Working on the rest of the documentation
 
@@ -32,6 +32,7 @@ Tested on python `v{{get_python_version()}}`
 ```bash
 # Install all dependencies
 pip install -r requirements.txt
+cd homepage && npm install
 ```
 
 Run the following to start the server.
@@ -40,13 +41,13 @@ This supports hot reloading so updating the docs should
 automatically reload the docs in your browser.
 
 ```bash
-mkdocs serve
+./serve.sh
 ```
 
 ## Macros
 
-The docs also uses the [mkdocs-macros](https://mkdocs-macros-plugin.readthedocs.io/en/latest/) plugin.
-This lets us call out to python code (and a load of other features) from within markdown.
+The docs use Zensical's built-in macro support, which is compatible with the `mkdocs-macros-plugin`
+API. This lets us call out to Python code from within Markdown.
 
 See the `main.py` file which includes some useful macros.
 

@@ -1,6 +1,8 @@
-import { Button } from "./ui/button";
+import { buttonVariants } from "./ui/button";
+import { cn } from "./ui/utils";
 import { GithubIcon } from "./ui/icons";
-import logo from "../assets/logo.svg";
+
+const logo = "/img/icon.svg";
 
 export function Footer() {
     return (
@@ -22,7 +24,6 @@ export function Footer() {
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li>
                                 <a
-                                    target="_top"
                                     href="/quick-start"
                                     className="hover:text-foreground transition-colors">
                                     Getting Started
@@ -30,7 +31,6 @@ export function Footer() {
                             </li>
                             <li>
                                 <a
-                                    target="_top"
                                     href="/dokka"
                                     className="hover:text-foreground transition-colors">
                                     API Reference
@@ -38,7 +38,6 @@ export function Footer() {
                             </li>
                             <li>
                                 <a
-                                    target="_top"
                                     href="https://github.com/Apadmi-Engineering/Mockzilla/tree/develop/samples"
                                     className="hover:text-foreground transition-colors">
                                     Examples
@@ -52,7 +51,6 @@ export function Footer() {
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li>
                                 <a
-                                    target="_top"
                                     href="https://github.com/Apadmi-Engineering/Mockzilla/"
                                     className="hover:text-foreground transition-colors">
                                     GitHub
@@ -60,7 +58,6 @@ export function Footer() {
                             </li>
                             <li>
                                 <a
-                                    target="_top"
                                     href="/contributing"
                                     className="hover:text-foreground transition-colors">
                                     Contributing
@@ -74,7 +71,6 @@ export function Footer() {
                         <ul className="space-y-2 text-sm text-muted-foreground">
                             <li>
                                 <a
-                                    target="_top"
                                     href="https://github.com/Apadmi-Engineering/Mockzilla/issues"
                                     className="hover:text-foreground transition-colors">
                                     Support
@@ -90,16 +86,14 @@ export function Footer() {
                     </p>
                     <div className="flex space-x-6 text-sm text-muted-foreground mt-4 sm:mt-0">
                         <div className="flex space-x-2">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() =>
-                                    (window.location.href =
-                                        "https://github.com/Apadmi-Engineering/Mockzilla/")
-                                }
-                                className="hover:text-accent">
+                            <a
+                                href="https://github.com/Apadmi-Engineering/Mockzilla/"
+                                className={cn(
+                                    buttonVariants({ variant: "ghost", size: "icon" }),
+                                    "hover:text-accent"
+                                )}>
                                 <GithubIcon className="h-4 w-4" />
-                            </Button>
+                            </a>
                         </div>
                     </div>
                 </div>
