@@ -4,20 +4,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.surfaceMuted
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MzkSlider(
+fun MockzillaSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
@@ -25,7 +26,7 @@ fun MzkSlider(
     enabled: Boolean = true,
     onValueChangeFinished: (() -> Unit)? = null,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Slider(
         value = value,
         onValueChange = onValueChange,
@@ -34,21 +35,21 @@ fun MzkSlider(
         valueRange = valueRange,
         onValueChangeFinished = onValueChangeFinished,
         colors = SliderDefaults.colors(
-            thumbColor = tokens.accent,
-            activeTrackColor = tokens.accent,
-            inactiveTrackColor = tokens.bg4,
-            disabledThumbColor = tokens.fg3,
-            disabledActiveTrackColor = tokens.fg3,
-            disabledInactiveTrackColor = tokens.bg4,
+            thumbColor = colorScheme.primary,
+            activeTrackColor = colorScheme.primary,
+            inactiveTrackColor = colorScheme.surfaceMuted,
+            disabledThumbColor = colorScheme.onSurfaceFaint,
+            disabledActiveTrackColor = colorScheme.onSurfaceFaint,
+            disabledInactiveTrackColor = colorScheme.surfaceMuted,
         ),
     )
 }
 
 @Preview
 @Composable
-private fun MzkSliderPreview() = PreviewSurface {
+private fun MockzillaSliderPreview() = PreviewSurface {
     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        MzkSlider(value = 0.3f, onValueChange = {})
-        MzkSlider(value = 0.7f, onValueChange = {}, enabled = false)
+        MockzillaSlider(value = 0.3f, onValueChange = {})
+        MockzillaSlider(value = 0.7f, onValueChange = {}, enabled = false)
     }
 }

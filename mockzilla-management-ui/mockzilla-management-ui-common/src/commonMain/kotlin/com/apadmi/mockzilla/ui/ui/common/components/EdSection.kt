@@ -5,12 +5,12 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,17 +28,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.background
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@Suppress("MAGIC_NUMBER")
 private val sectionShape = RoundedCornerShape(8.dp)
 
 @Suppress("MAGIC_NUMBER")
@@ -50,7 +50,7 @@ fun EdSection(
     initiallyExpanded: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
     val chevronRotation by animateFloatAsState(
         targetValue = if (expanded) 90f else 0f,
@@ -60,12 +60,12 @@ fun EdSection(
     Column(
         modifier = modifier
             .clip(sectionShape)
-            .border(width = 1.dp, color = tokens.line1, shape = sectionShape),
+            .border(width = 1.dp, color = colorScheme.outline, shape = sectionShape),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(tokens.bg2)
+                .background(colorScheme.surfaceContainer)
                 .clickable { expanded = !expanded }
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -75,21 +75,21 @@ fun EdSection(
                 modifier = Modifier.size(10.dp).rotate(chevronRotation),
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
-                tint = tokens.fg3,
+                tint = colorScheme.onSurfaceFaint,
             )
-            if (icon != null) {
+            icon?.let {
                 Icon(
                     modifier = Modifier.size(12.dp),
                     imageVector = icon,
                     contentDescription = null,
-                    tint = tokens.accent,
+                    tint = colorScheme.primary,
                 )
             }
             Text(
                 modifier = Modifier.weight(1f),
                 text = label.uppercase(),
                 style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.06.em),
-                color = tokens.fg1,
+                color = colorScheme.onSurfaceVariant,
             )
         }
 
@@ -101,7 +101,7 @@ fun EdSection(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(tokens.bg1)
+                    .background(colorScheme.surface)
                     .padding(horizontal = 14.dp, vertical = 12.dp),
             ) {
                 content()

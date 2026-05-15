@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,7 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.surfaceMuted
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -35,14 +36,14 @@ fun MzkToggle(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
 
     val trackColor by animateColorAsState(
-        targetValue = if (checked) tokens.accent else tokens.bg4,
+        targetValue = if (checked) colorScheme.primary else colorScheme.surfaceMuted,
         animationSpec = tween(140),
     )
     val thumbColor by animateColorAsState(
-        targetValue = if (checked) tokens.accentFg else tokens.fg2,
+        targetValue = if (checked) colorScheme.onPrimary else colorScheme.onSurfaceMuted,
         animationSpec = tween(140),
     )
     val thumbOffset by animateFloatAsState(
@@ -55,7 +56,7 @@ fun MzkToggle(
             .size(width = 32.dp, height = 18.dp)
             .clip(RoundedCornerShape(10.dp))
             .background(trackColor)
-            .border(width = 1.dp, color = tokens.line1, shape = RoundedCornerShape(10.dp))
+            .border(width = 1.dp, color = colorScheme.outline, shape = RoundedCornerShape(10.dp))
             .clickable(enabled = enabled) { onCheckedChange(!checked) },
         contentAlignment = Alignment.CenterStart,
     ) {

@@ -87,9 +87,10 @@ fun WidgetScaffold(
     }
     val bottomPanelHeightRestriction = { height: Dp -> max(0.dp, height) }
 
+    val colorScheme = MaterialTheme.colorScheme
     Box(
         modifier = modifier
-            .background(com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens.current.bg0)
+            .background(colorScheme.background)
             .onSizeChanged { size ->
                 totalWidth = with(density) { size.width.toDp() }
             },

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -57,6 +56,8 @@ import com.apadmi.mockzilla.ui.ui.common.components.SurfaceHeader
 import com.apadmi.mockzilla.ui.ui.common.components.Tag
 import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
@@ -105,8 +106,8 @@ private fun ColumnScope.PopulatedState(
         ) {
             BaseButton(
                 label = strings.widgets.createEditPreset.save,
-                variant = com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant.Solid,
-                size = com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize.Md,
+                variant = ButtonVariant.Solid,
+                size = ButtonSize.Md,
                 onClick = onSave,
             )
         }

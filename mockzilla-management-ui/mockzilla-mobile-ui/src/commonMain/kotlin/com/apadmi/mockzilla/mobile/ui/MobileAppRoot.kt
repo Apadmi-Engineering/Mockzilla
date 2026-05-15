@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,7 +54,7 @@ import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.widgets.debug.DebugWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetWidget
@@ -69,7 +68,7 @@ internal fun MobileAppRoot(
     strings: Strings = LocalStrings.current,
     onClose: () -> Unit,
 ) = AppTheme {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     val viewModel = getViewModel<AppRootViewModel>()
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
@@ -77,12 +76,12 @@ internal fun MobileAppRoot(
         .value
         .size > 2
 
-    Column(modifier = Modifier.fillMaxSize().background(tokens.bg0)) {
+    Column(modifier = Modifier.fillMaxSize().background(colorScheme.background)) {
         // App bar
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(tokens.bg1)
+                .background(colorScheme.surface)
                 .statusBarsPadding()
                 .padding(horizontal = 10.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -92,13 +91,13 @@ internal fun MobileAppRoot(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(tokens.bg3),
+                        .background(colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center,
                 ) {
                     IconButton(onClick = navController::navigateUp) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            tint = tokens.fg0,
+                            tint = colorScheme.onSurface,
                             contentDescription = strings.common.backDescription,
                         )
                     }
@@ -111,7 +110,7 @@ internal fun MobileAppRoot(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Article,
-                        tint = tokens.fg1,
+                        tint = colorScheme.onSurfaceVariant,
                         contentDescription = strings.common.debugDescription,
                     )
                 }
@@ -123,13 +122,13 @@ internal fun MobileAppRoot(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(tokens.bg3),
+                    .background(colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
                 IconButton(onClick = onClose) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        tint = tokens.fg1,
+                        tint = colorScheme.onSurfaceVariant,
                         contentDescription = strings.common.closeDescription,
                     )
                 }
@@ -158,10 +157,10 @@ private fun ConnectedState(
     navController: NavHostController,
     currentState: State.Connected,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Column(modifier = Modifier.fillMaxSize()) {
         NavHost(
-            modifier = Modifier.weight(1f).background(color = tokens.bg0),
+            modifier = Modifier.weight(1f).background(color = colorScheme.background),
             navController = navController,
             startDestination = Destination.EndpointList,
             enterTransition = {
@@ -211,7 +210,7 @@ private fun ConnectedState(
             }
 
             composable<Destination.EndpointList> {
-                Box(modifier = Modifier.fillMaxSize().background(tokens.bg0)) {
+                Box(modifier = Modifier.fillMaxSize().background(colorScheme.background)) {
                     EndpointsWidget(
                         device = currentState.activeDevice.device,
                         onEndpointClicked = {
@@ -225,13 +224,13 @@ private fun ConnectedState(
             }
 
             composable<Destination.GlobalControls> {
-                Box(modifier = Modifier.fillMaxSize().background(tokens.bg0)) {
+                Box(modifier = Modifier.fillMaxSize().background(colorScheme.background)) {
                     GlobalControlsWidget(device = currentState.activeDevice.device)
                 }
             }
 
             composable<Destination.CreateEditPreset> { backStackEntry ->
-                Box(modifier = Modifier.fillMaxSize().background(tokens.bg0)) {
+                Box(modifier = Modifier.fillMaxSize().background(colorScheme.background)) {
                     CreateEditPresetWidget(
                         device = currentState.activeDevice.device,
                         activeEndpoint = EndpointConfiguration.Key(
@@ -243,7 +242,7 @@ private fun ConnectedState(
             }
 
             composable<Destination.Debug> {
-                Box(modifier = Modifier.fillMaxSize().background(tokens.bg0)) {
+                Box(modifier = Modifier.fillMaxSize().background(colorScheme.background)) {
                     DebugWidget()
                 }
             }
@@ -254,13 +253,13 @@ private fun ConnectedState(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(24.dp)
-                .background(tokens.bg0),
+                .background(colorScheme.background),
             contentAlignment = Alignment.Center,
         ) {
             Box(
                 modifier = Modifier
                     .size(width = 104.dp, height = 2.dp)
-                    .background(tokens.fg3, shape = RoundedCornerShape(1.dp)),
+                    .background(colorScheme.onSurfaceFaint, shape = RoundedCornerShape(1.dp)),
             )
         }
     }

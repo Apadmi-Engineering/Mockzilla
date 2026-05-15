@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,10 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.background
 import androidx.compose.ui.unit.dp
 
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 @Composable
 fun SurfaceHeader(
@@ -22,12 +22,12 @@ fun SurfaceHeader(
     subtitle: String?,
     actions: @Composable () -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = tokens.bg2)
-            .border(width = 1.dp, color = tokens.line1)
+            .background(color = colorScheme.surfaceContainer)
+            .border(width = 1.dp, color = colorScheme.outline)
             .padding(vertical = 10.dp, horizontal = 14.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -36,13 +36,13 @@ fun SurfaceHeader(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
-                color = tokens.fg0,
+                color = colorScheme.onSurface,
             )
             subtitle?.let {
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodySmall,
-                    color = tokens.fg2,
+                    color = colorScheme.onSurfaceMuted,
                 )
             }
         }

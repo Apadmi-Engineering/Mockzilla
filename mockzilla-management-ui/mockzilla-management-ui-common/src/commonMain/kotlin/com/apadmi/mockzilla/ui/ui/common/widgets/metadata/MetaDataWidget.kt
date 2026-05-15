@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -96,62 +97,8 @@ fun MetaDataListView(
     Spacer(modifier = Modifier.height(16.dp))
 
     SessionSection(
-        uptime = state.uptime,
         requests = state.requestCount?.toString() ?: "–",
         port = device?.port,
-    )
-}
-
-// ── Sections ─────────────────────────────────────────────────────────────────
-
-@Composable
-private fun DeviceSection(metaData: MetaData, strings: Strings) = Column {
-    SectionHeader(title = strings.widgets.metaData.deviceSection)
-    MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget?.label(strings) ?: "-")
-    MetaDataRow(strings.widgets.metaData.operatingSystemVersion, metaData.operatingSystemVersion)
-    MetaDataRow(strings.widgets.metaData.deviceModel, metaData.deviceModel)
-    MetaDataRow(strings.widgets.metaData.appVersion, metaData.appVersion)
-    MetaDataRow(strings.widgets.metaData.mockzillaVersion, metaData.mockzillaVersion)
-}
-
-@Composable
-private fun SessionSection(uptime: String, requests: String, port: String?) = Column {
-    SectionHeader(title = "Session")
-    val cardShape = RoundedCornerShape(8.dp)
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(cardShape)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), cardShape)
-            .padding(16.dp)
-    ) {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            SessionRow(label = "uptime", value = uptime)
-            SessionRow(label = "requests", value = requests)
-            SessionRow(label = "port", value = port?.let { ":$it" } ?: "–")
-        }
-    }
-}
-
-// ── Row components ────────────────────────────────────────────────────────────
-
-@Composable
-private fun SessionRow(label: String, value: String) = Row(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.SpaceBetween
-) {
-    Text(
-        text = label,
-        style = MaterialTheme.typography.bodySmall,
-        fontFamily = FontFamily.Monospace,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-    )
-    Text(
-        text = value,
-        style = MaterialTheme.typography.bodySmall,
-        fontFamily = FontFamily.Monospace,
-        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -184,6 +131,82 @@ fun MetaDataRow(
     if (showDivider) {
         DashedDivider()
     }
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
+
+@Suppress("COMPLEX_EXPRESSION")
+@Preview
+@Composable
+fun MetaDataListViewPreview() = PreviewSurface() {
+    MetaDataListView(
+        state = MetaDataWidgetViewModel.State.DisplayMetaData(
+            metaData = MetaData(
+                appName = "Runner",
+                appPackage = "uk.co.homeserve.pega.sus.internal",
+                operatingSystemVersion = "Version 18.5 (Build 22F77)",
+                deviceModel = "iPhone 16 Plus",
+                appVersion = "999.999.1",
+                mockzillaVersion = "3.0.0-alpha2",
+                runTarget = RunTarget.IosSimulator
+            ),
+            requestCount = 17,
+        ),
+        device = Device(ip = "127.0.0.1", port = "49812")
+    )
+}
+
+// ── Sections ─────────────────────────────────────────────────────────────────
+
+@Composable
+private fun DeviceSection(metaData: MetaData, strings: Strings) = Column {
+    SectionHeader(title = strings.widgets.metaData.deviceSection)
+    MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget?.label(strings) ?: "-")
+    MetaDataRow(strings.widgets.metaData.operatingSystemVersion, metaData.operatingSystemVersion)
+    MetaDataRow(strings.widgets.metaData.deviceModel, metaData.deviceModel)
+    MetaDataRow(strings.widgets.metaData.appVersion, metaData.appVersion)
+    MetaDataRow(strings.widgets.metaData.mockzillaVersion, metaData.mockzillaVersion)
+}
+
+@Suppress("MAGIC_NUMBER")
+@Composable
+private fun SessionSection(requests: String, port: String?) = Column {
+    SectionHeader(title = "Session")
+    val cardShape = RoundedCornerShape(8.dp)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(cardShape)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), cardShape)
+            .padding(16.dp)
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            SessionRow(label = "requests", value = requests)
+            SessionRow(label = "port", value = port?.let { ":$it" } ?: "–")
+        }
+    }
+}
+
+// ── Row components ────────────────────────────────────────────────────────────
+
+@Composable
+private fun SessionRow(label: String, value: String) = Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.SpaceBetween
+) {
+    Text(
+        text = label,
+        style = MaterialTheme.typography.bodySmall,
+        fontFamily = FontFamily.Monospace,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+    )
+    Text(
+        text = value,
+        style = MaterialTheme.typography.bodySmall,
+        fontFamily = FontFamily.Monospace,
+        color = MaterialTheme.colorScheme.onSurface
+    )
 }
 
 // ── App header ────────────────────────────────────────────────────────────────
@@ -226,38 +249,17 @@ private fun AppHeader(appName: String, appPackage: String) = Row(
 
 // ── Primitives ────────────────────────────────────────────────────────────────
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 private fun DashedDivider() {
+    val dividerColor = Color.Gray.copy(alpha = 0.25f)
     Canvas(modifier = Modifier.fillMaxWidth().height(1.dp)) {
         drawLine(
-            color = androidx.compose.ui.graphics.Color.Gray.copy(alpha = 0.25f),
+            color = dividerColor,
             start = Offset(0f, size.height / 2),
             end = Offset(size.width, size.height / 2),
             strokeWidth = 1.dp.toPx(),
             pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 8f), 0f)
         )
     }
-}
-
-// ── Preview ───────────────────────────────────────────────────────────────────
-
-@Preview
-@Composable
-fun MetaDataListViewPreview() = PreviewSurface() {
-    MetaDataListView(
-        state = MetaDataWidgetViewModel.State.DisplayMetaData(
-            metaData = MetaData(
-                appName = "Runner",
-                appPackage = "uk.co.homeserve.pega.sus.internal",
-                operatingSystemVersion = "Version 18.5 (Build 22F77)",
-                deviceModel = "iPhone 16 Plus",
-                appVersion = "999.999.1",
-                mockzillaVersion = "3.0.0-alpha2",
-                runTarget = RunTarget.IosSimulator
-            ),
-            uptime = "5m 42s",
-            requestCount = 17,
-        ),
-        device = Device(ip = "127.0.0.1", port = "49812")
-    )
 }

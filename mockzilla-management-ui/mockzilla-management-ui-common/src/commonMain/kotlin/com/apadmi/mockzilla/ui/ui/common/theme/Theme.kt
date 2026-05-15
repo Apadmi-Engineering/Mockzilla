@@ -29,6 +29,128 @@ val LocalForceDarkMode = compositionLocalOf { false }
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalSetScaleFactor = compositionLocalOf<(Float) -> Unit> { { /* noop */ } }
 
+private val darkColors = darkColorScheme(
+    primary = darkPrimary,
+    onPrimary = darkOnPrimary,
+    primaryContainer = darkPrimaryContainer,
+    onPrimaryContainer = darkOnSurface,
+    secondary = darkPrimary,
+    onSecondary = darkOnPrimary,
+    secondaryContainer = darkSurfaceVariant,
+    onSecondaryContainer = darkOnSurface,
+    tertiary = darkTertiary,
+    onTertiary = darkBackground,
+    tertiaryContainer = darkTertiaryContainer,
+    onTertiaryContainer = darkOnSurface,
+    error = darkError,
+    errorContainer = darkErrorContainer,
+    onError = darkBackground,
+    onErrorContainer = darkError,
+    background = darkBackground,
+    onBackground = darkOnSurface,
+    surface = darkSurface,
+    onSurface = darkOnSurface,
+    surfaceVariant = darkSurfaceVariant,
+    surfaceContainer = darkSurfaceContainer,
+    onSurfaceVariant = darkOnSurfaceVariant,
+    outline = darkOutline,
+    outlineVariant = darkOutlineVariant,
+    inverseOnSurface = darkBackground,
+    inverseSurface = darkOnSurface,
+    inversePrimary = darkInversePrimary,
+    scrim = Color.Black,
+)
+
+private val lightColors = lightColorScheme(
+    primary = lightPrimary,
+    onPrimary = lightOnPrimary,
+    primaryContainer = lightPrimaryContainer,
+    onPrimaryContainer = lightOnSurface,
+    secondary = lightPrimary,
+    onSecondary = lightOnPrimary,
+    secondaryContainer = lightSurfaceVariant,
+    onSecondaryContainer = lightOnSurface,
+    tertiary = lightTertiary,
+    onTertiary = lightOnSurface,
+    tertiaryContainer = lightTertiaryContainer,
+    onTertiaryContainer = lightOnSurface,
+    error = lightError,
+    errorContainer = lightErrorContainer,
+    onError = lightOnSurface,
+    onErrorContainer = lightError,
+    background = lightBackground,
+    onBackground = lightOnSurface,
+    surface = lightSurface,
+    onSurface = lightOnSurface,
+    surfaceVariant = lightSurfaceVariant,
+    surfaceContainer = lightSurfaceContainer,
+    onSurfaceVariant = lightOnSurfaceVariant,
+    outline = lightOutline,
+    outlineVariant = lightOutlineVariant,
+    inverseOnSurface = lightOnSurface,
+    inverseSurface = lightBackground,
+    inversePrimary = lightInversePrimary,
+    scrim = Color.Black,
+)
+
+// ── Extensions for colours that don't map onto a Material slot ────────────────
+
+@get:Composable
+val ColorScheme.surfaceMuted: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkSurfaceMuted else lightSurfaceMuted
+
+@get:Composable
+val ColorScheme.surfaceSubtle: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkSurfaceSubtle else lightSurfaceSubtle
+
+@get:Composable
+val ColorScheme.onSurfaceMuted: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkOnSurfaceMuted else lightOnSurfaceMuted
+
+@get:Composable
+val ColorScheme.onSurfaceFaint: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkOnSurfaceFaint else lightOnSurfaceFaint
+
+@get:Composable
+val ColorScheme.success: StateColors
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) {
+        StateColors(primary = darkSuccess, container = darkSuccessContainer)
+    } else {
+        StateColors(primary = lightSuccess, container = lightSuccessContainer)
+    }
+
+@get:Composable
+val ColorScheme.warning: StateColors
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) {
+        StateColors(primary = darkWarning, container = darkWarningContainer)
+    } else {
+        StateColors(primary = lightWarning, container = lightWarningContainer)
+    }
+
+@get:Composable
+val ColorScheme.methodGet: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkMethodGet else lightMethodGet
+
+@get:Composable
+val ColorScheme.methodPost: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkMethodPost else lightMethodPost
+
+@get:Composable
+val ColorScheme.methodPut: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkMethodPut else lightMethodPut
+
+@get:Composable
+val ColorScheme.methodPatch: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkMethodPatch else lightMethodPatch
+
+@get:Composable
+val ColorScheme.methodDelete: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkMethodDelete else lightMethodDelete
+
+@get:Composable
+val ColorScheme.methodOther: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkMethodOther else lightMethodOther
+
 /**
  * @property primary
  * @property container
@@ -57,83 +179,17 @@ fun Modifier.alternatingBackground(index: Int) = background(
     }
 )
 
-private fun buildDarkColorScheme(t: MockzillaTokens): ColorScheme = darkColorScheme(
-    primary = t.accent,
-    onPrimary = t.accentFg,
-    primaryContainer = t.accentSoft,
-    onPrimaryContainer = t.fg0,
-    secondary = t.accent,
-    onSecondary = t.accentFg,
-    secondaryContainer = t.bg3,
-    onSecondaryContainer = t.fg0,
-    tertiary = t.info,
-    onTertiary = t.bg0,
-    tertiaryContainer = t.infoSoft,
-    onTertiaryContainer = t.fg0,
-    error = t.err,
-    errorContainer = t.errSoft,
-    onError = t.bg0,
-    onErrorContainer = t.err,
-    background = t.bg0,
-    onBackground = t.fg0,
-    surface = t.bg1,
-    onSurface = t.fg0,
-    surfaceVariant = t.bg3,
-    surfaceContainer = t.bg2,
-    onSurfaceVariant = t.fg1,
-    outline = t.line1,
-    outlineVariant = t.line2,
-    inverseOnSurface = t.bg0,
-    inverseSurface = t.fg0,
-    inversePrimary = t.accent2,
-    scrim = Color.Black,
-)
-
-private fun buildLightColorScheme(t: MockzillaTokens): ColorScheme = lightColorScheme(
-    primary = t.accent,
-    onPrimary = t.accentFg,
-    primaryContainer = t.accentSoft,
-    onPrimaryContainer = t.fg0,
-    secondary = t.accent,
-    onSecondary = t.accentFg,
-    secondaryContainer = t.bg3,
-    onSecondaryContainer = t.fg0,
-    tertiary = t.info,
-    onTertiary = t.fg0,
-    tertiaryContainer = t.infoSoft,
-    onTertiaryContainer = t.fg0,
-    error = t.err,
-    errorContainer = t.errSoft,
-    onError = t.fg0,
-    onErrorContainer = t.err,
-    background = t.bg0,
-    onBackground = t.fg0,
-    surface = t.bg1,
-    onSurface = t.fg0,
-    surfaceVariant = t.bg3,
-    surfaceContainer = t.bg2,
-    onSurfaceVariant = t.fg1,
-    outline = t.line1,
-    outlineVariant = t.line2,
-    inverseOnSurface = t.fg0,
-    inverseSurface = t.bg0,
-    inversePrimary = t.accent2,
-    scrim = Color.Black,
-)
-
 @Composable
 fun AppTheme(
     useDarkTheme: Boolean = LocalForceDarkMode.current || isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val tokens = if (useDarkTheme) MockzillaTokens.Dark else MockzillaTokens.Light
-    val colorScheme = if (useDarkTheme) buildDarkColorScheme(tokens) else buildLightColorScheme(tokens)
+    val colorScheme = if (useDarkTheme) darkColors else lightColors
     val uiFont = mockzillaFontFamily()
     val monoFont = mockzillaMonoFontFamily()
     var scaleFactor by rememberSaveable { mutableFloatStateOf(ScaleFactor.default) }
     ProvideLocalisableStrings {
         CompositionLocalProvider(
-            LocalMockzillaTokens provides tokens,
             LocalMonoFontFamily provides monoFont,
             LocalSetScaleFactor provides { scale -> scaleFactor = scale },
         ) {

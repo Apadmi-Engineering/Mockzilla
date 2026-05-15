@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,8 +32,9 @@ import com.apadmi.mockzilla.ui.ui.common.assets.Play
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
-import com.apadmi.mockzilla.ui.ui.common.theme.MockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.success
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -44,15 +45,20 @@ enum class ForceFailureBannerState {
     ;
 }
 
+/**
+ * @property accent
+ * @property soft
+ */
 private data class BannerColors(
     val accent: Color,
     val soft: Color,
 )
 
-private fun MockzillaTokens.bannerColors(state: ForceFailureBannerState) = when (state) {
-    ForceFailureBannerState.FullFailure -> BannerColors(err, errSoft)
-    ForceFailureBannerState.PartialFailure -> BannerColors(warn, warnSoft)
-    ForceFailureBannerState.Normal -> BannerColors(ok, okSoft)
+@Composable
+private fun ColorScheme.bannerColors(state: ForceFailureBannerState) = when (state) {
+    ForceFailureBannerState.FullFailure -> BannerColors(error, errorContainer)
+    ForceFailureBannerState.PartialFailure -> BannerColors(warning.primary, warning.container)
+    ForceFailureBannerState.Normal -> BannerColors(success.primary, success.container)
 }
 
 @Composable
@@ -63,8 +69,8 @@ internal fun ForceFailureBanner(
     onForceFailureClicked: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
-    val tokens = LocalMockzillaTokens.current
-    val colors = tokens.bannerColors(state)
+    val colorScheme = MaterialTheme.colorScheme
+    val colors = colorScheme.bannerColors(state)
     val titleAndSubtitle = when (state) {
         ForceFailureBannerState.FullFailure -> strings.widgets.globalControls.forcedFailureBannerConfig
         ForceFailureBannerState.PartialFailure -> strings.widgets.globalControls.partialFailureBannerConfig
@@ -102,7 +108,7 @@ internal fun ForceFailureBanner(
                     style = MaterialTheme.typography.titleSmall,
                 )
                 Text(
-                    color = tokens.fg2,
+                    color = colorScheme.onSurfaceMuted,
                     text = titleAndSubtitle.subtitle,
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -153,7 +159,7 @@ private fun ForceFailureBannerDarkPreview() = PreviewSurface(darkTheme = true) {
 @Composable
 private fun GlobalFailureConfigBannerPreview() {
     Column(
-        modifier = Modifier.padding(8.dp).background(LocalMockzillaTokens.current.bg0),
+        modifier = Modifier.padding(8.dp).background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         ForceFailureBannerState.entries.forEach {

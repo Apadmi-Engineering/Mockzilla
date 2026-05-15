@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,7 +37,9 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.success
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -68,9 +68,9 @@ fun DeviceTabsWidgetContent(
     onAddNewDevice: () -> Unit,
     onCloseTab: (State.DeviceTabEntry) -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
 
-    Column(modifier = modifier.background(tokens.bg1)) {
+    Column(modifier = modifier.background(colorScheme.surface)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,10 +94,11 @@ fun DeviceTabsWidgetContent(
             )
         }
 
-        HorizontalDivider(color = tokens.line1, thickness = 1.dp)
+        HorizontalDivider(color = colorScheme.outline, thickness = 1.dp)
     }
 }
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 private fun DeviceChip(
     device: State.DeviceTabEntry,
@@ -105,18 +106,18 @@ private fun DeviceChip(
     onSelect: () -> Unit,
     onClose: () -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     val chipShape = RoundedCornerShape(8.dp)
-    val dotColor = if (device.isConnected) tokens.ok else tokens.fg3
-    val statusColor = if (device.isConnected) tokens.ok else tokens.fg3
+    val dotColor = if (device.isConnected) colorScheme.success.primary else colorScheme.onSurfaceFaint
+    val statusColor = if (device.isConnected) colorScheme.success.primary else colorScheme.onSurfaceFaint
 
     Box(
         modifier = Modifier
             .clip(chipShape)
-            .background(if (device.isActive) tokens.bg3 else tokens.bg2)
+            .background(if (device.isActive) colorScheme.surfaceVariant else colorScheme.surfaceContainer)
             .border(
                 width = 1.dp,
-                color = if (device.isActive) tokens.line2 else tokens.line1,
+                color = if (device.isActive) colorScheme.outlineVariant else colorScheme.outline,
                 shape = chipShape
             )
             .clickable(onClick = onSelect)
@@ -146,7 +147,7 @@ private fun DeviceChip(
                 Text(
                     text = device.name,
                     style = MaterialTheme.typography.labelMedium,
-                    color = if (device.isActive) tokens.fg0 else tokens.fg1,
+                    color = if (device.isActive) colorScheme.onSurface else colorScheme.onSurfaceVariant,
                 )
                 Text(
                     text = if (device.isConnected) {
@@ -169,7 +170,7 @@ private fun DeviceChip(
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = strings.widgets.deviceTabs.closeButtonDescription,
-                    tint = tokens.fg3,
+                    tint = colorScheme.onSurfaceFaint,
                     modifier = Modifier.size(12.dp),
                 )
             }
@@ -179,7 +180,7 @@ private fun DeviceChip(
 
 @Composable
 private fun AddDeviceButton(label: String, onClick: () -> Unit) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
 
     Row(
         modifier = Modifier
@@ -192,17 +193,16 @@ private fun AddDeviceButton(label: String, onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.Add,
             contentDescription = null,
-            tint = tokens.fg2,
+            tint = colorScheme.onSurfaceMuted,
             modifier = Modifier.size(14.dp),
         )
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = tokens.fg2,
+            color = colorScheme.onSurfaceMuted,
         )
     }
 }
-
 
 @Preview
 @Composable

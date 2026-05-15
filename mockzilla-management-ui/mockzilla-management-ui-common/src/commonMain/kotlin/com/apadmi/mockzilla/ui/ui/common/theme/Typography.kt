@@ -21,6 +21,9 @@ import com.apadmi.mockzilla_management_ui_common.generated.resources.jetbrainsmo
 
 import org.jetbrains.compose.resources.Font
 
+@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
+val LocalMonoFontFamily = compositionLocalOf<FontFamily> { FontFamily.Monospace }
+
 @Composable
 fun mockzillaFontFamily(): FontFamily = FontFamily(
     Font(Res.font.geist_regular, weight = FontWeight.Normal),
@@ -36,10 +39,7 @@ fun mockzillaMonoFontFamily(): FontFamily = FontFamily(
     Font(Res.font.jetbrainsmono_semibold, weight = FontWeight.SemiBold),
 )
 
-@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-val LocalMonoFontFamily = compositionLocalOf<FontFamily> { FontFamily.Monospace }
-
-@Suppress("MAGIC_NUMBER")
+@Suppress("MAGIC_NUMBER", "TOO_LONG_FUNCTION")
 fun mockzillaTypography(uiFont: FontFamily): Typography = Typography(
     // Small utility labels — section headers, chips, monospace tags
     labelSmall = TextStyle(

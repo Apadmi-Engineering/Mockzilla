@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,13 +31,18 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-enum class ButtonVariant { Ghost, Outline, Solid, Soft, Danger }
-enum class ButtonSize { Sm, Md, Lg }
-enum class ButtonContentAlignment { Start, Center }
+enum class ButtonVariant {
+    Danger, Ghost, Outline, Soft, Solid
+}
+enum class ButtonSize {
+    Lg, Md, Sm
+}
+enum class ButtonContentAlignment {
+    Center, Start
+}
 
 @Suppress("MAGIC_NUMBER")
 @Composable
@@ -50,33 +56,33 @@ fun BaseButton(
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
     val bgTarget = when (variant) {
-        ButtonVariant.Ghost -> if (isHovered && enabled) tokens.bg3 else Color.Transparent
+        ButtonVariant.Ghost -> if (isHovered && enabled) colorScheme.surfaceVariant else Color.Transparent
         ButtonVariant.Outline -> Color.Transparent
-        ButtonVariant.Solid -> if (isHovered && enabled) tokens.accent2 else tokens.accent
-        ButtonVariant.Soft -> tokens.bg3
+        ButtonVariant.Solid -> if (isHovered && enabled) colorScheme.inversePrimary else colorScheme.primary
+        ButtonVariant.Soft -> colorScheme.surfaceVariant
         ButtonVariant.Danger -> Color.Transparent
     }
     val bgColor by animateColorAsState(targetValue = bgTarget, animationSpec = tween(140))
 
     val contentColor = when (variant) {
-        ButtonVariant.Ghost -> tokens.fg1
-        ButtonVariant.Outline -> tokens.fg0
-        ButtonVariant.Solid -> tokens.accentFg
-        ButtonVariant.Soft -> tokens.fg0
-        ButtonVariant.Danger -> tokens.err
+        ButtonVariant.Ghost -> colorScheme.onSurfaceVariant
+        ButtonVariant.Outline -> colorScheme.onSurface
+        ButtonVariant.Solid -> colorScheme.onPrimary
+        ButtonVariant.Soft -> colorScheme.onSurface
+        ButtonVariant.Danger -> colorScheme.error
     }
 
     val borderTarget = when (variant) {
         ButtonVariant.Ghost -> Color.Transparent
-        ButtonVariant.Outline -> if (isHovered && enabled) tokens.line2 else tokens.line1
+        ButtonVariant.Outline -> if (isHovered && enabled) colorScheme.outlineVariant else colorScheme.outline
         ButtonVariant.Solid -> Color.Transparent
-        ButtonVariant.Soft -> tokens.line1
-        ButtonVariant.Danger -> tokens.err.copy(alpha = 0.3f)
+        ButtonVariant.Soft -> colorScheme.outline
+        ButtonVariant.Danger -> colorScheme.error.copy(alpha = 0.3f)
     }
     val borderColor by animateColorAsState(targetValue = borderTarget, animationSpec = tween(140))
 

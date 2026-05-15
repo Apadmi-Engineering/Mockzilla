@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -28,7 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.desktop.utils.rotateVertically
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -56,10 +55,10 @@ fun VerticalTabList(
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Column(
         modifier = modifier
-            .background(tokens.bg1)
+            .background(colorScheme.surface)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
@@ -82,11 +81,11 @@ fun HorizontalTabList(
     selected: Int?,
     onSelect: (Int) -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = modifier
-            .background(tokens.bg1)
-            .border(width = 1.dp, color = tokens.line1)
+            .background(colorScheme.surface)
+            .border(width = 1.dp, color = colorScheme.outline)
             .horizontalScroll(rememberScrollState()),
     ) {
         tabs.forEachIndexed { index, tab ->
@@ -116,12 +115,12 @@ private fun TabItem(
     subtitle: String? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Box(
         modifier = modifier
-            .background(if (selected) tokens.bg3 else Color.Transparent)
+            .background(if (selected) colorScheme.surfaceVariant else Color.Transparent)
             .then(
-                if (selected) Modifier.border(width = 1.dp, color = tokens.line2) else Modifier
+                if (selected) Modifier.border(width = 1.dp, color = colorScheme.outlineVariant) else Modifier
             )
             .selectable(selected = selected, onClick = onSelect)
             .heightIn(min = 36.dp),
@@ -138,11 +137,11 @@ private fun TabItem(
                 Icon(
                     imageVector = leadingIcon,
                     contentDescription = null,
-                    tint = if (selected) tokens.accent else tokens.fg2,
+                    tint = if (selected) colorScheme.primary else colorScheme.onSurfaceMuted,
                 )
                 Spacer(modifier = Modifier.width(4.dp))
             }
-            if (leadingContent != null) {
+            leadingContent?.let {
                 Spacer(modifier = Modifier.width(4.dp))
             }
             Column(
@@ -153,14 +152,14 @@ private fun TabItem(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.labelLarge,
-                        color = if (selected) tokens.fg0 else tokens.fg1,
+                        color = if (selected) colorScheme.onSurface else colorScheme.onSurfaceVariant,
                     )
                 }
                 subtitle?.let {
                     Text(
                         text = subtitle,
                         style = MaterialTheme.typography.bodySmall,
-                        color = tokens.fg2,
+                        color = colorScheme.onSurfaceMuted,
                     )
                 }
             }

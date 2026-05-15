@@ -1,29 +1,28 @@
 package com.apadmi.mockzilla.ui.ui.common.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.background
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@Suppress("MAGIC_NUMBER")
 private val cardShape = RoundedCornerShape(10.dp)
 
 @Suppress("MAGIC_NUMBER")
@@ -36,12 +35,12 @@ fun MzkCard(
     actions: @Composable (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val tokens = LocalMockzillaTokens.current
+    val colorScheme = MaterialTheme.colorScheme
     Column(
         modifier = modifier
             .clip(cardShape)
-            .background(color = tokens.bg2)
-            .border(width = 1.dp, color = tokens.line1, shape = cardShape),
+            .background(color = colorScheme.surfaceContainer)
+            .border(width = 1.dp, color = colorScheme.outline, shape = cardShape),
     ) {
         if (title != null || titleIcon != null || actions != null) {
             Row(
@@ -52,18 +51,18 @@ fun MzkCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    if (title != null) {
+                    title?.let {
                         Text(
                             text = title,
                             style = MaterialTheme.typography.titleSmall,
-                            color = tokens.fg0,
+                            color = colorScheme.onSurface,
                         )
                     }
-                    if (subtitle != null) {
+                    subtitle?.let {
                         Text(
                             text = subtitle,
                             style = MaterialTheme.typography.bodySmall,
-                            color = tokens.fg2,
+                            color = colorScheme.onSurfaceMuted,
                         )
                     }
                 }
