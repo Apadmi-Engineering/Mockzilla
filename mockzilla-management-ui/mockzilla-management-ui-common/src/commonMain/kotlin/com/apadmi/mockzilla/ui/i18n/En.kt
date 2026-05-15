@@ -82,6 +82,7 @@ val EnStrings = Strings(
         logs = Strings.Widgets.Logs(
             title = "Logs",
             clearAll = "Clear all",
+            openInPanel = "Open in panel →",
         ),
         logDetails = Strings.Widgets.LogDetails(
             title = "Log Detail",

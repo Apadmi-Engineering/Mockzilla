@@ -76,6 +76,10 @@ fun DesktopApp(
                 openWidgets = openWidgets.minus(createPresetWidgetId)
                 openWidgets = openWidgets.plus(editPresetWidgetId)
             },
+            onCloseLogDetail = {
+                logDetail = null
+                openWidgets = openWidgets.minus(logDetailsWidgetId)
+            },
         )
 
         WidgetScaffold(
@@ -193,8 +197,8 @@ private fun rightPanelWidgets(
     logDetail: LogEvent?,
     strings: Strings,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
-    onEditPreset: (EndpointConfiguration.Key) -> Unit
-
+    onEditPreset: (EndpointConfiguration.Key) -> Unit,
+    onCloseLogDetail: () -> Unit,
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
     buildList {
         add(
@@ -217,7 +221,7 @@ private fun rightPanelWidgets(
             Widget(
                 id = logDetailsWidgetId, title = strings.widgets.logDetails.title
             ) {
-                MonitorLogDetailsWidget(logDetail)
+                MonitorLogDetailsWidget(logDetail = logDetail, onClose = onCloseLogDetail)
             }
         )
     }

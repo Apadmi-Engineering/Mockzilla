@@ -79,10 +79,12 @@ data class Strings(
         /**
          * @property title
          * @property clearAll
+         * @property openInPanel
          */
         data class Logs(
             val title: String,
             val clearAll: String,
+            val openInPanel: String,
         )
 
         /**
