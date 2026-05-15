@@ -1,17 +1,19 @@
 package com.apadmi.mockzilla.lib
 
 import android.content.Context
+
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryServiceImpl
 import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.extractMetaData
 import com.apadmi.mockzilla.lib.internal.utils.runHandlingPortConflict
-
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
-import kotlinx.coroutines.runBlocking
+
 import java.net.ServerSocket
+
 import kotlin.use
+import kotlinx.coroutines.runBlocking
 
 /**
  * Starts the Mockzilla server,
