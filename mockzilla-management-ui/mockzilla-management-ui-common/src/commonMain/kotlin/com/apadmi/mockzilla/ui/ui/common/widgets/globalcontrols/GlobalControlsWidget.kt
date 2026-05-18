@@ -177,6 +177,9 @@ internal fun GlobalControlsWidgetIdleContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f)
+                .background(Color(0xFFF9FAFB))
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
