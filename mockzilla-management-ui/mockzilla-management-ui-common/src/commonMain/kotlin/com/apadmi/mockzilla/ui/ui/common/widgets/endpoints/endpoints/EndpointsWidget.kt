@@ -251,6 +251,8 @@ private fun EndpointsWidgetContent(
                     .align(Alignment.BottomEnd)
                     .zIndex(1f),
                 onClick = onGlobalControlsClicked,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(
                     imageVector = Icons.Filled.Settings,

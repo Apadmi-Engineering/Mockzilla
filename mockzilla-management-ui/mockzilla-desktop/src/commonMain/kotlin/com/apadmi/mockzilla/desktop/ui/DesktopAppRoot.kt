@@ -1,15 +1,26 @@
 package com.apadmi.mockzilla.desktop.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,6 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionWidget
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsWidget
@@ -50,6 +63,7 @@ private const val endpointDetailsWidgetId = "endpoint-details"
 private const val logDetailsWidgetId = "log-details"
 private const val editPresetWidgetId = "edit-preset"
 private const val createPresetWidgetId = "create-preset"
+private const val globalControlsWidgetId = "global-controls"
 
 @Composable
 fun DesktopApp(
@@ -62,64 +76,101 @@ fun DesktopApp(
         var openWidgets by remember { mutableStateOf(setOf(devicePanelWidgetId)) }
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
-        val rightWidgets = rightPanelWidgets(
-            state = state,
-            logDetail = logDetail,
-            strings = strings,
-            onCreatePreset = {
-                viewModel.setSelectedEndpoint(it)
-                openWidgets = openWidgets.minus(editPresetWidgetId)
-                openWidgets = openWidgets.plus(createPresetWidgetId)
-            },
-            onEditPreset = {
-                viewModel.setSelectedEndpoint(it)
-                openWidgets = openWidgets.minus(createPresetWidgetId)
-                openWidgets = openWidgets.plus(editPresetWidgetId)
-            },
-        )
+        val onSelected: (String) -> Unit = { id ->
+            openWidgets = if (openWidgets.contains(id)) {
+                openWidgets.minus(id)
+            } else {
+                openWidgets.plus(id)
+            }
+        }
 
-        WidgetScaffold(
-            modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
-            openWidgets = openWidgets,
-            top = {
-                DeviceTabsWidget(
-                    modifier = Modifier.fillMaxWidth()
-                )
-            },
-            left = leftPanelWidgets(state),
-            right = rightWidgets,
-            middle = middleWidgets(
-                state, openWidgets, onCloseEditor = {
-                    openWidgets = openWidgets
-                        .minus(editPresetWidgetId)
-                        .minus(createPresetWidgetId)
-                }
-            ) {
-                viewModel.setSelectedEndpoint(it)
-                openWidgets = openWidgets.plus(endpointDetailsWidgetId)
-            },
-            bottom = bottomPanelWidgets(
-                state = state,
-                onViewDetail = {
-                    logDetail = it
-                    openWidgets = openWidgets.plus(logDetailsWidgetId)
+        Box(modifier = Modifier.fillMaxSize()) {
+            WidgetScaffold(
+                modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
+                openWidgets = openWidgets,
+                top = {
+                    DeviceTabsWidget(
+                        modifier = Modifier.fillMaxWidth(),
+                        isGlobalControlsOpen = openWidgets.contains(globalControlsWidgetId),
+                        onGlobalControlsClick = { onSelected(globalControlsWidgetId) }
+                    )
                 },
-                strings = strings,
-            ),
-            onSelected = {
-                openWidgets = if (openWidgets.contains(it)) {
-                    openWidgets.minus(it)
-                } else {
-                    openWidgets.plus(it)
+                left = leftPanelWidgets(state),
+                right = rightPanelWidgets(
+                    state = state,
+                    logDetail = logDetail,
+                    strings = strings,
+                    onCreatePreset = {
+                        viewModel.setSelectedEndpoint(it)
+                        openWidgets = openWidgets.minus(editPresetWidgetId)
+                        openWidgets = openWidgets.plus(createPresetWidgetId)
+                    },
+                    onEditPreset = {
+                        viewModel.setSelectedEndpoint(it)
+                        openWidgets = openWidgets.minus(createPresetWidgetId)
+                        openWidgets = openWidgets.plus(editPresetWidgetId)
+                    },
+                ),
+                middle = middleWidgets(
+                    state,
+                    openWidgets,
+                    onOpenGlobalControls = {
+                        if (!openWidgets.contains(globalControlsWidgetId)) {
+                            onSelected(globalControlsWidgetId)
+                        }
+                    },
+                    onCloseEditor = {
+                        openWidgets = openWidgets
+                            .minus(editPresetWidgetId)
+                            .minus(createPresetWidgetId)
+                    }
+                ) {
+                    viewModel.setSelectedEndpoint(it)
+                    openWidgets = openWidgets.plus(endpointDetailsWidgetId)
+                },
+                bottom = bottomPanelWidgets(
+                    state = state,
+                    onViewDetail = {
+                        logDetail = it
+                        openWidgets = openWidgets.plus(logDetailsWidgetId)
+                    },
+                    strings = strings,
+                ),
+                onSelected = onSelected
+            )
+
+            // Global Controls Overlay
+            val connectedState = state as? AppRootViewModel.State.Connected
+            AnimatedVisibility(
+                visible = openWidgets.contains(globalControlsWidgetId) && connectedState != null,
+                enter = slideInHorizontally(animationSpec = tween(300)) { it },
+                exit = slideOutHorizontally(animationSpec = tween(300)) { it },
+                modifier = Modifier.align(Alignment.CenterEnd).padding(top = 48.dp) // Adjust top padding to match top bar height
+            ) {
+                if (connectedState != null) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(400.dp)
+                            .shadow(8.dp)
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(topStart = 8.dp)),
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(topStart = 8.dp)
+                    ) {
+                        GlobalControlsWidget(
+                            device = connectedState.activeDevice.device,
+                            onClose = { onSelected(globalControlsWidgetId) }
+                        )
+                    }
                 }
             }
-        )
 
-        AnimatedErrorBanner(
-            (state as? AppRootViewModel.State.Connected)?.error,
-            viewModel::refreshAll,
-            viewModel::dismissError
-        )
+            AnimatedErrorBanner(
+                (state as? AppRootViewModel.State.Connected)?.error,
+                viewModel::refreshAll,
+                viewModel::dismissError
+            )
+        }
     }
 }
 
@@ -143,11 +194,11 @@ private fun bottomPanelWidgets(
 private fun middleWidgets(
     state: AppRootViewModel.State,
     openWidgets: Set<String>,
+    onOpenGlobalControls: () -> Unit,
     onCloseEditor: () -> Unit,
     onEndpointClicked: (EndpointConfiguration.Key) -> Unit,
 ) = listOf(when (state) {
     is AppRootViewModel.State.Connected -> Widget(id = "endpoints") {
-        val isGlobalControlsOpen = remember { mutableStateOf(false) }
         val selectedEndpoint = state.selectedEndpoint
         when {
             (createPresetWidgetId in openWidgets || editPresetWidgetId in openWidgets)
@@ -162,19 +213,11 @@ private fun middleWidgets(
                     creatingNewPreset = createPresetWidgetId in openWidgets
                 )
             }
-            isGlobalControlsOpen.value -> Column {
-                IconButton(
-                    modifier = Modifier.align(Alignment.End),
-                    onClick = {
-                        isGlobalControlsOpen.value = false
-                    }) { CloseButtonIcon() }
-                GlobalControlsWidget(state.activeDevice.device)
-            }
 
             else -> EndpointsWidget(
                 state.activeDevice.device,
                 onEndpointClicked,
-                { isGlobalControlsOpen.value = true }
+                onGlobalControlsClicked = onOpenGlobalControls
             )
         }
     }

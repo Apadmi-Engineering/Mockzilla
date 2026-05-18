@@ -362,12 +362,13 @@ private fun RightPanel(
             }
         }
 
+        val tabWidgets = content.filter { it.title != null }
         VerticalTabList(
-            tabs = content.map { widget -> VerticalTab(title = widget.title) },
+            tabs = tabWidgets.map { widget -> VerticalTab(title = widget.title) },
             clockwise = true,
-            selected = selectedWidgets,
-            onSelect = { widget ->
-                onSelected(content[widget].id)
+            selected = tabWidgets.indices.filter { openWidgets.contains(tabWidgets[it].id) },
+            onSelect = { index ->
+                onSelected(tabWidgets[index].id)
                 if (width < 20.dp) {
                     onWidthChange(defaultWidth)
                 }
