@@ -237,6 +237,7 @@ private fun LogStatusBadge(status: HttpStatusCode) {
         text = status.value.toString(),
         modifier = Modifier
             .border(width = 1.5.dp, color = statusColor, shape = RoundedCornerShape(percent = 50))
+            .background(color = statusColor.copy(alpha = 0.1f), shape = RoundedCornerShape(percent = 50))
             .padding(horizontal = 8.dp, vertical = 3.dp),
         style = MaterialTheme.typography.labelMedium.copy(fontFamily = monoFont),
         color = statusColor,
