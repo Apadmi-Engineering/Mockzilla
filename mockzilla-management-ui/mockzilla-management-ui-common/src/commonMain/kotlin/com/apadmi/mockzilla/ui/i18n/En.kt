@@ -96,7 +96,8 @@ val EnStrings = Strings(
             responseHeaders = "Response headers",
             responseBody = "Response body",
             noHeaders = "None",
-            noBody = "Empty"
+            noBody = "Empty",
+            emptyBody = "(none)"
         ),
         endpoints = Strings.Widgets.Endpoints(
             filterPlaceholder = "Filter endpoints...",

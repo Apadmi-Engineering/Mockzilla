@@ -100,6 +100,7 @@ data class Strings(
          * @property responseBody
          * @property noHeaders
          * @property noBody
+         * @property emptyBody
          */
         data class LogDetails(
             val title: String,
@@ -113,7 +114,8 @@ data class Strings(
             val responseHeaders: String,
             val responseBody: String,
             val noHeaders: String,
-            val noBody: String
+            val noBody: String,
+            val emptyBody: String,
         )
 
         /**

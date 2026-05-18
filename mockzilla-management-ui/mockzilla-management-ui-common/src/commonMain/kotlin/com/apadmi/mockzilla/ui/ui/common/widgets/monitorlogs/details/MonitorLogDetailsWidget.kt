@@ -313,23 +313,9 @@ private fun LogTabBar(selectedTab: Tab, onTabSelected: (Tab) -> Unit) {
 @Composable
 private fun BodyContent(body: String, strings: Strings) {
     val monoFont = LocalMonoFontFamily.current
-    if (body.isEmpty()) {
-        Text(
-            text = strings.widgets.logDetails.noBody,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-            modifier = Modifier.padding(vertical = 4.dp),
-        )
-        return
-    }
     val cs = MaterialTheme.colorScheme
-    val jsonColors = JsonHighlightColors(
-        keyColor = cs.jsonKey,
-        stringColor = cs.success.primary,
-        numberColor = cs.tertiary,
-        boolColor = cs.warning.primary,
-        nullColor = cs.onSurface.copy(alpha = ALPHA_MUTED),
-    )
+    val trimmed = body.trim()
+    val isEmpty = trimmed.isEmpty() || trimmed == "{}" || trimmed == "[]"
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -339,11 +325,26 @@ private fun BodyContent(body: String, strings: Strings) {
             )
             .padding(10.dp),
     ) {
-        SelectionContainer {
+        if (isEmpty) {
             Text(
-                text = buildJsonAnnotatedString(body, jsonColors),
+                text = strings.widgets.logDetails.emptyBody,
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
+                color = cs.onSurface.copy(alpha = 0.5f),
             )
+        } else {
+            val jsonColors = JsonHighlightColors(
+                keyColor = cs.jsonKey,
+                stringColor = cs.success.primary,
+                numberColor = cs.tertiary,
+                boolColor = cs.warning.primary,
+                nullColor = cs.onSurface.copy(alpha = ALPHA_MUTED),
+            )
+            SelectionContainer {
+                Text(
+                    text = buildJsonAnnotatedString(body, jsonColors),
+                    style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
+                )
+            }
         }
     }
 }
@@ -374,7 +375,7 @@ private fun HeadersContent(headers: List<Pair<String, String>>, strings: Strings
                     Text(
                         text = key,
                         style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
-                        color = MaterialTheme.colorScheme.tertiary,
+                        color = MaterialTheme.colorScheme.jsonKey,
                         modifier = Modifier.weight(0.4f),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
