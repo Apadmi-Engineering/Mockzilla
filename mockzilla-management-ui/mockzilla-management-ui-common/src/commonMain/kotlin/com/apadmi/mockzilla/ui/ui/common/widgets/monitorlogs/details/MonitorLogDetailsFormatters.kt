@@ -18,6 +18,9 @@ internal const val TENTHS_FACTOR = 10
 internal const val ALPHA_MUTED = 0.5f
 private const val JSON_INDENT = "  "
 private const val MILLISECONDS_FRACTION_DIGITS = 3
+private const val JSON_TRUE_LENGTH = 4
+private const val JSON_FALSE_LENGTH = 5
+private const val JSON_NULL_LENGTH = 4
 
 /**
  * @property keyColor Color for JSON object keys.
@@ -220,15 +223,15 @@ private fun AnnotatedString.Builder.processHighlightToken(
     }
     text.startsWith("true", charIdx) -> {
         withStyle(SpanStyle(color = colors.boolColor)) { append("true") }
-        charIdx + 4
+        charIdx + JSON_TRUE_LENGTH
     }
     text.startsWith("false", charIdx) -> {
         withStyle(SpanStyle(color = colors.boolColor)) { append("false") }
-        charIdx + 5
+        charIdx + JSON_FALSE_LENGTH
     }
     text.startsWith("null", charIdx) -> {
         withStyle(SpanStyle(color = colors.nullColor)) { append("null") }
-        charIdx + 4
+        charIdx + JSON_NULL_LENGTH
     }
     else -> {
         append(text[charIdx])
