@@ -17,6 +17,7 @@ internal const val BYTES_PER_KB = 1024
 internal const val TENTHS_FACTOR = 10
 internal const val ALPHA_MUTED = 0.5f
 private const val JSON_INDENT = "  "
+private const val MILLISECONDS_FRACTION_DIGITS = 3
 
 /**
  * @property keyColor Color for JSON object keys.
@@ -52,7 +53,7 @@ private val TIMESTAMP_FORMAT = DateTimeComponents.Format {
     char(':')
     second()
     char('.')
-    secondFraction(3)
+    secondFraction(MILLISECONDS_FRACTION_DIGITS)
 }
 
 internal fun formatTimestamp(timestamp: Long): String =
@@ -93,6 +94,7 @@ private fun appendJsonString(source: String, openQuoteIdx: Int, sink: StringBuil
     return idx - 1
 }
 
+@Suppress("TOO_LONG_FUNCTION")
 internal fun String.prettyPrintJson(): String {
     val trimmed = trim()
     if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return this

@@ -91,19 +91,18 @@ class MonitorLogDetailsFormattersTests {
 
     @Test
     fun `prettyPrintJson formats a flat object`() {
-        val input = """{"name":"John","age":30}"""
         val expected = """
             {
               "name": "John",
               "age": 30
             }
         """.trimIndent()
+        val input = """{"name":"John","age":30}"""
         assertEquals(expected, input.prettyPrintJson())
     }
 
     @Test
     fun `prettyPrintJson formats a nested object`() {
-        val input = """{"a":{"b":"c"}}"""
         val expected = """
             {
               "a": {
@@ -111,12 +110,12 @@ class MonitorLogDetailsFormattersTests {
               }
             }
         """.trimIndent()
+        val input = """{"a":{"b":"c"}}"""
         assertEquals(expected, input.prettyPrintJson())
     }
 
     @Test
     fun `prettyPrintJson formats an array`() {
-        val input = """[1,2,3]"""
         val expected = """
             [
               1,
@@ -124,14 +123,14 @@ class MonitorLogDetailsFormattersTests {
               3
             ]
         """.trimIndent()
+        val input = """[1,2,3]"""
         assertEquals(expected, input.prettyPrintJson())
     }
 
     @Test
     fun `prettyPrintJson preserves escaped quotes inside strings`() {
-        val input = """{"msg":"hello \"world\""}"""
         assertTrue(
-            input.prettyPrintJson().contains(""""hello \"world\"""""),
+            """{"msg":"hello \"world\""}""".prettyPrintJson().contains(""""hello \"world\"""""),
             "Expected escaped quotes to be preserved in output"
         )
     }
