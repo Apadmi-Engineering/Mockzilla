@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -152,8 +153,9 @@ internal fun GlobalControlsWidgetIdleContent(
             }
 
             BaseButton(
+                modifier = Modifier.height(32.dp),
                 label = strings.widgets.globalControls.resetAllLabel,
-                variant = ButtonVariant.Soft,
+                variant = ButtonVariant.Outline,
                 size = ButtonSize.Sm,
                 leadingIcon = Icons.Default.Refresh,
                 onClick = onResetClicked
@@ -199,17 +201,22 @@ internal fun GlobalControlsWidgetIdleContent(
                 strings = strings
             )
 
-            // Per-Endpoint Status Section Header
-            Text(
-                text = "PER-ENDPOINT STATUS",
-                style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.5.sp),
-                color = colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            // Per-Endpoint Status Section
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = "PER-ENDPOINT STATUS",
+                    style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.5.sp),
+                    color = colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
 
-            state.endpoints.filter { it.overriddenProperties.isNotEmpty() || it.fail }.forEach { endpoint ->
-                EndpointStatusRow(endpoint)
+                state.endpoints.filter { it.overriddenProperties.isNotEmpty() || it.fail }.forEach { endpoint ->
+                    EndpointStatusRow(endpoint)
+                }
             }
         }
     }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -71,7 +72,7 @@ fun BaseButton(
 
     val contentColor = when (variant) {
         ButtonVariant.Ghost -> colorScheme.onSurfaceVariant
-        ButtonVariant.Outline -> colorScheme.onSurface
+        ButtonVariant.Outline -> colorScheme.onSurfaceVariant
         ButtonVariant.Solid -> colorScheme.onPrimary
         ButtonVariant.Soft -> colorScheme.onSurface
         ButtonVariant.Danger -> colorScheme.error
@@ -87,15 +88,15 @@ fun BaseButton(
     val borderColor by animateColorAsState(targetValue = borderTarget, animationSpec = tween(140))
 
     val contentPadding = when (size) {
-        ButtonSize.Sm -> PaddingValues(vertical = 4.dp, horizontal = 8.dp)
-        ButtonSize.Md -> PaddingValues(vertical = 6.dp, horizontal = 10.dp)
-        ButtonSize.Lg -> PaddingValues(vertical = 10.dp, horizontal = 14.dp)
+        ButtonSize.Sm -> PaddingValues(vertical = 4.dp, horizontal = 12.dp)
+        ButtonSize.Md -> PaddingValues(vertical = 6.dp, horizontal = 12.dp)
+        ButtonSize.Lg -> PaddingValues(vertical = 10.dp, horizontal = 16.dp)
     }
 
     val iconSize = if (size == ButtonSize.Lg) 18.dp else 14.dp
 
     Button(
-        modifier = modifier.alpha(if (enabled) 1f else 0.5f),
+        modifier = modifier.defaultMinSize(minHeight = 1.dp).alpha(if (enabled) 1f else 0.5f),
         onClick = onClick,
         enabled = enabled,
         shape = RoundedCornerShape(6.dp),
@@ -116,7 +117,7 @@ fun BaseButton(
                 imageVector = icon,
                 contentDescription = null,
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(4.dp))
         }
         Text(text = label)
         if (contentAlignment == ButtonContentAlignment.Start) {
