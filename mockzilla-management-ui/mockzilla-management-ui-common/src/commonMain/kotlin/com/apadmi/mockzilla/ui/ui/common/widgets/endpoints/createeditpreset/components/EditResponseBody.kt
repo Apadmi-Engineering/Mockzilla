@@ -37,7 +37,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.DropdownMenu
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalMockzillaTokens
+import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.State
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.TitleRow
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.card
@@ -111,7 +111,7 @@ internal fun EditResponseBody(
                     contentDescription = null,
                     tint = when (state.hasBodyError) {
                         true -> MaterialTheme.colorScheme.error
-                        false -> LocalMockzillaTokens.current.ok
+                        false -> MaterialTheme.colorScheme.success.primary
                     }
                 )
                 Spacer(modifier = Modifier.width(2.dp))
@@ -123,7 +123,7 @@ internal fun EditResponseBody(
                     style = MaterialTheme.typography.labelMedium,
                     color = when (state.hasBodyError) {
                         true -> MaterialTheme.colorScheme.error
-                        false -> LocalMockzillaTokens.current.ok
+                        false -> MaterialTheme.colorScheme.success.primary
                     }
                 )
             }
