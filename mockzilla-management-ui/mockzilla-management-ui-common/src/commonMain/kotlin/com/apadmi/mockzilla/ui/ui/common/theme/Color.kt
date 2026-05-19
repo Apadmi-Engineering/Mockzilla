@@ -36,6 +36,7 @@ val darkError = Color(0xFFF87171)
 val darkErrorContainer = darkError.copy(alpha = 0.14f)
 val darkTertiary = Color(0xFF38BDF8)
 val darkTertiaryContainer = darkTertiary.copy(alpha = 0.14f)
+val darkJsonKey = Color(0xFFA78BFA)
 
 // ── Light theme ───────────────────────────────────────────────────────────────
 val lightBackground = Color(0xFFF8FAFC)
@@ -66,6 +67,7 @@ val lightError = Color(0xFFDC2626)
 val lightErrorContainer = lightError.copy(alpha = 0.14f)
 val lightTertiary = Color(0xFF0284C7)
 val lightTertiaryContainer = lightTertiary.copy(alpha = 0.14f)
+val lightJsonKey = Color(0xFF7C3AED)
 
 // ── HTTP method colours (shared; themed via ColorScheme extensions) ──────────
 val darkMethodGet = Color(0xFF5ECDE8)

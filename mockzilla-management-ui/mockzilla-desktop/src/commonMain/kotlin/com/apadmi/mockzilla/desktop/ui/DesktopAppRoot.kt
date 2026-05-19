@@ -75,13 +75,25 @@ fun DesktopApp(
         var openWidgets by remember { mutableStateOf(setOf(devicePanelWidgetId)) }
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
-        val onSelected: (String) -> Unit = { id ->
-            openWidgets = if (openWidgets.contains(id)) {
-                openWidgets.minus(id)
-            } else {
-                openWidgets.plus(id)
-            }
-        }
+        val rightWidgets = rightPanelWidgets(
+            state = state,
+            logDetail = logDetail,
+            strings = strings,
+            onCreatePreset = {
+                viewModel.setSelectedEndpoint(it)
+                openWidgets = openWidgets.minus(editPresetWidgetId)
+                openWidgets = openWidgets.plus(createPresetWidgetId)
+            },
+            onEditPreset = {
+                viewModel.setSelectedEndpoint(it)
+                openWidgets = openWidgets.minus(createPresetWidgetId)
+                openWidgets = openWidgets.plus(editPresetWidgetId)
+            },
+            onCloseLogDetail = {
+                logDetail = null
+                openWidgets = openWidgets.minus(logDetailsWidgetId)
+            },
+        )
 
         Box(modifier = Modifier.fillMaxSize()) {
             WidgetScaffold(
@@ -235,8 +247,8 @@ private fun rightPanelWidgets(
     logDetail: LogEvent?,
     strings: Strings,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
-    onEditPreset: (EndpointConfiguration.Key) -> Unit
-
+    onEditPreset: (EndpointConfiguration.Key) -> Unit,
+    onCloseLogDetail: () -> Unit,
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
     buildList {
         add(
@@ -259,7 +271,7 @@ private fun rightPanelWidgets(
             Widget(
                 id = logDetailsWidgetId, title = strings.widgets.logDetails.title
             ) {
-                MonitorLogDetailsWidget(logDetail)
+                MonitorLogDetailsWidget(logDetail = logDetail, onClose = onCloseLogDetail)
             }
         )
     }

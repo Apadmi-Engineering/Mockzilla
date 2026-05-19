@@ -82,6 +82,9 @@ val EnStrings = Strings(
         logs = Strings.Widgets.Logs(
             title = "Logs",
             clearAll = "Clear all",
+            openInPanel = "Open in panel →",
+            streaming = "STREAMING",
+            clickToInspect = "·  CLICK ROW TO INSPECT",
         ),
         logDetails = Strings.Widgets.LogDetails(
             title = "Log Detail",
@@ -95,7 +98,8 @@ val EnStrings = Strings(
             responseHeaders = "Response headers",
             responseBody = "Response body",
             noHeaders = "None",
-            noBody = "Empty"
+            noBody = "Empty",
+            emptyBody = "(none)"
         ),
         endpoints = Strings.Widgets.Endpoints(
             filterPlaceholder = "Filter endpoints...",
