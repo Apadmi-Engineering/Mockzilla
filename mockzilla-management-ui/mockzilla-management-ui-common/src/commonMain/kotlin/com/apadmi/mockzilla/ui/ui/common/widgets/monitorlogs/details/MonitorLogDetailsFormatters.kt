@@ -196,6 +196,46 @@ private fun readNumberToken(text: String, startIdx: Int): Pair<String, Int> {
     return text.substring(startIdx, idx) to idx
 }
 
+/**
+ * Processes a single character (or token) at [charIdx] in [text] during JSON syntax
+ * highlighting, appending styled spans to the receiver [AnnotatedString.Builder].
+ *
+ * @return The index of the next character to process.
+ */
+private fun AnnotatedString.Builder.processHighlightToken(
+    text: String,
+    charIdx: Int,
+    colors: JsonHighlightColors,
+): Int = when {
+    text[charIdx] == '"' -> {
+        val (token, next) = readStringToken(text, charIdx)
+        val color = if (isFollowedByColon(text, next)) colors.keyColor else colors.stringColor
+        withStyle(SpanStyle(color = color)) { append(token) }
+        next
+    }
+    isNumberStart(text, charIdx) -> {
+        val (token, next) = readNumberToken(text, charIdx)
+        withStyle(SpanStyle(color = colors.numberColor)) { append(token) }
+        next
+    }
+    text.startsWith("true", charIdx) -> {
+        withStyle(SpanStyle(color = colors.boolColor)) { append("true") }
+        charIdx + 4
+    }
+    text.startsWith("false", charIdx) -> {
+        withStyle(SpanStyle(color = colors.boolColor)) { append("false") }
+        charIdx + 5
+    }
+    text.startsWith("null", charIdx) -> {
+        withStyle(SpanStyle(color = colors.nullColor)) { append("null") }
+        charIdx + 4
+    }
+    else -> {
+        append(text[charIdx])
+        charIdx + 1
+    }
+}
+
 internal fun buildJsonAnnotatedString(text: String, colors: JsonHighlightColors): AnnotatedString {
     val pretty = text.prettyPrintJson()
     return buildAnnotatedString {
@@ -206,35 +246,7 @@ internal fun buildJsonAnnotatedString(text: String, colors: JsonHighlightColors)
         }
         var charIdx = 0
         while (charIdx < pretty.length) {
-            when {
-                pretty[charIdx] == '"' -> {
-                    val (token, next) = readStringToken(pretty, charIdx)
-                    val color = if (isFollowedByColon(pretty, next)) colors.keyColor else colors.stringColor
-                    withStyle(SpanStyle(color = color)) { append(token) }
-                    charIdx = next
-                }
-                isNumberStart(pretty, charIdx) -> {
-                    val (token, next) = readNumberToken(pretty, charIdx)
-                    withStyle(SpanStyle(color = colors.numberColor)) { append(token) }
-                    charIdx = next
-                }
-                pretty.startsWith("true", charIdx) -> {
-                    withStyle(SpanStyle(color = colors.boolColor)) { append("true") }
-                    charIdx += 4
-                }
-                pretty.startsWith("false", charIdx) -> {
-                    withStyle(SpanStyle(color = colors.boolColor)) { append("false") }
-                    charIdx += 5
-                }
-                pretty.startsWith("null", charIdx) -> {
-                    withStyle(SpanStyle(color = colors.nullColor)) { append("null") }
-                    charIdx += 4
-                }
-                else -> {
-                    append(pretty[charIdx])
-                    charIdx++
-                }
-            }
+            charIdx = processHighlightToken(pretty, charIdx, colors)
         }
     }
 }
