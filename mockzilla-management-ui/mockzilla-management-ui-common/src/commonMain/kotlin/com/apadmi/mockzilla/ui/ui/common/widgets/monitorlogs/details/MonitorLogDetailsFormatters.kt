@@ -67,6 +67,44 @@ private fun StringBuilder.appendNewlineIndent(depth: Int) {
 }
 
 /**
+ * Processes a single character from [source] at [startIdx] during JSON pretty-printing,
+ * appending the formatted output to the receiver [StringBuilder].
+ *
+ * @return A pair of (next index to process, updated nesting depth).
+ */
+private fun StringBuilder.processPrettyJsonChar(
+    source: String,
+    startIdx: Int,
+    depth: Int,
+): Pair<Int, Int> = when (source[startIdx]) {
+    '{', '[' -> {
+        append(source[startIdx])
+        appendNewlineIndent(depth + 1)
+        startIdx + 1 to depth + 1
+    }
+    '}', ']' -> {
+        appendNewlineIndent(depth - 1)
+        append(source[startIdx])
+        startIdx + 1 to depth - 1
+    }
+    ',' -> {
+        append(',')
+        appendNewlineIndent(depth)
+        startIdx + 1 to depth
+    }
+    ':' -> {
+        append(": ")
+        startIdx + 1 to depth
+    }
+    '"' -> appendJsonString(source, startIdx, this) + 1 to depth
+    ' ', '\t', '\r', '\n' -> startIdx + 1 to depth
+    else -> {
+        append(source[startIdx])
+        startIdx + 1 to depth
+    }
+}
+
+/**
  * Reads a JSON string literal (including surrounding quotes and escape sequences)
  * from [source] starting at [openQuoteIdx], appending each character to [sink].
  *
@@ -94,7 +132,6 @@ private fun appendJsonString(source: String, openQuoteIdx: Int, sink: StringBuil
     return idx - 1
 }
 
-@Suppress("TOO_LONG_FUNCTION")
 internal fun String.prettyPrintJson(): String {
     val trimmed = trim()
     if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return this
@@ -102,27 +139,9 @@ internal fun String.prettyPrintJson(): String {
     var depth = 0
     var idx = 0
     while (idx < trimmed.length) {
-        when (trimmed[idx]) {
-            '{', '[' -> {
-                sb.append(trimmed[idx])
-                depth++
-                sb.appendNewlineIndent(depth)
-            }
-            '}', ']' -> {
-                depth--
-                sb.appendNewlineIndent(depth)
-                sb.append(trimmed[idx])
-            }
-            ',' -> {
-                sb.append(',')
-                sb.appendNewlineIndent(depth)
-            }
-            ':' -> sb.append(": ")
-            '"' -> idx = appendJsonString(trimmed, idx, sb)
-            ' ', '\t', '\r', '\n' -> Unit
-            else -> sb.append(trimmed[idx])
-        }
-        idx++
+        val (newIdx, newDepth) = sb.processPrettyJsonChar(trimmed, idx, depth)
+        idx = newIdx
+        depth = newDepth
     }
     return sb.toString()
 }
