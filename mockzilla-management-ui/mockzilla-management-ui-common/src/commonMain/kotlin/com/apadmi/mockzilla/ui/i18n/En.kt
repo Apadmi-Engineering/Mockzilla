@@ -83,6 +83,8 @@ val EnStrings = Strings(
             title = "Logs",
             clearAll = "Clear all",
             openInPanel = "Open in panel →",
+            streaming = "STREAMING",
+            clickToInspect = "·  CLICK ROW TO INSPECT",
         ),
         logDetails = Strings.Widgets.LogDetails(
             title = "Log Detail",

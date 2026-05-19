@@ -80,11 +80,15 @@ data class Strings(
          * @property title
          * @property clearAll
          * @property openInPanel
+         * @property streaming
+         * @property clickToInspect
          */
         data class Logs(
             val title: String,
             val clearAll: String,
             val openInPanel: String,
+            val streaming: String,
+            val clickToInspect: String,
         )
 
         /**

@@ -151,12 +151,12 @@ fun MonitorLogsWidgetContent(
             )
             Canvas(modifier = Modifier.size(6.dp)) { drawCircle(color = streamingColor) }
             Text(
-                text = "STREAMING",
+                text = strings.widgets.logs.streaming,
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
                 color = streamingColor,
             )
             Text(
-                text = "·  CLICK ROW TO INSPECT",
+                text = strings.widgets.logs.clickToInspect,
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
                 color = faintColor,
             )
