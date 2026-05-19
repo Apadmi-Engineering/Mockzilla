@@ -1,4 +1,4 @@
-@file:Suppress("COMPLEX_EXPRESSION", "FILE_NAME_MATCH_CLASS")
+@file:Suppress("FILE_NAME_MATCH_CLASS")
 
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details
 
@@ -8,11 +8,15 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 
-import kotlin.time.Instant
+import kotlinx.datetime.Instant
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.format.char
 
 internal const val BYTES_PER_KB = 1024
 internal const val TENTHS_FACTOR = 10
 internal const val ALPHA_MUTED = 0.5f
+private const val JSON_INDENT = "  "
 
 /**
  * @property keyColor Color for JSON object keys.
@@ -34,54 +38,85 @@ internal fun String.toKbLabel(): String {
     return "${tenths / TENTHS_FACTOR}.${tenths % TENTHS_FACTOR} KB"
 }
 
-@Suppress("TOO_LONG_FUNCTION", "NESTED_BLOCK")
+internal fun urlToTitle(url: String): String = url
+    .trimEnd('/')
+    .substringAfterLast('/')
+    .substringBefore('?')
+    .replaceFirstChar { it.uppercaseChar() }
+    .ifBlank { url }
+
+private val TIMESTAMP_FORMAT = DateTimeComponents.Format {
+    hour()
+    char(':')
+    minute()
+    char(':')
+    second()
+    char('.')
+    secondFraction(3)
+}
+
+internal fun formatTimestamp(timestamp: Long): String =
+    Instant.fromEpochMilliseconds(timestamp).format(TIMESTAMP_FORMAT)
+
+// ── JSON pretty-printer ───────────────────────────────────────────────────────
+
+private fun StringBuilder.appendNewlineIndent(depth: Int) {
+    append('\n')
+    repeat(depth) { append(JSON_INDENT) }
+}
+
+/**
+ * Reads a JSON string literal (including surrounding quotes and escape sequences)
+ * from [source] starting at [openQuoteIdx], appending each character to [sink].
+ *
+ * @return The index of the closing `"` in [source], so the caller can advance past it.
+ */
+private fun appendJsonString(source: String, openQuoteIdx: Int, sink: StringBuilder): Int {
+    sink.append('"')
+    var idx = openQuoteIdx + 1
+    while (idx < source.length) {
+        val ch = source[idx]
+        when {
+            ch == '\\' && idx + 1 < source.length -> {
+                sink.append(ch)
+                idx++
+                sink.append(source[idx])
+            }
+            ch == '"' -> {
+                sink.append(ch)
+                return idx
+            }
+            else -> sink.append(ch)
+        }
+        idx++
+    }
+    return idx - 1
+}
+
 internal fun String.prettyPrintJson(): String {
     val trimmed = trim()
-    if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
-        return this
-    }
+    if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return this
     val sb = StringBuilder()
-    var indent = 0
-    val indentStr = "  "
+    var depth = 0
     var idx = 0
     while (idx < trimmed.length) {
         when (trimmed[idx]) {
             '{', '[' -> {
                 sb.append(trimmed[idx])
-                indent++
-                sb.append('\n')
-                repeat(indent) { sb.append(indentStr) }
+                depth++
+                sb.appendNewlineIndent(depth)
             }
             '}', ']' -> {
-                indent--
-                sb.append('\n')
-                repeat(indent) { sb.append(indentStr) }
+                depth--
+                sb.appendNewlineIndent(depth)
                 sb.append(trimmed[idx])
             }
             ',' -> {
                 sb.append(',')
-                sb.append('\n')
-                repeat(indent) { sb.append(indentStr) }
+                sb.appendNewlineIndent(depth)
             }
             ':' -> sb.append(": ")
-            '"' -> {
-                sb.append('"')
-                idx++
-                while (idx < trimmed.length) {
-                    val ch = trimmed[idx]
-                    if (ch == '\\' && idx + 1 < trimmed.length) {
-                        sb.append(ch)
-                        idx++
-                        sb.append(trimmed[idx])
-                    } else if (ch == '"') {
-                        sb.append(ch)
-                        break
-                    } else {
-                        sb.append(ch)
-                    }
-                    idx++
-                }
-            }
+            '"' -> idx = appendJsonString(trimmed, idx, sb)
             ' ', '\t', '\r', '\n' -> Unit
             else -> sb.append(trimmed[idx])
         }
@@ -90,88 +125,93 @@ internal fun String.prettyPrintJson(): String {
     return sb.toString()
 }
 
-internal fun urlToTitle(url: String): String = url
-    .trimEnd('/')
-    .substringAfterLast('/')
-    .substringBefore('?')
-    .replaceFirstChar { it.uppercaseChar() }
-    .ifBlank { url }
+// ── JSON syntax highlighter ───────────────────────────────────────────────────
 
-internal fun formatTimestamp(timestamp: Long): String {
-    val raw = Instant.fromEpochMilliseconds(timestamp)
-        .toString()
-        .substringAfterLast('T')
-        .removeSuffix("Z")
-    return if ('.' in raw) {
-        raw.substringBefore('.') + "." + raw.substringAfter('.').take(3)
-    } else {
-        raw
+/**
+ * Reads a quoted JSON string token from [text] starting at [startIdx] (the opening `"`).
+ *
+ * @return The full token (including surrounding quotes) and the index immediately
+ * after the closing `"`.
+ */
+private fun readStringToken(text: String, startIdx: Int): Pair<String, Int> {
+    var idx = startIdx + 1
+    while (idx < text.length) {
+        when {
+            text[idx] == '\\' -> idx++  // skip the escaped character
+            text[idx] == '"' -> return text.substring(startIdx, idx + 1) to idx + 1
+        }
+        idx++
     }
+    return text.substring(startIdx, idx) to idx
 }
 
-@Suppress("IDENTIFIER_LENGTH", "TOO_LONG_FUNCTION")
+/**
+ * Returns `true` if the first non-whitespace character at or after [fromIdx] is `:`,
+ * meaning the token that preceded it is a JSON object key.
+ */
+private fun isFollowedByColon(text: String, fromIdx: Int): Boolean {
+    var idx = fromIdx
+    while (idx < text.length && text[idx] in " \t\r\n") idx++
+    return idx < text.length && text[idx] == ':'
+}
+
+/**
+ * Returns `true` if the character at [idx] in [text] is the start of a JSON number
+ * (a digit, or a `-` followed by a digit).
+ */
+private fun isNumberStart(text: String, idx: Int): Boolean =
+    text[idx].isDigit() || (text[idx] == '-' && idx + 1 < text.length && text[idx + 1].isDigit())
+
+/**
+ * Reads a JSON number token (optional `-`, digits, optional decimal part) from [text]
+ * starting at [startIdx].
+ *
+ * @return The token string and the index immediately after the number.
+ */
+private fun readNumberToken(text: String, startIdx: Int): Pair<String, Int> {
+    var idx = startIdx
+    if (idx < text.length && text[idx] == '-') idx++
+    while (idx < text.length && (text[idx].isDigit() || text[idx] == '.')) idx++
+    return text.substring(startIdx, idx) to idx
+}
+
 internal fun buildJsonAnnotatedString(text: String, colors: JsonHighlightColors): AnnotatedString {
     val pretty = text.prettyPrintJson()
     return buildAnnotatedString {
-        if (pretty.isBlank() ||
-                (!pretty.trimStart().startsWith('{') && !pretty.trimStart().startsWith('['))
-        ) {
+        val trimmedStart = pretty.trimStart()
+        if (pretty.isBlank() || (!trimmedStart.startsWith('{') && !trimmedStart.startsWith('['))) {
             append(pretty)
             return@buildAnnotatedString
         }
-        var ci = 0
-        while (ci < pretty.length) {
+        var charIdx = 0
+        while (charIdx < pretty.length) {
             when {
-                pretty[ci] == '"' -> {
-                    val start = ci++
-                    while (ci < pretty.length) {
-                        if (pretty[ci] == '\\') {
-                            ci++
-                        }
-                        if (ci >= pretty.length) {
-                            break
-                        }
-                        if (pretty[ci] == '"') {
-                            ci++
-                            break
-                        }
-                        ci++
-                    }
-                    val token = pretty.substring(start, ci)
-                    var peek = ci
-                    while (peek < pretty.length && pretty[peek] in " \t\r\n") {
-                        peek++
-                    }
-                    val isKey = peek < pretty.length && pretty[peek] == ':'
-                    withStyle(SpanStyle(color = if (isKey) colors.keyColor else colors.stringColor)) {
-                        append(token)
-                    }
+                pretty[charIdx] == '"' -> {
+                    val (token, next) = readStringToken(pretty, charIdx)
+                    val color = if (isFollowedByColon(pretty, next)) colors.keyColor else colors.stringColor
+                    withStyle(SpanStyle(color = color)) { append(token) }
+                    charIdx = next
                 }
-                pretty[ci].isDigit() || (pretty[ci] == '-' && ci + 1 < pretty.length && pretty[ci + 1].isDigit()) -> {
-                    val start = ci
-                    if (pretty[ci] == '-') {
-                        ci++
-                    }
-                    while (ci < pretty.length && (pretty[ci].isDigit() || pretty[ci] == '.')) {
-                        ci++
-                    }
-                    withStyle(SpanStyle(color = colors.numberColor)) { append(pretty.substring(start, ci)) }
+                isNumberStart(pretty, charIdx) -> {
+                    val (token, next) = readNumberToken(pretty, charIdx)
+                    withStyle(SpanStyle(color = colors.numberColor)) { append(token) }
+                    charIdx = next
                 }
-                ci + 4 <= pretty.length && pretty.substring(ci, ci + 4) == "true" -> {
+                pretty.startsWith("true", charIdx) -> {
                     withStyle(SpanStyle(color = colors.boolColor)) { append("true") }
-                    ci += 4
+                    charIdx += 4
                 }
-                ci + 5 <= pretty.length && pretty.substring(ci, ci + 5) == "false" -> {
+                pretty.startsWith("false", charIdx) -> {
                     withStyle(SpanStyle(color = colors.boolColor)) { append("false") }
-                    ci += 5
+                    charIdx += 5
                 }
-                ci + 4 <= pretty.length && pretty.substring(ci, ci + 4) == "null" -> {
+                pretty.startsWith("null", charIdx) -> {
                     withStyle(SpanStyle(color = colors.nullColor)) { append("null") }
-                    ci += 4
+                    charIdx += 4
                 }
                 else -> {
-                    append(pretty[ci])
-                    ci++
+                    append(pretty[charIdx])
+                    charIdx++
                 }
             }
         }

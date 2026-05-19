@@ -68,6 +68,9 @@ kotlin {
             /* Coroutines */
             implementation(libs.kotlinx.coroutines.core)
 
+            /* Date / Time */
+            implementation(libs.kotlinx.datetime)
+
             /* JSON */
             implementation(libs.kotlinx.serialization.json)
 

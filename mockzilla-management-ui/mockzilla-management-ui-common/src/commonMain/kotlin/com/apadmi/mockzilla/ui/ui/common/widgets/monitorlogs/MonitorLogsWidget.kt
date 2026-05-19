@@ -62,7 +62,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
-import kotlin.time.Instant
+import kotlinx.datetime.Instant
 
 /** Extracts `HH:mm:ss.mmm` from epoch millis (UTC). */
 private fun Long.formatTimestamp(): String =
@@ -123,7 +123,7 @@ fun MonitorLogsWidgetContent(
     var isExpanded by remember { mutableStateOf(false) }
     val chevronRotation by animateFloatAsState(
         targetValue = if (isExpanded) 90f else 0f,
-        animationSpec = tween(durationMillis = 250),
+        animationSpec = tween(durationMillis = 150),
         label = "chevronRotation",
     )
 
@@ -173,12 +173,12 @@ fun MonitorLogsWidgetContent(
             visible = isExpanded,
             enter = expandVertically(
                 expandFrom = Alignment.Top,
-                animationSpec = tween(durationMillis = 320),
-            ) + fadeIn(animationSpec = tween(durationMillis = 220)),
+                animationSpec = tween(durationMillis = 160),
+            ) + fadeIn(animationSpec = tween(durationMillis = 120)),
             exit = shrinkVertically(
                 shrinkTowards = Alignment.Top,
-                animationSpec = tween(durationMillis = 260),
-            ) + fadeOut(animationSpec = tween(durationMillis = 180)),
+                animationSpec = tween(durationMillis = 130),
+            ) + fadeOut(animationSpec = tween(durationMillis = 100)),
         ) {
             MonitorLogsList(
                 entryList = entryList,

@@ -36,7 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
@@ -187,8 +186,8 @@ private fun LogHeaderBar(logDetail: LogEvent, onClose: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-            .padding(horizontal = 14.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+            .padding(horizontal = 14.dp, vertical = 6.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -212,7 +211,7 @@ private fun LogHeaderBar(logDetail: LogEvent, onClose: () -> Unit) {
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             MetaItem(icon = "⏱", label = "${logDetail.delay}ms", color = metaColor)
             MetaItem(icon = "↑", label = logDetail.requestBody.toKbLabel(), color = metaColor)
@@ -389,23 +388,19 @@ private fun HeadersContent(headers: List<Pair<String, String>>, strings: Strings
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.Top,
                 ) {
                     Text(
                         text = key,
                         style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
                         color = MaterialTheme.colorScheme.jsonKey,
-                        modifier = Modifier.weight(0.4f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.width(110.dp),
                     )
                     Text(
                         text = value,
                         style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.weight(0.6f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
                     )
                 }
                 DashedDivider(color = dividerColor)
