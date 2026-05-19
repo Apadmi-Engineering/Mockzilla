@@ -75,6 +75,14 @@ fun DesktopApp(
         var openWidgets by remember { mutableStateOf(setOf(devicePanelWidgetId)) }
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
+        val onSelected: (String) -> Unit = { id ->
+            openWidgets = if (openWidgets.contains(id)) {
+                openWidgets.minus(id)
+            } else {
+                openWidgets.plus(id)
+            }
+        }
+
         val rightWidgets = rightPanelWidgets(
             state = state,
             logDetail = logDetail,
@@ -107,21 +115,7 @@ fun DesktopApp(
                     )
                 },
                 left = leftPanelWidgets(state),
-                right = rightPanelWidgets(
-                    state = state,
-                    logDetail = logDetail,
-                    strings = strings,
-                    onCreatePreset = {
-                        viewModel.setSelectedEndpoint(it)
-                        openWidgets = openWidgets.minus(editPresetWidgetId)
-                        openWidgets = openWidgets.plus(createPresetWidgetId)
-                    },
-                    onEditPreset = {
-                        viewModel.setSelectedEndpoint(it)
-                        openWidgets = openWidgets.minus(createPresetWidgetId)
-                        openWidgets = openWidgets.plus(editPresetWidgetId)
-                    },
-                ),
+                right = rightWidgets,
                 middle = middleWidgets(
                     state,
                     openWidgets,

@@ -31,7 +31,7 @@ class MonitorLogDetailsViewModelTests : CoroutineTest() {
 
         /* Run Test */
         sut.state.test {
-            awaitItem() // consume initial state
+            awaitItem()  // consume initial state
 
             sut.onTabSelected(Tab.Request)
 
