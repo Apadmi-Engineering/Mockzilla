@@ -17,9 +17,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -94,9 +99,9 @@ fun LogDetailsContent(
     strings: Strings = LocalStrings.current,
 ) = Column(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface)) {
     LogHeaderBar(logDetail = logDetail, onClose = onClose)
-    HorizontalDivider()
+    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
     LogTabBar(selectedTab = state.selectedTab, onTabSelected = onTabSelected)
-    HorizontalDivider()
+    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -197,14 +202,13 @@ private fun LogHeaderBar(logDetail: LogEvent, onClose: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
             )
-            Text(
-                text = "×",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = onClose)
-                    .padding(4.dp),
-            )
+            IconButton(onClick = onClose) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -273,18 +277,24 @@ private fun MetaItem(
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-private fun LogTabBar(selectedTab: Tab, onTabSelected: (Tab) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+private fun LogTabBar(
+    selectedTab: Tab,
+    onTabSelected: (Tab) -> Unit,
+) {
+    Row {
         Tab.entries.forEach { tab ->
+
             val isSelected = tab == selectedTab
+
             val selectedColor = if (isSelected) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
             }
+
             Column(
                 modifier = Modifier
-                    .weight(1f)
+                    .width(100.dp)  // Fixed width
                     .clickable { onTabSelected(tab) },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -292,22 +302,30 @@ private fun LogTabBar(selectedTab: Tab, onTabSelected: (Tab) -> Unit) {
                     text = tab.name,
                     modifier = Modifier.padding(vertical = 10.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                    fontWeight = if (isSelected) {
+                        FontWeight.SemiBold
+                    } else {
+                        FontWeight.Normal
+                    },
                     color = selectedColor,
                 )
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(2.dp)
                         .background(
-                            if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+                            if (isSelected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                Color.Transparent
+                            },
                         ),
                 )
             }
         }
     }
 }
-
 // ── Content sections ──────────────────────────────────────────────────────────
 
 @Suppress("MAGIC_NUMBER")
