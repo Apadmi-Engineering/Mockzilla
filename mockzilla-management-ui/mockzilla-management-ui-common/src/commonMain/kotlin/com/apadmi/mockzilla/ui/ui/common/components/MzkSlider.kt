@@ -52,15 +52,18 @@ fun MockzillaSlider(
                         shape = CircleShape,
                         clip = false
                     )
-                    .background(Color.White, CircleShape),
+                    .background(Color.Transparent, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 Box(
                     modifier = Modifier
                         .size(12.dp)
                         .background(
-                            if (enabled) activeColor
-                            else colorScheme.onSurfaceFaint,
+                            if (enabled) {
+                                activeColor
+                            } else {
+                                colorScheme.onSurfaceFaint
+                            },
                             CircleShape
                         )
                 )

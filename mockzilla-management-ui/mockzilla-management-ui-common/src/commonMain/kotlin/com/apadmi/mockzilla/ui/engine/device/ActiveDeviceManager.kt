@@ -66,7 +66,7 @@ class ActiveDeviceManagerImpl(
 
                 if (statefulDevice != newStatefulDevice) {
                     onDeviceConnectionStateChange.emit(Unit)
-                    if (device == statefulDevice.device) {
+                    if (device == selectedDevice.value?.device) {
                         selectedDevice.value = newStatefulDevice
                     }
                 }

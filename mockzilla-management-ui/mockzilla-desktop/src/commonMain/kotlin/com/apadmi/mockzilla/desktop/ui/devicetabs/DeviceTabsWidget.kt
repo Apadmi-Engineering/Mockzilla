@@ -110,7 +110,7 @@ fun DeviceTabsWidgetContent(
                     }
                 }
 
-                if (state.devices.any { it.isActive }) {
+                if (state.devices.isNotEmpty()) {
                     AddDeviceButton(
                         label = strings.widgets.deviceTabs.addDevice,
                         onClick = onAddNewDevice,

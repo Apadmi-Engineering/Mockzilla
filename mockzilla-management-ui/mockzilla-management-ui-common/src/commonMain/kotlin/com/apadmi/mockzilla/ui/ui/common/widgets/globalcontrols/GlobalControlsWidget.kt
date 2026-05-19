@@ -47,6 +47,8 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.State
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -155,7 +157,7 @@ internal fun GlobalControlsWidgetIdleContent(
             BaseButton(
                 modifier = Modifier.height(32.dp),
                 label = strings.widgets.globalControls.resetAllLabel,
-                variant = ButtonVariant.Outline,
+                variant = ButtonVariant.Ghost,
                 size = ButtonSize.Sm,
                 leadingIcon = Icons.Default.Refresh,
                 onClick = onResetClicked
@@ -180,7 +182,7 @@ internal fun GlobalControlsWidgetIdleContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .background(Color(0xFFF9FAFB))
+                .background(colorScheme.surface)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -239,7 +241,7 @@ private fun ForceFailureCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = colorScheme.surfaceVariant.copy(alpha = 0.3f), shape = RoundedCornerShape(8.dp))
+            .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
             .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -284,7 +286,7 @@ private fun EndpointStatusRow(endpoint: EndpointsViewModel.State.EndpointConfig)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = colorScheme.surfaceVariant.copy(alpha = 0.2f), shape = RoundedCornerShape(8.dp))
+            .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
             .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
             .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -307,12 +309,12 @@ private fun EndpointStatusRow(endpoint: EndpointsViewModel.State.EndpointConfig)
             }
             endpoint.overriddenProperties.forEach { property ->
                 StatusChip(
-                    label = when (property.displayName) {
-                        "Delay" -> "LATENCY"
+                    label = when (property) {
+                        EndpointProperties.Delay -> "LATENCY"
                         else -> property.displayName.uppercase()
                     },
-                    color = when (property.displayName) {
-                        "Delay" -> Color(0xFFEAB308)
+                    color = when (property) {
+                        EndpointProperties.Delay -> colorScheme.warning.primary
                         else -> colorScheme.primary
                     }
                 )

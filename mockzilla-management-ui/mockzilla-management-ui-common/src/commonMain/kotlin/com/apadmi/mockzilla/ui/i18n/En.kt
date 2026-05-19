@@ -132,7 +132,10 @@ val EnStrings = Strings(
             title = "Response Latency",
             sliderMin = "0s",
             sliderMax = "60s",
-            millisecondLabel = "ms",
+            millisecondLabel = { "$it ms" },
+            secondLabel = { "$it s" },
+            notSet = "Not Set",
+            clear = "Clear",
         ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",

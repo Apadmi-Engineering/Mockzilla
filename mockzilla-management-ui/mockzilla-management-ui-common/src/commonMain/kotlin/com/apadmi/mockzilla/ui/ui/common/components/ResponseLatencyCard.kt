@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.max
 import kotlin.math.min
@@ -68,32 +68,33 @@ internal fun ResponseLatencyCard(
         }
     }
 
+    val colorScheme = MaterialTheme.colorScheme
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = Color.White,
+                color = colorScheme.surfaceVariant,
                 shape = RoundedCornerShape(8.dp)
             )
             .border(
                 width = 1.dp,
-                color = Color(0xFFE5E7EB),
+                color = colorScheme.outline,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // HEADER
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Response Latency",
+                text = strings.widgets.latency.title,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF111827)
+                    color = colorScheme.onSurface
                 )
             )
 
@@ -109,12 +110,12 @@ internal fun ResponseLatencyCard(
                     imageVector = Icons.Default.Close,
                     contentDescription = null,
                     modifier = Modifier.size(14.dp),
-                    tint = Color(0xFF6B7280)
+                    tint = colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Clear",
+                    text = strings.widgets.latency.clear,
                     style = MaterialTheme.typography.labelMedium.copy(
-                        color = Color(0xFF6B7280),
+                        color = colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Medium
                     )
                 )
@@ -126,28 +127,27 @@ internal fun ResponseLatencyCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // VALUE FIELD
             Box(
                 modifier = Modifier
                     .weight(1f)
                     .height(44.dp)
                     .background(
-                        color = Color(0xFFF3F4F6),
+                        color = colorScheme.surface,
                         shape = RoundedCornerShape(6.dp),
                     )
                     .border(
                         width = 1.dp,
-                        color = Color(0xFFD1D5DB),
+                        color = colorScheme.outline,
                         shape = RoundedCornerShape(6.dp),
                     )
                     .padding(horizontal = 12.dp),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Text(
-                    text = value?.let { "$it ms" } ?: "Not Set",
+                    text = value?.let { strings.widgets.latency.millisecondLabel(it) } ?: strings.widgets.latency.notSet,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = mockzillaMonoFontFamily(),
-                        color = if (value == null) Color(0xFF9CA3AF) else Color(0xFFEAB308),
+                        color = if (value == null) colorScheme.onSurfaceVariant else colorScheme.warning.primary,
                         fontSize = 16.sp
                     ),
                     textAlign = TextAlign.Start,
@@ -155,28 +155,25 @@ internal fun ResponseLatencyCard(
                 )
             }
 
-            // MINUS BUTTON
             SmallSquareButton(onClick = { updateValue((value ?: 0) - 100) }) {
                 Icon(
                     imageVector = Icons.Default.Remove,
                     contentDescription = null,
-                    tint = Color(0xFF4B5563),
+                    tint = colorScheme.onSurface,
                     modifier = Modifier.size(20.dp),
                 )
             }
 
-            // PLUS BUTTON
             SmallSquareButton(onClick = { updateValue((value ?: 0) + 100) }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = null,
-                    tint = Color(0xFF4B5563),
+                    tint = colorScheme.onSurface,
                     modifier = Modifier.size(20.dp),
                 )
             }
         }
 
-        // SLIDER
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
@@ -184,7 +181,7 @@ internal fun ResponseLatencyCard(
                 value = value?.toFloat() ?: 0f,
                 valueRange = 0f..sliderMax,
                 modifier = Modifier.fillMaxWidth(),
-                activeTrackColor = Color(0xFF00A896),
+                activeTrackColor = colorScheme.primary,
                 onValueChange = {
                     updateValue(it.toInt())
                 },
@@ -195,41 +192,39 @@ internal fun ResponseLatencyCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = "0s",
+                    text = strings.widgets.latency.sliderMin,
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = Color(0xFF6B7280),
+                        color = colorScheme.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                 )
                 Text(
-                    text = "60s",
+                    text = strings.widgets.latency.sliderMax,
                     style = MaterialTheme.typography.labelSmall.copy(
-                        color = Color(0xFF6B7280),
+                        color = colorScheme.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                 )
             }
         }
-
-        // PRESET BUTTONS
+        
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             listOf(0, 300, 1000, 3000, 10000).forEach { ms ->
                 val label = when {
-                    ms == 0 -> "0 ms"
-                    ms < 1000 -> "$ms ms"
-                    else -> "${ms / 1000} s"
+                    ms < 1000 -> strings.widgets.latency.millisecondLabel(ms)
+                    else -> strings.widgets.latency.secondLabel(ms / 1000)
                 }
 
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
-                        .background(Color(0xFFF3F4F6))
+                        .background(colorScheme.surface)
                         .border(
                             width = 1.dp,
-                            color = Color(0xFFD1D5DB),
+                            color = colorScheme.outline,
                             shape = RoundedCornerShape(4.dp)
                         )
                         .clickable {
@@ -241,7 +236,7 @@ internal fun ResponseLatencyCard(
                     Text(
                         text = label,
                         style = MaterialTheme.typography.labelMedium.copy(
-                            color = Color(0xFF4B5563),
+                            color = colorScheme.onSurface,
                             fontWeight = FontWeight.Medium,
                             fontSize = 12.sp
                         )
@@ -257,14 +252,15 @@ private fun SmallSquareButton(
     onClick: () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
     Box(
         modifier = Modifier
             .size(44.dp)
             .clip(RoundedCornerShape(6.dp))
-            .background(Color(0xFFF3F4F6))
+            .background(colorScheme.surface)
             .border(
                 width = 1.dp,
-                color = Color(0xFFD1D5DB),
+                color = colorScheme.outline,
                 shape = RoundedCornerShape(6.dp)
             )
             .clickable(onClick = onClick),

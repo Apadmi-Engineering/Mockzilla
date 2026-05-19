@@ -293,14 +293,20 @@ data class Strings(
         /**
          * @property title
          * @property millisecondLabel
+         * @property secondLabel
          * @property sliderMin
          * @property sliderMax
+         * @property notSet
+         * @property clear
          */
         data class Latency(
             val title: String,
-            val millisecondLabel: String,
+            val millisecondLabel: (Int) -> String,
+            val secondLabel: (Int) -> String,
             val sliderMin: String,
-            val sliderMax: String
+            val sliderMax: String,
+            val notSet: String,
+            val clear: String,
         )
 
         /**

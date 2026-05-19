@@ -5,7 +5,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -145,9 +144,9 @@ fun DesktopApp(
                 visible = openWidgets.contains(globalControlsWidgetId) && connectedState != null,
                 enter = slideInHorizontally(animationSpec = tween(300)) { it },
                 exit = slideOutHorizontally(animationSpec = tween(300)) { it },
-                modifier = Modifier.align(Alignment.CenterEnd).padding(top = 48.dp) // Adjust top padding to match top bar height
+                modifier = Modifier.align(Alignment.CenterEnd).padding(top = 48.dp)  // Adjust top padding to match top bar height
             ) {
-                if (connectedState != null) {
+                connectedState?.let {
                     Surface(
                         modifier = Modifier
                             .fillMaxHeight()
