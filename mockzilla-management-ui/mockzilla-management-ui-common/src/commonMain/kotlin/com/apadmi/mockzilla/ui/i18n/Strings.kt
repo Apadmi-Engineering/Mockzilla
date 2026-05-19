@@ -269,6 +269,13 @@ data class Strings(
          * @property partialFailureBannerConfig
          * @property failButtonLabel
          * @property restoreButtonLabel
+         * @property activeOverrides
+         * @property perEndpointStatus
+         * @property forcedStatus
+         * @property latencyStatus
+         * @property bodyStatus
+         * @property headersStatus
+         * @property statusStatus
          */
         data class GlobalControls(
             val title: String,
@@ -279,6 +286,13 @@ data class Strings(
             val partialFailureBannerConfig: GlobalConfigBanner,
             val failButtonLabel: String,
             val restoreButtonLabel: String,
+            val activeOverrides: (Int) -> String,
+            val perEndpointStatus: String,
+            val forcedStatus: String,
+            val latencyStatus: String,
+            val bodyStatus: String,
+            val headersStatus: String,
+            val statusStatus: String,
         ) {
             /**
              * @property title

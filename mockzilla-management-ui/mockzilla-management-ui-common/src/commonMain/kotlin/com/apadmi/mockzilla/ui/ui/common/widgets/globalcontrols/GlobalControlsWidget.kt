@@ -146,7 +146,7 @@ internal fun GlobalControlsWidgetIdleContent(
                         color = colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = " · ${state.activeOverridesCount} active",
+                        text = strings.widgets.globalControls.activeOverrides(state.activeOverridesCount),
                         style = MaterialTheme.typography.bodySmall,
                         color = colorScheme.primary,
                         fontWeight = FontWeight.Bold
@@ -169,7 +169,7 @@ internal fun GlobalControlsWidgetIdleContent(
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = null,
+                    contentDescription = strings.common.closeDescription,
                     tint = colorScheme.onSurfaceFaint,
                     modifier = Modifier.size(16.dp)
                 )
@@ -209,7 +209,7 @@ internal fun GlobalControlsWidgetIdleContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "PER-ENDPOINT STATUS",
+                    text = strings.widgets.globalControls.perEndpointStatus,
                     style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.5.sp),
                     color = colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold,
@@ -217,7 +217,7 @@ internal fun GlobalControlsWidgetIdleContent(
                 )
 
                 state.endpoints.filter { it.overriddenProperties.isNotEmpty() || it.fail }.forEach { endpoint ->
-                    EndpointStatusRow(endpoint)
+                    EndpointStatusRow(endpoint, strings)
                 }
             }
         }
@@ -281,7 +281,10 @@ private fun ForceFailureCard(
 }
 
 @Composable
-private fun EndpointStatusRow(endpoint: EndpointsViewModel.State.EndpointConfig) {
+private fun EndpointStatusRow(
+    endpoint: EndpointsViewModel.State.EndpointConfig,
+    strings: Strings
+) {
     val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = Modifier
@@ -305,13 +308,15 @@ private fun EndpointStatusRow(endpoint: EndpointsViewModel.State.EndpointConfig)
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             if (endpoint.fail) {
-                StatusChip(label = "FORCED", color = colorScheme.error)
+                StatusChip(label = strings.widgets.globalControls.forcedStatus, color = colorScheme.error)
             }
             endpoint.overriddenProperties.forEach { property ->
                 StatusChip(
                     label = when (property) {
-                        EndpointProperties.Delay -> "LATENCY"
-                        else -> property.displayName.uppercase()
+                        EndpointProperties.Delay -> strings.widgets.globalControls.latencyStatus
+                        EndpointProperties.Body -> strings.widgets.globalControls.bodyStatus
+                        EndpointProperties.Headers -> strings.widgets.globalControls.headersStatus
+                        EndpointProperties.Status -> strings.widgets.globalControls.statusStatus
                     },
                     color = when (property) {
                         EndpointProperties.Delay -> colorScheme.warning.primary

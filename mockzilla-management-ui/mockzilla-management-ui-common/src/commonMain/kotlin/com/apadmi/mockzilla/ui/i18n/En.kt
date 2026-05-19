@@ -127,6 +127,13 @@ val EnStrings = Strings(
                 title = "Forced API Failure Enabled",
                 subtitle = "All API calls will return error responses regardless of your configured presets.",
             ),
+            activeOverrides = { " · $it active" },
+            perEndpointStatus = "PER-ENDPOINT STATUS",
+            forcedStatus = "FORCED",
+            latencyStatus = "LATENCY",
+            bodyStatus = "BODY",
+            headersStatus = "HEADERS",
+            statusStatus = "STATUS",
         ),
         latency = Strings.Widgets.Latency(
             title = "Response Latency",
