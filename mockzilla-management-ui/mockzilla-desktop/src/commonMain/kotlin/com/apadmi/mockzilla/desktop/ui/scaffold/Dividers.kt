@@ -38,6 +38,7 @@ internal fun HorizontalDraggableDivider(
 @Composable
 internal fun VerticalDraggableDivider(
     onDrag: (Float) -> Unit,
+    onDragStarted: () -> Unit = {},
     onDragStopped: () -> Unit,
 ) {
     Box(
@@ -51,6 +52,7 @@ internal fun VerticalDraggableDivider(
                     onDrag(dragAmount)
                 },
                 orientation = Orientation.Vertical,
+                onDragStarted = { _ -> onDragStarted() },
                 onDragStopped = { onDragStopped() },
             )
     )
