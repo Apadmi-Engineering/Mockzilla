@@ -8,47 +8,20 @@ import kotlinx.coroutines.flow.update
 class MonitorLogDetailsViewModel(
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
-    val state = MutableStateFlow(
-        State.ViewDetails(
-            requestHeaders = false,
-            requestBody = false,
-            responseHeaders = false,
-            responseBody = true
-        )
-    )
+    val state = MutableStateFlow(State.ViewDetails())
 
-    fun onViewRequestHeaders(view: Boolean) = updateState { state ->
-        state.copy(requestHeaders = view)
-    }
-
-    fun onViewRequestBody(view: Boolean) = updateState { state ->
-        state.copy(requestBody = view)
-    }
-
-    fun onViewResponseHeaders(view: Boolean) = updateState { state ->
-        state.copy(responseHeaders = view)
-    }
-
-    fun onViewResponseBody(view: Boolean) = updateState { state ->
-        state.copy(responseBody = view)
-    }
-
-    private fun updateState(
-        update: (State.ViewDetails) -> State.ViewDetails
-    ) = state.update(update)
+    fun onTabSelected(tab: State.ViewDetails.Tab) = state.update { it.copy(selectedTab = tab) }
 
     sealed class State {
         /**
-         * @property requestHeaders
-         * @property requestBody
-         * @property responseHeaders
-         * @property responseBody
+         * @property selectedTab
          */
         data class ViewDetails(
-            val requestHeaders: Boolean,
-            val requestBody: Boolean,
-            val responseHeaders: Boolean,
-            val responseBody: Boolean,
-        ) : State()
+            val selectedTab: Tab = Tab.Response,
+        ) : State() {
+            enum class Tab {
+                Request, Response
+            }
+        }
     }
 }

@@ -128,6 +128,10 @@ val ColorScheme.warning: StateColors
     }
 
 @get:Composable
+val ColorScheme.jsonKey: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkJsonKey else lightJsonKey
+
+@get:Composable
 val ColorScheme.methodGet: Color
     get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkMethodGet else lightMethodGet
 

@@ -18,8 +18,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
-import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTab
-import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTabList
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTabList
 
@@ -62,8 +60,6 @@ fun WidgetScaffold(
     var leftPanelSettledWidth by remember { mutableStateOf(230.dp) }
     var rightPanelWidth by remember { mutableStateOf(280.dp) }
     var rightPanelSettledWidth by remember { mutableStateOf(280.dp) }
-    var bottomPanelHeight by remember { mutableStateOf(140.dp) }
-    var bottomPanelSettledHeight by remember { mutableStateOf(140.dp) }
 
     // Both of the horizontal panels must collectively not be so large that the center panel
     // runs out of space. We can enforce this by hoisting the width of each panel and preventing
@@ -85,12 +81,9 @@ fun WidgetScaffold(
             max(0.dp, width)
         }
     }
-    val bottomPanelHeightRestriction = { height: Dp -> max(0.dp, height) }
-
-    val colorScheme = MaterialTheme.colorScheme
     Box(
         modifier = modifier
-            .background(colorScheme.background)
+            .background(MaterialTheme.colorScheme.background)
             .onSizeChanged { size ->
                 totalWidth = with(density) { size.width.toDp() }
             },
@@ -137,78 +130,15 @@ fun WidgetScaffold(
                     onSelected = onSelected
                 )
             }
-            BottomPanel(
-                content = bottom,
-                openWidgets = openWidgets,
-                height = bottomPanelHeight,
-                settledHeight = bottomPanelSettledHeight,
-                onHeightChange = {
-                    bottomPanelHeight = it
-                    bottomPanelSettledHeight = bottomPanelHeightRestriction(it)
-                },
-                onDragStopped = {
-                    bottomPanelHeight = bottomPanelSettledHeight
-                },
-                onSelected = onSelected
-            )
+            BottomPanel(content = bottom)
         }
     }
 }
 
-@Suppress(
-    "TOO_LONG_FUNCTION",
-    "LOCAL_VARIABLE_EARLY_DECLARATION",
-    "MAGIC_NUMBER"
-)
 @Composable
-private fun BottomPanel(
-    content: List<Widget>,
-    openWidgets: Set<String>,
-    height: Dp,
-    settledHeight: Dp,
-    defaultHeight: Dp = 200.dp,
-    onDragStopped: () -> Unit,
-    onHeightChange: (Dp) -> Unit,
-    onSelected: (String) -> Unit,
-) {
-    val density = LocalDensity.current
-    val selectedWidget = remember(openWidgets) {
-        content.indices.firstOrNull { openWidgets.contains(content[it].id) }
-    }
-
+private fun BottomPanel(content: List<Widget>) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        selectedWidget?.let {
-            VerticalDraggableDivider(
-                onDrag = { offset ->
-                    with(density) {
-                        onHeightChange(height - offset.toDp())
-                    }
-                },
-                onDragStopped = onDragStopped
-            )
-        }
-
-        Surface(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
-                .height(selectedWidget?.let { settledHeight } ?: 0.dp)
-        ) {
-            selectedWidget?.let {
-                content.getOrNull(it)?.ui?.invoke()
-            }
-        }
-
-        HorizontalTabList(
-            tabs = content.map { widget -> HorizontalTab(title = widget.title) },
-            selected = selectedWidget,
-            onSelect = { widget ->
-                onSelected(content[widget].id)
-                if (height < 20.dp) {
-                    onHeightChange(defaultHeight)
-                }
-            }
-        )
+        content.forEach { widget -> widget.ui() }
     }
 }
 

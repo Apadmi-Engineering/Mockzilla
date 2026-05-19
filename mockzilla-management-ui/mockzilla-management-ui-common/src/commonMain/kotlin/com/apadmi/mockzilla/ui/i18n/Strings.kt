@@ -79,10 +79,16 @@ data class Strings(
         /**
          * @property title
          * @property clearAll
+         * @property openInPanel
+         * @property streaming
+         * @property clickToInspect
          */
         data class Logs(
             val title: String,
             val clearAll: String,
+            val openInPanel: String,
+            val streaming: String,
+            val clickToInspect: String,
         )
 
         /**
@@ -98,6 +104,7 @@ data class Strings(
          * @property responseBody
          * @property noHeaders
          * @property noBody
+         * @property emptyBody
          */
         data class LogDetails(
             val title: String,
@@ -111,7 +118,8 @@ data class Strings(
             val responseHeaders: String,
             val responseBody: String,
             val noHeaders: String,
-            val noBody: String
+            val noBody: String,
+            val emptyBody: String,
         )
 
         /**
