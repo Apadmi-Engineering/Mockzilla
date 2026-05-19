@@ -48,6 +48,7 @@ private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
 
 private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 internal fun ResponseLatencyCard(
     modifier: Modifier = Modifier,
@@ -147,7 +148,9 @@ internal fun ResponseLatencyCard(
                     text = value?.let { strings.widgets.latency.millisecondLabel(it) } ?: strings.widgets.latency.notSet,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = mockzillaMonoFontFamily(),
-                        color = if (value == null) colorScheme.onSurfaceVariant else colorScheme.warning.primary,
+                        color = value?.let {
+                            colorScheme.warning.primary
+                        } ?: colorScheme.onSurfaceVariant,
                         fontSize = 16.sp
                     ),
                     textAlign = TextAlign.Start,

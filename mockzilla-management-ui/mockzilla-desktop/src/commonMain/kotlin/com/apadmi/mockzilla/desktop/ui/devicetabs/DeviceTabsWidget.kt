@@ -148,11 +148,15 @@ private fun DeviceChip(
             .clip(chipShape)
             .background(if (device.isActive) colorScheme.surface else Color.Transparent)
             .then(
-                if (device.isActive) Modifier.border(
-                    width = 1.dp,
-                    color = colorScheme.outline,
-                    shape = chipShape
-                ) else Modifier
+                if (device.isActive) {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = colorScheme.outline,
+                        shape = chipShape
+                    )
+                } else {
+                    Modifier
+                }
             )
             .clickable(onClick = onSelect)
             .desktopTertiaryPointerClick(onClick = onClose)
@@ -238,8 +242,13 @@ private fun AddDeviceButton(label: String, onClick: () -> Unit) {
     }
 }
 
+@Suppress("MAGIC_NUMBER")
 @Composable
-private fun GlobalControlsButton(label: String, isOpen: Boolean, onClick: () -> Unit) {
+private fun GlobalControlsButton(
+    label: String,
+    isOpen: Boolean,
+    onClick: () -> Unit
+) {
     val colorScheme = MaterialTheme.colorScheme
     val shape = RoundedCornerShape(8.dp)
 
