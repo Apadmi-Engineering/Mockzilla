@@ -9,6 +9,8 @@ import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.*
 
 import app.cash.turbine.test
@@ -43,6 +45,20 @@ class GlobalControlsViewModelTests : CoroutineTest() {
         eventBus = eventBusMock,
         testScope.backgroundScope,
     )
+
+    private fun List<SerializableEndpointConfig>.toState() = map { config ->
+        EndpointsViewModel.State.EndpointConfig(
+            key = config.key,
+            name = config.name,
+            fail = config.shouldFail == true,
+            overriddenProperties = listOfNotNull(
+                EndpointProperties.Delay.takeIf { _ -> config.delayMs != null },
+                EndpointProperties.Body.takeIf { _ -> config.defaultBody != null || config.appliedPresetOverride?.response?.body != null },
+                EndpointProperties.Status.takeIf { _ -> config.defaultStatus != null || config.appliedPresetOverride?.response?.statusCode != null },
+                EndpointProperties.Headers.takeIf { _ -> config.defaultHeaders != null || config.appliedPresetOverride?.response?.headers != null }
+            )
+        )
+    }
 
     @Test
     fun `reloadData - partial failure - populates correctly`() = runBlockingTest {
@@ -89,6 +105,8 @@ class GlobalControlsViewModelTests : CoroutineTest() {
                     initialLatencyMs = 10,
                     apiFailureState = ForceFailureBannerState.FullFailure,
                     isLoading = false,
+                    endpoints = fullFailureAndLatency.toState(),
+                    activeOverridesCount = 3
                 ), awaitItem()
             )
 
@@ -98,6 +116,8 @@ class GlobalControlsViewModelTests : CoroutineTest() {
                     initialLatencyMs = null,
                     apiFailureState = ForceFailureBannerState.PartialFailure,
                     isLoading = false,
+                    endpoints = partialFailure.toState(),
+                    activeOverridesCount = 2
                 ), awaitItem()
             )
 
@@ -107,6 +127,8 @@ class GlobalControlsViewModelTests : CoroutineTest() {
                     initialLatencyMs = null,
                     apiFailureState = ForceFailureBannerState.Normal,
                     isLoading = false,
+                    endpoints = noFailure.toState(),
+                    activeOverridesCount = 2
                 ), awaitItem()
             )
         }
@@ -140,7 +162,9 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             assertEquals(State.Idle(
                 initialLatencyMs = null,
                 apiFailureState = ForceFailureBannerState.PartialFailure,
-                isLoading = true
+                isLoading = true,
+                endpoints = endpoints.toState(),
+                activeOverridesCount = 1
             ), awaitItem())
             coVerify {
                 updateServiceMock.setShouldFail(Device.dummy(), endpointKeys, false)
@@ -176,7 +200,9 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             assertEquals(State.Idle(
                 initialLatencyMs = null,
                 apiFailureState = ForceFailureBannerState.PartialFailure,
-                isLoading = true
+                isLoading = true,
+                endpoints = endpoints.toState(),
+                activeOverridesCount = 1
             ), awaitItem())
             coVerify {
                 updateServiceMock.setShouldFail(Device.dummy(), endpointKeys, true)
@@ -212,7 +238,9 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             assertEquals(State.Idle(
                 initialLatencyMs = null,
                 apiFailureState = ForceFailureBannerState.PartialFailure,
-                isLoading = true
+                isLoading = true,
+                endpoints = endpoints.toState(),
+                activeOverridesCount = 1
             ), awaitItem())
             coVerify {
                 updateServiceMock.setDelay(Device.dummy(), endpointKeys, null)
@@ -248,7 +276,9 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             assertEquals(State.Idle(
                 initialLatencyMs = null,
                 apiFailureState = ForceFailureBannerState.PartialFailure,
-                isLoading = true
+                isLoading = true,
+                endpoints = endpoints.toState(),
+                activeOverridesCount = 1
             ), awaitItem())
             coVerify {
                 updateServiceMock.setDelay(Device.dummy(), endpointKeys, 1592)

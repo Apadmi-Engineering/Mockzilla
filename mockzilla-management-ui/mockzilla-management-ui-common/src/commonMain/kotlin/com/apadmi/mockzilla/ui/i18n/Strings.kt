@@ -277,6 +277,13 @@ data class Strings(
          * @property partialFailureBannerConfig
          * @property failButtonLabel
          * @property restoreButtonLabel
+         * @property activeOverrides
+         * @property perEndpointStatus
+         * @property forcedStatus
+         * @property latencyStatus
+         * @property bodyStatus
+         * @property headersStatus
+         * @property statusStatus
          */
         data class GlobalControls(
             val title: String,
@@ -287,6 +294,13 @@ data class Strings(
             val partialFailureBannerConfig: GlobalConfigBanner,
             val failButtonLabel: String,
             val restoreButtonLabel: String,
+            val activeOverrides: (Int) -> String,
+            val perEndpointStatus: String,
+            val forcedStatus: String,
+            val latencyStatus: String,
+            val bodyStatus: String,
+            val headersStatus: String,
+            val statusStatus: String,
         ) {
             /**
              * @property title
@@ -301,14 +315,20 @@ data class Strings(
         /**
          * @property title
          * @property millisecondLabel
+         * @property secondLabel
          * @property sliderMin
          * @property sliderMax
+         * @property notSet
+         * @property clear
          */
         data class Latency(
             val title: String,
-            val millisecondLabel: String,
+            val millisecondLabel: (Int) -> String,
+            val secondLabel: (Int) -> String,
             val sliderMin: String,
-            val sliderMax: String
+            val sliderMax: String,
+            val notSet: String,
+            val clear: String,
         )
 
         /**

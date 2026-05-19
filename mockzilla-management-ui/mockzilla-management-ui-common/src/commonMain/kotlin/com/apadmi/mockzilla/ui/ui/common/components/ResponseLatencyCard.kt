@@ -2,22 +2,21 @@ package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,18 +26,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-
+import androidx.compose.ui.unit.sp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.assets.Clock
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
-
+import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration.Companion.days
@@ -49,10 +46,9 @@ private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
 @Suppress("MAGIC_NUMBER")
 private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
 
-@Suppress("MAGIC_NUMBER")
-private val cardShape = RoundedCornerShape(10.dp)
 private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 internal fun ResponseLatencyCard(
     modifier: Modifier = Modifier,
@@ -61,134 +57,229 @@ internal fun ResponseLatencyCard(
     onReset: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    var value by remember(initialValue) { mutableStateOf(initialValue) }
+    var value by remember(initialValue) {
+        mutableStateOf(initialValue)
+    }
+
     val updateValue = remember(initialValue) {
         { it: Int ->
-            value = it.clamped()
-            onChange(it.clamped())
+            val clamped = it.clamped()
+            value = clamped
+            onChange(clamped)
         }
     }
+
+    val colorScheme = MaterialTheme.colorScheme
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(cardShape)
-            .background(color = colorScheme.surfaceContainer)
-            .border(width = 1.dp, color = colorScheme.outline, shape = cardShape)
-            .padding(start = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        SectionTitle(label = strings.widgets.latency.title)
-
-        Row(
-            modifier = Modifier.padding(end = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            SquareIconButton(
-                enabled = value != null && value != 0,
-                onClick = { updateValue((value ?: 0) - 100) },
-            ) {
-                Icon(imageVector = Icons.Default.Remove, contentDescription = "Minus")
-            }
-            Spacer(Modifier.size(10.dp))
-            CustomTextField(
-                modifier = Modifier.weight(1f),
-                value = value?.toString() ?: "",
-                placeholder = { Text("Not Set") },
-                onValueChange = { updateValue(it.toIntOrNull() ?: 0) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                suffix = {
-                    value?.let {
-                        Text(strings.widgets.latency.millisecondLabel)
-                    } ?: Box(Modifier)
-                },
+            .background(
+                color = colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(8.dp)
             )
-            Spacer(Modifier.size(10.dp))
-            SquareIconButton(
-                enabled = value != null && value != maxLatencyMs,
-                onClick = { updateValue((value ?: 0) + 100) },
+            .border(
+                width = 1.dp,
+                color = colorScheme.outline,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = strings.widgets.latency.title,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = colorScheme.onSurface
+                )
+            )
+
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .clickable(onClick = onReset)
+                    .padding(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Plus")
-            }
-            Spacer(Modifier.size(6.dp))
-            IconButton(onClick = onReset, enabled = value != null) {
                 Icon(
-                    modifier = Modifier.size(18.dp),
-                    imageVector = Icons.Default.Restore,
-                    contentDescription = strings.common.resetDescription,
-                    tint = colorScheme.onSurfaceMuted,
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    modifier = Modifier.size(14.dp),
+                    tint = colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = strings.widgets.latency.clear,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Medium
+                    )
                 )
             }
         }
 
         Row(
-            modifier = Modifier.padding(end = 12.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = strings.widgets.latency.sliderMin,
-                style = MaterialTheme.typography.bodySmall,
-                color = colorScheme.onSurfaceMuted,
-            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(44.dp)
+                    .background(
+                        color = colorScheme.surface,
+                        shape = RoundedCornerShape(6.dp),
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = colorScheme.outline,
+                        shape = RoundedCornerShape(6.dp),
+                    )
+                    .padding(horizontal = 12.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = value?.let { strings.widgets.latency.millisecondLabel(it) } ?: strings.widgets.latency.notSet,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontFamily = mockzillaMonoFontFamily(),
+                        color = value?.let {
+                            colorScheme.warning.primary
+                        } ?: colorScheme.onSurfaceVariant,
+                        fontSize = 16.sp
+                    ),
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            SmallSquareButton(onClick = { updateValue((value ?: 0) - 100) }) {
+                Icon(
+                    imageVector = Icons.Default.Remove,
+                    contentDescription = null,
+                    tint = colorScheme.onSurface,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+
+            SmallSquareButton(onClick = { updateValue((value ?: 0) + 100) }) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                    tint = colorScheme.onSurface,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             MockzillaSlider(
                 value = value?.toFloat() ?: 0f,
                 valueRange = 0f..sliderMax,
-                modifier = Modifier.weight(1f),
-                onValueChange = { updateValue(it.toInt()) },
+                modifier = Modifier.fillMaxWidth(),
+                activeTrackColor = colorScheme.primary,
+                onValueChange = {
+                    updateValue(it.toInt())
+                },
             )
-            Box {
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
                 Text(
-                    modifier = Modifier
-                        .alpha(if ((value ?: 0) > sliderMax) 0f else 1f)
-                        .padding(8.dp),
-                    text = strings.widgets.latency.sliderMax,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colorScheme.onSurfaceMuted,
+                    text = strings.widgets.latency.sliderMin,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = colorScheme.onSurfaceVariant,
+                        fontSize = 12.sp
+                    )
                 )
-                Icon(
-                    modifier = Modifier
-                        .size(18.dp)
-                        .align(Alignment.Center)
-                        .alpha(if ((value ?: 0) > sliderMax) 1f else 0f),
-                    imageVector = Icons.Clock,
-                    contentDescription = null,
-                    tint = colorScheme.onSurfaceMuted,
+                Text(
+                    text = strings.widgets.latency.sliderMax,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = colorScheme.onSurfaceVariant,
+                        fontSize = 12.sp
+                    )
                 )
             }
         }
-        Spacer(modifier = Modifier.size(4.dp))
+        
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            listOf(0, 300, 1000, 3000, 10000).forEach { ms ->
+                val label = when {
+                    ms < 1000 -> strings.widgets.latency.millisecondLabel(ms)
+                    else -> strings.widgets.latency.secondLabel(ms / 1000)
+                }
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(colorScheme.surface)
+                        .border(
+                            width = 1.dp,
+                            color = colorScheme.outline,
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                        .clickable {
+                            updateValue(ms)
+                        }
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = label,
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = colorScheme.onSurface,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 12.sp
+                        )
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
-private fun SquareIconButton(
+private fun SmallSquareButton(
     onClick: () -> Unit,
-    enabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    IconButton(
-        onClick = onClick,
-        enabled = enabled,
+    Box(
         modifier = Modifier
-            .size(30.dp)
+            .size(44.dp)
             .clip(RoundedCornerShape(6.dp))
-            .background(colorScheme.surfaceVariant)
-            .border(width = 1.dp, color = colorScheme.outline, shape = RoundedCornerShape(6.dp)),
-        content = content,
-    )
+            .background(colorScheme.surface)
+            .border(
+                width = 1.dp,
+                color = colorScheme.outline,
+                shape = RoundedCornerShape(6.dp)
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        content()
+    }
 }
 
 @Preview
 @Composable
 private fun ResponseLatencyCardPreview() = PreviewSurface {
-    ResponseLatencyCard(initialValue = 150, onChange = {}, onReset = {})
-}
-
-@Preview
-@Composable
-private fun ResponseLatencyCardDarkPreview() = PreviewSurface(darkTheme = true) {
-    ResponseLatencyCard(initialValue = 3000, onChange = {}, onReset = {})
+    ResponseLatencyCard(
+        modifier = Modifier.padding(16.dp),
+        initialValue = null,
+        onChange = {},
+        onReset = {},
+    )
 }

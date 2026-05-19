@@ -1,4 +1,3 @@
-require "apadmi_grout"
 
 platform :ios do
     desc "Generate Podspec"
@@ -111,6 +110,7 @@ def createMobileUiSnapshotProp(is_snapshot, version)
 end
 
 private_lane :get_mobile_ui_version_name do |options|
+    options ||= {}
     build_gradle_text = IO.read("#{lane_context[:repo_root]}/mockzilla-management-ui/mockzilla-mobile-ui/build.gradle.kts")
     version_pattern = /.*"(.*?)" \/\/ x-release-please-version/
     version = build_gradle_text.match(version_pattern)[1]

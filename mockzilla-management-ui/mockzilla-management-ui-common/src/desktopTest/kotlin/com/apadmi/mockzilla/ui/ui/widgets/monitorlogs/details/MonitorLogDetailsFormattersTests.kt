@@ -15,6 +15,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class MonitorLogDetailsFormattersTests {
+    // ── buildJsonAnnotatedString ──────────────────────────────────────────────
+
+    private val colors = JsonHighlightColors(
+        keyColor = Color.Blue,
+        stringColor = Color.Green,
+        numberColor = Color.Yellow,
+        boolColor = Color.Magenta,
+        nullColor = Color.Gray,
+    )
 
     // ── toKbLabel ─────────────────────────────────────────────────────────────
 
@@ -141,16 +150,6 @@ class MonitorLogDetailsFormattersTests {
         val compact = """{"key":"value"}"""
         assertEquals(compact.prettyPrintJson(), withSpaces.prettyPrintJson())
     }
-
-    // ── buildJsonAnnotatedString ──────────────────────────────────────────────
-
-    private val colors = JsonHighlightColors(
-        keyColor = Color.Blue,
-        stringColor = Color.Green,
-        numberColor = Color.Yellow,
-        boolColor = Color.Magenta,
-        nullColor = Color.Gray,
-    )
 
     @Test
     fun `buildJsonAnnotatedString plain text equals pretty printed json`() {
