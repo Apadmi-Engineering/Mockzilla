@@ -3,17 +3,24 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +39,9 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -50,12 +60,12 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
-import com.apadmi.mockzilla.ui.ui.common.theme.inputBackground
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
+private const val MIN_CONTENT_WIDTH_DP = 300
 private const val HOVER_ALPHA = 0.08f
 private const val UNSELECTED_BORDER_ALPHA = 0.2f
 private const val LEFT_BORDER_WIDTH_DP = 3
@@ -86,12 +96,17 @@ fun EndpointsWidget(
         parametersOf(device)
     }
     val state by viewModel.state.collectAsState()
+    var selectedKey by remember { mutableStateOf<Key?>(null) }
 
     EndpointsWidgetContent(
         state = state,
+        selectedKey = selectedKey,
         onFilterUpdate = viewModel::onFilterChanged,
         onDensityChanged = viewModel::onDensityChanged,
-        onEndpointClicked = onEndpointClicked,
+        onEndpointClicked = { key ->
+            selectedKey = key
+            onEndpointClicked(key)
+        },
         onGlobalControlsClicked = onGlobalControlsClicked
     )
 }
@@ -104,6 +119,7 @@ private fun formatDelaySeconds(delayMs: Int): String {
 @Composable
 private fun EndpointsList(
     state: EndpointsViewModel.State.EndpointsList,
+    selectedKey: Key?,
     onEndpointClicked: (Key) -> Unit,
     onFilterUpdate: (String) -> Unit,
     onDensityChanged: (Density) -> Unit,
@@ -120,6 +136,7 @@ private fun EndpointsList(
         EndpointRow(
             endpoint = endpoint,
             density = state.density,
+            isSelected = endpoint.key == selectedKey,
             onEndpointClicked = onEndpointClicked,
         )
     }
@@ -181,19 +198,28 @@ private fun DensityButton(
 private fun EndpointRow(
     endpoint: EndpointsViewModel.State.EndpointConfig,
     density: Density,
+    isSelected: Boolean,
     onEndpointClicked: (Key) -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
     val cs = MaterialTheme.colorScheme
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
     val leftBorderColor = when {
         endpoint.fail -> cs.error
         endpoint.overriddenProperties.any { it != EndpointProperties.Delay } -> cs.primary
         endpoint.overriddenProperties.isNotEmpty() -> cs.warning.primary
+        isSelected -> cs.primary
         else -> Color.Transparent
     }
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .hoverable(interactionSource = interactionSource)
+            .background(
+                if (isSelected || isHovered) cs.onSurface.copy(alpha = HOVER_ALPHA)
+                else Color.Transparent
+            )
             .drawBehind {
                 drawRect(
                     leftBorderColor,
@@ -208,6 +234,7 @@ private fun EndpointRow(
                 bottom = density.verticalPadding(),
             ),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Column(modifier = Modifier.weight(1f)) {
             EndpointRowMainContent(endpoint = endpoint)
@@ -276,40 +303,53 @@ private fun EndpointRowChips(
 @Composable
 private fun EndpointsWidgetContent(
     state: EndpointsViewModel.State,
+    selectedKey: Key?,
     onFilterUpdate: (String) -> Unit,
     onDensityChanged: (Density) -> Unit,
     onEndpointClicked: (Key) -> Unit,
     onGlobalControlsClicked: () -> Unit,
     strings: Strings = LocalStrings.current
-) = Box(
-    modifier = Modifier
-        .fillMaxSize()
-        .background(color = MaterialTheme.colorScheme.background)
-        .padding(horizontal = 12.dp, vertical = 15.dp)
-        .navigationBarsPadding()
 ) {
-    when (state) {
-        EndpointsViewModel.State.Loading -> CircularProgressIndicator()
-        is EndpointsViewModel.State.EndpointsList -> {
-            EndpointsList(
-                state = state,
-                onEndpointClicked = onEndpointClicked,
-                onFilterUpdate = onFilterUpdate,
-                onDensityChanged = onDensityChanged,
-            )
-            FloatingActionButton(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .align(Alignment.BottomEnd)
-                    .zIndex(1f),
-                onClick = onGlobalControlsClicked,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = strings.widgets.globalControls.title
-                )
+    val horizontalScrollState = rememberScrollState()
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
+        val contentWidth = maxOf(maxWidth, MIN_CONTENT_WIDTH_DP.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .horizontalScroll(horizontalScrollState)
+                .width(contentWidth)
+                .padding(horizontal = 12.dp, vertical = 15.dp)
+                .navigationBarsPadding()
+        ) {
+            when (state) {
+                EndpointsViewModel.State.Loading -> CircularProgressIndicator()
+                is EndpointsViewModel.State.EndpointsList -> {
+                    EndpointsList(
+                        state = state,
+                        selectedKey = selectedKey,
+                        onEndpointClicked = onEndpointClicked,
+                        onFilterUpdate = onFilterUpdate,
+                        onDensityChanged = onDensityChanged,
+                    )
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .align(Alignment.BottomEnd)
+                            .zIndex(1f),
+                        onClick = onGlobalControlsClicked,
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = strings.widgets.globalControls.title
+                        )
+                    }
+                }
             }
         }
     }
@@ -324,25 +364,34 @@ private fun FilterTextField(
     modifier = Modifier
         .fillMaxWidth()
         .height(48.dp)
-        .background(MaterialTheme.colorScheme.surfaceContainer)
         .border(
             1.dp,
-            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-            RoundedCornerShape(12.dp)
+            MaterialTheme.colorScheme.onBackground.copy(alpha = UNSELECTED_BORDER_ALPHA),
+            RoundedCornerShape(8.dp)
         ),
     value = value,
     onValueChange = onFilterUpdate,
-    textStyle = MaterialTheme.typography.titleMedium,
-    placeholder = { Text(strings.widgets.endpoints.filterPlaceholder) },
+    textStyle = MaterialTheme.typography.bodyLarge,
+    placeholder = {
+        Text(
+            text = strings.widgets.endpoints.filterPlaceholder,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    },
     leadingIcon = {
-        Icon(imageVector = Icons.Default.Search, contentDescription = null)
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     },
     singleLine = true,
-    shape = RoundedCornerShape(12.dp),
+    shape = RoundedCornerShape(8.dp),
     colors = TextFieldDefaults.colors().copy(
-        focusedContainerColor = MaterialTheme.colorScheme.inputBackground,
-        unfocusedContainerColor = MaterialTheme.colorScheme.inputBackground,
-        disabledContainerColor = MaterialTheme.colorScheme.inputBackground,
+        focusedContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
+        unfocusedContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
+        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
@@ -351,8 +400,9 @@ private fun FilterTextField(
 
 @Preview
 @Composable
-private fun EndpointsWidgetPreview() = PreviewSurface {
+private fun EndpointsWidgetPreview() = PreviewSurface(darkTheme = true) {
     EndpointsWidgetContent(
+        selectedKey = null,
         state = EndpointsViewModel.State.EndpointsList(
             allEndpoints = listOf(
                 EndpointsViewModel.State.EndpointConfig(
