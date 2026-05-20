@@ -7,7 +7,7 @@ LC_ALL=C
 repo_root="$(git rev-parse --show-toplevel)"
 
 # Check if we need to run spotless (only when staged .kt files have changed)
-kt_changes="$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.kt$' || true)"
+kt_changes="$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.kt$' | grep -v 'FlutterMockzilla/' || true)"
 if [[ -n "$kt_changes" ]]; then
     # Run spotless
     echo "🦥 Running spotlessCheck 🦥"
