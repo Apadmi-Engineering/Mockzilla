@@ -80,9 +80,9 @@ private fun EndpointProperties.chipTone(): ChipTone = when (this) {
     else -> ChipTone.Teal
 }
 
-private fun Density.verticalPadding(): Dp = when (this) {
-    Density.Compact -> COMPACT_VERTICAL_PADDING_DP.dp
-    Density.Comfy -> COMFY_VERTICAL_PADDING_DP.dp
+private fun RowDensity.verticalPadding(): Dp = when (this) {
+    RowDensity.Compact -> COMPACT_VERTICAL_PADDING_DP.dp
+    RowDensity.Comfy -> COMFY_VERTICAL_PADDING_DP.dp
 }
 
 @Composable
@@ -101,7 +101,7 @@ fun EndpointsWidget(
         state = state,
         selectedKey = selectedKey,
         onFilterUpdate = viewModel::onFilterChanged,
-        onDensityChanged = viewModel::onDensityChanged,
+        onRowDensityChanged = viewModel::onRowDensityChanged,
         onEndpointClicked = { key ->
             selectedKey = key
             onEndpointClicked(key)
@@ -121,20 +121,20 @@ private fun EndpointsList(
     selectedKey: Key?,
     onEndpointClicked: (Key) -> Unit,
     onFilterUpdate: (String) -> Unit,
-    onDensityChanged: (Density) -> Unit,
+    onRowDensityChanged: (RowDensity) -> Unit,
 ) = Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
     FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
     EndpointsHeader(
         displayedCount = state.endpoints.size,
         totalCount = state.allEndpoints.size,
-        selectedDensity = state.density,
-        onDensityChanged = onDensityChanged,
+        selectedRowDensity = state.rowDensity,
+        onRowDensityChanged = onRowDensityChanged,
     )
     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
     state.endpoints.forEach { endpoint ->
         EndpointRow(
             endpoint = endpoint,
-            density = state.density,
+            rowDensity = state.rowDensity,
             isSelected = endpoint.key == selectedKey,
             onEndpointClicked = onEndpointClicked,
         )
@@ -145,8 +145,8 @@ private fun EndpointsList(
 private fun EndpointsHeader(
     displayedCount: Int,
     totalCount: Int,
-    selectedDensity: Density,
-    onDensityChanged: (Density) -> Unit,
+    selectedRowDensity: RowDensity,
+    onRowDensityChanged: (RowDensity) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -161,11 +161,11 @@ private fun EndpointsHeader(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            listOf(Density.Compact, Density.Comfy).forEach { density ->
-                DensityButton(
+            listOf(RowDensity.Compact, RowDensity.Comfy).forEach { density ->
+                RowDensityButton(
                     label = density.name.lowercase(),
-                    isSelected = selectedDensity == density,
-                    onClick = { onDensityChanged(density) },
+                    isSelected = selectedRowDensity == density,
+                    onClick = { onRowDensityChanged(density) },
                 )
             }
         }
@@ -173,7 +173,7 @@ private fun EndpointsHeader(
 }
 
 @Composable
-private fun DensityButton(
+private fun RowDensityButton(
     label: String,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -196,7 +196,7 @@ private fun DensityButton(
 @Composable
 private fun EndpointRow(
     endpoint: EndpointsViewModel.State.EndpointConfig,
-    density: Density,
+    rowDensity: RowDensity,
     isSelected: Boolean,
     onEndpointClicked: (Key) -> Unit,
     strings: Strings = LocalStrings.current,
@@ -232,15 +232,15 @@ private fun EndpointRow(
             .padding(
                 start = CONTENT_START_PADDING_DP.dp,
                 end = 12.dp,
-                top = density.verticalPadding(),
-                bottom = density.verticalPadding(),
+                top = rowDensity.verticalPadding(),
+                bottom = rowDensity.verticalPadding(),
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Column(modifier = Modifier.weight(1f)) {
             EndpointRowMainContent(endpoint = endpoint)
-            if (density != Density.Compact) {
+            if (rowDensity != RowDensity.Compact) {
                 Spacer(Modifier.height(4.dp))
                 EndpointRowChips(endpoint = endpoint)
             }
@@ -307,7 +307,7 @@ private fun EndpointsWidgetContent(
     state: EndpointsViewModel.State,
     selectedKey: Key?,
     onFilterUpdate: (String) -> Unit,
-    onDensityChanged: (Density) -> Unit,
+    onRowDensityChanged: (RowDensity) -> Unit,
     onEndpointClicked: (Key) -> Unit,
     onGlobalControlsClicked: () -> Unit,
     strings: Strings = LocalStrings.current
@@ -335,7 +335,7 @@ private fun EndpointsWidgetContent(
                         selectedKey = selectedKey,
                         onEndpointClicked = onEndpointClicked,
                         onFilterUpdate = onFilterUpdate,
-                        onDensityChanged = onDensityChanged,
+                        onRowDensityChanged = onRowDensityChanged,
                     )
                     FloatingActionButton(
                         modifier = Modifier
@@ -440,10 +440,10 @@ private fun EndpointsWidgetPreview() = PreviewSurface(darkTheme = true) {
                 ),
             ),
             filter = "",
-            density = Density.Comfy,
+            rowDensity = RowDensity.Comfy,
         ),
         onFilterUpdate = {},
-        onDensityChanged = {},
+        onRowDensityChanged = {},
         onEndpointClicked = {},
         onGlobalControlsClicked = {}
     )

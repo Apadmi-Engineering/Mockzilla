@@ -48,7 +48,7 @@ class EndpointsViewModel(
                         )
                     },
                     filter = currentState?.filter ?: "",
-                    density = currentState?.density ?: Density.Comfy,
+                    rowDensity = currentState?.rowDensity ?: RowDensity.Comfy,
                 )
             },
             onFailure = {
@@ -63,9 +63,9 @@ class EndpointsViewModel(
         state.value = currentState.copy(filter = value)
     }
 
-    fun onDensityChanged(density: Density) {
+    fun onRowDensityChanged(rowDensity: RowDensity) {
         val currentState = state.value as? State.EndpointsList ?: return
-        state.value = currentState.copy(density = density)
+        state.value = currentState.copy(rowDensity = rowDensity)
     }
 
     sealed class State {
@@ -89,12 +89,12 @@ class EndpointsViewModel(
         /**
          * @property allEndpoints Endpoints list before applying the filter string
          * @property filter Filter string
-         * @property density Display density for the list rows
+         * @property rowDensity Display density for the list rows
          */
         data class EndpointsList(
             val allEndpoints: List<EndpointConfig>,
             val filter: String,
-            val density: Density = Density.Comfy,
+            val rowDensity: RowDensity = RowDensity.Comfy,
         ) : State() {
             /**
              * Filtered endpoints
@@ -105,7 +105,7 @@ class EndpointsViewModel(
 }
 
 /** Controls how much information each row in the endpoint list shows. */
-enum class Density {
+enum class RowDensity {
     Comfy, Compact
 }
 
