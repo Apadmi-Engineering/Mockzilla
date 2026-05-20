@@ -165,7 +165,7 @@ data class StateColors(
 )
 
 data object ScaleFactor {
-    const val DEFAULT_DESKTOP = 0.9F
+    const val DEFAULT_DESKTOP = 1.0F
     const val DEFAULT_MOBILE = 1.0F
     val default = when (Platform.current) {
         Platform.Android, Platform.Ios -> DEFAULT_MOBILE
