@@ -71,8 +71,7 @@ private const val UNSELECTED_BORDER_ALPHA = 0.2f
 private const val LEFT_BORDER_WIDTH_DP = 3
 private const val CONTENT_START_PADDING_DP = 13
 private const val COMPACT_VERTICAL_PADDING_DP = 10
-private const val COZY_VERTICAL_PADDING_DP = 14
-private const val COMFY_VERTICAL_PADDING_DP = 18
+private const val COMFY_VERTICAL_PADDING_DP = 14
 private const val DELAY_TENTHS_DIVISOR = 100
 private const val DELAY_TENTHS_MODULO = 10
 
@@ -83,7 +82,7 @@ private fun EndpointProperties.chipTone(): ChipTone = when (this) {
 
 private fun Density.verticalPadding(): Dp = when (this) {
     Density.Compact -> COMPACT_VERTICAL_PADDING_DP.dp
-    Density.Comfy -> COZY_VERTICAL_PADDING_DP.dp
+    Density.Comfy -> COMFY_VERTICAL_PADDING_DP.dp
 }
 
 @Composable
@@ -217,8 +216,11 @@ private fun EndpointRow(
             .fillMaxWidth()
             .hoverable(interactionSource = interactionSource)
             .background(
-                if (isSelected || isHovered) cs.onSurface.copy(alpha = HOVER_ALPHA)
-                else Color.Transparent
+                if (isSelected || isHovered) {
+                    cs.onSurface.copy(alpha = HOVER_ALPHA)
+                } else {
+                    Color.Transparent
+                }
             )
             .drawBehind {
                 drawRect(
@@ -243,15 +245,15 @@ private fun EndpointRow(
                 EndpointRowChips(endpoint = endpoint)
             }
         }
+        if (endpoint.fail) {
+            StatusChip(label = strings.widgets.endpoints.forced, tone = ChipTone.Err)
+        }
         endpoint.delayMs?.let { delay ->
             Text(
                 text = formatDelaySeconds(delay),
                 style = MaterialTheme.typography.labelSmall,
                 color = cs.warning.primary,
             )
-        }
-        if (endpoint.fail) {
-            StatusChip(label = strings.widgets.endpoints.forced, tone = ChipTone.Err)
         }
         Icon(
             imageVector = Icons.Default.ChevronRight,
