@@ -117,19 +117,19 @@ val EnStrings = Strings(
             title = "Global Controls",
             subtitle = "Apply to all endpoints",
             resetAllLabel = "Reset All",
-            failButtonLabel = "Force Failure",
+            failButtonLabel = "Force Fail",
             restoreButtonLabel = "Restore API",
             normalBehaviourBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
-                title = "Normal API Behavior",
-                subtitle = "API will respond as normal. (Error presets will still return their errors)",
+                title = "Normal Behavior",
+                subtitle = "API responds normally. Error presets still apply",
             ),
             partialFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
                 title = "Partial Failure Enabled",
                 subtitle = "Some API calls are forced to fail, others are not.",
             ),
             forcedFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
-                title = "Forced API Failure Enabled",
-                subtitle = "All API calls will return error responses regardless of your configured presets.",
+                title = "Forced Failure",
+                subtitle = "All requests return 500. Presets ignored.",
             ),
             activeOverrides = { " · $it active" },
             perEndpointStatus = "PER-ENDPOINT STATUS",
@@ -150,7 +150,7 @@ val EnStrings = Strings(
         ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",
-            subtitle = "Configure HTTP response",
+            subtitle = "Configure mock response",
             none = "No endpoint selected",
             statusCode = "Status code",
             edit = "Edit",
@@ -161,6 +161,8 @@ val EnStrings = Strings(
             emptyDescription = "Choose an Endpoint to start editing",
             forcedApiFailureBannerTitle = "Forced API Failure Enabled",
             forcedApiFailureBannerSubtitle = "This setting is currently being overridden",
+            behavior = "Behavior",
+            latency = "Latency",
             presets = Strings.Widgets.EndpointDetails.Presets(
                 title = "Presets",
                 noPresetTitle = "No Override Selected",
@@ -181,7 +183,7 @@ val EnStrings = Strings(
                 filterPlaceholderEmpty = "Nothing here :(",
                 statusCodeFallback = "XXX",
                 applyLabel = "Apply",
-                appliedLabel = "Applied",
+                appliedLabel = "Set",
                 editLabel = "Edit"
             )
         ),

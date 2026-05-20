@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.scaffold
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Immutable
 data class VerticalTab(
     val title: String?,
+    val leadingIcon: ImageVector? = null,
+    val leadingContent: (@Composable () -> Unit)? = null,
 )
 
 @Immutable
@@ -58,9 +61,27 @@ fun VerticalTabList(
     val colorScheme = MaterialTheme.colorScheme
     Column(
         modifier = modifier
-            .background(colorScheme.surface)
+            .background(colorScheme.surfaceContainer)
+            .drawBehind {
+                val strokeWidth = 1.dp.toPx()
+                if (clockwise) {
+                    drawLine(
+                        color = colorScheme.outline,
+                        start = Offset(0f, 0f),
+                        end = Offset(0f, size.height),
+                        strokeWidth = strokeWidth
+                    )
+                } else {
+                    drawLine(
+                        color = colorScheme.outline,
+                        start = Offset(size.width, 0f),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = strokeWidth
+                    )
+                }
+            }
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.Top,
     ) {
         tabs.forEachIndexed { index, tab ->
             val isSelected = selected.contains(index)
@@ -68,6 +89,8 @@ fun VerticalTabList(
                 title = tab.title,
                 selected = isSelected,
                 onSelect = { onSelect(index) },
+                leadingIcon = tab.leadingIcon,
+                leadingContent = tab.leadingContent,
                 modifier = Modifier.rotateVertically(clockwise),
             )
         }
@@ -84,8 +107,16 @@ fun HorizontalTabList(
     val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = modifier
-            .background(colorScheme.surface)
-            .border(width = 1.dp, color = colorScheme.outline)
+            .background(colorScheme.surfaceContainer)
+            .drawBehind {
+                val strokeWidth = 1.dp.toPx()
+                drawLine(
+                    color = colorScheme.outline,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = strokeWidth
+                )
+            }
             .horizontalScroll(rememberScrollState()),
     ) {
         tabs.forEachIndexed { index, tab ->
@@ -118,18 +149,30 @@ private fun TabItem(
     val colorScheme = MaterialTheme.colorScheme
     Box(
         modifier = modifier
-            .background(if (selected) colorScheme.surfaceVariant else Color.Transparent)
-            .then(
-                if (selected) Modifier.border(width = 1.dp, color = colorScheme.outlineVariant) else Modifier
-            )
+            .background(if (selected) colorScheme.surface else Color.Transparent)
             .selectable(selected = selected, onClick = onSelect)
-            .heightIn(min = 36.dp),
+            .heightIn(min = 44.dp),
         contentAlignment = Alignment.Center,
     ) {
+        if (selected) {
+            Box(
+                Modifier
+                    .matchParentSize()
+                    .drawBehind {
+                        val strokeWidth = 2.dp.toPx()
+                        drawLine(
+                            color = colorScheme.primary,
+                            start = Offset(0f, size.height - strokeWidth / 2),
+                            end = Offset(size.width, size.height - strokeWidth / 2),
+                            strokeWidth = strokeWidth
+                        )
+                    }
+            )
+        }
         Row(
             modifier = Modifier
                 .minimumInteractiveComponentSize()
-                .padding(horizontal = 10.dp, vertical = 6.dp),
+                .padding(horizontal = 16.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             leadingContent?.invoke()
@@ -139,10 +182,10 @@ private fun TabItem(
                     contentDescription = null,
                     tint = if (selected) colorScheme.primary else colorScheme.onSurfaceMuted,
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
             }
             leadingContent?.let {
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
             }
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -152,7 +195,7 @@ private fun TabItem(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.labelLarge,
-                        color = if (selected) colorScheme.onSurface else colorScheme.onSurfaceVariant,
+                        color = if (selected) colorScheme.primary else colorScheme.onSurfaceVariant,
                     )
                 }
                 subtitle?.let {
@@ -164,7 +207,7 @@ private fun TabItem(
                 }
             }
             trailing?.let {
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 it()
             }
         }

@@ -47,6 +47,8 @@ fun WidgetScaffold(
     bottom: List<Widget>,
     onSelected: (String) -> Unit,
     top: @Composable () -> Unit,
+    initialLeftPanelWidth: Dp = 230.dp,
+    initialRightPanelWidth: Dp = 280.dp,
 ) {
     val density = LocalDensity.current
 
@@ -56,10 +58,10 @@ fun WidgetScaffold(
     // width/height below zero (when the user drags into the tab areas) but visually display the
     // restricted width/height that can't drop below 0. This ensures the dragged divider stays
     // with the cursor at all times.
-    var leftPanelWidth by remember { mutableStateOf(230.dp) }
-    var leftPanelSettledWidth by remember { mutableStateOf(230.dp) }
-    var rightPanelWidth by remember { mutableStateOf(280.dp) }
-    var rightPanelSettledWidth by remember { mutableStateOf(280.dp) }
+    var leftPanelWidth by remember { mutableStateOf(initialLeftPanelWidth) }
+    var leftPanelSettledWidth by remember { mutableStateOf(initialLeftPanelWidth) }
+    var rightPanelWidth by remember { mutableStateOf(initialRightPanelWidth) }
+    var rightPanelSettledWidth by remember { mutableStateOf(initialRightPanelWidth) }
 
     // Both of the horizontal panels must collectively not be so large that the center panel
     // runs out of space. We can enforce this by hoisting the width of each panel and preventing
@@ -103,7 +105,8 @@ fun WidgetScaffold(
                     onDragStopped = {
                         leftPanelWidth = leftPanelSettledWidth
                     },
-                    onSelected = onSelected
+                    onSelected = onSelected,
+                    defaultWidth = initialLeftPanelWidth
                 )
                 Column(
                     modifier = Modifier
@@ -127,7 +130,8 @@ fun WidgetScaffold(
                     onDragStopped = {
                         rightPanelWidth = rightPanelSettledWidth
                     },
-                    onSelected = onSelected
+                    onSelected = onSelected,
+                    defaultWidth = initialRightPanelWidth
                 )
             }
             BottomPanel(content = bottom)

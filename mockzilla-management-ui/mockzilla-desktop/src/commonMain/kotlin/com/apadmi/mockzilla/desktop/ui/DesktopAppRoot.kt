@@ -76,10 +76,28 @@ fun DesktopApp(
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
         val onSelected: (String) -> Unit = { id ->
-            openWidgets = if (openWidgets.contains(id)) {
-                openWidgets.minus(id)
+            if (id == endpointDetailsWidgetId) {
+                if (!openWidgets.contains(id)) {
+                    openWidgets = openWidgets.minus(logDetailsWidgetId).plus(id)
+                    logDetail = null
+                } else {
+                    openWidgets = openWidgets.minus(id)
+                    viewModel.setSelectedEndpoint(null)
+                }
+            } else if (id == logDetailsWidgetId) {
+                if (!openWidgets.contains(id)) {
+                    openWidgets = openWidgets.minus(endpointDetailsWidgetId).plus(id)
+                    viewModel.setSelectedEndpoint(null)
+                } else {
+                    openWidgets = openWidgets.minus(id)
+                    logDetail = null
+                }
             } else {
-                openWidgets.plus(id)
+                openWidgets = if (openWidgets.contains(id)) {
+                    openWidgets.minus(id)
+                } else {
+                    openWidgets.plus(id)
+                }
             }
         }
 
@@ -131,17 +149,21 @@ fun DesktopApp(
                     }
                 ) {
                     viewModel.setSelectedEndpoint(it)
-                    openWidgets = openWidgets.plus(endpointDetailsWidgetId)
+                    logDetail = null
+                    openWidgets = openWidgets.minus(logDetailsWidgetId).plus(endpointDetailsWidgetId)
                 },
                 bottom = bottomPanelWidgets(
                     state = state,
                     onViewDetail = {
                         logDetail = it
-                        openWidgets = openWidgets.plus(logDetailsWidgetId)
+                        viewModel.setSelectedEndpoint(null)
+                        openWidgets = openWidgets.minus(endpointDetailsWidgetId).plus(logDetailsWidgetId)
                     },
                     strings = strings,
                 ),
-                onSelected = onSelected
+                onSelected = onSelected,
+                initialLeftPanelWidth = 300.dp,
+                initialRightPanelWidth = 900.dp
             )
 
             // Global Controls Overlay

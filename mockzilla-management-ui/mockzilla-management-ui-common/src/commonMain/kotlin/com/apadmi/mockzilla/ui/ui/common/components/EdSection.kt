@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -48,6 +49,7 @@ fun EdSection(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     initiallyExpanded: Boolean = true,
+    headerActions: @Composable RowScope.() -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -67,7 +69,7 @@ fun EdSection(
                 .fillMaxWidth()
                 .background(colorScheme.surfaceContainer)
                 .clickable { expanded = !expanded }
-                .padding(horizontal = 14.dp, vertical = 10.dp),
+                .padding(horizontal = 14.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
@@ -91,6 +93,7 @@ fun EdSection(
                 style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.06.em),
                 color = colorScheme.onSurfaceVariant,
             )
+            headerActions()
         }
 
         AnimatedVisibility(

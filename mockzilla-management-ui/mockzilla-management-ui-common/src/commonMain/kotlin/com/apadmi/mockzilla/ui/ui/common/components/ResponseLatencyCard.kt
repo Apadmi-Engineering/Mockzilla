@@ -48,13 +48,16 @@ private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
 
 private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
-@Suppress("MAGIC_NUMBER")
+@Suppress("MAGIC_NUMBER", "LONG_PARAMETER_LIST")
 @Composable
 internal fun ResponseLatencyCard(
     modifier: Modifier = Modifier,
     initialValue: Int?,
     onChange: (Int) -> Unit,
     onReset: () -> Unit,
+    showHeader: Boolean = true,
+    showBackground: Boolean = true,
+    showBorder: Boolean = true,
     strings: Strings = LocalStrings.current,
 ) {
     var value by remember(initialValue) {
@@ -74,52 +77,66 @@ internal fun ResponseLatencyCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                color = colorScheme.surfaceVariant,
-                shape = RoundedCornerShape(8.dp)
+            .then(
+                if (showBackground) {
+                    Modifier.background(
+                        color = colorScheme.surfaceVariant,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                } else {
+                    Modifier
+                }
             )
-            .border(
-                width = 1.dp,
-                color = colorScheme.outline,
-                shape = RoundedCornerShape(8.dp)
+            .then(
+                if (showBorder) {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = colorScheme.outline,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                } else {
+                    Modifier
+                }
             )
-            .padding(16.dp),
+            .padding(if (showBackground || showBorder) 16.dp else 0.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = strings.widgets.latency.title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = colorScheme.onSurface
-                )
-            )
-
+        if (showHeader) {
             Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(4.dp))
-                    .clickable(onClick = onReset)
-                    .padding(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = null,
-                    modifier = Modifier.size(14.dp),
-                    tint = colorScheme.onSurfaceVariant
-                )
                 Text(
-                    text = strings.widgets.latency.clear,
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Medium
+                    text = strings.widgets.latency.title,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = colorScheme.onSurface
                     )
                 )
+
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .clickable(onClick = onReset)
+                        .padding(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = strings.widgets.latency.clear,
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = colorScheme.onSurfaceVariant,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
             }
         }
 
@@ -133,7 +150,7 @@ internal fun ResponseLatencyCard(
                     .weight(1f)
                     .height(44.dp)
                     .background(
-                        color = colorScheme.surface,
+                        color = colorScheme.surfaceContainer,
                         shape = RoundedCornerShape(6.dp),
                     )
                     .border(
@@ -224,7 +241,7 @@ internal fun ResponseLatencyCard(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
-                        .background(colorScheme.surface)
+                        .background(colorScheme.surfaceContainer)
                         .border(
                             width = 1.dp,
                             color = colorScheme.outline,
@@ -260,7 +277,7 @@ private fun SmallSquareButton(
         modifier = Modifier
             .size(44.dp)
             .clip(RoundedCornerShape(6.dp))
-            .background(colorScheme.surface)
+            .background(colorScheme.surfaceContainer)
             .border(
                 width = 1.dp,
                 color = colorScheme.outline,

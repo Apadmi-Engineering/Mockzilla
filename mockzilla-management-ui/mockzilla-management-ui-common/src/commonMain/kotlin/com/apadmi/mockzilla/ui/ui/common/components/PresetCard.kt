@@ -12,11 +12,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.UnfoldLess
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material3.Icon
@@ -34,9 +39,11 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -45,13 +52,13 @@ import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.EditCircle
-import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.assets.ErrorCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.InfoCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.RedirectCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.utils.color
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
 
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -105,122 +112,27 @@ private fun DashboardOverridePreset.icon() = if (isManagementUiDefinedCustomPres
 }
 
 @Composable
-internal fun PresetCard(
-    variant: PresetCardVariant,
-    preset: DashboardOverridePreset,
-    onClicked: (DashboardOverridePreset) -> Unit,
-    strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
-) = Column(
-    Modifier.fillMaxWidth()
-        .clip(shape = RoundedCornerShape(12.dp))
-        .clickable {
-            onClicked(preset)
-        }.border(
-            width = 1.dp,
-            color = when (variant) {
-                PresetCardVariant.Selected -> MaterialTheme.colorScheme.onBackground
-                PresetCardVariant.Selectable -> MaterialTheme.colorScheme.outline
-            },
-            shape = RoundedCornerShape(12.dp)
-        ).background(
-            color = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(12.dp)
-        )
-        .padding(12.dp),
-) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = preset.icon(),
-            contentDescription = null,
-            tint = preset.color()
-        )
-        Spacer(Modifier.size(8.dp))
-        Text(
-            modifier = Modifier.weight(1f),
-            text = preset.name, style = MaterialTheme.typography.labelLarge
-        )
-        Spacer(Modifier.size(8.dp))
-        Tag(
-            label = when (variant) {
-                PresetCardVariant.Selected -> strings.appliedLabel
-                PresetCardVariant.Selectable -> preset.response.statusCode?.value?.toString()
-                    ?: strings.statusCodeFallback
-            },
-            textColor = preset.color(),
-            borderColor = preset.color()
-        )
-    }
-    Spacer(Modifier.size(8.dp))
-    if (!preset.description.isNullOrBlank()) {
-        Text(
-            text = preset.description ?: "",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-    Spacer(Modifier.size(8.dp))
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Tag(
-            label = preset.description(),
-            textColor = preset.color(),
-            borderColor = preset.color(),
-            backgroundColor = preset.color().copy(alpha = 0.2f)
-        )
-        when (variant) {
-            PresetCardVariant.Selected -> Tag(
-                prefix = {
-                    Icon(
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        imageVector = Icons.EditUnderscore,
-                        contentDescription = null,
-                    )
-                },
-                label = strings.editLabel,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                borderColor = MaterialTheme.colorScheme.outline
-            )
-            PresetCardVariant.Selectable -> Tag(
-                label = strings.applyLabel,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                borderColor = MaterialTheme.colorScheme.outline,
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-            )
-        }
-    }
-
-    preset.response.body?.takeIf { it.isNotBlank() }
-        ?.let {
-            Spacer(Modifier.size(8.dp))
-            ExpandableResponseBody(preset.response.body ?: "")
-        }
-}
-
-@Composable
-internal fun Tag(
+fun Tag(
     modifier: Modifier = Modifier,
     prefix: @Composable () -> Unit = {},
     label: String,
     textColor: Color,
     borderColor: Color,
     backgroundColor: Color = Color.Transparent,
+    shape: Shape = RoundedCornerShape(8.dp),
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
 ) = Row(
     modifier = modifier
         .border(
             width = 1.dp,
             color = borderColor,
-            shape = RoundedCornerShape(8.dp)
+            shape = shape
         )
         .background(
             color = backgroundColor.compositeOver(
                 background = MaterialTheme.colorScheme.surface
             ),
-            shape = RoundedCornerShape(8.dp)
+            shape = shape
         )
         .padding(contentPadding),
     verticalAlignment = Alignment.CenterVertically,
@@ -232,6 +144,149 @@ internal fun Tag(
         style = MaterialTheme.typography.labelMedium,
         color = textColor
     )
+}
+
+@Composable
+internal fun PresetCard(
+    variant: PresetCardVariant,
+    preset: DashboardOverridePreset,
+    onClicked: (DashboardOverridePreset) -> Unit,
+    layoutMode: LayoutMode = LayoutMode.Comfy,
+    strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
+) {
+    val isCompact = layoutMode == LayoutMode.Compact
+    Column(
+        Modifier.fillMaxWidth()
+            .clip(shape = RoundedCornerShape(12.dp))
+            .clickable {
+                onClicked(preset)
+            }.border(
+                width = 1.dp,
+                color = when (variant) {
+                    PresetCardVariant.Selected -> Color(0xFF_0D9_488)
+                    PresetCardVariant.Selectable -> MaterialTheme.colorScheme.outline
+                },
+                shape = RoundedCornerShape(12.dp)
+            ).background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(if (isCompact) 8.dp else 12.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (isCompact) {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.size(4.dp))
+            } else {
+                Icon(
+                    imageVector = preset.icon(),
+                    contentDescription = null,
+                    tint = preset.color()
+                )
+                Spacer(Modifier.size(8.dp))
+            }
+
+            Text(
+                modifier = Modifier.weight(1f),
+                text = preset.name,
+                style = if (isCompact) MaterialTheme.typography.titleSmall else MaterialTheme.typography.labelLarge,
+                color = if (isCompact) Color(0xFF_0D9_488) else MaterialTheme.colorScheme.onSurface,
+                fontWeight = if (isCompact) FontWeight.Bold else FontWeight.Normal
+            )
+            Spacer(Modifier.size(8.dp))
+
+            Tag(
+                label = preset.response.statusCode?.value?.toString() ?: strings.statusCodeFallback,
+                textColor = if (isCompact) Color(0xFF_166_534) else preset.color(),
+                borderColor = if (isCompact) Color.Transparent else preset.color(),
+                backgroundColor = if (isCompact) Color(0xFF_DCF_CE7) else Color.Transparent,
+                shape = if (isCompact) CircleShape else RoundedCornerShape(8.dp),
+                contentPadding = if (isCompact) {
+                    PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                } else {
+                    PaddingValues(
+                        horizontal = 8.dp,
+                        vertical = 2.dp
+                    )
+                }
+            )
+            Spacer(Modifier.size(8.dp))
+            when (variant) {
+                PresetCardVariant.Selected -> Tag(
+                    prefix = {
+                        Icon(
+                            modifier = Modifier.size(14.dp),
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                        )
+                    },
+                    label = if (isCompact) "Set" else strings.appliedLabel,
+                    textColor = MaterialTheme.colorScheme.onPrimary,
+                    borderColor = Color.Transparent,
+                    backgroundColor = if (isCompact) Color(0xFF_0D9_488) else MaterialTheme.colorScheme.primary,
+                    shape = if (isCompact) RoundedCornerShape(6.dp) else RoundedCornerShape(8.dp),
+                    contentPadding = if (isCompact) {
+                        PaddingValues(
+                            horizontal = 12.dp,
+                            vertical = 4.dp
+                        )
+                    } else {
+                        PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    }
+                )
+
+                PresetCardVariant.Selectable -> Tag(
+                    label = if (isCompact) "Set" else strings.applyLabel,
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                    borderColor = MaterialTheme.colorScheme.outline,
+                    shape = if (isCompact) RoundedCornerShape(6.dp) else RoundedCornerShape(8.dp),
+                    contentPadding = if (isCompact) {
+                        PaddingValues(
+                            horizontal = 12.dp,
+                            vertical = 4.dp
+                        )
+                    } else {
+                        PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                    }
+                )
+            }
+        }
+        if (!isCompact) {
+            Spacer(Modifier.size(8.dp))
+            if (!preset.description.isNullOrBlank()) {
+                Text(
+                    text = preset.description ?: "",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Spacer(Modifier.size(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Tag(
+                    label = preset.description(),
+                    textColor = preset.color(),
+                    borderColor = preset.color(),
+                    backgroundColor = preset.color().copy(alpha = 0.2f)
+                )
+            }
+        }
+
+        preset.response.body?.takeIf { it.isNotBlank() }
+            ?.let {
+                Spacer(Modifier.size(8.dp))
+                ExpandableResponseBody(preset.response.body ?: "", isCompact)
+            }
+    }
 }
 
 @Composable
@@ -270,9 +325,11 @@ internal fun NoPresetCard(
 }
 
 @Composable
-private fun ExpandableResponseBody(body: String) {
+private fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
     var isExpanded by remember { mutableStateOf(false) }
     var canExpand by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
+
     Box(
         Modifier
             .fillMaxWidth()
@@ -281,14 +338,20 @@ private fun ExpandableResponseBody(body: String) {
                 shape = RoundedCornerShape(8.dp)
             )
             .clip(shape = RoundedCornerShape(8.dp))
-            .clickable(enabled = canExpand || isExpanded) {
-                isExpanded = !isExpanded
-            },
+            .then(
+                if (isCompact) {
+                    Modifier.heightIn(max = 120.dp).verticalScroll(scrollState)
+                } else {
+                    Modifier.clickable(enabled = canExpand || isExpanded) {
+                        isExpanded = !isExpanded
+                    }
+                }
+            ),
     ) {
         Text(
             modifier = Modifier.padding(8.dp),
             text = body,
-            maxLines = if (isExpanded) Int.MAX_VALUE else 4,
+            maxLines = if (isExpanded || isCompact) Int.MAX_VALUE else 4,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -296,7 +359,7 @@ private fun ExpandableResponseBody(body: String) {
                 canExpand = it.hasVisualOverflow
             }
         )
-        if (canExpand || isExpanded) {
+        if (!isCompact && (canExpand || isExpanded)) {
             Box(
                 Modifier.align(Alignment.BottomEnd).padding(4.dp).background(
                     MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.4f),

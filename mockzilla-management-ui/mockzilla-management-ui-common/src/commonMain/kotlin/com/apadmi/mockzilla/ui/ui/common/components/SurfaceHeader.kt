@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,32 +19,39 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 fun SurfaceHeader(
     title: String,
     subtitle: String?,
-    actions: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    actions: @Composable () -> Unit = {},
+    content: @Composable () -> Unit = {},
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    Row(
-        modifier = Modifier
+    Column(
+        modifier = modifier
             .fillMaxWidth()
-            .background(color = colorScheme.surfaceContainer)
-            .border(width = 1.dp, color = colorScheme.outline)
-            .padding(vertical = 10.dp, horizontal = 14.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .background(color = colorScheme.surface)
+            .padding(vertical = 12.dp, horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleSmall,
-                color = colorScheme.onSurface,
-            )
-            subtitle?.let {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colorScheme.onSurfaceMuted,
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = colorScheme.onSurface,
                 )
+                subtitle?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colorScheme.onSurfaceMuted,
+                    )
+                }
             }
+            actions()
         }
-        actions()
+        content()
     }
 }
