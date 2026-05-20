@@ -5,16 +5,13 @@ import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.internal.plugin.SimpleAuthPlugin
 import com.apadmi.mockzilla.lib.internal.service.AuthenticationConstants
 import com.apadmi.mockzilla.lib.internal.service.TokensService
-import com.apadmi.mockzilla.lib.internal.utils.AddressAlreadyInUseException
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
-import com.apadmi.mockzilla.lib.internal.utils.isSomeMatchInChain
 import com.apadmi.mockzilla.lib.internal.utils.multiPlatformIo
+import com.apadmi.mockzilla.lib.internal.utils.runHandlingPortConflict
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
-import com.apadmi.mockzilla.lib.models.PortConflictException
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.lib.internal.utils.runHandlingPortConflict
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
@@ -26,9 +23,6 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.IgnoreTrailingSlash
 import io.ktor.server.routing.RoutingCall
 import io.ktor.server.routing.RoutingContext
-import io.ktor.util.Platform
-import io.ktor.util.PlatformUtils
-import io.ktor.util.platform
 import io.ktor.utils.io.CancellationException
 
 import kotlinx.coroutines.*
