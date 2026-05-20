@@ -22,16 +22,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.UnfoldLess
-import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,7 +39,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
@@ -59,6 +52,9 @@ import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.utils.color
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -155,67 +151,54 @@ internal fun PresetCard(
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     val isCompact = layoutMode == LayoutMode.Compact
+    val isSelected = variant == PresetCardVariant.Selected
+
     Column(
         Modifier.fillMaxWidth()
-            .clip(shape = RoundedCornerShape(12.dp))
-            .clickable {
-                onClicked(preset)
-            }.border(
-                width = 1.dp,
-                color = when (variant) {
-                    PresetCardVariant.Selected -> Color(0xFF_0D9_488)
-                    PresetCardVariant.Selectable -> MaterialTheme.colorScheme.outline
-                },
-                shape = RoundedCornerShape(12.dp)
-            ).background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(12.dp)
+            .clip(shape = RoundedCornerShape(8.dp))
+            .clickable { onClicked(preset) }
+            .border(
+                width = if (isSelected) 1.dp else 0.dp,
+                color = if (isSelected) Color(0xFF_0D9_488) else Color.Transparent,
+                shape = RoundedCornerShape(8.dp)
             )
-            .padding(if (isCompact) 8.dp else 12.dp),
+            .background(
+                color = if (isSelected) Color(0xFF_F0FDFA).copy(alpha = 0.3f) else Color.Transparent,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (isCompact) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.size(4.dp))
-            } else {
-                Icon(
-                    imageVector = preset.icon(),
-                    contentDescription = null,
-                    tint = preset.color()
-                )
-                Spacer(Modifier.size(8.dp))
-            }
+            // Replaced the custom preset icons with the standard chevron
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = if (isSelected) Color(0xFF_0D9_488) else MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.size(8.dp))
 
+            // Standardized to always be bold, matching the target screenshot
             Text(
                 modifier = Modifier.weight(1f),
                 text = preset.name,
-                style = if (isCompact) MaterialTheme.typography.titleSmall else MaterialTheme.typography.labelLarge,
-                color = if (isCompact) Color(0xFF_0D9_488) else MaterialTheme.colorScheme.onSurface,
-                fontWeight = if (isCompact) FontWeight.Bold else FontWeight.Normal
+                style = MaterialTheme.typography.titleSmall,
+                color = if (isSelected) Color(0xFF_0D9_488) else MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.size(8.dp))
 
+            // Status tag updated to a fixed light green pill layout
             Tag(
                 label = preset.response.statusCode?.value?.toString() ?: strings.statusCodeFallback,
-                textColor = if (isCompact) Color(0xFF_166_534) else preset.color(),
-                borderColor = if (isCompact) Color.Transparent else preset.color(),
-                backgroundColor = if (isCompact) Color(0xFF_DCF_CE7) else Color.Transparent,
-                shape = if (isCompact) CircleShape else RoundedCornerShape(8.dp),
-                contentPadding = if (isCompact) {
-                    PaddingValues(horizontal = 8.dp, vertical = 0.dp)
-                } else {
-                    PaddingValues(
-                        horizontal = 8.dp,
-                        vertical = 2.dp
-                    )
-                }
+                textColor = Color(0xFF_166_534),
+                borderColor = Color.Transparent,
+                backgroundColor = Color(0xFF_DCF_CE7),
+                shape = CircleShape,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
             )
             Spacer(Modifier.size(8.dp))
+
             when (variant) {
                 PresetCardVariant.Selected -> Tag(
                     prefix = {
@@ -223,72 +206,46 @@ internal fun PresetCard(
                             modifier = Modifier.size(14.dp),
                             imageVector = Icons.Default.Check,
                             contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     },
-                    label = if (isCompact) "Set" else strings.appliedLabel,
+                    label = "Set",
                     textColor = MaterialTheme.colorScheme.onPrimary,
                     borderColor = Color.Transparent,
-                    backgroundColor = if (isCompact) Color(0xFF_0D9_488) else MaterialTheme.colorScheme.primary,
-                    shape = if (isCompact) RoundedCornerShape(6.dp) else RoundedCornerShape(8.dp),
-                    contentPadding = if (isCompact) {
-                        PaddingValues(
-                            horizontal = 12.dp,
-                            vertical = 4.dp
-                        )
-                    } else {
-                        PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-                    }
+                    backgroundColor = Color(0xFF_0D9_488),
+                    shape = RoundedCornerShape(6.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                 )
 
                 PresetCardVariant.Selectable -> Tag(
-                    label = if (isCompact) "Set" else strings.applyLabel,
+                    label = "Apply",
                     textColor = MaterialTheme.colorScheme.onSurface,
                     borderColor = MaterialTheme.colorScheme.outline,
-                    shape = if (isCompact) RoundedCornerShape(6.dp) else RoundedCornerShape(8.dp),
-                    contentPadding = if (isCompact) {
-                        PaddingValues(
-                            horizontal = 12.dp,
-                            vertical = 4.dp
-                        )
-                    } else {
-                        PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-                    }
-                )
-            }
-        }
-        if (!isCompact) {
-            Spacer(Modifier.size(8.dp))
-            if (!preset.description.isNullOrBlank()) {
-                Text(
-                    text = preset.description ?: "",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Spacer(Modifier.size(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Tag(
-                    label = preset.description(),
-                    textColor = preset.color(),
-                    borderColor = preset.color(),
-                    backgroundColor = preset.color().copy(alpha = 0.2f)
+                    shape = RoundedCornerShape(6.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                 )
             }
         }
 
+        // Moved the description up directly under the title
+        if (!isCompact && !preset.description.isNullOrBlank()) {
+            Spacer(Modifier.size(4.dp))
+            Text(
+                modifier = Modifier.padding(start = 28.dp),
+                text = preset.description ?: "",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        // JSON body
         preset.response.body?.takeIf { it.isNotBlank() }
             ?.let {
-                Spacer(Modifier.size(8.dp))
+                Spacer(Modifier.size(12.dp))
                 ExpandableResponseBody(preset.response.body ?: "", isCompact)
             }
     }
 }
-
 @Composable
 internal fun NoPresetCard(
     strings: Strings = LocalStrings.current
@@ -326,9 +283,10 @@ internal fun NoPresetCard(
 
 @Composable
 private fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
-    var isExpanded by remember { mutableStateOf(false) }
-    var canExpand by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
+
+    // Made the scrollbar color slightly darker so it's easier to see against the background
+    val scrollbarColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
 
     Box(
         Modifier
@@ -337,41 +295,51 @@ private fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
                 color = MaterialTheme.colorScheme.surfaceContainerHigh,
                 shape = RoundedCornerShape(8.dp)
             )
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(8.dp)
+            )
             .clip(shape = RoundedCornerShape(8.dp))
             .then(
                 if (isCompact) {
-                    Modifier.heightIn(max = 120.dp).verticalScroll(scrollState)
+                    Modifier
+                        // LOWERED to 48.dp (roughly 2 lines of text) to force the content to overflow!
+                        .heightIn(max = 48.dp)
+                        .verticalScroll(scrollState)
+                        .drawWithContent {
+                            drawContent()
+
+                            // Only draw if the text actually exceeds the 48.dp height
+                            if (scrollState.maxValue > 0) {
+                                val visibleHeight = size.height
+                                val contentHeight = visibleHeight + scrollState.maxValue
+
+                                val scrollbarHeight = visibleHeight * (visibleHeight / contentHeight)
+                                val scrollbarY = (scrollState.value.toFloat() / scrollState.maxValue) * (visibleHeight - scrollbarHeight)
+                                val scrollbarWidth = 4.dp.toPx()
+                                val paddingEnd = 4.dp.toPx()
+
+                                drawRoundRect(
+                                    color = scrollbarColor,
+                                    topLeft = Offset(size.width - scrollbarWidth - paddingEnd, scrollbarY),
+                                    size = Size(scrollbarWidth, scrollbarHeight),
+                                    cornerRadius = CornerRadius(2.dp.toPx())
+                                )
+                            }
+                        }
                 } else {
-                    Modifier.clickable(enabled = canExpand || isExpanded) {
-                        isExpanded = !isExpanded
-                    }
+                    Modifier
                 }
             ),
     ) {
         Text(
             modifier = Modifier.padding(8.dp),
             text = body,
-            maxLines = if (isExpanded || isCompact) Int.MAX_VALUE else 4,
-            overflow = TextOverflow.Ellipsis,
+            maxLines = Int.MAX_VALUE,
             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            onTextLayout = {
-                canExpand = it.hasVisualOverflow
-            }
         )
-        if (!isCompact && (canExpand || isExpanded)) {
-            Box(
-                Modifier.align(Alignment.BottomEnd).padding(4.dp).background(
-                    MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.4f),
-                    shape = CircleShape
-                )
-            ) {
-                Icon(
-                    imageVector = if (isExpanded) Icons.Default.UnfoldLess else Icons.Default.UnfoldMore,
-                    contentDescription = null
-                )
-            }
-        }
     }
 }
 
