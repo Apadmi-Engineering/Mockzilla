@@ -37,17 +37,18 @@ class EndpointsViewModel(
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
             onSuccess = { list ->
                 val currentState = state.value as? State.EndpointsList
-                val filter = currentState?.filter ?: ""
                 State.EndpointsList(
                     allEndpoints = list.map {
                         State.EndpointConfig(
                             key = it.key,
                             name = it.name,
                             fail = it.shouldFail == true,
-                            overriddenProperties = it.getOverriddenProperties()
+                            overriddenProperties = it.getOverriddenProperties(),
+                            delayMs = it.delayMs,
                         )
                     },
-                    filter
+                    filter = currentState?.filter ?: "",
+                    density = currentState?.density ?: Density.Comfy,
                 )
             },
             onFailure = {
@@ -59,10 +60,12 @@ class EndpointsViewModel(
 
     fun onFilterChanged(value: String) {
         val currentState = state.value as? State.EndpointsList ?: return
+        state.value = currentState.copy(filter = value)
+    }
 
-        state.value = currentState.copy(
-            filter = value
-        )
+    fun onDensityChanged(density: Density) {
+        val currentState = state.value as? State.EndpointsList ?: return
+        state.value = currentState.copy(density = density)
     }
 
     sealed class State {
@@ -73,21 +76,25 @@ class EndpointsViewModel(
          * @property name
          * @property fail
          * @property overriddenProperties
+         * @property delayMs Overridden delay in milliseconds, or null if not overridden.
          */
         data class EndpointConfig(
             val key: EndpointConfiguration.Key,
             val name: String,
             val fail: Boolean,
             val overriddenProperties: List<EndpointProperties>,
+            val delayMs: Int?,
         )
 
         /**
          * @property allEndpoints Endpoints list before applying the filter string
          * @property filter Filter string
+         * @property density Display density for the list rows
          */
         data class EndpointsList(
             val allEndpoints: List<EndpointConfig>,
             val filter: String,
+            val density: Density = Density.Comfy,
         ) : State() {
             /**
              * Filtered endpoints
@@ -97,12 +104,17 @@ class EndpointsViewModel(
     }
 }
 
+/** Controls how much information each row in the endpoint list shows. */
+enum class Density {
+    Comfy, Compact
+}
+
 /**
  * @property displayName
  */
 enum class EndpointProperties(val displayName: String) {
     Body("Body"),
-    Delay("Delay"),
+    Delay("Latency"),
     Headers("Headers"),
     Status("Status"),
     ;

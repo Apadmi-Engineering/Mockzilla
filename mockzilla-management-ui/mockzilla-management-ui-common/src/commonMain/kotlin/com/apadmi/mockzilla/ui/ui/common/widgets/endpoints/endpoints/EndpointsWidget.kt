@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,9 +34,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 
@@ -44,11 +47,34 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
+import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.theme.inputBackground
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
+
+private const val HOVER_ALPHA = 0.08f
+private const val UNSELECTED_BORDER_ALPHA = 0.2f
+private const val LEFT_BORDER_WIDTH_DP = 3
+private const val CONTENT_START_PADDING_DP = 13
+private const val COMPACT_VERTICAL_PADDING_DP = 10
+private const val COZY_VERTICAL_PADDING_DP = 14
+private const val COMFY_VERTICAL_PADDING_DP = 18
+private const val DELAY_TENTHS_DIVISOR = 100
+private const val DELAY_TENTHS_MODULO = 10
+
+private fun EndpointProperties.chipTone(): ChipTone = when (this) {
+    EndpointProperties.Delay -> ChipTone.Warn
+    else -> ChipTone.Teal
+}
+
+private fun Density.verticalPadding(): Dp = when (this) {
+    Density.Compact -> COMPACT_VERTICAL_PADDING_DP.dp
+    Density.Comfy -> COZY_VERTICAL_PADDING_DP.dp
+}
 
 @Composable
 fun EndpointsWidget(
@@ -64,160 +90,185 @@ fun EndpointsWidget(
     EndpointsWidgetContent(
         state = state,
         onFilterUpdate = viewModel::onFilterChanged,
+        onDensityChanged = viewModel::onDensityChanged,
         onEndpointClicked = onEndpointClicked,
         onGlobalControlsClicked = onGlobalControlsClicked
     )
 }
 
-@Suppress("MAGIC_NUMBER")
+private fun formatDelaySeconds(delayMs: Int): String {
+    val tenths = delayMs / DELAY_TENTHS_DIVISOR
+    return "${tenths / DELAY_TENTHS_MODULO}.${tenths % DELAY_TENTHS_MODULO} s"
+}
+
 @Composable
 private fun EndpointsList(
     state: EndpointsViewModel.State.EndpointsList,
     onEndpointClicked: (Key) -> Unit,
     onFilterUpdate: (String) -> Unit,
-    strings: Strings = LocalStrings.current
-) = Column(
-    modifier = Modifier.verticalScroll(rememberScrollState())
-) {
-    FilterTextField(
-        value = state.filter,
-        onFilterUpdate = onFilterUpdate
+    onDensityChanged: (Density) -> Unit,
+) = Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
+    EndpointsHeader(
+        displayedCount = state.endpoints.size,
+        totalCount = state.allEndpoints.size,
+        selectedDensity = state.density,
+        onDensityChanged = onDensityChanged,
     )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    Text(
-        text = strings.widgets.endpoints.numberOfEndpointsShown(
-            state.endpoints.size,
-            state.allEndpoints.size
-        ),
-        color = MaterialTheme.colorScheme.onBackground,
-        style = MaterialTheme.typography.labelSmall
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
+    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
     state.endpoints.forEach { endpoint ->
-        EndpointCard(
+        EndpointRow(
             endpoint = endpoint,
-            onEndpointClicked = onEndpointClicked
+            density = state.density,
+            onEndpointClicked = onEndpointClicked,
         )
-        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
-@Suppress("MAGIC_NUMBER")
 @Composable
-private fun EndpointCard(
-    endpoint: EndpointsViewModel.State.EndpointConfig,
-    onEndpointClicked: (Key) -> Unit,
-    strings: Strings = LocalStrings.current
-) = Column(
-    modifier = Modifier.fillMaxWidth()
+private fun EndpointsHeader(
+    displayedCount: Int,
+    totalCount: Int,
+    selectedDensity: Density,
+    onDensityChanged: (Density) -> Unit,
 ) {
-    val topSectionShape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)
-    val bottomSectionShape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp)
-    val failureBorderColor = MaterialTheme.colorScheme.error
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .clickable { onEndpointClicked(endpoint.key) }
-            .background(
-                color = if (endpoint.fail) {
-                    MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f)
-                } else {
-                    MaterialTheme.colorScheme.surface
-                },
-                shape = if (endpoint.overriddenProperties.isEmpty()) {
-                    RoundedCornerShape(10.dp)
-                } else {
-                    topSectionShape
-                }
-            )
-            .border(
-                width = if (endpoint.fail) (1.5).dp else (0.5).dp,
-                color = if (endpoint.fail) failureBorderColor else Color.Black.copy(alpha = 0.1f),
-                shape = if (endpoint.overriddenProperties.isEmpty() || endpoint.fail) {
-                    RoundedCornerShape(10.dp)
-                } else {
-                    topSectionShape
-                }
-            )
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
+            text = "$displayedCount/$totalCount",
             modifier = Modifier.weight(1f),
-            text = endpoint.name,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (endpoint.fail) {
-                Icon(
-                    modifier = Modifier
-                        .background(
-                            color = Color.Red,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .padding(horizontal = 12.dp, vertical = 2.dp),
-                    imageVector = Icons.LightningBolt,
-                    contentDescription = null,
-                    tint = Color.White
+        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            listOf(Density.Compact, Density.Comfy).forEach { density ->
+                DensityButton(
+                    label = density.name.lowercase(),
+                    isSelected = selectedDensity == density,
+                    onClick = { onDensityChanged(density) },
                 )
             }
-
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
-            )
         }
     }
+}
 
-    if (endpoint.overriddenProperties.isNotEmpty() && !endpoint.fail) {
-        FlowRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.secondaryContainer,  // TODO: Wire up correct colours
-                    shape = bottomSectionShape
-                )
-                .border(
-                    width = (0.5).dp,
-                    color = Color.Black.copy(alpha = 0.1f),
-                    shape = bottomSectionShape
-                )
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            itemVerticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = strings.widgets.endpoints.overrides(
-                    endpoint.overriddenProperties.size
-                ),
-                style = MaterialTheme.typography.labelMedium
-            )
-            endpoint.overriddenProperties.forEach { property ->
-                Text(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.surfaceContainer,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(horizontal = 8.dp, vertical = 2.dp),
-                    text = property.displayName,
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
+@Composable
+private fun DensityButton(
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val cs = MaterialTheme.colorScheme
+    val borderColor =
+        if (isSelected) cs.onSurface else cs.onSurface.copy(alpha = UNSELECTED_BORDER_ALPHA)
+    Text(
+        text = label,
+        modifier = Modifier
+            .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(4.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+        color = if (isSelected) cs.onSurface else cs.onSurfaceVariant,
+    )
+}
+
+@Composable
+private fun EndpointRow(
+    endpoint: EndpointsViewModel.State.EndpointConfig,
+    density: Density,
+    onEndpointClicked: (Key) -> Unit,
+    strings: Strings = LocalStrings.current,
+) {
+    val cs = MaterialTheme.colorScheme
+    val leftBorderColor = when {
+        endpoint.fail -> cs.error
+        endpoint.overriddenProperties.any { it != EndpointProperties.Delay } -> cs.primary
+        endpoint.overriddenProperties.isNotEmpty() -> cs.warning.primary
+        else -> Color.Transparent
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .drawBehind {
+                drawRect(
+                    leftBorderColor,
+                    size = Size(LEFT_BORDER_WIDTH_DP.dp.toPx(), size.height)
                 )
             }
+            .clickable { onEndpointClicked(endpoint.key) }
+            .padding(
+                start = CONTENT_START_PADDING_DP.dp,
+                end = 12.dp,
+                top = density.verticalPadding(),
+                bottom = density.verticalPadding(),
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            EndpointRowMainContent(endpoint = endpoint)
+            if (density != Density.Compact) {
+                Spacer(Modifier.height(4.dp))
+                EndpointRowChips(endpoint = endpoint)
+            }
+        }
+        endpoint.delayMs?.let { delay ->
+            Text(
+                text = formatDelaySeconds(delay),
+                style = MaterialTheme.typography.labelSmall,
+                color = cs.warning.primary,
+            )
+        }
+        if (endpoint.fail) {
+            StatusChip(label = strings.widgets.endpoints.forced, tone = ChipTone.Err)
+        }
+        Icon(
+            imageVector = Icons.Default.ChevronRight,
+            contentDescription = null,
+            tint = cs.onSurface.copy(alpha = 0.4f),
+        )
+    }
+    HorizontalDivider(color = cs.onSurface.copy(alpha = 0.12f))
+}
+
+@Composable
+private fun EndpointRowMainContent(endpoint: EndpointsViewModel.State.EndpointConfig) {
+    Text(
+        text = endpoint.name,
+        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+        color = MaterialTheme.colorScheme.onSurface,
+    )
+}
+
+@Composable
+private fun EndpointRowChips(
+    endpoint: EndpointsViewModel.State.EndpointConfig,
+    strings: Strings = LocalStrings.current,
+) {
+    if (!endpoint.fail && endpoint.overriddenProperties.isEmpty()) {
+        Text(
+            text = strings.widgets.endpoints.noOverrides,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+        )
+        return
+    }
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        if (endpoint.fail) {
+            StatusChip(label = strings.widgets.endpoints.forced, tone = ChipTone.Err)
+        }
+        endpoint.overriddenProperties.forEach { property ->
+            StatusChip(
+                label = property.displayName.uppercase(),
+                tone = property.chipTone(),
+            )
         }
     }
 }
@@ -226,6 +277,7 @@ private fun EndpointCard(
 private fun EndpointsWidgetContent(
     state: EndpointsViewModel.State,
     onFilterUpdate: (String) -> Unit,
+    onDensityChanged: (Density) -> Unit,
     onEndpointClicked: (Key) -> Unit,
     onGlobalControlsClicked: () -> Unit,
     strings: Strings = LocalStrings.current
@@ -242,9 +294,9 @@ private fun EndpointsWidgetContent(
             EndpointsList(
                 state = state,
                 onEndpointClicked = onEndpointClicked,
-                onFilterUpdate = onFilterUpdate
+                onFilterUpdate = onFilterUpdate,
+                onDensityChanged = onDensityChanged,
             )
-
             FloatingActionButton(
                 modifier = Modifier
                     .padding(end = 8.dp)
@@ -269,7 +321,15 @@ private fun FilterTextField(
     onFilterUpdate: (String) -> Unit,
     strings: Strings = LocalStrings.current
 ) = TextField(
-    modifier = Modifier.fillMaxWidth(),
+    modifier = Modifier
+        .fillMaxWidth()
+        .height(48.dp)
+        .background(MaterialTheme.colorScheme.surfaceContainer)
+        .border(
+            1.dp,
+            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+            RoundedCornerShape(12.dp)
+        ),
     value = value,
     onValueChange = onFilterUpdate,
     textStyle = MaterialTheme.typography.titleMedium,
@@ -278,13 +338,14 @@ private fun FilterTextField(
         Icon(imageVector = Icons.Default.Search, contentDescription = null)
     },
     singleLine = true,
-    shape = RoundedCornerShape(8.dp),
+    shape = RoundedCornerShape(12.dp),
     colors = TextFieldDefaults.colors().copy(
-        focusedContainerColor = MaterialTheme.colorScheme.surface,
-        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-        disabledContainerColor = MaterialTheme.colorScheme.surface,
+        focusedContainerColor = MaterialTheme.colorScheme.inputBackground,
+        unfocusedContainerColor = MaterialTheme.colorScheme.inputBackground,
+        disabledContainerColor = MaterialTheme.colorScheme.inputBackground,
         focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent
+        unfocusedIndicatorColor = Color.Transparent,
+        disabledIndicatorColor = Color.Transparent,
     )
 )
 
@@ -296,50 +357,41 @@ private fun EndpointsWidgetPreview() = PreviewSurface {
             allEndpoints = listOf(
                 EndpointsViewModel.State.EndpointConfig(
                     key = Key("1"),
-                    name = "FooBar",
+                    name = "Repairs",
                     fail = false,
                     overriddenProperties = listOf(
-                        EndpointProperties.Delay,
-                        EndpointProperties.Body
-                    )
+                        EndpointProperties.Body,
+                        EndpointProperties.Status
+                    ),
+                    delayMs = null,
                 ),
                 EndpointsViewModel.State.EndpointConfig(
                     key = Key("2"),
-                    name = "Foo",
-                    fail = true,
-                    overriddenProperties = emptyList()
+                    name = "Cancel Repair",
+                    fail = false,
+                    overriddenProperties = listOf(EndpointProperties.Delay),
+                    delayMs = 4900,
                 ),
                 EndpointsViewModel.State.EndpointConfig(
                     key = Key("3"),
-                    name = "FooBuzz",
+                    name = "Reschedule Repair",
                     fail = false,
-                    overriddenProperties = listOf(
-                        EndpointProperties.Status,
-                        EndpointProperties.Status,
-                        EndpointProperties.Delay,
-                        EndpointProperties.Body,
-                        EndpointProperties.Headers
-                    )
+                    overriddenProperties = emptyList(),
+                    delayMs = null,
                 ),
                 EndpointsViewModel.State.EndpointConfig(
                     key = Key("4"),
-                    name = "Foobar",
-                    fail = false,
-                    overriddenProperties = emptyList()
-                ),
-                EndpointsViewModel.State.EndpointConfig(
-                    key = Key("5"),
-                    name = "Foobuzz",
+                    name = "Auth — Token",
                     fail = true,
-                    overriddenProperties = listOf(
-                        EndpointProperties.Delay,
-                        EndpointProperties.Body
-                    )
-                )
+                    overriddenProperties = emptyList(),
+                    delayMs = null,
+                ),
             ),
-            filter = "Foo",
+            filter = "",
+            density = Density.Comfy,
         ),
         onFilterUpdate = {},
+        onDensityChanged = {},
         onEndpointClicked = {},
         onGlobalControlsClicked = {}
     )
