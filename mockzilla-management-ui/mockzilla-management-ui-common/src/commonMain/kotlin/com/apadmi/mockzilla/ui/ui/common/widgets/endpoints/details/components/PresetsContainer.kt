@@ -163,10 +163,14 @@ private fun PopulatedPresets(
         Text(strings.filterPlaceholderEmpty)
     }
 
-    presets.visiblePresets.forEach {
+    presets.visiblePresets.forEach { preset ->
         PresetCard(
-            variant = PresetCardVariant.Selectable,
-            preset = it,
+            variant = if (preset.name == presets.appliedPreset?.name) {
+                PresetCardVariant.Selected
+            } else {
+                PresetCardVariant.Selectable
+            },
+            preset = preset,
             onClicked = onDefaultPresetSelected,
             layoutMode = layoutMode
         )

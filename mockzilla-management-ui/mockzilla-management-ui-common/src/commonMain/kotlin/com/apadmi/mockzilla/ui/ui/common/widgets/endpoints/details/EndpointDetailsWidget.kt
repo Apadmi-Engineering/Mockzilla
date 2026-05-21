@@ -5,6 +5,7 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,8 +58,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.EdSection
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
-import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
-import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
 import com.apadmi.mockzilla.ui.ui.common.components.SurfaceHeader
@@ -67,7 +66,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
@@ -91,10 +90,9 @@ private fun ColumnScope.PopulatedState(
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
-    onEditPreset: () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = colorScheme.surface == darkSurface
+    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
     val accentColor = if (isDark) colorScheme.primary else tealColor
 
     Box {
@@ -217,15 +215,6 @@ private fun ColumnScope.PopulatedState(
         }
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            state.presets.appliedPreset?.let {
-                PresetCard(
-                    variant = PresetCardVariant.Selected,
-                    preset = state.presets.appliedPreset,
-                    onClicked = { onEditPreset() },
-                    layoutMode = state.layoutMode
-                )
-            }
-
             PresetsContainer(
                 state = state,
                 onPresetFilterChanged = onFilterPresetChanged,
@@ -252,7 +241,6 @@ fun EndpointDetailsWidget(
     device: Device,
     activeEndpoint: EndpointConfiguration.Key?,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
-    onEditPreset: (EndpointConfiguration.Key) -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
     val viewModel = getViewModel<EndpointDetailsViewModel>(
@@ -269,7 +257,6 @@ fun EndpointDetailsWidget(
         onFilterPresetChanged = viewModel::onFilterPresetChanged,
         onLayoutModeChanged = viewModel::onLayoutModeChanged,
         onCreatePreset = { activeEndpoint?.let { onCreatePreset(activeEndpoint) } },
-        onEditPreset = { activeEndpoint?.let { onEditPreset(activeEndpoint) } },
         onPresetMoreInfoClicked = {
             // TODO, Add preset docs and update link
             uriHandler.openUri("https://mockzilla.apadmi.dev/")
@@ -288,7 +275,6 @@ fun EndpointDetailsWidgetContent(
     onLayoutModeChanged: (LayoutMode) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
-    onEditPreset: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -315,8 +301,7 @@ fun EndpointDetailsWidgetContent(
                 onLayoutModeChanged,
                 onDefaultPresetSelected,
                 onPresetMoreInfoClicked,
-                onCreatePreset,
-                onEditPreset
+                onCreatePreset
             )
         }
     }
@@ -328,7 +313,7 @@ private fun ActivePresetBanner(
     onClear: () -> Unit
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = colorScheme.surface == darkSurface
+    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
     val bannerBg = if (isDark) Color.Transparent else Color(0xFF_F0F_DFA)
     val successColors = colorScheme.success
 

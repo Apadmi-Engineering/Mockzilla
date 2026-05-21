@@ -8,6 +8,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,15 +39,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 
-import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Suppress("MAGIC_NUMBER")
-private val sectionShape = RoundedCornerShape(8.dp)
+private const val ANIMATION_DURATION = 200
+private const val ROTATION_COLLAPSED = 0f
+private const val ROTATION_EXPANDED = 90f
+private const val SECTION_CORNER_RADIUS = 8
 
-@Suppress("MAGIC_NUMBER")
 @Composable
 fun EdSection(
     label: String,
@@ -57,11 +59,13 @@ fun EdSection(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = colorScheme.surface == darkSurface
+    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val sectionShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(SECTION_CORNER_RADIUS.dp)
+
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
     val chevronRotation by animateFloatAsState(
-        targetValue = if (expanded) 90f else 0f,
-        animationSpec = tween(200),
+        targetValue = if (expanded) ROTATION_EXPANDED else ROTATION_COLLAPSED,
+        animationSpec = tween(ANIMATION_DURATION),
     )
 
     Column(
@@ -83,7 +87,7 @@ fun EdSection(
                 color = colorScheme.outline,
                 shape = sectionShape
             )
-            .clip(if (isDark) RoundedCornerShape(0.dp) else sectionShape),
+            .clip(sectionShape),
     ) {
         Row(
             modifier = Modifier

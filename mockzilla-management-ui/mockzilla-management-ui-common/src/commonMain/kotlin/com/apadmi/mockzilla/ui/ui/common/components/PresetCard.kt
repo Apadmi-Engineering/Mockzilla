@@ -5,6 +5,7 @@ package com.apadmi.mockzilla.ui.ui.common.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -48,16 +50,11 @@ import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.assets.EditCircle
-import com.apadmi.mockzilla.ui.ui.common.assets.ErrorCircle
-import com.apadmi.mockzilla.ui.ui.common.assets.InfoCircle
-import com.apadmi.mockzilla.ui.ui.common.assets.RedirectCircle
-import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
-import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.success
-import com.apadmi.mockzilla.ui.ui.common.utils.color
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.JsonHighlightColors
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildJsonAnnotatedString
 
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -67,47 +64,6 @@ private const val strokeAlpha = 0.3f
 
 internal enum class PresetCardVariant {
     Selectable, Selected
-}
-
-@Composable
-private fun DashboardOverridePreset.description(
-    strings: Strings.Widgets.EndpointDetails.Presets.TypeDescriptions = LocalStrings.current.widgets.endpointDetails.presets.typeDescriptions
-) =
-    when (type?.exampleStatusCode()?.value ?: response.statusCode?.value) {
-        in 100..199 -> strings.informational
-        in 200..299 -> strings.success
-        in 300..399 -> strings.redirect
-        in 400..499 -> strings.error
-        in 500..599 -> strings.error
-        else -> strings.other
-    }
-
-private fun DashboardOverridePreset.Type.exampleStatusCode() = when (this) {
-    DashboardOverridePreset.Type.ClientError -> HttpStatusCode.BadRequest
-    DashboardOverridePreset.Type.Informational -> HttpStatusCode.Continue
-    DashboardOverridePreset.Type.Other -> null
-    DashboardOverridePreset.Type.Redirect -> HttpStatusCode.PermanentRedirect
-    DashboardOverridePreset.Type.ServerError -> HttpStatusCode.InternalServerError
-    DashboardOverridePreset.Type.Success -> HttpStatusCode.OK
-}
-
-@Composable
-private fun DashboardOverridePreset.color(): androidx.compose.ui.graphics.Color {
-    val colorScheme = MaterialTheme.colorScheme
-    return (type?.exampleStatusCode() ?: response.statusCode)?.color() ?: colorScheme.onSurfaceMuted
-}
-
-private fun DashboardOverridePreset.icon() = if (isManagementUiDefinedCustomPreset) {
-    Icons.EditCircle
-} else {
-    when ((type?.exampleStatusCode() ?: response.statusCode)?.value) {
-        in 100..199 -> Icons.InfoCircle
-        in 200..299 -> Icons.SuccessCircle
-        in 300..399 -> Icons.RedirectCircle
-        in 400..499 -> Icons.ErrorCircle
-        in 500..599 -> Icons.ErrorCircle
-        else -> Icons.EditCircle
-    }
 }
 
 @Composable
@@ -155,23 +111,26 @@ internal fun PresetCard(
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = colorScheme.surface == darkSurface
+    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
     val isCompact = layoutMode == LayoutMode.Compact
     val isSelected = variant == PresetCardVariant.Selected
+    val shape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
 
     Column(
         Modifier.fillMaxWidth()
-            .clip(shape = RoundedCornerShape(8.dp))
+            .clip(shape = shape)
             .clickable { onClicked(preset) }
-            .border(
-                width = if (isSelected) 1.dp else 0.dp,
-                color = if (isSelected) colorScheme.primary else Color.Transparent,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .background(
-                color = if (isSelected) colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent,
-                shape = RoundedCornerShape(8.dp)
-            )
+            .focusProperties { canFocus = false }
+            .drawBehind {
+                if (isSelected) {
+                    val indicatorWidth = 4.dp.toPx()
+                    drawRect(
+                        color = Color(0xFF_22_D3_EE),
+                        topLeft = Offset.Zero,
+                        size = Size(indicatorWidth, size.height)
+                    )
+                }
+            }
             .padding(12.dp),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -180,7 +139,7 @@ internal fun PresetCard(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
-                tint = if (isSelected) colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                tint = if (isSelected) Color(0xFF_22_D3_EE) else MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.size(8.dp))
 
@@ -189,7 +148,7 @@ internal fun PresetCard(
                 modifier = Modifier.weight(1f),
                 text = preset.name,
                 style = MaterialTheme.typography.titleSmall,
-                color = if (isSelected) colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                color = if (isSelected) Color(0xFF_22_D3_EE) else MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.size(8.dp))
@@ -198,8 +157,8 @@ internal fun PresetCard(
             Tag(
                 label = preset.response.statusCode?.value?.toString() ?: strings.statusCodeFallback,
                 textColor = colorScheme.success.primary,
-                borderColor = if (isDark) colorScheme.success.primary else Color.Transparent,
-                backgroundColor = colorScheme.success.container,
+                borderColor = colorScheme.success.primary,
+                backgroundColor = if (isDark) Color.Transparent else colorScheme.success.container,
                 shape = CircleShape,
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
             )
@@ -212,21 +171,22 @@ internal fun PresetCard(
                             modifier = Modifier.size(14.dp),
                             imageVector = Icons.Default.Check,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = Color(0xFF_08_33_44)
                         )
                     },
-                    label = "Set",
-                    textColor = MaterialTheme.colorScheme.onPrimary,
+                    label = strings.appliedLabel,
+                    textColor = Color(0xFF_08_33_44),
                     borderColor = Color.Transparent,
-                    backgroundColor = colorScheme.primary,
+                    backgroundColor = Color(0xFF_22_D3_EE),
                     shape = RoundedCornerShape(6.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                 )
 
                 PresetCardVariant.Selectable -> Tag(
-                    label = "Apply",
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    borderColor = MaterialTheme.colorScheme.outline,
+                    label = strings.applyLabel,
+                    textColor = Color.White,
+                    borderColor = Color(0xFF_37_41_51),
+                    backgroundColor = Color(0xFF_11_18_27),
                     shape = RoundedCornerShape(6.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                 )
@@ -290,6 +250,13 @@ internal fun NoPresetCard(
 @Composable
 private fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
     val scrollState = rememberScrollState()
+    val highlightColors = JsonHighlightColors(
+        keyColor = Color(0xFF_BB_9A_F7),
+        stringColor = Color(0xFF_A5_D6_A7),
+        numberColor = Color(0xFF_D1_9A_66),
+        boolColor = Color(0xFF_61_AF_EF),
+        nullColor = Color(0xFF_E0_6C_75)
+    )
 
     // Made the scrollbar color slightly darker so it's easier to see against the background
     val scrollbarColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
@@ -341,7 +308,7 @@ private fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
     ) {
         Text(
             modifier = Modifier.padding(8.dp),
-            text = body,
+            text = buildJsonAnnotatedString(body, highlightColors),
             maxLines = Int.MAX_VALUE,
             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             color = MaterialTheme.colorScheme.onSurfaceVariant,

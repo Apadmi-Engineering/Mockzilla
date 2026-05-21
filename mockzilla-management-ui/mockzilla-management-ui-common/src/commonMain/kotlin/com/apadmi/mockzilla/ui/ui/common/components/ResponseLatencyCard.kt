@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.ui.ui.common.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -40,6 +43,9 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+
+private const val BUTTON_CORNER_RADIUS_DARK = 4
+private const val BUTTON_CORNER_RADIUS_LIGHT = 6
 
 private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
 
@@ -73,6 +79,9 @@ internal fun ResponseLatencyCard(
     }
 
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val cardShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
+    val componentShape = if (isDark) RoundedCornerShape(4.dp) else RoundedCornerShape(6.dp)
 
     Column(
         modifier = modifier
@@ -81,7 +90,7 @@ internal fun ResponseLatencyCard(
                 if (showBackground) {
                     Modifier.background(
                         color = colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = cardShape
                     )
                 } else {
                     Modifier
@@ -92,7 +101,7 @@ internal fun ResponseLatencyCard(
                     Modifier.border(
                         width = 1.dp,
                         color = colorScheme.outline,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = cardShape
                     )
                 } else {
                     Modifier
@@ -151,12 +160,12 @@ internal fun ResponseLatencyCard(
                     .height(44.dp)
                     .background(
                         color = colorScheme.surfaceContainer,
-                        shape = RoundedCornerShape(6.dp),
+                        shape = componentShape,
                     )
                     .border(
                         width = 1.dp,
                         color = colorScheme.outline,
-                        shape = RoundedCornerShape(6.dp),
+                        shape = componentShape,
                     )
                     .padding(horizontal = 12.dp),
                 contentAlignment = Alignment.CenterStart
@@ -240,13 +249,13 @@ internal fun ResponseLatencyCard(
 
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(componentShape)
                         .background(colorScheme.surfaceContainer)
 
                         .border(
                             width = 1.dp,
                             color = colorScheme.outline,
-                            shape = RoundedCornerShape(4.dp)
+                            shape = componentShape
                         )
                         .clickable {
                             updateValue(ms)
@@ -274,15 +283,22 @@ private fun SmallSquareButton(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = colorScheme.surface == darkSurface
+    val shape = if (isDark) {
+        RoundedCornerShape(BUTTON_CORNER_RADIUS_DARK.dp)
+    } else {
+        RoundedCornerShape(BUTTON_CORNER_RADIUS_LIGHT.dp)
+    }
+
     Box(
         modifier = Modifier
             .size(44.dp)
-            .clip(RoundedCornerShape(6.dp))
+            .clip(shape)
             .background(colorScheme.surfaceContainer)
             .border(
                 width = 1.dp,
                 color = colorScheme.outline,
-                shape = RoundedCornerShape(6.dp)
+                shape = shape
             )
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,

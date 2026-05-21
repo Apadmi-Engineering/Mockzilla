@@ -46,7 +46,6 @@ internal fun EndpointDetailsWidgetPreviewContent(
     onLayoutModeChanged = {},
     onPresetMoreInfoClicked = {},
     onCreatePreset = {},
-    onEditPreset = {},
 )
 
 @Suppress("TOO_LONG_FUNCTION")

@@ -110,11 +110,6 @@ fun DesktopApp(
                 openWidgets = openWidgets.minus(editPresetWidgetId)
                 openWidgets = openWidgets.plus(createPresetWidgetId)
             },
-            onEditPreset = {
-                viewModel.setSelectedEndpoint(it)
-                openWidgets = openWidgets.minus(createPresetWidgetId)
-                openWidgets = openWidgets.plus(editPresetWidgetId)
-            },
             onCloseLogDetail = {
                 logDetail = null
                 openWidgets = openWidgets.minus(logDetailsWidgetId)
@@ -265,7 +260,6 @@ private fun rightPanelWidgets(
     logDetail: LogEvent?,
     strings: Strings,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
-    onEditPreset: (EndpointConfiguration.Key) -> Unit,
     onCloseLogDetail: () -> Unit,
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
     buildList {
@@ -279,8 +273,7 @@ private fun rightPanelWidgets(
                     EndpointDetailsWidget(
                         device = newState.activeDevice.device,
                         activeEndpoint = newState.selectedEndpoint,
-                        onCreatePreset = onCreatePreset,
-                        onEditPreset = onEditPreset
+                        onCreatePreset = onCreatePreset
                     )
                 }
             }

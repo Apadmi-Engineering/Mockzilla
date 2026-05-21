@@ -202,9 +202,6 @@ private fun ConnectedState(
                         onCreatePreset = {
                             navController.navigate(Destination.CreateEditPreset(it.raw, true))
                         },
-                        onEditPreset = {
-                            navController.navigate(Destination.CreateEditPreset(it.raw, false))
-                        },
                     )
                 }
             }

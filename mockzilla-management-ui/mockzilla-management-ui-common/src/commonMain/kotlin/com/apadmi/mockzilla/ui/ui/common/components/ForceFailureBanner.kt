@@ -4,6 +4,7 @@ package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,11 +35,14 @@ import com.apadmi.mockzilla.ui.ui.common.assets.Play
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+private const val BANNER_CORNER_RADIUS = 8
 
 enum class ForceFailureBannerState {
     FullFailure,
@@ -79,13 +83,20 @@ internal fun ForceFailureBanner(
         ForceFailureBannerState.Normal -> strings.widgets.globalControls.normalBehaviourBannerConfig
     }
 
+    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val shape = RoundedCornerShape(BANNER_CORNER_RADIUS.dp)
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .clip(RoundedCornerShape(6.dp))
-            .background(color = colors.soft)
-            .border(width = 1.dp, color = colors.accent.copy(alpha = 0.5f), shape = RoundedCornerShape(6.dp)),
+            .clip(shape)
+            .background(color = if (isDark) colors.soft.copy(alpha = 0.5f) else colors.soft)
+            .border(
+                width = 1.dp,
+                color = colors.accent.copy(alpha = 0.5f),
+                shape = shape
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
