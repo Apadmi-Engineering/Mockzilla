@@ -12,6 +12,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
 
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
@@ -94,6 +95,7 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 fail = false,
                 delayMillis = 50,
                 isLoading = false,
+                layoutMode = State.Endpoint.LayoutMode.Compact,
                 presets = State.Endpoint.Presets(
                     appliedPreset = DashboardOverridePreset(
                         name = "Derived preset",
@@ -185,6 +187,7 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 fail = null,
                 delayMillis = null,
                 isLoading = false,
+                layoutMode = LayoutMode.Compact,
                 presets = State.Endpoint.Presets(
                     appliedPreset = null,
                     visiblePresets = presets.presets,
@@ -201,6 +204,7 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 fail = true,
                 delayMillis = 100,
                 isLoading = true,
+                layoutMode = LayoutMode.Compact,
                 presets = State.Endpoint.Presets(
                     appliedPreset = DashboardOverridePreset(
                         name = "Preset name",
