@@ -242,6 +242,7 @@ internal fun ResponseLatencyCard(
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
                         .background(colorScheme.surfaceContainer)
+
                         .border(
                             width = 1.dp,
                             color = colorScheme.outline,

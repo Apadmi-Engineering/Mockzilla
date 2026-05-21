@@ -156,6 +156,7 @@ fun DesktopApp(
                     state = state,
                     onViewDetail = {
                         logDetail = it
+
                         viewModel.setSelectedEndpoint(null)
                         openWidgets = openWidgets.minus(endpointDetailsWidgetId).plus(logDetailsWidgetId)
                     },
@@ -164,6 +165,7 @@ fun DesktopApp(
                 onSelected = onSelected,
                 initialLeftPanelWidth = 300.dp,
                 initialRightPanelWidth = 900.dp
+
             )
 
             // Global Controls Overlay
