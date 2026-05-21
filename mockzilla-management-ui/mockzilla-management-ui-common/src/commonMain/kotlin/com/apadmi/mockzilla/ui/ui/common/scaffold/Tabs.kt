@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.desktop.utils.rotateVertically
 
@@ -59,9 +60,10 @@ fun VerticalTabList(
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = colorScheme.surface == darkSurface
     Column(
         modifier = modifier
-            .background(colorScheme.surfaceContainer)
+            .background(if (isDark) colorScheme.surfaceContainerLow else colorScheme.surfaceContainer)
             .drawBehind {
                 val strokeWidth = 1.dp.toPx()
                 if (clockwise) {

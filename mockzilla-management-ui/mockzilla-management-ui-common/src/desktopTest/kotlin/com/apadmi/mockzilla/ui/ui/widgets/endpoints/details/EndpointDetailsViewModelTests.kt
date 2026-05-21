@@ -95,7 +95,7 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 fail = false,
                 delayMillis = 50,
                 isLoading = false,
-                layoutMode = State.Endpoint.LayoutMode.Compact,
+                layoutMode = State.Endpoint.LayoutMode.Comfy,
                 presets = State.Endpoint.Presets(
                     appliedPreset = DashboardOverridePreset(
                         name = "Derived preset",
@@ -187,7 +187,7 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 fail = null,
                 delayMillis = null,
                 isLoading = false,
-                layoutMode = LayoutMode.Compact,
+                layoutMode = LayoutMode.Comfy,
                 presets = State.Endpoint.Presets(
                     appliedPreset = null,
                     visiblePresets = presets.presets,
@@ -204,7 +204,7 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 fail = true,
                 delayMillis = 100,
                 isLoading = true,
-                layoutMode = LayoutMode.Compact,
+                layoutMode = LayoutMode.Comfy,
                 presets = State.Endpoint.Presets(
                     appliedPreset = DashboardOverridePreset(
                         name = "Preset name",

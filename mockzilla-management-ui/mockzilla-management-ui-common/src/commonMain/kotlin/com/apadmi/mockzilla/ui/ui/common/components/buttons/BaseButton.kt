@@ -55,6 +55,7 @@ fun BaseButton(
     size: ButtonSize = ButtonSize.Md,
     contentAlignment: ButtonContentAlignment = ButtonContentAlignment.Center,
     enabled: Boolean = true,
+    contentColor: Color? = null,
     onClick: () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -70,13 +71,14 @@ fun BaseButton(
     }
     val bgColor by animateColorAsState(targetValue = bgTarget, animationSpec = tween(140))
 
-    val contentColor = when (variant) {
+    val defaultContentColor = when (variant) {
         ButtonVariant.Ghost -> colorScheme.onSurfaceVariant
         ButtonVariant.Outline -> colorScheme.onSurfaceVariant
         ButtonVariant.Solid -> colorScheme.onPrimary
         ButtonVariant.Soft -> colorScheme.onSurface
         ButtonVariant.Danger -> colorScheme.error
     }
+    val finalContentColor = contentColor ?: defaultContentColor
 
     val borderTarget = when (variant) {
         ButtonVariant.Ghost -> Color.Transparent
@@ -102,9 +104,9 @@ fun BaseButton(
         shape = RoundedCornerShape(6.dp),
         colors = ButtonColors(
             containerColor = bgColor,
-            contentColor = contentColor,
+            contentColor = finalContentColor,
             disabledContainerColor = bgColor,
-            disabledContentColor = contentColor,
+            disabledContentColor = finalContentColor,
         ),
         border = BorderStroke(1.dp, borderColor),
         contentPadding = contentPadding,

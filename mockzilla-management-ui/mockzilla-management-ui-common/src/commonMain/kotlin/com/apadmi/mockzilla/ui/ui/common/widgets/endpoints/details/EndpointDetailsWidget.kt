@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -92,6 +93,10 @@ private fun ColumnScope.PopulatedState(
     onCreatePreset: () -> Unit,
     onEditPreset: () -> Unit,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+    val isDark = colorScheme.surface == darkSurface
+    val accentColor = if (isDark) colorScheme.primary else tealColor
+
     Box {
         SurfaceHeader(
             title = state.config.name,
@@ -110,9 +115,10 @@ private fun ColumnScope.PopulatedState(
                     state.config.getOverriddenProperties().forEach { property ->
                         Tag(
                             label = property.displayName.uppercase(),
-                            textColor = MaterialTheme.colorScheme.primary,
-                            borderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                            backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                            textColor = accentColor,
+                            borderColor = accentColor.copy(alpha = 0.5f),
+                            backgroundColor = accentColor.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(4.dp),
                             contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
                         )
                     }
@@ -134,7 +140,6 @@ private fun ColumnScope.PopulatedState(
     }
 
     EdSection(
-        modifier = Modifier.padding(horizontal = 12.dp),
         label = strings.widgets.endpointDetails.behavior,
         icon = Icons.LightningBolt,
     ) {
@@ -150,7 +155,6 @@ private fun ColumnScope.PopulatedState(
     }
 
     EdSection(
-        modifier = Modifier.padding(horizontal = 12.dp),
         label = strings.widgets.endpointDetails.latency,
         icon = Icons.Clock,
     ) {
@@ -165,7 +169,6 @@ private fun ColumnScope.PopulatedState(
     }
 
     EdSection(
-        modifier = Modifier.padding(horizontal = 12.dp),
         label = "${strings.widgets.endpointDetails.presets.title} (${state.presets.allPresets.size})",
         icon = Icons.Default.DragIndicator,
         headerActions = {
@@ -289,8 +292,7 @@ fun EndpointDetailsWidgetContent(
     modifier = Modifier
         .fillMaxWidth()
         .navigationBarsPadding()
-        .background(color = MaterialTheme.colorScheme.surface),
-    verticalArrangement = Arrangement.spacedBy(8.dp)
+        .background(color = MaterialTheme.colorScheme.surface)
 ) {
     when (state) {
         is State.Empty -> EmptyState(
@@ -321,46 +323,45 @@ private fun ActivePresetBanner(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = colorScheme.surface == darkSurface
-    val bannerBg = if (isDark) colorScheme.surfaceContainer else Color(0xFF_E6F_2F5)
-    val accentColor = if (isDark) Color(0xFF_22D_3EE) else tealColor
-    val successColor = colorScheme.success.primary
+    val bannerBg = if (isDark) colorScheme.surfaceContainerLow else Color(0xFF_F0F_DFA)
+    val successColors = colorScheme.success
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(bannerBg)
             .drawBehind {
-                val strokeWidth = 4.dp.toPx()
                 drawLine(
-                    color = accentColor,
-                    start = Offset(strokeWidth / 2, 0f),
-                    end = Offset(strokeWidth / 2, size.height),
-                    strokeWidth = strokeWidth
+                    color = successColors.primary,
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = 1.dp.toPx()
                 )
             }
-            .padding(start = 16.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
+            .padding(start = 16.dp, end = 8.dp, top = 10.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Icon(
             imageVector = Icons.Default.Check,
             contentDescription = null,
-            tint = successColor,
+            tint = successColors.primary,
             modifier = Modifier.size(16.dp)
         )
         Text(
             text = preset.name,
-            style = MaterialTheme.typography.bodyMedium,
-            color = successColor,
+            style = MaterialTheme.typography.titleSmall,
+            color = successColors.primary,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f)
         )
         preset.response.statusCode?.let {
             Tag(
                 label = it.value.toString(),
-                textColor = successColor,
-                borderColor = Color.Transparent,
-                backgroundColor = successColor.copy(alpha = 0.1f)
+                textColor = successColors.primary,
+                borderColor = successColors.primary,
+                backgroundColor = Color.Transparent,
+                shape = CircleShape,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
             )
         }
         Text(
@@ -368,11 +369,13 @@ private fun ActivePresetBanner(
             style = MaterialTheme.typography.labelSmall,
             color = colorScheme.onSurfaceVariant
         )
+        Spacer(Modifier.weight(1f))
         IconButton(onClick = onClear, modifier = Modifier.size(24.dp)) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(16.dp),
+                tint = colorScheme.onSurfaceVariant
             )
         }
     }

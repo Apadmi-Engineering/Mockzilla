@@ -53,7 +53,9 @@ import com.apadmi.mockzilla.ui.ui.common.assets.ErrorCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.InfoCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.RedirectCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
+import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.utils.color
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
 
@@ -152,6 +154,8 @@ internal fun PresetCard(
     layoutMode: LayoutMode = LayoutMode.Comfy,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+    val isDark = colorScheme.surface == darkSurface
     val isCompact = layoutMode == LayoutMode.Compact
     val isSelected = variant == PresetCardVariant.Selected
 
@@ -161,11 +165,11 @@ internal fun PresetCard(
             .clickable { onClicked(preset) }
             .border(
                 width = if (isSelected) 1.dp else 0.dp,
-                color = if (isSelected) Color(0xFF_0D9_488) else Color.Transparent,
+                color = if (isSelected) colorScheme.primary else Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
             .background(
-                color = if (isSelected) Color(0xFF_F0FDFA).copy(alpha = 0.3f) else Color.Transparent,
+                color = if (isSelected) colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(12.dp),
@@ -176,7 +180,7 @@ internal fun PresetCard(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
-                tint = if (isSelected) Color(0xFF_0D9_488) else MaterialTheme.colorScheme.onSurfaceVariant
+                tint = if (isSelected) colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.size(8.dp))
 
@@ -185,7 +189,7 @@ internal fun PresetCard(
                 modifier = Modifier.weight(1f),
                 text = preset.name,
                 style = MaterialTheme.typography.titleSmall,
-                color = if (isSelected) Color(0xFF_0D9_488) else MaterialTheme.colorScheme.onSurface,
+                color = if (isSelected) colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.size(8.dp))
@@ -193,9 +197,9 @@ internal fun PresetCard(
             // Status tag updated to a fixed light green pill layout
             Tag(
                 label = preset.response.statusCode?.value?.toString() ?: strings.statusCodeFallback,
-                textColor = Color(0xFF_166_534),
-                borderColor = Color.Transparent,
-                backgroundColor = Color(0xFF_DCF_CE7),
+                textColor = colorScheme.success.primary,
+                borderColor = if (isDark) colorScheme.success.primary else Color.Transparent,
+                backgroundColor = colorScheme.success.container,
                 shape = CircleShape,
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
             )
@@ -214,7 +218,7 @@ internal fun PresetCard(
                     label = "Set",
                     textColor = MaterialTheme.colorScheme.onPrimary,
                     borderColor = Color.Transparent,
-                    backgroundColor = Color(0xFF_0D9_488),
+                    backgroundColor = colorScheme.primary,
                     shape = RoundedCornerShape(6.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                 )
