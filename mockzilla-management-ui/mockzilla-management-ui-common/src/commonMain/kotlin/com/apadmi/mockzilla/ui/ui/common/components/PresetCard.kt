@@ -30,7 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.Shape
@@ -40,6 +43,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -52,9 +56,6 @@ import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.utils.color
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -143,6 +144,7 @@ fun Tag(
 }
 
 @Composable
+@Suppress("LONG_NUMERICAL_VALUES_SEPARATED")
 internal fun PresetCard(
     variant: PresetCardVariant,
     preset: DashboardOverridePreset,
@@ -316,13 +318,13 @@ private fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
                                 val contentHeight = visibleHeight + scrollState.maxValue
 
                                 val scrollbarHeight = visibleHeight * (visibleHeight / contentHeight)
-                                val scrollbarY = (scrollState.value.toFloat() / scrollState.maxValue) * (visibleHeight - scrollbarHeight)
+                                val scrollbarVertical = (scrollState.value.toFloat() / scrollState.maxValue) * (visibleHeight - scrollbarHeight)
                                 val scrollbarWidth = 4.dp.toPx()
                                 val paddingEnd = 4.dp.toPx()
 
                                 drawRoundRect(
                                     color = scrollbarColor,
-                                    topLeft = Offset(size.width - scrollbarWidth - paddingEnd, scrollbarY),
+                                    topLeft = Offset(size.width - scrollbarWidth - paddingEnd, scrollbarVertical),
                                     size = Size(scrollbarWidth, scrollbarHeight),
                                     cornerRadius = CornerRadius(2.dp.toPx())
                                 )
