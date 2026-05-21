@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -87,7 +88,7 @@ fun EdSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (isDark) colorScheme.surfaceContainerLow else colorScheme.surfaceContainer)
+                .background(if (isDark) Color.Transparent else colorScheme.surfaceContainer)
                 .clickable { expanded = !expanded }
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -124,7 +125,7 @@ fun EdSection(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(colorScheme.surface)
+                    .background(if (isDark) Color.Transparent else colorScheme.surface)
                     .padding(horizontal = 14.dp, vertical = 12.dp),
             ) {
                 content()

@@ -107,6 +107,7 @@ private fun ColumnScope.PopulatedState(
                     leadingIcon = Icons.Default.Refresh,
                     variant = ButtonVariant.Ghost,
                     size = ButtonSize.Sm,
+                    contentColor = if (isDark) colorScheme.onSurface else null,
                     onClick = onResetAll,
                 )
             },
@@ -176,12 +177,12 @@ private fun ColumnScope.PopulatedState(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
                     .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow),
+                    .background(MaterialTheme.colorScheme.surface),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .background(if (state.layoutMode == LayoutMode.Comfy) MaterialTheme.colorScheme.surface else Color.Transparent)
+                        .background(if (state.layoutMode == LayoutMode.Comfy) MaterialTheme.colorScheme.surfaceContainerHigh else Color.Transparent)
                         .clickable { onLayoutModeChanged(LayoutMode.Comfy) }
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
@@ -210,6 +211,7 @@ private fun ColumnScope.PopulatedState(
                 leadingIcon = Icons.Default.Add,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Sm,
+                contentColor = if (isDark) colorScheme.onSurface else null,
                 onClick = onCreatePreset
             )
         }
@@ -288,31 +290,35 @@ fun EndpointDetailsWidgetContent(
     onCreatePreset: () -> Unit,
     onEditPreset: () -> Unit,
     strings: Strings = LocalStrings.current,
-) = Column(
-    modifier = Modifier
-        .fillMaxWidth()
-        .navigationBarsPadding()
-        .background(color = MaterialTheme.colorScheme.surface)
 ) {
-    when (state) {
-        is State.Empty -> EmptyState(
-            title = strings.widgets.endpointDetails.emptyTitle,
-            description = strings.widgets.endpointDetails.emptyDescription
-        )
+    val colorScheme = MaterialTheme.colorScheme
 
-        is State.Endpoint -> PopulatedState(
-            state,
-            strings,
-            onResetAll,
-            onFailChange,
-            onDelayChange,
-            onFilterPresetChanged,
-            onLayoutModeChanged,
-            onDefaultPresetSelected,
-            onPresetMoreInfoClicked,
-            onCreatePreset,
-            onEditPreset
-        )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+            .background(color = colorScheme.surface)
+    ) {
+        when (state) {
+            is State.Empty -> EmptyState(
+                title = strings.widgets.endpointDetails.emptyTitle,
+                description = strings.widgets.endpointDetails.emptyDescription
+            )
+
+            is State.Endpoint -> PopulatedState(
+                state,
+                strings,
+                onResetAll,
+                onFailChange,
+                onDelayChange,
+                onFilterPresetChanged,
+                onLayoutModeChanged,
+                onDefaultPresetSelected,
+                onPresetMoreInfoClicked,
+                onCreatePreset,
+                onEditPreset
+            )
+        }
     }
 }
 
@@ -323,7 +329,7 @@ private fun ActivePresetBanner(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = colorScheme.surface == darkSurface
-    val bannerBg = if (isDark) colorScheme.surfaceContainerLow else Color(0xFF_F0F_DFA)
+    val bannerBg = if (isDark) Color.Transparent else Color(0xFF_F0F_DFA)
     val successColors = colorScheme.success
 
     Row(
@@ -331,12 +337,21 @@ private fun ActivePresetBanner(
             .fillMaxWidth()
             .background(bannerBg)
             .drawBehind {
+                val strokeWidth = 1.dp.toPx()
                 drawLine(
                     color = successColors.primary,
                     start = Offset(0f, 0f),
                     end = Offset(size.width, 0f),
-                    strokeWidth = 1.dp.toPx()
+                    strokeWidth = strokeWidth
                 )
+                if (isDark) {
+                    drawLine(
+                        color = colorScheme.outline,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = strokeWidth
+                    )
+                }
             }
             .padding(start = 16.dp, end = 8.dp, top = 10.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
