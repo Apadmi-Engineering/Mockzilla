@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.min
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTabList
 
+private const val LEFT_PANEL_MIN_WIDTH_DP = 280
+
 /**
  * @property title
  * @property ui
@@ -56,8 +58,8 @@ fun WidgetScaffold(
     // width/height below zero (when the user drags into the tab areas) but visually display the
     // restricted width/height that can't drop below 0. This ensures the dragged divider stays
     // with the cursor at all times.
-    var leftPanelWidth by remember { mutableStateOf(230.dp) }
-    var leftPanelSettledWidth by remember { mutableStateOf(230.dp) }
+    var leftPanelWidth by remember { mutableStateOf(LEFT_PANEL_MIN_WIDTH_DP.dp) }
+    var leftPanelSettledWidth by remember { mutableStateOf(LEFT_PANEL_MIN_WIDTH_DP.dp) }
     var rightPanelWidth by remember { mutableStateOf(280.dp) }
     var rightPanelSettledWidth by remember { mutableStateOf(280.dp) }
 
@@ -68,9 +70,9 @@ fun WidgetScaffold(
     val leftPanelWidthRestriction = { width: Dp ->
         if (totalWidth > 0.dp) {
             val remaining = totalWidth - centerMinWidth - max(rightPanelSettledWidth, 0.dp)
-            min(max(0.dp, width), remaining)
+            min(max(LEFT_PANEL_MIN_WIDTH_DP.dp, width), remaining)
         } else {
-            max(0.dp, width)
+            max(LEFT_PANEL_MIN_WIDTH_DP.dp, width)
         }
     }
     val rightPanelWidthRestriction = { width: Dp ->

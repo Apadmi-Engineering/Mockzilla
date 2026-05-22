@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -312,7 +311,7 @@ private fun EndpointsWidgetContent(
     onGlobalControlsClicked: () -> Unit,
     strings: Strings = LocalStrings.current
 ) {
-    val horizontalScrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -321,8 +320,7 @@ private fun EndpointsWidgetContent(
         val contentWidth = maxOf(maxWidth, MIN_CONTENT_WIDTH_DP.dp)
         Box(
             modifier = Modifier
-                .fillMaxHeight()
-                .horizontalScroll(horizontalScrollState)
+                .horizontalScroll(scrollState)
                 .width(contentWidth)
                 .padding(horizontal = 12.dp, vertical = 15.dp)
                 .navigationBarsPadding()

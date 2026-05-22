@@ -2,7 +2,9 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -50,6 +53,8 @@ import com.apadmi.mockzilla.ui.ui.common.theme.ScaleFactor
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
+private const val MIN_CONTENT_WIDTH_DP = 280
+
 private data object PresentationModeScaleFactor {
     const val MIN = 0.8F
     const val MAX = 1.4F
@@ -82,7 +87,11 @@ fun MiscControlsWidgetContent(
     onRefreshAll: () -> Unit,
     onClearAllOverrides: () -> Unit,
     strings: Strings = LocalStrings.current
-) = Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+) {
+    val scrollState = rememberScrollState()
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val contentWidth = maxOf(maxWidth, MIN_CONTENT_WIDTH_DP.dp)
+        Column(modifier = Modifier.horizontalScroll(scrollState).width(contentWidth).padding(horizontal = 16.dp, vertical = 8.dp)) {
     SectionHeader(title = strings.widgets.miscControls.actionsSection)
 
     Spacer(modifier = Modifier.height(4.dp))
@@ -134,6 +143,8 @@ fun MiscControlsWidgetContent(
             PresentationModeScaleFactor.scaleFactor = scaleFactor
         },
     )
+        }
+    }
 }
 
 @Preview
