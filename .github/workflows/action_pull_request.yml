@@ -274,7 +274,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ./.github/actions/react-native-setup
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: ReactNativeMockzilla/.nvmrc
+      - name: Install dependencies
+        run: yarn install --immutable
+        working-directory: ReactNativeMockzilla
       - name: Setup fastlane
         run: bundle install
       - name: Run checks
@@ -288,7 +293,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ./.github/actions/react-native-setup
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: ReactNativeMockzilla/.nvmrc
+      - name: Install dependencies
+        run: yarn install --immutable
+        working-directory: ReactNativeMockzilla
       - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
@@ -309,7 +319,12 @@ jobs:
         with:
           xcode-version: '26.2.0'
       - uses: actions/checkout@v6
-      - uses: ./.github/actions/react-native-setup
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: ReactNativeMockzilla/.nvmrc
+      - name: Install dependencies
+        run: yarn install --immutable
+        working-directory: ReactNativeMockzilla
       - name: Setup fastlane
         run: bundle install
       - name: Build iOS
