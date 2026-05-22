@@ -60,7 +60,7 @@ internal fun endpointDetailsWidgetSuccessState(
     fail = fail,
     delayMillis = null,
     isLoading = false,
-    layoutMode = LayoutMode.Comfy,
+    layoutMode = LayoutMode.Compact,
     presets = Presets(
         appliedPreset = null,
         visiblePresets = mockPresets,

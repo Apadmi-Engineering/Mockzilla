@@ -132,7 +132,7 @@ private fun PopulatedPresets(
     onPresetFilterChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     showTitle: Boolean = true,
-    layoutMode: LayoutMode = LayoutMode.Comfy,
+    layoutMode: LayoutMode = LayoutMode.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     Column {

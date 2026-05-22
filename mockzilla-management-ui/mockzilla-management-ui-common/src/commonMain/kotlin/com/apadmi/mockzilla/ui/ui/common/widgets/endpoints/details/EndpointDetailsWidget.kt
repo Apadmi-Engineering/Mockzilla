@@ -3,7 +3,6 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
@@ -56,6 +56,7 @@ import com.apadmi.mockzilla.ui.ui.common.assets.Clock
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.EdSection
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.ExpandableResponseBody
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
@@ -167,31 +168,47 @@ private fun ColumnScope.PopulatedState(
         )
     }
 
+    val activeBody = state.presets.appliedPreset?.response?.body ?: state.config.defaultBody
+    if (!activeBody.isNullOrBlank()) {
+        EdSection(
+            label = strings.widgets.createEditPreset.bodyTitle,
+            icon = Icons.Default.Code,
+        ) {
+            ExpandableResponseBody(
+                body = activeBody,
+                isCompact = state.layoutMode == LayoutMode.Compact
+            )
+        }
+    }
+
     EdSection(
         label = "${strings.widgets.endpointDetails.presets.title} (${state.presets.allPresets.size})",
         icon = Icons.Default.DragIndicator,
         headerActions = {
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(4.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
-                    .background(MaterialTheme.colorScheme.surface),
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .background(if (state.layoutMode == LayoutMode.Comfy) MaterialTheme.colorScheme.surfaceContainerHigh else Color.Transparent)
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(if (state.layoutMode == LayoutMode.Comfy) MaterialTheme.colorScheme.surface else Color.Transparent)
                         .clickable { onLayoutModeChanged(LayoutMode.Comfy) }
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(
                         text = "comfy",
                         style = MaterialTheme.typography.labelSmall,
+                        fontWeight = if (state.layoutMode == LayoutMode.Comfy) FontWeight.Bold else FontWeight.Normal,
                         color = if (state.layoutMode == LayoutMode.Comfy) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 Box(
                     modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
                         .background(if (state.layoutMode == LayoutMode.Compact) MaterialTheme.colorScheme.surface else Color.Transparent)
                         .clickable { onLayoutModeChanged(LayoutMode.Compact) }
                         .padding(horizontal = 8.dp, vertical = 2.dp)
@@ -199,6 +216,7 @@ private fun ColumnScope.PopulatedState(
                     Text(
                         text = "compact",
                         style = MaterialTheme.typography.labelSmall,
+                        fontWeight = if (state.layoutMode == LayoutMode.Compact) FontWeight.Bold else FontWeight.Normal,
                         color = if (state.layoutMode == LayoutMode.Compact) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

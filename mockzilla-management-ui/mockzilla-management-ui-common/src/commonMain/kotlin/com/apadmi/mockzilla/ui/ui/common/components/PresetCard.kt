@@ -51,8 +51,11 @@ import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.success
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.ALPHA_MUTED
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.JsonHighlightColors
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildJsonAnnotatedString
 
@@ -107,7 +110,7 @@ internal fun PresetCard(
     variant: PresetCardVariant,
     preset: DashboardOverridePreset,
     onClicked: (DashboardOverridePreset) -> Unit,
-    layoutMode: LayoutMode = LayoutMode.Comfy,
+    layoutMode: LayoutMode = LayoutMode.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -248,14 +251,15 @@ internal fun NoPresetCard(
 }
 
 @Composable
-private fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
+internal fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
     val scrollState = rememberScrollState()
+    val cs = MaterialTheme.colorScheme
     val highlightColors = JsonHighlightColors(
-        keyColor = Color(0xFF_BB_9A_F7),
-        stringColor = Color(0xFF_A5_D6_A7),
-        numberColor = Color(0xFF_D1_9A_66),
-        boolColor = Color(0xFF_61_AF_EF),
-        nullColor = Color(0xFF_E0_6C_75)
+        keyColor = cs.jsonKey,
+        stringColor = cs.success.primary,
+        numberColor = cs.tertiary,
+        boolColor = cs.warning.primary,
+        nullColor = cs.onSurface.copy(alpha = ALPHA_MUTED)
     )
 
     // Made the scrollbar color slightly darker so it's easier to see against the background
