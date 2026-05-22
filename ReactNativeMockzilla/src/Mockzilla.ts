@@ -37,7 +37,7 @@ export class Mockzilla {
     this._emitter = new NativeEventEmitter(NativeMockzillaModule);
     this._sub = this._emitter.addListener(
       'MockzillaRequest',
-      (event: RequestEvent) => void this._dispatch(event)
+      (event) => void this._dispatch(event as RequestEvent)
     );
 
     const result = await NativeMockzillaModule.startMockzilla({
@@ -105,7 +105,7 @@ export class Mockzilla {
         const res = await fn(req);
         NativeMockzillaModule.respondToHandler(requestId, {
           statusCode: res.statusCode ?? 200,
-          headers: res.headers ?? { 'Content-Type': 'application/json' },
+          headers: res.headers ?? {},
           body: res.body ?? '',
         });
       }

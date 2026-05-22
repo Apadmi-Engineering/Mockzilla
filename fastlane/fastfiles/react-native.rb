@@ -3,6 +3,7 @@ lane :react_native_lint_pull_request do
     root = "#{lane_context[:repo_root]}/ReactNativeMockzilla"
     sh("cd #{root} && yarn lint")
     sh("cd #{root} && yarn typecheck")
+    sh("cd #{root} && yarn test")
 end
 
 desc "Build React Native library"
