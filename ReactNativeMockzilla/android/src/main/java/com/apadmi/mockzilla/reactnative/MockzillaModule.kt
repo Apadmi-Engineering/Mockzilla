@@ -20,6 +20,12 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
+private enum class RequestEventType(val value: String) {
+    EndpointMatcher("endpointMatcher"),
+    DefaultHandler("defaultHandler"),
+    ErrorHandler("errorHandler"),
+}
+
 class MockzillaModule(reactContext: ReactApplicationContext) :
     NativeMockzillaModuleSpec(reactContext) {
 
@@ -69,12 +75,12 @@ class MockzillaModule(reactContext: ReactApplicationContext) :
     private suspend fun callJsMatcher(key: String, req: RequestBridge): Boolean {
         val id = UUID.randomUUID().toString()
         val d = CompletableDeferred<Boolean>().also { pendingMatchers[id] = it }
-        emitRequest(id, key, "endpointMatcher", req)
+        emitRequest(id, key, RequestEventType.EndpointMatcher, req)
         return d.await()
     }
 
     private suspend fun callJsHandler(
-        type: String,
+        type: RequestEventType,
         key: String,
         req: RequestBridge
     ): MockzillaHttpResponse {
@@ -84,12 +90,12 @@ class MockzillaModule(reactContext: ReactApplicationContext) :
         return d.await().toMockzillaHttpResponse()
     }
 
-    private fun emitRequest(id: String, key: String, type: String, req: RequestBridge) {
+    private fun emitRequest(id: String, key: String, type: RequestEventType, req: RequestBridge) {
         reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java)
             .emit("MockzillaRequest", WritableNativeMap().apply {
                 putString("requestId", id)
                 putString("key", key)
-                putString("type", type)
+                putString("type", type.value)
                 putMap("request", WritableNativeMap().apply {
                     putString("uri", req.uri)
                     putString("method", req.method)
@@ -127,11 +133,11 @@ class MockzillaModule(reactContext: ReactApplicationContext) :
                 }
                 .setDefaultHandler {
                     val body = runCatching { bodyAsString() }.getOrDefault("")
-                    callJsHandler("defaultHandler", key, RequestBridge(uri, headers, method.value, body))
+                    callJsHandler(RequestEventType.DefaultHandler, key, RequestBridge(uri, headers, method.value, body))
                 }
                 .setErrorHandler {
                     val body = runCatching { bodyAsString() }.getOrDefault("")
-                    callJsHandler("errorHandler", key, RequestBridge(uri, headers, method.value, body))
+                    callJsHandler(RequestEventType.ErrorHandler, key, RequestBridge(uri, headers, method.value, body))
                 }
 
             val presets = ep.getArray("presets") ?: Arguments.createArray()

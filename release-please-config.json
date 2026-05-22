@@ -57,6 +57,10 @@
     "mockzilla-management-ui/mockzilla-mobile-ui": {
       "component": "mockzilla-mobile-ui",
       "extra-files": ["build.gradle.kts"]
+    },
+    "ReactNativeMockzilla": {
+      "component": "react-native-mockzilla",
+      "release-type": "node"
     }
   },
   "plugins": [

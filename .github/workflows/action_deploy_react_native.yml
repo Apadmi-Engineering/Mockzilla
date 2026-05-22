@@ -1,0 +1,21 @@
+name: Publish react-native-mockzilla to npm
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - react-native-mockzilla-v**
+
+jobs:
+  publish:
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/react-native-setup
+      - name: Setup fastlane
+        run: bundle install
+      - name: Publish to npm
+        run: bundle exec fastlane react_native_publish
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

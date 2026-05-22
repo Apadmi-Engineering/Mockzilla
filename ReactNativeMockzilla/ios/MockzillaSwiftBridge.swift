@@ -90,11 +90,11 @@ import SwiftMockzilla
                     await self?.callMatcher(key: k, request: req) ?? false
                 }
                 .setSwiftDefaultHandler { [weak self] req in
-                    await self?.callHandler(type: "defaultHandler", key: k, request: req)
+                    await self?.callHandler(type: .defaultHandler, key: k, request: req)
                         ?? MockzillaHttpResponse()
                 }
                 .setSwiftErrorHandler { [weak self] req in
-                    await self?.callHandler(type: "errorHandler", key: k, request: req)
+                    await self?.callHandler(type: .errorHandler, key: k, request: req)
                         ?? MockzillaHttpResponse()
                 }
 
@@ -113,7 +113,7 @@ import SwiftMockzilla
             eventSender?.emitRequestEvent([
                 "requestId": id,
                 "key": key,
-                "type": "endpointMatcher",
+                "type": RequestEventType.endpointMatcher.rawValue,
                 "request": [
                     "uri": request.uri,
                     "headers": request.headers,
@@ -125,7 +125,7 @@ import SwiftMockzilla
     }
 
     private func callHandler(
-        type: String,
+        type: RequestEventType,
         key: String,
         request: MockzillaHttpRequest
     ) async -> MockzillaHttpResponse {
@@ -138,7 +138,7 @@ import SwiftMockzilla
             eventSender?.emitRequestEvent([
                 "requestId": id,
                 "key": key,
-                "type": type,
+                "type": type.rawValue,
                 "request": [
                     "uri": request.uri,
                     "headers": request.headers,
@@ -148,6 +148,12 @@ import SwiftMockzilla
             ])
         }
     }
+}
+
+private enum RequestEventType: String {
+    case endpointMatcher
+    case defaultHandler
+    case errorHandler
 }
 
 private extension String {

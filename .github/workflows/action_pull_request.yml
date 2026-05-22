@@ -34,6 +34,7 @@ jobs:
       sample-android: ${{ steps.filter.outputs.sample-android }}
       sample-kmm: ${{ steps.filter.outputs.sample-kmm }}
       swagger: ${{ steps.filter.outputs.swagger }}
+      react-native: ${{ steps.filter.outputs.react-native }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -88,6 +89,10 @@ jobs:
             swagger:
               - *common-fastlane
               - webapi.yml
+            react-native:
+              - *common-fastlane
+              - ReactNativeMockzilla/**
+              - fastlane/fastfiles/react-native.rb
 
   docs:
     needs: filter
@@ -262,6 +267,53 @@ jobs:
         uses: mbowman100/swagger-validator-action@2.0
         with:
           files: webapi.yaml
+
+  react-native-checks:
+    needs: filter
+    if: needs.filter.outputs.react-native == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/react-native-setup
+      - name: Setup fastlane
+        run: bundle install
+      - name: Run checks
+        run: |
+          bundle exec fastlane react_native_lint_pull_request
+          bundle exec fastlane react_native_library_pull_request
+
+  react-native-android:
+    needs: filter
+    if: needs.filter.outputs.react-native == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/react-native-setup
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: Finalize Android SDK
+        run: /bin/bash -c "yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null"
+      - name: Setup fastlane
+        run: bundle install
+      - name: Build Android
+        run: bundle exec fastlane android react_native_pull_request
+
+  react-native-ios:
+    needs: filter
+    if: needs.filter.outputs.react-native == 'true'
+    runs-on: macos-26
+    steps:
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/react-native-setup
+      - name: Setup fastlane
+        run: bundle install
+      - name: Build iOS
+        run: bundle exec fastlane ios react_native_pull_request
 
 env:
   PR: true
