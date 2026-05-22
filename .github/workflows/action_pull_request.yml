@@ -47,7 +47,6 @@ jobs:
               - fastlane/Appfile
               - Gemfile
               - Gemfile.lock
-              - .github/workflows/**
             common-kotlin: &common-kotlin
               - *common-fastlane
               - build-logic/**
@@ -280,8 +279,13 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
         working-directory: ReactNativeMockzilla
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4
       - name: Setup fastlane
-        run: bundle install
+        run: |
+          gem install bundler
+          bundle install
       - name: Run checks
         run: |
           bundle exec fastlane react_native_lint_pull_request
@@ -305,8 +309,13 @@ jobs:
           java-version: '17'
       - name: Finalize Android SDK
         run: /bin/bash -c "yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null"
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4
       - name: Setup fastlane
-        run: bundle install
+        run: |
+          gem install bundler
+          bundle install
       - name: Build Android
         run: bundle exec fastlane android react_native_pull_request
 
@@ -325,8 +334,14 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
         working-directory: ReactNativeMockzilla
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4
       - name: Setup fastlane
-        run: bundle install
+        run: |
+          gem install bundler
+          bundle install
+          
       - name: Build iOS
         run: bundle exec fastlane ios react_native_pull_request
 
