@@ -56,7 +56,8 @@ class GlobalControlsViewModelTests : CoroutineTest() {
                 EndpointProperties.Body.takeIf { _ -> config.defaultBody != null || config.appliedPresetOverride?.response?.body != null },
                 EndpointProperties.Status.takeIf { _ -> config.defaultStatus != null || config.appliedPresetOverride?.response?.statusCode != null },
                 EndpointProperties.Headers.takeIf { _ -> config.defaultHeaders != null || config.appliedPresetOverride?.response?.headers != null }
-            )
+            ),
+            delayMs = config.delayMs,
         )
     }
 

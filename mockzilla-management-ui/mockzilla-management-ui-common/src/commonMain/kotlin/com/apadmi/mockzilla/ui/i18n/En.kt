@@ -111,7 +111,9 @@ val EnStrings = Strings(
                     1 -> "1 override:"
                     else -> "$number overrides:"
                 }
-            }
+            },
+            noOverrides = "no overrides",
+            forced = "FORCED",
         ),
         globalControls = Strings.Widgets.GlobalControls(
             title = "Global Controls",

@@ -46,7 +46,8 @@ internal class GlobalControlsViewModel(
                         key = it.key,
                         name = it.name,
                         fail = it.shouldFail == true,
-                        overriddenProperties = it.getOverriddenProperties()
+                        overriddenProperties = it.getOverriddenProperties(),
+                        delayMs = it.delayMs,
                     )
                 }
                 State.Idle(
