@@ -242,6 +242,7 @@ internal fun ResponseLatencyCard(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             listOf(0, 300, 1000, 3000, 10000).forEach { ms ->
+                val isSelected = value == ms
                 val label = when {
                     ms < 1000 -> strings.widgets.latency.millisecondLabel(ms)
                     else -> strings.widgets.latency.secondLabel(ms / 1000)
@@ -251,10 +252,9 @@ internal fun ResponseLatencyCard(
                     modifier = Modifier
                         .clip(componentShape)
                         .background(colorScheme.surfaceContainer)
-
                         .border(
                             width = 1.dp,
-                            color = colorScheme.outline,
+                            color = if (isSelected) colorScheme.primary else colorScheme.outline,
                             shape = componentShape
                         )
                         .clickable {
@@ -266,8 +266,8 @@ internal fun ResponseLatencyCard(
                     Text(
                         text = label,
                         style = MaterialTheme.typography.labelMedium.copy(
-                            color = colorScheme.onSurface,
-                            fontWeight = FontWeight.Medium,
+                            color = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                             fontSize = 12.sp
                         )
                     )

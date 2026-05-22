@@ -24,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
@@ -56,7 +55,6 @@ import com.apadmi.mockzilla.ui.ui.common.assets.Clock
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.EdSection
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
-import com.apadmi.mockzilla.ui.ui.common.components.ExpandableResponseBody
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
@@ -166,19 +164,6 @@ private fun ColumnScope.PopulatedState(
             showBackground = false,
             showBorder = false,
         )
-    }
-
-    val activeBody = state.presets.appliedPreset?.response?.body ?: state.config.defaultBody
-    if (!activeBody.isNullOrBlank()) {
-        EdSection(
-            label = strings.widgets.createEditPreset.bodyTitle,
-            icon = Icons.Default.Code,
-        ) {
-            ExpandableResponseBody(
-                body = activeBody,
-                isCompact = state.layoutMode == LayoutMode.Compact
-            )
-        }
     }
 
     EdSection(

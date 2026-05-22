@@ -51,6 +51,7 @@ import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
@@ -67,6 +68,28 @@ private const val strokeAlpha = 0.3f
 
 internal enum class PresetCardVariant {
     Selectable, Selected
+}
+
+@Composable
+private fun DashboardOverridePreset.statusColors(): StateColors {
+    val colorScheme = MaterialTheme.colorScheme
+    val effectiveType = type ?: response.statusCode?.let {
+        when (it.value) {
+            in 200..299 -> DashboardOverridePreset.Type.Success
+            in 400..499 -> DashboardOverridePreset.Type.ClientError
+            in 500..599 -> DashboardOverridePreset.Type.ServerError
+            in 300..399 -> DashboardOverridePreset.Type.Redirect
+            else -> DashboardOverridePreset.Type.Other
+        }
+    }
+
+    return when (effectiveType) {
+        DashboardOverridePreset.Type.Success -> colorScheme.success
+        DashboardOverridePreset.Type.ServerError -> StateColors(colorScheme.error, colorScheme.errorContainer)
+        DashboardOverridePreset.Type.ClientError -> colorScheme.warning
+        DashboardOverridePreset.Type.Redirect -> colorScheme.warning
+        else -> StateColors(colorScheme.onSurfaceVariant, colorScheme.surfaceVariant)
+    }
 }
 
 @Composable
@@ -113,11 +136,11 @@ internal fun PresetCard(
     layoutMode: LayoutMode = LayoutMode.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
-    val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
     val isCompact = layoutMode == LayoutMode.Compact
     val isSelected = variant == PresetCardVariant.Selected
     val shape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
+    val statusColors = preset.statusColors()
 
     Column(
         Modifier.fillMaxWidth()
@@ -125,14 +148,12 @@ internal fun PresetCard(
             .clickable { onClicked(preset) }
             .focusProperties { canFocus = false }
             .drawBehind {
-                if (isSelected) {
-                    val indicatorWidth = 4.dp.toPx()
-                    drawRect(
-                        color = Color(0xFF_22_D3_EE),
-                        topLeft = Offset.Zero,
-                        size = Size(indicatorWidth, size.height)
-                    )
-                }
+                val indicatorWidth = 2.dp.toPx()
+                drawRect(
+                    color = if (isSelected) Color(0xFF_22_D3_EE) else statusColors.primary,
+                    topLeft = Offset.Zero,
+                    size = Size(indicatorWidth, size.height)
+                )
             }
             .padding(12.dp),
     ) {
@@ -159,9 +180,9 @@ internal fun PresetCard(
             // Status tag updated to a fixed light green pill layout
             Tag(
                 label = preset.response.statusCode?.value?.toString() ?: strings.statusCodeFallback,
-                textColor = colorScheme.success.primary,
-                borderColor = colorScheme.success.primary,
-                backgroundColor = if (isDark) Color.Transparent else colorScheme.success.container,
+                textColor = statusColors.primary,
+                borderColor = statusColors.primary,
+                backgroundColor = if (isDark) Color.Transparent else statusColors.container,
                 shape = CircleShape,
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
             )
@@ -312,7 +333,7 @@ internal fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
     ) {
         Text(
             modifier = Modifier.padding(8.dp),
-            text = buildJsonAnnotatedString(body, highlightColors),
+            text = buildJsonAnnotatedString(body, highlightColors, isMinified = isCompact),
             maxLines = Int.MAX_VALUE,
             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             color = MaterialTheme.colorScheme.onSurfaceVariant,

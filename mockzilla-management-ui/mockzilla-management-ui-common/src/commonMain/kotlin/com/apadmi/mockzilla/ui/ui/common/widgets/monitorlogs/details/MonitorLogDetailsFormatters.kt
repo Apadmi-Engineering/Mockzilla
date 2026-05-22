@@ -68,6 +68,26 @@ internal fun String.prettyPrintJson(): String {
     return sb.toString()
 }
 
+internal fun String.minifyJson(): String {
+    val trimmed = trim()
+    if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+        return this
+    }
+    val sb = StringBuilder()
+    var idx = 0
+    while (idx < trimmed.length) {
+        when (trimmed[idx]) {
+            '"' -> idx = appendJsonString(trimmed, idx, sb) + 1
+            ' ', '\t', '\r', '\n' -> idx++
+            else -> {
+                sb.append(trimmed[idx])
+                idx++
+            }
+        }
+    }
+    return sb.toString()
+}
+
 // ── JSON pretty-printer ───────────────────────────────────────────────────────
 
 private fun StringBuilder.appendNewlineIndent(depth: Int) {
@@ -163,17 +183,21 @@ internal fun urlToTitle(url: String): String = url
 internal fun formatTimestamp(timestamp: Long): String =
     Instant.fromEpochMilliseconds(timestamp).format(timestampFormat)
 
-internal fun buildJsonAnnotatedString(text: String, colors: JsonHighlightColors): AnnotatedString {
-    val pretty = text.prettyPrintJson()
+internal fun buildJsonAnnotatedString(
+    text: String,
+    colors: JsonHighlightColors,
+    isMinified: Boolean = false
+): AnnotatedString {
+    val formatted = if (isMinified) text.minifyJson() else text.prettyPrintJson()
     return buildAnnotatedString {
-        val trimmedStart = pretty.trimStart()
-        if (pretty.isBlank() || (!trimmedStart.startsWith('{') && !trimmedStart.startsWith('['))) {
-            append(pretty)
+        val trimmedStart = formatted.trimStart()
+        if (formatted.isBlank() || (!trimmedStart.startsWith('{') && !trimmedStart.startsWith('['))) {
+            append(formatted)
             return@buildAnnotatedString
         }
         var charIdx = 0
-        while (charIdx < pretty.length) {
-            charIdx = processHighlightToken(pretty, charIdx, colors)
+        while (charIdx < formatted.length) {
+            charIdx = processHighlightToken(formatted, charIdx, colors)
         }
     }
 }
