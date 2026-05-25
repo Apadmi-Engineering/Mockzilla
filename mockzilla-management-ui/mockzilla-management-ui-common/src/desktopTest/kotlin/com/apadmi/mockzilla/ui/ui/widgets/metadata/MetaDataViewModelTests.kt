@@ -1,3 +1,5 @@
+@file:Suppress("MAGIC_NUMBER")
+
 package com.apadmi.mockzilla.ui.ui.widgets.metadata
 
 import com.apadmi.mockzilla.lib.models.MetaData

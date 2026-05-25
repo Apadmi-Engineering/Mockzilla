@@ -1,3 +1,3 @@
 package com.apadmi.mockzilla.lib.internal
 
-internal actual class PlatformConfig()
+internal actual class PlatformConfig

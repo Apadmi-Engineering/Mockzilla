@@ -69,15 +69,20 @@ class MetaDataWidgetViewModel(
             val appIconBytes: ByteArray? = null,
         ) : State() {
             override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (other !is DisplayMetaData) return false
+                if (this === other) {
+                    return true
+                }
+                if (other !is DisplayMetaData) {
+                    return false
+                }
                 return metaData == other.metaData &&
-                    requestCount == other.requestCount &&
-                    (appIconBytes == null && other.appIconBytes == null ||
-                        appIconBytes != null && other.appIconBytes != null &&
-                        appIconBytes.contentEquals(other.appIconBytes))
+                        requestCount == other.requestCount &&
+                        (appIconBytes == null && other.appIconBytes == null ||
+                                appIconBytes != null && other.appIconBytes != null &&
+                                        appIconBytes.contentEquals(other.appIconBytes))
             }
 
+            @Suppress("SAY_NO_TO_VAR")
             override fun hashCode(): Int {
                 var result = metaData.hashCode()
                 result = 31 * result + (requestCount ?: 0)

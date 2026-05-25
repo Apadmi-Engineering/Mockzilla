@@ -43,7 +43,6 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionHeader
-import com.apadmi.mockzilla.ui.utils.toImageBitmapOrNull
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
@@ -220,7 +219,11 @@ private fun SessionRow(label: String, value: String) = Row(
 // ── App header ────────────────────────────────────────────────────────────────
 
 @Composable
-private fun AppHeader(appName: String, appPackage: String, appIconBytes: ByteArray? = null) = Row(
+private fun AppHeader(
+    appName: String,
+    appPackage: String,
+    appIconBytes: ByteArray? = null
+) = Row(
     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -233,19 +236,17 @@ private fun AppHeader(appName: String, appPackage: String, appIconBytes: ByteArr
             .background(MaterialTheme.colorScheme.surfaceContainer),
         contentAlignment = Alignment.Center
     ) {
-        if (imageBitmap != null) {
+        imageBitmap?.let {
             Image(
                 modifier = Modifier.size(40.dp),
                 painter = BitmapPainter(imageBitmap),
                 contentDescription = null
             )
-        } else {
-            Image(
-                modifier = Modifier.size(40.dp),
-                imageVector = Icons.MockzillaLogo,
-                contentDescription = null
-            )
-        }
+        } ?: Image(
+            modifier = Modifier.size(40.dp),
+            imageVector = Icons.MockzillaLogo,
+            contentDescription = null
+        )
     }
     Column(modifier = Modifier.weight(1f)) {
         Text(
