@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -238,7 +239,7 @@ private fun AppHeader(
     ) {
         imageBitmap?.let {
             Image(
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.fillMaxSize(),
                 painter = BitmapPainter(imageBitmap),
                 contentDescription = null
             )
