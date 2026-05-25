@@ -63,8 +63,11 @@ private const val logDetailsWidgetId = "log-details"
 private const val editPresetWidgetId = "edit-preset"
 private const val createPresetWidgetId = "create-preset"
 private const val globalControlsWidgetId = "global-controls"
-private val leftPanelWidth = 300.dp
-private val rightPanelWidth = 900.dp
+private const val animationDuration = 300
+private const val leftPanelWidthInt = 300
+private const val rightPanelWidthInt = 900
+private val leftPanelWidth = leftPanelWidthInt.dp
+private val rightPanelWidth = rightPanelWidthInt.dp
 
 @Composable
 fun DesktopApp(
@@ -169,8 +172,8 @@ fun DesktopApp(
             val connectedState = state as? AppRootViewModel.State.Connected
             AnimatedVisibility(
                 visible = openWidgets.contains(globalControlsWidgetId) && connectedState != null,
-                enter = slideInHorizontally(animationSpec = tween(300)) { it },
-                exit = slideOutHorizontally(animationSpec = tween(300)) { it },
+                enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
+                exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
                 modifier = Modifier.align(Alignment.CenterEnd).padding(top = 48.dp)  // Adjust top padding to match top bar height
             ) {
                 connectedState?.let {
