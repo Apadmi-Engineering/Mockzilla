@@ -97,7 +97,7 @@ private val lightColors = lightColorScheme(
 
 @get:Composable
 val ColorScheme.inputBackground: Color
-    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkSurfaceContainer else lightSurfaceVariant
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) surface else surfaceVariant
 
 @get:Composable
 val ColorScheme.surfaceMuted: Color
