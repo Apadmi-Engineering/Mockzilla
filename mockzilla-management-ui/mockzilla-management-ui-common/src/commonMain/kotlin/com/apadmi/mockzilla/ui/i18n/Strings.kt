@@ -170,6 +170,7 @@ data class Strings(
             val jvm: String,
             val js: String,
             val deviceSection: String,
+            val error: String,
         )
 
         /**

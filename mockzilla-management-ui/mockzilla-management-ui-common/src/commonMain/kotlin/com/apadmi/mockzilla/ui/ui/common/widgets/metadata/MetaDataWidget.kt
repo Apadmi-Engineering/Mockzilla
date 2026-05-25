@@ -87,7 +87,7 @@ fun MetaDataWidgetContent(
         ) {
             when (state) {
                 is MetaDataWidgetViewModel.State.DisplayMetaData -> MetaDataListView(state, device, strings)
-                MetaDataWidgetViewModel.State.Error -> Text("Error")
+                MetaDataWidgetViewModel.State.Error -> Text(strings.widgets.metaData.error)
                 MetaDataWidgetViewModel.State.Loading -> CircularProgressIndicator()
             }
         }
