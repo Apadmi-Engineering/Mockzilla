@@ -26,6 +26,7 @@ object MockzillaUiKoinContext {
             viewModelModule(),
             useCaseModule(),
             module {
+                single { MockzillaManagement.instance.appIconService }
                 single { MockzillaManagement.instance.metaDataService }
                 single { MockzillaManagement.instance.logsService }
                 single { MockzillaManagement.instance.endpointsService }
