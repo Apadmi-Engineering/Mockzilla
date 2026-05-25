@@ -63,6 +63,8 @@ private const val logDetailsWidgetId = "log-details"
 private const val editPresetWidgetId = "edit-preset"
 private const val createPresetWidgetId = "create-preset"
 private const val globalControlsWidgetId = "global-controls"
+private val leftPanelWidth = 300.dp
+private val rightPanelWidth = 900.dp
 
 @Composable
 fun DesktopApp(
@@ -158,8 +160,8 @@ fun DesktopApp(
                     strings = strings,
                 ),
                 onSelected = onSelected,
-                initialLeftPanelWidth = 300.dp,
-                initialRightPanelWidth = 900.dp
+                initialLeftPanelWidth = leftPanelWidth,
+                initialRightPanelWidth = rightPanelWidth
 
             )
 

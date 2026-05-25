@@ -141,6 +141,10 @@ internal fun PresetCard(
     val isSelected = variant == PresetCardVariant.Selected
     val shape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
     val statusColors = preset.statusColors()
+    val colorScheme = MaterialTheme.colorScheme
+    val indicatorColor = if (isSelected) colorScheme.primary else statusColors.primary
+    val iconTint = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant
+    val titleColor = if (isSelected) colorScheme.primary else colorScheme.onSurface
 
     Column(
         Modifier.fillMaxWidth()
@@ -150,7 +154,7 @@ internal fun PresetCard(
             .drawBehind {
                 val indicatorWidth = 2.dp.toPx()
                 drawRect(
-                    color = if (isSelected) Color(0xFF_22_D3_EE) else statusColors.primary,
+                    color = indicatorColor,
                     topLeft = Offset.Zero,
                     size = Size(indicatorWidth, size.height)
                 )
@@ -163,7 +167,7 @@ internal fun PresetCard(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
-                tint = if (isSelected) Color(0xFF_22_D3_EE) else MaterialTheme.colorScheme.onSurfaceVariant
+                tint = iconTint
             )
             Spacer(Modifier.size(8.dp))
 
@@ -172,7 +176,7 @@ internal fun PresetCard(
                 modifier = Modifier.weight(1f),
                 text = preset.name,
                 style = MaterialTheme.typography.titleSmall,
-                color = if (isSelected) Color(0xFF_22_D3_EE) else MaterialTheme.colorScheme.onSurface,
+                color = titleColor,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.size(8.dp))
@@ -195,22 +199,22 @@ internal fun PresetCard(
                             modifier = Modifier.size(14.dp),
                             imageVector = Icons.Default.Check,
                             contentDescription = null,
-                            tint = Color(0xFF_08_33_44)
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     },
                     label = strings.appliedLabel,
-                    textColor = Color(0xFF_08_33_44),
+                    textColor = MaterialTheme.colorScheme.onPrimary,
                     borderColor = Color.Transparent,
-                    backgroundColor = Color(0xFF_22_D3_EE),
+                    backgroundColor = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(6.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                 )
 
                 PresetCardVariant.Selectable -> Tag(
                     label = strings.applyLabel,
-                    textColor = Color.White,
-                    borderColor = Color(0xFF_37_41_51),
-                    backgroundColor = Color(0xFF_11_18_27),
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                    borderColor = MaterialTheme.colorScheme.outline,
+                    backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
                     shape = RoundedCornerShape(6.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                 )
