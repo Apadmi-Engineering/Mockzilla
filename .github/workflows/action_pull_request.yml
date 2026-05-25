@@ -110,6 +110,12 @@ jobs:
           pip install --upgrade setuptools
           pip install -r docs/requirements.txt
           bundle exec fastlane generate_docs
+      - name: Archive generated docs
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-docs
+          path: generated_docs/
+          retention-days: 7
 
   flutter:
     needs: filter
