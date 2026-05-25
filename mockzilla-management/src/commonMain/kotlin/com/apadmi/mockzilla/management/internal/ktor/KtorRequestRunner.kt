@@ -17,7 +17,10 @@ import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-internal class KtorRequestRunner(private val client: HttpClient) {
+/**
+ * @property client
+ */
+internal class KtorRequestRunner(internal val client: HttpClient) {
     suspend inline operator fun <reified SuccessType : Any> invoke(
         block: HttpClient.() -> HttpResponse,
     ): Result<SuccessType> {
