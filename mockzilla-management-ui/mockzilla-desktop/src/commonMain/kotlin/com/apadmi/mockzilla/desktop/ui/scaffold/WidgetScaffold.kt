@@ -22,6 +22,7 @@ import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTabList
 
 private const val LEFT_PANEL_MIN_WIDTH_DP = 280
+private const val RIGHT_PANEL_MIN_WIDTH_DP = 720
 
 /**
  * @property title
@@ -60,8 +61,8 @@ fun WidgetScaffold(
     // with the cursor at all times.
     var leftPanelWidth by remember { mutableStateOf(LEFT_PANEL_MIN_WIDTH_DP.dp) }
     var leftPanelSettledWidth by remember { mutableStateOf(LEFT_PANEL_MIN_WIDTH_DP.dp) }
-    var rightPanelWidth by remember { mutableStateOf(280.dp) }
-    var rightPanelSettledWidth by remember { mutableStateOf(280.dp) }
+    var rightPanelWidth by remember { mutableStateOf(RIGHT_PANEL_MIN_WIDTH_DP.dp) }
+    var rightPanelSettledWidth by remember { mutableStateOf(RIGHT_PANEL_MIN_WIDTH_DP.dp) }
 
     // Both of the horizontal panels must collectively not be so large that the center panel
     // runs out of space. We can enforce this by hoisting the width of each panel and preventing
@@ -69,7 +70,10 @@ fun WidgetScaffold(
     val centerMinWidth = 300.dp
     val leftPanelWidthRestriction = { width: Dp ->
         if (totalWidth > 0.dp) {
-            val remaining = totalWidth - centerMinWidth - max(rightPanelSettledWidth, 0.dp)
+            val remaining = max(
+                LEFT_PANEL_MIN_WIDTH_DP.dp,
+                totalWidth - centerMinWidth - max(rightPanelSettledWidth, RIGHT_PANEL_MIN_WIDTH_DP.dp)
+            )
             min(max(LEFT_PANEL_MIN_WIDTH_DP.dp, width), remaining)
         } else {
             max(LEFT_PANEL_MIN_WIDTH_DP.dp, width)
@@ -77,10 +81,13 @@ fun WidgetScaffold(
     }
     val rightPanelWidthRestriction = { width: Dp ->
         if (totalWidth > 0.dp) {
-            val remaining = totalWidth - centerMinWidth - max(leftPanelSettledWidth, 0.dp)
-            min(max(0.dp, width), remaining)
+            val remaining = max(
+                RIGHT_PANEL_MIN_WIDTH_DP.dp,
+                totalWidth - centerMinWidth - max(leftPanelSettledWidth, LEFT_PANEL_MIN_WIDTH_DP.dp)
+            )
+            min(max(RIGHT_PANEL_MIN_WIDTH_DP.dp, width), remaining)
         } else {
-            max(0.dp, width)
+            max(RIGHT_PANEL_MIN_WIDTH_DP.dp, width)
         }
     }
     Box(
