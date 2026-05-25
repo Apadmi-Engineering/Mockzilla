@@ -19,7 +19,7 @@ internal fun HorizontalDraggableDivider(
     onDrag: (Float) -> Unit,
     onDragStopped: () -> Unit,
 ) {
-    val dividerColor = MaterialTheme.colorScheme.outlineVariant
+    val dividerColor = MaterialTheme.colorScheme.outline
     Box(
         modifier = Modifier
             .background(color = dividerColor)
@@ -42,7 +42,7 @@ internal fun VerticalDraggableDivider(
     onDragStarted: () -> Unit = {},
     onDragStopped: () -> Unit,
 ) {
-    val dividerColor = MaterialTheme.colorScheme.outlineVariant
+    val dividerColor = MaterialTheme.colorScheme.outline
     Box(
         modifier = Modifier
             .background(color = dividerColor)
