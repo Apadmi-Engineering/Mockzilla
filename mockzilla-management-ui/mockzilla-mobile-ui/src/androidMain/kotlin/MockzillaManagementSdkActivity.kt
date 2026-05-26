@@ -16,7 +16,6 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -174,7 +173,6 @@ private fun BottomSheetWrapper(onDismiss: () -> Unit) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(0.dp))
                 MobileAppRoot(onClose = ::triggerDismiss)
             }
         }
