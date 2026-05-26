@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 
 import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.ALPHA_MUTED
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.JsonHighlightColors
 import com.apadmi.mockzilla.ui.utils.Platform
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
@@ -138,6 +140,16 @@ val ColorScheme.warning: StateColors
 @get:Composable
 val ColorScheme.jsonKey: Color
     get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkJsonKey else lightJsonKey
+
+@get:Composable
+internal val ColorScheme.jsonHighlight: JsonHighlightColors
+    get() = JsonHighlightColors(
+        keyColor = jsonKey,
+        stringColor = success.primary,
+        numberColor = tertiary,
+        boolColor = warning.primary,
+        nullColor = onSurface.copy(alpha = ALPHA_MUTED)
+    )
 
 @get:Composable
 val ColorScheme.methodGet: Color

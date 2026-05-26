@@ -52,13 +52,11 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
-import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
+import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.ALPHA_MUTED
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.JsonHighlightColors
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildJsonAnnotatedString
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -278,14 +276,6 @@ internal fun NoPresetCard(
 @Composable
 internal fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
     val scrollState = rememberScrollState()
-    val cs = MaterialTheme.colorScheme
-    val highlightColors = JsonHighlightColors(
-        keyColor = cs.jsonKey,
-        stringColor = cs.success.primary,
-        numberColor = cs.tertiary,
-        boolColor = cs.warning.primary,
-        nullColor = cs.onSurface.copy(alpha = ALPHA_MUTED)
-    )
 
     // Made the scrollbar color slightly darker so it's easier to see against the background
     val scrollbarColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
@@ -337,7 +327,7 @@ internal fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
     ) {
         Text(
             modifier = Modifier.padding(8.dp),
-            text = buildJsonAnnotatedString(body, highlightColors, isMinified = isCompact),
+            text = buildHighlightedAnnotatedString(body, MaterialTheme.colorScheme.jsonHighlight, isMinified = isCompact),
             maxLines = Int.MAX_VALUE,
             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             color = MaterialTheme.colorScheme.onSurfaceVariant,

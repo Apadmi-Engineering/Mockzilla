@@ -42,7 +42,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private const val BANNER_CORNER_RADIUS = 8
+private const val bannerCornerRadius = 8
 
 enum class ForceFailureBannerState {
     FullFailure,
@@ -84,7 +84,7 @@ internal fun ForceFailureBanner(
     }
 
     val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
-    val shape = RoundedCornerShape(BANNER_CORNER_RADIUS.dp)
+    val shape = RoundedCornerShape(bannerCornerRadius.dp)
 
     Row(
         modifier = modifier

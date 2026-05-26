@@ -63,7 +63,8 @@ class EndpointDetailsViewModel(
                                 fail = config.shouldFail,
                                 delayMillis = config.delayMs,
                                 isLoading = false,
-                                layoutMode = (currentState as? State.Endpoint)?.layoutMode ?: State.Endpoint.LayoutMode.Compact,
+                                layoutMode = (currentState as? State.Endpoint)?.layoutMode
+                                    ?: State.Endpoint.LayoutMode.Compact,
                                 presets = State.Endpoint.Presets(
                                     appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
                                         // Remove all this once deprecated properties are removed

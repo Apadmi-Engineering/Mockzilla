@@ -44,8 +44,8 @@ import kotlin.math.min
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
-private const val BUTTON_CORNER_RADIUS_DARK = 4
-private const val BUTTON_CORNER_RADIUS_LIGHT = 6
+private const val buttonCornerRadiusDark = 4
+private const val buttonCornerRadiusLight = 6
 
 private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
 
@@ -285,9 +285,9 @@ private fun SmallSquareButton(
     val colorScheme = MaterialTheme.colorScheme
     val isDark = colorScheme.surface == darkSurface
     val shape = if (isDark) {
-        RoundedCornerShape(BUTTON_CORNER_RADIUS_DARK.dp)
+        RoundedCornerShape(buttonCornerRadiusDark.dp)
     } else {
-        RoundedCornerShape(BUTTON_CORNER_RADIUS_LIGHT.dp)
+        RoundedCornerShape(buttonCornerRadiusLight.dp)
     }
 
     Box(

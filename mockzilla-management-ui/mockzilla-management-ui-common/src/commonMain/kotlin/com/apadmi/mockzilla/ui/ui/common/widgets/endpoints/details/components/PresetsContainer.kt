@@ -112,7 +112,7 @@ internal fun PresetsContainer(
                     )
                     Spacer(modifier = Modifier.size(4.dp))
                     CustomOutlineButton(
-                        label = "More Information",
+                        label = strings.moreInfoButton,
                         onClick = onPresetMoreInfoClicked,
                         variant = OutlineButtonVariant.Secondary,
                     )

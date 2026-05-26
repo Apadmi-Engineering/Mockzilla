@@ -64,10 +64,8 @@ private const val editPresetWidgetId = "edit-preset"
 private const val createPresetWidgetId = "create-preset"
 private const val globalControlsWidgetId = "global-controls"
 private const val animationDuration = 300
-private const val leftPanelWidthInt = 300
-private const val rightPanelWidthInt = 900
-private val leftPanelWidth = leftPanelWidthInt.dp
-private val rightPanelWidth = rightPanelWidthInt.dp
+private val leftPanelWidth = 300.dp
+private val rightPanelWidth = 900.dp
 
 @Composable
 fun DesktopApp(
@@ -81,28 +79,10 @@ fun DesktopApp(
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
         val onSelected: (String) -> Unit = { id ->
-            if (id == endpointDetailsWidgetId) {
-                if (!openWidgets.contains(id)) {
-                    openWidgets = openWidgets.minus(logDetailsWidgetId).plus(id)
-                    logDetail = null
-                } else {
-                    openWidgets = openWidgets.minus(id)
-                    viewModel.setSelectedEndpoint(null)
-                }
-            } else if (id == logDetailsWidgetId) {
-                if (!openWidgets.contains(id)) {
-                    openWidgets = openWidgets.minus(endpointDetailsWidgetId).plus(id)
-                    viewModel.setSelectedEndpoint(null)
-                } else {
-                    openWidgets = openWidgets.minus(id)
-                    logDetail = null
-                }
+            openWidgets = if (openWidgets.contains(id)) {
+                openWidgets.minus(id)
             } else {
-                openWidgets = if (openWidgets.contains(id)) {
-                    openWidgets.minus(id)
-                } else {
-                    openWidgets.plus(id)
-                }
+                openWidgets.plus(id)
             }
         }
 
@@ -149,16 +129,13 @@ fun DesktopApp(
                     }
                 ) {
                     viewModel.setSelectedEndpoint(it)
-                    logDetail = null
-                    openWidgets = openWidgets.minus(logDetailsWidgetId).plus(endpointDetailsWidgetId)
+                    onSelected(endpointDetailsWidgetId)
                 },
                 bottom = bottomPanelWidgets(
                     state = state,
                     onViewDetail = {
                         logDetail = it
-
-                        viewModel.setSelectedEndpoint(null)
-                        openWidgets = openWidgets.minus(endpointDetailsWidgetId).plus(logDetailsWidgetId)
+                        onSelected(logDetailsWidgetId)
                     },
                     strings = strings,
                 ),

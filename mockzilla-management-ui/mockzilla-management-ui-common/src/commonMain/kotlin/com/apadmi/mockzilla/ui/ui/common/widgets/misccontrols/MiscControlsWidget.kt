@@ -103,7 +103,7 @@ fun MiscControlsWidgetContent(
         modifier = Modifier.fillMaxWidth(),
         label = strings.widgets.miscControls.clearOverrides,
         leadingIcon = Icons.Filled.Restore,
-        variant = ButtonVariant.Soft,
+        variant = ButtonVariant.Danger,
         size = ButtonSize.Lg,
         contentAlignment = ButtonContentAlignment.Start,
         onClick = onClearAllOverrides

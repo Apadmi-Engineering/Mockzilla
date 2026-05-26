@@ -44,10 +44,10 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private const val ANIMATION_DURATION = 200
-private const val ROTATION_COLLAPSED = 0f
-private const val ROTATION_EXPANDED = 90f
-private const val SECTION_CORNER_RADIUS = 8
+private const val animationDuration = 200
+private const val rotationCollapsed = 0f
+private const val rotationExpanded = 90f
+private const val sectionCornerRadius = 8
 
 @Composable
 fun EdSection(
@@ -60,12 +60,12 @@ fun EdSection(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
-    val sectionShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(SECTION_CORNER_RADIUS.dp)
+    val sectionShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(sectionCornerRadius.dp)
 
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
     val chevronRotation by animateFloatAsState(
-        targetValue = if (expanded) ROTATION_EXPANDED else ROTATION_COLLAPSED,
-        animationSpec = tween(ANIMATION_DURATION),
+        targetValue = if (expanded) rotationExpanded else rotationCollapsed,
+        animationSpec = tween(animationDuration),
     )
 
     Column(
