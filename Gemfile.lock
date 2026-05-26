@@ -20,15 +20,15 @@ GEM
     algoliasearch (1.27.5)
       httpclient (~> 2.8, >= 2.8.3)
       json (>= 1.5.1)
-    apadmi_grout (3.0.1)
+    apadmi_grout (3.0.2)
       faraday (~> 1.0)
       jira-ruby (~> 3.1)
       mustache (~> 1.0)
       semantic (~> 1.5.0)
     artifactory (3.0.17)
-    atlassian-jwt (0.2.1)
-      jwt (~> 2.1)
     atomos (0.1.3)
+    auth-sanitizer (0.1.4)
+      version_gem (~> 1.1, >= 1.1.9)
     aws-eventstream (1.4.0)
     aws-partitions (1.1247.0)
     aws-sdk-core (3.247.0)
@@ -189,8 +189,8 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.4.1)
       xcpretty-travis-formatter (>= 0.0.3, < 2.0.0)
-    fastlane-plugin-apadmi_grout (3.0.1)
-      apadmi_grout (~> 3.0.1)
+    fastlane-plugin-apadmi_grout (3.0.2)
+      apadmi_grout (~> 3.0.2)
     fastlane-plugin-flutter (0.8.0)
     fastlane-plugin-screenshotbot (1.0.0)
       fastlane (>= 2.232.1)
@@ -256,15 +256,15 @@ GEM
       mutex_m
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
-    jira-ruby (3.1.0)
+    jira-ruby (3.2.0)
       activesupport
-      atlassian-jwt
       cgi
+      jwt (>= 2.1)
       multipart-post
       oauth (~> 1.0)
     jmespath (1.6.2)
     json (2.19.5)
-    jwt (2.10.2)
+    jwt (2.10.3)
       base64
     logger (1.7.0)
     mini_magick (4.13.2)
@@ -280,12 +280,16 @@ GEM
     naturally (2.3.0)
     netrc (0.11.0)
     nkf (0.2.0)
-    oauth (1.1.3)
+    oauth (1.1.5)
+      auth-sanitizer (~> 0.1, >= 0.1.3)
       base64 (~> 0.1)
-      oauth-tty (~> 1.0, >= 1.0.6)
-      snaky_hash (~> 2.0)
+      cgi
+      oauth-tty (~> 1.0, >= 1.0.8)
+      snaky_hash (~> 2.0, >= 2.0.4)
       version_gem (~> 1.1, >= 1.1.9)
-    oauth-tty (1.0.6)
+    oauth-tty (1.0.8)
+      auth-sanitizer (~> 0.1, >= 0.1.3)
+      cgi
       version_gem (~> 1.1, >= 1.1.9)
     optparse (0.8.1)
     os (1.1.4)
@@ -314,7 +318,7 @@ GEM
     simctl (1.6.10)
       CFPropertyList
       naturally
-    snaky_hash (2.0.3)
+    snaky_hash (2.0.4)
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
     terminal-notifier (2.0.0)
@@ -361,7 +365,7 @@ PLATFORMS
 DEPENDENCIES
   cocoapods (~> 1.16.2)
   fastlane (~> 2.234.0)
-  fastlane-plugin-apadmi_grout (~> 3.0.1)
+  fastlane-plugin-apadmi_grout (~> 3.0.2)
   fastlane-plugin-flutter (~> 0.8.0)
   fastlane-plugin-screenshotbot (~> 1.0.0)
 
@@ -371,10 +375,10 @@ CHECKSUMS
   activesupport (7.2.3.1) sha256=11ebed516a43a0bb47346227a35ebae4d9427465a7c9eb197a03d5c8d283cb34
   addressable (2.9.0) sha256=7fdf6ac3660f7f4e867a0838be3f6cf722ace541dd97767fa42bc6cfa980c7af
   algoliasearch (1.27.5) sha256=26c1cddf3c2ec4bd60c148389e42702c98fdac862881dc6b07a4c0b89ffec853
-  apadmi_grout (3.0.1) sha256=3ddb735d69c9995b470ea09de55bb27e67be96158c5a6788b96dd63eec1c8117
+  apadmi_grout (3.0.2) sha256=b0163dab5f8bf09ad485fb938b2f7f8bf1bc921844104b15f901adce0a4ab00a
   artifactory (3.0.17) sha256=3023d5c964c31674090d655a516f38ca75665c15084140c08b7f2841131af263
-  atlassian-jwt (0.2.1) sha256=2fd2d87418773f2e140c038cb22e049069708aff2bd0a423a7e1740574e97823
   atomos (0.1.3) sha256=7d43b22f2454a36bace5532d30785b06de3711399cb1c6bf932573eda536789f
+  auth-sanitizer (0.1.4) sha256=ded72221d4d3a7c91e34e8a87b21e6a42cbf7829697f140dcf49d542422faedc
   aws-eventstream (1.4.0) sha256=116bf85c436200d1060811e6f5d2d40c88f65448f2125bc77ffce5121e6e183b
   aws-partitions (1.1247.0) sha256=0461b97f905e8cfc346bb6e57668e916c46b8f4b7c2eb5eedad005368403715f
   aws-sdk-core (3.247.0) sha256=789864594ce8cef05ee3d81fa8ed506099280bda6ea12a7612b8b7c5e5e62851
@@ -385,6 +389,7 @@ CHECKSUMS
   base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
   benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
   bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
+  bundler (4.0.12) sha256=7f8b757d28dfb636e7b24fba2344ac6dd13b5b24f4b46d62573d483f211825ac
   cgi (0.5.1) sha256=e93fcafc69b8a934fe1e6146121fa35430efa8b4a4047c4893764067036f18e9
   claide (1.1.0) sha256=6d3c5c089dde904d96aa30e73306d0d4bd444b1accb9b3125ce14a3c0183f82e
   cocoapods (1.16.2) sha256=0ff1c860f32df3db8b16df09b58da1a6bb2a12fe55f6d5e8be994a74fadd1e5e
@@ -425,7 +430,7 @@ CHECKSUMS
   faraday_middleware (1.2.1) sha256=d45b78c8ee864c4783fbc276f845243d4a7918a67301c052647bacabec0529e9
   fastimage (2.4.1) sha256=c64bebd46b6fd8943ab70c1e6e85ff728f970f2e48f92ecd249b6bc3a540ad20
   fastlane (2.234.0) sha256=b74835681ad9a8e9c0931a5727dad1bab433895ac534c864a1ed5749625d26e9
-  fastlane-plugin-apadmi_grout (3.0.1) sha256=348cef3908d531e1d1d5e86b1170b5006eaa15bafdb552536379d19e0981e1aa
+  fastlane-plugin-apadmi_grout (3.0.2) sha256=387bd36d01b2d0582fe7c41a368c0fb826c461a597681ffc659b0a38aa632576
   fastlane-plugin-flutter (0.8.0) sha256=84c6196da06431b089c1f97c4dd4838ce03d89869e15849c51e9a51b567ed39e
   fastlane-plugin-screenshotbot (1.0.0) sha256=fe5d6f9bd256bbb94de418c2ebdba0af4d861efb248c78219e0b6faa644c9c71
   fastlane-sirp (1.1.0) sha256=10bc94f9682efd8e1badfb31452a76dd8981f1f3a33717c765fde6d75b54d847
@@ -458,10 +463,10 @@ CHECKSUMS
   http-cookie (1.0.8) sha256=b14fe0445cf24bf9ae098633e9b8d42e4c07c3c1f700672b09fbfe32ffd41aa6
   httpclient (2.9.0) sha256=4b645958e494b2f86c2f8a2f304c959baa273a310e77a2931ddb986d83e498c8
   i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
-  jira-ruby (3.1.0) sha256=45664dac20565155a5fcde514be8820a10fa6c0153d494f7aa38e77b4248ad0b
+  jira-ruby (3.2.0) sha256=3da8fbb2e5ea9787a45bd8a27c455532a0371c808bc7ec1e5303ec3c1bf58ee9
   jmespath (1.6.2) sha256=238d774a58723d6c090494c8879b5e9918c19485f7e840f2c1c7532cf84ebcb1
   json (2.19.5) sha256=218a18553e4801d579ca7e0f5bc72bafd776d7397238a1fb4e74db5b0a812c59
-  jwt (2.10.2) sha256=31e1ee46f7359883d5e622446969fe9c118c3da87a0b1dca765ce269c3a0c4f4
+  jwt (2.10.3) sha256=e4d9352fbc7309b1a7448c7dd713dfe4d8c47077af80759cdbed8f878ea0b484
   logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
   mini_magick (4.13.2) sha256=71d6258e0e8a3d04a9a0a09784d5d857b403a198a51dd4f882510435eb95ddd9
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
@@ -476,8 +481,8 @@ CHECKSUMS
   naturally (2.3.0) sha256=459923cf76c2e6613048301742363200c3c7e4904c324097d54a67401e179e01
   netrc (0.11.0) sha256=de1ce33da8c99ab1d97871726cba75151113f117146becbe45aa85cb3dabee3f
   nkf (0.2.0) sha256=fbc151bda025451f627fafdfcb3f4f13d0b22ae11f58c6d3a2939c76c5f5f126
-  oauth (1.1.3) sha256=71ca1b534561bf31a9b2aee01147384064b555e796d1a0fe2591806bb4bdd633
-  oauth-tty (1.0.6) sha256=9e8bd1861d367cce18318d8f214f2e1a1d7cb3898de0a9ea79162b4fdecb3152
+  oauth (1.1.5) sha256=0ec467908f5819a54d1659d33e8bb520e8475cc87a452d6ecfaa5db351999cca
+  oauth-tty (1.0.8) sha256=d9a63b67af17c22517f868c59f12178e4ee19a367536d1a6dcb74d9d07a41e07
   optparse (0.8.1) sha256=42bea10d53907ccff4f080a69991441d611fbf8733b60ed1ce9ee365ce03bd1a
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
@@ -496,7 +501,7 @@ CHECKSUMS
   semantic (1.5.0) sha256=2e44c885bbf25d6f886358d519265f6aa316716a51a8949bbd7a7ed912db234f
   signet (0.21.0) sha256=d617e9fbf24928280d39dcfefba9a0372d1c38187ffffd0a9283957a10a8cd5b
   simctl (1.6.10) sha256=b99077f4d13ad81eace9f86bf5ba4df1b0b893a4d1b368bd3ed59b5b27f9236b
-  snaky_hash (2.0.3) sha256=25a3d299566e8153fb02fa23fd9a9358845950f7a523ddbbe1fa1e0d79a6d456
+  snaky_hash (2.0.4) sha256=2b12758c57defa6796341a1620f84b1a23737421d8d7e2575d0550b53cc4fece
   terminal-notifier (2.0.0) sha256=7a0d2b2212ab9835c07f4b2e22a94cff64149dba1eed203c04835f7991078cea
   terminal-table (3.0.2) sha256=f951b6af5f3e00203fb290a669e0a85c5dd5b051b3b023392ccfd67ba5abae91
   trailblazer-option (0.1.2) sha256=20e4f12ea4e1f718c8007e7944ca21a329eee4eed9e0fa5dde6e8ad8ac4344a3
