@@ -88,6 +88,7 @@ export function Footer() {
                         <div className="flex space-x-2">
                             <a
                                 href="https://github.com/Apadmi-Engineering/Mockzilla/"
+                                aria-label="GitHub"
                                 className={cn(
                                     buttonVariants({ variant: "ghost", size: "icon" }),
                                     "hover:text-accent"

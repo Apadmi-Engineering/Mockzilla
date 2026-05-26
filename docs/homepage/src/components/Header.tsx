@@ -14,7 +14,7 @@ export function Header() {
                     <nav className="hidden md:flex items-center space-x-6 ml-auto">
                         <button
                             id="theme-toggle"
-                            aria-label="Toggle dark mode"
+                            aria-label="Toggle theme"
                             className="rounded-md p-2 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                             <svg
                                 id="icon-sun"

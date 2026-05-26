@@ -11,7 +11,7 @@ The homepage is a separate React site which is included in the Zensical site.
 In your IDE of choice open `docs/homepage` and treat it as a regular standalone React site.
 Install dependencies with `npm install` and run it with `npm run dev`.
 
-Note: Run `npm run build` to get your updates to the homepage reflected in the docs site locally.
+Note: Run `npm run build:fragment` (or `./serve.sh`) to get your updates to the homepage reflected in the docs site locally.
 
 ## Working on the rest of the documentation
 
