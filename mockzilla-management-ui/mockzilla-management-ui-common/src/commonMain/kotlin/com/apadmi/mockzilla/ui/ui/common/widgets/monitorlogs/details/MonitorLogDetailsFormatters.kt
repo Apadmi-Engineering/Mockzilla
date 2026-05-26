@@ -33,6 +33,8 @@ private val timestampFormat = DateTimeComponents.Format {
     secondFraction(MILLISECONDS_FRACTION_DIGITS)
 }
 
+private val jsonPrettyPrinter = Json { prettyPrint = true }
+
 /**
  * @property keyColor Color for JSON object keys.
  * @property stringColor Color for JSON string values.
@@ -47,8 +49,6 @@ internal data class JsonHighlightColors(
     val boolColor: Color,
     val nullColor: Color,
 )
-
-private val jsonPrettyPrinter = Json { prettyPrint = true }
 
 internal fun String.toKbLabel(): String {
     val tenths = encodeToByteArray().size * TENTHS_FACTOR / BYTES_PER_KB

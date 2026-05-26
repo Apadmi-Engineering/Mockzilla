@@ -219,7 +219,7 @@ class MonitorLogDetailsFormattersTests {
         val html = """<html><body>Hi</body></html>"""
         val result = buildHighlightedAnnotatedString(html, colors)
         assertEquals(html, result.text)
-        assertEquals(4, result.spanStyles.size) // <html>, <body>, </body>, </html>
+        assertEquals(4, result.spanStyles.size)  // <html>, <body>, </body>, </html>
         result.spanStyles.forEach {
             assertEquals(Color.Blue, it.item.color)
         }

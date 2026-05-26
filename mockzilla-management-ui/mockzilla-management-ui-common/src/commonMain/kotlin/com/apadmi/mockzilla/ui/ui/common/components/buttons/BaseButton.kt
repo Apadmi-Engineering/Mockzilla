@@ -54,6 +54,7 @@ fun BaseButton(
     variant: ButtonVariant = ButtonVariant.Solid,
     size: ButtonSize = ButtonSize.Md,
     contentAlignment: ButtonContentAlignment = ButtonContentAlignment.Center,
+    contentColor: Color? = null,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -70,7 +71,7 @@ fun BaseButton(
     }
     val bgColor by animateColorAsState(targetValue = bgTarget, animationSpec = tween(140))
 
-    val finalContentColor = when (variant) {
+    val finalContentColor = contentColor ?: when (variant) {
         ButtonVariant.Ghost -> colorScheme.onSurfaceVariant
         ButtonVariant.Outline -> colorScheme.onSurfaceVariant
         ButtonVariant.Solid -> colorScheme.onPrimary
