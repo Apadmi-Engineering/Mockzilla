@@ -30,7 +30,7 @@ val darkPrimaryContainer = darkPrimary.copy(alpha = 0.14f)
 
 val darkSuccess = Color(0xFF4ADE80)
 val darkSuccessContainer = darkSuccess.copy(alpha = 0.14f)
-val darkWarning = Color(0xFFFACC15)
+val darkWarning = Color(0xFFCCB125)
 val darkWarningContainer = darkWarning.copy(alpha = 0.14f)
 val darkError = Color(0xFFF87171)
 val darkErrorContainer = darkError.copy(alpha = 0.14f)

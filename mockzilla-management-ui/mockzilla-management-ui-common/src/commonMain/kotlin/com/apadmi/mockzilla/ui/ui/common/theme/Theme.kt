@@ -106,6 +106,10 @@ private val lightColors = lightColorScheme(
 // ── Extensions for colours that don't map onto a Material slot ────────────────
 
 @get:Composable
+val ColorScheme.inputBackground: Color
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkSurfaceContainer else lightSurfaceVariant
+
+@get:Composable
 val ColorScheme.surfaceMuted: Color
     get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkSurfaceMuted else lightSurfaceMuted
 

@@ -21,6 +21,8 @@ import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.yield
 
+private const val DUMMY_DELAY_MS = 10
+
 @Suppress("TOO_LONG_FUNCTION")
 class EndpointsViewModelTests : CoroutineTest() {
     private val defaultEndpointList = State.EndpointsList(
@@ -29,22 +31,25 @@ class EndpointsViewModelTests : CoroutineTest() {
                 key = EndpointConfiguration.Key("Key1"),
                 name = "Name1",
                 fail = false,
-                overriddenProperties = emptyList()
+                overriddenProperties = emptyList(),
+                delayMs = null,
             ),
             State.EndpointConfig(
                 key = EndpointConfiguration.Key("Key2"),
                 name = "Name2",
                 fail = true,
-                overriddenProperties = emptyList()
+                overriddenProperties = emptyList(),
+                delayMs = null,
             ),
             State.EndpointConfig(
                 key = EndpointConfiguration.Key("Key3"),
                 name = "Name3",
                 fail = true,
-                overriddenProperties = listOf(EndpointProperties.Delay)
-            )
+                overriddenProperties = listOf(EndpointProperties.Delay),
+                delayMs = DUMMY_DELAY_MS,
+            ),
         ),
-        filter = ""
+        filter = "",
     )
 
     @RelaxedMockK
@@ -72,7 +77,7 @@ class EndpointsViewModelTests : CoroutineTest() {
                         SerializableEndpointConfig.allNulls("Key2", "Name2", 1)
                             .copy(shouldFail = true),
                         SerializableEndpointConfig.allNulls("Key3", "Name3", 1)
-                            .copy(shouldFail = true, delayMs = 10),
+                            .copy(shouldFail = true, delayMs = DUMMY_DELAY_MS),
                     )
                 )
             )
@@ -99,7 +104,7 @@ class EndpointsViewModelTests : CoroutineTest() {
                     SerializableEndpointConfig.allNulls("Key2", "Name2", 1)
                         .copy(shouldFail = true),
                     SerializableEndpointConfig.allNulls("Key3", "Name3", 1)
-                        .copy(shouldFail = true, delayMs = 10),
+                        .copy(shouldFail = true, delayMs = DUMMY_DELAY_MS),
                 )
             )
         )

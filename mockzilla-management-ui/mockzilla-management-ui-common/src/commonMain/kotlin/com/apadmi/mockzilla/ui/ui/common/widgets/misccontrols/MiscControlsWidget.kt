@@ -82,8 +82,13 @@ fun MiscControlsWidgetContent(
     onRefreshAll: () -> Unit,
     onClearAllOverrides: () -> Unit,
     strings: Strings = LocalStrings.current
-) = Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-    SectionHeader(title = strings.widgets.miscControls.actionsSection)
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        SectionHeader(title = strings.widgets.miscControls.actionsSection)
 
     Spacer(modifier = Modifier.height(4.dp))
 
@@ -134,6 +139,7 @@ fun MiscControlsWidgetContent(
             PresentationModeScaleFactor.scaleFactor = scaleFactor
         },
     )
+    }
 }
 
 @Preview

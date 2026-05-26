@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 enum class ChipTone {
-    Accent, Err, Info, Neutral, Ok, Warn
+    Accent, Err, Info, Neutral, Ok, Teal, Warn
 }
 
 /**
@@ -49,6 +50,7 @@ fun StatusChip(
     Text(
         text = label,
         modifier = modifier
+            .background(colors.background, RoundedCornerShape(3.dp))
             .border(width = 1.dp, color = colors.border, shape = RoundedCornerShape(3.dp))
             .padding(horizontal = 4.dp, vertical = 1.dp),
         style = MaterialTheme.typography.labelSmall.copy(
@@ -78,6 +80,10 @@ private fun chipColors(tone: ChipTone): ChipColors {
             text = cs.error,
             background = cs.errorContainer,
         )
+        ChipTone.Teal -> {
+            val color = cs.primary
+            ChipColors(border = color, text = color, background = color.copy(alpha = 0.14f))
+        }
         ChipTone.Accent -> ChipColors(
             border = cs.primary,
             text = cs.primary,

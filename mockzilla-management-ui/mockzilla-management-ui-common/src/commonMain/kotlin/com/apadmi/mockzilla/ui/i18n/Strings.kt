@@ -170,6 +170,7 @@ data class Strings(
             val jvm: String,
             val js: String,
             val deviceSection: String,
+            val error: String,
         )
 
         /**
@@ -261,11 +262,15 @@ data class Strings(
          * @property filterPlaceholder
          * @property numberOfEndpointsShown
          * @property overrides
+         * @property noOverrides
+         * @property forced
          */
         data class Endpoints(
             val filterPlaceholder: String,
             val numberOfEndpointsShown: (shown: Int, max: Int) -> String,
-            val overrides: (number: Int) -> String
+            val overrides: (number: Int) -> String,
+            val noOverrides: String,
+            val forced: String,
         )
 
         /**

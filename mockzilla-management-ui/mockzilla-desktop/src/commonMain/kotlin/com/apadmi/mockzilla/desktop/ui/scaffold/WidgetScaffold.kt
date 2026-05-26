@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.min
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTabList
 
+private const val leftPanelMinWidthDp = 280
+private const val rightPanelMinWidthDp = 720
+
 /**
  * @property title
  * @property ui
@@ -58,10 +61,10 @@ fun WidgetScaffold(
     // width/height below zero (when the user drags into the tab areas) but visually display the
     // restricted width/height that can't drop below 0. This ensures the dragged divider stays
     // with the cursor at all times.
-    var leftPanelWidth by remember { mutableStateOf(initialLeftPanelWidth) }
-    var leftPanelSettledWidth by remember { mutableStateOf(initialLeftPanelWidth) }
-    var rightPanelWidth by remember { mutableStateOf(initialRightPanelWidth) }
-    var rightPanelSettledWidth by remember { mutableStateOf(initialRightPanelWidth) }
+    var leftPanelWidth by remember { mutableStateOf(leftPanelMinWidthDp.dp) }
+    var leftPanelSettledWidth by remember { mutableStateOf(leftPanelMinWidthDp.dp) }
+    var rightPanelWidth by remember { mutableStateOf(rightPanelMinWidthDp.dp) }
+    var rightPanelSettledWidth by remember { mutableStateOf(rightPanelMinWidthDp.dp) }
 
     // Both of the horizontal panels must collectively not be so large that the center panel
     // runs out of space. We can enforce this by hoisting the width of each panel and preventing
@@ -69,18 +72,24 @@ fun WidgetScaffold(
     val centerMinWidth = 300.dp
     val leftPanelWidthRestriction = { width: Dp ->
         if (totalWidth > 0.dp) {
-            val remaining = totalWidth - centerMinWidth - max(rightPanelSettledWidth, 0.dp)
-            min(max(0.dp, width), remaining)
+            val remaining = max(
+                leftPanelMinWidthDp.dp,
+                totalWidth - centerMinWidth - max(rightPanelSettledWidth, rightPanelMinWidthDp.dp)
+            )
+            min(max(leftPanelMinWidthDp.dp, width), remaining)
         } else {
-            max(0.dp, width)
+            max(leftPanelMinWidthDp.dp, width)
         }
     }
     val rightPanelWidthRestriction = { width: Dp ->
         if (totalWidth > 0.dp) {
-            val remaining = totalWidth - centerMinWidth - max(leftPanelSettledWidth, 0.dp)
-            min(max(0.dp, width), remaining)
+            val remaining = max(
+                rightPanelMinWidthDp.dp,
+                totalWidth - centerMinWidth - max(leftPanelSettledWidth, leftPanelMinWidthDp.dp)
+            )
+            min(max(rightPanelMinWidthDp.dp, width), remaining)
         } else {
-            max(0.dp, width)
+            max(rightPanelMinWidthDp.dp, width)
         }
     }
     Box(
