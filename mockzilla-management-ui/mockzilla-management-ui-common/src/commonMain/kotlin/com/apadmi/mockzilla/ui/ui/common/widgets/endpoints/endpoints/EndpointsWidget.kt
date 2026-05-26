@@ -64,7 +64,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
-private const val MIN_CONTENT_WIDTH_DP = 300
+private const val minContentWidthDp = 300
 private const val HOVER_ALPHA = 0.08f
 private const val UNSELECTED_BORDER_ALPHA = 0.2f
 private const val LEFT_BORDER_WIDTH_DP = 3
@@ -317,7 +317,7 @@ private fun EndpointsWidgetContent(
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
     ) {
-        val contentWidth = maxOf(maxWidth, MIN_CONTENT_WIDTH_DP.dp)
+        val contentWidth = maxOf(maxWidth, minContentWidthDp.dp)
         Box(
             modifier = Modifier
                 .horizontalScroll(scrollState)
@@ -325,32 +325,32 @@ private fun EndpointsWidgetContent(
                 .padding(horizontal = 12.dp, vertical = 15.dp)
                 .navigationBarsPadding()
         ) {
-            when (state) {
-                EndpointsViewModel.State.Loading -> CircularProgressIndicator()
-                is EndpointsViewModel.State.EndpointsList -> {
-                    EndpointsList(
-                        state = state,
-                        selectedKey = selectedKey,
-                        onEndpointClicked = onEndpointClicked,
-                        onFilterUpdate = onFilterUpdate,
-                        onRowDensityChanged = onRowDensityChanged,
+        when (state) {
+            EndpointsViewModel.State.Loading -> CircularProgressIndicator()
+            is EndpointsViewModel.State.EndpointsList -> {
+                EndpointsList(
+                    state = state,
+                    selectedKey = selectedKey,
+                    onEndpointClicked = onEndpointClicked,
+                    onFilterUpdate = onFilterUpdate,
+                    onRowDensityChanged = onRowDensityChanged,
+                )
+                FloatingActionButton(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .align(Alignment.BottomEnd)
+                        .zIndex(1f),
+                    onClick = onGlobalControlsClicked,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = strings.widgets.globalControls.title
                     )
-                    FloatingActionButton(
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .align(Alignment.BottomEnd)
-                            .zIndex(1f),
-                        onClick = onGlobalControlsClicked,
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = strings.widgets.globalControls.title
-                        )
-                    }
                 }
             }
+        }
         }
     }
 }
