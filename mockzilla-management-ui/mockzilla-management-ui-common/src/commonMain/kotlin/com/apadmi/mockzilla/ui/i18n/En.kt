@@ -77,7 +77,8 @@ val EnStrings = Strings(
             ios = "iOS",
             jvm = "JVM",
             js = "Web - JS",
-            deviceSection = "Device"
+            deviceSection = "Device",
+            error = "Failed to load device info",
         ),
         logs = Strings.Widgets.Logs(
             title = "Logs",
