@@ -8,9 +8,11 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,50 +31,75 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Suppress("MAGIC_NUMBER")
-private val sectionShape = RoundedCornerShape(8.dp)
+private const val animationDuration = 200
+private const val rotationCollapsed = 0f
+private const val rotationExpanded = 90f
+private const val sectionCornerRadius = 8
 
-@Suppress("MAGIC_NUMBER")
 @Composable
 fun EdSection(
     label: String,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     initiallyExpanded: Boolean = true,
+    headerActions: @Composable RowScope.() -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val sectionShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(sectionCornerRadius.dp)
+
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
     val chevronRotation by animateFloatAsState(
-        targetValue = if (expanded) 90f else 0f,
-        animationSpec = tween(200),
+        targetValue = if (expanded) rotationExpanded else rotationCollapsed,
+        animationSpec = tween(animationDuration),
     )
 
     Column(
         modifier = modifier
-            .clip(sectionShape)
-            .border(width = 1.dp, color = colorScheme.outline, shape = sectionShape),
+            .fillMaxWidth()
+            .drawBehind {
+                if (isDark) {
+                    val strokeWidth = 1.dp.toPx()
+                    drawLine(
+                        color = colorScheme.outline,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = strokeWidth
+                    )
+                }
+            }
+            .border(
+                width = if (isDark) 0.dp else 1.dp,
+                color = colorScheme.outline,
+                shape = sectionShape
+            )
+            .clip(sectionShape),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(colorScheme.surfaceContainer)
+                .background(if (isDark) Color.Transparent else colorScheme.surfaceContainer)
                 .clickable { expanded = !expanded }
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
-                modifier = Modifier.size(10.dp).rotate(chevronRotation),
+                modifier = Modifier.size(12.dp).rotate(chevronRotation),
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
                 tint = colorScheme.onSurfaceFaint,
@@ -89,8 +116,9 @@ fun EdSection(
                 modifier = Modifier.weight(1f),
                 text = label.uppercase(),
                 style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.06.em),
-                color = colorScheme.onSurfaceVariant,
+                color = if (isDark) colorScheme.onSurface else colorScheme.onSurfaceVariant,
             )
+            headerActions()
         }
 
         AnimatedVisibility(
@@ -101,7 +129,7 @@ fun EdSection(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(colorScheme.surface)
+                    .background(if (isDark) Color.Transparent else colorScheme.surface)
                     .padding(horizontal = 14.dp, vertical = 12.dp),
             ) {
                 content()

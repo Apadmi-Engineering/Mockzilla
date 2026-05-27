@@ -1,4 +1,5 @@
 @file:Suppress("FILE_NAME_MATCH_CLASS")
+@file:OptIn(ExperimentalSerializationApi::class)
 
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details
 
@@ -12,11 +13,13 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.char
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
 internal const val BYTES_PER_KB = 1024
 internal const val TENTHS_FACTOR = 10
 internal const val ALPHA_MUTED = 0.5f
-private const val JSON_INDENT = "  "
 private const val MILLISECONDS_FRACTION_DIGITS = 3
 private const val JSON_TRUE_LENGTH = 4
 private const val JSON_FALSE_LENGTH = 5
@@ -30,6 +33,11 @@ private val timestampFormat = DateTimeComponents.Format {
     second()
     char('.')
     secondFraction(MILLISECONDS_FRACTION_DIGITS)
+}
+
+private val jsonPrettyPrinter = Json {
+    prettyPrint = true
+    prettyPrintIndent = "  "
 }
 
 /**
@@ -52,66 +60,15 @@ internal fun String.toKbLabel(): String {
     return "${tenths / TENTHS_FACTOR}.${tenths % TENTHS_FACTOR} KB"
 }
 
-internal fun String.prettyPrintJson(): String {
-    val trimmed = trim()
-    if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
-        return this
-    }
-    val sb = StringBuilder()
-    var depth = 0
-    var idx = 0
-    while (idx < trimmed.length) {
-        val (newIdx, newDepth) = sb.processPrettyJsonChar(trimmed, idx, depth)
-        idx = newIdx
-        depth = newDepth
-    }
-    return sb.toString()
-}
+internal fun String.prettyPrintJson(): String = runCatching {
+    jsonPrettyPrinter.encodeToString(JsonElement.serializer(), Json.parseToJsonElement(this))
+}.getOrNull() ?: this
 
-// ── JSON pretty-printer ───────────────────────────────────────────────────────
+internal fun String.minifyJson(): String = runCatching {
+    Json.encodeToString(JsonElement.serializer(), Json.parseToJsonElement(this))
+}.getOrNull() ?: this
 
-private fun StringBuilder.appendNewlineIndent(depth: Int) {
-    append('\n')
-    repeat(depth) { append(JSON_INDENT) }
-}
-
-/**
- * Processes a single character from [source] at [startIdx] during JSON pretty-printing,
- * appending the formatted output to the receiver [StringBuilder].
- *
- * @return A pair of (next index to process, updated nesting depth).
- */
-private fun StringBuilder.processPrettyJsonChar(
-    source: String,
-    startIdx: Int,
-    depth: Int,
-): Pair<Int, Int> = when (source[startIdx]) {
-    '{', '[' -> {
-        append(source[startIdx])
-        appendNewlineIndent(depth + 1)
-        startIdx + 1 to depth + 1
-    }
-    '}', ']' -> {
-        appendNewlineIndent(depth - 1)
-        append(source[startIdx])
-        startIdx + 1 to depth - 1
-    }
-    ',' -> {
-        append(',')
-        appendNewlineIndent(depth)
-        startIdx + 1 to depth
-    }
-    ':' -> {
-        append(": ")
-        startIdx + 1 to depth
-    }
-    '"' -> appendJsonString(source, startIdx, this) + 1 to depth
-    ' ', '\t', '\r', '\n' -> startIdx + 1 to depth
-    else -> {
-        append(source[startIdx])
-        startIdx + 1 to depth
-    }
-}
+// ── JSON syntax highlighter ───────────────────────────────────────────────────
 
 /**
  * Processes a single character (or token) at [charIdx] in [text] during JSON syntax
@@ -163,51 +120,40 @@ internal fun urlToTitle(url: String): String = url
 internal fun formatTimestamp(timestamp: Long): String =
     Instant.fromEpochMilliseconds(timestamp).format(timestampFormat)
 
-internal fun buildJsonAnnotatedString(text: String, colors: JsonHighlightColors): AnnotatedString {
-    val pretty = text.prettyPrintJson()
+internal fun buildHighlightedAnnotatedString(
+    text: String,
+    colors: JsonHighlightColors,
+    isMinified: Boolean = false
+): AnnotatedString {
+    val trimmed = text.trimStart()
+    if (trimmed.startsWith('<')) {
+        return buildHtmlAnnotatedString(text, colors.keyColor)
+    }
+
+    if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+        return AnnotatedString(text)
+    }
+
+    val formatted = if (isMinified) text.minifyJson() else text.prettyPrintJson()
     return buildAnnotatedString {
-        val trimmedStart = pretty.trimStart()
-        if (pretty.isBlank() || (!trimmedStart.startsWith('{') && !trimmedStart.startsWith('['))) {
-            append(pretty)
-            return@buildAnnotatedString
-        }
         var charIdx = 0
-        while (charIdx < pretty.length) {
-            charIdx = processHighlightToken(pretty, charIdx, colors)
+        while (charIdx < formatted.length) {
+            charIdx = processHighlightToken(formatted, charIdx, colors)
         }
     }
 }
 
-/**
- * Reads a JSON string literal (including surrounding quotes and escape sequences)
- * from [source] starting at [openQuoteIdx], appending each character to [sink].
- *
- * @return The index of the closing `"` in [source], so the caller can advance past it.
- */
-private fun appendJsonString(
-    source: String,
-    openQuoteIdx: Int,
-    sink: StringBuilder
-): Int {
-    sink.append('"')
-    var idx = openQuoteIdx + 1
-    while (idx < source.length) {
-        val ch = source[idx]
-        when {
-            ch == '\\' && idx + 1 < source.length -> {
-                sink.append(ch)
-                idx++
-                sink.append(source[idx])
-            }
-            ch == '"' -> {
-                sink.append(ch)
-                return idx
-            }
-            else -> sink.append(ch)
+private fun buildHtmlAnnotatedString(text: String, tagColor: Color): AnnotatedString = buildAnnotatedString {
+    val tagRegex = Regex("<[^>]+>")
+    var lastIdx = 0
+    tagRegex.findAll(text).forEach { match ->
+        append(text.substring(lastIdx, match.range.first))
+        withStyle(SpanStyle(color = tagColor)) {
+            append(match.value)
         }
-        idx++
+        lastIdx = match.range.last + 1
     }
-    return idx - 1
+    append(text.substring(lastIdx))
 }
 
 // ── JSON syntax highlighter ───────────────────────────────────────────────────

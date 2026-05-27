@@ -50,6 +50,8 @@ fun WidgetScaffold(
     bottom: List<Widget>,
     onSelected: (String) -> Unit,
     top: @Composable () -> Unit,
+    initialLeftPanelWidth: Dp = 230.dp,
+    initialRightPanelWidth: Dp = 280.dp,
 ) {
     val density = LocalDensity.current
 
@@ -112,7 +114,8 @@ fun WidgetScaffold(
                     onDragStopped = {
                         leftPanelWidth = leftPanelSettledWidth
                     },
-                    onSelected = onSelected
+                    onSelected = onSelected,
+                    defaultWidth = initialLeftPanelWidth
                 )
                 Column(
                     modifier = Modifier
@@ -136,7 +139,8 @@ fun WidgetScaffold(
                     onDragStopped = {
                         rightPanelWidth = rightPanelSettledWidth
                     },
-                    onSelected = onSelected
+                    onSelected = onSelected,
+                    defaultWidth = initialRightPanelWidth
                 )
             }
             BottomPanel(content = bottom)

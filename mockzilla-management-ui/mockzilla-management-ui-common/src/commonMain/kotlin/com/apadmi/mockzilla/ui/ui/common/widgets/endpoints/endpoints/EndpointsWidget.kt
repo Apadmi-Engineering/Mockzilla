@@ -325,32 +325,32 @@ private fun EndpointsWidgetContent(
                 .padding(horizontal = 12.dp, vertical = 15.dp)
                 .navigationBarsPadding()
         ) {
-        when (state) {
-            EndpointsViewModel.State.Loading -> CircularProgressIndicator()
-            is EndpointsViewModel.State.EndpointsList -> {
-                EndpointsList(
-                    state = state,
-                    selectedKey = selectedKey,
-                    onEndpointClicked = onEndpointClicked,
-                    onFilterUpdate = onFilterUpdate,
-                    onRowDensityChanged = onRowDensityChanged,
-                )
-                FloatingActionButton(
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .align(Alignment.BottomEnd)
-                        .zIndex(1f),
-                    onClick = onGlobalControlsClicked,
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Settings,
-                        contentDescription = strings.widgets.globalControls.title
+            when (state) {
+                EndpointsViewModel.State.Loading -> CircularProgressIndicator()
+                is EndpointsViewModel.State.EndpointsList -> {
+                    EndpointsList(
+                        state = state,
+                        selectedKey = selectedKey,
+                        onEndpointClicked = onEndpointClicked,
+                        onFilterUpdate = onFilterUpdate,
+                        onRowDensityChanged = onRowDensityChanged,
                     )
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .align(Alignment.BottomEnd)
+                            .zIndex(1f),
+                        onClick = onGlobalControlsClicked,
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = strings.widgets.globalControls.title
+                        )
+                    }
                 }
             }
-        }
         }
     }
 }

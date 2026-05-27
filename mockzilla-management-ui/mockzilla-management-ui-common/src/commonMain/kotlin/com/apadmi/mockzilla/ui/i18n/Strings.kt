@@ -154,6 +154,7 @@ data class Strings(
          * @property jvm
          * @property js
          * @property deviceSection
+         * @property error
          */
         data class MetaData(
             val title: String,
@@ -350,6 +351,8 @@ data class Strings(
          * @property forcedApiFailureBannerTitle
          * @property forcedApiFailureBannerSubtitle
          * @property presets
+         * @property behavior
+         * @property latency
          */
         data class EndpointDetails(
             val title: String,
@@ -364,6 +367,8 @@ data class Strings(
             val emptyDescription: String,
             val forcedApiFailureBannerTitle: String,
             val forcedApiFailureBannerSubtitle: String,
+            val behavior: String,
+            val latency: String,
             val presets: Presets
         ) {
             /**

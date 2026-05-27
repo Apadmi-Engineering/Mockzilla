@@ -63,6 +63,14 @@ private const val logDetailsWidgetId = "log-details"
 private const val editPresetWidgetId = "edit-preset"
 private const val createPresetWidgetId = "create-preset"
 private const val globalControlsWidgetId = "global-controls"
+private const val animationDuration = 300
+private const val defaultLeftPanelWidth = 300
+private const val defaultRightPanelWidth = 900
+private const val globalControlsWidth = 400
+private const val crossfadeDuration = 200
+private const val topBarHeight = 48
+private val leftPanelWidth = defaultLeftPanelWidth.dp
+private val rightPanelWidth = defaultRightPanelWidth.dp
 
 @Composable
 fun DesktopApp(
@@ -91,11 +99,6 @@ fun DesktopApp(
                 viewModel.setSelectedEndpoint(it)
                 openWidgets = openWidgets.minus(editPresetWidgetId)
                 openWidgets = openWidgets.plus(createPresetWidgetId)
-            },
-            onEditPreset = {
-                viewModel.setSelectedEndpoint(it)
-                openWidgets = openWidgets.minus(createPresetWidgetId)
-                openWidgets = openWidgets.plus(editPresetWidgetId)
             },
             onCloseLogDetail = {
                 logDetail = null
@@ -131,32 +134,35 @@ fun DesktopApp(
                     }
                 ) {
                     viewModel.setSelectedEndpoint(it)
-                    openWidgets = openWidgets.plus(endpointDetailsWidgetId)
+                    onSelected(endpointDetailsWidgetId)
                 },
                 bottom = bottomPanelWidgets(
                     state = state,
                     onViewDetail = {
                         logDetail = it
-                        openWidgets = openWidgets.plus(logDetailsWidgetId)
+                        onSelected(logDetailsWidgetId)
                     },
                     strings = strings,
                 ),
-                onSelected = onSelected
+                onSelected = onSelected,
+                initialLeftPanelWidth = leftPanelWidth,
+                initialRightPanelWidth = rightPanelWidth
+
             )
 
             // Global Controls Overlay
             val connectedState = state as? AppRootViewModel.State.Connected
             AnimatedVisibility(
                 visible = openWidgets.contains(globalControlsWidgetId) && connectedState != null,
-                enter = slideInHorizontally(animationSpec = tween(300)) { it },
-                exit = slideOutHorizontally(animationSpec = tween(300)) { it },
-                modifier = Modifier.align(Alignment.CenterEnd).padding(top = 48.dp)  // Adjust top padding to match top bar height
+                enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
+                exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
+                modifier = Modifier.align(Alignment.CenterEnd).padding(top = topBarHeight.dp)  // Adjust top padding to match top bar height
             ) {
                 connectedState?.let {
                     Surface(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .width(400.dp)
+                            .width(globalControlsWidth.dp)
                             .shadow(8.dp)
                             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(topStart = 8.dp)),
                         color = MaterialTheme.colorScheme.surface,
@@ -241,7 +247,6 @@ private fun rightPanelWidgets(
     logDetail: LogEvent?,
     strings: Strings,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
-    onEditPreset: (EndpointConfiguration.Key) -> Unit,
     onCloseLogDetail: () -> Unit,
 ) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
     buildList {
@@ -250,13 +255,12 @@ private fun rightPanelWidgets(
                 id = endpointDetailsWidgetId, title = strings.widgets.endpointDetails.title
             ) {
                 Crossfade(
-                    targetState = connectedState, animationSpec = tween(durationMillis = 200)
+                    targetState = connectedState, animationSpec = tween(durationMillis = crossfadeDuration)
                 ) { newState ->
                     EndpointDetailsWidget(
                         device = newState.activeDevice.device,
                         activeEndpoint = newState.selectedEndpoint,
-                        onCreatePreset = onCreatePreset,
-                        onEditPreset = onEditPreset
+                        onCreatePreset = onCreatePreset
                     )
                 }
             }
