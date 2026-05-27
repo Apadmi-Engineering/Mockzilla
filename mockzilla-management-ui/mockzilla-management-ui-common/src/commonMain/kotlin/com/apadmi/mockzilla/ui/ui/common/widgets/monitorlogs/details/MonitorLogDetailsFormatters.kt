@@ -1,4 +1,5 @@
 @file:Suppress("FILE_NAME_MATCH_CLASS")
+@file:OptIn(ExperimentalSerializationApi::class)
 
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details
 
@@ -12,6 +13,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.char
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 
@@ -33,7 +35,10 @@ private val timestampFormat = DateTimeComponents.Format {
     secondFraction(MILLISECONDS_FRACTION_DIGITS)
 }
 
-private val jsonPrettyPrinter = Json { prettyPrint = true }
+private val jsonPrettyPrinter = Json {
+    prettyPrint = true
+    prettyPrintIndent = "  "
+}
 
 /**
  * @property keyColor Color for JSON object keys.

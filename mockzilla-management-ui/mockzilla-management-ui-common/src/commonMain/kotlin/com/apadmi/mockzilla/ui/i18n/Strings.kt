@@ -154,6 +154,7 @@ data class Strings(
          * @property jvm
          * @property js
          * @property deviceSection
+         * @property error
          */
         data class MetaData(
             val title: String,
