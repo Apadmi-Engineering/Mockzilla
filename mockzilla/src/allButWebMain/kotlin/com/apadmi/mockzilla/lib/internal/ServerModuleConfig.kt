@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.utils.allowCors
+import com.apadmi.mockzilla.lib.internal.utils.fetchAppIconBytes
 import com.apadmi.mockzilla.lib.internal.utils.respondMockzilla
 import com.apadmi.mockzilla.lib.internal.utils.toMockzillaRequest
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -100,6 +101,16 @@ internal fun Application.configureEndpoints(
                         di.metaData.appPackage, di.managementApiController.consumeLogEntries()
                     )
                 )
+            }
+        }
+        get("/api/app-icon") {
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                val iconBytes = fetchAppIconBytes(di.platformConfig)
+                iconBytes?.let {
+                    call.response.header(HttpHeaders.CacheControl, "max-age=3600, immutable")
+                    call.respondBytes(iconBytes, ContentType.Image.PNG)
+                } ?: call.respond(HttpStatusCode.NotFound)
             }
         }
     }

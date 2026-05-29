@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.BuildKonfig
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
@@ -39,7 +40,8 @@ fun startMockzilla(
             runTarget = RunTarget.Jvm,
             mockzillaVersion = BuildKonfig.VERSION_NAME
         ),
-        FileIo(Files.createTempDirectory("").toFile())
+        FileIo(Files.createTempDirectory("").toFile()),
+        platformConfig = PlatformConfig(),
     ) {
         object : ZeroConfDiscoveryService {
             override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {

@@ -21,6 +21,7 @@ interface MockzillaManagement {
     val logsService: LogsService
     val cacheClearingService: CacheClearingService
     val endpointsService: EndpointsService
+    val appIconService: AppIconService
 
     interface CacheClearingService {
         suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
@@ -72,19 +73,24 @@ interface MockzillaManagement {
         ): Result<MonitorLogsResponse>
     }
 
+    interface AppIconService {
+        suspend fun fetchAppIcon(connection: MockzillaConnectionConfig): Result<ByteArray?>
+    }
+
     private data class Instance(
         override val underlyingRepository: MockzillaManagementRepository,
         override val updateService: UpdateService,
         override val metaDataService: MetaDataService,
         override val logsService: LogsService,
         override val cacheClearingService: CacheClearingService,
-        override val endpointsService: EndpointsService
+        override val endpointsService: EndpointsService,
+        override val appIconService: AppIconService
     ) : MockzillaManagement
 
     companion object {
         val instance: MockzillaManagement by lazy {
             val repo = MockzillaManagementRepositoryImpl.create()
-            Instance(repo, UpdateServiceImpl(repo), repo, repo, repo, repo)
+            Instance(repo, UpdateServiceImpl(repo), repo, repo, repo, repo, repo)
         }
     }
 }
