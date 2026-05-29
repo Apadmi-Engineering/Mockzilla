@@ -2,16 +2,23 @@
 
 package com.apadmi.mockzilla.desktop.ui.scaffold
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -273,34 +280,39 @@ private fun RightPanel(
     }
 
     Row(modifier = Modifier.fillMaxHeight()) {
-        if (selectedWidgets.isNotEmpty()) {
-            HorizontalDraggableDivider(
-                onDrag = { offset ->
-                    with(density) {
-                        onWidthChange(width - offset.toDp())
-                    }
-                },
-                onDragStopped = onDragStopped,
-            )
-        }
-
-        Surface(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxHeight()
-                .width(if (selectedWidgets.isEmpty()) {
-                    0.dp
-                } else {
-                    settledWidth
-                })
+        AnimatedVisibility(
+            visible = selectedWidgets.isNotEmpty(),
+            enter = expandHorizontally(
+                expandFrom = Alignment.End,
+                animationSpec = tween(durationMillis = 160),
+            ) + fadeIn(animationSpec = tween(durationMillis = 120)),
+            exit = shrinkHorizontally(
+                shrinkTowards = Alignment.End,
+                animationSpec = tween(durationMillis = 130),
+            ) + fadeOut(animationSpec = tween(durationMillis = 100)),
         ) {
-            if (selectedWidgets.isNotEmpty()) {
-                Column {
-                    selectedWidgets.sorted().forEachIndexed { index, widget ->
-                        if (index != 0) {
-                            HorizontalDivider(Modifier.padding(vertical = 8.dp))
+            Row {
+                HorizontalDraggableDivider(
+                    onDrag = { offset ->
+                        with(density) {
+                            onWidthChange(width - offset.toDp())
                         }
-                        content.getOrNull(widget)?.ui?.invoke()
+                    },
+                    onDragStopped = onDragStopped,
+                )
+                Surface(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxHeight()
+                        .width(settledWidth)
+                ) {
+                    Column {
+                        selectedWidgets.sorted().forEachIndexed { index, widget ->
+                            if (index != 0) {
+                                HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                            }
+                            content.getOrNull(widget)?.ui?.invoke()
+                        }
                     }
                 }
             }
