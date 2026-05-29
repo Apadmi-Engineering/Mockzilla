@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,12 +23,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +45,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionHeader
+import org.jetbrains.compose.resources.decodeToImageBitmap
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
@@ -71,14 +76,16 @@ fun MetaDataWidgetContent(
     state: MetaDataWidgetViewModel.State,
     device: Device? = null,
     strings: Strings = LocalStrings.current
-) = Box(
-    Modifier.fillMaxWidth(),
-    contentAlignment = Alignment.Center
 ) {
-    when (state) {
-        is MetaDataWidgetViewModel.State.DisplayMetaData -> MetaDataListView(state, device, strings)
-        MetaDataWidgetViewModel.State.Error -> Text("Error")
-        MetaDataWidgetViewModel.State.Loading -> CircularProgressIndicator()
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (state) {
+            is MetaDataWidgetViewModel.State.DisplayMetaData -> MetaDataListView(state, device, strings)
+            MetaDataWidgetViewModel.State.Error -> Text(strings.widgets.metaData.error)
+            MetaDataWidgetViewModel.State.Loading -> CircularProgressIndicator()
+        }
     }
 }
 
@@ -88,7 +95,11 @@ fun MetaDataListView(
     device: Device? = null,
     strings: Strings = LocalStrings.current
 ) = Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
-    AppHeader(appName = state.metaData.appName, appPackage = state.metaData.appPackage)
+    AppHeader(
+        appName = state.metaData.appName,
+        appPackage = state.metaData.appPackage,
+        appIconBytes = state.appIconBytes
+    )
 
     Spacer(modifier = Modifier.height(16.dp))
 
@@ -212,11 +223,16 @@ private fun SessionRow(label: String, value: String) = Row(
 // ── App header ────────────────────────────────────────────────────────────────
 
 @Composable
-private fun AppHeader(appName: String, appPackage: String) = Row(
+private fun AppHeader(
+    appName: String,
+    appPackage: String,
+    appIconBytes: ByteArray? = null
+) = Row(
     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(12.dp)
 ) {
+    val imageBitmap = remember(appIconBytes) { appIconBytes?.decodeToImageBitmap() }
     Box(
         modifier = Modifier
             .size(56.dp)
@@ -224,7 +240,13 @@ private fun AppHeader(appName: String, appPackage: String) = Row(
             .background(MaterialTheme.colorScheme.surfaceContainer),
         contentAlignment = Alignment.Center
     ) {
-        Image(
+        imageBitmap?.let {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = BitmapPainter(imageBitmap),
+                contentDescription = null
+            )
+        } ?: Image(
             modifier = Modifier.size(40.dp),
             imageVector = Icons.MockzillaLogo,
             contentDescription = null

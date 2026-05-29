@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -65,7 +64,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
-private const val MIN_CONTENT_WIDTH_DP = 300
+private const val minContentWidthDp = 300
 private const val HOVER_ALPHA = 0.08f
 private const val UNSELECTED_BORDER_ALPHA = 0.2f
 private const val LEFT_BORDER_WIDTH_DP = 3
@@ -312,17 +311,16 @@ private fun EndpointsWidgetContent(
     onGlobalControlsClicked: () -> Unit,
     strings: Strings = LocalStrings.current
 ) {
-    val horizontalScrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
     ) {
-        val contentWidth = maxOf(maxWidth, MIN_CONTENT_WIDTH_DP.dp)
+        val contentWidth = maxOf(maxWidth, minContentWidthDp.dp)
         Box(
             modifier = Modifier
-                .fillMaxHeight()
-                .horizontalScroll(horizontalScrollState)
+                .horizontalScroll(scrollState)
                 .width(contentWidth)
                 .padding(horizontal = 12.dp, vertical = 15.dp)
                 .navigationBarsPadding()

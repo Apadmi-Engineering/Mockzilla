@@ -50,7 +50,7 @@ class AppRootViewModel(
         state.value = (state.value as? State.Connected)?.copy(error = State.Connected.ErrorBannerState.UnknownError) ?: state.value
     }.launchIn(viewModelScope)
 
-    fun setSelectedEndpoint(key: EndpointConfiguration.Key) {
+    fun setSelectedEndpoint(key: EndpointConfiguration.Key?) {
         val currentState = state.value as? State.Connected ?: return
         state.value = currentState.copy(selectedEndpoint = key)
     }

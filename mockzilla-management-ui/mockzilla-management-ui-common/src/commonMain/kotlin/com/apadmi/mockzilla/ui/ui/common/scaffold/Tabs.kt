@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.scaffold
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,11 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.desktop.utils.rotateVertically
 
@@ -36,6 +38,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Immutable
 data class VerticalTab(
     val title: String?,
+    val leadingIcon: ImageVector? = null,
+    val leadingContent: (@Composable () -> Unit)? = null,
 )
 
 @Immutable
@@ -57,6 +61,7 @@ fun VerticalTabList(
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = colorScheme.surface == darkSurface
     Column(
         modifier = modifier
             .fillMaxHeight()
@@ -70,6 +75,8 @@ fun VerticalTabList(
                 title = tab.title,
                 selected = isSelected,
                 onSelect = { onSelect(index) },
+                leadingIcon = tab.leadingIcon,
+                leadingContent = tab.leadingContent,
                 modifier = Modifier.rotateVertically(clockwise),
             )
         }
@@ -86,8 +93,16 @@ fun HorizontalTabList(
     val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = modifier
-            .background(colorScheme.surface)
-            .border(width = 1.dp, color = colorScheme.outline)
+            .background(colorScheme.surfaceContainer)
+            .drawBehind {
+                val strokeWidth = 1.dp.toPx()
+                drawLine(
+                    color = colorScheme.outline,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = strokeWidth
+                )
+            }
             .horizontalScroll(rememberScrollState()),
     ) {
         tabs.forEachIndexed { index, tab ->
@@ -124,6 +139,21 @@ private fun TabItem(
             .selectable(selected = selected, onClick = onSelect),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        if (selected) {
+            Box(
+                Modifier
+                    .matchParentSize()
+                    .drawBehind {
+                        val strokeWidth = 2.dp.toPx()
+                        drawLine(
+                            color = colorScheme.primary,
+                            start = Offset(0f, size.height - strokeWidth / 2),
+                            end = Offset(size.width, size.height - strokeWidth / 2),
+                            strokeWidth = strokeWidth
+                        )
+                    }
+            )
+        }
         Row(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 12.dp),
@@ -136,10 +166,10 @@ private fun TabItem(
                     contentDescription = null,
                     tint = if (selected) colorScheme.primary else colorScheme.onSurfaceMuted,
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
             }
             leadingContent?.let {
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
             }
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -163,7 +193,7 @@ private fun TabItem(
                 }
             }
             trailing?.let {
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 it()
             }
         }

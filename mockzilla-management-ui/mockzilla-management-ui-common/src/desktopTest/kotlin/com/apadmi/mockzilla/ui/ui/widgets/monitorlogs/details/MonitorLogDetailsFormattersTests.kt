@@ -3,7 +3,7 @@ package com.apadmi.mockzilla.ui.ui.widgets.monitorlogs.details
 import androidx.compose.ui.graphics.Color
 
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.JsonHighlightColors
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildJsonAnnotatedString
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.formatTimestamp
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.toKbLabel
@@ -152,65 +152,76 @@ class MonitorLogDetailsFormattersTests {
     }
 
     @Test
-    fun `buildJsonAnnotatedString plain text equals pretty printed json`() {
+    fun `buildHighlightedAnnotatedString plain text equals pretty printed json`() {
         val json = """{"key":"value"}"""
-        assertEquals(json.prettyPrintJson(), buildJsonAnnotatedString(json, colors).text)
+        assertEquals(json.prettyPrintJson(), buildHighlightedAnnotatedString(json, colors).text)
     }
 
     @Test
-    fun `buildJsonAnnotatedString returns unstyled text for non-json input`() {
+    fun `buildHighlightedAnnotatedString returns unstyled text for non-json input`() {
         val plain = "not json at all"
-        val result = buildJsonAnnotatedString(plain, colors)
+        val result = buildHighlightedAnnotatedString(plain, colors)
         assertEquals(plain, result.text)
         assertTrue(result.spanStyles.isEmpty(), "Expected no spans for plain text")
     }
 
     @Test
-    fun `buildJsonAnnotatedString colours object keys with keyColor`() {
-        val result = buildJsonAnnotatedString("""{"name":"John"}""", colors)
+    fun `buildHighlightedAnnotatedString colours object keys with keyColor`() {
+        val result = buildHighlightedAnnotatedString("""{"name":"John"}""", colors)
         val span = result.spanStyles.first { it.item.color == Color.Blue }
         assertEquals(""""name"""", result.text.substring(span.start, span.end))
     }
 
     @Test
-    fun `buildJsonAnnotatedString colours string values with stringColor`() {
-        val result = buildJsonAnnotatedString("""{"name":"John"}""", colors)
+    fun `buildHighlightedAnnotatedString colours string values with stringColor`() {
+        val result = buildHighlightedAnnotatedString("""{"name":"John"}""", colors)
         val span = result.spanStyles.first { it.item.color == Color.Green }
         assertEquals(""""John"""", result.text.substring(span.start, span.end))
     }
 
     @Test
-    fun `buildJsonAnnotatedString colours integer numbers with numberColor`() {
-        val result = buildJsonAnnotatedString("""{"age":30}""", colors)
+    fun `buildHighlightedAnnotatedString colours integer numbers with numberColor`() {
+        val result = buildHighlightedAnnotatedString("""{"age":30}""", colors)
         val span = result.spanStyles.first { it.item.color == Color.Yellow }
         assertEquals("30", result.text.substring(span.start, span.end))
     }
 
     @Test
-    fun `buildJsonAnnotatedString colours negative numbers with numberColor`() {
-        val result = buildJsonAnnotatedString("""{"temp":-5}""", colors)
+    fun `buildHighlightedAnnotatedString colours negative numbers with numberColor`() {
+        val result = buildHighlightedAnnotatedString("""{"temp":-5}""", colors)
         val span = result.spanStyles.first { it.item.color == Color.Yellow }
         assertEquals("-5", result.text.substring(span.start, span.end))
     }
 
     @Test
-    fun `buildJsonAnnotatedString colours true with boolColor`() {
-        val result = buildJsonAnnotatedString("""{"active":true}""", colors)
+    fun `buildHighlightedAnnotatedString colours true with boolColor`() {
+        val result = buildHighlightedAnnotatedString("""{"active":true}""", colors)
         val span = result.spanStyles.first { it.item.color == Color.Magenta }
         assertEquals("true", result.text.substring(span.start, span.end))
     }
 
     @Test
-    fun `buildJsonAnnotatedString colours false with boolColor`() {
-        val result = buildJsonAnnotatedString("""{"active":false}""", colors)
+    fun `buildHighlightedAnnotatedString colours false with boolColor`() {
+        val result = buildHighlightedAnnotatedString("""{"active":false}""", colors)
         val span = result.spanStyles.first { it.item.color == Color.Magenta }
         assertEquals("false", result.text.substring(span.start, span.end))
     }
 
     @Test
-    fun `buildJsonAnnotatedString colours null with nullColor`() {
-        val result = buildJsonAnnotatedString("""{"value":null}""", colors)
+    fun `buildHighlightedAnnotatedString colours null with nullColor`() {
+        val result = buildHighlightedAnnotatedString("""{"value":null}""", colors)
         val span = result.spanStyles.first { it.item.color == Color.Gray }
         assertEquals("null", result.text.substring(span.start, span.end))
+    }
+
+    @Test
+    fun `buildHighlightedAnnotatedString highlights HTML tags`() {
+        val html = """<html><body>Hi</body></html>"""
+        val result = buildHighlightedAnnotatedString(html, colors)
+        assertEquals(html, result.text)
+        assertEquals(4, result.spanStyles.size)  // <html>, <body>, </body>, </html>
+        result.spanStyles.forEach {
+            assertEquals(Color.Blue, it.item.color)
+        }
     }
 }

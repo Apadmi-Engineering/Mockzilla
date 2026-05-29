@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib
 
 import android.content.Context
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryServiceImpl
 import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
@@ -21,10 +22,9 @@ fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeP
     startMockzilla(
         config = config,
         metaData = context.extractMetaData(),
-        fileIo = FileIo(
-            context.cacheDir
-        ),
-        zeroConfDiscoveryService = { logger -> ZeroConfDiscoveryServiceImpl(logger, context) }
+        fileIo = FileIo(context.cacheDir),
+        zeroConfDiscoveryService = { logger -> ZeroConfDiscoveryServiceImpl(logger, context) },
+        platformConfig = PlatformConfig(context.applicationContext),
     )
 }
 

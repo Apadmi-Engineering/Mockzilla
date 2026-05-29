@@ -82,58 +82,64 @@ fun MiscControlsWidgetContent(
     onRefreshAll: () -> Unit,
     onClearAllOverrides: () -> Unit,
     strings: Strings = LocalStrings.current
-) = Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-    SectionHeader(title = strings.widgets.miscControls.actionsSection)
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        SectionHeader(title = strings.widgets.miscControls.actionsSection)
 
-    Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
-    BaseButton(
-        modifier = Modifier.fillMaxWidth(),
-        label = strings.widgets.miscControls.refreshAll,
-        leadingIcon = Icons.Filled.Refresh,
-        variant = ButtonVariant.Soft,
-        size = ButtonSize.Lg,
-        contentAlignment = ButtonContentAlignment.Start,
-        onClick = onRefreshAll
-    )
+        BaseButton(
+            modifier = Modifier.fillMaxWidth(),
+            label = strings.widgets.miscControls.refreshAll,
+            leadingIcon = Icons.Filled.Refresh,
+            variant = ButtonVariant.Soft,
+            size = ButtonSize.Lg,
+            contentAlignment = ButtonContentAlignment.Start,
+            onClick = onRefreshAll
+        )
 
-    Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
-    BaseButton(
-        modifier = Modifier.fillMaxWidth(),
-        label = strings.widgets.miscControls.clearOverrides,
-        leadingIcon = Icons.Filled.Restore,
-        variant = ButtonVariant.Soft,
-        size = ButtonSize.Lg,
-        contentAlignment = ButtonContentAlignment.Start,
-        onClick = onClearAllOverrides
-    )
+        BaseButton(
+            modifier = Modifier.fillMaxWidth(),
+            label = strings.widgets.miscControls.clearOverrides,
+            leadingIcon = Icons.Filled.Restore,
+            variant = ButtonVariant.Danger,
+            size = ButtonSize.Lg,
+            contentAlignment = ButtonContentAlignment.Start,
+            onClick = onClearAllOverrides
+        )
 
-    Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-    var presentationMode by rememberSaveable { mutableStateOf(PresentationModeScaleFactor.enabled) }
-    var presentationModeScaleFactor by rememberSaveable {
-        mutableFloatStateOf(PresentationModeScaleFactor.scaleFactor)
+        var presentationMode by rememberSaveable { mutableStateOf(PresentationModeScaleFactor.enabled) }
+        var presentationModeScaleFactor by rememberSaveable {
+            mutableFloatStateOf(PresentationModeScaleFactor.scaleFactor)
+        }
+        val setScaleFactor = LocalSetScaleFactor.current
+        PresentationModeSettings(
+            presentationMode = presentationMode,
+            onPresentationModeChange = { presentationModeEnabled ->
+                presentationMode = presentationModeEnabled
+                PresentationModeScaleFactor.enabled = presentationModeEnabled
+                if (presentationModeEnabled) {
+                    setScaleFactor(presentationModeScaleFactor)
+                } else {
+                    setScaleFactor(ScaleFactor.default)
+                }
+            },
+            presentationModeScaleFactor = presentationModeScaleFactor,
+            onPresentationModeScaleFactorChange = { scaleFactor ->
+                setScaleFactor(scaleFactor)
+                presentationModeScaleFactor = scaleFactor
+                PresentationModeScaleFactor.scaleFactor = scaleFactor
+            },
+        )
     }
-    val setScaleFactor = LocalSetScaleFactor.current
-    PresentationModeSettings(
-        presentationMode = presentationMode,
-        onPresentationModeChange = { presentationModeEnabled ->
-            presentationMode = presentationModeEnabled
-            PresentationModeScaleFactor.enabled = presentationModeEnabled
-            if (presentationModeEnabled) {
-                setScaleFactor(presentationModeScaleFactor)
-            } else {
-                setScaleFactor(ScaleFactor.default)
-            }
-        },
-        presentationModeScaleFactor = presentationModeScaleFactor,
-        onPresentationModeScaleFactorChange = { scaleFactor ->
-            setScaleFactor(scaleFactor)
-            presentationModeScaleFactor = scaleFactor
-            PresentationModeScaleFactor.scaleFactor = scaleFactor
-        },
-    )
 }
 
 @Preview

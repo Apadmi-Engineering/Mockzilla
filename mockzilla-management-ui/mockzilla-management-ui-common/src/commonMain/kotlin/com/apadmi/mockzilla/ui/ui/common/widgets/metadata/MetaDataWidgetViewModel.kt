@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.metadata
 import androidx.compose.runtime.Immutable
 
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.ui.engine.device.AppIconUseCase
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
@@ -18,6 +19,7 @@ class MetaDataWidgetViewModel(
     private val device: Device,
     private val metaDataUseCase: MetaDataUseCase,
     private val monitorLogsUseCase: MonitorLogsUseCase,
+    private val appIconUseCase: AppIconUseCase,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
     val state = MutableStateFlow<State>(State.Loading)
@@ -31,8 +33,10 @@ class MetaDataWidgetViewModel(
     }
 
     private suspend fun reloadData() {
-        state.value = metaDataUseCase.getMetaData(device).fold(
-            onSuccess = { State.DisplayMetaData(it) },
+        val metaDataResult = metaDataUseCase.getMetaData(device)
+        val iconResult = appIconUseCase.getAppIcon(device)
+        state.value = metaDataResult.fold(
+            onSuccess = { State.DisplayMetaData(it, appIconBytes = iconResult.getOrNull()) },
             onFailure = { State.Error }
         )
     }
@@ -62,6 +66,29 @@ class MetaDataWidgetViewModel(
         data class DisplayMetaData(
             val metaData: MetaData,
             val requestCount: Int? = null,
-        ) : State()
+            val appIconBytes: ByteArray? = null,
+        ) : State() {
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+                if (other !is DisplayMetaData) {
+                    return false
+                }
+                return metaData == other.metaData &&
+                        requestCount == other.requestCount &&
+                        (appIconBytes == null && other.appIconBytes == null ||
+                                appIconBytes != null && other.appIconBytes != null &&
+                                        appIconBytes.contentEquals(other.appIconBytes))
+            }
+
+            @Suppress("SAY_NO_TO_VAR")
+            override fun hashCode(): Int {
+                var result = metaData.hashCode()
+                result = 31 * result + (requestCount ?: 0)
+                result = 31 * result + (appIconBytes?.contentHashCode() ?: 0)
+                return result
+            }
+        }
     }
 }

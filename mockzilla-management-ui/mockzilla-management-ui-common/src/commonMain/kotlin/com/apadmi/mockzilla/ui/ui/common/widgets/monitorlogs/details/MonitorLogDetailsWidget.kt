@@ -46,6 +46,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionTitle
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
@@ -350,16 +351,9 @@ private fun BodyContent(body: String, strings: Strings) {
                 color = cs.onSurface.copy(alpha = 0.5f),
             )
         } else {
-            val jsonColors = JsonHighlightColors(
-                keyColor = cs.jsonKey,
-                stringColor = cs.success.primary,
-                numberColor = cs.tertiary,
-                boolColor = cs.warning.primary,
-                nullColor = cs.onSurface.copy(alpha = ALPHA_MUTED),
-            )
             SelectionContainer {
                 Text(
-                    text = buildJsonAnnotatedString(body, jsonColors),
+                    text = buildHighlightedAnnotatedString(body, MaterialTheme.colorScheme.jsonHighlight),
                     style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
                 )
             }

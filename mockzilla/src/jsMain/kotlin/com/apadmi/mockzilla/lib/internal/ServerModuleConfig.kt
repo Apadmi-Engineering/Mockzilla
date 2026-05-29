@@ -179,5 +179,14 @@ internal fun configureEndpoints(
                 )
             )
         }
+    },
+    Msw.http.get("$baseUrl/api/app-icon") { info ->
+        di.logger.v { "Handling GET app-icon (not supported on web): ${info.request.url}" }
+        Promise.resolve(
+            MockzillaHttpResponse(
+                statusCode = HttpStatusCode.NotFound,
+                headers = CorsUtils.allowAllHeaders
+            ).toJsResponse()
+        )
     }
 )
