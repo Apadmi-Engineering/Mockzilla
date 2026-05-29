@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
@@ -151,9 +150,9 @@ private fun TabItem(
     val colorScheme = MaterialTheme.colorScheme
     Box(
         modifier = modifier
-            .background(if (selected) colorScheme.surface else Color.Transparent)
+            .background(Color.Transparent)
             .selectable(selected = selected, onClick = onSelect)
-            .heightIn(min = 44.dp),
+            .heightIn(min = 30.dp),
         contentAlignment = Alignment.Center,
     ) {
         if (selected) {
@@ -173,8 +172,7 @@ private fun TabItem(
         }
         Row(
             modifier = Modifier
-                .minimumInteractiveComponentSize()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+                .padding(horizontal = 10.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             leadingContent?.invoke()
