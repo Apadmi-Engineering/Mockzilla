@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -17,7 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
@@ -58,9 +59,10 @@ fun VerticalTabList(
     val colorScheme = MaterialTheme.colorScheme
     Column(
         modifier = modifier
+            .fillMaxHeight()
             .background(colorScheme.surface)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.Top,
     ) {
         tabs.forEachIndexed { index, tab ->
             val isSelected = selected.contains(index)
@@ -116,20 +118,15 @@ private fun TabItem(
     trailing: (@Composable () -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    Box(
+    Column(
         modifier = modifier
-            .background(if (selected) colorScheme.surfaceVariant else Color.Transparent)
-            .then(
-                if (selected) Modifier.border(width = 1.dp, color = colorScheme.outlineVariant) else Modifier
-            )
-            .selectable(selected = selected, onClick = onSelect)
-            .heightIn(min = 36.dp),
-        contentAlignment = Alignment.Center,
+            .background(if (selected) colorScheme.surfaceContainerHighest.copy(alpha = 0.5f) else Color.Transparent)
+            .selectable(selected = selected, onClick = onSelect),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
             modifier = Modifier
-                .minimumInteractiveComponentSize()
-                .padding(horizontal = 10.dp, vertical = 6.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             leadingContent?.invoke()
@@ -152,7 +149,9 @@ private fun TabItem(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.labelLarge,
-                        color = if (selected) colorScheme.onSurface else colorScheme.onSurfaceVariant,
+                        color = if (selected) colorScheme.primary else colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        softWrap = false,
                     )
                 }
                 subtitle?.let {
@@ -167,6 +166,16 @@ private fun TabItem(
                 Spacer(modifier = Modifier.width(4.dp))
                 it()
             }
+        }
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(colorScheme.primary)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(3.dp))
         }
     }
 }

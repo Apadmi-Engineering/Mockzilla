@@ -36,11 +36,11 @@ private val darkColors = darkColorScheme(
     onPrimaryContainer = darkOnSurface,
     secondary = darkPrimary,
     onSecondary = darkOnPrimary,
-    secondaryContainer = darkSurfaceVariant,
+    secondaryContainer = darkVariant,
     onSecondaryContainer = darkOnSurface,
-    tertiary = darkTertiary,
+    tertiary = darkMethodPatch,
     onTertiary = darkBackground,
-    tertiaryContainer = darkTertiaryContainer,
+    tertiaryContainer = darkVariant,
     onTertiaryContainer = darkOnSurface,
     error = darkError,
     errorContainer = darkErrorContainer,
@@ -50,8 +50,12 @@ private val darkColors = darkColorScheme(
     onBackground = darkOnSurface,
     surface = darkSurface,
     onSurface = darkOnSurface,
-    surfaceVariant = darkSurfaceVariant,
-    surfaceContainer = darkSurfaceContainer,
+    surfaceVariant = darkVariant,
+    surfaceContainer = darkContainer,
+    surfaceContainerLow = darkSurface,
+    surfaceContainerLowest = darkBackground,
+    surfaceContainerHigh = darkVariant,
+    surfaceContainerHighest = darkElevated,
     onSurfaceVariant = darkOnSurfaceVariant,
     outline = darkOutline,
     outlineVariant = darkOutlineVariant,
@@ -68,11 +72,11 @@ private val lightColors = lightColorScheme(
     onPrimaryContainer = lightOnSurface,
     secondary = lightPrimary,
     onSecondary = lightOnPrimary,
-    secondaryContainer = lightSurfaceVariant,
+    secondaryContainer = lightVariant,
     onSecondaryContainer = lightOnSurface,
-    tertiary = lightTertiary,
+    tertiary = lightMethodPatch,
     onTertiary = lightOnSurface,
-    tertiaryContainer = lightTertiaryContainer,
+    tertiaryContainer = lightVariant,
     onTertiaryContainer = lightOnSurface,
     error = lightError,
     errorContainer = lightErrorContainer,
@@ -82,8 +86,12 @@ private val lightColors = lightColorScheme(
     onBackground = lightOnSurface,
     surface = lightSurface,
     onSurface = lightOnSurface,
-    surfaceVariant = lightSurfaceVariant,
-    surfaceContainer = lightSurfaceContainer,
+    surfaceVariant = lightVariant,
+    surfaceContainer = lightContainer,
+    surfaceContainerLow = lightSurface,
+    surfaceContainerLowest = lightBackground,
+    surfaceContainerHigh = lightVariant,
+    surfaceContainerHighest = lightElevated,
     onSurfaceVariant = lightOnSurfaceVariant,
     outline = lightOutline,
     outlineVariant = lightOutlineVariant,
@@ -98,14 +106,6 @@ private val lightColors = lightColorScheme(
 @get:Composable
 val ColorScheme.inputBackground: Color
     get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) surface else surfaceVariant
-
-@get:Composable
-val ColorScheme.surfaceMuted: Color
-    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkSurfaceMuted else lightSurfaceMuted
-
-@get:Composable
-val ColorScheme.surfaceSubtle: Color
-    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) darkSurfaceSubtle else lightSurfaceSubtle
 
 @get:Composable
 val ColorScheme.onSurfaceMuted: Color
@@ -129,6 +129,14 @@ val ColorScheme.warning: StateColors
         StateColors(primary = darkWarning, container = darkWarningContainer)
     } else {
         StateColors(primary = lightWarning, container = lightWarningContainer)
+    }
+
+@get:Composable
+val ColorScheme.info: StateColors
+    get() = if (LocalForceDarkMode.current || isSystemInDarkTheme()) {
+        StateColors(primary = darkInfo, container = darkInfoContainer)
+    } else {
+        StateColors(primary = lightInfo, container = lightInfoContainer)
     }
 
 @get:Composable

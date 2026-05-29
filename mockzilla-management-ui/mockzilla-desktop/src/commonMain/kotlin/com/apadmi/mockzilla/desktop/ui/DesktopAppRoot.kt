@@ -76,10 +76,15 @@ fun DesktopApp(
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
         val onSelected: (String) -> Unit = { id ->
+            val isExclusive = id == endpointDetailsWidgetId || id == logDetailsWidgetId
             openWidgets = if (openWidgets.contains(id)) {
                 openWidgets.minus(id)
             } else {
-                openWidgets.plus(id)
+                (if (isExclusive) {
+                    openWidgets.minus(endpointDetailsWidgetId).minus(logDetailsWidgetId)
+                } else {
+                    openWidgets
+                }).plus(id)
             }
         }
 
@@ -131,13 +136,13 @@ fun DesktopApp(
                     }
                 ) {
                     viewModel.setSelectedEndpoint(it)
-                    openWidgets = openWidgets.plus(endpointDetailsWidgetId)
+                    openWidgets = openWidgets.minus(logDetailsWidgetId).plus(endpointDetailsWidgetId)
                 },
                 bottom = bottomPanelWidgets(
                     state = state,
                     onViewDetail = {
                         logDetail = it
-                        openWidgets = openWidgets.plus(logDetailsWidgetId)
+                        openWidgets = openWidgets.minus(endpointDetailsWidgetId).plus(logDetailsWidgetId)
                     },
                     strings = strings,
                 ),

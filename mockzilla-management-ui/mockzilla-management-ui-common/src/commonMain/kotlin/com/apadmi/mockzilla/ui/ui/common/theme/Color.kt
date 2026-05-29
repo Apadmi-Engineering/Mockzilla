@@ -7,79 +7,81 @@ package com.apadmi.mockzilla.ui.ui.common.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ── Dark theme ────────────────────────────────────────────────────────────────
-val darkBackground = Color(0xFF0B0D10)
-val darkSurface = Color(0xFF0B0D10)
-val darkSurfaceContainer = Color(0xFF111827)
-val darkSurfaceVariant = Color(0xFF181B1F)
-val darkSurfaceMuted = Color(0xFF1E293B)
-val darkSurfaceSubtle = Color(0xFF111827)
+// ── Surface tones ────────────────────────────────────────────────────────────
+internal val darkBackground = Color(0xFF0B0D11)  // T0
+internal val darkSurface = Color(0xFF111418)  // T1
+internal val darkContainer = Color(0xFF181B1F)  // T2
+internal val darkVariant = Color(0xFF21242A)  // T3
+internal val darkElevated = Color(0xFF2D3137)  // T4
 
-val darkOnSurface = Color(0xFFF6F9FC)
-val darkOnSurfaceVariant = Color(0xFFC0C4CB)
-val darkOnSurfaceMuted = Color(0xFF888C94)
-val darkOnSurfaceFaint = Color(0xFF5A5E65)
+internal val lightBackground = Color(0xFFE9EBEE)  // T0
+internal val lightSurface = Color(0xFFFDFDFF)  // T1
+internal val lightContainer = Color(0xFFF2F3F6)  // T2
+internal val lightVariant = Color(0xFFE2E5E9)  // T3
+internal val lightElevated = Color(0xFFCBCED3)  // T4
 
-val darkOutline = Color(0xFF2B2E33)
-val darkOutlineVariant = Color(0xFF373B41)
+// ── On-surface text ──────────────────────────────────────────────────────────
+internal val darkOnSurface = Color(0xFFF6F9FC)
+internal val darkOnSurfaceVariant = Color(0xFFC0C4CB)
+internal val darkOnSurfaceMuted = Color(0xFF888C94)
+internal val darkOnSurfaceFaint = Color(0xFF5A5E65)
 
-val darkPrimary = Color(0xFF68D5DA)
-val darkInversePrimary = Color(0xFF00858D)
-val darkOnPrimary = Color(0xFF07090D)
-val darkPrimaryContainer = Color(0xFF0E2C2D)
+internal val lightOnSurface = Color(0xFF0E1217)
+internal val lightOnSurfaceVariant = Color(0xFF2A2E34)
+internal val lightOnSurfaceMuted = Color(0xFF494D55)
+internal val lightOnSurfaceFaint = Color(0xFF646971)
 
-val darkSuccess = Color(0xFF4ADE80)
-val darkSuccessContainer = darkSuccess.copy(alpha = 0.14f)
-val darkWarning = Color(0xFFCCB125)
-val darkWarningContainer = darkWarning.copy(alpha = 0.14f)
-val darkError = Color(0xFFFD736D)
-val darkErrorContainer = Color(0xFF401312)
-val darkTertiary = Color(0xFF38BDF8)
-val darkTertiaryContainer = darkTertiary.copy(alpha = 0.14f)
-val darkJsonKey = Color(0xFFA78BFA)
+// ── Outline ──────────────────────────────────────────────────────────────────
+internal val darkOutline = Color(0xFF2B2E33)
+internal val darkOutlineVariant = Color(0xFF373B41)
+internal val lightOutline = Color(0xFFC1C4C9)
+internal val lightOutlineVariant = Color(0xFFA7ABB1)
 
-// ── Light theme ───────────────────────────────────────────────────────────────
-val lightBackground = Color(0xFFF1F5F9)
-val lightSurface = Color(0xFFFFFFFF)
-val lightSurfaceContainer = Color(0xFFFFFFFF)
-val lightSurfaceVariant = Color(0xFFF8FAFC)
-val lightSurfaceMuted = Color(0xFFCBD5E1)
-val lightSurfaceSubtle = Color(0xFFFFFFFF)
+// ── Primary (Mockzilla teal) ─────────────────────────────────────────────────
+internal val darkPrimary = Color(0xFF00ECF8)
+internal val darkOnPrimary = Color(0xFF07090D)
+internal val darkPrimaryContainer = Color(0xFF0E2C2D)
+internal val darkInversePrimary = Color(0xFF00858D)
 
-val lightOnSurface = Color(0xFF0E1217)
-val lightOnSurfaceVariant = Color(0xFF2A2E34)
-val lightOnSurfaceMuted = Color(0xFF494D55)
-val lightOnSurfaceFaint = Color(0xFF646971)
+internal val lightPrimary = Color(0xFF00858D)
+internal val lightOnPrimary = Color(0xFFFAFCFF)
+internal val lightPrimaryContainer = Color(0xFFC0E7E8)
+internal val lightInversePrimary = Color(0xFF68D5DA)
 
-val lightOutline = Color(0xFFC1C4C9)
-val lightOutlineVariant = Color(0xFFA7ABB1)
+// ── State colours ────────────────────────────────────────────────────────────
+internal val darkSuccess = Color(0xFF61DA92)
+internal val darkSuccessContainer = Color(0xFF092917)
+internal val darkWarning = Color(0xFFF3B94C)
+internal val darkWarningContainer = Color(0xFF312103)
+internal val darkError = Color(0xFFFD736D)
+internal val darkErrorContainer = Color(0xFF401312)
+internal val darkInfo = Color(0xFF59C5F5)
+internal val darkInfoContainer = Color(0xFF002635)
 
-val lightPrimary = Color(0xFF00858D)
-val lightInversePrimary = Color(0xFF68D5DA)
-val lightOnPrimary = Color(0xFFFAFCFF)
-val lightPrimaryContainer = Color(0xFFC0E7E8)
+internal val lightSuccess = Color(0xFF007C36)
+internal val lightSuccessContainer = Color(0xFFC0F3D0)
+internal val lightWarning = Color(0xFFB16600)
+internal val lightWarningContainer = Color(0xFFFFE1B6)
+internal val lightError = Color(0xFFC9222B)
+internal val lightErrorContainer = Color(0xFFFFD6D1)
+internal val lightInfo = Color(0xFF0075A9)
+internal val lightInfoContainer = Color(0xFFC4ECFF)
 
-val lightSuccess = Color(0xFF16A34A)
-val lightSuccessContainer = lightSuccess.copy(alpha = 0.14f)
-val lightWarning = Color(0xFFCA8A04)
-val lightWarningContainer = lightWarning.copy(alpha = 0.14f)
-val lightError = Color(0xFFC9222B)
-val lightErrorContainer = Color(0xFFFFD6D1)
-val lightTertiary = Color(0xFF0284C7)
-val lightTertiaryContainer = lightTertiary.copy(alpha = 0.14f)
-val lightJsonKey = Color(0xFF7C3AED)
+// ── HTTP methods ─────────────────────────────────────────────────────────────
+internal val darkMethodGet = Color(0xFF00DFE8)
+internal val darkMethodPost = Color(0xFF61DA92)
+internal val darkMethodPut = Color(0xFFF3B94C)
+internal val darkMethodPatch = Color(0xFFCEA4FF)
+internal val darkMethodDelete = Color(0xFFFD736D)
+internal val darkMethodOther = Color(0xFF888C94)
 
-// ── HTTP method colours (shared; themed via ColorScheme extensions) ──────────
-val darkMethodGet = Color(0xFF5ECDE8)
-val darkMethodPost = Color(0xFF62D496)
-val darkMethodPut = Color(0xFFD4C24C)
-val darkMethodPatch = Color(0xFFD46ED4)
-val darkMethodDelete = Color(0xFFD96050)
-val darkMethodOther = Color(0xFF9898AC)
+internal val lightMethodGet = Color(0xFF008892)
+internal val lightMethodPost = Color(0xFF007C36)
+internal val lightMethodPut = Color(0xFFB76C00)
+internal val lightMethodPatch = Color(0xFF794DB6)
+internal val lightMethodDelete = Color(0xFFC9222B)
+internal val lightMethodOther = Color(0xFF494D55)
 
-val lightMethodGet = Color(0xFF1A7A8A)
-val lightMethodPost = Color(0xFF1E8248)
-val lightMethodPut = Color(0xFF7A6A00)
-val lightMethodPatch = Color(0xFF8A208A)
-val lightMethodDelete = Color(0xFF9E2A1A)
-val lightMethodOther = Color(0xFF5A5A70)
+// ── JSON syntax ──────────────────────────────────────────────────────────────
+internal val darkJsonKey = Color(0xFFCEA4FF)
+internal val lightJsonKey = Color(0xFF794DB6)
