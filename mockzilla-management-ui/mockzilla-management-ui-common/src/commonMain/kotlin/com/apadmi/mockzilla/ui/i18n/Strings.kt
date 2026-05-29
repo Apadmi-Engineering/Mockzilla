@@ -467,6 +467,12 @@ data class Strings(
             val addHeaderValuePlaceholder: String,
             val unset: String,
             val save: String,
+            val cancel: String,
+            val endpointSubtitle: (endpointName: String) -> String,
+            val statusCodeRowLabel: String,
+            val bodyTypeLabel: String,
+            val responseSectionLabel: String,
+            val bodyLabel: String,
         )
 
         /**

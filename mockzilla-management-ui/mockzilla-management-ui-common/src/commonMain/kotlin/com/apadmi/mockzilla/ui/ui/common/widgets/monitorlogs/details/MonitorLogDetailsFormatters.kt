@@ -123,7 +123,8 @@ internal fun formatTimestamp(timestamp: Long): String =
 internal fun buildHighlightedAnnotatedString(
     text: String,
     colors: JsonHighlightColors,
-    isMinified: Boolean = false
+    isMinified: Boolean = false,
+    reformat: Boolean = true,
 ): AnnotatedString {
     val trimmed = text.trimStart()
     if (trimmed.startsWith('<')) {
@@ -134,7 +135,11 @@ internal fun buildHighlightedAnnotatedString(
         return AnnotatedString(text)
     }
 
-    val formatted = if (isMinified) text.minifyJson() else text.prettyPrintJson()
+    val formatted = when {
+        isMinified -> text.minifyJson()
+        reformat -> text.prettyPrintJson()
+        else -> text // highlight in-place without reformatting (suitable for editable fields)
+    }
     return buildAnnotatedString {
         var charIdx = 0
         while (charIdx < formatted.length) {

@@ -231,7 +231,13 @@ val EnStrings = Strings(
             save = "Save",
             addHeaderKeyPlaceholder = "Header name",
             addHeaderValuePlaceholder = "Header value",
-            unset = "Unset"
+            unset = "Unset",
+            cancel = "Cancel",
+            endpointSubtitle = { name -> "for $name" },
+            statusCodeRowLabel = "Status code",
+            bodyTypeLabel = "Body type",
+            responseSectionLabel = "Response",
+            bodyLabel = "Body",
         )
     )
 )
