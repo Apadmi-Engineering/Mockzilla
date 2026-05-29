@@ -139,21 +139,6 @@ private fun TabItem(
             .selectable(selected = selected, onClick = onSelect),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (selected) {
-            Box(
-                Modifier
-                    .matchParentSize()
-                    .drawBehind {
-                        val strokeWidth = 2.dp.toPx()
-                        drawLine(
-                            color = colorScheme.primary,
-                            start = Offset(0f, size.height - strokeWidth / 2),
-                            end = Offset(size.width, size.height - strokeWidth / 2),
-                            strokeWidth = strokeWidth
-                        )
-                    }
-            )
-        }
         Row(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 12.dp),
