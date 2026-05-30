@@ -49,8 +49,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.State
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
@@ -68,7 +70,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.inputBackground
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val compactLayoutBreakpointDp = 1100
 private const val compactMaxWidthDp = 720

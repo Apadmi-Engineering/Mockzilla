@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.vanniktechPublish)
     alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.dokka) apply true
 }
 
 val artifactName = "mockzilla-common"
@@ -95,11 +96,6 @@ android {
         sourceCompatibility = JavaConfig.version
         targetCompatibility = JavaConfig.version
     }
-}
-
-private val javadocJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("javadoc")
-    from(tasks.dokkaHtml)
 }
 
 buildkonfig {

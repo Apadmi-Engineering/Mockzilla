@@ -71,7 +71,7 @@ MockzillaManagement.AppIconService {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/meta" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/meta" }
     }
 
     override suspend fun fetchAllEndpointConfigs(
@@ -79,7 +79,7 @@ MockzillaManagement.AppIconService {
     ) = runner<MockDataResponseDto> {
         get(connection, "/api/mock-data")
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
     }.map { it.entries }
 
     override suspend fun fetchDashboardOptionsConfig(
@@ -92,7 +92,7 @@ MockzillaManagement.AppIconService {
             }
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data/{key}/dashboard-config" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data/{key}/dashboard-config" }
     }
 
     override suspend fun updateMockDataEntry(
@@ -109,7 +109,7 @@ MockzillaManagement.AppIconService {
             setBody(SerializableEndpointConfigPatchRequestDto(entries))
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/monitor-logs" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
     }
 
     override suspend fun fetchMonitorLogsAndClearBuffer(
@@ -120,7 +120,7 @@ MockzillaManagement.AppIconService {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/monitor-logs" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
     }
 
     override suspend fun clearAllCaches(
@@ -128,7 +128,7 @@ MockzillaManagement.AppIconService {
     ) = runner<Unit> {
         delete(connection, "/api/mock-data/all")
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
     }
 
     override suspend fun clearCaches(
@@ -140,7 +140,7 @@ MockzillaManagement.AppIconService {
             setBody(ClearCachesRequestDto(keys))
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
     }
 
     override suspend fun fetchAppIcon(
@@ -154,7 +154,7 @@ MockzillaManagement.AppIconService {
                 else -> throw Exception("Failed fetching app icon (${response.status})")
             }
         }.onFailure {
-            Logger.v(tag = "Management", it) { "Request Failed: /api/app-icon" }
+            Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/app-icon" }
         }
     }
 

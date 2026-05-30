@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.vanniktechPublish)
+    alias(libs.plugins.dokka) apply true
 }
 
 repositories {
@@ -105,11 +106,6 @@ val copyServiceWorker = tasks.register<Copy>("copyServiceWorker") {
 }
 
 tasks.getByPath(":mockzilla-management:jsTestProcessResources").dependsOn(copyServiceWorker)
-
-private val javadocJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("javadoc")
-    from(tasks.dokkaHtml)
-}
 
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
