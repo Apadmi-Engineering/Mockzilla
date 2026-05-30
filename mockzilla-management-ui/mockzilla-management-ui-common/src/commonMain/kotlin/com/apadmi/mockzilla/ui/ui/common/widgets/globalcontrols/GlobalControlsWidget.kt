@@ -51,7 +51,8 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.State
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
+
 import org.koin.core.parameter.parametersOf
 
 @Composable

@@ -20,7 +20,8 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
+
 
 @Suppress("MAGIC_NUMBER")
 private val cardShape = RoundedCornerShape(10.dp)
