@@ -32,8 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 
@@ -83,8 +83,8 @@ class MockzillaManagementSdkActivity : ComponentActivity() {
 
 @Composable
 private fun BottomSheetWrapper(onDismiss: () -> Unit) {
-    val screenHeightDp = LocalConfiguration.current.screenHeightDp.dp
-    val screenHeightPx = with(LocalDensity.current) { screenHeightDp.toPx() }
+    val screenHeightPx = LocalWindowInfo.current.containerSize.height.toFloat()
+    val screenHeightDp = with(LocalDensity.current) { screenHeightPx.toDp() }
     val sheetHeightPx = screenHeightPx * sheetHeightFraction
 
     val offset = remember { Animatable(sheetHeightPx) }
