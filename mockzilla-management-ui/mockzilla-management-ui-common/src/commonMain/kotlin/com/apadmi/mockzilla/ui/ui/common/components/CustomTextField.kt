@@ -93,7 +93,10 @@ fun CustomTextField(
             OutlinedTextFieldDefaults.DecorationBox(
                 value = value,
                 visualTransformation = visualTransformation,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                contentPadding = PaddingValues(
+                    horizontal = 8.dp,
+                    vertical = if (leadingIcon == null) 0.dp else 8.dp
+                ),
                 innerTextField = innerTextField,
                 placeholder = placeholderText?.let {
                     {
