@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
-
 @Suppress("MAGIC_NUMBER")
 @Composable
 fun MzkToggle(

@@ -21,7 +21,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
-
 enum class ChipTone {
     Accent, Err, Info, Neutral, Ok, Teal, Warn
 }
