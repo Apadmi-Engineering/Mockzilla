@@ -134,9 +134,13 @@ private fun TabItem(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Column(
-        modifier = modifier
-            .background(if (selected) colorScheme.surfaceContainerHighest.copy(alpha = 0.5f) else Color.Transparent)
-            .selectable(selected = selected, onClick = onSelect),
+        modifier = modifier.background(
+            if (selected) {
+                colorScheme.surfaceContainerHighest.copy(alpha = 0.5f)
+            } else {
+                Color.Transparent
+            }
+        ).selectable(selected = selected, onClick = onSelect),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
