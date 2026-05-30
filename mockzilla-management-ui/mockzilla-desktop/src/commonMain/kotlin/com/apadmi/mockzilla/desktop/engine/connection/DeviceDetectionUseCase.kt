@@ -6,9 +6,10 @@ import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
 import com.apadmi.mockzilla.ui.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.ui.engine.connection.IpAddress
+import com.apadmi.mockzilla.ui.utils.prettyName
+
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -82,7 +83,7 @@ class DeviceDetectionUseCaseImpl(
             else -> null
         } ?: DetectedDevice(
             connectionId = info.connectionName,
-            prettyName = metaData?.let { "${it.appName} (${it.deviceModel})" } ?: info.connectionName,
+            prettyName = metaData?.prettyName() ?: info.connectionName,
             metaData = metaData,
             hostAddress = info.hostAddress,
             hostAddresses = info.hostAddresses.map { IpAddress(it) },

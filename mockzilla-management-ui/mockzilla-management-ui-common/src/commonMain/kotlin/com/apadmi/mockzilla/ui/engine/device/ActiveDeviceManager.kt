@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.ui.engine.device
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.ui.engine.Config
 import com.apadmi.mockzilla.ui.utils.Platform
+import com.apadmi.mockzilla.ui.utils.prettyName
 
 import io.github.z4kn4fein.semver.toVersion
 
@@ -89,7 +90,7 @@ class ActiveDeviceManagerImpl(
     override fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData) {
         allDevicesInternal[device] = StatefulDevice(
             device = device,
-            name = "${metadata.runTarget ?: metadata.appPackage}-${metadata.deviceModel}",
+            name = metadata.prettyName(),
             isConnected = true,
             connectedAppPackage = metadata.appPackage,
             isCompatibleMockzillaVersion = metadata.mockzillaVersion.toVersion() >= Config.minSupportedMockzillaVersion
