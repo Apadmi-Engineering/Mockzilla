@@ -2,6 +2,7 @@
 
 package com.apadmi.mockzilla.lib
 
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.service.validate
@@ -27,7 +28,8 @@ internal suspend fun startMockzilla(
     config: MockzillaConfig,
     metaData: MetaData,
     fileIo: FileIo,
-    zeroConfDiscoveryService: (Logger) -> ZeroConfDiscoveryService
+    platformConfig: PlatformConfig,
+    zeroConfDiscoveryService: (Logger) -> ZeroConfDiscoveryService,
 ): MockzillaRuntimeParams {
     val logger = Logger(
         StaticConfig(
@@ -35,7 +37,7 @@ internal suspend fun startMockzilla(
             listOf(platformLogWriter()) + config.additionalLogWriters.map { it.toKermitLogWriter() }
         ), "Mockzilla"
     )
-    return startMockzilla(config, prepareMockzilla(config, metaData, fileIo, logger, zeroConfDiscoveryService(logger)))
+    return startMockzilla(config, prepareMockzilla(config, metaData, fileIo, logger, zeroConfDiscoveryService(logger), platformConfig))
 }
 
 internal fun prepareMockzilla(
@@ -44,7 +46,8 @@ internal fun prepareMockzilla(
     fileIo: FileIo,
     logger: Logger,
     zeroConfDiscoveryService: ZeroConfDiscoveryService,
-) = DependencyInjector(config, metaData, fileIo, zeroConfDiscoveryService, logger).also {
+    platformConfig: PlatformConfig,
+) = DependencyInjector(config, metaData, fileIo, zeroConfDiscoveryService, logger, platformConfig).also {
     config.validate()
 }
 

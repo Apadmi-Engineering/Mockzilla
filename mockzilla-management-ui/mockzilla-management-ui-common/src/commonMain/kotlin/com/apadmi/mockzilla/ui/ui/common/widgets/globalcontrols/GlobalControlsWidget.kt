@@ -33,8 +33,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -51,7 +53,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.State
-import org.jetbrains.compose.ui.tooling.preview.Preview
+
 import org.koin.core.parameter.parametersOf
 
 @Composable

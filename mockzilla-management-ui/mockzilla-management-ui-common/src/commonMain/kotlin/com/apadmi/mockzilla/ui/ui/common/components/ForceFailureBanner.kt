@@ -4,39 +4,44 @@ package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.assets.CircleCheck
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.assets.Play
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
-import org.jetbrains.compose.ui.tooling.preview.Preview
+private const val bannerCornerRadius = 8
 
 enum class ForceFailureBannerState {
     FullFailure,
@@ -56,9 +61,9 @@ private data class BannerColors(
 
 @Composable
 private fun ColorScheme.bannerColors(state: ForceFailureBannerState) = when (state) {
-    ForceFailureBannerState.FullFailure -> BannerColors(error, errorContainer)
-    ForceFailureBannerState.PartialFailure -> BannerColors(warning.primary, warning.container)
-    ForceFailureBannerState.Normal -> BannerColors(success.primary, success.container)
+    ForceFailureBannerState.FullFailure -> BannerColors(error, surfaceContainerLow)
+    ForceFailureBannerState.PartialFailure -> BannerColors(warning.primary, surfaceContainerLow)
+    ForceFailureBannerState.Normal -> BannerColors(success.primary, surfaceContainerLow)
 }
 
 @Composable
@@ -76,36 +81,43 @@ internal fun ForceFailureBanner(
         ForceFailureBannerState.PartialFailure -> strings.widgets.globalControls.partialFailureBannerConfig
         ForceFailureBannerState.Normal -> strings.widgets.globalControls.normalBehaviourBannerConfig
     }
-    val bannerIcon = when (state) {
-        ForceFailureBannerState.FullFailure,
-        ForceFailureBannerState.PartialFailure -> Icons.LightningBolt
-        ForceFailureBannerState.Normal -> Icons.CircleCheck
-    }
 
-    Column(
+    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val shape = RoundedCornerShape(bannerCornerRadius.dp)
+
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = colors.soft, shape = RoundedCornerShape(10.dp))
-            .border(width = 1.dp, color = colors.accent, shape = RoundedCornerShape(10.dp))
-            .padding(top = 16.dp, bottom = 10.dp, start = 14.dp, end = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+            .height(IntrinsicSize.Min)
+            .clip(shape)
+            .background(color = if (isDark) colors.soft.copy(alpha = 0.5f) else colors.soft)
+            .border(
+                width = 1.dp,
+                color = colors.accent.copy(alpha = 0.5f),
+                shape = shape
+            ),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(4.dp)
+                .background(colors.accent)
+        )
+
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                modifier = Modifier.size(16.dp),
-                imageVector = bannerIcon,
-                contentDescription = null,
-                tint = colors.accent,
-            )
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     color = colors.accent,
                     text = titleAndSubtitle.title,
                     style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(
                     color = colorScheme.onSurfaceMuted,
@@ -113,32 +125,30 @@ internal fun ForceFailureBanner(
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
-        }
 
-        Spacer(Modifier.height(2.dp))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (state != ForceFailureBannerState.FullFailure) {
+                    BaseButton(
+                        label = strings.widgets.globalControls.failButtonLabel,
+                        leadingIcon = Icons.LightningBolt,
+                        variant = ButtonVariant.Danger,
+                        size = ButtonSize.Sm,
+                        onClick = onForceFailureClicked,
+                    )
+                }
 
-        Row(
-            modifier = Modifier.align(Alignment.End),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            if (state != ForceFailureBannerState.FullFailure) {
-                BaseButton(
-                    label = strings.widgets.globalControls.failButtonLabel,
-                    leadingIcon = Icons.LightningBolt,
-                    variant = ButtonVariant.Danger,
-                    size = ButtonSize.Sm,
-                    onClick = onForceFailureClicked,
-                )
-            }
-
-            if (state != ForceFailureBannerState.Normal) {
-                BaseButton(
-                    label = strings.widgets.globalControls.restoreButtonLabel,
-                    leadingIcon = Icons.Play,
-                    variant = ButtonVariant.Solid,
-                    size = ButtonSize.Sm,
-                    onClick = onRestoreApiClicked,
-                )
+                if (state != ForceFailureBannerState.Normal) {
+                    BaseButton(
+                        label = strings.widgets.globalControls.restoreButtonLabel,
+                        leadingIcon = Icons.Play,
+                        variant = ButtonVariant.Solid,
+                        size = ButtonSize.Sm,
+                        onClick = onRestoreApiClicked,
+                    )
+                }
             }
         }
     }

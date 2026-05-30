@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.ui.ui.common.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,17 +30,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
-import org.jetbrains.compose.ui.tooling.preview.Preview
+
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
+
+private const val buttonCornerRadiusDark = 4
+private const val buttonCornerRadiusLight = 6
 
 private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
 
@@ -48,13 +56,16 @@ private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
 
 private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
-@Suppress("MAGIC_NUMBER")
+@Suppress("MAGIC_NUMBER", "LONG_PARAMETER_LIST")
 @Composable
 internal fun ResponseLatencyCard(
     modifier: Modifier = Modifier,
     initialValue: Int?,
     onChange: (Int) -> Unit,
     onReset: () -> Unit,
+    showHeader: Boolean = true,
+    showBackground: Boolean = true,
+    showBorder: Boolean = true,
     strings: Strings = LocalStrings.current,
 ) {
     var value by remember(initialValue) {
@@ -70,56 +81,73 @@ internal fun ResponseLatencyCard(
     }
 
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val cardShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
+    val componentShape = if (isDark) RoundedCornerShape(4.dp) else RoundedCornerShape(6.dp)
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                color = colorScheme.surfaceVariant,
-                shape = RoundedCornerShape(8.dp)
+            .then(
+                if (showBackground) {
+                    Modifier.background(
+                        color = colorScheme.surfaceVariant,
+                        shape = cardShape
+                    )
+                } else {
+                    Modifier
+                }
             )
-            .border(
-                width = 1.dp,
-                color = colorScheme.outline,
-                shape = RoundedCornerShape(8.dp)
+            .then(
+                if (showBorder) {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = colorScheme.outline,
+                        shape = cardShape
+                    )
+                } else {
+                    Modifier
+                }
             )
-            .padding(16.dp),
+            .padding(if (showBackground || showBorder) 16.dp else 0.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = strings.widgets.latency.title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = colorScheme.onSurface
-                )
-            )
-
+        if (showHeader) {
             Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(4.dp))
-                    .clickable(onClick = onReset)
-                    .padding(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = null,
-                    modifier = Modifier.size(14.dp),
-                    tint = colorScheme.onSurfaceVariant
-                )
                 Text(
-                    text = strings.widgets.latency.clear,
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.Medium
+                    text = strings.widgets.latency.title,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = colorScheme.onSurface
                     )
                 )
+
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .clickable(onClick = onReset)
+                        .padding(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = strings.widgets.latency.clear,
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = colorScheme.onSurfaceVariant,
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
             }
         }
 
@@ -133,13 +161,13 @@ internal fun ResponseLatencyCard(
                     .weight(1f)
                     .height(44.dp)
                     .background(
-                        color = colorScheme.surface,
-                        shape = RoundedCornerShape(6.dp),
+                        color = colorScheme.surfaceContainer,
+                        shape = componentShape,
                     )
                     .border(
                         width = 1.dp,
                         color = colorScheme.outline,
-                        shape = RoundedCornerShape(6.dp),
+                        shape = componentShape,
                     )
                     .padding(horizontal = 12.dp),
                 contentAlignment = Alignment.CenterStart
@@ -216,6 +244,7 @@ internal fun ResponseLatencyCard(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             listOf(0, 300, 1000, 3000, 10000).forEach { ms ->
+                val isSelected = value == ms
                 val label = when {
                     ms < 1000 -> strings.widgets.latency.millisecondLabel(ms)
                     else -> strings.widgets.latency.secondLabel(ms / 1000)
@@ -223,12 +252,12 @@ internal fun ResponseLatencyCard(
 
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(colorScheme.surface)
+                        .clip(componentShape)
+                        .background(colorScheme.surfaceContainer)
                         .border(
                             width = 1.dp,
-                            color = colorScheme.outline,
-                            shape = RoundedCornerShape(4.dp)
+                            color = if (isSelected) colorScheme.primary else colorScheme.outline,
+                            shape = componentShape
                         )
                         .clickable {
                             updateValue(ms)
@@ -239,8 +268,8 @@ internal fun ResponseLatencyCard(
                     Text(
                         text = label,
                         style = MaterialTheme.typography.labelMedium.copy(
-                            color = colorScheme.onSurface,
-                            fontWeight = FontWeight.Medium,
+                            color = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                             fontSize = 12.sp
                         )
                     )
@@ -256,15 +285,22 @@ private fun SmallSquareButton(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = colorScheme.surface == darkSurface
+    val shape = if (isDark) {
+        RoundedCornerShape(buttonCornerRadiusDark.dp)
+    } else {
+        RoundedCornerShape(buttonCornerRadiusLight.dp)
+    }
+
     Box(
         modifier = Modifier
             .size(44.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(colorScheme.surface)
+            .clip(shape)
+            .background(colorScheme.surfaceContainer)
             .border(
                 width = 1.dp,
                 color = colorScheme.outline,
-                shape = RoundedCornerShape(6.dp)
+                shape = shape
             )
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,

@@ -63,6 +63,8 @@ class EndpointDetailsViewModel(
                                 fail = config.shouldFail,
                                 delayMillis = config.delayMs,
                                 isLoading = false,
+                                layoutMode = (currentState as? State.Endpoint)?.layoutMode
+                                    ?: State.Endpoint.LayoutMode.Compact,
                                 presets = State.Endpoint.Presets(
                                     appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
                                         // Remove all this once deprecated properties are removed
@@ -172,6 +174,10 @@ class EndpointDetailsViewModel(
         )
     }, { _, _ -> })
 
+    fun onLayoutModeChanged(layoutMode: State.Endpoint.LayoutMode) = onPropertyChanged({
+        copy(layoutMode = layoutMode)
+    }, { _, _ -> })
+
     private fun setStateLoading() {
         val current = state.value as? State.Endpoint ?: return
         state.value = current.copy(isLoading = true)
@@ -186,14 +192,20 @@ class EndpointDetailsViewModel(
          * @property delayMillis
          * @property presets
          * @property isLoading
+         * @property layoutMode
          */
         data class Endpoint(
             val config: SerializableEndpointConfig,
             val fail: Boolean?,
             val delayMillis: Int?,
             val isLoading: Boolean,
+            val layoutMode: LayoutMode,
             val presets: Presets,
         ) : State() {
+            enum class LayoutMode {
+                Comfy, Compact
+            }
+
             /**
              * @property appliedPreset
              * @property visiblePresets

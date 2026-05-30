@@ -18,10 +18,10 @@ concurrency:
 jobs:
   # Build job
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
       - uses: actions/setup-python@v6
@@ -32,6 +32,7 @@ jobs:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
       - run: pip install -r docs/requirements.txt
+      - run: gem install bundler
       - run: bundle install
       - run: bundle exec fastlane generate_docs
       - name: Upload artifact
@@ -43,10 +44,10 @@ jobs:
   # Deployment job
   deploy:
     environment: production-docs
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         name: generated_docs
       - name: Debug
         run: |

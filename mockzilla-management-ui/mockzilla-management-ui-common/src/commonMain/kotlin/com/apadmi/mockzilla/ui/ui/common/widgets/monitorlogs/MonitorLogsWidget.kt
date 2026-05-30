@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
@@ -60,7 +61,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import io.ktor.http.HttpStatusCode
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 import kotlinx.datetime.Instant
 

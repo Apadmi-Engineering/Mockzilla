@@ -1,14 +1,15 @@
 package com.apadmi.mockzilla.ui.ui.common.scaffold
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -17,24 +18,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.desktop.utils.rotateVertically
-
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Immutable
 data class VerticalTab(
     val title: String?,
+    val leadingIcon: ImageVector? = null,
+    val leadingContent: (@Composable () -> Unit)? = null,
 )
 
 @Immutable
@@ -56,11 +60,13 @@ fun VerticalTabList(
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = colorScheme.surface == darkSurface
     Column(
         modifier = modifier
+            .fillMaxHeight()
             .background(colorScheme.surface)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.Top,
     ) {
         tabs.forEachIndexed { index, tab ->
             val isSelected = selected.contains(index)
@@ -68,6 +74,8 @@ fun VerticalTabList(
                 title = tab.title,
                 selected = isSelected,
                 onSelect = { onSelect(index) },
+                leadingIcon = tab.leadingIcon,
+                leadingContent = tab.leadingContent,
                 modifier = Modifier.rotateVertically(clockwise),
             )
         }
@@ -84,8 +92,16 @@ fun HorizontalTabList(
     val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = modifier
-            .background(colorScheme.surface)
-            .border(width = 1.dp, color = colorScheme.outline)
+            .background(colorScheme.surfaceContainer)
+            .drawBehind {
+                val strokeWidth = 1.dp.toPx()
+                drawLine(
+                    color = colorScheme.outline,
+                    start = Offset(0f, size.height),
+                    end = Offset(size.width, size.height),
+                    strokeWidth = strokeWidth
+                )
+            }
             .horizontalScroll(rememberScrollState()),
     ) {
         tabs.forEachIndexed { index, tab ->
@@ -116,20 +132,19 @@ private fun TabItem(
     trailing: (@Composable () -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    Box(
-        modifier = modifier
-            .background(if (selected) colorScheme.surfaceVariant else Color.Transparent)
-            .then(
-                if (selected) Modifier.border(width = 1.dp, color = colorScheme.outlineVariant) else Modifier
-            )
-            .selectable(selected = selected, onClick = onSelect)
-            .heightIn(min = 36.dp),
-        contentAlignment = Alignment.Center,
+    Column(
+        modifier = modifier.background(
+            if (selected) {
+                colorScheme.surfaceContainerHighest.copy(alpha = 0.5f)
+            } else {
+                Color.Transparent
+            }
+        ).selectable(selected = selected, onClick = onSelect),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
             modifier = Modifier
-                .minimumInteractiveComponentSize()
-                .padding(horizontal = 10.dp, vertical = 6.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             leadingContent?.invoke()
@@ -139,10 +154,10 @@ private fun TabItem(
                     contentDescription = null,
                     tint = if (selected) colorScheme.primary else colorScheme.onSurfaceMuted,
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
             }
             leadingContent?.let {
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
             }
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -152,7 +167,9 @@ private fun TabItem(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.labelLarge,
-                        color = if (selected) colorScheme.onSurface else colorScheme.onSurfaceVariant,
+                        color = if (selected) colorScheme.primary else colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        softWrap = false,
                     )
                 }
                 subtitle?.let {
@@ -164,9 +181,19 @@ private fun TabItem(
                 }
             }
             trailing?.let {
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 it()
             }
+        }
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(colorScheme.primary)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(3.dp))
         }
     }
 }
