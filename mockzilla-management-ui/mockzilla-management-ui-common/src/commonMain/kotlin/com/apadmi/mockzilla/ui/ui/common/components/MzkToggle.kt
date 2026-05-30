@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
-import com.apadmi.mockzilla.ui.ui.common.theme.surfaceMuted
 
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -39,7 +38,7 @@ fun MzkToggle(
     val colorScheme = MaterialTheme.colorScheme
 
     val trackColor by animateColorAsState(
-        targetValue = if (checked) colorScheme.primary else colorScheme.surfaceMuted,
+        targetValue = if (checked) colorScheme.primary else colorScheme.surfaceContainer,
         animationSpec = tween(140),
     )
     val thumbColor by animateColorAsState(

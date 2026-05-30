@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -62,25 +64,8 @@ fun VerticalTabList(
     val isDark = colorScheme.surface == darkSurface
     Column(
         modifier = modifier
-            .background(if (isDark) colorScheme.surfaceContainerLow else colorScheme.surfaceContainer)
-            .drawBehind {
-                val strokeWidth = 1.dp.toPx()
-                if (clockwise) {
-                    drawLine(
-                        color = colorScheme.outline,
-                        start = Offset(0f, 0f),
-                        end = Offset(0f, size.height),
-                        strokeWidth = strokeWidth
-                    )
-                } else {
-                    drawLine(
-                        color = colorScheme.outline,
-                        start = Offset(size.width, 0f),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = strokeWidth
-                    )
-                }
-            }
+            .fillMaxHeight()
+            .background(colorScheme.surface)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
     ) {
@@ -148,31 +133,19 @@ private fun TabItem(
     trailing: (@Composable () -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    Box(
-        modifier = modifier
-            .background(Color.Transparent)
-            .selectable(selected = selected, onClick = onSelect)
-            .heightIn(min = 30.dp),
-        contentAlignment = Alignment.Center,
+    Column(
+        modifier = modifier.background(
+            if (selected) {
+                colorScheme.surfaceContainerHighest.copy(alpha = 0.5f)
+            } else {
+                Color.Transparent
+            }
+        ).selectable(selected = selected, onClick = onSelect),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (selected) {
-            Box(
-                Modifier
-                    .matchParentSize()
-                    .drawBehind {
-                        val strokeWidth = 2.dp.toPx()
-                        drawLine(
-                            color = colorScheme.primary,
-                            start = Offset(0f, size.height - strokeWidth / 2),
-                            end = Offset(size.width, size.height - strokeWidth / 2),
-                            strokeWidth = strokeWidth
-                        )
-                    }
-            )
-        }
         Row(
             modifier = Modifier
-                .padding(horizontal = 10.dp, vertical = 6.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             leadingContent?.invoke()
@@ -196,6 +169,8 @@ private fun TabItem(
                         text = title,
                         style = MaterialTheme.typography.labelLarge,
                         color = if (selected) colorScheme.primary else colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        softWrap = false,
                     )
                 }
                 subtitle?.let {
@@ -210,6 +185,16 @@ private fun TabItem(
                 Spacer(modifier = Modifier.width(8.dp))
                 it()
             }
+        }
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(colorScheme.primary)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(3.dp))
         }
     }
 }

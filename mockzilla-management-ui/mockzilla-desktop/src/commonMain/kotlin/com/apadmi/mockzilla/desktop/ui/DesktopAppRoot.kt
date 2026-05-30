@@ -84,10 +84,15 @@ fun DesktopApp(
         var logDetail by remember { mutableStateOf<LogEvent?>(null) }
 
         val onSelected: (String) -> Unit = { id ->
+            val isExclusive = id == endpointDetailsWidgetId || id == logDetailsWidgetId
             openWidgets = if (openWidgets.contains(id)) {
                 openWidgets.minus(id)
             } else {
-                openWidgets.plus(id)
+                (if (isExclusive) {
+                    openWidgets.minus(endpointDetailsWidgetId).minus(logDetailsWidgetId)
+                } else {
+                    openWidgets
+                }).plus(id)
             }
         }
 
