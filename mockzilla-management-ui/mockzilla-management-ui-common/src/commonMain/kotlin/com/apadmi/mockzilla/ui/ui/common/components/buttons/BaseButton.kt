@@ -119,7 +119,7 @@ fun BaseButton(
             )
             Spacer(Modifier.width(4.dp))
         }
-        Text(text = label)
+        Text(text = label, style = MaterialTheme.typography.titleSmall)
         if (contentAlignment == ButtonContentAlignment.Start) {
             Spacer(Modifier.weight(1f))
         }
