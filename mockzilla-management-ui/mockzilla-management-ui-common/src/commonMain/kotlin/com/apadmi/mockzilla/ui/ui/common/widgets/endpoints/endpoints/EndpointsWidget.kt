@@ -122,13 +122,15 @@ private fun EndpointsList(
     onFilterUpdate: (String) -> Unit,
     onRowDensityChanged: (RowDensity) -> Unit,
 ) = Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-    FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
-    EndpointsHeader(
-        displayedCount = state.endpoints.size,
-        totalCount = state.allEndpoints.size,
-        selectedRowDensity = state.rowDensity,
-        onRowDensityChanged = onRowDensityChanged,
-    )
+    Column(modifier = Modifier.padding(12.dp)) {
+        FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
+        EndpointsHeader(
+            displayedCount = state.endpoints.size,
+            totalCount = state.allEndpoints.size,
+            selectedRowDensity = state.rowDensity,
+            onRowDensityChanged = onRowDensityChanged,
+        )
+    }
     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
     state.endpoints.forEach { endpoint ->
         EndpointRow(
@@ -322,8 +324,6 @@ private fun EndpointsWidgetContent(
             modifier = Modifier
                 .horizontalScroll(scrollState)
                 .width(contentWidth)
-                .padding(horizontal = 12.dp, vertical = 15.dp)
-                .navigationBarsPadding()
         ) {
         when (state) {
             EndpointsViewModel.State.Loading -> CircularProgressIndicator()
