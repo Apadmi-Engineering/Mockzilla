@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -325,32 +324,32 @@ private fun EndpointsWidgetContent(
                 .horizontalScroll(scrollState)
                 .width(contentWidth)
         ) {
-        when (state) {
-            EndpointsViewModel.State.Loading -> CircularProgressIndicator()
-            is EndpointsViewModel.State.EndpointsList -> {
-                EndpointsList(
-                    state = state,
-                    selectedKey = selectedKey,
-                    onEndpointClicked = onEndpointClicked,
-                    onFilterUpdate = onFilterUpdate,
-                    onRowDensityChanged = onRowDensityChanged,
-                )
-                FloatingActionButton(
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .align(Alignment.BottomEnd)
-                        .zIndex(1f),
-                    onClick = onGlobalControlsClicked,
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Settings,
-                        contentDescription = strings.widgets.globalControls.title
+            when (state) {
+                EndpointsViewModel.State.Loading -> CircularProgressIndicator()
+                is EndpointsViewModel.State.EndpointsList -> {
+                    EndpointsList(
+                        state = state,
+                        selectedKey = selectedKey,
+                        onEndpointClicked = onEndpointClicked,
+                        onFilterUpdate = onFilterUpdate,
+                        onRowDensityChanged = onRowDensityChanged,
                     )
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .padding(end = 8.dp)
+                            .align(Alignment.BottomEnd)
+                            .zIndex(1f),
+                        onClick = onGlobalControlsClicked,
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = strings.widgets.globalControls.title
+                        )
+                    }
                 }
             }
-        }
         }
     }
 }

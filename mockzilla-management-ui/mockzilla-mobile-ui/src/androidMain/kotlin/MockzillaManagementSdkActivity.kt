@@ -16,15 +16,11 @@ import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +48,7 @@ import org.koin.dsl.module
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
-private const val sheetHeightFraction = 0.93f
+private const val sheetHeightFraction = 0.95f
 private const val scrimAlpha = 0.4f
 private const val dismissDragFraction = 0.25f
 private const val dismissVelocityThreshold = 1500f
