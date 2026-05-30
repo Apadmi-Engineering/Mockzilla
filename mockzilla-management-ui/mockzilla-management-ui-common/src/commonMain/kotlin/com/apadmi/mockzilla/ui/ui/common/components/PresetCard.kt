@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
@@ -59,7 +60,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetai
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 
 import io.ktor.http.HttpStatusCode
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val intervalDp = 6
 private const val strokeAlpha = 0.3f
