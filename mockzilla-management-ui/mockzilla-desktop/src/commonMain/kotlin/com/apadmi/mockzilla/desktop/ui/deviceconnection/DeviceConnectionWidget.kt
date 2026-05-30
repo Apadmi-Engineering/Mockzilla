@@ -49,8 +49,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.State
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
@@ -64,11 +66,10 @@ import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.inputBackground
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
-import com.apadmi.mockzilla.ui.ui.common.theme.surfaceSubtle
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val compactLayoutBreakpointDp = 1100
 private const val compactMaxWidthDp = 720
@@ -266,7 +267,7 @@ private fun ConnectionCard(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        color = colorScheme.surfaceSubtle,
+        color = colorScheme.surfaceContainerLow,
         border = BorderStroke(1.dp, colorScheme.outline),
     ) {
         Column(
@@ -330,8 +331,8 @@ private fun ConnectionCard(
                         focusedTextColor = colorScheme.onSurface,
                         unfocusedTextColor = colorScheme.onSurface,
 
-                        focusedContainerColor = colorScheme.surfaceVariant,
-                        unfocusedContainerColor = colorScheme.surfaceVariant,
+                        focusedContainerColor = colorScheme.inputBackground,
+                        unfocusedContainerColor = colorScheme.inputBackground,
 
                         focusedBorderColor = colorScheme.outlineVariant,
                         unfocusedBorderColor = colorScheme.outline,

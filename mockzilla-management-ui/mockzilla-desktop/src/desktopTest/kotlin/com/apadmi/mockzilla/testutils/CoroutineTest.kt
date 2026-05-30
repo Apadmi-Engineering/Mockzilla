@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.testutils
 import io.mockk.MockKAnnotations
 import org.junit.Before
 
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestDispatcher
@@ -24,7 +25,7 @@ open class CoroutineTest {
         testDispatcher = StandardTestDispatcher(testScope.testScheduler)
         Dispatchers.setMain(testDispatcher)
         // Ideally should use testScope.runBlockingTest() but it does not work.
-        testScope.runTest(dispatchTimeoutMs = 1234, testBody = testBody)
+        testScope.runTest(timeout = 10.seconds, testBody = testBody)
         Dispatchers.resetMain()
     }
 }

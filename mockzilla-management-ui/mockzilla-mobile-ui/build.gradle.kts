@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.vanniktechPublish)
+    alias(libs.plugins.dokka) apply true
     kotlin("native.cocoapods") apply true
 }
 
@@ -72,12 +73,12 @@ kotlin {
         }
         commonMain.dependencies {
             /* Compose */
-            implementation(compose.runtime)
-            implementation(compose.material3)
-            implementation(compose.components.resources)
-            implementation(compose.materialIconsExtended)
+            implementation(libs.runtime)
+            implementation(libs.material3)
+            implementation(libs.components.resources)
+            implementation(libs.ui.tooling.preview)
+            implementation(libs.material.icons.extended)
             implementation(libs.navigation.compose)
-            implementation(compose.components.uiToolingPreview)
 
 
             /* Localisable Strings */

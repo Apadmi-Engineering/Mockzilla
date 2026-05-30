@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib
 
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryServiceImpl
 import com.apadmi.mockzilla.lib.internal.discovery.validateInfoPlist
 import com.apadmi.mockzilla.lib.internal.persistance.KeychainSettings
@@ -30,7 +31,8 @@ fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlockin
                 logger,
                 KeychainSettings("mockzilla_keychain_settings")
             )
-        }
+        },
+        platformConfig = PlatformConfig(),
     )
 }
 

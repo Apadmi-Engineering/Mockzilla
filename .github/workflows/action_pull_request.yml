@@ -35,7 +35,7 @@ jobs:
       sample-kmm: ${{ steps.filter.outputs.sample-kmm }}
       swagger: ${{ steps.filter.outputs.swagger }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: dorny/paths-filter@v3
@@ -46,6 +46,7 @@ jobs:
               - fastlane/Appfile
               - Gemfile
               - Gemfile.lock
+              - .github/workflows/**
             common-kotlin: &common-kotlin
               - *common-fastlane
               - build-logic/**
@@ -85,19 +86,25 @@ jobs:
               - *mockzilla-server
               - samples/demo-kmm/**
             swagger:
+              - *common-fastlane
               - webapi.yml
 
   docs:
     needs: filter
     if: needs.filter.outputs.docs == 'true'
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
           python-version: 3.x
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.4
       - name: Setup fastlane
-        run: bundle install
+        run: |
+          gem install bundler
+          bundle install
       - name: Generate Docs
         run: |
           pip install --upgrade setuptools
@@ -107,12 +114,12 @@ jobs:
   flutter:
     needs: filter
     if: needs.filter.outputs.flutter == 'true'
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4.0'
-      - uses: actions/checkout@v5
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.41.9'
@@ -127,12 +134,12 @@ jobs:
   mockzilla-server:
     needs: filter
     if: needs.filter.outputs.mockzilla-server == 'true'
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4.0'
-      - uses: actions/checkout@v5
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
       - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
@@ -149,12 +156,12 @@ jobs:
   mockzilla-management:
     needs: filter
     if: needs.filter.outputs.mockzilla-management == 'true'
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4.0'
-      - uses: actions/checkout@v5
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
       - name: Setup fastlane
         run: bundle install
       - name: Build Management Library
@@ -163,12 +170,12 @@ jobs:
   mockzilla-management-ui:
     needs: filter
     if: needs.filter.outputs.mockzilla-management-ui == 'true'
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4.0'
-      - uses: actions/checkout@v5
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
       - name: Setup fastlane
         run: bundle install
       - name: Build Management UI
@@ -177,12 +184,12 @@ jobs:
   swift-mockzilla:
     needs: filter
     if: needs.filter.outputs.swift-mockzilla == 'true'
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4.0'
-      - uses: actions/checkout@v5
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
       - name: Setup fastlane
         run: bundle install
       - name: Build SwiftMockzilla
@@ -191,12 +198,12 @@ jobs:
   sample-android:
     needs: filter
     if: needs.filter.outputs.sample-android == 'true'
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4.0'
-      - uses: actions/checkout@v5
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
       - name: Setup fastlane
         run: bundle install
       - name: Build Sample Android
@@ -205,12 +212,12 @@ jobs:
   sample-ios:
     needs: filter
     if: needs.filter.outputs.sample-ios == 'true'
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4.0'
-      - uses: actions/checkout@v5
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
       - name: Setup fastlane
         run: bundle install
       - name: Build Sample iOS
@@ -219,12 +226,12 @@ jobs:
   sample-kmm-ios:
     needs: filter
     if: needs.filter.outputs.sample-kmm == 'true'
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4.0'
-      - uses: actions/checkout@v5
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
       - name: Setup fastlane
         run: bundle install
       - name: Build Sample KMM
@@ -233,12 +240,12 @@ jobs:
   sample-kmm-android:
     needs: filter
     if: needs.filter.outputs.sample-kmm == 'true'
-    runs-on: macos-14
+    runs-on: macos-26
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4.0'
-      - uses: actions/checkout@v5
+          xcode-version: '26.2.0'
+      - uses: actions/checkout@v6
       - name: Setup fastlane
         run: bundle install
       - name: Build Sample KMM
@@ -248,9 +255,9 @@ jobs:
   swagger:
     needs: filter
     if: needs.filter.outputs.swagger == 'true'
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Validate Swagger
         uses: mbowman100/swagger-validator-action@2.0
         with:

@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
+import com.apadmi.mockzilla.lib.internal.utils.multiPlatformIo
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
@@ -19,13 +20,19 @@ import com.apadmi.mockzilla.management.internal.ktor.get
 import com.apadmi.mockzilla.management.internal.ktor.patch
 
 import co.touchlab.kermit.Logger
+import io.ktor.client.call.body
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.header
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
+import io.ktor.http.isSuccess
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 interface MockzillaManagementRepository {
     suspend fun fetchMetaData(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MetaData>
@@ -54,7 +61,8 @@ internal class MockzillaManagementRepositoryImpl(
 MockzillaManagement.LogsService,
 MockzillaManagement.MetaDataService,
 MockzillaManagement.EndpointsService,
-MockzillaManagement.CacheClearingService {
+MockzillaManagement.CacheClearingService,
+MockzillaManagement.AppIconService {
     override suspend fun fetchMetaData(
         connection: MockzillaConnectionConfig,
         hideFromLogs: Boolean
@@ -63,7 +71,7 @@ MockzillaManagement.CacheClearingService {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/meta" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/meta" }
     }
 
     override suspend fun fetchAllEndpointConfigs(
@@ -71,7 +79,7 @@ MockzillaManagement.CacheClearingService {
     ) = runner<MockDataResponseDto> {
         get(connection, "/api/mock-data")
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
     }.map { it.entries }
 
     override suspend fun fetchDashboardOptionsConfig(
@@ -84,7 +92,7 @@ MockzillaManagement.CacheClearingService {
             }
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data/{key}/dashboard-config" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data/{key}/dashboard-config" }
     }
 
     override suspend fun updateMockDataEntry(
@@ -101,7 +109,7 @@ MockzillaManagement.CacheClearingService {
             setBody(SerializableEndpointConfigPatchRequestDto(entries))
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/monitor-logs" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
     }
 
     override suspend fun fetchMonitorLogsAndClearBuffer(
@@ -112,7 +120,7 @@ MockzillaManagement.CacheClearingService {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/monitor-logs" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
     }
 
     override suspend fun clearAllCaches(
@@ -120,7 +128,7 @@ MockzillaManagement.CacheClearingService {
     ) = runner<Unit> {
         delete(connection, "/api/mock-data/all")
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
     }
 
     override suspend fun clearCaches(
@@ -132,7 +140,22 @@ MockzillaManagement.CacheClearingService {
             setBody(ClearCachesRequestDto(keys))
         }
     }.onFailure {
-        Logger.v(tag = "Management", it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
+    }
+
+    override suspend fun fetchAppIcon(
+        connection: MockzillaConnectionConfig
+    ): Result<ByteArray?> = withContext(Dispatchers.multiPlatformIo) {
+        runCatching {
+            val response = runner.client.get(connection, "/api/app-icon")
+            when {
+                response.status.isSuccess() -> response.body<ByteArray>()
+                response.status == HttpStatusCode.NotFound -> null
+                else -> throw Exception("Failed fetching app icon (${response.status})")
+            }
+        }.onFailure {
+            Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/app-icon" }
+        }
     }
 
     companion object {

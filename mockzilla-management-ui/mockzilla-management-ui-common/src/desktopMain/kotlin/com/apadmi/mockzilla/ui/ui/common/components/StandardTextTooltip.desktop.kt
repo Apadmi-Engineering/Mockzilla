@@ -12,6 +12,8 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -28,7 +30,7 @@ actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) {
                 modifier = Modifier.padding(2.dp)
                     .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                     .padding(vertical = 2.dp, horizontal = 6.dp),
-                text = text
+                text = buildHighlightedAnnotatedString(text, MaterialTheme.colorScheme.jsonHighlight)
             )
         },
         state = rememberBasicTooltipState(),

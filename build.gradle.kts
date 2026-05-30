@@ -32,12 +32,19 @@ allprojects {
     }
 }
 
-subprojects {
-    apply(plugin = "org.jetbrains.dokka")
+dependencies {
+    dokka(project(":mockzilla:"))
+    dokka(project(":mockzilla-common:"))
+    dokka(project(":mockzilla-management:"))
+    dokka(project(":mockzilla-management-ui:mockzilla-desktop"))
+    dokka(project(":mockzilla-management-ui:mockzilla-management-ui-common"))
+    dokka(project(":mockzilla-management-ui:mockzilla-mobile-ui"))
 }
 
-tasks.dokkaHtmlMultiModule {
-    outputDirectory.set(File(System.getProperty("docsOutputDirectory", "temp")))
+dokka {
+    dokkaPublications.html {
+        outputDirectory.set(File(System.getProperty("docsOutputDirectory", "temp")))
+    }
 }
 
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
@@ -72,7 +79,22 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
 project.afterEvaluate {
     tasks.getByPath(":mockzilla-common:preBuild").apply {
-        dependsOn(":spotlessApply")
+        dependsOn(
+            tasks.register<Copy>("installGitHooks") {
+                group = "git hooks"
+                description = "Installs the local git hooks from the scripts directory."
+                from(
+                    File(rootProject.rootDir, "scripts/hooks/pre-commit")
+                )
+                into { File(rootProject.rootDir, ".git/hooks") }
+                filePermissions {
+                    user { execute = true }
+                }
+
+                // Always copy the file over because updates won't be copied over otherwise.
+                outputs.upToDateWhen { false }
+            }
+        )
     }
 }
 

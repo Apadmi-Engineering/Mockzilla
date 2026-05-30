@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.conveyor)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.dokka) apply true
 }
 
 val artifactName = "mockzilla-management-ui"
@@ -33,11 +34,12 @@ kotlin {
         }
         commonMain.dependencies {
             /* Compose */
-            implementation(compose.runtime)
-            implementation(compose.material3)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.materialIconsExtended)
+            implementation(libs.runtime)
+            implementation(libs.material3)
+            implementation(libs.components.resources)
+            implementation(libs.ui.tooling.preview)
+            implementation(libs.material.icons.extended)
+            implementation(libs.navigation.compose)
             implementation(libs.navigation.compose)
 
             /* Localisable Strings */
@@ -79,8 +81,7 @@ kotlin {
             implementation(libs.koin.compose)
 
             implementation(libs.androidx.compose.activity)
-            implementation(compose.preview)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.ui.tooling.preview)
 
             /* Mockzilla */
             // Android target is only used for development since it's a better dev experience than desktop
@@ -165,13 +166,13 @@ compose.desktop {
 
 dependencies {
     // Use the configurations created by the Conveyor plugin to tell Gradle/Conveyor where to find the artifacts for each platform.
-    linuxAmd64(compose.desktop.linux_x64)
-    macAmd64(compose.desktop.macos_x64)
-    macAarch64(compose.desktop.macos_arm64)
-    windowsAmd64(compose.desktop.windows_x64)
+    linuxAmd64(libs.desktop.jvm.linux.x64)
+    macAmd64(libs.desktop.jvm.macos.x64)
+    macAarch64(libs.desktop.jvm.macos.arm64)
+    windowsAmd64(libs.desktop.jvm.windows.x64)
 
     /* Compose previews */
-    debugImplementation(compose.uiTooling)
+    debugImplementation(libs.ui.tooling.preview)
 }
 
 configurations.all {

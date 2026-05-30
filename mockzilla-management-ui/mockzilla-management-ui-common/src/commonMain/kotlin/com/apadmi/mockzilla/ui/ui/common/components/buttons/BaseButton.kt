@@ -28,12 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 enum class ButtonVariant {
     Danger, Ghost, Outline, Soft, Solid
@@ -54,6 +53,7 @@ fun BaseButton(
     variant: ButtonVariant = ButtonVariant.Solid,
     size: ButtonSize = ButtonSize.Md,
     contentAlignment: ButtonContentAlignment = ButtonContentAlignment.Center,
+    contentColor: Color? = null,
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
@@ -70,7 +70,7 @@ fun BaseButton(
     }
     val bgColor by animateColorAsState(targetValue = bgTarget, animationSpec = tween(140))
 
-    val contentColor = when (variant) {
+    val finalContentColor = contentColor ?: when (variant) {
         ButtonVariant.Ghost -> colorScheme.onSurfaceVariant
         ButtonVariant.Outline -> colorScheme.onSurfaceVariant
         ButtonVariant.Solid -> colorScheme.onPrimary
@@ -102,9 +102,9 @@ fun BaseButton(
         shape = RoundedCornerShape(6.dp),
         colors = ButtonColors(
             containerColor = bgColor,
-            contentColor = contentColor,
+            contentColor = finalContentColor,
             disabledContainerColor = bgColor,
-            disabledContentColor = contentColor,
+            disabledContentColor = finalContentColor,
         ),
         border = BorderStroke(1.dp, borderColor),
         contentPadding = contentPadding,
