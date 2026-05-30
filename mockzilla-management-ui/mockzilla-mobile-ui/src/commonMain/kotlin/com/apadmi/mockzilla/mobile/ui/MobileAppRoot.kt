@@ -15,10 +15,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -54,7 +52,6 @@ import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.widgets.debug.DebugWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetWidget
@@ -82,7 +79,6 @@ internal fun MobileAppRoot(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(colorScheme.surface)
-                .statusBarsPadding()
                 .padding(horizontal = 10.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -243,21 +239,6 @@ private fun ConnectedState(
                     DebugWidget()
                 }
             }
-        }
-
-        // Gesture indicator bar
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(24.dp)
-                .background(colorScheme.background),
-            contentAlignment = Alignment.Center,
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(width = 104.dp, height = 2.dp)
-                    .background(colorScheme.onSurfaceFaint, shape = RoundedCornerShape(1.dp)),
-            )
         }
     }
 }

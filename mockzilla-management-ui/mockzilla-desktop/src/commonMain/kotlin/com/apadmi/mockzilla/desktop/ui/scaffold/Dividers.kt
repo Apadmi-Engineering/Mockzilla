@@ -15,6 +15,8 @@ import com.apadmi.mockzilla.desktop.ui.utils.horizontalResizeCursor
 import com.apadmi.mockzilla.desktop.ui.utils.verticalResizeCursor
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
 @Composable
 internal fun HorizontalDraggableDivider(
     onDrag: (Float) -> Unit,
