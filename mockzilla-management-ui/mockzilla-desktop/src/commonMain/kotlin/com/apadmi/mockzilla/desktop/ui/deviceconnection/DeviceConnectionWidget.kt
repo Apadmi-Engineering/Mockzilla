@@ -145,7 +145,9 @@ fun DeviceConnectionContent(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Top,
             ) {
-                ProductIntro(strings = strings)
+                Box(modifier = Modifier.sizeIn(maxWidth = 300.dp)) {
+                    ProductIntro(strings = strings)
+                }
 
                 Spacer(modifier = Modifier.width(100.dp))
 

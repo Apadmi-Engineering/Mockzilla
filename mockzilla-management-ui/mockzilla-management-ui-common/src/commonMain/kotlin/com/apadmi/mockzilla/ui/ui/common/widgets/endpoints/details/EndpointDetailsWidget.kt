@@ -212,7 +212,6 @@ private fun ColumnScope.PopulatedState(
                 leadingIcon = Icons.Default.Add,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Sm,
-                contentColor = if (isDark) colorScheme.onSurface else null,
                 onClick = onCreatePreset
             )
         }
