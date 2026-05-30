@@ -4,7 +4,8 @@ import com.apadmi.mockzilla.lib.models.MetaData
 import kotlin.jvm.JvmInline
 
 /**
- * @property connectionName
+ * @property connectionId
+ * @property prettyName
  * @property metaData
  * @property hostAddress
  * @property hostAddresses
@@ -13,7 +14,8 @@ import kotlin.jvm.JvmInline
  * @property state
  */
 data class DetectedDevice(
-    val connectionName: String,
+    val connectionId: String,
+    val prettyName: String,
     val metaData: MetaData?,
     val hostAddress: String,
     val hostAddresses: List<IpAddress>,

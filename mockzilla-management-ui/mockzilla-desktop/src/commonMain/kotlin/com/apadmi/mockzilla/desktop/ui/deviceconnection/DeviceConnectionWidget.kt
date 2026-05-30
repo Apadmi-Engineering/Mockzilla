@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -115,7 +115,8 @@ fun DeviceConnectionContent(
     contentAlignment = Alignment.Center,
 ) {
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         val isCompact = maxWidth < compactLayoutBreakpointDp.dp
 
@@ -157,25 +158,15 @@ fun DeviceConnectionContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth(0.75f)
-                    .fillMaxHeight(),
+                    .padding(bottom = 20.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
             ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f),
-                    contentAlignment = Alignment.TopEnd,
-                ) {
-                    ProductIntro(strings = strings)
-                }
+                ProductIntro(strings = strings)
 
                 Spacer(modifier = Modifier.width(100.dp))
 
-                Box(
-                    modifier = Modifier
-                        .weight(1f),
-                    contentAlignment = Alignment.TopStart,
-                ) {
+                Box(modifier = Modifier.sizeIn(maxWidth = 600.dp)) {
                     ConnectionCard(
                         state = state,
                         onIpAndPortChanged = onIpAndPortChanged,
@@ -198,7 +189,7 @@ private fun ProductIntro(strings: Strings) {
     ) {
         Box(
             modifier = Modifier
-                .size(76.dp)
+                .size(64.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(colorScheme.surface)
                 .border(
@@ -224,34 +215,36 @@ private fun ProductIntro(strings: Strings) {
             fontWeight = FontWeight.ExtraBold
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = strings.widgets.deviceConnection.subTile,
             style = MaterialTheme.typography.bodyLarge,
-            color = colorScheme.onSurfaceVariant
+            color = colorScheme.onSurfaceMuted
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        BulletItem(
-            icon = Icons.Default.Bolt,
-            text = strings.widgets.deviceConnection.bullet1
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            BulletItem(
+                icon = Icons.Default.Bolt,
+                text = strings.widgets.deviceConnection.bullet1
+            )
 
-        BulletItem(
-            icon = Icons.Default.DragIndicator,
-            text = strings.widgets.deviceConnection.bullet2
-        )
+            BulletItem(
+                icon = Icons.Default.DragIndicator,
+                text = strings.widgets.deviceConnection.bullet2
+            )
 
-        BulletItem(
-            icon = Icons.Default.AccessTime,
-            text = strings.widgets.deviceConnection.bullet3
-        )
+            BulletItem(
+                icon = Icons.Default.AccessTime,
+                text = strings.widgets.deviceConnection.bullet3
+            )
 
-        BulletItem(
-            icon = Icons.Default.Menu,
-            text = strings.widgets.deviceConnection.bullet4
-        )
+            BulletItem(
+                icon = Icons.Default.Menu,
+                text = strings.widgets.deviceConnection.bullet4
+            )
+        }
     }
 }
 
@@ -265,7 +258,6 @@ private fun ConnectionCard(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Surface(
-        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         color = colorScheme.surfaceContainerLow,
         border = BorderStroke(1.dp, colorScheme.outline),
@@ -276,9 +268,9 @@ private fun ConnectionCard(
         ) {
             Text(
                 text = strings.widgets.deviceConnection.networkConnection,
-                color = colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.Bold,
+                color = colorScheme.onSurfaceMuted,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.SemiBold,
                 ),
             )
             Text(
@@ -411,7 +403,7 @@ private fun DiscoveredDevicesSection(
             verticalArrangement = Arrangement.spacedBy(8.dp),
 
         ) {
-            itemsIndexed(devices, key = { _, device -> device.connectionName }) { _, device ->
+            itemsIndexed(devices, key = { _, device -> device.connectionId }) { _, device ->
 
                 DiscoveredDeviceRow(
                     device = device,
@@ -484,11 +476,7 @@ private fun DiscoveredDeviceRow(
                     modifier = Modifier.weight(1f),
                 ) {
                     Text(
-                        text = if (device.connectionName.length > 25) {
-                            device.connectionName.take(22) + strings.widgets.deviceConnection.dot
-                        } else {
-                            device.connectionName
-                        },
+                        text = device.prettyName,
                         color = colorScheme.onSurface,
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.ExtraBold,
@@ -498,7 +486,7 @@ private fun DiscoveredDeviceRow(
                     )
 
                     DeviceMetaLine(
-                        device.metaData?.let { "${it.appName} · ${it.appPackage}" }
+                        device.metaData?.appPackage
                             ?: "${device.hostAddress}:${device.port}",
                     )
                     device.metaData?.also {
@@ -539,26 +527,23 @@ private fun DeviceMetaLine(text: String) {
 private fun BulletItem(
     icon: ImageVector,
     text: String
+) = Row(
+    verticalAlignment = Alignment.CenterVertically
 ) {
-    Row(
-        modifier = Modifier.padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(16.dp)
-        )
+    Icon(
+        imageVector = icon,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.height(16.dp)
+    )
 
-        Spacer(modifier = Modifier.width(16.dp))
+    Spacer(modifier = Modifier.width(8.dp))
 
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceMuted
+    )
 }
 
 @Preview(
@@ -574,7 +559,8 @@ private fun DeviceConnectionWidgetMediumTabletPreview() = PreviewSurface {
             connectionState = State.ConnectionState.Disconnected,
             devices = listOf(
                 DetectedDevice(
-                    connectionName = "iosSimulator-iPhone 16 Plus",
+                    connectionId = "iosSimulator-iPhone 16 Plus",
+                    prettyName = "My App (iPhone)",
                     metaData = MetaData(
                         appName = "Runner",
                         appPackage = "sus.Internal",
@@ -591,7 +577,8 @@ private fun DeviceConnectionWidgetMediumTabletPreview() = PreviewSurface {
                     state = DetectedDevice.State.ReadyToConnect,
                 ),
                 DetectedDevice(
-                    connectionName = "Pixel 8 Pro",
+                    connectionId = "Pixel 8 Pro",
+                    prettyName = "My App (Android)",
                     metaData = MetaData(
                         appName = "Runner",
                         appPackage = "sus.Internal",

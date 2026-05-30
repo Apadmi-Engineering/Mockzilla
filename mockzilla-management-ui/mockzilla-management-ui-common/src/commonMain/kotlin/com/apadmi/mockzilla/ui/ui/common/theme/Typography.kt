@@ -100,4 +100,9 @@ fun mockzillaTypography(uiFont: FontFamily): Typography = Typography(
         fontSize = 15.sp,
         fontWeight = FontWeight.Bold,
     ),
+    headlineLarge = TextStyle(
+        fontFamily = uiFont,
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold,
+    ),
 )

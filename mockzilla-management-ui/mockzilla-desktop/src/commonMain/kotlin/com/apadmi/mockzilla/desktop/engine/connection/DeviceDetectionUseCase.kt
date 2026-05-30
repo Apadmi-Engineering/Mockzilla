@@ -81,13 +81,14 @@ class DeviceDetectionUseCaseImpl(
             existingDevice?.state == DetectedDevice.State.Removed && info.state == ServiceInfoWrapper.State.Found -> existingDevice
             else -> null
         } ?: DetectedDevice(
-            info.connectionName,
-            metaData,
-            info.hostAddress,
-            info.hostAddresses.map { IpAddress(it) },
-            info.port,
-            adbConnection,
-            state
+            connectionId = info.connectionName,
+            prettyName = metaData?.let { "${it.appName} (${it.deviceModel})" } ?: info.connectionName,
+            metaData = metaData,
+            hostAddress = info.hostAddress,
+            hostAddresses = info.hostAddresses.map { IpAddress(it) },
+            port = info.port,
+            adbConnection = adbConnection,
+            state = state
         )
 
         deviceCache[info.connectionName] = device

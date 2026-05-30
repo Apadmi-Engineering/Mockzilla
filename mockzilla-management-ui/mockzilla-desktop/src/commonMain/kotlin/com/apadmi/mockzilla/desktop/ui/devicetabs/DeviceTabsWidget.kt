@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +42,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 
@@ -74,10 +76,10 @@ fun DeviceTabsWidgetContent(
     onAddNewDevice: () -> Unit,
     onCloseTab: (State.DeviceTabEntry) -> Unit,
     onGlobalControlsClick: () -> Unit = {},
-) {
+) = Column {
     val colorScheme = MaterialTheme.colorScheme
 
-    Column(modifier = modifier.background(colorScheme.surfaceContainer)) {
+    Column(modifier = modifier.background(colorScheme.surfaceContainerLow)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,8 +96,17 @@ fun DeviceTabsWidgetContent(
                 if (state.devices.isEmpty()) {
                     Text(
                         text = strings.widgets.deviceTabs.devices(0),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = colorScheme.onSurfaceVariant,
+                        style = MaterialTheme
+                            .typography
+                            .labelSmall
+                            .copy(
+                                fontFamily = LocalMonoFontFamily.current,
+                                lineHeightStyle = LineHeightStyle(
+                                    alignment = LineHeightStyle.Alignment.Center,
+                                    trim = LineHeightStyle.Trim.None
+                                )
+                            ),
+                        color = colorScheme.onSurfaceFaint,
                         modifier = Modifier.padding(vertical = 6.dp)
                     )
                 } else {
@@ -125,9 +136,9 @@ fun DeviceTabsWidgetContent(
                 )
             }
         }
-
-        HorizontalDivider(color = colorScheme.outline, thickness = 1.dp)
     }
+
+    HorizontalDivider(color = colorScheme.outline, thickness = 1.dp)
 }
 
 @Suppress("MAGIC_NUMBER")
