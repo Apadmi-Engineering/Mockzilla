@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,8 +34,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,8 +57,10 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
+import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import org.koin.core.parameter.parametersOf
@@ -360,42 +361,19 @@ private fun FilterTextField(
     value: String,
     onFilterUpdate: (String) -> Unit,
     strings: Strings = LocalStrings.current
-) = TextField(
-    modifier = Modifier
-        .fillMaxWidth()
-        .height(48.dp)
-        .border(
-            1.dp,
-            MaterialTheme.colorScheme.onBackground.copy(alpha = UNSELECTED_BORDER_ALPHA),
-            RoundedCornerShape(8.dp)
-        ),
+) = CustomTextField(
+    modifier = Modifier.fillMaxWidth(),
     value = value,
     onValueChange = onFilterUpdate,
-    textStyle = MaterialTheme.typography.bodyLarge,
-    placeholder = {
-        Text(
-            text = strings.widgets.endpoints.filterPlaceholder,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    },
+    placeholderText = strings.widgets.endpoints.filterPlaceholder,
     leadingIcon = {
         Icon(
             imageVector = Icons.Default.Search,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            tint = MaterialTheme.colorScheme.onSurfaceMuted,
         )
     },
     singleLine = true,
-    shape = RoundedCornerShape(8.dp),
-    colors = TextFieldDefaults.colors().copy(
-        focusedContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
-        unfocusedContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
-        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        disabledIndicatorColor = Color.Transparent,
-    )
 )
 
 @Preview

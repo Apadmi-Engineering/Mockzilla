@@ -276,7 +276,7 @@ private fun ConnectionCard(
                             imageVector = Icons.Outlined.Power,
                             contentDescription = null,
                             tint = colorScheme.onSurfaceMuted,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     },
                     placeholder = {
