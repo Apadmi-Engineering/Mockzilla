@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 enum class ButtonVariant {
     Danger, Ghost, Outline, Soft, Solid
@@ -122,12 +121,12 @@ fun BaseButton(
             Spacer(Modifier.width(4.dp))
         }
         Text(text = label, style = MaterialTheme.typography.labelMedium.copy(
-            fontWeight = when(variant) {
+            fontWeight = when (variant) {
                 ButtonVariant.Danger,
                 ButtonVariant.Outline,
                 ButtonVariant.Ghost -> FontWeight.Medium
                 ButtonVariant.Solid,
-                ButtonVariant.Soft -> FontWeight.SemiBold;
+                ButtonVariant.Soft -> FontWeight.SemiBold
             }
         ))
         if (contentAlignment == ButtonContentAlignment.Start) {

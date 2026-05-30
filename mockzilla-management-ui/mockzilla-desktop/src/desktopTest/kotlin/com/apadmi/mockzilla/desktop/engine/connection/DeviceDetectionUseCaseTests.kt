@@ -38,6 +38,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidDevice),
                     port = 8080,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -58,6 +59,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = null,
                     port = 8080,
                     adbConnection = null,
+                    prettyName = "connection name",
                     state = DetectedDevice.State.Resolving
                 )
             ),
@@ -78,6 +80,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = null,
                     port = 8_087_854,
                     adbConnection = null,
+                    prettyName = "connection name",
                     state = DetectedDevice.State.Resolving
                 )
             ),
@@ -98,6 +101,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosDevice),
                     port = 8_087_854,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -122,6 +126,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosSimulator),
                     port = 8_087_854,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -146,6 +151,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosSimulator),
                     port = 1_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.NotYourSimulator
                 )
             ),
@@ -175,6 +181,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                         true,
                         listOf(IpAddress("some local machine ip address"))
                     ),
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -200,6 +207,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator),
                     port = 13_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.NotYourSimulator
                 )
             )
@@ -256,6 +264,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosDevice),
                     port = 13_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -270,6 +279,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosDevice),
                     port = 13_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.Removed
                 )
             ),

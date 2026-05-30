@@ -122,16 +122,16 @@ fun DeviceTabsWidgetContent(
                         )
                     }
                 }
+            }
 
-                if (state.devices.isNotEmpty()) {
-                    BaseButton(
-                        label = strings.widgets.deviceTabs.addDevice,
-                        leadingIcon = Icons.Default.Add,
-                        variant = ButtonVariant.Ghost,
-                        size = ButtonSize.Sm,
-                        onClick = onAddNewDevice
-                    )
-                }
+            if (state.devices.isNotEmpty()) {
+                BaseButton(
+                    label = strings.widgets.deviceTabs.addDevice,
+                    leadingIcon = Icons.Default.Add,
+                    variant = ButtonVariant.Ghost,
+                    size = ButtonSize.Sm,
+                    onClick = onAddNewDevice
+                )
             }
 
             if (state.devices.any { it.isActive }) {
@@ -162,7 +162,7 @@ private fun DeviceChip(
     Box(
         modifier = Modifier
             .clip(chipShape)
-            .background(if (device.isActive) colorScheme.surface else Color.Transparent)
+            .background(if (device.isActive) colorScheme.surfaceContainerHigh else Color.Transparent)
             .then(
                 if (device.isActive) {
                     Modifier.border(
@@ -199,16 +199,18 @@ private fun DeviceChip(
 
             Column(verticalArrangement = Arrangement.Center) {
                 Text(
-                    text = device.name,
+                    text = device.appName,
                     style = MaterialTheme.typography.titleSmall.copy(fontSize = 11.sp),
                     color = if (device.isActive) colorScheme.onSurface else colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = if (device.isConnected) {
-                        strings.widgets.deviceTabs.connected
-                    } else {
-                        strings.widgets.deviceTabs.disconnected
-                    },
+                    text = "${device.deviceName} · ${
+                        if (device.isConnected) {
+                            strings.widgets.deviceTabs.connected
+                        } else {
+                            strings.widgets.deviceTabs.disconnected
+                        }
+                    }",
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = FontWeight.Normal,
                         fontFamily = LocalMonoFontFamily.current
@@ -276,13 +278,15 @@ private fun DeviceTabsWidgetPreviewLight() = PreviewSurface {
         state = State(
             devices = listOf(
                 State.DeviceTabEntry(
-                    name = "iosSimulator-iPhone 16 Plus",
+                    appName = "Runner",
+                    deviceName = "iPhone",
                     isActive = true,
                     isConnected = true,
                     underlyingDevice = Device(ip = "", port = ""),
                 ),
                 State.DeviceTabEntry(
-                    name = "Pixel 8 Pro",
+                    appName = "Runner",
+                    deviceName = "Pixel 8 Pro",
                     isActive = false,
                     isConnected = false,
                     underlyingDevice = Device(ip = "", port = ""),
@@ -302,13 +306,15 @@ private fun DeviceTabsWidgetPreviewDark() = PreviewSurface(darkTheme = true) {
         state = State(
             devices = listOf(
                 State.DeviceTabEntry(
-                    name = "iosSimulator-iPhone 16 Plus",
+                    appName = "Runner",
+                    deviceName = "iPhone",
                     isActive = true,
                     isConnected = true,
                     underlyingDevice = Device(ip = "", port = ""),
                 ),
                 State.DeviceTabEntry(
-                    name = "Pixel 8 Pro",
+                    appName = "Runner",
+                    deviceName = "iPhone",
                     isActive = false,
                     isConnected = false,
                     underlyingDevice = Device(ip = "", port = ""),

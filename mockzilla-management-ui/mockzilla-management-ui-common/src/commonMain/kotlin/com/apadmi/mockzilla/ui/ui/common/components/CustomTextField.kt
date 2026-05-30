@@ -93,7 +93,9 @@ fun CustomTextField(
                 visualTransformation = visualTransformation,
                 contentPadding = PaddingValues(
                     horizontal = 8.dp,
-                    vertical = if (leadingIcon == null) 0.dp else 8.dp
+                    vertical = leadingIcon?.let {
+                        8.dp
+                    } ?: 0.dp
                 ),
                 innerTextField = innerTextField,
                 placeholder = placeholderText?.let {
