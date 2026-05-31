@@ -20,7 +20,6 @@ class ZeroConfDiscoveryServiceImpl(
 ) : ZeroConfDiscoveryService {
     private val nsdManager by lazy { context.getSystemService(Context.NSD_SERVICE) as NsdManager }
     private var registered = false
-
     private val registrationListener = object : NsdManager.RegistrationListener {
         override fun onServiceRegistered(serviceInfo: NsdServiceInfo) {
             logger.e("ZeroConf Registered: ${serviceInfo.serviceName}")

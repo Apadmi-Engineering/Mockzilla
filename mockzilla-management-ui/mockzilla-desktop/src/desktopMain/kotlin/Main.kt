@@ -8,8 +8,6 @@ import com.apadmi.mockzilla.desktop.ui.DesktopApp
 import com.apadmi.mockzilla.desktop.utils.rememberAppIcon
 import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
 
-import org.koin.core.context.GlobalContext
-
 fun main() = application {
     val state = rememberWindowState(
         placement = WindowPlacement.Maximized,

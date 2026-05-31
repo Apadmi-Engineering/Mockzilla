@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val tag = "ZeroConfSdkWrapper"
+private const val bufferCapacity = 16
 
 actual class ZeroConfSdkWrapper actual constructor(
     private val serviceType: String,
@@ -32,7 +33,7 @@ actual class ZeroConfSdkWrapper actual constructor(
 ) : ServiceListener {
     private val jmDnsInstances = mutableMapOf<InetAddress, JmDNS>()
     private val output = MutableSharedFlow<ServiceInfoWrapper>(
-        extraBufferCapacity = 16,
+        extraBufferCapacity = bufferCapacity,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     private var pollingJob: Job? = null

@@ -73,7 +73,7 @@ class ZeroConfDiscoveryServiceImpl(
         val txtRecord = alloc<TXTRecordRef>()
         TXTRecordCreate(txtRecord.ptr, 0u, null)
         for ((key, value) in txtRecords) {
-            val bytes = value.encodeToByteArray()   // encode once per key
+            val bytes = value.encodeToByteArray()  // encode once per key
             TXTRecordSetValue(txtRecord.ptr, key, bytes.size.convert(), bytes.refTo(0))
         }
 
