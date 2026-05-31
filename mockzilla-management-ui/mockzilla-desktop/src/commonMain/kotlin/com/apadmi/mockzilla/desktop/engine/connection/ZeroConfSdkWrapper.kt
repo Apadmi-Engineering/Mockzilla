@@ -29,4 +29,5 @@ data class ServiceInfoWrapper(
 
 expect class ZeroConfSdkWrapper(serviceType: String, scope: CoroutineScope) {
     fun setListener(listener: suspend (ServiceInfoWrapper) -> Unit)
+    fun stop()
 }

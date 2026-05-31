@@ -17,19 +17,17 @@ fun Enumeration<NetworkInterface>.isLocalIpAddress(
 
 fun Enumeration<NetworkInterface>.findMdnsAddresses() = asSequence()
     .filter { networkInterface ->
-        networkInterface.isUp ||  // a down interface is not useful for us
-        networkInterface.supportsMulticast()  // MC is required for mDNS
+        networkInterface.isUp && networkInterface.supportsMulticast()
     }
     .map { networkInterface ->
         networkInterface.inetAddresses.toList()
-            .filter {
-                it.isAnyLocalAddress ||
-                        runCatching {
-                            DatagramSocket(0, it).use { datagramSocket ->
-                                // try to connect to *somewhere*
-                                datagramSocket.connect(googleDns)
-                            }
-                        }.getOrNull() != null
+            .filter { address ->
+                true
+                !address.isAnyLocalAddress &&
+                !address.isLoopbackAddress &&
+                runCatching {
+                    DatagramSocket(0, address).use { it.connect(googleDns) }
+                }.isSuccess
             }
     }
     .flatten()
