@@ -28,7 +28,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun MzkToggle(
+fun CustomToggle(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -73,12 +73,12 @@ fun MzkToggle(
 private fun MzkTogglePreview() = PreviewSurface {
     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            MzkToggle(checked = false, onCheckedChange = {})
-            MzkToggle(checked = true, onCheckedChange = {})
+            CustomToggle(checked = false, onCheckedChange = {})
+            CustomToggle(checked = true, onCheckedChange = {})
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            MzkToggle(checked = false, enabled = false, onCheckedChange = {})
-            MzkToggle(checked = true, enabled = false, onCheckedChange = {})
+            CustomToggle(checked = false, enabled = false, onCheckedChange = {})
+            CustomToggle(checked = true, enabled = false, onCheckedChange = {})
         }
     }
 }

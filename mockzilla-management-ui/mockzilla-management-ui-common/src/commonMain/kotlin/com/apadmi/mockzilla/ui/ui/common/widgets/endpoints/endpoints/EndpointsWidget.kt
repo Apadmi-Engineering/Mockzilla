@@ -317,7 +317,7 @@ private fun EndpointsWidgetContent(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = MaterialTheme.colorScheme.surface)
     ) {
         val contentWidth = maxOf(maxWidth, minContentWidthDp.dp)
         Box(

@@ -196,6 +196,7 @@ val EnStrings = Strings(
             title = "Tools",
             actionsSection = "Actions",
             presentationMode = "Presentation mode",
+            darkMode = "Dark Mode",
             fontScaleLabel = { scale -> "${(scale * 100).roundToInt()}%" }
         ),
         unsupportedMockzilla = Strings.Widgets.UnsupportedMockzillaVersion(

@@ -24,7 +24,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MockzillaSlider(
+fun CustomSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
@@ -102,12 +102,12 @@ private fun MockzillaSliderPreview() = PreviewSurface {
         Modifier.padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        MockzillaSlider(
+        CustomSlider(
             value = 0.4f,
             onValueChange = {},
         )
 
-        MockzillaSlider(
+        CustomSlider(
             value = 0.7f,
             onValueChange = {},
             enabled = false,

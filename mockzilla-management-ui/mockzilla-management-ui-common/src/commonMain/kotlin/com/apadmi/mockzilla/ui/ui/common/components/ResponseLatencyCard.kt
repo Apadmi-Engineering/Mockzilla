@@ -3,7 +3,6 @@ package com.apadmi.mockzilla.ui.ui.common.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -81,7 +80,7 @@ internal fun ResponseLatencyCard(
     }
 
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val isDark = LocalForceDarkMode.current
     val cardShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
     val componentShape = if (isDark) RoundedCornerShape(4.dp) else RoundedCornerShape(6.dp)
 
@@ -208,7 +207,7 @@ internal fun ResponseLatencyCard(
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            MockzillaSlider(
+            CustomSlider(
                 value = value?.toFloat() ?: 0f,
                 valueRange = 0f..sliderMax,
                 modifier = Modifier.fillMaxWidth(),
