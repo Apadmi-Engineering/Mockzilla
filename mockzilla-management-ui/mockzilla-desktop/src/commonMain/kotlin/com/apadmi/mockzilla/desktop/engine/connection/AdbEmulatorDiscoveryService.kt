@@ -5,6 +5,7 @@ import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.ui.engine.connection.AdbConnectionDeviceSerial
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,18 +19,10 @@ import java.net.URL
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Discovers Android emulators running Mockzilla via ADB rather than mDNS.
+ * Discovers Android emulators over ADB rather than mDNS.
  *
- * mDNS (JmDNS) is unreliable for emulator discovery for two reasons:
- *  1. Android emulators run on virtual NICs (eth0/ethX) that don't participate in
- *     multicast the same way as a real Wi-Fi interface, so JmDNS often never sees
- *     the emulator's NSD broadcast.
- *  2. VPN software intercepts and re-routes multicast traffic, meaning developers
- *     on a corporate or personal VPN will almost never receive the mDNS packets
- *     regardless of interface configuration.
- *
- * ADB port forwarding is unaffected by both issues — it tunnels directly over the
- * USB/ADB connection and bypasses the host's IP stack entirely.
+ * mDNS (JmDNS) is unreliable for emulator discovery especially when a VPN is running.
+ * ADB port forwarding is unaffected and we can detect the mockzilla port over ADB as a backup.
  */
 interface AdbEmulatorDiscoveryService {
     fun start(
@@ -41,7 +34,7 @@ interface AdbEmulatorDiscoveryService {
 }
 
 class AdbEmulatorDiscoveryServiceImpl(
-    private val adbConnectorService: AdbConnectorService
+    private val adbConnectorService: AdbConnectorService,
 ) : AdbEmulatorDiscoveryService {
     private var pollingJob: Job? = null
     private val knownSerials = mutableSetOf<String>()
@@ -50,12 +43,12 @@ class AdbEmulatorDiscoveryServiceImpl(
     override fun start(
         scope: CoroutineScope,
         onDiscovered: suspend (connection: AdbConnection, metaData: MetaData, emulatorPort: Int) -> Unit,
-        onLost: suspend (deviceSerial: String) -> Unit
+        onLost: suspend (deviceSerial: AdbConnectionDeviceSerial) -> Unit
     ) {
         pollingJob = scope.launch {
             while (isActive) {
                 pollEmulators(onDiscovered, onLost)
-                delay(10.seconds)
+                delay(1.seconds)
             }
         }
     }
@@ -67,11 +60,8 @@ class AdbEmulatorDiscoveryServiceImpl(
 
     private suspend fun pollEmulators(
         onDiscovered: suspend (AdbConnection, MetaData, Int) -> Unit,
-        onLost: suspend (String) -> Unit
+        onLost: suspend (AdbConnectionDeviceSerial) -> Unit
     ) {
-        // ADB is used here instead of mDNS because mDNS multicast is unreliable on emulator
-        // virtual NICs and is often blocked entirely by VPN software. ADB port forwarding
-        // tunnels over the USB/ADB connection and is unaffected by either issue.
         val devices = adbConnectorService.listConnectedDevices().getOrNull() ?: return
         val activeEmulators = devices.filter {
             it.deviceSerial.startsWith("emulator-") && it.isActive
@@ -83,13 +73,14 @@ class AdbEmulatorDiscoveryServiceImpl(
         knownSerials.retainAll(activeSerials)
 
         activeEmulators.forEach { connection ->
-            probeEmulator(connection, onDiscovered)
+            probeEmulator(connection, onDiscovered, onLost)
         }
     }
 
     private suspend fun probeEmulator(
         connection: AdbConnection,
-        onDiscovered: suspend (AdbConnection, MetaData, Int) -> Unit
+        onDiscovered: suspend (AdbConnection, MetaData, Int) -> Unit,
+        onLost: suspend (AdbConnectionDeviceSerial) -> Unit
     ) {
         val candidatePorts = withContext(Dispatchers.IO) {
             val tcp4 = adbConnectorService
@@ -102,6 +93,7 @@ class AdbEmulatorDiscoveryServiceImpl(
             (parseListeningPorts(tcp4) + parseListeningPorts(tcp6)).distinct()
         }
         if (candidatePorts.isEmpty()) {
+            onLost(connection.deviceSerial)
             Logger.d("AdbEmulatorDiscovery") { "No candidate ports for ${connection.deviceSerial}" }
             return
         }
@@ -120,6 +112,8 @@ class AdbEmulatorDiscoveryServiceImpl(
                 return
             }
         }
+
+        onLost(connection.deviceSerial)
     }
 
     // /proc/net/tcp rows look like:
