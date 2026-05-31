@@ -32,6 +32,7 @@ interface AdbConnectorService {
         localPort: Int,
         emulatorPort: Int
     ): Result<AdbPortForwardingResult>
+    suspend fun executeShellCommand(serial: String, command: String): Result<String>
 }
 
 object AdbConnectorServiceImpl : AdbConnectorService {
@@ -74,16 +75,20 @@ object AdbConnectorServiceImpl : AdbConnectorService {
     }
 
     private suspend fun AndroidDebugBridgeClient.getIpAddresses(serial: String): List<String> {
-        val output = execute(
-            request = ShellCommandRequest("ifconfig wlan0"),
-            serial = serial
-        ).output
-
+        // Use `ip -f inet addr` rather than `ifconfig wlan0`: emulators have no wlan0,
+        // they use eth0 for their virtual NIC, so wlan0 always returns empty for them.
+        val output = execute(ShellCommandRequest("ip -f inet addr"), serial).output
         return ipParsingRegex.findAll(output)
             .map { it.groupValues.drop(1) }
             .flatten()
+            .filter { it != "127.0.0.1" }  // exclude loopback — only real routable addresses
             .toList()
     }
+
+    override suspend fun executeShellCommand(serial: String, command: String) =
+        runAdbCommandsSafely { adb ->
+            adb.execute(ShellCommandRequest(command), serial).output
+        }
 
     override suspend fun setupPortForwardingIfNeeded(
         emulator: AdbConnection,

@@ -2,6 +2,8 @@ package com.apadmi.mockzilla.desktop.di
 
 import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorService
 import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorServiceImpl
+import com.apadmi.mockzilla.desktop.engine.connection.AdbEmulatorDiscoveryService
+import com.apadmi.mockzilla.desktop.engine.connection.AdbEmulatorDiscoveryServiceImpl
 import com.apadmi.mockzilla.desktop.engine.connection.DeviceDetectionUseCase
 import com.apadmi.mockzilla.desktop.engine.connection.DeviceDetectionUseCaseImpl
 import com.apadmi.mockzilla.desktop.engine.connection.ZeroConfSdkWrapper
@@ -23,14 +25,20 @@ import kotlinx.coroutines.GlobalScope
 fun startDesktopMockzillaKoin() {
     MockzillaUiKoinContext.startMockzillaUiKoinIfNeeded(listOf(module {
         single<AdbConnectorService> { AdbConnectorServiceImpl }
+        single<AdbEmulatorDiscoveryService> { AdbEmulatorDiscoveryServiceImpl(get()) }
         single<DeviceDetectionUseCase> {
             DeviceDetectionUseCaseImpl(
                 isLocalIpAddress = { address ->
                     NetworkInterface.getNetworkInterfaces().isLocalIpAddress(address)
                 },
                 adbConnectorService = get()
-            ).also {
-                get<ZeroConfSdkWrapper>().setListener(it::onChangedServiceEvent)
+            ).also { useCase ->
+                get<ZeroConfSdkWrapper>().setListener(useCase::onChangedServiceEvent)
+                get<AdbEmulatorDiscoveryService>().start(
+                    scope = GlobalScope,
+                    onDiscovered = useCase::onAdbDiscoveredEmulator,
+                    onLost = useCase::onAdbEmulatorLost
+                )
             }
         }
         single { ZeroConfSdkWrapper(ZeroConfConfig.serviceType + ".local.", GlobalScope) }

@@ -17,6 +17,8 @@ interface DeviceDetectionUseCase {
     val onChangeEvent: Flow<Unit>
     val devices: List<DetectedDevice>
     suspend fun prepareForConnection(device: DetectedDevice): Result<IpAddress>
+    suspend fun onAdbDiscoveredEmulator(connection: AdbConnection, metaData: MetaData, emulatorPort: Int)
+    suspend fun onAdbEmulatorLost(deviceSerial: String)
 }
 
 class DeviceDetectionUseCaseImpl(
@@ -90,11 +92,59 @@ class DeviceDetectionUseCaseImpl(
             state
         )
 
+        // mDNS found the same emulator that ADB already registered — drop the ADB entry so
+        // the device doesn't appear twice. The mDNS entry is preferred (real address, not loopback).
+        val adbKey = "adb:${adbConnection?.deviceSerial}"
+        if (adbConnection != null && deviceCache.containsKey(adbKey)) {
+            deviceCache.remove(adbKey)
+        }
         deviceCache[info.connectionName] = device
         if (existingDevice != device) {
             onChangeEvent.emit(Unit)
         }
     }
+
+    // "adb:" prefix namespaces ADB-discovered entries so they don't collide with
+    // mDNS-discovered entries (which use the Bonjour service name as the key). Both
+    // discovery paths can find the same physical emulator; the prefix lets them coexist
+    // in the cache until one supersedes the other.
+    override suspend fun onAdbDiscoveredEmulator(
+        connection: AdbConnection,
+        metaData: MetaData,
+        emulatorPort: Int
+    ) = mutex.withLock {
+        val cacheKey = "adb:${connection.deviceSerial}"
+        // Skip if mDNS already found this device — prefer the mDNS entry because it
+        // carries a real network address rather than a loopback forward.
+        val alreadyFoundByMdns = deviceCache.values.any {
+            it.adbConnection?.deviceSerial == connection.deviceSerial && it.connectionName != cacheKey
+        }
+        if (alreadyFoundByMdns) return@withLock
+
+        val device = DetectedDevice(
+            connectionName = cacheKey,
+            metaData = metaData,
+            // ADB port forwarding binds on loopback — the real emulator address is
+            // irrelevant here because traffic flows through the ADB tunnel.
+            hostAddress = "127.0.0.1",
+            hostAddresses = listOf(IpAddress("127.0.0.1")),
+            port = emulatorPort,
+            adbConnection = connection,
+            state = DetectedDevice.State.ReadyToConnect
+        )
+        if (deviceCache[cacheKey] != device) {
+            deviceCache[cacheKey] = device
+            onChangeEvent.emit(Unit)
+        }
+    }
+
+    override suspend fun onAdbEmulatorLost(deviceSerial: String) = mutex.withLock {
+        val cacheKey = "adb:$deviceSerial"
+        deviceCache[cacheKey]?.let {
+            deviceCache[cacheKey] = it.copy(state = DetectedDevice.State.Removed)
+            onChangeEvent.emit(Unit)
+        }
+    }.let { /* no-op */ }
 
     private fun determineNewDeviceState(
         info: ServiceInfoWrapper,
