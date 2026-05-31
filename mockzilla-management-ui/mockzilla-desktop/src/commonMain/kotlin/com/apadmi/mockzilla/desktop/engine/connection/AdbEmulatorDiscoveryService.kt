@@ -2,10 +2,13 @@ package com.apadmi.mockzilla.desktop.engine.connection
 
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
+import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
+import com.apadmi.mockzilla.ui.engine.device.Device
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.ui.engine.connection.AdbConnectionDeviceSerial
+
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -13,42 +16,48 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
-import java.net.HttpURLConnection
-import java.net.URL
-import kotlin.time.Duration.Companion.seconds
+
+private const val tag = "AdbEmulatorDiscovery"
+
+typealias AdbEmulatorDiscoveryServiceDiscoveredCallback = suspend (connection: AdbConnection, metaData: MetaData, emulatorPort: Int) -> Unit
+typealias AdbEmulatorDiscoveryServiceLostCallback = suspend (deviceSerial: String, emulatorPort: Int) -> Unit
 
 /**
- * Discovers Android emulators over ADB rather than mDNS.
+ * Discovers Android emulators running Mockzilla via ADB rather than mDNS.
  *
- * mDNS (JmDNS) is unreliable for emulator discovery especially when a VPN is running.
- * ADB port forwarding is unaffected and we can detect the mockzilla port over ADB as a backup.
+ * mDNS (JmDNS) is unreliable for emulator discovery especially when connected to a VPN
+ * We detect the mockzilla port directly from ADB and derive the connection from that.
  */
 interface AdbEmulatorDiscoveryService {
     fun start(
         scope: CoroutineScope,
-        onDiscovered: suspend (connection: AdbConnection, metaData: MetaData, emulatorPort: Int) -> Unit,
-        onLost: suspend (deviceSerial: String) -> Unit
+        onDiscovered: AdbEmulatorDiscoveryServiceDiscoveredCallback,
+        onLost: AdbEmulatorDiscoveryServiceLostCallback
     )
     fun stop()
 }
 
 class AdbEmulatorDiscoveryServiceImpl(
     private val adbConnectorService: AdbConnectorService,
+    private val metaDataService: MockzillaManagement.MetaDataService
 ) : AdbEmulatorDiscoveryService {
     private var pollingJob: Job? = null
-    private val knownSerials = mutableSetOf<String>()
-    private val json = Json { ignoreUnknownKeys = true; isLenient = true }
+
+    // Maps device serial → set of known Mockzilla emulator ports.
+    // Once a port is confirmed via /api/meta we only need to verify it stays in the
+    // /proc/net/tcp LISTEN set — no need to re-hit the HTTP endpoint each cycle.
+    // A set is used because the same emulator may run multiple Mockzilla apps on different ports.
+    private val knownEmulators = mutableMapOf<String, MutableSet<Int>>()
 
     override fun start(
         scope: CoroutineScope,
-        onDiscovered: suspend (connection: AdbConnection, metaData: MetaData, emulatorPort: Int) -> Unit,
-        onLost: suspend (deviceSerial: AdbConnectionDeviceSerial) -> Unit
+        onDiscovered: AdbEmulatorDiscoveryServiceDiscoveredCallback,
+        onLost: AdbEmulatorDiscoveryServiceLostCallback
     ) {
         pollingJob = scope.launch {
             while (isActive) {
                 pollEmulators(onDiscovered, onLost)
-                delay(1.seconds)
+                delay(2.seconds)
             }
         }
     }
@@ -58,89 +67,98 @@ class AdbEmulatorDiscoveryServiceImpl(
         pollingJob = null
     }
 
+    @Suppress("TYPE_ALIAS")
     private suspend fun pollEmulators(
         onDiscovered: suspend (AdbConnection, MetaData, Int) -> Unit,
-        onLost: suspend (AdbConnectionDeviceSerial) -> Unit
+        onLost: suspend (String, Int) -> Unit
     ) {
+        // ADB is used here instead of mDNS because mDNS multicast is unreliable on emulator
+        // virtual NICs and is often blocked entirely by VPN software. ADB port forwarding
+        // tunnels over the USB/ADB connection and is unaffected by either issue.
         val devices = adbConnectorService.listConnectedDevices().getOrNull() ?: return
         val activeEmulators = devices.filter {
             it.deviceSerial.startsWith("emulator-") && it.isActive
         }
         val activeSerials = activeEmulators.map { it.deviceSerial }.toSet()
 
-        // Emit lost events for emulators that have disconnected since the last poll
-        (knownSerials - activeSerials).forEach { serial -> onLost(serial) }
-        knownSerials.retainAll(activeSerials)
+        // Emit a lost event for each known port on emulators that have disconnected from ADB
+        (knownEmulators.keys.toSet() - activeSerials).forEach { serial ->
+            knownEmulators[serial]?.forEach { port -> onLost(serial, port) }
+        }
+        knownEmulators.keys.retainAll(activeSerials)
 
         activeEmulators.forEach { connection ->
             probeEmulator(connection, onDiscovered, onLost)
         }
     }
 
+    @Suppress("TYPE_ALIAS")
     private suspend fun probeEmulator(
         connection: AdbConnection,
         onDiscovered: suspend (AdbConnection, MetaData, Int) -> Unit,
-        onLost: suspend (AdbConnectionDeviceSerial) -> Unit
+        onLost: suspend (String, Int) -> Unit
     ) {
-        val candidatePorts = withContext(Dispatchers.IO) {
-            val tcp4 = adbConnectorService
-                .executeShellCommand(connection.deviceSerial, "cat /proc/net/tcp")
-                .getOrNull().orEmpty()
-            val tcp6 = adbConnectorService
-                .executeShellCommand(connection.deviceSerial, "cat /proc/net/tcp6")
-                .getOrNull().orEmpty()
-            // Merge IPv4 and IPv6 listener lists — emulators may bind on either family
-            (parseListeningPorts(tcp4) + parseListeningPorts(tcp6)).distinct()
-        }
-        if (candidatePorts.isEmpty()) {
-            onLost(connection.deviceSerial)
-            Logger.d("AdbEmulatorDiscovery") { "No candidate ports for ${connection.deviceSerial}" }
-            return
+        val candidatePorts = getCandidatePorts(connection)
+        val knownPorts = knownEmulators[connection.deviceSerial].orEmpty().toSet()
+
+        // For ports we already know about, just verify they are still LISTEN — no HTTP probe needed
+        (knownPorts - candidatePorts).forEach { lostPort ->
+            knownEmulators[connection.deviceSerial]?.remove(lostPort)
+            Logger.i(tag = tag) { "Mockzilla port $lostPort gone from ${connection.deviceSerial}" }
+            onLost(connection.deviceSerial, lostPort)
         }
 
-        for (port in candidatePorts) {
+        // Only probe ports we haven't confirmed yet — avoids hammering /api/meta each cycle
+        val newCandidates = candidatePorts - knownPorts
+        for (port in newCandidates) {
             val forward = adbConnectorService
                 .setupPortForwardingIfNeeded(connection, 0, port)
                 .getOrNull() ?: continue
             val metaData = withContext(Dispatchers.IO) { fetchMeta(forward.localPort) } ?: continue
             if (metaData.runTarget == RunTarget.AndroidEmulator) {
-                Logger.i("AdbEmulatorDiscovery") {
+                Logger.i(tag = tag) {
                     "Found Mockzilla on ${connection.deviceSerial} at emulator port $port"
                 }
-                knownSerials += connection.deviceSerial
+                knownEmulators.getOrPut(connection.deviceSerial) { mutableSetOf() } += port
                 onDiscovered(connection, metaData, port)
-                return
             }
         }
+    }
 
-        onLost(connection.deviceSerial)
+    private suspend fun getCandidatePorts(connection: AdbConnection): Set<Int> = withContext(Dispatchers.IO) {
+        val tcp4 = adbConnectorService
+            .executeShellCommand(connection.deviceSerial, "cat /proc/net/tcp")
+            .getOrNull().orEmpty()
+        val tcp6 = adbConnectorService
+            .executeShellCommand(connection.deviceSerial, "cat /proc/net/tcp6")
+            .getOrNull().orEmpty()
+        // Merge IPv4 and IPv6 listener lists — emulators may bind on either family
+        (parseListeningPorts(tcp4) + parseListeningPorts(tcp6)).distinct().toSet()
     }
 
     // /proc/net/tcp rows look like:
-    //   sl  local_address rem_address st tx_queue:rx_queue tr:tm->when retrnsmt uid ...
-    //   0: 00000000:1F90 00000000:0000 0A 00000000:00000000 ...
+    // sl  local_address rem_address st tx_queue:rx_queue tr:tm->when retrnsmt uid ...
+    // 0: 00000000:1F90 00000000:0000 0A 00000000:00000000 ...
     // Fields are space-separated; local_address is host:port in hex (big-endian).
     // State 0A = TCP_LISTEN. We read this via `adb shell` — no port forwarding needed.
     private fun parseListeningPorts(procNetTcp: String): List<Int> {
         return procNetTcp.lines()
-            .drop(1)                         // skip header row
+            .drop(1)  // skip header row
             .mapNotNull { line ->
                 val cols = line.trim().split(Regex("\\s+"))
-                if (cols.size < 4) return@mapNotNull null
-                if (cols[3] != "0A") return@mapNotNull null  // 0A = LISTEN
-                val portHex = cols[1].substringAfter(":")    // "00000000:1F90" → "1F90"
+                if (cols.size < 4) {
+                    return@mapNotNull null
+                }
+                if (cols[3] != "0A") {
+                    return@mapNotNull null
+                }  // 0A = LISTEN
+                val portHex = cols[1].substringAfter(":")  // "00000000:1F90" → "1F90"
                 portHex.toLongOrNull(16)?.toInt()
             }
-            .filter { it > 1024 }            // exclude well-known system ports
+            .filter { it > 1024 }  // exclude well-known system ports
     }
 
-    private fun fetchMeta(localPort: Int): MetaData? = runCatching {
-        val conn = URL("http://127.0.0.1:$localPort/api/meta")
-            .openConnection() as HttpURLConnection
-        conn.connectTimeout = 1000
-        conn.readTimeout = 1000
-        val body = conn.inputStream.bufferedReader().readText()
-        conn.disconnect()
-        json.decodeFromString<MetaData>(body)
+    private suspend fun fetchMeta(localPort: Int): MetaData? = runCatching {
+        metaDataService.fetchMetaData(Device("127.0.0.1", localPort.toString()), true).getOrNull()
     }.getOrNull()
 }

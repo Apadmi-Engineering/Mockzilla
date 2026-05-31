@@ -25,7 +25,7 @@ import kotlinx.coroutines.GlobalScope
 fun startDesktopMockzillaKoin() {
     MockzillaUiKoinContext.startMockzillaUiKoinIfNeeded(listOf(module {
         single<AdbConnectorService> { AdbConnectorServiceImpl }
-        single<AdbEmulatorDiscoveryService> { AdbEmulatorDiscoveryServiceImpl(get()) }
+        single<AdbEmulatorDiscoveryService> { AdbEmulatorDiscoveryServiceImpl(get(), get()) }
         single<DeviceDetectionUseCase> {
             DeviceDetectionUseCaseImpl(
                 isLocalIpAddress = { address ->
@@ -37,7 +37,7 @@ fun startDesktopMockzillaKoin() {
                 get<AdbEmulatorDiscoveryService>().start(
                     scope = GlobalScope,
                     onDiscovered = useCase::onAdbDiscoveredEmulator,
-                    onLost = useCase::onAdbEmulatorLost
+                    onLost = { serial, port -> useCase.onAdbEmulatorLost(serial, port) }
                 )
             }
         }
