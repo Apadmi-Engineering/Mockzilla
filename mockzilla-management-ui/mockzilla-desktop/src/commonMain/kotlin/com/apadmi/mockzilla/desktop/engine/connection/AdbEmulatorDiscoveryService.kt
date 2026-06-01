@@ -4,11 +4,11 @@ import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
+import com.apadmi.mockzilla.ui.engine.connection.AdbConnectionDeviceSerial
 import com.apadmi.mockzilla.ui.engine.device.Device
 
 import co.touchlab.kermit.Logger
 
-import kotlin.compareTo
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +45,7 @@ class AdbEmulatorDiscoveryServiceImpl(
     // Once a port is confirmed via /api/meta we only need to verify it stays in the
     // /proc/net/tcp LISTEN set — no need to re-hit the HTTP endpoint each cycle.
     // A set is used because the same emulator may run multiple Mockzilla apps on different ports.
-    private val knownEmulators = mutableMapOf<String, MutableSet<Int>>()
+    private val knownEmulatorsWithPorts = mutableMapOf<AdbConnectionDeviceSerial, MutableSet<Int>>()
 
     override fun start(
         scope: CoroutineScope,
@@ -75,8 +75,8 @@ class AdbEmulatorDiscoveryServiceImpl(
         val activeSerials = activeEmulators.map { it.deviceSerial }.toSet()
 
         // Emit a lost event for each known port on emulators that have disconnected from ADB
-        (knownEmulators.keys.toSet() - activeSerials).forEach { serial ->
-            knownEmulators[serial]?.forEach { port ->
+        (knownEmulatorsWithPorts.keys.toSet() - activeSerials).forEach { serial ->
+            knownEmulatorsWithPorts[serial]?.forEach { port ->
                 onEvent(DeviceDiscoveryEvent(
                     connectionName = "adb:$serial:$port",
                     hostAddress = "127.0.0.1",
@@ -88,7 +88,7 @@ class AdbEmulatorDiscoveryServiceImpl(
                 ))
             }
         }
-        knownEmulators.keys.retainAll(activeSerials)
+        knownEmulatorsWithPorts.keys.retainAll(activeSerials)
 
         activeEmulators.forEach { connection ->
             probeEmulator(connection, onEvent)
@@ -108,11 +108,11 @@ class AdbEmulatorDiscoveryServiceImpl(
                 it > minAllowedPort  // Filter out privileged ports https://www.w3.org/Daemon/User/Installation/PrivilegedPorts.html
             }
             .toSet()
-        val knownPorts = knownEmulators[connection.deviceSerial].orEmpty().toSet()
+        val knownPorts = knownEmulatorsWithPorts[connection.deviceSerial].orEmpty().toSet()
 
         // For ports we already know about, just verify they are still LISTEN — no HTTP probe needed
         (knownPorts - candidatePorts).forEach { lostPort ->
-            knownEmulators[connection.deviceSerial]?.remove(lostPort)
+            knownEmulatorsWithPorts[connection.deviceSerial]?.remove(lostPort)
             Logger.i(tag = tag) { "Mockzilla port $lostPort gone from ${connection.deviceSerial}" }
             onEvent(DeviceDiscoveryEvent(
                 connectionName = "adb:${connection.deviceSerial}:$lostPort",
@@ -147,7 +147,7 @@ class AdbEmulatorDiscoveryServiceImpl(
         } ?: return null
 
         Logger.i(tag = tag) { "Found Mockzilla on ${connection.deviceSerial} at emulator port $port" }
-        knownEmulators.getOrPut(connection.deviceSerial) { mutableSetOf() } += port
+        knownEmulatorsWithPorts.getOrPut(connection.deviceSerial) { mutableSetOf() } += port
         return DeviceDiscoveryEvent(
             connectionName = "adb:${connection.deviceSerial}:$port",
             hostAddress = "127.0.0.1",
