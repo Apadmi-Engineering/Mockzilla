@@ -118,29 +118,39 @@ class AdbEmulatorDiscoveryServiceImpl(
         // Only probe ports we haven't confirmed yet — avoids hammering /api/meta each cycle
         val newCandidates = candidatePorts - knownPorts
         for (port in newCandidates) {
-            val forward = adbConnectorService
-                .setupPortForwardingIfNeeded(connection, 0, port)
-                .getOrNull() ?: continue
-            val metaData = withContext(Dispatchers.IO) { fetchMeta(forward.localPort) } ?: continue
-            if (metaData.runTarget == RunTarget.AndroidEmulator) {
-                Logger.i(tag = tag) {
-                    "Found Mockzilla on ${connection.deviceSerial} at emulator port $port"
-                }
-                knownEmulators.getOrPut(connection.deviceSerial) { mutableSetOf() } += port
-                onEvent(DeviceDiscoveryEvent(
-                    connectionName = "adb:${connection.deviceSerial}:$port",
-                    hostAddress = "127.0.0.1",
-                    hostAddresses = listOf("127.0.0.1"),
-                    attributes = emptyMap(),
-                    port = port,
-                    state = DeviceDiscoveryEvent.State.Resolved,
-                    adbConnection = connection,
-                    metaData = metaData
-                ))
-            }
+            probeCandidate(port, connection)?.also { onEvent(it) }
         }
     }
 
+    private suspend fun probeCandidate(
+        port: Int, connection: AdbConnection
+    ): DeviceDiscoveryEvent? {
+        val forward = adbConnectorService.setupPortForwardingIfNeeded(
+            emulator = connection,
+            localPort = 0,
+            emulatorPort = port
+        ).getOrNull() ?: return null
+        val metaData = withContext(Dispatchers.IO) {
+            fetchMeta(forward.localPort)
+        }?.takeIf { metaData ->
+            metaData.runTarget == RunTarget.AndroidEmulator
+        } ?: return null
+
+        Logger.i(tag = tag) { "Found Mockzilla on ${connection.deviceSerial} at emulator port $port" }
+        knownEmulators.getOrPut(connection.deviceSerial) { mutableSetOf() } += port
+        return DeviceDiscoveryEvent(
+            connectionName = "adb:${connection.deviceSerial}:$port",
+            hostAddress = "127.0.0.1",
+            hostAddresses = listOf("127.0.0.1"),
+            attributes = emptyMap(),
+            port = port,
+            state = DeviceDiscoveryEvent.State.Resolved,
+            adbConnection = connection,
+            metaData = metaData
+        )
+    }
+
+    // Gets ports that *might* be Mockzilla
     private suspend fun getCandidatePorts(connection: AdbConnection): Set<Int> = withContext(Dispatchers.IO) {
         val tcp4 = adbConnectorService
             .executeShellCommand(connection.deviceSerial, "cat /proc/net/tcp")
