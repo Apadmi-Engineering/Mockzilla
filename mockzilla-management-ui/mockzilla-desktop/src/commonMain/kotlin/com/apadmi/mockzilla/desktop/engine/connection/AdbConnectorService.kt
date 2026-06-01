@@ -19,6 +19,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * @property connection
@@ -52,6 +53,9 @@ object AdbConnectorServiceImpl : AdbConnectorService {
                     block(prepareAdb())
                 }
             }
+        } catch (e: CancellationException) {
+            // Let coroutine cancellation propagate unchanged.
+            throw e
         } catch (e: Exception) {
             Result.failure(e)
         }
