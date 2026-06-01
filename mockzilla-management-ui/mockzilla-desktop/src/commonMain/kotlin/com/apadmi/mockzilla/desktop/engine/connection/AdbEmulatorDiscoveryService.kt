@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 
 import co.touchlab.kermit.Logger
 
+import kotlin.compareTo
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val tag = "AdbEmulatorDiscovery"
+private const val minAllowedPort = 1024
 
 /**
  * Discovers Android emulators running Mockzilla via ADB rather than mDNS.
@@ -97,7 +99,15 @@ class AdbEmulatorDiscoveryServiceImpl(
         connection: AdbConnection,
         onEvent: suspend (DeviceDiscoveryEvent) -> Unit
     ) {
-        val candidatePorts = getCandidatePorts(connection)
+        // Gets ports that *might* be Mockzilla
+        val candidatePorts = adbConnectorService
+            .getListeningTcpPorts(connection.deviceSerial)
+            .getOrNull()
+            .orEmpty()
+            .filter {
+                it > minAllowedPort  // Filter out privileged ports https://www.w3.org/Daemon/User/Installation/PrivilegedPorts.html
+            }
+            .toSet()
         val knownPorts = knownEmulators[connection.deviceSerial].orEmpty().toSet()
 
         // For ports we already know about, just verify they are still LISTEN — no HTTP probe needed
@@ -148,40 +158,6 @@ class AdbEmulatorDiscoveryServiceImpl(
             adbConnection = connection,
             metaData = metaData
         )
-    }
-
-    // Gets ports that *might* be Mockzilla
-    private suspend fun getCandidatePorts(connection: AdbConnection): Set<Int> = withContext(Dispatchers.IO) {
-        val tcp4 = adbConnectorService
-            .executeShellCommand(connection.deviceSerial, "cat /proc/net/tcp")
-            .getOrNull().orEmpty()
-        val tcp6 = adbConnectorService
-            .executeShellCommand(connection.deviceSerial, "cat /proc/net/tcp6")
-            .getOrNull().orEmpty()
-        // Merge IPv4 and IPv6 listener lists — emulators may bind on either family
-        (parseListeningPorts(tcp4) + parseListeningPorts(tcp6)).distinct().toSet()
-    }
-
-    // /proc/net/tcp rows look like:
-    // sl  local_address rem_address st tx_queue:rx_queue tr:tm->when retrnsmt uid ...
-    // 0: 00000000:1F90 00000000:0000 0A 00000000:00000000 ...
-    // Fields are space-separated; local_address is host:port in hex (big-endian).
-    // State 0A = TCP_LISTEN. We read this via `adb shell` — no port forwarding needed.
-    private fun parseListeningPorts(procNetTcp: String): List<Int> {
-        return procNetTcp.lines()
-            .drop(1)  // skip header row
-            .mapNotNull { line ->
-                val cols = line.trim().split(Regex("\\s+"))
-                if (cols.size < 4) {
-                    return@mapNotNull null
-                }
-                if (cols[3] != "0A") {
-                    return@mapNotNull null
-                }  // 0A = LISTEN
-                val portHex = cols[1].substringAfter(":")  // "00000000:1F90" → "1F90"
-                portHex.toLongOrNull(16)?.toInt()
-            }
-            .filter { it > 1024 }  // exclude well-known system ports
     }
 
     private suspend fun fetchMeta(localPort: Int): MetaData? = runCatching {

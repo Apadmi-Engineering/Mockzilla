@@ -32,7 +32,7 @@ interface AdbConnectorService {
         localPort: Int,
         emulatorPort: Int
     ): Result<AdbPortForwardingResult>
-    suspend fun executeShellCommand(serial: String, command: String): Result<String>
+    suspend fun getListeningTcpPorts(serial: String): Result<List<Int>>
 }
 
 object AdbConnectorServiceImpl : AdbConnectorService {
@@ -86,10 +86,31 @@ object AdbConnectorServiceImpl : AdbConnectorService {
             .toList()
     }
 
-    override suspend fun executeShellCommand(serial: String, command: String) =
-        runAdbCommandsSafely { adb ->
-            adb.execute(ShellCommandRequest(command), serial).output
-        }
+    override suspend fun getListeningTcpPorts(serial: String) = runAdbCommandsSafely { adb ->
+        val tcp4 = adb.execute(ShellCommandRequest("cat /proc/net/tcp"), serial).output
+        val tcp6 = adb.execute(ShellCommandRequest("cat /proc/net/tcp6"), serial).output
+        (parseTcpListeningPorts(tcp4) + parseTcpListeningPorts(tcp6))
+    }
+
+    // /proc/net/tcp rows look like:
+    // sl  local_address rem_address st tx_queue:rx_queue tr:tm->when retrnsmt uid ...
+    // 0: 00000000:1F90 00000000:0000 0A 00000000:00000000 ...
+    // State 0A = TCP_LISTEN.
+    private fun parseTcpListeningPorts(procNetTcp: String): List<Int> {
+        return procNetTcp.lines()
+            .drop(1)
+            .mapNotNull { line ->
+                val cols = line.trim().split(Regex("\\s+"))
+                if (cols.size < 4) {
+                    return@mapNotNull null
+                }
+                if (cols[3] != "0A") {
+                    return@mapNotNull null
+                }
+                val portHex = cols[1].substringAfter(":")
+                portHex.toLongOrNull(16)?.toInt()
+            }
+    }
 
     override suspend fun setupPortForwardingIfNeeded(
         emulator: AdbConnection,
