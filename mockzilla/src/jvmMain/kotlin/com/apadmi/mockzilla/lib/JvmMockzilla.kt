@@ -58,6 +58,6 @@ fun startMockzilla(
  *
  * @return
  */
-fun stopMockzilla() = runBlocking {
+actual fun stopMockzilla() = runBlocking {
     stopServer()
 }

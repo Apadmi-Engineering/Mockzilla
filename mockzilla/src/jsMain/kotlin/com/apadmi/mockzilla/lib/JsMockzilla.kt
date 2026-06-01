@@ -58,6 +58,6 @@ suspend fun startMockzilla(
 }
 
 @OptIn(DelicateCoroutinesApi::class)
-fun stopMockzilla() = GlobalScope.promise {
+actual fun stopMockzilla() = GlobalScope.promise {
     stopServer()
-}
+}.let { /* no-op */ }

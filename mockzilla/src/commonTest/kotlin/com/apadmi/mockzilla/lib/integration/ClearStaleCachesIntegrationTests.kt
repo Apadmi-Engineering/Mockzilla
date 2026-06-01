@@ -11,6 +11,7 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.lib.prepareMockzilla
 import com.apadmi.mockzilla.lib.startMockzilla
+import com.apadmi.mockzilla.lib.stopMockzilla
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig

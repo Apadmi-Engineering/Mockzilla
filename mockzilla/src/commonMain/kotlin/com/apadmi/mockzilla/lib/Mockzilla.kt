@@ -23,6 +23,8 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+expect fun stopMockzilla()
+
 internal suspend fun startMockzilla(
     config: MockzillaConfig,
     metaData: MetaData,
