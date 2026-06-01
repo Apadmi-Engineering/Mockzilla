@@ -9,19 +9,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -33,11 +31,10 @@ import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Power
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +48,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.State
 import com.apadmi.mockzilla.lib.models.MetaData
@@ -62,17 +58,17 @@ import com.apadmi.mockzilla.ui.engine.connection.IpAddress
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
+import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
-import com.apadmi.mockzilla.ui.ui.common.theme.inputBackground
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 
 private const val compactLayoutBreakpointDp = 1100
-private const val compactMaxWidthDp = 720
 
 private fun DetectedDevice.State.toolTipText(strings: Strings) = when (this) {
     DetectedDevice.State.NotYourSimulator -> strings.widgets.deviceConnection.tooltips.notYourSimulator
@@ -111,11 +107,13 @@ fun DeviceConnectionContent(
 ) = Box(
     modifier = Modifier
         .fillMaxSize()
+        .padding(vertical = 40.dp)
         .background(MaterialTheme.colorScheme.background),
     contentAlignment = Alignment.Center,
 ) {
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         val isCompact = maxWidth < compactLayoutBreakpointDp.dp
 
@@ -123,59 +121,37 @@ fun DeviceConnectionContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp, vertical = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .padding(horizontal = 36.dp, vertical = 32.dp),
+                horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center,
             ) {
-                val compactWidth = compactMaxWidthDp.dp
-
-                Box(
-                    modifier = Modifier
-                        .widthIn(max = compactWidth),
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    ProductIntro(strings = strings)
-                }
+                ProductIntro(strings = strings)
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                Box(
-                    modifier = Modifier
-                        .widthIn(max = compactWidth),
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    ConnectionCard(
-                        state = state,
-                        onIpAndPortChanged = onIpAndPortChanged,
-                        onConnect = { onIpAndPortChanged(state.ipAndPort) },
-                        onTapDevice = onTapDevice,
-                        strings = strings,
-                    )
-                }
+                ConnectionCard(
+                    state = state,
+                    onIpAndPortChanged = onIpAndPortChanged,
+                    onConnect = { onIpAndPortChanged(state.ipAndPort) },
+                    onTapDevice = onTapDevice,
+                    strings = strings,
+                )
             }
         } else {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(0.75f)
-                    .fillMaxHeight(),
+                    .padding(bottom = 20.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.Top,
             ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f),
-                    contentAlignment = Alignment.TopEnd,
-                ) {
+                Box(modifier = Modifier.sizeIn(maxWidth = 300.dp)) {
                     ProductIntro(strings = strings)
                 }
 
                 Spacer(modifier = Modifier.width(100.dp))
 
-                Box(
-                    modifier = Modifier
-                        .weight(1f),
-                    contentAlignment = Alignment.TopStart,
-                ) {
+                Box(modifier = Modifier.sizeIn(maxWidth = 600.dp)) {
                     ConnectionCard(
                         state = state,
                         onIpAndPortChanged = onIpAndPortChanged,
@@ -190,49 +166,48 @@ fun DeviceConnectionContent(
 }
 
 @Composable
-private fun ProductIntro(strings: Strings) {
-    val colorScheme = MaterialTheme.colorScheme
-    Column(
+private fun ProductIntro(
+    strings: Strings,
+    colorScheme: ColorScheme = MaterialTheme.colorScheme
+) = Column {
+    Box(
         modifier = Modifier
-            .widthIn(max = 620.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(76.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(colorScheme.surface)
-                .border(
-                    width = 1.dp,
-                    color = colorScheme.outline,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                imageVector = Icons.MockzillaLogo,
-                contentDescription = null
+            .size(64.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(colorScheme.surface)
+            .border(
+                width = 1.dp,
+                color = colorScheme.outline,
+                shape = RoundedCornerShape(16.dp)
             )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = strings.widgets.deviceConnection.title,
-            style = MaterialTheme.typography.headlineLarge,
-            color = colorScheme.onSurface,
-            fontWeight = FontWeight.ExtraBold
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            imageVector = Icons.MockzillaLogo,
+            contentDescription = null
         )
+    }
 
-        Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = strings.widgets.deviceConnection.subTile,
-            style = MaterialTheme.typography.bodyLarge,
-            color = colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(32.dp))
+    Text(
+        text = strings.widgets.deviceConnection.title,
+        style = MaterialTheme.typography.headlineLarge,
+        color = colorScheme.onSurface,
+        fontWeight = FontWeight.ExtraBold
+    )
 
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Text(
+        text = strings.widgets.deviceConnection.subTile,
+        style = MaterialTheme.typography.bodyLarge,
+        color = colorScheme.onSurfaceMuted
+    )
+    Spacer(modifier = Modifier.height(20.dp))
+
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         BulletItem(
             icon = Icons.Default.Bolt,
             text = strings.widgets.deviceConnection.bullet1
@@ -265,20 +240,19 @@ private fun ConnectionCard(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Surface(
-        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         color = colorScheme.surfaceContainerLow,
         border = BorderStroke(1.dp, colorScheme.outline),
     ) {
         Column(
             modifier = Modifier.padding(32.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = strings.widgets.deviceConnection.networkConnection,
-                color = colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.Bold,
+                color = colorScheme.onSurfaceMuted,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.SemiBold,
                 ),
             )
             Text(
@@ -286,75 +260,41 @@ private fun ConnectionCard(
                 color = colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyMedium,
             )
+            Spacer(Modifier.height(4.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(45.dp)
-                        .border(
-                            width = 0.5.dp,
-                            color = colorScheme.outline,
-                            shape = RoundedCornerShape(8.dp)),
-                    shape = RoundedCornerShape(8.dp),
-
+                CustomTextField(
+                    modifier = Modifier.weight(1f),
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         fontFamily = LocalMonoFontFamily.current,
-                        fontSize = 16.sp,
-                        lineHeight = 16.sp,
                     ),
                     value = state.ipAndPort,
                     onValueChange = onIpAndPortChanged,
                     singleLine = true,
-
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Power,
                             contentDescription = null,
                             tint = colorScheme.onSurfaceMuted,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     },
-
                     placeholder = {
                         Text(
                             text = strings.widgets.deviceConnection.ipAndPort,
-                            fontFamily = LocalMonoFontFamily.current,
-                            fontSize = 14.sp,
-                            lineHeight = 14.sp
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontFamily = LocalMonoFontFamily.current
+                            ),
+                            color = MaterialTheme.colorScheme.onSurfaceMuted
                         )
-                    },
-
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = colorScheme.onSurface,
-                        unfocusedTextColor = colorScheme.onSurface,
-
-                        focusedContainerColor = colorScheme.inputBackground,
-                        unfocusedContainerColor = colorScheme.inputBackground,
-
-                        focusedBorderColor = colorScheme.outlineVariant,
-                        unfocusedBorderColor = colorScheme.outline,
-
-                        focusedPlaceholderColor = colorScheme.onSurfaceFaint,
-                        unfocusedPlaceholderColor = colorScheme.onSurfaceFaint,
-
-                        cursorColor = colorScheme.primary,
-
-                        focusedLeadingIconColor = colorScheme.onSurfaceMuted,
-                        unfocusedLeadingIconColor = colorScheme.onSurfaceMuted,
-                    )
+                    }
                 )
-                SolidButton(
-                    modifier = Modifier.height(32.dp)
-                        .align(Alignment.CenterVertically),
+                BaseButton(
+                    modifier = Modifier.height(IntrinsicSize.Min),
                     label = strings.widgets.deviceConnection.connect,
                     onClick = onConnect,
-                    contentPadding = PaddingValues(
-                        horizontal = 16.dp,
-                        vertical = 16.dp
-                    )
                 )
             }
             Row(
@@ -365,7 +305,7 @@ private fun ConnectionCard(
                 HorizontalDivider(Modifier.weight(1f), color = colorScheme.outline)
                 Text(
                     text = strings.widgets.deviceConnection.connectAutomatically,
-                    color = colorScheme.onSurfaceMuted,
+                    color = colorScheme.onSurfaceFaint,
                     style = MaterialTheme.typography.labelMedium,
                 )
                 HorizontalDivider(Modifier.weight(1f), color = colorScheme.outline)
@@ -407,12 +347,9 @@ private fun DiscoveredDevicesSection(
             )
         }
         LazyColumn(
-            modifier = Modifier.heightIn(max = 220.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-
         ) {
-            itemsIndexed(devices, key = { _, device -> device.connectionName }) { _, device ->
-
+            itemsIndexed(devices, key = { _, device -> device.connectionId }) { _, device ->
                 DiscoveredDeviceRow(
                     device = device,
                     onTapDevice = onTapDevice,
@@ -434,7 +371,7 @@ private fun DiscoveredDeviceRow(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
-        color = colorScheme.surfaceVariant,
+        color = colorScheme.surfaceContainer,
         border = BorderStroke(1.dp, colorScheme.outline),
     ) {
         Row(
@@ -484,11 +421,7 @@ private fun DiscoveredDeviceRow(
                     modifier = Modifier.weight(1f),
                 ) {
                     Text(
-                        text = if (device.connectionName.length > 25) {
-                            device.connectionName.take(22) + strings.widgets.deviceConnection.dot
-                        } else {
-                            device.connectionName
-                        },
+                        text = device.prettyName,
                         color = colorScheme.onSurface,
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.ExtraBold,
@@ -498,7 +431,7 @@ private fun DiscoveredDeviceRow(
                     )
 
                     DeviceMetaLine(
-                        device.metaData?.let { "${it.appName} · ${it.appPackage}" }
+                        device.metaData?.appPackage
                             ?: "${device.hostAddress}:${device.port}",
                     )
                     device.metaData?.also {
@@ -539,26 +472,23 @@ private fun DeviceMetaLine(text: String) {
 private fun BulletItem(
     icon: ImageVector,
     text: String
+) = Row(
+    verticalAlignment = Alignment.CenterVertically
 ) {
-    Row(
-        modifier = Modifier.padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(16.dp)
-        )
+    Icon(
+        imageVector = icon,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.height(16.dp)
+    )
 
-        Spacer(modifier = Modifier.width(16.dp))
+    Spacer(modifier = Modifier.width(8.dp))
 
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceMuted
+    )
 }
 
 @Preview(
@@ -574,7 +504,8 @@ private fun DeviceConnectionWidgetMediumTabletPreview() = PreviewSurface {
             connectionState = State.ConnectionState.Disconnected,
             devices = listOf(
                 DetectedDevice(
-                    connectionName = "iosSimulator-iPhone 16 Plus",
+                    connectionId = "iosSimulator-iPhone 16 Plus",
+                    prettyName = "My App (iPhone)",
                     metaData = MetaData(
                         appName = "Runner",
                         appPackage = "sus.Internal",
@@ -591,7 +522,8 @@ private fun DeviceConnectionWidgetMediumTabletPreview() = PreviewSurface {
                     state = DetectedDevice.State.ReadyToConnect,
                 ),
                 DetectedDevice(
-                    connectionName = "Pixel 8 Pro",
+                    connectionId = "Pixel 8 Pro",
+                    prettyName = "My App (Android)",
                     metaData = MetaData(
                         appName = "Runner",
                         appPackage = "sus.Internal",

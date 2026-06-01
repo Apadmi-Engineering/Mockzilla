@@ -49,6 +49,12 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `setActiveDeviceWithMetaData - updates device and notifies listeners`() = runBlockingTest {
         /* Setup */
+        val metaDataFixture = MetaData.dummy().copy(
+            appPackage = "test.package",
+            runTarget = RunTarget.Jvm,
+            mockzillaVersion = "99.99.99",
+            deviceModel = "model"
+        )
         coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
             Result.success(MetaData.dummy())
         )
@@ -58,12 +64,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
             /* Run Test */
             sut.setActiveDeviceWithMetaData(
                 Device.dummy(),
-                MetaData.dummy().copy(
-                    appPackage = "test.package",
-                    runTarget = RunTarget.Jvm,
-                    mockzillaVersion = "99.99.99",
-                    deviceModel = "model"
-                )
+                metaDataFixture
             )
 
             /* Verify */
@@ -71,9 +72,8 @@ class ActiveDeviceManagerTests : CoroutineTest() {
                 listOf(
                     StatefulDevice(
                         device = Device.dummy(),
-                        name = "Jvm-model",
+                        metaData = metaDataFixture,
                         isConnected = true,
-                        connectedAppPackage = "test.package",
                         isCompatibleMockzillaVersion = true
                     )
                 ),
@@ -192,11 +192,11 @@ class ActiveDeviceManagerTests : CoroutineTest() {
             /* Verify */
             awaitItem().apply {
                 assertEquals(Device.dummy(), this?.device)
-                assertEquals("old.package", this?.connectedAppPackage)
+                assertEquals("old.package", this?.metaData?.appPackage)
             }
             awaitItem().apply {
                 assertEquals(Device.dummy(), this?.device)
-                assertEquals("new.package", this?.connectedAppPackage)
+                assertEquals("new.package", this?.metaData?.appPackage)
             }
             ensureAllEventsConsumed()
             sut.cancelPolling()

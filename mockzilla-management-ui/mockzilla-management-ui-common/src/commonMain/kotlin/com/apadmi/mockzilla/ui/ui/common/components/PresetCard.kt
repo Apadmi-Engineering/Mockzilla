@@ -5,7 +5,6 @@ package com.apadmi.mockzilla.ui.ui.common.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -134,7 +133,7 @@ internal fun PresetCard(
     layoutMode: LayoutMode = LayoutMode.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
-    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val isDark = LocalForceDarkMode.current
     val isCompact = layoutMode == LayoutMode.Compact
     val isSelected = variant == PresetCardVariant.Selected
     val shape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)

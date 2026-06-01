@@ -108,4 +108,4 @@ class DeviceConnectionViewModel(
 
 fun DetectedDevice.prettyName() = metaData?.let {
     "${it.deviceModel}-${it.operatingSystemVersion}"
-} ?: connectionName
+} ?: connectionId

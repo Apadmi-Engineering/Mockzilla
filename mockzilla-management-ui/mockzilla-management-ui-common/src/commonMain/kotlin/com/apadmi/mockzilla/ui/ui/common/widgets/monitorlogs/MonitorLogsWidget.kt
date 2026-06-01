@@ -10,7 +10,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -109,7 +108,6 @@ fun MonitorLogsWidgetContent(
 ) {
     val monoFont = LocalMonoFontFamily.current
     val cs = MaterialTheme.colorScheme
-    val panelBg = if (isSystemInDarkTheme()) cs.background else cs.surface
     val streamingColor = cs.success.primary
     val dimColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     val faintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
@@ -127,12 +125,11 @@ fun MonitorLogsWidgetContent(
         label = "chevronRotation",
     )
 
-    Column(modifier = Modifier.background(panelBg)) {
+    Column(modifier = Modifier.background(cs.background)) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outline)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(panelBg)
                 .clickable { isExpanded = !isExpanded }
                 .padding(horizontal = 12.dp, vertical = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -182,7 +179,6 @@ fun MonitorLogsWidgetContent(
         ) {
             MonitorLogsList(
                 entryList = entryList,
-                panelBg = panelBg,
                 onViewDetail = onViewDetail,
                 modifier = Modifier.height(280.dp),
             )
@@ -202,13 +198,12 @@ fun LogRow(
     val isRealError = event.status.value >= 400 && !event.isIntendedFailure
     val errorColor = cs.error
     val errorBgColor = cs.errorContainer
-    val panelBg = if (isSystemInDarkTheme()) cs.background else cs.surface
     val faintColor = cs.onSurface.copy(alpha = 0.3f)
     val slowColor = cs.warning.primary
 
     Row(
         modifier = modifier
-            .background(if (isRealError) errorBgColor else panelBg)
+            .background(if (isRealError) errorBgColor else Color.Transparent)
             .drawBehind {
                 if (isRealError) {
                     drawRect(color = errorColor, size = Size(3.dp.toPx(), size.height))
@@ -337,7 +332,6 @@ fun MonitorLogsWidgetPreview() = PreviewSurface {
 @Composable
 private fun MonitorLogsList(
     entryList: List<LogEvent>,
-    panelBg: Color,
     onViewDetail: (LogEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -363,8 +357,7 @@ private fun MonitorLogsList(
             item(key = logEvent.timestamp) {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(panelBg),
+                        .fillMaxWidth(),
                 ) {
                     LogRow(
                         modifier = Modifier

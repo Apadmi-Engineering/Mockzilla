@@ -39,13 +39,15 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.components.MzkToggle
+import com.apadmi.mockzilla.ui.ui.common.components.CustomToggle
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionHeader
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonContentAlignment
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.ScaleFactor
 
@@ -140,6 +142,10 @@ fun MiscControlsWidgetContent(
                 PresentationModeScaleFactor.scaleFactor = scaleFactor
             },
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        DarkModeSettings()
     }
 }
 
@@ -150,6 +156,35 @@ fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
         onRefreshAll = {},
         onClearAllOverrides = {}
     )
+}
+
+@Composable
+private fun DarkModeSettings(
+    strings: Strings = LocalStrings.current
+) {
+    val setForceDarkMode = LocalSetForceDarkMode.current
+
+    SectionHeader(title = strings.widgets.miscControls.darkMode)
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 4.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            modifier = Modifier.weight(1f),
+            text = strings.widgets.miscControls.darkMode,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        CustomToggle(
+            checked = LocalForceDarkMode.current,
+            onCheckedChange = {
+                setForceDarkMode(it)
+            },
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -182,7 +217,7 @@ private fun PresentationModeSettings(
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.width(8.dp))
-        MzkToggle(
+        CustomToggle(
             checked = presentationMode,
             onCheckedChange = onPresentationModeChange,
         )

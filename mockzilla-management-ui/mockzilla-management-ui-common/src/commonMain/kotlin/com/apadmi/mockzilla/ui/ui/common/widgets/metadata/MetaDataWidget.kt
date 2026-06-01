@@ -187,7 +187,7 @@ private fun SessionSection(requests: String, port: String?) = Column {
         modifier = Modifier
             .fillMaxWidth()
             .clip(cardShape)
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .background(MaterialTheme.colorScheme.background)
             .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), cardShape)
             .padding(16.dp)
     ) {

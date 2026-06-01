@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +42,10 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 
@@ -74,10 +79,10 @@ fun DeviceTabsWidgetContent(
     onAddNewDevice: () -> Unit,
     onCloseTab: (State.DeviceTabEntry) -> Unit,
     onGlobalControlsClick: () -> Unit = {},
-) {
+) = Column {
     val colorScheme = MaterialTheme.colorScheme
 
-    Column(modifier = modifier.background(colorScheme.surfaceContainer)) {
+    Column(modifier = modifier.background(colorScheme.surfaceContainerLow)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,8 +99,17 @@ fun DeviceTabsWidgetContent(
                 if (state.devices.isEmpty()) {
                     Text(
                         text = strings.widgets.deviceTabs.devices(0),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = colorScheme.onSurfaceVariant,
+                        style = MaterialTheme
+                            .typography
+                            .labelSmall
+                            .copy(
+                                fontFamily = LocalMonoFontFamily.current,
+                                lineHeightStyle = LineHeightStyle(
+                                    alignment = LineHeightStyle.Alignment.Center,
+                                    trim = LineHeightStyle.Trim.None
+                                )
+                            ),
+                        color = colorScheme.onSurfaceFaint,
                         modifier = Modifier.padding(vertical = 6.dp)
                     )
                 } else {
@@ -110,13 +124,15 @@ fun DeviceTabsWidgetContent(
                 }
 
                 if (state.devices.isNotEmpty()) {
-                    AddDeviceButton(
+                    BaseButton(
                         label = strings.widgets.deviceTabs.addDevice,
-                        onClick = onAddNewDevice,
+                        leadingIcon = Icons.Default.Add,
+                        variant = ButtonVariant.Ghost,
+                        size = ButtonSize.Sm,
+                        onClick = onAddNewDevice
                     )
                 }
             }
-
             if (state.devices.any { it.isActive }) {
                 GlobalControlsButton(
                     label = strings.widgets.globalControls.title,
@@ -125,9 +141,9 @@ fun DeviceTabsWidgetContent(
                 )
             }
         }
-
-        HorizontalDivider(color = colorScheme.outline, thickness = 1.dp)
     }
+
+    HorizontalDivider(color = colorScheme.outline, thickness = 1.dp)
 }
 
 @Suppress("MAGIC_NUMBER")
@@ -145,7 +161,7 @@ private fun DeviceChip(
     Box(
         modifier = Modifier
             .clip(chipShape)
-            .background(if (device.isActive) colorScheme.surface else Color.Transparent)
+            .background(if (device.isActive) colorScheme.surfaceContainerHigh else Color.Transparent)
             .then(
                 if (device.isActive) {
                     Modifier.border(
@@ -182,17 +198,22 @@ private fun DeviceChip(
 
             Column(verticalArrangement = Arrangement.Center) {
                 Text(
-                    text = device.name,
+                    text = device.appName,
                     style = MaterialTheme.typography.titleSmall.copy(fontSize = 11.sp),
                     color = if (device.isActive) colorScheme.onSurface else colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = if (device.isConnected) {
-                        strings.widgets.deviceTabs.connected
-                    } else {
-                        strings.widgets.deviceTabs.disconnected
-                    },
-                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Normal),
+                    text = "${device.deviceName} · ${
+                        if (device.isConnected) {
+                            strings.widgets.deviceTabs.connected
+                        } else {
+                            strings.widgets.deviceTabs.disconnected
+                        }
+                    }",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = LocalMonoFontFamily.current
+                    ),
                     color = colorScheme.onSurfaceVariant,
                 )
             }
@@ -212,32 +233,6 @@ private fun DeviceChip(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun AddDeviceButton(label: String, onClick: () -> Unit) {
-    val colorScheme = MaterialTheme.colorScheme
-
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(6.dp))
-            .clickable(onClick = onClick)
-            .padding(horizontal = 10.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Add,
-            contentDescription = null,
-            tint = colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(14.dp),
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = colorScheme.onSurfaceVariant,
-        )
     }
 }
 
@@ -282,13 +277,15 @@ private fun DeviceTabsWidgetPreviewLight() = PreviewSurface {
         state = State(
             devices = listOf(
                 State.DeviceTabEntry(
-                    name = "iosSimulator-iPhone 16 Plus",
+                    appName = "Runner",
+                    deviceName = "iPhone",
                     isActive = true,
                     isConnected = true,
                     underlyingDevice = Device(ip = "", port = ""),
                 ),
                 State.DeviceTabEntry(
-                    name = "Pixel 8 Pro",
+                    appName = "Runner",
+                    deviceName = "Pixel 8 Pro",
                     isActive = false,
                     isConnected = false,
                     underlyingDevice = Device(ip = "", port = ""),
@@ -308,13 +305,15 @@ private fun DeviceTabsWidgetPreviewDark() = PreviewSurface(darkTheme = true) {
         state = State(
             devices = listOf(
                 State.DeviceTabEntry(
-                    name = "iosSimulator-iPhone 16 Plus",
+                    appName = "Runner",
+                    deviceName = "iPhone",
                     isActive = true,
                     isConnected = true,
                     underlyingDevice = Device(ip = "", port = ""),
                 ),
                 State.DeviceTabEntry(
-                    name = "Pixel 8 Pro",
+                    appName = "Runner",
+                    deviceName = "iPhone",
                     isActive = false,
                     isConnected = false,
                     underlyingDevice = Device(ip = "", port = ""),
