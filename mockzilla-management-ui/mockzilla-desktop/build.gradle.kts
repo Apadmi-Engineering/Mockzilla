@@ -155,11 +155,10 @@ android {
 compose.desktop {
     application {
         mainClass = "MainKt"
+        jvmArgs("-Dapple.awt.application.appearance=system", "-Djava.net.preferIPv4Stack=true")
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = artifactName
-
-            jvmArgs("-Dapple.awt.application.appearance=system", "-Djava.net.preferIPv4Stack=true")
         }
     }
 }
