@@ -36,8 +36,7 @@ fun startDesktopMockzillaKoin() {
                 get<ZeroConfSdkWrapper>().setListener(useCase::onChangedServiceEvent)
                 get<AdbEmulatorDiscoveryService>().start(
                     scope = GlobalScope,
-                    onDiscovered = useCase::onAdbDiscoveredEmulator,
-                    onLost = { serial, port -> useCase.onAdbEmulatorLost(serial, port) }
+                    onEvent = useCase::onChangedServiceEvent
                 )
             }
         }

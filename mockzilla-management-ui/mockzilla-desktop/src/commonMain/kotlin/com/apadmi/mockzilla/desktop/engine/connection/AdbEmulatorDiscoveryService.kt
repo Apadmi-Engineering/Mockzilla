@@ -19,9 +19,6 @@ import kotlinx.coroutines.withContext
 
 private const val tag = "AdbEmulatorDiscovery"
 
-typealias AdbEmulatorDiscoveryServiceDiscoveredCallback = suspend (connection: AdbConnection, metaData: MetaData, emulatorPort: Int) -> Unit
-typealias AdbEmulatorDiscoveryServiceLostCallback = suspend (deviceSerial: String, emulatorPort: Int) -> Unit
-
 /**
  * Discovers Android emulators running Mockzilla via ADB rather than mDNS.
  *
@@ -31,8 +28,7 @@ typealias AdbEmulatorDiscoveryServiceLostCallback = suspend (deviceSerial: Strin
 interface AdbEmulatorDiscoveryService {
     fun start(
         scope: CoroutineScope,
-        onDiscovered: AdbEmulatorDiscoveryServiceDiscoveredCallback,
-        onLost: AdbEmulatorDiscoveryServiceLostCallback
+        onEvent: suspend (DeviceDiscoveryEvent) -> Unit
     )
     fun stop()
 }
@@ -51,12 +47,11 @@ class AdbEmulatorDiscoveryServiceImpl(
 
     override fun start(
         scope: CoroutineScope,
-        onDiscovered: AdbEmulatorDiscoveryServiceDiscoveredCallback,
-        onLost: AdbEmulatorDiscoveryServiceLostCallback
+        onEvent: suspend (DeviceDiscoveryEvent) -> Unit
     ) {
         pollingJob = scope.launch {
             while (isActive) {
-                pollEmulators(onDiscovered, onLost)
+                pollEmulators(onEvent)
                 delay(2.seconds)
             }
         }
@@ -67,11 +62,7 @@ class AdbEmulatorDiscoveryServiceImpl(
         pollingJob = null
     }
 
-    @Suppress("TYPE_ALIAS")
-    private suspend fun pollEmulators(
-        onDiscovered: suspend (AdbConnection, MetaData, Int) -> Unit,
-        onLost: suspend (String, Int) -> Unit
-    ) {
+    private suspend fun pollEmulators(onEvent: suspend (DeviceDiscoveryEvent) -> Unit) {
         // ADB is used here instead of mDNS because mDNS multicast is unreliable on emulator
         // virtual NICs and is often blocked entirely by VPN software. ADB port forwarding
         // tunnels over the USB/ADB connection and is unaffected by either issue.
@@ -83,20 +74,28 @@ class AdbEmulatorDiscoveryServiceImpl(
 
         // Emit a lost event for each known port on emulators that have disconnected from ADB
         (knownEmulators.keys.toSet() - activeSerials).forEach { serial ->
-            knownEmulators[serial]?.forEach { port -> onLost(serial, port) }
+            knownEmulators[serial]?.forEach { port ->
+                onEvent(DeviceDiscoveryEvent(
+                    connectionName = "adb:$serial:$port",
+                    hostAddress = "127.0.0.1",
+                    hostAddresses = emptyList(),
+                    attributes = emptyMap(),
+                    port = port,
+                    state = DeviceDiscoveryEvent.State.Removed,
+                    adbConnection = AdbConnection(serial, false, emptyList())
+                ))
+            }
         }
         knownEmulators.keys.retainAll(activeSerials)
 
         activeEmulators.forEach { connection ->
-            probeEmulator(connection, onDiscovered, onLost)
+            probeEmulator(connection, onEvent)
         }
     }
 
-    @Suppress("TYPE_ALIAS")
     private suspend fun probeEmulator(
         connection: AdbConnection,
-        onDiscovered: suspend (AdbConnection, MetaData, Int) -> Unit,
-        onLost: suspend (String, Int) -> Unit
+        onEvent: suspend (DeviceDiscoveryEvent) -> Unit
     ) {
         val candidatePorts = getCandidatePorts(connection)
         val knownPorts = knownEmulators[connection.deviceSerial].orEmpty().toSet()
@@ -105,7 +104,15 @@ class AdbEmulatorDiscoveryServiceImpl(
         (knownPorts - candidatePorts).forEach { lostPort ->
             knownEmulators[connection.deviceSerial]?.remove(lostPort)
             Logger.i(tag = tag) { "Mockzilla port $lostPort gone from ${connection.deviceSerial}" }
-            onLost(connection.deviceSerial, lostPort)
+            onEvent(DeviceDiscoveryEvent(
+                connectionName = "adb:${connection.deviceSerial}:$lostPort",
+                hostAddress = "127.0.0.1",
+                hostAddresses = emptyList(),
+                attributes = emptyMap(),
+                port = lostPort,
+                state = DeviceDiscoveryEvent.State.Removed,
+                adbConnection = connection
+            ))
         }
 
         // Only probe ports we haven't confirmed yet — avoids hammering /api/meta each cycle
@@ -120,7 +127,16 @@ class AdbEmulatorDiscoveryServiceImpl(
                     "Found Mockzilla on ${connection.deviceSerial} at emulator port $port"
                 }
                 knownEmulators.getOrPut(connection.deviceSerial) { mutableSetOf() } += port
-                onDiscovered(connection, metaData, port)
+                onEvent(DeviceDiscoveryEvent(
+                    connectionName = "adb:${connection.deviceSerial}:$port",
+                    hostAddress = "127.0.0.1",
+                    hostAddresses = listOf("127.0.0.1"),
+                    attributes = emptyMap(),
+                    port = port,
+                    state = DeviceDiscoveryEvent.State.Resolved,
+                    adbConnection = connection,
+                    metaData = metaData
+                ))
             }
         }
     }

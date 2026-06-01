@@ -32,13 +32,13 @@ actual class ZeroConfSdkWrapper actual constructor(
     private val scope: CoroutineScope
 ) : ServiceListener {
     private val jmDnsInstances = mutableMapOf<InetAddress, JmDNS>()
-    private val output = MutableSharedFlow<ServiceInfoWrapper>(
+    private val output = MutableSharedFlow<DeviceDiscoveryEvent>(
         extraBufferCapacity = bufferCapacity,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     private var pollingJob: Job? = null
 
-    actual fun setListener(listener: suspend (ServiceInfoWrapper) -> Unit) {
+    actual fun setListener(listener: suspend (DeviceDiscoveryEvent) -> Unit) {
         pollingJob?.cancel()
         pollingJob = scope.launch {
             // Start collecting before the polling loop — no lateinit race possible
@@ -91,20 +91,20 @@ actual class ZeroConfSdkWrapper actual constructor(
         }
     }
 
-    override fun serviceAdded(event: ServiceEvent?) = serviceChanged(event, ServiceInfoWrapper.State.Found)
+    override fun serviceAdded(event: ServiceEvent?) = serviceChanged(event, DeviceDiscoveryEvent.State.Found)
 
-    override fun serviceRemoved(event: ServiceEvent?) = serviceChanged(event, ServiceInfoWrapper.State.Removed)
+    override fun serviceRemoved(event: ServiceEvent?) = serviceChanged(event, DeviceDiscoveryEvent.State.Removed)
 
-    override fun serviceResolved(event: ServiceEvent?) = serviceChanged(event, ServiceInfoWrapper.State.Resolved)
+    override fun serviceResolved(event: ServiceEvent?) = serviceChanged(event, DeviceDiscoveryEvent.State.Resolved)
 
-    private fun serviceChanged(event: ServiceEvent?, state: ServiceInfoWrapper.State) {
+    private fun serviceChanged(event: ServiceEvent?, state: DeviceDiscoveryEvent.State) {
         Logger.d { "Service changed: ${event?.name} ${state.name}" }
         event ?: return
 
         scope.launch {
-            val shouldCallListener = state == ServiceInfoWrapper.State.Found ||
-                    state == ServiceInfoWrapper.State.Removed ||
-                    state == ServiceInfoWrapper.State.Resolved && event.info.inet4Addresses.isNotEmpty()
+            val shouldCallListener = state == DeviceDiscoveryEvent.State.Found ||
+                    state == DeviceDiscoveryEvent.State.Removed ||
+                    state == DeviceDiscoveryEvent.State.Resolved && event.info.inet4Addresses.isNotEmpty()
 
             if (shouldCallListener) {
                 output.emit(event.info.parse(state))
@@ -112,12 +112,12 @@ actual class ZeroConfSdkWrapper actual constructor(
         }
     }
 
-    private fun ServiceInfo.parse(state: ServiceInfoWrapper.State): ServiceInfoWrapper {
+    private fun ServiceInfo.parse(state: DeviceDiscoveryEvent.State): DeviceDiscoveryEvent {
         val hostAddresses = (inet6Addresses.toList() + inet4Addresses + inetAddresses).mapNotNull {
             it.hostAddress
         } + hostAddresses
 
-        return ServiceInfoWrapper.create(
+        return DeviceDiscoveryEvent.create(
             this,
             hostAddresses.map { it.removePrefix("[").removeSuffix("]") }.distinct(),
             state
