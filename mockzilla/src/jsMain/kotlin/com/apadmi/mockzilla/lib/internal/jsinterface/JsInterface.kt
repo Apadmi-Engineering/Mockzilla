@@ -298,6 +298,6 @@ fun startMockzillaJs(
 }
 
 @JsExport
-actual fun stopMockzilla() = GlobalScope.promise {
+fun stopMockzilla() = GlobalScope.promise {
     stopServer()
-}.let { /* no-op */ }
+}
