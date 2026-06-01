@@ -73,15 +73,15 @@ class DeviceDetectionUseCaseImpl(
             return
         }
 
-        // Skip if mDNS already found this specific port on this device — prefer the mDNS entry
-        val alreadyFoundByMdns = deviceCache.values.any {
-            it.adbConnection?.deviceSerial == event.adbConnection?.deviceSerial &&
-                    it.port == event.port &&
-                    it.connectionName != cacheKey
-        }
-        if (alreadyFoundByMdns) {
-            return
-        }
+        // ADB takes priority — evict any mDNS entry for the same (serial, port) so the ADB
+        // entry wins. ADB has already verified reachability via /api/meta; mDNS has not.
+        deviceCache.values
+            .firstOrNull {
+                it.adbConnection?.deviceSerial == event.adbConnection?.deviceSerial &&
+                        it.port == event.port &&
+                        it.connectionName != cacheKey
+            }
+            ?.let { deviceCache.remove(it.connectionName) }
 
         val device = DetectedDevice(
             connectionName = cacheKey,
@@ -119,11 +119,11 @@ class DeviceDetectionUseCaseImpl(
             state
         )
 
-        // mDNS found the same emulator+port that ADB already registered — drop the ADB entry so
-        // the device doesn't appear twice.
+        // ADB takes priority — if ADB already verified this port via /api/meta, keep the ADB
+        // entry and discard this mDNS event so the device doesn't appear twice.
         val adbKey = "adb:${adbConnection?.deviceSerial}:${event.port}"
         if (adbConnection != null && deviceCache.containsKey(adbKey)) {
-            deviceCache.remove(adbKey)
+            return
         }
         deviceCache[event.connectionName] = device
         if (existingDevice != device) {

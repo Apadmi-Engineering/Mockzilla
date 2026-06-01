@@ -360,7 +360,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
     }
 
     @Test
-    fun `onChangedServiceEvent - ADB path - skipped if mDNS already found same serial and port`() = runBlockingTest {
+    fun `onChangedServiceEvent - ADB path - replaces mDNS entry for same serial and port`() = runBlockingTest {
         val adbConnection = AdbConnection("emulator-5554", true, listOf(IpAddress("10.0.2.15")))
         val metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator)
         coEvery { adbConnectorServiceMock.listConnectedDevices() }
@@ -375,7 +375,6 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             port = 8080,
             state = DeviceDiscoveryEvent.State.Resolved
         ))
-        val afterMdns = sut.devices
 
         sut.onChangedServiceEvent(DeviceDiscoveryEvent(
             connectionName = "adb:emulator-5554:8080",
@@ -388,8 +387,10 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             metaData = metaData
         ))
 
-        assertEquals(expected = afterMdns, actual = sut.devices)
+        // ADB evicts the mDNS entry and takes over
         assertEquals(1, sut.devices.size)
+        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionName)
+        assertEquals("127.0.0.1", sut.devices.single().hostAddress)
     }
 
     @Test
@@ -446,7 +447,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
     }
 
     @Test
-    fun `onChangedServiceEvent - ZeroConf path - mDNS finds emulator already in ADB cache - replaces ADB entry`() = runBlockingTest {
+    fun `onChangedServiceEvent - ZeroConf path - mDNS ignored if ADB already verified same serial and port`() = runBlockingTest {
         val adbConnection = AdbConnection("emulator-5554", true, listOf(IpAddress("10.0.2.15")))
         val metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator)
         coEvery { adbConnectorServiceMock.listConnectedDevices() }
@@ -463,6 +464,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             adbConnection = adbConnection,
             metaData = metaData
         ))
+        val afterAdb = sut.devices
 
         sut.onChangedServiceEvent(DeviceDiscoveryEvent(
             connectionName = "mdns-service-name",
@@ -473,9 +475,10 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             state = DeviceDiscoveryEvent.State.Resolved
         ))
 
+        // mDNS event discarded — ADB entry unchanged
+        assertEquals(expected = afterAdb, actual = sut.devices)
         assertEquals(1, sut.devices.size)
-        assertEquals("mdns-service-name", sut.devices.single().connectionName)
-        assertEquals("10.0.2.15", sut.devices.single().hostAddress)
+        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionName)
     }
 
     @Test
