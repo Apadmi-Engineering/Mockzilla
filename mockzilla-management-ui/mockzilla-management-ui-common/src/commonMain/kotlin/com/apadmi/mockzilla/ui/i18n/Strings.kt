@@ -129,6 +129,7 @@ data class Strings(
          * @property presentationMode
          * @property fontScaleLabel
          * @property actionsSection
+         * @property darkMode
          */
         data class MiscControls(
             val refreshAll: String,
@@ -136,6 +137,7 @@ data class Strings(
             val title: String,
             val actionsSection: String,
             val presentationMode: String,
+            val darkMode: String,
             val fontScaleLabel: (Float) -> String,
         )
 

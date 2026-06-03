@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
-gem "fastlane"
-gem "fastlane-plugin-screenshotbot", '~> 0.3.1'
-gem 'fastlane-plugin-apadmi_grout', '~> 2.11.0'
-gem 'fastlane-plugin-flutter', '~>0.8.0'
-gem 'cocoapods', '~> 1.16'
+gem "fastlane", '~> 2.234.0'
+gem "fastlane-plugin-screenshotbot", '~> 1.0.0'
+gem 'fastlane-plugin-apadmi_grout', '~> 3.0.2'
+gem 'fastlane-plugin-flutter', '~> 0.8.0'
+gem 'cocoapods', '~> 1.16.2'

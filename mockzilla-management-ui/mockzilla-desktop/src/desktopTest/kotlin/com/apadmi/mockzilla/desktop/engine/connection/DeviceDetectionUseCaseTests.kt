@@ -32,12 +32,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     ServiceInfoWrapper.State.Found
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(IpAddress("a")),
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidDevice),
                     port = 8080,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -52,12 +53,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     ServiceInfoWrapper.State.Found
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(IpAddress("a")),
                     metaData = null,
                     port = 8080,
                     adbConnection = null,
+                    prettyName = "connection name",
                     state = DetectedDevice.State.Resolving
                 )
             ),
@@ -72,12 +74,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     ServiceInfoWrapper.State.Found
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(IpAddress("b")),
                     metaData = null,
                     port = 8_087_854,
                     adbConnection = null,
+                    prettyName = "connection name",
                     state = DetectedDevice.State.Resolving
                 )
             ),
@@ -92,12 +95,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     ServiceInfoWrapper.State.Resolved
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(IpAddress("b")),
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosDevice),
                     port = 8_087_854,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -113,7 +117,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                 ),
                 isLocalIpAddress = true,
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(
                         "b",
@@ -122,6 +126,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosSimulator),
                     port = 8_087_854,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -137,7 +142,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                 ),
                 isLocalIpAddress = false,
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(
                         "b",
@@ -146,6 +151,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosSimulator),
                     port = 1_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.NotYourSimulator
                 )
             ),
@@ -165,7 +171,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     ipAddresses = listOf(IpAddress("some local machine ip address"))
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("some local machine ip address").map { IpAddress(it) },
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator),
@@ -175,6 +181,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                         true,
                         listOf(IpAddress("some local machine ip address"))
                     ),
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -194,12 +201,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     ipAddresses = listOf(IpAddress("some local machine ip address"))
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("some remote machine ip address").map { IpAddress(it) },
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator),
                     port = 13_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.NotYourSimulator
                 )
             )
@@ -250,12 +258,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         assertEquals(
             expected = listOf(
                 DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = emptyList(),
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosDevice),
                     port = 13_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -264,12 +273,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         assertEquals(
             expected = listOf(
                 DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = emptyList(),
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosDevice),
                     port = 13_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.Removed
                 )
             ),

@@ -58,7 +58,7 @@ class ActiveDeviceManagerImpl(
                     metaDataUseCase.getMetaData(device, isPolling = true).fold(onSuccess = { metaData ->
                         statefulDevice.copy(
                             isConnected = true,
-                            connectedAppPackage = metaData.appPackage
+                            metaData = metaData
                         )
                     }, onFailure = {
                         statefulDevice.copy(isConnected = false)
@@ -89,9 +89,8 @@ class ActiveDeviceManagerImpl(
     override fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData) {
         allDevicesInternal[device] = StatefulDevice(
             device = device,
-            name = "${metadata.runTarget ?: metadata.appPackage}-${metadata.deviceModel}",
+            metaData = metadata,
             isConnected = true,
-            connectedAppPackage = metadata.appPackage,
             isCompatibleMockzillaVersion = metadata.mockzillaVersion.toVersion() >= Config.minSupportedMockzillaVersion
         ).also {
             selectedDevice.value = it

@@ -3,7 +3,6 @@ package com.apadmi.mockzilla.ui.ui.common.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,15 +29,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
-import org.jetbrains.compose.ui.tooling.preview.Preview
+
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.time.Duration.Companion.days
@@ -79,7 +80,7 @@ internal fun ResponseLatencyCard(
     }
 
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val isDark = LocalForceDarkMode.current
     val cardShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
     val componentShape = if (isDark) RoundedCornerShape(4.dp) else RoundedCornerShape(6.dp)
 
@@ -206,7 +207,7 @@ internal fun ResponseLatencyCard(
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            MockzillaSlider(
+            CustomSlider(
                 value = value?.toFloat() ?: 0f,
                 valueRange = 0f..sliderMax,
                 modifier = Modifier.fillMaxWidth(),

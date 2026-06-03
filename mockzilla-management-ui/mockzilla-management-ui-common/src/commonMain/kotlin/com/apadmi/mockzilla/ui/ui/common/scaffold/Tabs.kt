@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -16,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
@@ -25,14 +26,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.desktop.utils.rotateVertically
-
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Immutable
 data class VerticalTab(
@@ -63,25 +63,8 @@ fun VerticalTabList(
     val isDark = colorScheme.surface == darkSurface
     Column(
         modifier = modifier
-            .background(if (isDark) colorScheme.surfaceContainerLow else colorScheme.surfaceContainer)
-            .drawBehind {
-                val strokeWidth = 1.dp.toPx()
-                if (clockwise) {
-                    drawLine(
-                        color = colorScheme.outline,
-                        start = Offset(0f, 0f),
-                        end = Offset(0f, size.height),
-                        strokeWidth = strokeWidth
-                    )
-                } else {
-                    drawLine(
-                        color = colorScheme.outline,
-                        start = Offset(size.width, 0f),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = strokeWidth
-                    )
-                }
-            }
+            .fillMaxHeight()
+            .background(colorScheme.surface)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
     ) {
@@ -149,32 +132,19 @@ private fun TabItem(
     trailing: (@Composable () -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    Box(
-        modifier = modifier
-            .background(if (selected) colorScheme.surface else Color.Transparent)
-            .selectable(selected = selected, onClick = onSelect)
-            .heightIn(min = 44.dp),
-        contentAlignment = Alignment.Center,
+    Column(
+        modifier = modifier.background(
+            if (selected) {
+                colorScheme.surfaceContainerHighest.copy(alpha = 0.5f)
+            } else {
+                Color.Transparent
+            }
+        ).selectable(selected = selected, onClick = onSelect),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (selected) {
-            Box(
-                Modifier
-                    .matchParentSize()
-                    .drawBehind {
-                        val strokeWidth = 2.dp.toPx()
-                        drawLine(
-                            color = colorScheme.primary,
-                            start = Offset(0f, size.height - strokeWidth / 2),
-                            end = Offset(size.width, size.height - strokeWidth / 2),
-                            strokeWidth = strokeWidth
-                        )
-                    }
-            )
-        }
         Row(
             modifier = Modifier
-                .minimumInteractiveComponentSize()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             leadingContent?.invoke()
@@ -198,6 +168,8 @@ private fun TabItem(
                         text = title,
                         style = MaterialTheme.typography.labelLarge,
                         color = if (selected) colorScheme.primary else colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        softWrap = false,
                     )
                 }
                 subtitle?.let {
@@ -212,6 +184,16 @@ private fun TabItem(
                 Spacer(modifier = Modifier.width(8.dp))
                 it()
             }
+        }
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .background(colorScheme.primary)
+            )
+        } else {
+            Spacer(modifier = Modifier.height(3.dp))
         }
     }
 }

@@ -42,7 +42,13 @@ class DeviceTabsViewModel(
 
     private fun reloadData(selectedDevice: Device?) {
         state.value = State(devices = activeDeviceMonitor.allDevices.map {
-            State.DeviceTabEntry(it.name, it.device == selectedDevice, it.isConnected, it.device)
+            State.DeviceTabEntry(
+                it.metaData.appName,
+                it.metaData.deviceModel,
+                it.device == selectedDevice,
+                it.isConnected,
+                it.device
+            )
         })
     }
 
@@ -51,13 +57,15 @@ class DeviceTabsViewModel(
      */
     data class State(val devices: List<DeviceTabEntry>) {
         /**
-         * @property name
          * @property isActive
          * @property isConnected
          * @property underlyingDevice
+         * @property appName
+         * @property deviceName
          */
         data class DeviceTabEntry(
-            val name: String,
+            val appName: String,
+            val deviceName: String,
             val isActive: Boolean,
             val isConnected: Boolean,
             val underlyingDevice: Device

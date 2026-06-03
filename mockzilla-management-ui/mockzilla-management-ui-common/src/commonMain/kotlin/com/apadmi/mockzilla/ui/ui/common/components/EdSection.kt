@@ -8,7 +8,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,13 +35,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
-
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private const val animationDuration = 200
 private const val rotationCollapsed = 0f
@@ -59,7 +57,7 @@ fun EdSection(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val isDark = LocalForceDarkMode.current
     val sectionShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(sectionCornerRadius.dp)
 
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }

@@ -8,7 +8,7 @@
         <activity
             android:name="com.apadmi.mockzilla.MockzillaManagementSdkActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/Theme.MockzillaBottomSheet"
             tools:ignore="DiscouragedApi" />
     </application>
 </manifest>

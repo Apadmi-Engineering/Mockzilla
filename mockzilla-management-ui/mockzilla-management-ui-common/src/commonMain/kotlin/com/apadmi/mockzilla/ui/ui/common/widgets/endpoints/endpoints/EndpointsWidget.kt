@@ -17,8 +17,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,8 +33,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -47,6 +45,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -57,11 +56,12 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
+import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 private const val minContentWidthDp = 300
@@ -122,13 +122,15 @@ private fun EndpointsList(
     onFilterUpdate: (String) -> Unit,
     onRowDensityChanged: (RowDensity) -> Unit,
 ) = Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-    FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
-    EndpointsHeader(
-        displayedCount = state.endpoints.size,
-        totalCount = state.allEndpoints.size,
-        selectedRowDensity = state.rowDensity,
-        onRowDensityChanged = onRowDensityChanged,
-    )
+    Column(modifier = Modifier.padding(12.dp)) {
+        FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
+        EndpointsHeader(
+            displayedCount = state.endpoints.size,
+            totalCount = state.allEndpoints.size,
+            selectedRowDensity = state.rowDensity,
+            onRowDensityChanged = onRowDensityChanged,
+        )
+    }
     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
     state.endpoints.forEach { endpoint ->
         EndpointRow(
@@ -315,15 +317,13 @@ private fun EndpointsWidgetContent(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = MaterialTheme.colorScheme.surface)
     ) {
         val contentWidth = maxOf(maxWidth, minContentWidthDp.dp)
         Box(
             modifier = Modifier
                 .horizontalScroll(scrollState)
                 .width(contentWidth)
-                .padding(horizontal = 12.dp, vertical = 15.dp)
-                .navigationBarsPadding()
         ) {
             when (state) {
                 EndpointsViewModel.State.Loading -> CircularProgressIndicator()
@@ -360,42 +360,19 @@ private fun FilterTextField(
     value: String,
     onFilterUpdate: (String) -> Unit,
     strings: Strings = LocalStrings.current
-) = TextField(
-    modifier = Modifier
-        .fillMaxWidth()
-        .height(48.dp)
-        .border(
-            1.dp,
-            MaterialTheme.colorScheme.onBackground.copy(alpha = UNSELECTED_BORDER_ALPHA),
-            RoundedCornerShape(8.dp)
-        ),
+) = CustomTextField(
+    modifier = Modifier.fillMaxWidth(),
     value = value,
     onValueChange = onFilterUpdate,
-    textStyle = MaterialTheme.typography.bodyLarge,
-    placeholder = {
-        Text(
-            text = strings.widgets.endpoints.filterPlaceholder,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    },
+    placeholderText = strings.widgets.endpoints.filterPlaceholder,
     leadingIcon = {
         Icon(
             imageVector = Icons.Default.Search,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            tint = MaterialTheme.colorScheme.onSurfaceMuted,
         )
     },
     singleLine = true,
-    shape = RoundedCornerShape(8.dp),
-    colors = TextFieldDefaults.colors().copy(
-        focusedContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
-        unfocusedContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
-        disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        disabledIndicatorColor = Color.Transparent,
-    )
 )
 
 @Preview

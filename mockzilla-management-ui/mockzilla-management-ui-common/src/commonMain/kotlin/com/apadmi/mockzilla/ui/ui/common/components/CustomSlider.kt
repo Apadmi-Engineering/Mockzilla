@@ -17,13 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MockzillaSlider(
+fun CustomSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
@@ -101,12 +102,12 @@ private fun MockzillaSliderPreview() = PreviewSurface {
         Modifier.padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        MockzillaSlider(
+        CustomSlider(
             value = 0.4f,
             onValueChange = {},
         )
 
-        MockzillaSlider(
+        CustomSlider(
             value = 0.7f,
             onValueChange = {},
             enabled = false,

@@ -18,6 +18,7 @@ plugins {
     alias(libs.plugins.buildKonfig)
     alias(libs.plugins.vanniktechPublish)
     kotlin("native.cocoapods") apply true
+    alias(libs.plugins.dokka) apply true
 }
 
 val artifactName = "mockzilla"
@@ -186,11 +187,6 @@ buildkonfig {
     defaultConfigs {
         buildConfigField(STRING, "VERSION_NAME", version.toString())
     }
-}
-
-private val javadocJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("javadoc")
-    from(tasks.dokkaHtml)
 }
 
 mavenPublishing {

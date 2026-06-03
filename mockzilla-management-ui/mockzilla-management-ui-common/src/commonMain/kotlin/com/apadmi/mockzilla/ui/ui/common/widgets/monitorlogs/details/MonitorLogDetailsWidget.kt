@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
@@ -54,7 +55,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogD
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsViewModel.State.ViewDetails.Tab
 
 import io.ktor.http.HttpStatusCode
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MonitorLogDetailsWidget(

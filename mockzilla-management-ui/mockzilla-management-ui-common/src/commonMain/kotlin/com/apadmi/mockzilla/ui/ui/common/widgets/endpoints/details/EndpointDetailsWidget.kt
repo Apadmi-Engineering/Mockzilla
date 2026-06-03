@@ -4,7 +4,6 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +41,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
@@ -72,7 +72,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetai
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.core.parameter.parametersOf
 
 private val tealColor = Color(0xFF_0D9_488)
@@ -91,7 +90,7 @@ private fun ColumnScope.PopulatedState(
     onCreatePreset: () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val isDark = LocalForceDarkMode.current
     val accentColor = if (isDark) colorScheme.primary else tealColor
 
     Box {
@@ -212,7 +211,6 @@ private fun ColumnScope.PopulatedState(
                 leadingIcon = Icons.Default.Add,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Sm,
-                contentColor = if (isDark) colorScheme.onSurface else null,
                 onClick = onCreatePreset
             )
         }
@@ -316,7 +314,7 @@ private fun ActivePresetBanner(
     onClear: () -> Unit
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = LocalForceDarkMode.current || isSystemInDarkTheme()
+    val isDark = LocalForceDarkMode.current
     val bannerBg = if (isDark) Color.Transparent else Color(0xFF_F0F_DFA)
     val successColors = colorScheme.success
 

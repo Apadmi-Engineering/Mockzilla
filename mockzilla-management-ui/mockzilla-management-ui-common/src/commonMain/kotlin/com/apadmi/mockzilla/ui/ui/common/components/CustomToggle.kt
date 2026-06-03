@@ -21,16 +21,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
-import com.apadmi.mockzilla.ui.ui.common.theme.surfaceMuted
-
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun MzkToggle(
+fun CustomToggle(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -39,7 +37,7 @@ fun MzkToggle(
     val colorScheme = MaterialTheme.colorScheme
 
     val trackColor by animateColorAsState(
-        targetValue = if (checked) colorScheme.primary else colorScheme.surfaceMuted,
+        targetValue = if (checked) colorScheme.primary else colorScheme.surfaceContainer,
         animationSpec = tween(140),
     )
     val thumbColor by animateColorAsState(
@@ -75,12 +73,12 @@ fun MzkToggle(
 private fun MzkTogglePreview() = PreviewSurface {
     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            MzkToggle(checked = false, onCheckedChange = {})
-            MzkToggle(checked = true, onCheckedChange = {})
+            CustomToggle(checked = false, onCheckedChange = {})
+            CustomToggle(checked = true, onCheckedChange = {})
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            MzkToggle(checked = false, enabled = false, onCheckedChange = {})
-            MzkToggle(checked = true, enabled = false, onCheckedChange = {})
+            CustomToggle(checked = false, enabled = false, onCheckedChange = {})
+            CustomToggle(checked = true, enabled = false, onCheckedChange = {})
         }
     }
 }

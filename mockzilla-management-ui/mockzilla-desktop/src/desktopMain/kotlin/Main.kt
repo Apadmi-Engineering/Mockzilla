@@ -11,7 +11,7 @@ import com.apadmi.mockzilla.desktop.utils.rememberAppIcon
 import java.awt.Dimension
 import java.awt.GraphicsEnvironment
 
-private const val minWindowSizeDp = 1300
+private const val minWindowSizeDp = 400
 
 fun main() = application {
     val state = rememberWindowState(

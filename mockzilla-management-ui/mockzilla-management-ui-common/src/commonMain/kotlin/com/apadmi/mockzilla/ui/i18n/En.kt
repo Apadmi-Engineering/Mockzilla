@@ -18,7 +18,7 @@ val EnStrings = Strings(
     widgets = Strings.Widgets(
         deviceConnection = Strings.Widgets.DeviceConnection(
             title = "Mockzilla",
-            subTile = "Dynamic mock server configuration for Android\n& iOS development",
+            subTile = "Dynamic mock server configuration for Android & iOS development",
             bullet1 = "Intercept HTTP at runtime",
             bullet2 = "Switch presets on the fly",
             bullet3 = "Simulate network latency",
@@ -196,6 +196,7 @@ val EnStrings = Strings(
             title = "Tools",
             actionsSection = "Actions",
             presentationMode = "Presentation mode",
+            darkMode = "Dark Mode",
             fontScaleLabel = { scale -> "${(scale * 100).roundToInt()}%" }
         ),
         unsupportedMockzilla = Strings.Widgets.UnsupportedMockzillaVersion(

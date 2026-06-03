@@ -17,7 +17,7 @@ platform :ios do
         scan(
             package_path: "#{lane_context[:repo_root]}/SwiftMockzilla",
             scheme: "SwiftMockzilla",
-            destination: "platform=iOS Simulator,name=iPhone 15 Pro Max,OS=17.5",
+            destination: "platform=iOS Simulator,name=iPhone 16e,OS=26.2",
             result_bundle: true,
             output_directory: "#{lane_context[:repo_root]}/fastlane/test_output"
         )
