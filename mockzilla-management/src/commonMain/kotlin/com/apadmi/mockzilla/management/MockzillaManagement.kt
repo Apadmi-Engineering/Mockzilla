@@ -72,6 +72,12 @@ interface MockzillaManagement {
         ): Result<MonitorLogsResponse>
     }
 
+    /**
+     * @property disableProxy
+     */
+    data class Config(
+        val disableProxy: Boolean = false
+    )
     private data class Instance(
         override val underlyingRepository: MockzillaManagementRepository,
         override val updateService: UpdateService,
@@ -82,9 +88,12 @@ interface MockzillaManagement {
     ) : MockzillaManagement
 
     companion object {
-        val instance: MockzillaManagement by lazy {
-            val repo = MockzillaManagementRepositoryImpl.create()
-            Instance(repo, UpdateServiceImpl(repo), repo, repo, repo, repo)
+        @Deprecated("This property is deprecated")
+        val instance: MockzillaManagement by lazy { constructInstance() }
+
+        fun constructInstance(config: Config = Config()): MockzillaManagement {
+            val repo = MockzillaManagementRepositoryImpl.create(config)
+            return Instance(repo, UpdateServiceImpl(repo), repo, repo, repo, repo)
         }
     }
 }
