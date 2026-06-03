@@ -444,6 +444,12 @@ data class Strings(
          * @property addHeaderValuePlaceholder
          * @property save
          * @property unset
+         * @property cancel
+         * @property endpointSubtitle
+         * @property statusCodeRowLabel
+         * @property bodyTypeLabel
+         * @property responseSectionLabel
+         * @property bodyLabel
          */
         data class CreateEditPreset(
             val createTitle: String,

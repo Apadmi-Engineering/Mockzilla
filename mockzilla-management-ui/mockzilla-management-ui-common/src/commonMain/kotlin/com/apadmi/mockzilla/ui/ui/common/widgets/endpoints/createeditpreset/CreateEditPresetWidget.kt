@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,7 +43,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -77,7 +77,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
-import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 
@@ -100,262 +99,6 @@ internal fun Modifier.card() = fillMaxWidth()
         color = MaterialTheme.colorScheme.outline,
         shape = RoundedCornerShape(12.dp)
     )
-
-@Composable
-internal fun TitleRow(
-    isSet: Boolean,
-    icon: ImageVector,
-    onReset: () -> Unit,
-    title: String,
-    strings: Strings = LocalStrings.current,
-) = Row(
-    modifier = Modifier.padding(start = 12.dp, end = 4.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(8.dp)
-) {
-    Icon(imageVector = icon, modifier = Modifier.size(16.dp), contentDescription = null)
-    Text(modifier = Modifier.weight(1f), text = title, style = MaterialTheme.typography.titleMedium)
-    if (isSet) {
-        IconButton(onClick = onReset) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                imageVector = Icons.Default.Restore,
-                contentDescription = strings.common.resetDescription
-            )
-        }
-    }
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ──────────────────────────────────────────────────────────────────────────────
-
-private fun chipToneForStatusCode(code: Int) = when (code) {
-    in 200..299 -> ChipTone.Ok
-    in 300..399 -> ChipTone.Info
-    in 400..499 -> ChipTone.Warn
-    else -> ChipTone.Err
-}
-
-/**
- * Applies JSON syntax highlighting to [text] without reformatting it.
- * Uses the theme's [jsonHighlight] colour palette so it adapts to light/dark mode.
- * Suitable for editable fields because it never reorders the characters.
- */
-@Composable
-internal fun buildJsonAnnotatedString(text: String) =
-    buildHighlightedAnnotatedString(
-        text = text,
-        colors = MaterialTheme.colorScheme.jsonHighlight,
-        reformat = false,
-    )
-
-/**
- * Editable text field that applies [buildJsonAnnotatedString] syntax highlighting
- * on every keystroke without reformatting the user's text.
- */
-@Composable
-private fun JsonBodyTextField(
-    body: String,
-    onBodyChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    placeholder: String,
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    // Capture highlight colours at @Composable scope — jsonHighlight has a @Composable getter
-    // so it cannot be accessed inside remember{}, LaunchedEffect{}, or onValueChange{}.
-    val highlight = colorScheme.jsonHighlight
-
-    var fieldValue by remember {
-        mutableStateOf(
-            TextFieldValue(
-                annotatedString = buildHighlightedAnnotatedString(body, highlight, reformat = false)
-            )
-        )
-    }
-
-    // Sync external changes (e.g. ViewModel load) without resetting cursor
-    LaunchedEffect(body) {
-        if (fieldValue.text != body) {
-            fieldValue = TextFieldValue(
-                annotatedString = buildHighlightedAnnotatedString(body, highlight, reformat = false),
-                selection = TextRange(body.length),
-            )
-        }
-    }
-
-    BasicTextField(
-        value = fieldValue,
-        onValueChange = { newValue ->
-            fieldValue = newValue.copy(
-                annotatedString = buildHighlightedAnnotatedString(newValue.text, highlight, reformat = false)
-            )
-            onBodyChange(newValue.text)
-        },
-        modifier = modifier
-            .background(colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
-            .padding(horizontal = 12.dp, vertical = 12.dp),
-        textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
-        decorationBox = { innerTextField ->
-            if (body.isEmpty()) {
-                Text(
-                    text = placeholder,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorScheme.onSurfaceVariant,
-                )
-            }
-            innerTextField()
-        },
-    )
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Design components
-// ──────────────────────────────────────────────────────────────────────────────
-
-@Composable
-private fun SectionLabel(title: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .padding(horizontal = 16.dp, vertical = 7.dp)
-    ) {
-        Text(
-            text = title.uppercase(),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            letterSpacing = 0.8.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
-    }
-}
-
-@Composable
-private fun StatusCodeDropdown(
-    statusCode: HttpStatusCode?,
-    onSelected: (HttpStatusCode) -> Unit,
-    strings: Strings.Widgets.CreateEditPreset,
-    modifier: Modifier = Modifier,
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .clickable { expanded = true }
-                .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
-                .padding(horizontal = 10.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            if (statusCode != null) {
-                StatusChip(
-                    label = "${statusCode.value}",
-                    tone = chipToneForStatusCode(statusCode.value),
-                )
-                Text(
-                    text = statusCode.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            } else {
-                Text(
-                    text = strings.noOverrideStatusCode,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorScheme.onSurfaceVariant,
-                )
-            }
-            Icon(
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = null,
-                tint = colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(20.dp),
-            )
-        }
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            HttpStatusCode.allStatusCodes.forEach { code ->
-                DropdownMenuItem(
-                    text = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            StatusChip(
-                                label = "${code.value}",
-                                tone = chipToneForStatusCode(code.value),
-                            )
-                            Text(
-                                text = code.description,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                    },
-                    onClick = {
-                        onSelected(code)
-                        expanded = false
-                    },
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun BodyTypeToggle(
-    selected: State.Editing.ResponseType,
-    onSelect: (State.Editing.ResponseType) -> Unit,
-    strings: Strings.Widgets.CreateEditPreset,
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    val types = State.Editing.ResponseType.entries
-    Row(
-        modifier = Modifier
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(6.dp))
-            .height(IntrinsicSize.Min)
-    ) {
-        types.forEachIndexed { index, type ->
-            val isSelected = selected == type
-            val shape = when (index) {
-                0 -> RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp)
-                types.lastIndex -> RoundedCornerShape(topEnd = 5.dp, bottomEnd = 5.dp)
-                else -> RoundedCornerShape(0.dp)
-            }
-            Box(
-                modifier = Modifier
-                    .clickable { onSelect(type) }
-                    .background(
-                        color = if (isSelected) colorScheme.primaryContainer else Color.Transparent,
-                        shape = shape,
-                    )
-                    .padding(horizontal = 14.dp, vertical = 7.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = when (type) {
-                        State.Editing.ResponseType.Json -> strings.bodyTypeJson
-                        State.Editing.ResponseType.PlainText -> strings.bodyTypePlain
-                    },
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                )
-            }
-            if (index < types.lastIndex) {
-                Box(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .fillMaxHeight()
-                        .background(colorScheme.outline)
-                )
-            }
-        }
-    }
-}
 
 @Composable
 private fun ColumnScope.PanelHeader(
@@ -475,30 +218,26 @@ private fun ColumnScope.HeadersSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(start = 16.dp, end = 4.dp, top = 10.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = header.key,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                )
-                if (header.value.isNotEmpty()) {
-                    Text(
-                        text = header.value,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
+            Text(
+                text = header.key,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = " : ${header.value}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.weight(1f),
+            )
             IconButton(onClick = { onRemoveHeader(header) }) {
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp),
                 )
             }
         }
@@ -519,13 +258,23 @@ private fun ColumnScope.HeadersSection(
         CustomTextField(
             modifier = Modifier.weight(1f),
             value = state.newHeader.key,
-            placeholder = { Text(text = strings.addHeaderKeyPlaceholder) },
+            placeholder = {
+                Text(
+                    text = strings.addHeaderKeyPlaceholder,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
             onValueChange = { onUpdateNewHeader(it, null) },
         )
         CustomTextField(
             modifier = Modifier.weight(1f),
             value = state.newHeader.value,
-            placeholder = { Text(text = strings.addHeaderValuePlaceholder) },
+            placeholder = {
+                Text(
+                    text = strings.addHeaderValuePlaceholder,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
             onValueChange = { onUpdateNewHeader(null, it) },
         )
         Box(
@@ -560,12 +309,12 @@ private fun ColumnScope.PopulatedState(
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
-    val s = strings.widgets.createEditPreset
+    val str = strings.widgets.createEditPreset
 
     PanelHeader(state, endpointName, onCancel, onSave, strings)
 
     // ── RESPONSE section ─────────────────────────────────────────────────────
-    SectionLabel(s.responseSectionLabel)
+    SectionLabel(str.responseSectionLabel)
 
     // Status code — label left, dropdown right
     Row(
@@ -575,11 +324,11 @@ private fun ColumnScope.PopulatedState(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(text = s.statusCodeRowLabel, style = MaterialTheme.typography.bodyMedium)
+        Text(text = str.statusCodeRowLabel, style = MaterialTheme.typography.bodyMedium)
         StatusCodeDropdown(
             statusCode = state.statusCode,
             onSelected = onStatusCodeSelected,
-            strings = s,
+            strings = str,
         )
     }
 
@@ -596,11 +345,11 @@ private fun ColumnScope.PopulatedState(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(text = s.bodyTypeLabel, style = MaterialTheme.typography.bodyMedium)
+        Text(text = str.bodyTypeLabel, style = MaterialTheme.typography.bodyMedium)
         BodyTypeToggle(
             selected = state.responseType,
             onSelect = onNewResponseType,
-            strings = s,
+            strings = str,
         )
     }
 
@@ -609,17 +358,23 @@ private fun ColumnScope.PopulatedState(
         color = MaterialTheme.colorScheme.outlineVariant,
     )
 
-    BodySection(state, onNewResponseBody, s)
+    BodySection(state, onNewResponseBody, str)
 
     // ── HEADERS section ───────────────────────────────────────────────────────
-    SectionLabel(strings.widgets.createEditPreset.headersTitle)
+    val headerCount = state.headers.size
+    val headersLabel = if (headerCount > 0) {
+        "${strings.widgets.createEditPreset.headersTitle} ($headerCount)"
+    } else {
+        strings.widgets.createEditPreset.headersTitle
+    }
+    SectionLabel(headersLabel)
 
     HeadersSection(
         state = state,
         onUpdateNewHeader = onUpdateNewHeader,
         onAddHeader = onAddHeader,
         onRemoveHeader = onRemoveHeader,
-        strings = s,
+        strings = str,
     )
 }
 
@@ -700,6 +455,263 @@ fun CreateEditPresetWidgetContent(
             onRemoveHeader = onRemoveHeader,
             strings = strings,
         )
+    }
+}
+
+@Composable
+internal fun TitleRow(
+    isSet: Boolean,
+    icon: ImageVector,
+    onReset: () -> Unit,
+    title: String,
+    strings: Strings = LocalStrings.current,
+) = Row(
+    modifier = Modifier.padding(start = 12.dp, end = 4.dp),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(8.dp)
+) {
+    Icon(imageVector = icon, modifier = Modifier.size(16.dp), contentDescription = null)
+    Text(modifier = Modifier.weight(1f), text = title, style = MaterialTheme.typography.titleMedium)
+    if (isSet) {
+        IconButton(onClick = onReset) {
+            Icon(
+                modifier = Modifier.size(20.dp),
+                imageVector = Icons.Default.Restore,
+                contentDescription = strings.common.resetDescription
+            )
+        }
+    }
+}
+
+/**
+ * Applies JSON syntax highlighting to [text] without reformatting it.
+ * Uses the theme's [jsonHighlight] colour palette so it adapts to light/dark mode.
+ * Suitable for editable fields because it never reorders the characters.
+ *
+ * @param text The raw JSON (or plain) string to highlight.
+ * @return
+ */
+@Composable
+internal fun buildJsonAnnotatedString(text: String) =
+    buildHighlightedAnnotatedString(
+        text = text,
+        colors = MaterialTheme.colorScheme.jsonHighlight,
+        reformat = false,
+    )
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ──────────────────────────────────────────────────────────────────────────────
+
+private fun chipToneForStatusCode(code: Int) = when (code) {
+    in 200..299 -> ChipTone.Ok
+    in 300..399 -> ChipTone.Info
+    in 400..499 -> ChipTone.Warn
+    else -> ChipTone.Err
+}
+
+/**
+ * Editable text field that applies [buildJsonAnnotatedString] syntax highlighting
+ * on every keystroke without reformatting the user's text.
+ */
+@Composable
+private fun JsonBodyTextField(
+    body: String,
+    onBodyChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    placeholder: String,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    // Capture highlight colours at @Composable scope — jsonHighlight has a @Composable getter
+    // so it cannot be accessed inside remember{}, LaunchedEffect{}, or onValueChange{}.
+    val highlight = colorScheme.jsonHighlight
+
+    var fieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                annotatedString = buildHighlightedAnnotatedString(body, highlight, reformat = false)
+            )
+        )
+    }
+
+    // Sync external changes (e.g. ViewModel load) without resetting cursor
+    LaunchedEffect(body) {
+        if (fieldValue.text != body) {
+            fieldValue = TextFieldValue(
+                annotatedString = buildHighlightedAnnotatedString(body, highlight, reformat = false),
+                selection = TextRange(body.length),
+            )
+        }
+    }
+
+    BasicTextField(
+        value = fieldValue,
+        onValueChange = { newValue ->
+            fieldValue = newValue.copy(
+                annotatedString = buildHighlightedAnnotatedString(newValue.text, highlight, reformat = false)
+            )
+            onBodyChange(newValue.text)
+        },
+        modifier = modifier
+            .background(colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
+        decorationBox = { innerTextField ->
+            if (body.isEmpty()) {
+                Text(
+                    text = placeholder,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorScheme.onSurfaceVariant,
+                )
+            }
+            innerTextField()
+        },
+    )
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Design components
+// ──────────────────────────────────────────────────────────────────────────────
+
+@Composable
+private fun SectionLabel(title: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .padding(horizontal = 16.dp, vertical = 7.dp)
+    ) {
+        Text(
+            text = title.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            letterSpacing = 0.8.sp,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
+@Composable
+private fun StatusCodeDropdown(
+    statusCode: HttpStatusCode?,
+    onSelected: (HttpStatusCode) -> Unit,
+    strings: Strings.Widgets.CreateEditPreset,
+    modifier: Modifier = Modifier,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .clickable { expanded = true }
+                .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+                .padding(horizontal = 10.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            statusCode?.let {
+                StatusChip(
+                    label = "${statusCode.value}",
+                    tone = chipToneForStatusCode(statusCode.value),
+                )
+                Text(
+                    text = statusCode.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            } ?: Text(
+                text = strings.noOverrideStatusCode,
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorScheme.onSurfaceVariant,
+            )
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = null,
+                tint = colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp),
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            HttpStatusCode.allStatusCodes.forEach { code ->
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            StatusChip(
+                                label = "${code.value}",
+                                tone = chipToneForStatusCode(code.value),
+                            )
+                            Text(
+                                text = code.description,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    },
+                    onClick = {
+                        onSelected(code)
+                        expanded = false
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BodyTypeToggle(
+    selected: State.Editing.ResponseType,
+    onSelect: (State.Editing.ResponseType) -> Unit,
+    strings: Strings.Widgets.CreateEditPreset,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val types = State.Editing.ResponseType.entries
+    Row(
+        modifier = Modifier
+            .border(1.dp, colorScheme.outline, RoundedCornerShape(6.dp))
+            .height(IntrinsicSize.Min)
+    ) {
+        types.forEachIndexed { index, type ->
+            val isSelected = selected == type
+            val shape = when (index) {
+                0 -> RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp)
+                types.lastIndex -> RoundedCornerShape(topEnd = 5.dp, bottomEnd = 5.dp)
+                else -> RoundedCornerShape(0.dp)
+            }
+            Box(
+                modifier = Modifier
+                    .clickable { onSelect(type) }
+                    .background(
+                        color = if (isSelected) colorScheme.primaryContainer else Color.Transparent,
+                        shape = shape,
+                    )
+                    .padding(horizontal = 14.dp, vertical = 7.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = when (type) {
+                        State.Editing.ResponseType.Json -> strings.bodyTypeJson
+                        State.Editing.ResponseType.PlainText -> strings.bodyTypePlain
+                    },
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant,
+                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                )
+            }
+            if (index < types.lastIndex) {
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .fillMaxHeight()
+                        .background(colorScheme.outline)
+                )
+            }
+        }
     }
 }
 

@@ -138,7 +138,7 @@ internal fun buildHighlightedAnnotatedString(
     val formatted = when {
         isMinified -> text.minifyJson()
         reformat -> text.prettyPrintJson()
-        else -> text // highlight in-place without reformatting (suitable for editable fields)
+        else -> text  // highlight in-place without reformatting (suitable for editable fields)
     }
     return buildAnnotatedString {
         var charIdx = 0
