@@ -63,7 +63,9 @@ MockzillaManagement.CacheClearingService {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
     }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/meta" }
+        if (!hideFromLogs) {
+            Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/meta" }
+        }
     }
 
     override suspend fun fetchAllEndpointConfigs(

@@ -24,6 +24,7 @@ import kotlinx.coroutines.yield
 
 private val zeroConfStub = object : ZeroConfDiscoveryService {
     override suspend fun makeDiscoverable(metaData: MetaData, port: Int) = Unit
+    override suspend fun stop() = Unit
 }
 
 internal typealias SetupBlock = suspend (cacheService: LocalCacheService) -> Unit

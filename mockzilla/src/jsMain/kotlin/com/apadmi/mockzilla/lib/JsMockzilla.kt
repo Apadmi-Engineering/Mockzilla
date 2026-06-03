@@ -47,13 +47,17 @@ suspend fun startMockzilla(
     ) {
         object : ZeroConfDiscoveryService {
             override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
-                Logger.i("Mockzilla") { "ZeroConf not supported for JS Mockzilla" }
+                Logger.i(tag = "Mockzilla") { "ZeroConf not supported for JS Mockzilla" }
+            }
+
+            override suspend fun stop() {
+                Logger.i(tag = "Mockzilla") { "ZeroConf not supported for JS Mockzilla" }
             }
         }
     }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
-fun stopMockzilla() = GlobalScope.promise {
+actual fun stopMockzilla() = GlobalScope.promise {
     stopServer()
-}
+}.let { /* no-op */ }
