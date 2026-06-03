@@ -54,7 +54,7 @@ fun startMockzilla(
 }
 
 /**
- * Stops the Mockzilla server,
+ * Stops the running Mockzilla server.
  *
  * @return
  */

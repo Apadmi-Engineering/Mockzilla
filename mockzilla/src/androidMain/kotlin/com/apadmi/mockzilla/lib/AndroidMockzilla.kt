@@ -46,7 +46,7 @@ fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeP
 }
 
 /**
- * Stops the Mockzilla server,
+ * Stops the running Mockzilla server.
  *
  * @return
  */

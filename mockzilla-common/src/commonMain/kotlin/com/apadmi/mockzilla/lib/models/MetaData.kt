@@ -8,18 +8,18 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNames
 
 /**
- * @property appName
- * @property appPackage
- * @property operatingSystemVersion
- * @property deviceModel
- * @property appVersion
- * @property runTarget
- * @property mockzillaVersion
+ * Device and application metadata collected when Mockzilla starts. Displayed in the management
+ * dashboard to identify the connected device, and used in ZeroConf service records.
  *
  * Don't add non optional fields to this type since that will break backward compatibility
  *
- * Short alternative JsonNames used for encoding/decoding when ZeroConf is used to reduce payload size
- *
+ * @property appName The name of the application.
+ * @property appPackage The application package name or bundle identifier.
+ * @property operatingSystemVersion The OS version string of the device.
+ * @property deviceModel The device model identifier.
+ * @property appVersion The application version string.
+ * @property runTarget The platform the server is running on, or `null` if unknown.
+ * @property mockzillaVersion The version of the Mockzilla library.
  */
 @Serializable
 data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
@@ -51,14 +51,27 @@ data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
     @SerialName("mzVer")
     val mockzillaVersion: String
 ) {
+    /**
+     * `true` if the server is running on an Android device or emulator.
+     */
     val isAndroid = runTarget in listOf(RunTarget.AndroidEmulator, RunTarget.AndroidDevice)
 
+    /**
+     * Serialises this metadata to a [Map] for embedding in ZeroConf TXT records.
+     *
+     * @return A map of field names to string values.
+     */
     fun toMap(): Map<String, String> {
         val encoded = json.encodeToString(this)
         return json.decodeFromString<Map<String, String>>(encoded)
     }
 
     companion object {
+        /**
+         * Maximum length in characters for each metadata field. Fields collected from the platform
+         * (device model, OS version, etc.) are truncated to this limit to comply with ZeroConf
+         * DNS-SD payload constraints (RFC 1035).
+         */
         const val maxFieldLength = 254
         private val json = Json {
             isLenient = true
@@ -66,6 +79,13 @@ data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
             explicitNulls = false
         }
 
+        /**
+         * Deserialises a [MetaData] instance from a [Map] of field names to string values, as
+         * produced by [MetaData.toMap]. Intended for reconstructing metadata received via ZeroConf
+         * TXT records.
+         *
+         * @return The deserialised [MetaData].
+         */
         fun Map<String, String>.parseMetaData(): MetaData {
             val encoded = json.encodeToString(this)
             return json.decodeFromString<MetaData>(encoded)
@@ -73,6 +93,10 @@ data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
     }
 }
 
+/**
+ * Identifies the platform on which the Mockzilla server is running. Reported in [MetaData] and
+ * visible in the management dashboard.
+ */
 enum class RunTarget {
     AndroidDevice,
     AndroidEmulator,
