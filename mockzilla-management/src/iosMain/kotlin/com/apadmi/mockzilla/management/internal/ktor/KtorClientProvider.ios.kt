@@ -15,4 +15,6 @@ internal actual fun createPlatformKtorClient(
             }
         }
     }
+
+    configure()
 }
