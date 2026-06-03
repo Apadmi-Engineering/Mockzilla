@@ -47,15 +47,16 @@ fun CustomTextField(
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
-    shape: Shape = RoundedCornerShape(8.dp)
+    shape: Shape = RoundedCornerShape(8.dp),
+    containerColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surfaceContainer,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     val colors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = MaterialTheme.colorScheme.primary,
         unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+        focusedContainerColor = containerColor,
+        unfocusedContainerColor = containerColor,
     )
 
     val resolvedTextColor = textStyle.color.takeOrElse {

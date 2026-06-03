@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,7 +22,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -57,6 +54,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -77,8 +75,11 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.urlToTitle
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
@@ -110,6 +111,7 @@ private fun ColumnScope.PanelHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -159,6 +161,10 @@ private fun ColumnScope.BodySection(
     state: State.Editing,
     onNewResponseBody: (String) -> Unit,
     strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
+) = Column(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.surfaceContainer),
 ) {
     Row(
         modifier = Modifier
@@ -179,7 +185,7 @@ private fun ColumnScope.BodySection(
             Text(
                 text = strings.responseCharacters(state.body?.length ?: 0),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.success.primary,
             )
             if (state.responseType == State.Editing.ResponseType.Json) {
                 Icon(
@@ -254,24 +260,30 @@ private fun ColumnScope.HeadersSection(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        val mutedColor = MaterialTheme.colorScheme.onSurfaceMuted
+        val inputBg = MaterialTheme.colorScheme.surfaceContainerLowest
         CustomTextField(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).height(48.dp),
             value = state.newHeader.key,
+            singleLine = true,
+            containerColor = inputBg,
             placeholder = {
                 Text(
                     text = strings.addHeaderKeyPlaceholder,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = mutedColor,
                 )
             },
             onValueChange = { onUpdateNewHeader(it, null) },
         )
         CustomTextField(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).height(48.dp),
             value = state.newHeader.value,
+            singleLine = true,
+            containerColor = inputBg,
             placeholder = {
                 Text(
                     text = strings.addHeaderValuePlaceholder,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = mutedColor,
                 )
             },
             onValueChange = { onUpdateNewHeader(null, it) },
@@ -279,19 +291,20 @@ private fun ColumnScope.HeadersSection(
         Box(
             modifier = Modifier
                 .size(48.dp)
-                .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp))
                 .clickable(onClick = onAddHeader),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = strings.addHeaderButton,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
 
-    Spacer(modifier = Modifier.height(8.dp))
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
 
 @Composable
@@ -315,20 +328,29 @@ private fun ColumnScope.PopulatedState(
     // ── RESPONSE section ─────────────────────────────────────────────────────
     SectionLabel(str.responseSectionLabel)
 
-    // Status code — label left, dropdown right
+    // Status code — label left, dropdown aligned with body-type toggle start
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(text = str.statusCodeRowLabel, style = MaterialTheme.typography.bodyMedium)
-        StatusCodeDropdown(
-            statusCode = state.statusCode,
-            onSelected = onStatusCodeSelected,
-            strings = str,
+        Text(
+            text = str.statusCodeRowLabel,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
         )
+        Box(
+            modifier = Modifier.weight(3f),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            StatusCodeDropdown(
+                statusCode = state.statusCode,
+                onSelected = onStatusCodeSelected,
+                strings = str,
+            )
+        }
     }
 
     HorizontalDivider(
@@ -336,28 +358,39 @@ private fun ColumnScope.PopulatedState(
         color = MaterialTheme.colorScheme.outlineVariant,
     )
 
-    // Body type — label left, toggle right
+    // Body type — label left, toggle starts at same x as dropdown above
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(text = str.bodyTypeLabel, style = MaterialTheme.typography.bodyMedium)
-        BodyTypeToggle(
-            selected = state.responseType,
-            onSelect = onNewResponseType,
-            strings = str,
+        Text(
+            text = str.bodyTypeLabel,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
         )
+        Box(
+            modifier = Modifier.weight(3f),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            BodyTypeToggle(
+                selected = state.responseType,
+                onSelect = onNewResponseType,
+                strings = str,
+            )
+        }
     }
 
-    HorizontalDivider(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        color = MaterialTheme.colorScheme.outlineVariant,
-    )
+    if (state.responseType != State.Editing.ResponseType.None) {
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
 
-    BodySection(state, onNewResponseBody, str)
+        BodySection(state, onNewResponseBody, str)
+    }
 
     // ── HEADERS section ───────────────────────────────────────────────────────
     val headerCount = state.headers.size
@@ -404,6 +437,7 @@ fun CreateEditPresetWidget(
 
     CreateEditPresetWidgetContent(
         state = state,
+        endpointName = urlToTitle(activeEndpoint.raw),
         onCancel = onCancel,
         onSave = viewModel::save,
         onStatusCodeSelected = viewModel::onNewStatusCode,
@@ -432,7 +466,7 @@ fun CreateEditPresetWidgetContent(
     modifier = Modifier
         .fillMaxSize()
         .verticalScroll(rememberScrollState())
-        .background(color = MaterialTheme.colorScheme.background)
+        .background(color = MaterialTheme.colorScheme.surfaceContainer)
         .navigationBarsPadding(),
 ) {
     when (state) {
@@ -521,9 +555,10 @@ private fun JsonBodyTextField(
     placeholder: String,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    // Capture highlight colours at @Composable scope — jsonHighlight has a @Composable getter
-    // so it cannot be accessed inside remember{}, LaunchedEffect{}, or onValueChange{}.
+    // Capture at @Composable scope — these have @Composable getters and cannot be accessed
+    // inside remember{}, LaunchedEffect{}, or onValueChange{}.
     val highlight = colorScheme.jsonHighlight
+    val placeholderColor = colorScheme.onSurfaceMuted
 
     var fieldValue by remember {
         mutableStateOf(
@@ -552,18 +587,21 @@ private fun JsonBodyTextField(
             onBodyChange(newValue.text)
         },
         modifier = modifier
-            .background(colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
+            .clipToBounds()
+            .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
             .padding(horizontal = 12.dp, vertical = 12.dp),
         textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
         decorationBox = { innerTextField ->
-            if (body.isEmpty()) {
-                Text(
-                    text = placeholder,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorScheme.onSurfaceVariant,
-                )
+            Box {
+                if (fieldValue.text.isEmpty()) {
+                    Text(
+                        text = placeholder,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = placeholderColor,
+                    )
+                }
+                innerTextField()
             }
-            innerTextField()
         },
     )
 }
@@ -574,6 +612,7 @@ private fun JsonBodyTextField(
 
 @Composable
 private fun SectionLabel(title: String) {
+    val mutedColor = MaterialTheme.colorScheme.onSurfaceMuted
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -583,7 +622,7 @@ private fun SectionLabel(title: String) {
         Text(
             text = title.uppercase(),
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = mutedColor,
             letterSpacing = 0.8.sp,
             fontWeight = FontWeight.SemiBold,
         )
@@ -604,6 +643,7 @@ private fun StatusCodeDropdown(
         Row(
             modifier = Modifier
                 .clickable { expanded = true }
+                .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
                 .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
                 .padding(horizontal = 10.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -669,45 +709,35 @@ private fun BodyTypeToggle(
     strings: Strings.Widgets.CreateEditPreset,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val types = State.Editing.ResponseType.entries
-    Row(
-        modifier = Modifier
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(6.dp))
-            .height(IntrinsicSize.Min)
-    ) {
-        types.forEachIndexed { index, type ->
+    val chipShape = RoundedCornerShape(8.dp)
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        State.Editing.ResponseType.entries.forEach { type ->
             val isSelected = selected == type
-            val shape = when (index) {
-                0 -> RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp)
-                types.lastIndex -> RoundedCornerShape(topEnd = 5.dp, bottomEnd = 5.dp)
-                else -> RoundedCornerShape(0.dp)
-            }
             Box(
                 modifier = Modifier
                     .clickable { onSelect(type) }
-                    .background(
-                        color = if (isSelected) colorScheme.primaryContainer else Color.Transparent,
-                        shape = shape,
+                    .background(colorScheme.surfaceContainerLowest, chipShape)
+                    .then(
+                        if (isSelected) {
+                            Modifier.border(1.dp, colorScheme.primary, chipShape)
+                        } else {
+                            Modifier
+                        }
                     )
-                    .padding(horizontal = 14.dp, vertical = 7.dp),
+                    .padding(horizontal = 14.dp, vertical = 8.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = when (type) {
                         State.Editing.ResponseType.Json -> strings.bodyTypeJson
                         State.Editing.ResponseType.PlainText -> strings.bodyTypePlain
+                        State.Editing.ResponseType.Xml -> strings.bodyTypeXml
+                        State.Editing.ResponseType.Html -> strings.bodyTypeHtml
+                        State.Editing.ResponseType.None -> strings.bodyTypeNone
                     },
                     style = MaterialTheme.typography.labelMedium,
-                    color = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant,
+                    color = if (isSelected) colorScheme.primary else colorScheme.onSurface,
                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                )
-            }
-            if (index < types.lastIndex) {
-                Box(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .fillMaxHeight()
-                        .background(colorScheme.outline)
                 )
             }
         }
