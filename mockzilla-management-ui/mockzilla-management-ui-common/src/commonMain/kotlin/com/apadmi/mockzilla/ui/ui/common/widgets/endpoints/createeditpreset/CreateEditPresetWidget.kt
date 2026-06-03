@@ -246,10 +246,7 @@ private fun ColumnScope.HeadersSection(
                 )
             }
         }
-        HorizontalDivider(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            color = MaterialTheme.colorScheme.outlineVariant,
-        )
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     }
 
     // Add header input row
@@ -353,10 +350,7 @@ private fun ColumnScope.PopulatedState(
         }
     }
 
-    HorizontalDivider(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        color = MaterialTheme.colorScheme.outlineVariant,
-    )
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
     // Body type — label left, toggle starts at same x as dropdown above
     Row(
@@ -384,10 +378,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     if (state.responseType != State.Editing.ResponseType.None) {
-        HorizontalDivider(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            color = MaterialTheme.colorScheme.outlineVariant,
-        )
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
         BodySection(state, onNewResponseBody, str)
     }
