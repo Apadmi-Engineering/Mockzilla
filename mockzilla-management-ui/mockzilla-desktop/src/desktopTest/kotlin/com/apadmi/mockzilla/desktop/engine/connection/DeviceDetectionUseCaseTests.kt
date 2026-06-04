@@ -319,7 +319,11 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
     @Test
     fun `onChangedServiceEvent - ADB path - discovered emulator - creates ReadyToConnect device at loopback`() = runBlockingTest {
         val adbConnection = AdbConnection("emulator-5554", true, emptyList())
-        val metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator)
+        val metaData = MetaData.dummy().copy(
+            appName = "app-name",
+            deviceModel = "device-model",
+            runTarget = RunTarget.AndroidEmulator
+        )
         val sut = DeviceDetectionUseCaseImpl({ false }, adbConnectorServiceMock)
 
         sut.onChangedServiceEvent(DeviceDiscoveryEvent(
@@ -335,7 +339,8 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
 
         assertEquals(
             expected = listOf(DetectedDevice(
-                connectionName = "adb:emulator-5554:8080",
+                connectionId = "adb:emulator-5554:8080",
+                prettyName = "app-name (device-model)",
                 metaData = metaData,
                 hostAddress = "127.0.0.1",
                 hostAddresses = listOf(IpAddress("127.0.0.1")),
@@ -399,7 +404,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
 
         // ADB evicts the mDNS entry and takes over
         assertEquals(1, sut.devices.size)
-        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionName)
+        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionId)
         assertEquals("127.0.0.1", sut.devices.single().hostAddress)
     }
 
@@ -427,7 +432,8 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
 
         assertEquals(
             expected = listOf(DetectedDevice(
-                connectionName = "adb:emulator-5554:8080",
+                connectionId = "adb:emulator-5554:8080",
+                prettyName = "${metaData.appName} (${metaData.deviceModel})",
                 metaData = metaData,
                 hostAddress = "127.0.0.1",
                 hostAddresses = listOf(IpAddress("127.0.0.1")),
@@ -488,7 +494,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         // mDNS event discarded — ADB entry unchanged
         assertEquals(expected = afterAdb, actual = sut.devices)
         assertEquals(1, sut.devices.size)
-        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionName)
+        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionId)
     }
 
     @Test
