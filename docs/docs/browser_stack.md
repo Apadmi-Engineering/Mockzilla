@@ -12,7 +12,6 @@ Browserstack seems to proxy local traffic by default. In your client app you'll 
 ```kotlin
 OkHttpClient.Builder()
     .proxy(Proxy.NO_PROXY)
-    .protocols(listOf(Protocol.HTTP_1_1)).build()
 ```
 
 ### Ktor Example:

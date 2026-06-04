@@ -138,10 +138,13 @@ MockzillaManagement.CacheClearingService {
     }
 
     companion object {
-        internal fun create(logger: KtorLogger) = MockzillaManagementRepositoryImpl(
-            KtorRequestRunner(KtorClientProvider.createKtorClient(logger = logger))
+        internal fun create(config: MockzillaManagement.Config, logger: KtorLogger) = MockzillaManagementRepositoryImpl(
+            KtorRequestRunner(KtorClientProvider.createKtorClient(
+                disableProxy = config.disableProxy,
+                logger = logger
+            ))
         )
 
-        fun create() = create(KtorLogger.SIMPLE)
+        fun create(config: MockzillaManagement.Config) = create(config, KtorLogger.SIMPLE)
     }
 }

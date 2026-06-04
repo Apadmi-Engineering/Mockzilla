@@ -7,6 +7,7 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
+import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepositoryImpl
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 import io.ktor.client.plugins.logging.Logger
@@ -20,7 +21,7 @@ class UpdateServiceIntegrationTests {
 
     private suspend fun getEndpointConfig(
         connection: MockzillaConnectionConfig
-    ) = MockzillaManagementRepositoryImpl.create(Logger.SIMPLE)
+    ) = MockzillaManagementRepositoryImpl.create(MockzillaManagement.Config(), Logger.SIMPLE)
         .fetchAllEndpointConfigs(connection)
         .getOrThrow()
         .first { it.key == dummyConfig.key }
