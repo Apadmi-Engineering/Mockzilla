@@ -9,6 +9,7 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -49,7 +51,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
@@ -68,13 +69,14 @@ import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
-import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
+import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
@@ -111,7 +113,7 @@ private fun ColumnScope.PanelHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -142,17 +144,11 @@ private fun ColumnScope.PanelHeader(
             label = strings.widgets.createEditPreset.save,
             variant = ButtonVariant.Solid,
             size = ButtonSize.Md,
+            leadingIcon = Icons.Default.Done,
             onClick = onSave,
         )
     }
 
-    Box(Modifier.height(2.dp).fillMaxWidth().clipToBounds()) {
-        TogglableProgressIndicator(
-            modifier = Modifier.fillMaxWidth(),
-            isLoading = state.isSaving,
-            trackColor = Color.Transparent,
-        )
-    }
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 }
 
@@ -187,11 +183,11 @@ private fun ColumnScope.BodySection(
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.success.primary,
             )
-            if (state.responseType == State.Editing.ResponseType.Json) {
+            if (state.responseType == State.Editing.ResponseType.Json && state.body?.isNotEmpty() == true) {
                 Icon(
                     imageVector = if (state.hasBodyError) Icons.Default.ErrorOutline else Icons.Default.Done,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = if (state.hasBodyError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.success.primary,
                     modifier = Modifier.size(14.dp),
                 )
             }
@@ -208,7 +204,7 @@ private fun ColumnScope.BodySection(
             .heightIn(min = 200.dp, max = 400.dp),
     )
 
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable
@@ -223,27 +219,34 @@ private fun ColumnScope.HeadersSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 4.dp, top = 10.dp, bottom = 10.dp),
+                .height(48.dp)
+                .padding(start = 16.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = header.key,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = " : ${header.value}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.jsonKey,
                 modifier = Modifier.weight(1f),
             )
-            IconButton(onClick = { onRemoveHeader(header) }) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(16.dp),
+            Row(
+                modifier = Modifier.weight(3f),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = ":  ${header.value}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
                 )
+                IconButton(onClick = { onRemoveHeader(header) }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp),
+                    )
+                }
             }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -258,28 +261,35 @@ private fun ColumnScope.HeadersSection(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         val mutedColor = MaterialTheme.colorScheme.onSurfaceMuted
-        val inputBg = MaterialTheme.colorScheme.surfaceContainerLowest
+        val inputBg = MaterialTheme.colorScheme.surfaceContainerHigh
+        val monoFont = LocalMonoFontFamily.current
+        val titleStyle = MaterialTheme.typography.labelSmall.copy(
+            fontFamily = monoFont,
+            fontWeight = FontWeight.SemiBold,
+        )
         CustomTextField(
-            modifier = Modifier.weight(1f).height(48.dp),
+            modifier = Modifier.weight(1f).height(38.dp),
             value = state.newHeader.key,
             singleLine = true,
             containerColor = inputBg,
             placeholder = {
                 Text(
                     text = strings.addHeaderKeyPlaceholder,
+                    style = titleStyle,
                     color = mutedColor,
                 )
             },
             onValueChange = { onUpdateNewHeader(it, null) },
         )
         CustomTextField(
-            modifier = Modifier.weight(1f).height(48.dp),
+            modifier = Modifier.weight(1f).height(38.dp),
             value = state.newHeader.value,
             singleLine = true,
             containerColor = inputBg,
             placeholder = {
                 Text(
                     text = strings.addHeaderValuePlaceholder,
+                    style = titleStyle,
                     color = mutedColor,
                 )
             },
@@ -287,8 +297,8 @@ private fun ColumnScope.HeadersSection(
         )
         Box(
             modifier = Modifier
-                .size(48.dp)
-                .background(MaterialTheme.colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
+                .size(38.dp)
+                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
                 .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp))
                 .clickable(onClick = onAddHeader),
             contentAlignment = Alignment.Center,
@@ -324,6 +334,8 @@ private fun ColumnScope.PopulatedState(
 
     // ── RESPONSE section ─────────────────────────────────────────────────────
     SectionLabel(str.responseSectionLabel)
+
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
     // Status code — label left, dropdown aligned with body-type toggle start
     Row(
@@ -390,7 +402,12 @@ private fun ColumnScope.PopulatedState(
     } else {
         strings.widgets.createEditPreset.headersTitle
     }
+
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+
     SectionLabel(headersLabel)
+
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
     HeadersSection(
         state = state,
@@ -563,7 +580,11 @@ private fun JsonBodyTextField(
     LaunchedEffect(body) {
         if (fieldValue.text != body) {
             fieldValue = TextFieldValue(
-                annotatedString = buildHighlightedAnnotatedString(body, highlight, reformat = false),
+                annotatedString = buildHighlightedAnnotatedString(
+                    body,
+                    highlight,
+                    reformat = false
+                ),
                 selection = TextRange(body.length),
             )
         }
@@ -573,13 +594,18 @@ private fun JsonBodyTextField(
         value = fieldValue,
         onValueChange = { newValue ->
             fieldValue = newValue.copy(
-                annotatedString = buildHighlightedAnnotatedString(newValue.text, highlight, reformat = false)
+                annotatedString = buildHighlightedAnnotatedString(
+                    newValue.text,
+                    highlight,
+                    reformat = false
+                )
             )
             onBodyChange(newValue.text)
         },
         modifier = modifier
             .clipToBounds()
             .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
+            .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
             .padding(horizontal = 12.dp, vertical = 12.dp),
         textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
         decorationBox = { innerTextField ->
@@ -629,10 +655,15 @@ private fun StatusCodeDropdown(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     var expanded by remember { mutableStateOf(false) }
-
+    val monoFont = LocalMonoFontFamily.current
+    val titleStyle = MaterialTheme.typography.labelSmall.copy(
+        fontFamily = monoFont,
+        fontWeight = FontWeight.SemiBold,
+    )
     Box(modifier = modifier) {
         Row(
             modifier = Modifier
+                .width(130.dp)
                 .clickable { expanded = true }
                 .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
                 .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
@@ -647,13 +678,16 @@ private fun StatusCodeDropdown(
                 )
                 Text(
                     text = statusCode.description,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = titleStyle
                 )
             } ?: Text(
                 text = strings.noOverrideStatusCode,
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorScheme.onSurfaceVariant,
             )
+
+            Spacer(Modifier.weight(1f))
+
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = null,
@@ -701,13 +735,22 @@ private fun BodyTypeToggle(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val chipShape = RoundedCornerShape(8.dp)
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        State.Editing.ResponseType.entries.forEach { type ->
+    Row(
+        modifier = Modifier.horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        listOf(
+            State.Editing.ResponseType.Json,
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.Xml,
+            State.Editing.ResponseType.Html,
+            State.Editing.ResponseType.None,
+        ).forEach { type ->
             val isSelected = selected == type
             Box(
                 modifier = Modifier
                     .clickable { onSelect(type) }
-                    .background(colorScheme.surfaceContainerLowest, chipShape)
+                    .background(colorScheme.surfaceContainerHigh, chipShape)
                     .then(
                         if (isSelected) {
                             Modifier.border(1.dp, colorScheme.primary, chipShape)
