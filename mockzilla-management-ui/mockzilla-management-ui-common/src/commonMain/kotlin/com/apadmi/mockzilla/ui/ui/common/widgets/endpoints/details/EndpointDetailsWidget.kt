@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -281,9 +282,9 @@ fun EndpointDetailsWidgetContent(
 ) {
     val colorScheme = MaterialTheme.colorScheme
 
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .navigationBarsPadding()
             .background(color = colorScheme.surface)
     ) {
@@ -295,24 +296,26 @@ fun EndpointDetailsWidgetContent(
                     Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = null,
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(24.dp),
                         tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
             )
 
-            is State.Endpoint -> PopulatedState(
-                state,
-                strings,
-                onResetAll,
-                onFailChange,
-                onDelayChange,
-                onFilterPresetChanged,
-                onLayoutModeChanged,
-                onDefaultPresetSelected,
-                onPresetMoreInfoClicked,
-                onCreatePreset
-            )
+            is State.Endpoint -> Column(modifier = Modifier.fillMaxSize()) {
+                PopulatedState(
+                    state,
+                    strings,
+                    onResetAll,
+                    onFailChange,
+                    onDelayChange,
+                    onFilterPresetChanged,
+                    onLayoutModeChanged,
+                    onDefaultPresetSelected,
+                    onPresetMoreInfoClicked,
+                    onCreatePreset
+                )
+            }
         }
     }
 }

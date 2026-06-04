@@ -124,7 +124,7 @@ private fun EndpointsList(
     onFilterUpdate: (String) -> Unit,
     onRowDensityChanged: (RowDensity) -> Unit,
     modifier: Modifier = Modifier,
-) = Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+) = Column(modifier = modifier) {
     Column(modifier = Modifier.padding(12.dp)) {
         FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
         EndpointsHeader(
@@ -140,16 +140,18 @@ private fun EndpointsList(
         EmptyState(
             title = strings.widgets.endpoints.emptyTitle,
             description = strings.widgets.endpoints.emptyDescription,
-            modifier = Modifier.fillMaxWidth().padding(top = 80.dp)
+            modifier = Modifier.fillMaxSize()
         )
     } else {
-        state.endpoints.forEach { endpoint ->
-            EndpointRow(
-                endpoint = endpoint,
-                rowDensity = state.rowDensity,
-                isSelected = endpoint.key == selectedKey,
-                onEndpointClicked = onEndpointClicked,
-            )
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            state.endpoints.forEach { endpoint ->
+                EndpointRow(
+                    endpoint = endpoint,
+                    rowDensity = state.rowDensity,
+                    isSelected = endpoint.key == selectedKey,
+                    onEndpointClicked = onEndpointClicked,
+                )
+            }
         }
     }
 }
