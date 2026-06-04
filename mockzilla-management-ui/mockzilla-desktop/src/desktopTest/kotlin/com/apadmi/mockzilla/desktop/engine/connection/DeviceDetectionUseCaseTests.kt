@@ -23,13 +23,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         listOf(
             ChangedServiceEventTestCase(
                 caseDescription = "Android Device - Resolving - But with metadata",
-                info = ServiceInfoWrapper(
+                info = DeviceDiscoveryEvent(
                     connectionName = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("a"),
                     MetaData.dummy().copy(runTarget = RunTarget.AndroidDevice).toMap(),
                     8080,
-                    ServiceInfoWrapper.State.Found
+                    DeviceDiscoveryEvent.State.Found
                 ),
                 expectedResult = DetectedDevice(
                     connectionId = "connection name",
@@ -44,13 +44,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             ),
             ChangedServiceEventTestCase(
                 caseDescription = "Android Device - Resolving",
-                info = ServiceInfoWrapper(
+                info = DeviceDiscoveryEvent(
                     connectionName = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("a"),
                     mapOf(),
                     8080,
-                    ServiceInfoWrapper.State.Found
+                    DeviceDiscoveryEvent.State.Found
                 ),
                 expectedResult = DetectedDevice(
                     connectionId = "connection name",
@@ -65,13 +65,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             ),
             ChangedServiceEventTestCase(
                 caseDescription = "iOS Device - Resolving",
-                info = ServiceInfoWrapper(
+                info = DeviceDiscoveryEvent(
                     connectionName = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("b"),
                     mapOf(),
                     8_087_854,
-                    ServiceInfoWrapper.State.Found
+                    DeviceDiscoveryEvent.State.Found
                 ),
                 expectedResult = DetectedDevice(
                     connectionId = "connection name",
@@ -86,13 +86,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             ),
             ChangedServiceEventTestCase(
                 caseDescription = "iOS Device - Resolved",
-                info = ServiceInfoWrapper(
+                info = DeviceDiscoveryEvent(
                     connectionName = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("b"),
                     MetaData.dummy().copy(runTarget = RunTarget.IosDevice).toMap(),
                     8_087_854,
-                    ServiceInfoWrapper.State.Resolved
+                    DeviceDiscoveryEvent.State.Resolved
                 ),
                 expectedResult = DetectedDevice(
                     connectionId = "connection name",
@@ -107,13 +107,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             ),
             ChangedServiceEventTestCase(
                 caseDescription = "iOS Simulator - Is local sim",
-                info = ServiceInfoWrapper(
+                info = DeviceDiscoveryEvent(
                     connectionName = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("b", "my local machine ip address"),
                     MetaData.dummy().copy(runTarget = RunTarget.IosSimulator).toMap(),
                     8_087_854,
-                    ServiceInfoWrapper.State.Resolved
+                    DeviceDiscoveryEvent.State.Resolved
                 ),
                 isLocalIpAddress = true,
                 expectedResult = DetectedDevice(
@@ -132,13 +132,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             ),
             ChangedServiceEventTestCase(
                 caseDescription = "iOS Simulator - Is someone else's sim",
-                info = ServiceInfoWrapper(
+                info = DeviceDiscoveryEvent(
                     connectionName = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("b", "some remote machine ip address"),
                     MetaData.dummy().copy(runTarget = RunTarget.IosSimulator).toMap(),
                     1_111_111,
-                    ServiceInfoWrapper.State.Resolved
+                    DeviceDiscoveryEvent.State.Resolved
                 ),
                 isLocalIpAddress = false,
                 expectedResult = DetectedDevice(
@@ -157,13 +157,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             ),
             ChangedServiceEventTestCase(
                 caseDescription = "Android Emulator - Is local emulator",
-                info = ServiceInfoWrapper(
+                info = DeviceDiscoveryEvent(
                     connectionName = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("some local machine ip address"),
                     MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator).toMap(),
                     13_111_111,
-                    ServiceInfoWrapper.State.Resolved
+                    DeviceDiscoveryEvent.State.Resolved
                 ),
                 mockAdbConnection = AdbConnection(
                     deviceSerial = "serial",
@@ -187,13 +187,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             ),
             ChangedServiceEventTestCase(
                 caseDescription = "Android Emulator - Is someone else's emulator",
-                info = ServiceInfoWrapper(
+                info = DeviceDiscoveryEvent(
                     connectionName = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("some remote machine ip address"),
                     MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator).toMap(),
                     13_111_111,
-                    ServiceInfoWrapper.State.Resolved
+                    DeviceDiscoveryEvent.State.Resolved
                 ),
                 mockAdbConnection = AdbConnection(
                     deviceSerial = "serial",
@@ -238,20 +238,20 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         coEvery { adbConnectorServiceMock.listConnectedDevices() }
             .returns(Result.success(emptyList()))
 
-        val dummy = ServiceInfoWrapper(
+        val dummy = DeviceDiscoveryEvent(
             connectionName = "connection name",
             hostAddress = "host",
             hostAddresses = listOf(),
             MetaData.dummy().copy(runTarget = RunTarget.IosDevice).toMap(),
             13_111_111,
-            ServiceInfoWrapper.State.Resolved
+            DeviceDiscoveryEvent.State.Resolved
         )
         val sut = DeviceDetectionUseCaseImpl({ true }, adbConnectorServiceMock)
 
         /* Run Test */
         sut.onChangedServiceEvent(dummy)
         val result1 = sut.devices
-        sut.onChangedServiceEvent(dummy.copy(state = ServiceInfoWrapper.State.Removed))
+        sut.onChangedServiceEvent(dummy.copy(state = DeviceDiscoveryEvent.State.Removed))
         val result2 = sut.devices
 
         /* Verify */
@@ -293,20 +293,20 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         coEvery { adbConnectorServiceMock.listConnectedDevices() }
             .returns(Result.success(emptyList()))
 
-        val dummy = ServiceInfoWrapper(
+        val dummy = DeviceDiscoveryEvent(
             connectionName = "connection name",
             hostAddress = "host",
             hostAddresses = listOf(),
             MetaData.dummy().copy(runTarget = RunTarget.IosDevice).toMap(),
             13_111_111,
-            ServiceInfoWrapper.State.Resolved
+            DeviceDiscoveryEvent.State.Resolved
         )
         val sut = DeviceDetectionUseCaseImpl({ true }, adbConnectorServiceMock)
 
         /* Run Test */
         sut.onChangedServiceEvent(dummy)
         val result1 = sut.devices
-        sut.onChangedServiceEvent(dummy.copy(state = ServiceInfoWrapper.State.Found))
+        sut.onChangedServiceEvent(dummy.copy(state = DeviceDiscoveryEvent.State.Found))
         val result2 = sut.devices
 
         /* Verify */
@@ -314,6 +314,181 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
             expected = result1,
             actual = result2
         )
+    }
+
+    @Test
+    fun `onChangedServiceEvent - ADB path - discovered emulator - creates ReadyToConnect device at loopback`() = runBlockingTest {
+        val adbConnection = AdbConnection("emulator-5554", true, emptyList())
+        val metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator)
+        val sut = DeviceDetectionUseCaseImpl({ false }, adbConnectorServiceMock)
+
+        sut.onChangedServiceEvent(DeviceDiscoveryEvent(
+            connectionName = "adb:emulator-5554:8080",
+            hostAddress = "127.0.0.1",
+            hostAddresses = listOf("127.0.0.1"),
+            attributes = emptyMap(),
+            port = 8080,
+            state = DeviceDiscoveryEvent.State.Resolved,
+            adbConnection = adbConnection,
+            metaData = metaData
+        ))
+
+        assertEquals(
+            expected = listOf(DetectedDevice(
+                connectionName = "adb:emulator-5554:8080",
+                metaData = metaData,
+                hostAddress = "127.0.0.1",
+                hostAddresses = listOf(IpAddress("127.0.0.1")),
+                port = 8080,
+                adbConnection = adbConnection,
+                state = DetectedDevice.State.ReadyToConnect
+            )),
+            actual = sut.devices
+        )
+    }
+
+    @Test
+    fun `onChangedServiceEvent - ADB path - same event twice - no duplicate`() = runBlockingTest {
+        val adbConnection = AdbConnection("emulator-5554", true, emptyList())
+        val metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator)
+        val sut = DeviceDetectionUseCaseImpl({ false }, adbConnectorServiceMock)
+        val event = DeviceDiscoveryEvent(
+            connectionName = "adb:emulator-5554:8080",
+            hostAddress = "127.0.0.1",
+            hostAddresses = listOf("127.0.0.1"),
+            attributes = emptyMap(),
+            port = 8080,
+            state = DeviceDiscoveryEvent.State.Resolved,
+            adbConnection = adbConnection,
+            metaData = metaData
+        )
+
+        sut.onChangedServiceEvent(event)
+        sut.onChangedServiceEvent(event)
+
+        assertEquals(1, sut.devices.size)
+    }
+
+    @Test
+    fun `onChangedServiceEvent - ADB path - replaces mDNS entry for same serial and port`() = runBlockingTest {
+        val adbConnection = AdbConnection("emulator-5554", true, listOf(IpAddress("10.0.2.15")))
+        val metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator)
+        coEvery { adbConnectorServiceMock.listConnectedDevices() }
+            .returns(Result.success(listOf(adbConnection)))
+        val sut = DeviceDetectionUseCaseImpl({ false }, adbConnectorServiceMock)
+
+        sut.onChangedServiceEvent(DeviceDiscoveryEvent(
+            connectionName = "mdns-service-name",
+            hostAddress = "10.0.2.15",
+            hostAddresses = listOf("10.0.2.15"),
+            attributes = metaData.toMap(),
+            port = 8080,
+            state = DeviceDiscoveryEvent.State.Resolved
+        ))
+
+        sut.onChangedServiceEvent(DeviceDiscoveryEvent(
+            connectionName = "adb:emulator-5554:8080",
+            hostAddress = "127.0.0.1",
+            hostAddresses = listOf("127.0.0.1"),
+            attributes = emptyMap(),
+            port = 8080,
+            state = DeviceDiscoveryEvent.State.Resolved,
+            adbConnection = adbConnection,
+            metaData = metaData
+        ))
+
+        // ADB evicts the mDNS entry and takes over
+        assertEquals(1, sut.devices.size)
+        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionName)
+        assertEquals("127.0.0.1", sut.devices.single().hostAddress)
+    }
+
+    @Test
+    fun `onChangedServiceEvent - ADB path - emulator lost - marks Removed`() = runBlockingTest {
+        val adbConnection = AdbConnection("emulator-5554", true, emptyList())
+        val metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator)
+        val sut = DeviceDetectionUseCaseImpl({ false }, adbConnectorServiceMock)
+
+        val discoveredEvent = DeviceDiscoveryEvent(
+            connectionName = "adb:emulator-5554:8080",
+            hostAddress = "127.0.0.1",
+            hostAddresses = listOf("127.0.0.1"),
+            attributes = emptyMap(),
+            port = 8080,
+            state = DeviceDiscoveryEvent.State.Resolved,
+            adbConnection = adbConnection,
+            metaData = metaData
+        )
+        sut.onChangedServiceEvent(discoveredEvent)
+        sut.onChangedServiceEvent(discoveredEvent.copy(
+            state = DeviceDiscoveryEvent.State.Removed,
+            adbConnection = AdbConnection("emulator-5554", false, emptyList())
+        ))
+
+        assertEquals(
+            expected = listOf(DetectedDevice(
+                connectionName = "adb:emulator-5554:8080",
+                metaData = metaData,
+                hostAddress = "127.0.0.1",
+                hostAddresses = listOf(IpAddress("127.0.0.1")),
+                port = 8080,
+                adbConnection = adbConnection,
+                state = DetectedDevice.State.Removed
+            )),
+            actual = sut.devices
+        )
+    }
+
+    @Test
+    fun `onChangedServiceEvent - ADB path - lost emulator not in cache - no change`() = runBlockingTest {
+        val sut = DeviceDetectionUseCaseImpl({ false }, adbConnectorServiceMock)
+
+        sut.onChangedServiceEvent(DeviceDiscoveryEvent(
+            connectionName = "adb:emulator-5554:8080",
+            hostAddress = "127.0.0.1",
+            hostAddresses = emptyList(),
+            attributes = emptyMap(),
+            port = 8080,
+            state = DeviceDiscoveryEvent.State.Removed,
+            adbConnection = AdbConnection("emulator-5554", false, emptyList())
+        ))
+
+        assertEquals(expected = emptyList(), actual = sut.devices)
+    }
+
+    @Test
+    fun `onChangedServiceEvent - ZeroConf path - mDNS ignored if ADB already verified same serial and port`() = runBlockingTest {
+        val adbConnection = AdbConnection("emulator-5554", true, listOf(IpAddress("10.0.2.15")))
+        val metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator)
+        coEvery { adbConnectorServiceMock.listConnectedDevices() }
+            .returns(Result.success(listOf(adbConnection)))
+        val sut = DeviceDetectionUseCaseImpl({ false }, adbConnectorServiceMock)
+
+        sut.onChangedServiceEvent(DeviceDiscoveryEvent(
+            connectionName = "adb:emulator-5554:8080",
+            hostAddress = "127.0.0.1",
+            hostAddresses = listOf("127.0.0.1"),
+            attributes = emptyMap(),
+            port = 8080,
+            state = DeviceDiscoveryEvent.State.Resolved,
+            adbConnection = adbConnection,
+            metaData = metaData
+        ))
+        val afterAdb = sut.devices
+
+        sut.onChangedServiceEvent(DeviceDiscoveryEvent(
+            connectionName = "mdns-service-name",
+            hostAddress = "10.0.2.15",
+            hostAddresses = listOf("10.0.2.15"),
+            attributes = metaData.toMap(),
+            port = 8080,
+            state = DeviceDiscoveryEvent.State.Resolved
+        ))
+
+        // mDNS event discarded — ADB entry unchanged
+        assertEquals(expected = afterAdb, actual = sut.devices)
+        assertEquals(1, sut.devices.size)
+        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionName)
     }
 
     @Test
@@ -381,7 +556,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
      */
     data class ChangedServiceEventTestCase(
         val caseDescription: String,
-        val info: ServiceInfoWrapper,
+        val info: DeviceDiscoveryEvent,
         val mockAdbConnection: AdbConnection? = null,
         val isLocalIpAddress: Boolean = true,
         val expectedResult: DetectedDevice
