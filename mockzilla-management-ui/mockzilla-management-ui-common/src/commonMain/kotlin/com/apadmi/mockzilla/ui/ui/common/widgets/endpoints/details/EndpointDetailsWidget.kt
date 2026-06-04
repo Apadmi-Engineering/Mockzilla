@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -289,7 +290,15 @@ fun EndpointDetailsWidgetContent(
         when (state) {
             is State.Empty -> EmptyState(
                 title = strings.widgets.endpointDetails.emptyTitle,
-                description = strings.widgets.endpointDetails.emptyDescription
+                description = strings.widgets.endpointDetails.emptyDescription,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                }
             )
 
             is State.Endpoint -> PopulatedState(

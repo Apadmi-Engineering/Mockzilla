@@ -89,8 +89,8 @@ val EnStrings = Strings(
         ),
         logDetails = Strings.Widgets.LogDetails(
             title = "Log Detail",
-            emptyTitle = "\uD83D\uDC47",
-            emptyDescription = "Choose a Log to view details",
+            emptyTitle = "Click a log entry to inspect it",
+            emptyDescription = null,
             responseDelayUnits = "ms delay",
             intendedFailure = "Used error response",
             intendedSuccess = "Used non error response",
@@ -115,6 +115,8 @@ val EnStrings = Strings(
             },
             noOverrides = "no overrides",
             forced = "FORCED",
+            emptyTitle = "No endpoints found",
+            emptyDescription = "Try adjusting your filter"
         ),
         globalControls = Strings.Widgets.GlobalControls(
             title = "Global Controls",
@@ -160,8 +162,8 @@ val EnStrings = Strings(
             reset = "Reset",
             resetUseErrorResponse = "Reset",
             headersUnset = "Headers unset",
-            emptyTitle = "\uD83D\uDC48",
-            emptyDescription = "Choose an Endpoint to start editing",
+            emptyTitle = "Choose an Endpoint to start editing",
+            emptyDescription = null,
             forcedApiFailureBannerTitle = "Forced API Failure Enabled",
             forcedApiFailureBannerSubtitle = "This setting is currently being overridden",
             behavior = "Behavior",
