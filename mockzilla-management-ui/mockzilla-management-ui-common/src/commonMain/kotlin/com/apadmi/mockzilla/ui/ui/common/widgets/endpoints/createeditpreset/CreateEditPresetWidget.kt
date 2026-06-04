@@ -9,6 +9,7 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,7 +20,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -52,6 +52,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -64,6 +66,7 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.DragCorner
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
@@ -200,8 +203,7 @@ private fun ColumnScope.BodySection(
         placeholder = strings.responseBodyPlaceholder,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .heightIn(min = 200.dp, max = 400.dp),
+            .padding(horizontal = 16.dp),
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -268,7 +270,7 @@ private fun ColumnScope.HeadersSection(
             fontWeight = FontWeight.SemiBold,
         )
         CustomTextField(
-            modifier = Modifier.weight(1f).height(38.dp),
+            modifier = Modifier.weight(1f).height(30.dp),
             value = state.newHeader.key,
             singleLine = true,
             containerColor = inputBg,
@@ -282,7 +284,7 @@ private fun ColumnScope.HeadersSection(
             onValueChange = { onUpdateNewHeader(it, null) },
         )
         CustomTextField(
-            modifier = Modifier.weight(1f).height(38.dp),
+            modifier = Modifier.weight(1f).height(30.dp),
             value = state.newHeader.value,
             singleLine = true,
             containerColor = inputBg,
@@ -295,18 +297,32 @@ private fun ColumnScope.HeadersSection(
             },
             onValueChange = { onUpdateNewHeader(null, it) },
         )
+        val canAdd = state.newHeader.key.isNotEmpty() && state.newHeader.value.isNotEmpty()
         Box(
             modifier = Modifier
-                .size(38.dp)
-                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp))
-                .clickable(onClick = onAddHeader),
+                .size(28.dp)
+                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(6.dp))
+                .border(
+                    width = 1.dp,
+                    color = if (canAdd) {
+                        MaterialTheme.colorScheme.outline
+                    } else {
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                    },
+                    shape = RoundedCornerShape(6.dp),
+                )
+                .clickable(enabled = canAdd, onClick = onAddHeader),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = strings.addHeaderButton,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = if (canAdd) {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                },
+                modifier = Modifier.size(14.dp)
             )
         }
     }
@@ -567,6 +583,9 @@ private fun JsonBodyTextField(
     // inside remember{}, LaunchedEffect{}, or onValueChange{}.
     val highlight = colorScheme.jsonHighlight
     val placeholderColor = colorScheme.onSurfaceMuted
+    val density = LocalDensity.current
+
+    var fieldHeight by remember { mutableStateOf(200.dp) }
 
     var fieldValue by remember {
         mutableStateOf(
@@ -590,37 +609,56 @@ private fun JsonBodyTextField(
         }
     }
 
-    BasicTextField(
-        value = fieldValue,
-        onValueChange = { newValue ->
-            fieldValue = newValue.copy(
-                annotatedString = buildHighlightedAnnotatedString(
-                    newValue.text,
-                    highlight,
-                    reformat = false
-                )
-            )
-            onBodyChange(newValue.text)
-        },
-        modifier = modifier
-            .clipToBounds()
-            .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
-            .padding(horizontal = 12.dp, vertical = 12.dp),
-        textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
-        decorationBox = { innerTextField ->
-            Box {
-                if (fieldValue.text.isEmpty()) {
-                    Text(
-                        text = placeholder,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = placeholderColor,
+    Box(modifier = modifier) {
+        BasicTextField(
+            value = fieldValue,
+            onValueChange = { newValue ->
+                fieldValue = newValue.copy(
+                    annotatedString = buildHighlightedAnnotatedString(
+                        newValue.text,
+                        highlight,
+                        reformat = false
                     )
+                )
+                onBodyChange(newValue.text)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(fieldHeight)
+                .clipToBounds()
+                .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
+                .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
+            decorationBox = { innerTextField ->
+                Box {
+                    if (fieldValue.text.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = placeholderColor,
+                        )
+                    }
+                    innerTextField()
                 }
-                innerTextField()
-            }
-        },
-    )
+            },
+        )
+        Icon(
+            imageVector = Icons.DragCorner,
+            contentDescription = null,
+            tint = colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 6.dp, bottom = 4.dp)
+                .size(16.dp)
+                .pointerInput(Unit) {
+                    detectDragGestures { _, dragAmount ->
+                        val delta = with(density) { dragAmount.y.toDp() }
+                        fieldHeight = (fieldHeight + delta).coerceIn(100.dp, 600.dp)
+                    }
+                },
+        )
+    }
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -750,7 +788,14 @@ private fun BodyTypeToggle(
             Box(
                 modifier = Modifier
                     .clickable { onSelect(type) }
-                    .background(colorScheme.surfaceContainerHigh, chipShape)
+                    .background(
+                        color = if (isSelected) {
+                            colorScheme.primary.copy(alpha = 0.15f)
+                        } else {
+                            colorScheme.surfaceContainerHigh
+                        },
+                        shape = chipShape,
+                    )
                     .then(
                         if (isSelected) {
                             Modifier.border(1.dp, colorScheme.primary, chipShape)
