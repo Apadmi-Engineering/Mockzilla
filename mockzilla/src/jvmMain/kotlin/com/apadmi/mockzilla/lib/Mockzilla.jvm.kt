@@ -1,3 +1,5 @@
+@file:JvmName("JvmMockzillaKt")
+
 package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.BuildKonfig

@@ -1,3 +1,5 @@
+@file:JvmName("FileIoKt")
+
 package com.apadmi.mockzilla.lib.internal.utils
 
 import com.apadmi.mockzilla.lib.InternalMockzillaApi
