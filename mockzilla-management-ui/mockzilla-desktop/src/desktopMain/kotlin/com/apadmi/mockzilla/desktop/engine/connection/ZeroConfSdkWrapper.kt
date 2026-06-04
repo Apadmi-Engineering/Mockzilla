@@ -4,6 +4,7 @@ import com.apadmi.mockzilla.desktop.jmds.create
 
 import co.touchlab.kermit.Logger
 
+import java.io.IOException
 import java.net.InetAddress
 import java.net.NetworkInterface
 import javax.jmdns.JmDNS
@@ -15,87 +16,95 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-private val tag = "ZeroConfSdkWrapper"
+private const val tag = "ZeroConfSdkWrapper"
+private const val bufferCapacity = 16
+
 actual class ZeroConfSdkWrapper actual constructor(
     private val serviceType: String,
     private val scope: CoroutineScope
 ) : ServiceListener {
-    private var jmDnsInstances = mutableMapOf<InetAddress, JmDNS>()
-    private var listenerJob: Job? = null
-    private val output = MutableSharedFlow<ServiceInfoWrapper>()
-    private lateinit var listener: suspend (ServiceInfoWrapper) -> Unit
+    private val jmDnsInstances = mutableMapOf<InetAddress, JmDNS>()
+    private val output = MutableSharedFlow<DeviceDiscoveryEvent>(
+        extraBufferCapacity = bufferCapacity,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    private var pollingJob: Job? = null
 
-    actual fun setListener(listener: suspend (ServiceInfoWrapper) -> Unit) {
-        jmDnsInstances.forEach { it.value.removeServiceListener(serviceType, this) }
-        this.listener = listener
-
-        listenerJob?.cancel()
-        listenerJob = scope.launch {
-            output.distinctUntilChanged()
-                .onEach(listener)
-                .launchIn(this)
-
+    actual fun setListener(listener: suspend (DeviceDiscoveryEvent) -> Unit) {
+        pollingJob?.cancel()
+        pollingJob = scope.launch {
+            // Start collecting before the polling loop — no lateinit race possible
+            launch { output.distinctUntilChanged().collect { listener(it) } }
             withContext(Dispatchers.IO) {
-                while (listenerJob == null || listenerJob?.isCancelled == false) {
-                    attachListenersIfNeeded()
-                    delay(4.seconds)
+                while (isActive) {
+                    syncInterfaces()
+                    delay(10.seconds)
                 }
             }
         }
     }
 
-    private suspend fun attachListenersIfNeeded() = withContext(Dispatchers.IO) {
-        val newIps = NetworkInterface.getNetworkInterfaces().findMdnsAddresses()
+    actual fun stop() {
+        pollingJob?.cancel()
+        pollingJob = null
+        jmDnsInstances.values.forEach { runCatching { it.close() } }
+        jmDnsInstances.clear()
+    }
 
-        // Remove stale listeners
-        jmDnsInstances.filterNot { (hostAddress, _) ->
-            newIps.any { it == hostAddress }
-        }.forEach { (hostAddress, jmDns) ->
-            jmDns.removeServiceListener(serviceType, this@ZeroConfSdkWrapper)
-            jmDnsInstances.remove(hostAddress)
-            Logger.d(tag) { "Removing stale listener for $hostAddress" }
+    private fun syncInterfaces() {
+        val liveAddresses = try {
+            NetworkInterface.getNetworkInterfaces().findMdnsAddresses().toSet()
+        } catch (e: IOException) {
+            Logger.e(tag, e) { "Failed to enumerate network interfaces" }
+            return
         }
 
-        // Add new listeners
-        newIps.filterNot {
-            jmDnsInstances.keys.contains(it)
-        }.forEach { inetAddress ->
-            val jmDns = JmDNS.create(inetAddress)
-
-            jmDns.registerServiceType(serviceType)
-            jmDnsInstances[inetAddress] = jmDns
+        // Remove stale instances and close them to release sockets/threads
+        jmDnsInstances.keys.filter { it !in liveAddresses }.forEach { addr ->
+            jmDnsInstances.remove(addr)?.let { jmDns ->
+                runCatching {
+                    jmDns.removeServiceListener(serviceType, this)
+                    jmDns.close()
+                }
+                Logger.d(tag) { "Removed stale listener for $addr" }
+            }
         }
 
-        jmDnsInstances.forEach { (inetAddress, jmDns) ->
-            // Removing and re-adding listeners seems to give everything a kick and improves
-            // reliability of device detection
-            jmDns.removeServiceListener(serviceType, this@ZeroConfSdkWrapper)
-            jmDns.addServiceListener(serviceType, this@ZeroConfSdkWrapper)
-            Logger.i(tag) { "Listening on ${inetAddress.hostAddress}" }
+        // Add listeners for newly discovered interfaces
+        liveAddresses.filter { it !in jmDnsInstances }.forEach { addr ->
+            try {
+                val jmDns = JmDNS.create(addr, addr.hostAddress)
+                jmDns.addServiceListener(serviceType, this)
+                jmDnsInstances[addr] = jmDns
+                Logger.i(tag) { "Listening on ${addr.hostAddress}" }
+            } catch (e: IOException) {
+                Logger.e(tag, e) { "Failed to create JmDNS for $addr" }
+            }
         }
     }
 
-    override fun serviceAdded(
-        event: ServiceEvent?
-    ) = serviceChanged(event, ServiceInfoWrapper.State.Found)
+    override fun serviceAdded(event: ServiceEvent?) = serviceChanged(event, DeviceDiscoveryEvent.State.Found)
 
-    private fun serviceChanged(event: ServiceEvent?, state: ServiceInfoWrapper.State) {
-        Logger.d { "Service changed: ${event?.name} ${state?.name}" }
+    override fun serviceRemoved(event: ServiceEvent?) = serviceChanged(event, DeviceDiscoveryEvent.State.Removed)
+
+    override fun serviceResolved(event: ServiceEvent?) = serviceChanged(event, DeviceDiscoveryEvent.State.Resolved)
+
+    private fun serviceChanged(event: ServiceEvent?, state: DeviceDiscoveryEvent.State) {
+        Logger.d { "Service changed: ${event?.name} ${state.name}" }
         event ?: return
 
         scope.launch {
-            // If there's no ipv4 addresses there's no way we can connect to it so ignore the Resolved event in this case
-            val shouldCallListener = state == ServiceInfoWrapper.State.Found ||
-                    state == ServiceInfoWrapper.State.Removed ||
-                    state == ServiceInfoWrapper.State.Resolved && event.info.inet4Addresses.isNotEmpty()
+            val shouldCallListener = state == DeviceDiscoveryEvent.State.Found ||
+                    state == DeviceDiscoveryEvent.State.Removed ||
+                    state == DeviceDiscoveryEvent.State.Resolved && event.info.inet4Addresses.isNotEmpty()
 
             if (shouldCallListener) {
                 output.emit(event.info.parse(state))
@@ -103,20 +112,12 @@ actual class ZeroConfSdkWrapper actual constructor(
         }
     }
 
-    override fun serviceRemoved(
-        event: ServiceEvent?
-    ) = serviceChanged(event, ServiceInfoWrapper.State.Removed)
-
-    override fun serviceResolved(
-        event: ServiceEvent?
-    ) = serviceChanged(event, ServiceInfoWrapper.State.Resolved)
-
-    private fun ServiceInfo.parse(state: ServiceInfoWrapper.State): ServiceInfoWrapper {
+    private fun ServiceInfo.parse(state: DeviceDiscoveryEvent.State): DeviceDiscoveryEvent {
         val hostAddresses = (inet6Addresses.toList() + inet4Addresses + inetAddresses).mapNotNull {
             it.hostAddress
         } + hostAddresses
 
-        return ServiceInfoWrapper.create(
+        return DeviceDiscoveryEvent.create(
             this,
             hostAddresses.map { it.removePrefix("[").removeSuffix("]") }.distinct(),
             state

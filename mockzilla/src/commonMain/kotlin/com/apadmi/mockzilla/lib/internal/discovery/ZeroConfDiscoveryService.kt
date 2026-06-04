@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.lib.models.RunTarget
 
 interface ZeroConfDiscoveryService {
     suspend fun makeDiscoverable(metaData: MetaData, port: Int)
+    suspend fun stop()
 }
 
 internal fun MetaData.bonjourServiceName(deviceIdentifier: String) = """${
