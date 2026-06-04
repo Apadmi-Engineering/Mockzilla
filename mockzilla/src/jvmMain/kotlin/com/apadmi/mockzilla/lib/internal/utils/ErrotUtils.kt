@@ -2,7 +2,4 @@
 
 package com.apadmi.mockzilla.lib.internal.utils
 
-import com.apadmi.mockzilla.lib.InternalMockzillaApi
-
-@InternalMockzillaApi
-actual typealias AddressAlreadyInUseException = java.net.BindException
+internal actual typealias AddressAlreadyInUseException = java.net.BindException

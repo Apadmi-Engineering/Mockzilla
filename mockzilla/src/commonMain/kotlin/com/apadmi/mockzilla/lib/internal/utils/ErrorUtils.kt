@@ -2,13 +2,9 @@
 
 package com.apadmi.mockzilla.lib.internal.utils
 
-import com.apadmi.mockzilla.lib.InternalMockzillaApi
+internal expect class AddressAlreadyInUseException : Throwable
 
-@InternalMockzillaApi
-expect class AddressAlreadyInUseException : Throwable
-
-@InternalMockzillaApi
-fun Throwable.isSomeMatchInChain(predicate: (Throwable) -> Boolean): Boolean {
+internal fun Throwable.isSomeMatchInChain(predicate: (Throwable) -> Boolean): Boolean {
     var current: Throwable? = this
     while (current != null) {
         if (predicate(current)) {

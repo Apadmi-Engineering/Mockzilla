@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
-import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import io.ktor.http.*
@@ -8,8 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 
-@InternalMockzillaApi
-class KtorMockzillaHttpRequest internal constructor(
+internal class KtorMockzillaHttpRequest(
     private val call: ApplicationCall,
     override val method: HttpMethod
 ) : MockzillaHttpRequest {

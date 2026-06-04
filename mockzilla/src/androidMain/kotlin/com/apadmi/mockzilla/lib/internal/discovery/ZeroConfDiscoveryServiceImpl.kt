@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 
-import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.lib.models.MetaData
 
@@ -15,8 +14,7 @@ import com.google.android.gms.common.GoogleApiAvailabilityLight
 
 import java.util.UUID
 
-@InternalMockzillaApi
-class ZeroConfDiscoveryServiceImpl(
+internal class ZeroConfDiscoveryServiceImpl(
     private val logger: Logger,
     private val context: Context
 ) : ZeroConfDiscoveryService {

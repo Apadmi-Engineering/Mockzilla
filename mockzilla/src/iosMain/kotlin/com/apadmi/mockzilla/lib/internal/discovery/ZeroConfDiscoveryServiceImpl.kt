@@ -2,7 +2,6 @@
 
 package com.apadmi.mockzilla.lib.internal.discovery
 
-import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.lib.internal.persistance.KeychainSettings
 import com.apadmi.mockzilla.lib.models.MetaData
@@ -30,8 +29,7 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.refTo
 import kotlinx.cinterop.value
 
-@InternalMockzillaApi
-class ZeroConfDiscoveryServiceImpl(
+internal class ZeroConfDiscoveryServiceImpl(
     private val logger: Logger,
     private val keychainSettings: KeychainSettings
 ) : ZeroConfDiscoveryService {
