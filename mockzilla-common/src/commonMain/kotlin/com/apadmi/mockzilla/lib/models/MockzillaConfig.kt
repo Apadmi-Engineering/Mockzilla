@@ -81,7 +81,7 @@ data class MockzillaConfig(
 
         /**
          * Sets the port which the server will bind to. Setting port to `0` will cause the server to
-         * choose it's port auto-magically.
+         * choose its port automatically.
          *
          * @param port Port number to bind to. Use `0` for automatic port assignment.
          */
