@@ -59,8 +59,6 @@ suspend fun startMockzilla(
 
 /**
  * Stops the running Mockzilla server.
- *
- * @return
  */
 @OptIn(DelicateCoroutinesApi::class)
 actual fun stopMockzilla() = GlobalScope.promise {

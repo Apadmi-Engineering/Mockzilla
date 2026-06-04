@@ -11,7 +11,7 @@ import kotlinx.serialization.json.JsonNames
  * Device and application metadata collected when Mockzilla starts. Displayed in the management
  * dashboard to identify the connected device, and used in ZeroConf service records.
  *
- * Don't add non optional fields to this type since that will break backward compatibility
+ * Don't add non-optional fields to this type since that will break backward compatibility
  *
  * @property appName The name of the application.
  * @property appPackage The application package name or bundle identifier.
