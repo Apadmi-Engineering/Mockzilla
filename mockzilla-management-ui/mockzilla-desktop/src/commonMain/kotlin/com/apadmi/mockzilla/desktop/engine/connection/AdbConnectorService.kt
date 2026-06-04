@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.desktop.engine.connection
 
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
 import com.apadmi.mockzilla.ui.engine.connection.IpAddress
+
 import com.malinskiy.adam.AndroidDebugBridgeClient
 import com.malinskiy.adam.AndroidDebugBridgeClientFactory
 import com.malinskiy.adam.interactor.StartAdbInteractor
@@ -13,13 +14,12 @@ import com.malinskiy.adam.request.forwarding.LocalTcpPortSpec
 import com.malinskiy.adam.request.forwarding.PortForwardRequest
 import com.malinskiy.adam.request.forwarding.RemoteTcpPortSpec
 import com.malinskiy.adam.request.shell.v2.ShellCommandRequest
-
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * @property connection

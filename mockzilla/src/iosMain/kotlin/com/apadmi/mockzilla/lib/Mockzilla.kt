@@ -12,10 +12,10 @@ import com.apadmi.mockzilla.lib.models.PortConflictException
 import kotlinx.coroutines.runBlocking
 
 /**
- * Internal method to start the Mockzilla server. Consumer apps should prefer using the top-level
- * `startMockzilla()` function to avoid breaking changes.
+ * Starts the Mockzilla server.
  *
  * @param config The config with which to initialise mockzilla.
+ * @throws PortConflictException if the port specified in [config] is already in use.
  */
 @Throws(PortConflictException::class)
 fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlocking {
@@ -35,9 +35,8 @@ fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlockin
 }
 
 /**
- * Stops the Mockzilla server,
+ * Stops the running Mockzilla server.
  *
- * @return
  */
 actual fun stopMockzilla() = runBlocking {
     stopServer()
