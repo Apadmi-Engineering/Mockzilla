@@ -16,6 +16,7 @@ import com.malinskiy.adam.request.forwarding.RemoteTcpPortSpec
 import com.malinskiy.adam.request.shell.v2.ShellCommandRequest
 
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
