@@ -1,13 +1,14 @@
 package com.apadmi.mockzilla.desktop.jmds
 
-import com.apadmi.mockzilla.desktop.engine.connection.ServiceInfoWrapper
+import com.apadmi.mockzilla.desktop.engine.connection.DeviceDiscoveryEvent
+
 import javax.jmdns.ServiceInfo
 
-internal fun ServiceInfoWrapper.Companion.create(
+internal fun DeviceDiscoveryEvent.Companion.create(
     info: ServiceInfo,
     hostAddresses: List<String>,
-    state: ServiceInfoWrapper.State
-) = ServiceInfoWrapper(
+    state: DeviceDiscoveryEvent.State
+) = DeviceDiscoveryEvent(
     connectionName = info.name,
     hostAddress = info.inet4Addresses.firstOrNull()?.hostAddress ?: info.hostAddress,
     hostAddresses = hostAddresses,

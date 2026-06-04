@@ -1,6 +1,5 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
-import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
 import com.apadmi.mockzilla.lib.models.PortConflictException
 
 internal suspend fun <T> runHandlingPortConflict(port: Int, block: suspend () -> T): T {

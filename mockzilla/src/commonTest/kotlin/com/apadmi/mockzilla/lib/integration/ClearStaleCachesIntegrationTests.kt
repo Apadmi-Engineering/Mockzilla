@@ -50,6 +50,10 @@ class ClearStaleCachesIntegrationTests {
             override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
                 /* No-Op */
             }
+
+            override suspend fun stop() {
+                /* No-Op */
+            }
         }
     )
 

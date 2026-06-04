@@ -43,7 +43,11 @@ fun startMockzilla(
     ) {
         object : ZeroConfDiscoveryService {
             override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
-                Logger.i("Mockzilla") { "ZeroConf not supported for JVM Mockzilla" }
+                Logger.i(tag = "Mockzilla") { "ZeroConf not supported for JVM Mockzilla" }
+            }
+
+            override suspend fun stop() {
+                Logger.i(tag = "Mockzilla") { "ZeroConf not supported for JVM Mockzilla" }
             }
         }
     }
@@ -54,6 +58,6 @@ fun startMockzilla(
  *
  * @return
  */
-fun stopMockzilla() = runBlocking {
+actual fun stopMockzilla() = runBlocking {
     stopServer()
 }

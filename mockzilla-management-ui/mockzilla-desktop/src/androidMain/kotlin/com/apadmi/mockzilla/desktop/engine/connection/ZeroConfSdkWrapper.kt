@@ -4,7 +4,9 @@ import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineScope
 
 actual class ZeroConfSdkWrapper actual constructor(serviceType: String, scope: CoroutineScope) {
-    actual fun setListener(listener: suspend (ServiceInfoWrapper) -> Unit) {
+    actual fun setListener(listener: suspend (DeviceDiscoveryEvent) -> Unit) {
         Logger.i { "Skipping ZeroConf setup: Not available on Android target" }
     }
+
+    actual fun stop() = Unit
 }
