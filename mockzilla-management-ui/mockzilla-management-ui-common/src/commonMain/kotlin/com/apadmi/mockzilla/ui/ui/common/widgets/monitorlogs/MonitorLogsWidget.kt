@@ -54,6 +54,31 @@ fun MonitorLogsWidget(
     )
 }
 
+@Preview
+@Composable
+fun MonitorLogsWidgetPreview() = PreviewSurface {
+    MonitorLogsWidgetContent(
+        state = MonitorLogsViewModel.State.DisplayLogs(
+            entries = sequenceOf(
+                LogEvent(
+                    timestamp = 1000,
+                    url = "https://www.example.com/url",
+                    requestBody = "request body",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = "response body",
+                    status = HttpStatusCode.OK,
+                    delay = 50,
+                    method = "GET",
+                    isIntendedFailure = false
+                )
+            ),
+        ),
+        onClearAll = {},
+        onViewDetail = { _ -> }
+    )
+}
+
 @Composable
 internal fun MonitorLogsWidgetContent(
     state: MonitorLogsViewModel.State.DisplayLogs,
@@ -89,31 +114,6 @@ private fun LogRow(modifier: Modifier, event: LogEvent) =
             onDraw = { drawCircle(color = event.status.color()) })
         Text("${event.status.description} ${event.method}: ${event.url}")
     }
-
-@Preview
-@Composable
-fun MonitorLogsWidgetPreview() = PreviewSurface {
-    MonitorLogsWidgetContent(
-        state = MonitorLogsViewModel.State.DisplayLogs(
-            entries = sequenceOf(
-                LogEvent(
-                    timestamp = 1000,
-                    url = "https://www.example.com/url",
-                    requestBody = "request body",
-                    requestHeaders = mapOf(),
-                    responseHeaders = mapOf(),
-                    responseBody = "response body",
-                    status = HttpStatusCode.OK,
-                    delay = 50,
-                    method = "GET",
-                    isIntendedFailure = false
-                )
-            ),
-        ),
-        onClearAll = {},
-        onViewDetail = { _ -> }
-    )
-}
 
 @Composable
 private fun MonitorLogsList(

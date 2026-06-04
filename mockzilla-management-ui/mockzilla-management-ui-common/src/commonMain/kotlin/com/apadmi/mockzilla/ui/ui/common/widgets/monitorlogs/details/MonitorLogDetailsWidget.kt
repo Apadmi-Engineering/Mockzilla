@@ -63,6 +63,43 @@ fun MonitorLogDetailsWidget(
     }
 }
 
+@Preview
+@Composable
+fun MonitorLogDetailsWidgetPreview() = PreviewSurface {
+    LogDetailsContent(
+        logDetail = LogEvent(
+            timestamp = 1000,
+            url = "https://www.example.com/url",
+            requestBody = "request body",
+            requestHeaders = mapOf(),
+            responseHeaders = mapOf(),
+            responseBody = "response body",
+            status = HttpStatusCode.OK,
+            delay = 50,
+            method = "GET",
+            isIntendedFailure = false
+        ),
+        visible = MonitorLogDetailsViewModel.State.ViewDetails(
+            requestHeaders = true,
+            requestBody = true,
+            responseHeaders = true,
+            responseBody = true
+        ),
+        onViewRequestHeaders = {},
+        onViewRequestBody = {},
+        onViewResponseHeaders = {},
+        onViewResponseBody = {}
+    )
+}
+
+@Preview
+@Composable
+fun MonitorLogDetailsWidgetEmptyPreview() = PreviewSurface {
+    Box(modifier = Modifier.size(300.dp)) {
+        MonitorLogDetailsEmptyContent()
+    }
+}
+
 @Composable
 internal fun MonitorLogDetailsContent(
     logDetail: LogEvent?,
@@ -189,43 +226,6 @@ internal fun MonitorLogDetailsEmptyContent(
         title = strings.widgets.logDetails.emptyTitle,
         description = strings.widgets.logDetails.emptyDescription
     )
-}
-
-@Preview
-@Composable
-fun MonitorLogDetailsWidgetPreview() = PreviewSurface {
-    LogDetailsContent(
-        logDetail = LogEvent(
-            timestamp = 1000,
-            url = "https://www.example.com/url",
-            requestBody = "request body",
-            requestHeaders = mapOf(),
-            responseHeaders = mapOf(),
-            responseBody = "response body",
-            status = HttpStatusCode.OK,
-            delay = 50,
-            method = "GET",
-            isIntendedFailure = false
-        ),
-        visible = MonitorLogDetailsViewModel.State.ViewDetails(
-            requestHeaders = true,
-            requestBody = true,
-            responseHeaders = true,
-            responseBody = true
-        ),
-        onViewRequestHeaders = {},
-        onViewRequestBody = {},
-        onViewResponseHeaders = {},
-        onViewResponseBody = {}
-    )
-}
-
-@Preview
-@Composable
-fun MonitorLogDetailsWidgetEmptyPreview() = PreviewSurface {
-    Box(modifier = Modifier.size(300.dp)) {
-        MonitorLogDetailsEmptyContent()
-    }
 }
 
 @Composable
