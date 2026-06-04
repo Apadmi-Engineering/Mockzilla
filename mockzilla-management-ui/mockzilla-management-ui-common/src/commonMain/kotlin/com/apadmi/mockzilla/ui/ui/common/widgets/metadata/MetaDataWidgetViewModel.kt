@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class MetaDataWidgetViewModel(
+internal class MetaDataWidgetViewModel(
     private val device: Device,
     private val metaDataUseCase: MetaDataUseCase,
     scope: CoroutineScope? = null

@@ -2,10 +2,12 @@ package com.apadmi.mockzilla.lib.internal.utils
 
 import android.annotation.TargetApi
 import android.os.Build
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 
+@InternalMockzillaApi
 actual class FileIo(private val cacheDir: File) {
     private val cacheDirectory
         get() = File(
@@ -44,5 +46,6 @@ actual class FileIo(private val cacheDir: File) {
     }
 }
 
+@InternalMockzillaApi
 @TargetApi(Build.VERSION_CODES.O)
 actual fun createFileIoforTesting() = FileIo(Files.createTempDirectory("").toFile())

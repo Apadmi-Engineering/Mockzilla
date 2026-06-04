@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
-class MonitorLogDetailsViewModel(
+internal class MonitorLogDetailsViewModel(
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
     val state = MutableStateFlow(

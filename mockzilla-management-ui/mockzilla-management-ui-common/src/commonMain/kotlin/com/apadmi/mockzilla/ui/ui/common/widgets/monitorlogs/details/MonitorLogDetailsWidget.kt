@@ -64,7 +64,7 @@ fun MonitorLogDetailsWidget(
 }
 
 @Composable
-fun MonitorLogDetailsContent(
+internal fun MonitorLogDetailsContent(
     logDetail: LogEvent?,
     state: MonitorLogDetailsViewModel.State.ViewDetails,
     onViewRequestHeaders: (Boolean) -> Unit,
@@ -85,7 +85,7 @@ fun MonitorLogDetailsContent(
 }
 
 @Composable
-fun LogDetailsContent(
+internal fun LogDetailsContent(
     logDetail: LogEvent,
     visible: MonitorLogDetailsViewModel.State.ViewDetails,
     onViewRequestHeaders: (Boolean) -> Unit,
@@ -182,7 +182,7 @@ fun LogDetailsContent(
 }
 
 @Composable
-fun MonitorLogDetailsEmptyContent(
+internal fun MonitorLogDetailsEmptyContent(
     strings: Strings = LocalStrings.current,
 ) {
     EmptyState(

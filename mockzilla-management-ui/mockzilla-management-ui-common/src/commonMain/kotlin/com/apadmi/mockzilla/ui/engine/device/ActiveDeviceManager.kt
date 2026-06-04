@@ -33,7 +33,7 @@ interface ActiveDeviceSelector {
     fun removeDevice(device: Device)
 }
 
-class ActiveDeviceManagerImpl(
+internal class ActiveDeviceManagerImpl(
     private val metaDataUseCase: MetaDataUseCase,
     private val scope: CoroutineScope
 ) : ActiveDeviceMonitor, ActiveDeviceSelector {

@@ -8,7 +8,7 @@ import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 
-class MiscControlsViewModel(
+internal class MiscControlsViewModel(
     private val device: Device?,
     private val eventBus: EventBus,
     private val clearingService: MockzillaManagement.CacheClearingService,

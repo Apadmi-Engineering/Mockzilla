@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class EndpointsViewModel(
+internal class EndpointsViewModel(
     private val device: Device,
     private val endpointsService: MockzillaManagement.EndpointsService,
     private val eventBus: EventBus,
@@ -100,7 +100,7 @@ class EndpointsViewModel(
 /**
  * @property displayName
  */
-enum class EndpointProperties(val displayName: String) {
+internal enum class EndpointProperties(val displayName: String) {
     Body("Body"),
     Delay("Delay"),
     Headers("Headers"),

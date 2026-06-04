@@ -1,9 +1,11 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 
+@InternalMockzillaApi
 actual class FileIo(private val cacheDir: File) {
     private val cacheDirectory
         get() = File(
@@ -43,4 +45,5 @@ actual class FileIo(private val cacheDir: File) {
     }
 }
 
+@InternalMockzillaApi
 actual fun createFileIoforTesting(): FileIo = FileIo(Files.createTempDirectory("").toFile())

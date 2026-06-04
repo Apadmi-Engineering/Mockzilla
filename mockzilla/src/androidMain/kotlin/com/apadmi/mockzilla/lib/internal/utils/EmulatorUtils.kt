@@ -7,9 +7,11 @@ package com.apadmi.mockzilla.lib.internal.utils
 import android.os.Build
 
 import android.annotation.SuppressLint
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import java.io.*
 import java.lang.reflect.Method
 
+@InternalMockzillaApi
 val isProbablyRunningOnEmulator: Boolean by lazy {
     // Android SDK emulator
     return@lazy ((Build.MANUFACTURER == "Google" && Build.BRAND == "google" &&

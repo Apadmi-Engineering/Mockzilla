@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.management.internal
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
@@ -27,6 +28,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 
+@InternalMockzillaApi
 interface MockzillaManagementRepository {
     suspend fun fetchMetaData(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MetaData>
     suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>

@@ -5,12 +5,12 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-interface MonitorLogsUseCase {
+internal interface MonitorLogsUseCase {
     suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>>
     suspend fun clearMonitorLogs(device: Device): Result<Unit>
 }
 
-class MonitorLogsUseCaseImpl(
+internal class MonitorLogsUseCaseImpl(
     private val managementLogsService: MockzillaManagement.LogsService,
     private val managementMetaDataService: MockzillaManagement.MetaDataService,
 ) : MonitorLogsUseCase {

@@ -22,6 +22,9 @@ interface MockzillaManagement {
      * Provides direct access to the underlying HTTP repository for cases where the higher-level
      * services do not cover a required operation. Prefer using the typed service properties where
      * possible.
+     *
+     * Note: requires `@OptIn(InternalMockzillaApi::class)` since [MockzillaManagementRepository]
+     * is an internal type.
      */
     val underlyingRepository: MockzillaManagementRepository
 

@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 
 import io.ktor.http.HttpMethod
@@ -11,6 +12,7 @@ import kotlinx.coroutines.await
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+@InternalMockzillaApi
 class JsMockzillaRequest(private val jsRequest: JsRequest) : MockzillaHttpRequest {
     private val lock = Mutex()
     private var bodyCache: String? = null

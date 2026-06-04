@@ -19,6 +19,8 @@ package com.apadmi.mockzilla.lib.internal.persistance
  * limitations under the License.
  */
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
 import platform.CoreFoundation.CFArrayGetCount
 import platform.CoreFoundation.CFArrayGetValueAtIndex
 import platform.CoreFoundation.CFArrayRefVar
@@ -93,6 +95,7 @@ import kotlinx.cinterop.value
  * be used as the service name. It's also possible to pass custom key-value pairs as attributes that will be added to
  * every key, if the default behavior does not fit your needs.
  */
+@InternalMockzillaApi
 class KeychainSettings(vararg defaultProperties: Pair<CFStringRef?, CFTypeRef?>) {
     @OptIn(ExperimentalForeignApi::class)
     private val defaultProperties = mapOf(kSecClass to kSecClassGenericPassword) + mapOf(*defaultProperties)

@@ -55,7 +55,7 @@ fun MonitorLogsWidget(
 }
 
 @Composable
-fun MonitorLogsWidgetContent(
+internal fun MonitorLogsWidgetContent(
     state: MonitorLogsViewModel.State.DisplayLogs,
     onClearAll: () -> Unit,
     onViewDetail: (LogEvent) -> Unit,
@@ -78,7 +78,7 @@ fun MonitorLogsWidgetContent(
 }
 
 @Composable
-fun LogRow(modifier: Modifier, event: LogEvent) =
+private fun LogRow(modifier: Modifier, event: LogEvent) =
     Row(
         modifier = modifier
             .padding(2.dp),

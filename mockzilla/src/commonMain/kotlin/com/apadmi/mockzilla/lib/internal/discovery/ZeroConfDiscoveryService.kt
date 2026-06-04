@@ -1,9 +1,11 @@
 package com.apadmi.mockzilla.lib.internal.discovery
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
 
+@InternalMockzillaApi
 interface ZeroConfDiscoveryService {
     suspend fun makeDiscoverable(metaData: MetaData, port: Int)
     suspend fun stop()

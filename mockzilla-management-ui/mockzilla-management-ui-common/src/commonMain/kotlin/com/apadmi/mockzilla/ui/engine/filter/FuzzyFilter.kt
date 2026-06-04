@@ -3,7 +3,7 @@ package com.apadmi.mockzilla.ui.engine.filter
 import kotlin.math.max
 import kotlin.math.min
 
-data object FuzzyFilter {
+internal data object FuzzyFilter {
     /**
      * Filters a list of items to only return items matching
      * the filter exactly or with minor edits, sorted by the

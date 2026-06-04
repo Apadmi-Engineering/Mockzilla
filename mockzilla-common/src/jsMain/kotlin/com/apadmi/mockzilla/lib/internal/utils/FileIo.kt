@@ -1,10 +1,12 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import kotlin.random.Random
 import kotlinx.browser.localStorage
 
 var incrementForUniqueness = 0
 
+@InternalMockzillaApi
 actual class FileIo(private val filePrefix: String = "mockzilla_cache_") {
     actual suspend fun readFromCache(filename: String): String? = localStorage.getItem(filePrefix + filename)
 
@@ -24,6 +26,7 @@ actual class FileIo(private val filePrefix: String = "mockzilla_cache_") {
             .forEach { localStorage.removeItem(it) }
     }
 }
+@InternalMockzillaApi
 actual fun createFileIoforTesting() = FileIo(
     // Ensure each test has a de-facto isolated storage bucket to prevent overlap
     // in parallel tests
