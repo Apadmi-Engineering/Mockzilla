@@ -1,3 +1,5 @@
+@file:JvmName("FileUtilsKt")
+
 package com.apadmi.mockzilla.testutils
 
 import java.io.File

@@ -10,7 +10,7 @@ import android.annotation.SuppressLint
 import java.io.*
 import java.lang.reflect.Method
 
-val isProbablyRunningOnEmulator: Boolean by lazy {
+internal val isProbablyRunningOnEmulator: Boolean by lazy {
     // Android SDK emulator
     return@lazy ((Build.MANUFACTURER == "Google" && Build.BRAND == "google" &&
             ((Build.FINGERPRINT.startsWith("google/sdk_gphone_")

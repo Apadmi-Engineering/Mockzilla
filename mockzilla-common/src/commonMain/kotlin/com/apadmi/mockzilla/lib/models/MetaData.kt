@@ -21,6 +21,7 @@ import kotlinx.serialization.json.JsonNames
  * @property runTarget The platform the server is running on, or `null` if unknown.
  * @property mockzillaVersion The version of the Mockzilla library.
  */
+@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
     @JsonNames("appName")

@@ -54,42 +54,6 @@ fun MonitorLogsWidget(
     )
 }
 
-@Composable
-fun MonitorLogsWidgetContent(
-    state: MonitorLogsViewModel.State.DisplayLogs,
-    onClearAll: () -> Unit,
-    onViewDetail: (LogEvent) -> Unit,
-    strings: Strings = LocalStrings.current,
-) = Row {
-    MonitorLogsList(
-        entries = state.entries,
-        onViewDetail = onViewDetail,
-        modifier = Modifier.weight(1F)
-    )
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        Surface(modifier = Modifier.padding(8.dp)) {
-            Button(
-                onClick = onClearAll,
-            ) {
-                Text(text = strings.widgets.logs.clearAll)
-            }
-        }
-    }
-}
-
-@Composable
-fun LogRow(modifier: Modifier, event: LogEvent) =
-    Row(
-        modifier = modifier
-            .padding(2.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Canvas(
-            modifier = Modifier.size(15.dp).padding(end = 4.dp),
-            onDraw = { drawCircle(color = event.status.color()) })
-        Text("${event.status.description} ${event.method}: ${event.url}")
-    }
-
 @Preview
 @Composable
 fun MonitorLogsWidgetPreview() = PreviewSurface {
@@ -114,6 +78,42 @@ fun MonitorLogsWidgetPreview() = PreviewSurface {
         onViewDetail = { _ -> }
     )
 }
+
+@Composable
+internal fun MonitorLogsWidgetContent(
+    state: MonitorLogsViewModel.State.DisplayLogs,
+    onClearAll: () -> Unit,
+    onViewDetail: (LogEvent) -> Unit,
+    strings: Strings = LocalStrings.current,
+) = Row {
+    MonitorLogsList(
+        entries = state.entries,
+        onViewDetail = onViewDetail,
+        modifier = Modifier.weight(1F)
+    )
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        Surface(modifier = Modifier.padding(8.dp)) {
+            Button(
+                onClick = onClearAll,
+            ) {
+                Text(text = strings.widgets.logs.clearAll)
+            }
+        }
+    }
+}
+
+@Composable
+private fun LogRow(modifier: Modifier, event: LogEvent) =
+    Row(
+        modifier = modifier
+            .padding(2.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Canvas(
+            modifier = Modifier.size(15.dp).padding(end = 4.dp),
+            onDraw = { drawCircle(color = event.status.color()) })
+        Text("${event.status.description} ${event.method}: ${event.url}")
+    }
 
 @Composable
 private fun MonitorLogsList(

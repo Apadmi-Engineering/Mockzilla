@@ -1,3 +1,5 @@
+// This file intentionally breaks the convention and isn't named `Mockzilla.ios.kt` since
+// We want the Swift interop to expose MockzillaKt as it's type
 package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryServiceImpl

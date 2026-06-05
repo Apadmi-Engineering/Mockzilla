@@ -63,7 +63,7 @@ fun MiscControlsWidget(
 }
 
 @Composable
-fun MiscControlsWidgetContent(
+internal fun MiscControlsWidgetContent(
     onRefreshAll: () -> Unit,
     onClearAllOverrides: () -> Unit,
     strings: Strings = LocalStrings.current
@@ -101,7 +101,7 @@ fun MiscControlsWidgetContent(
 
 @Preview
 @Composable
-fun MiscControlsWidgetPreview() = PreviewSurface {
+private fun MiscControlsWidgetPreview() = PreviewSurface {
     MiscControlsWidgetContent(
         onRefreshAll = {},
         onClearAllOverrides = {}

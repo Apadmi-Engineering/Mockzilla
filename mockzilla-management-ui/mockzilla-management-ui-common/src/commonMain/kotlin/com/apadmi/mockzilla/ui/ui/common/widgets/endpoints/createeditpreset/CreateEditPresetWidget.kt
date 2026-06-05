@@ -187,7 +187,7 @@ fun CreateEditPresetWidget(
 }
 
 @Composable
-fun CreateEditPresetWidgetContent(
+internal fun CreateEditPresetWidgetContent(
     state: State,
     onSave: () -> Unit,
     onStatusCodeSelected: (HttpStatusCode) -> Unit,

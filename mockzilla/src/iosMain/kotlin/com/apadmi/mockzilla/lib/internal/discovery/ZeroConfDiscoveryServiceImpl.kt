@@ -29,7 +29,7 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.refTo
 import kotlinx.cinterop.value
 
-class ZeroConfDiscoveryServiceImpl(
+internal class ZeroConfDiscoveryServiceImpl(
     private val logger: Logger,
     private val keychainSettings: KeychainSettings
 ) : ZeroConfDiscoveryService {

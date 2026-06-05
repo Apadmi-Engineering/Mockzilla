@@ -23,7 +23,7 @@ interface EventBus {
     }
 }
 
-class EventBusImpl(
+internal class EventBusImpl(
     private val coroutineScope: CoroutineScope
 ) : EventBus {
     override val events = MutableSharedFlow<EventBus.Event>()

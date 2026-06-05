@@ -1,3 +1,5 @@
+@file:JvmName("AndroidMockzillaKt")
+
 package com.apadmi.mockzilla.lib
 
 import android.content.Context

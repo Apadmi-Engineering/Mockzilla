@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-class CreateEditPresetViewModel(
+internal class CreateEditPresetViewModel(
     private val key: EndpointConfiguration.Key,
     private val device: Device,
     private val variant: State.Editing.Variant,

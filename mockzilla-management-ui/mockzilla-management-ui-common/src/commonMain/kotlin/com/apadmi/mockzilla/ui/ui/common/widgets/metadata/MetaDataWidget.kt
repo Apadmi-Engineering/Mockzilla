@@ -56,8 +56,23 @@ fun MetaDataWidget(device: Device) {
     MetaDataWidgetContent(state)
 }
 
+@Preview
 @Composable
-fun MetaDataWidgetContent(
+fun MetaDataListViewPreview() = PreviewSurface {
+    MetaDataListView(
+        metaData = MetaData(
+            appName = "App name",
+            appPackage = "app.package",
+            operatingSystemVersion = "OS",
+            deviceModel = "Model",
+            appVersion = "App version",
+            mockzillaVersion = "Mockzilla version"
+        )
+    )
+}
+
+@Composable
+internal fun MetaDataWidgetContent(
     state: MetaDataWidgetViewModel.State,
     strings: Strings = LocalStrings.current
 ) = Box(
@@ -74,7 +89,7 @@ fun MetaDataWidgetContent(
 }
 
 @Composable
-fun MetaDataListView(
+internal fun MetaDataListView(
     metaData: MetaData,
     strings: Strings = LocalStrings.current
 ) = Column {
@@ -100,7 +115,7 @@ fun MetaDataListView(
 }
 
 @Composable
-fun MetaDataRow(
+internal fun MetaDataRow(
     label: String,
     value: String,
     showDivider: Boolean = true
@@ -122,19 +137,4 @@ fun MetaDataRow(
                 .align(Alignment.BottomCenter)
         )
     }
-}
-
-@Preview
-@Composable
-fun MetaDataListViewPreview() = PreviewSurface {
-    MetaDataListView(
-        metaData = MetaData(
-            appName = "App name",
-            appPackage = "app.package",
-            operatingSystemVersion = "OS",
-            deviceModel = "Model",
-            appVersion = "App version",
-            mockzillaVersion = "Mockzilla version"
-        )
-    )
 }

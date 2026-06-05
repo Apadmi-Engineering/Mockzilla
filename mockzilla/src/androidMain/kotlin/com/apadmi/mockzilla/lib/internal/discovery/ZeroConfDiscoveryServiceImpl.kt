@@ -14,7 +14,7 @@ import com.google.android.gms.common.GoogleApiAvailabilityLight
 
 import java.util.UUID
 
-class ZeroConfDiscoveryServiceImpl(
+internal class ZeroConfDiscoveryServiceImpl(
     private val logger: Logger,
     private val context: Context
 ) : ZeroConfDiscoveryService {

@@ -93,7 +93,7 @@ import kotlinx.cinterop.value
  * be used as the service name. It's also possible to pass custom key-value pairs as attributes that will be added to
  * every key, if the default behavior does not fit your needs.
  */
-class KeychainSettings(vararg defaultProperties: Pair<CFStringRef?, CFTypeRef?>) {
+internal class KeychainSettings(vararg defaultProperties: Pair<CFStringRef?, CFTypeRef?>) {
     @OptIn(ExperimentalForeignApi::class)
     private val defaultProperties = mapOf(kSecClass to kSecClassGenericPassword) + mapOf(*defaultProperties)
 

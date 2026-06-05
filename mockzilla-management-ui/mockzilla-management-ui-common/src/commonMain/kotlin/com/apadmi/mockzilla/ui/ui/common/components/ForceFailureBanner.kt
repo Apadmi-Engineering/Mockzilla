@@ -39,7 +39,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.success
 
 private const val overlayAlpha = 0.1f
 
-enum class ForceFailureBannerState {
+internal enum class ForceFailureBannerState {
     FullFailure,
     Normal,
     PartialFailure,
