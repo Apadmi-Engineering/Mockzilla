@@ -238,6 +238,7 @@ class CreateEditPresetViewModel(
             val variant: Variant,
             val endpointName: String = "",
         ) : State() {
+            @Suppress("EnumEntryOrder")
             enum class ResponseType {
                 Html,
                 Json,

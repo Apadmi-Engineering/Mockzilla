@@ -776,13 +776,7 @@ private fun BodyTypeToggle(
         modifier = Modifier.horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        listOf(
-            State.Editing.ResponseType.Json,
-            State.Editing.ResponseType.PlainText,
-
-            State.Editing.ResponseType.Html,
-            State.Editing.ResponseType.None,
-        ).forEach { type ->
+        State.Editing.ResponseType.entries.forEach { type ->
             val isSelected = selected == type
             Box(
                 modifier = Modifier
