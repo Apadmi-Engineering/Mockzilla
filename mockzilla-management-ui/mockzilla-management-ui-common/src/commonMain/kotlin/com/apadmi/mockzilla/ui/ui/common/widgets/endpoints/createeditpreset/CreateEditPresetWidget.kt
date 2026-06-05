@@ -779,7 +779,7 @@ private fun BodyTypeToggle(
         listOf(
             State.Editing.ResponseType.Json,
             State.Editing.ResponseType.PlainText,
-            State.Editing.ResponseType.Xml,
+
             State.Editing.ResponseType.Html,
             State.Editing.ResponseType.None,
         ).forEach { type ->
@@ -809,7 +809,7 @@ private fun BodyTypeToggle(
                     text = when (type) {
                         State.Editing.ResponseType.Json -> strings.bodyTypeJson
                         State.Editing.ResponseType.PlainText -> strings.bodyTypePlain
-                        State.Editing.ResponseType.Xml -> strings.bodyTypeXml
+
                         State.Editing.ResponseType.Html -> strings.bodyTypeHtml
                         State.Editing.ResponseType.None -> strings.bodyTypeNone
                     },

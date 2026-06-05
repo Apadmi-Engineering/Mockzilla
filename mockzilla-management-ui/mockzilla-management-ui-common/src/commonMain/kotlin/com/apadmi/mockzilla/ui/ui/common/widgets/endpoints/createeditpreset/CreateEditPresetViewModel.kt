@@ -243,7 +243,6 @@ class CreateEditPresetViewModel(
                 Json,
                 None,
                 PlainText,
-                Xml,
                 ;
             }
 

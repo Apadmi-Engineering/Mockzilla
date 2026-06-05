@@ -129,10 +129,6 @@ fun DesktopApp(
                     onGlobalControlsClick = { onSelected(globalControlsWidgetId) }
                 )
 
-                // ── Middle content area (bounded: never spills into logs) ────
-                // Extracted to its own composable so that ColumnScope is not an
-                // ambient implicit receiver — otherwise the compiler resolves
-                // AnimatedVisibility to ColumnScope.AnimatedVisibility and errors.
                 MiddleContentArea(
                     modifier = Modifier.weight(1f).fillMaxWidth(),
                     openWidgets = openWidgets,
