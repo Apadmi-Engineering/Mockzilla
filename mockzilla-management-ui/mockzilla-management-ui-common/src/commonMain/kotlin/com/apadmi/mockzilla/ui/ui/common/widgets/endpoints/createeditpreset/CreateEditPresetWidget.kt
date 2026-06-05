@@ -802,7 +802,7 @@ private fun BodyTypeToggle(
                             Modifier
                         }
                     )
-                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
