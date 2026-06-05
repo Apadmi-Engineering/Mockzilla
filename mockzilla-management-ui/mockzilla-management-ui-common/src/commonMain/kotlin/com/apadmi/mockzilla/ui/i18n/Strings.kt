@@ -433,7 +433,6 @@ data class Strings(
          * @property bodyTitle
          * @property bodyTypeJson
          * @property bodyTypePlain
-         * @property bodyTypeXml
          * @property bodyTypeHtml
          * @property bodyTypeNone
          * @property responseBodyFormat
@@ -465,7 +464,7 @@ data class Strings(
             val bodyTitle: String,
             val bodyTypeJson: String,
             val bodyTypePlain: String,
-            val bodyTypeXml: String,
+
             val bodyTypeHtml: String,
             val bodyTypeNone: String,
             val responseBodyFormat: String,

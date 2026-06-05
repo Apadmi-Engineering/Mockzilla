@@ -117,7 +117,7 @@ private fun ColumnScope.PanelHeader(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 12.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {

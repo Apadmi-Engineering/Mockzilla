@@ -220,7 +220,7 @@ val EnStrings = Strings(
             bodyTitle = "Response Body",
             bodyTypeJson = "JSON",
             bodyTypePlain = "Plain Text",
-            bodyTypeXml = "XML",
+
             bodyTypeHtml = "HTML",
             bodyTypeNone = "None",
             responseBodyFormat = "Format",

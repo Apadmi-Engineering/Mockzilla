@@ -48,7 +48,6 @@ private fun State.Editing.ResponseType.string(
 ) = when (this) {
     State.Editing.ResponseType.Json -> strings.bodyTypeJson
     State.Editing.ResponseType.PlainText -> strings.bodyTypePlain
-    State.Editing.ResponseType.Xml -> strings.bodyTypeXml
     State.Editing.ResponseType.Html -> strings.bodyTypeHtml
     State.Editing.ResponseType.None -> strings.bodyTypeNone
 }
