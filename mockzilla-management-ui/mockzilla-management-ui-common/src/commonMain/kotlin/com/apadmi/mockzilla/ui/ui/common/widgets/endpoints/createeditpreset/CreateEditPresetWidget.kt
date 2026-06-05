@@ -307,7 +307,7 @@ private fun ColumnScope.HeadersSection(
                     color = if (canAdd) {
                         MaterialTheme.colorScheme.outline
                     } else {
-                        MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.8f)
                     },
                     shape = RoundedCornerShape(6.dp),
                 )
@@ -649,7 +649,6 @@ private fun JsonBodyTextField(
             tint = colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 6.dp, bottom = 4.dp)
                 .size(16.dp)
                 .pointerInput(Unit) {
                     detectDragGestures { _, dragAmount ->
