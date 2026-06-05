@@ -11,6 +11,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +35,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -50,8 +51,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextRange
@@ -85,6 +89,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.urlToTitle
+import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
@@ -165,6 +170,9 @@ private fun ColumnScope.BodySection(
         .fillMaxWidth()
         .background(MaterialTheme.colorScheme.surfaceContainer),
 ) {
+    val isJsonError = state.responseType == State.Editing.ResponseType.Json &&
+            state.body?.isNotEmpty() == true && state.hasBodyError
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -176,24 +184,19 @@ private fun ColumnScope.BodySection(
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.weight(1f),
         )
-        // Char count + JSON validity combined on the right
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
+        // Right side: "invalid JSON" in red when error, otherwise char count in green
+        if (isJsonError) {
+            Text(
+                text = strings.invalidLabel,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.error,
+            )
+        } else {
             Text(
                 text = strings.responseCharacters(state.body?.length ?: 0),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.success.primary,
             )
-            if (state.responseType == State.Editing.ResponseType.Json && state.body?.isNotEmpty() == true) {
-                Icon(
-                    imageVector = if (state.hasBodyError) Icons.Default.ErrorOutline else Icons.Default.Done,
-                    contentDescription = null,
-                    tint = if (state.hasBodyError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.success.primary,
-                    modifier = Modifier.size(14.dp),
-                )
-            }
         }
     }
 
@@ -201,6 +204,7 @@ private fun ColumnScope.BodySection(
         body = state.body ?: "",
         onBodyChange = onNewResponseBody,
         placeholder = strings.responseBodyPlaceholder,
+        isError = isJsonError,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
@@ -311,7 +315,8 @@ private fun ColumnScope.HeadersSection(
                     },
                     shape = RoundedCornerShape(6.dp),
                 )
-                .clickable(enabled = canAdd, onClick = onAddHeader),
+                .clickable(enabled = canAdd, onClick = onAddHeader)
+                .pointerHoverIcon(if (canAdd) PointerIcon.Hand else blockedPointerIcon),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -577,6 +582,7 @@ private fun JsonBodyTextField(
     onBodyChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String,
+    isError: Boolean = false,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     // Capture at @Composable scope — these have @Composable getters and cannot be accessed
@@ -627,7 +633,7 @@ private fun JsonBodyTextField(
                 .height(fieldHeight)
                 .clipToBounds()
                 .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
-                .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+                .border(1.dp, if (isError) colorScheme.error else colorScheme.outline, RoundedCornerShape(8.dp))
                 .padding(horizontal = 12.dp, vertical = 12.dp),
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
             decorationBox = { innerTextField ->
@@ -778,16 +784,17 @@ private fun BodyTypeToggle(
     ) {
         State.Editing.ResponseType.entries.forEach { type ->
             val isSelected = selected == type
+            val interactionSource = remember { MutableInteractionSource() }
+            val isHovered by interactionSource.collectIsHoveredAsState()
             Box(
                 modifier = Modifier
-                    .clickable { onSelect(type) }
+                    .clip(chipShape)
                     .background(
-                        color = if (isSelected) {
-                            colorScheme.primary.copy(alpha = 0.15f)
-                        } else {
-                            colorScheme.surfaceContainerHigh
+                        color = when {
+                            isSelected -> colorScheme.primary.copy(alpha = 0.15f)
+                            isHovered -> colorScheme.onSurface.copy(alpha = 0.08f)
+                            else -> colorScheme.surfaceContainerHigh
                         },
-                        shape = chipShape,
                     )
                     .then(
                         if (isSelected) {
@@ -796,6 +803,12 @@ private fun BodyTypeToggle(
                             Modifier
                         }
                     )
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null,
+                        onClick = { onSelect(type) },
+                    )
+                    .pointerHoverIcon(PointerIcon.Hand)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 contentAlignment = Alignment.Center,
             ) {
