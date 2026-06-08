@@ -3,10 +3,13 @@ package com.apadmi.mockzilla.ui.ui.common.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,26 +22,34 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun EmptyState(
     title: String,
-    description: String,
+    modifier: Modifier = Modifier,
+    description: String? = null,
+    icon: (@Composable () -> Unit)? = null,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(space = 8.dp, alignment = Alignment.CenterVertically)
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        icon?.let {
+            it()
+            Spacer(modifier = Modifier.height(12.dp))
+        }
         Text(
-            modifier = Modifier.fillMaxWidth(),
             text = title,
-            style = MaterialTheme.typography.displayLarge,
-            textAlign = TextAlign.Center
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = description,
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
-        )
+        description?.let {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+            )
+        }
     }
 }
 
@@ -48,7 +59,10 @@ private fun EmptyStatePreview() = PreviewSurface {
     Box(modifier = Modifier.size(200.dp)) {
         EmptyState(
             title = "Title",
-            description = "Description text\non multiple lines"
+            description = "Description text\non multiple lines",
+            icon = {
+                Icon(Icons.Default.Search, contentDescription = null)
+            }
         )
     }
 }

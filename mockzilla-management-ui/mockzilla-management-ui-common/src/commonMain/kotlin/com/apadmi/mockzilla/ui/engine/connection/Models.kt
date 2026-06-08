@@ -3,6 +3,8 @@ package com.apadmi.mockzilla.ui.engine.connection
 import com.apadmi.mockzilla.lib.models.MetaData
 import kotlin.jvm.JvmInline
 
+typealias AdbConnectionDeviceSerial = String
+
 /**
  * @property connectionId
  * @property prettyName
@@ -38,7 +40,7 @@ data class DetectedDevice(
  * @property ipAddresses
  */
 data class AdbConnection(
-    val deviceSerial: String,
+    val deviceSerial: AdbConnectionDeviceSerial,
     val isActive: Boolean,
     val ipAddresses: List<IpAddress>
 ) {

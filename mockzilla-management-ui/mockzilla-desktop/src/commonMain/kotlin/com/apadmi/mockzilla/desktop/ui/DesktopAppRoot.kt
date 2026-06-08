@@ -155,13 +155,14 @@ fun DesktopApp(
                         openWidgets = openWidgets
                             .minus(editPresetWidgetId)
                             .minus(createPresetWidgetId)
-                    },
-                    globalControlsOpen = openWidgets.contains(globalControlsWidgetId),
-                    onCloseGlobalControls = { onSelected(globalControlsWidgetId) },
-                )
-
-                // ── Bottom logs panel ─────────────────────────────────────────
-                bottomPanelWidgets(
+                    }
+                ) {
+                    viewModel.setSelectedEndpoint(it)
+                    if (!openWidgets.contains(endpointDetailsWidgetId)) {
+                        onSelected(endpointDetailsWidgetId)
+                    }
+                },
+                bottom = bottomPanelWidgets(
                     state = state,
                     onViewDetail = {
                         logDetail = it

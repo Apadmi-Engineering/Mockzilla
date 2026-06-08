@@ -18,6 +18,8 @@ class ZeroConfDiscoveryServiceImpl(
     private val logger: Logger,
     private val context: Context
 ) : ZeroConfDiscoveryService {
+    private val nsdManager by lazy { context.getSystemService(Context.NSD_SERVICE) as NsdManager }
+    private var registered = false
     private val registrationListener = object : NsdManager.RegistrationListener {
         override fun onServiceRegistered(serviceInfo: NsdServiceInfo) {
             logger.e("ZeroConf Registered: ${serviceInfo.serviceName}")
@@ -47,11 +49,16 @@ class ZeroConfDiscoveryServiceImpl(
             }
         }
 
-        (context.getSystemService(Context.NSD_SERVICE) as NsdManager).registerService(
-            serviceInfo,
-            NsdManager.PROTOCOL_DNS_SD,
-            registrationListener
-        )
+        nsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
+        registered = true
+    }
+
+    override suspend fun stop() {
+        if (registered) {
+            runCatching { nsdManager.unregisterService(registrationListener) }
+                .onFailure { logger.e("Failed to unregister NSD service: ${it.message}") }
+            registered = false
+        }
     }
 
     private suspend fun getOrPutDeviceIdentifier(): String {

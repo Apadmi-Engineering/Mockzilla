@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -57,6 +58,7 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
+import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
@@ -121,7 +123,8 @@ private fun EndpointsList(
     onEndpointClicked: (Key) -> Unit,
     onFilterUpdate: (String) -> Unit,
     onRowDensityChanged: (RowDensity) -> Unit,
-) = Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+    modifier: Modifier = Modifier,
+) = Column(modifier = modifier) {
     Column(modifier = Modifier.padding(12.dp)) {
         FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
         EndpointsHeader(
@@ -132,13 +135,24 @@ private fun EndpointsList(
         )
     }
     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-    state.endpoints.forEach { endpoint ->
-        EndpointRow(
-            endpoint = endpoint,
-            rowDensity = state.rowDensity,
-            isSelected = endpoint.key == selectedKey,
-            onEndpointClicked = onEndpointClicked,
+    if (state.endpoints.isEmpty()) {
+        val strings = LocalStrings.current
+        EmptyState(
+            title = strings.widgets.endpoints.emptyTitle,
+            description = strings.widgets.endpoints.emptyDescription,
+            modifier = Modifier.fillMaxSize()
         )
+    } else {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            state.endpoints.forEach { endpoint ->
+                EndpointRow(
+                    endpoint = endpoint,
+                    rowDensity = state.rowDensity,
+                    isSelected = endpoint.key == selectedKey,
+                    onEndpointClicked = onEndpointClicked,
+                )
+            }
+        }
     }
 }
 
@@ -324,16 +338,24 @@ private fun EndpointsWidgetContent(
             modifier = Modifier
                 .horizontalScroll(scrollState)
                 .width(contentWidth)
+                .fillMaxHeight()
         ) {
             when (state) {
-                EndpointsViewModel.State.Loading -> CircularProgressIndicator()
+                EndpointsViewModel.State.Loading -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+
                 is EndpointsViewModel.State.EndpointsList -> {
                     EndpointsList(
                         state = state,
                         selectedKey = selectedKey,
-                        onEndpointClicked = onEndpointClicked,
                         onFilterUpdate = onFilterUpdate,
                         onRowDensityChanged = onRowDensityChanged,
+                        onEndpointClicked = onEndpointClicked,
+                        modifier = Modifier.fillMaxSize()
                     )
                     FloatingActionButton(
                         modifier = Modifier

@@ -239,23 +239,27 @@ internal fun PresetCard(
 }
 @Composable
 internal fun NoPresetCard(
+    isCentered: Boolean = true,
     strings: Strings = LocalStrings.current
 ) {
     val presetStrings = strings.widgets.endpointDetails.presets
     val strokeColor = MaterialTheme.colorScheme.onSurface.copy(alpha = strokeAlpha)
     Column(
-        Modifier.fillMaxWidth().drawBehind {
-            val stroke = Stroke(
-                width = 2f, pathEffect = PathEffect.dashPathEffect(
-                    floatArrayOf(intervalDp.dp.toPx(), intervalDp.dp.toPx()), 0f
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = 200.dp)
+            .drawBehind {
+                val stroke = Stroke(
+                    width = 2f, pathEffect = PathEffect.dashPathEffect(
+                        floatArrayOf(intervalDp.dp.toPx(), intervalDp.dp.toPx()), 0f
+                    )
                 )
-            )
-            drawRoundRect(
-                color = strokeColor, cornerRadius = CornerRadius(12.dp.toPx()), style = stroke
-            )
-        }.padding(20.dp),
+                drawRoundRect(
+                    color = strokeColor, cornerRadius = CornerRadius(12.dp.toPx()), style = stroke
+                )
+            }.padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = if (isCentered) Arrangement.Center else Arrangement.Top
     ) {
         Text(
             text = presetStrings.noPresetTitle,
