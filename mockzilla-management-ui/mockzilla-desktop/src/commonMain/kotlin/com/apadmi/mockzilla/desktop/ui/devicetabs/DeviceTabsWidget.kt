@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.State
 import com.apadmi.mockzilla.desktop.ui.utils.desktopTertiaryPointerClick
+import com.apadmi.mockzilla.desktop.ui.utils.isOsx
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -60,9 +61,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.success
-
-import org.jetbrains.skiko.OS
-import org.jetbrains.skiko.hostOs
 
 import kotlin.Float
 
@@ -180,7 +178,7 @@ fun DeviceTabsWidgetContent(
             modifier =
                 Modifier
                     .padding(
-                        start = if (hostOs == OS.MacOS) horizontalOsxButtonPaddingDp.dp else 0.dp,
+                        start = if (isOsx()) horizontalOsxButtonPaddingDp.dp else 0.dp,
                     )
                     .height(IntrinsicSize.Min)
         ) {
