@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.demo.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -37,61 +38,72 @@ fun MainContent(
     makeRequest: (someValue: String) -> Unit,
     setIsReleaseMode: (isRelease: Boolean) -> Unit,
     launchManagementUi: () -> Unit
-) = Column {
+) = Column(modifier = Modifier.fillMaxSize()) {
     AppBar(state = state, setIsReleaseMode = setIsReleaseMode)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(1f)
-            .verticalScroll(rememberScrollState())
-            .navigationBarsPadding()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+    if (state is MainViewModel.State.Fetching && state.values.requestBody.isEmpty()) {
+        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .navigationBarsPadding()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                text = "Mockzilla Farm",
-                style = MaterialTheme.typography.titleLarge.copy(fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Mockzilla Farm",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Button(
+                    onClick = { makeRequest(state.values.requestBody) },
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(text = "Refresh")
+                }
+            }
+
+            when (state) {
+                is MainViewModel.State.FetchError -> ErrorContent(state = state)
+                is MainViewModel.State.Success -> SuccessContent(
+                    state = state,
+                    setRequestText = setRequestText
+                )
+                is MainViewModel.State.Fetching -> Box(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+                else -> {
+                    // this is a generated else block
+                }
+            }
+
             Button(
-                onClick = { makeRequest(state.values.requestBody) },
+                modifier = Modifier.fillMaxWidth(),
+                onClick = launchManagementUi,
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Text(text = "Refresh")
-            }
-        }
-        
-        when (state) {
-            is MainViewModel.State.FetchError -> ErrorContent(state = state)
-            is MainViewModel.State.Success -> SuccessContent(
-                state = state,
-                setRequestText = setRequestText
-            )
-            else -> {
-                Spacer(modifier = Modifier.weight(1f))
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                Text(text = "Launch Mockzilla Management UI")
+                Spacer(modifier = Modifier.width(8.dp))
+                Image(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(id = R.drawable.mockzilla_logo),
+                    contentDescription = "Launch Mockzilla Management UI"
                 )
-                Spacer(modifier = Modifier.weight(1f))
             }
-        }
-
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = launchManagementUi,
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            Text(text = "Launch Mockzilla Management UI")
-            Spacer(modifier = Modifier.width(8.dp))
-            Image(
-                modifier = Modifier.size(20.dp),
-                painter = painterResource(id = R.drawable.mockzilla_logo),
-                contentDescription = "Launch Mockzilla Management UI"
-            )
         }
     }
 }

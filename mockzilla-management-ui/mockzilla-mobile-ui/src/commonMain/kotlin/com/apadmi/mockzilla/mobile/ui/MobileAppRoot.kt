@@ -17,9 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Article
@@ -185,11 +183,7 @@ private fun ConnectedState(
             },
         ) {
             composable<Destination.EndpointDetails> { backStackEntry ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
-                ) {
+                Box(modifier = Modifier.fillMaxSize()) {
                     EndpointDetailsWidget(
                         device = currentState.activeDevice.device,
                         activeEndpoint = EndpointConfiguration.Key(
