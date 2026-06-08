@@ -118,8 +118,6 @@ fun DesktopApp(
                 top = {
                     DeviceTabsWidget(
                         modifier = Modifier.fillMaxWidth(),
-                        isGlobalControlsOpen = openWidgets.contains(globalControlsWidgetId),
-                        onGlobalControlsClick = { onSelected(globalControlsWidgetId) }
                     )
                 },
                 left = leftPanelWidgets(state),
@@ -233,7 +231,7 @@ private fun middleWidgets(
             else -> EndpointsWidget(
                 state.activeDevice.device,
                 onEndpointClicked,
-                onGlobalControlsClicked = onOpenGlobalControls
+                onGlobalControlsClicked = onOpenGlobalControls,
             )
         }
     }

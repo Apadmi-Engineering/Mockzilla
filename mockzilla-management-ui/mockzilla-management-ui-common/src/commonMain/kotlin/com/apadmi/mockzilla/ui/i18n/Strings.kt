@@ -257,7 +257,7 @@ data class Strings(
             val addDevice: String,
             val connected: String,
             val disconnected: String,
-            val devices: (number: Int) -> String,
+            val empty: String,
             val closeButtonDescription: String,
         )
 
