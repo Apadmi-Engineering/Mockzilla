@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -132,19 +133,26 @@ private fun TabItem(
     trailing: (@Composable () -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val indicatorColor = if (selected) colorScheme.primary else Color.Transparent
     Column(
-        modifier = modifier.background(
-            if (selected) {
-                colorScheme.surfaceContainerHighest.copy(alpha = 0.5f)
-            } else {
-                Color.Transparent
+        modifier = modifier
+            .background(
+                if (selected) colorScheme.surfaceContainerHighest.copy(alpha = 0.5f) else Color.Transparent
+            )
+            .drawBehind {
+                val strokePx = 2.dp.toPx()
+                drawRect(
+                    color = indicatorColor,
+                    topLeft = Offset(0f, size.height - strokePx),
+                    size = Size(size.width, strokePx),
+                )
             }
-        ).selectable(selected = selected, onClick = onSelect),
+            .selectable(selected = selected, onClick = onSelect),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             leadingContent?.invoke()

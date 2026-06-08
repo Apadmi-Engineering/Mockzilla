@@ -137,7 +137,9 @@ fun DesktopApp(
                     }
                 ) {
                     viewModel.setSelectedEndpoint(it)
-                    onSelected(endpointDetailsWidgetId)
+                    if (!openWidgets.contains(endpointDetailsWidgetId)) {
+                        onSelected(endpointDetailsWidgetId)
+                    }
                 },
                 bottom = bottomPanelWidgets(
                     state = state,

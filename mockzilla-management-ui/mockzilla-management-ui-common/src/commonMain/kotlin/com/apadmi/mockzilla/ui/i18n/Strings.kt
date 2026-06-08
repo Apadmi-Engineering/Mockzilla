@@ -109,7 +109,7 @@ data class Strings(
         data class LogDetails(
             val title: String,
             val emptyTitle: String,
-            val emptyDescription: String,
+            val emptyDescription: String?,
             val responseDelayUnits: String,
             val intendedFailure: String,
             val intendedSuccess: String,
@@ -267,6 +267,8 @@ data class Strings(
          * @property overrides
          * @property noOverrides
          * @property forced
+         * @property emptyTitle
+         * @property emptyDescription
          */
         data class Endpoints(
             val filterPlaceholder: String,
@@ -274,6 +276,8 @@ data class Strings(
             val overrides: (number: Int) -> String,
             val noOverrides: String,
             val forced: String,
+            val emptyTitle: String,
+            val emptyDescription: String,
         )
 
         /**
@@ -366,7 +370,7 @@ data class Strings(
             val resetUseErrorResponse: String,
             val headersUnset: String,
             val emptyTitle: String,
-            val emptyDescription: String,
+            val emptyDescription: String?,
             val forcedApiFailureBannerTitle: String,
             val forcedApiFailureBannerSubtitle: String,
             val behavior: String,

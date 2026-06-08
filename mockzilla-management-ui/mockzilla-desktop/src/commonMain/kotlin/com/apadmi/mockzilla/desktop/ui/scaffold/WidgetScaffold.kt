@@ -10,8 +10,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -109,47 +107,50 @@ fun WidgetScaffold(
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             top()
-            Row(modifier = Modifier.fillMaxWidth().weight(1f)) {
-                LeftPanel(
-                    content = left,
-                    openWidgets = openWidgets,
-                    width = leftPanelWidth,
-                    settledWidth = leftPanelSettledWidth,
-                    onWidthChange = {
-                        leftPanelWidth = it
-                        leftPanelSettledWidth = leftPanelWidthRestriction(it)
-                    },
-                    onDragStopped = {
-                        leftPanelWidth = leftPanelSettledWidth
-                    },
-                    onSelected = onSelected,
-                    defaultWidth = initialLeftPanelWidth
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
-                ) {
-                    middle.forEach { widget ->
-                        widget.title?.let { Text(it) }
-                        widget.ui()
+            BoxWithConstraints(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                val availableHeight = maxHeight
+                Row(modifier = Modifier.fillMaxSize()) {
+                    LeftPanel(
+                        content = left,
+                        openWidgets = openWidgets,
+                        width = leftPanelWidth,
+                        settledWidth = leftPanelSettledWidth,
+                        onWidthChange = {
+                            leftPanelWidth = it
+                            leftPanelSettledWidth = leftPanelWidthRestriction(it)
+                        },
+                        onDragStopped = {
+                            leftPanelWidth = leftPanelSettledWidth
+                        },
+                        onSelected = onSelected,
+                        defaultWidth = initialLeftPanelWidth
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
+                    ) {
+                        middle.forEach { widget ->
+                            widget.title?.let { Text(it) }
+                            widget.ui()
+                        }
                     }
+                    RightPanel(
+                        content = right,
+                        openWidgets = openWidgets,
+                        width = rightPanelWidth,
+                        settledWidth = rightPanelSettledWidth,
+                        onWidthChange = {
+                            rightPanelWidth = it
+                            rightPanelSettledWidth = rightPanelWidthRestriction(it)
+                        },
+                        onDragStopped = {
+                            rightPanelWidth = rightPanelSettledWidth
+                        },
+                        onSelected = onSelected,
+                        defaultWidth = initialRightPanelWidth
+                    )
                 }
-                RightPanel(
-                    content = right,
-                    openWidgets = openWidgets,
-                    width = rightPanelWidth,
-                    settledWidth = rightPanelSettledWidth,
-                    onWidthChange = {
-                        rightPanelWidth = it
-                        rightPanelSettledWidth = rightPanelWidthRestriction(it)
-                    },
-                    onDragStopped = {
-                        rightPanelWidth = rightPanelSettledWidth
-                    },
-                    onSelected = onSelected,
-                    defaultWidth = initialRightPanelWidth
-                )
             }
             BottomPanel(content = bottom)
         }
@@ -183,11 +184,12 @@ private fun LeftPanel(
         Row(modifier = Modifier.fillMaxHeight()) {
             Surface(
                 modifier = Modifier
-                    .verticalScroll(rememberScrollState())
                     .fillMaxHeight()
                     .width(settledWidth)
             ) {
-                Column {
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     content.forEachIndexed { index, widget ->
                         if (index != 0) {
                             HorizontalDivider(Modifier.padding(vertical = 8.dp))
@@ -227,7 +229,6 @@ private fun LeftPanel(
 
         Surface(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
                 .fillMaxHeight()
                 .width(
                     if (selectedWidgets.isEmpty()) {
@@ -238,7 +239,10 @@ private fun LeftPanel(
                 )
         ) {
             if (selectedWidgets.isNotEmpty()) {
-                Column {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Top
+                ) {
                     selectedWidgets.sorted().forEachIndexed { index, widget ->
                         if (index != 0) {
                             HorizontalDivider(Modifier.padding(vertical = 8.dp))
@@ -302,11 +306,13 @@ private fun RightPanel(
                 )
                 Surface(
                     modifier = Modifier
-                        .verticalScroll(rememberScrollState())
                         .fillMaxHeight()
                         .width(settledWidth)
                 ) {
-                    Column {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Top
+                    ) {
                         selectedWidgets.sorted().forEachIndexed { index, widget ->
                             if (index != 0) {
                                 HorizontalDivider(Modifier.padding(vertical = 8.dp))

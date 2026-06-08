@@ -87,7 +87,7 @@ internal fun ActivePresetCard(
                 preset = state.presets.appliedPreset,
                 onClicked = onEditPreset,
             )
-        } ?: NoPresetCard()
+        } ?: NoPresetCard(isCentered = false)
     }
 
     if (state.config.shouldFail == true) {

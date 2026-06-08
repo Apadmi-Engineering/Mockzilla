@@ -11,20 +11,25 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -280,30 +285,44 @@ fun EndpointDetailsWidgetContent(
 ) {
     val colorScheme = MaterialTheme.colorScheme
 
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .navigationBarsPadding()
             .background(color = colorScheme.surface)
     ) {
         when (state) {
             is State.Empty -> EmptyState(
                 title = strings.widgets.endpointDetails.emptyTitle,
-                description = strings.widgets.endpointDetails.emptyDescription
+                description = strings.widgets.endpointDetails.emptyDescription,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                }
             )
 
-            is State.Endpoint -> PopulatedState(
-                state,
-                strings,
-                onResetAll,
-                onFailChange,
-                onDelayChange,
-                onFilterPresetChanged,
-                onLayoutModeChanged,
-                onDefaultPresetSelected,
-                onPresetMoreInfoClicked,
-                onCreatePreset
-            )
+            is State.Endpoint -> Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                PopulatedState(
+                    state,
+                    strings,
+                    onResetAll,
+                    onFailChange,
+                    onDelayChange,
+                    onFilterPresetChanged,
+                    onLayoutModeChanged,
+                    onDefaultPresetSelected,
+                    onPresetMoreInfoClicked,
+                    onCreatePreset
+                )
+            }
         }
     }
 }
