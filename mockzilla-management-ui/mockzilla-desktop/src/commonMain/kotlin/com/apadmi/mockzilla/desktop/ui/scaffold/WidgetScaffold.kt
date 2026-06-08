@@ -10,8 +10,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -117,7 +115,6 @@ fun WidgetScaffold(
                         openWidgets = openWidgets,
                         width = leftPanelWidth,
                         settledWidth = leftPanelSettledWidth,
-                        totalHeight = availableHeight,
                         onWidthChange = {
                             leftPanelWidth = it
                             leftPanelSettledWidth = leftPanelWidthRestriction(it)
@@ -143,7 +140,6 @@ fun WidgetScaffold(
                         openWidgets = openWidgets,
                         width = rightPanelWidth,
                         settledWidth = rightPanelSettledWidth,
-                        totalHeight = availableHeight,
                         onWidthChange = {
                             rightPanelWidth = it
                             rightPanelSettledWidth = rightPanelWidthRestriction(it)
@@ -175,7 +171,6 @@ private fun LeftPanel(
     openWidgets: Set<String>,
     width: Dp,
     settledWidth: Dp,
-    totalHeight: Dp,
     onWidthChange: (Dp) -> Unit,
     onDragStopped: () -> Unit,
     onSelected: (String) -> Unit,
@@ -193,10 +188,7 @@ private fun LeftPanel(
                     .width(settledWidth)
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .heightIn(min = totalHeight)
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     content.forEachIndexed { index, widget ->
                         if (index != 0) {
@@ -248,11 +240,8 @@ private fun LeftPanel(
         ) {
             if (selectedWidgets.isNotEmpty()) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .heightIn(min = totalHeight),
-                    verticalArrangement = Arrangement.Center
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Top
                 ) {
                     selectedWidgets.sorted().forEachIndexed { index, widget ->
                         if (index != 0) {
@@ -284,7 +273,6 @@ private fun RightPanel(
     openWidgets: Set<String>,
     width: Dp,
     settledWidth: Dp,
-    totalHeight: Dp,
     onWidthChange: (Dp) -> Unit,
     onDragStopped: () -> Unit,
     defaultWidth: Dp = 100.dp,
@@ -322,11 +310,8 @@ private fun RightPanel(
                         .width(settledWidth)
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .heightIn(min = totalHeight),
-                        verticalArrangement = Arrangement.Center
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Top
                     ) {
                         selectedWidgets.sorted().forEachIndexed { index, widget ->
                             if (index != 0) {
