@@ -1,11 +1,9 @@
 @file:Suppress("PACKAGE_NAME_MISSING")
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
@@ -24,8 +22,8 @@ import java.awt.GraphicsEnvironment
 
 private const val minWindowSizeDp = 400
 
+@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 val LocalAppWindow = staticCompositionLocalOf<java.awt.Window> { error("No window provided") }
-
 
 fun main() = application {
     val state = rememberWindowState(
@@ -46,7 +44,6 @@ fun main() = application {
             exitApplication()
         },
         content = {
-
             // Makes the UI edge to edge on OSX so that the tabs appear more naturally
             if (hostOs == OS.MacOS) {
                 window.rootPane.apply {
@@ -58,24 +55,26 @@ fun main() = application {
                 window.handleOsxZoomBehaviour(state)
             }
 
-
-            window.minimumSize = with(LocalDensity.current) {
-                val screenSize = GraphicsEnvironment
-                    .getLocalGraphicsEnvironment()
-                    .defaultScreenDevice
-                    .displayMode
-
-                val minDimension = minOf(
-                    screenSize.height,
-                    screenSize.width,
-                    minWindowSizeDp.dp.toPx().toInt()
-                )
-                Dimension(minDimension, minDimension)
-            }
+            window.minimumSize = getMinWindowSize()
 
             CompositionLocalProvider(LocalAppWindow provides window) {
                 DesktopApp()
             }
         }
     )
+}
+
+@Composable
+private fun getMinWindowSize(): Dimension = with(LocalDensity.current) {
+    val screenSize = GraphicsEnvironment
+        .getLocalGraphicsEnvironment()
+        .defaultScreenDevice
+        .displayMode
+
+    val minDimension = minOf(
+        screenSize.height,
+        screenSize.width,
+        minWindowSizeDp.dp.toPx().toInt()
+    )
+    Dimension(minDimension, minDimension)
 }

@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -14,10 +13,8 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,30 +24,29 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.PlusOne
-import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.PaintingStyle
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -61,34 +57,84 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.PaintingStyle
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import org.jetbrains.skiko.OS
 import org.jetbrains.skiko.hostOs
-import kotlin.Float
-import kotlin.math.roundToInt
 
-private val horizontalOsxButtonPadding = 70.dp
+import kotlin.Float
+
+private const val horizontalOsxButtonPaddingDp = 70
+
+/**
+ * @property shoulderWidth
+ * @property shoulderDepth
+ * @property tail
+ * @property curl
+ */
+private data class TabShapeConfig(
+    val shoulderWidth: Dp = 12.dp,
+    val shoulderDepth: Dp = 19.dp,
+    val tail: Dp = 27.dp,
+    val curl: Float = 0.15f,
+)
+
+private enum class FadeDirection {
+    Left, Right
+}
+
+private fun DrawScope.drawTab(
+    config: TabShapeConfig,
+    background: Color = Color.Unspecified,
+    borderColor: Color = Color.Unspecified,
+    strokeWidth: Dp = 1.dp,
+) {
+    val width = size.width
+    val height = size.height
+    val sw = config.shoulderWidth.toPx()
+    val sd = config.shoulderDepth.toPx()
+    val tail = config.tail.toPx()
+
+    val path = Path().apply {
+        moveTo(-tail, height)
+        // Bottom left curve
+        cubicTo(0f, height, 0f, height, 0f, height - sd)
+        lineTo(0f, sw)
+
+        // Top left curve
+        cubicTo(0f, 0f, 0f, 0f, sw, 0f)
+        lineTo(width - sw, 0f)
+
+        // Top right curve
+        cubicTo(width, 0f, width, 0f, width, sw)
+
+        // Bottom right curve
+        lineTo(width, height - sd)
+        cubicTo(width, height, width, height, width + tail, height)
+    }
+
+    if (borderColor != Color.Unspecified) {
+        val paint = Paint().apply {
+            this.color = borderColor
+            this.style = PaintingStyle.Stroke
+            this.strokeWidth = strokeWidth.toPx()
+            this.strokeCap = StrokeCap.Round
+            this.isAntiAlias = true
+        }
+        drawIntoCanvas {
+            it.drawPath(
+                path = path,
+                paint = paint
+            )
+        }
+    }
+
+    if (background != Color.Unspecified) {
+        drawPath(path.also { it.close() }, color = background)
+    }
+}
 
 @Composable
 fun DeviceTabsWidget(
@@ -123,7 +169,6 @@ fun DeviceTabsWidgetContent(
         modifier = modifier
             .background(colorScheme.background)
     ) {
-
         if (state.devices.isNotEmpty()) {
             HorizontalDivider(
                 color = colorScheme.outline,
@@ -132,10 +177,10 @@ fun DeviceTabsWidgetContent(
         }
 
         Box(
-           modifier =
+            modifier =
                 Modifier
                     .padding(
-                        start = if (hostOs == OS.MacOS) horizontalOsxButtonPadding else 0.dp,
+                        start = if (hostOs == OS.MacOS) horizontalOsxButtonPaddingDp.dp else 0.dp,
                     )
                     .height(IntrinsicSize.Min)
         ) {
@@ -146,7 +191,7 @@ fun DeviceTabsWidgetContent(
                     .horizontalScroll(scrollState),
                 verticalAlignment = Alignment.Bottom,
             ) {
-                Box(Modifier.width(8.dp)) // Accounts for left curve of active tab background
+                Box(Modifier.width(8.dp))  // Accounts for left curve of active tab background
 
                 state.devices.forEach { device ->
                     DeviceTab(
@@ -157,8 +202,6 @@ fun DeviceTabsWidgetContent(
                         shape = TabShapeConfig()
                     )
                 }
-
-
                 if (state.devices.isNotEmpty()) {
                     IconButton(onClick = onAddNewDevice) {
                         Icon(
@@ -187,11 +230,7 @@ fun DeviceTabsWidgetContent(
             )
         }
     }
-
 }
-
-
-private enum class FadeDirection { Left, Right }
 
 @Composable
 private fun FadeEdge(
@@ -210,7 +249,7 @@ private fun FadeEdge(
         modifier = Modifier
             .width(width)
             .fillMaxHeight()
-            .padding(bottom = 1.dp) // Avoid the border
+            .padding(bottom = 1.dp)  // Avoid the border
             .background(
                 brush = Brush.horizontalGradient(
                     colors = when (direction) {
@@ -220,64 +259,6 @@ private fun FadeEdge(
                 )
             )
     )
-}
-
-data class TabShapeConfig(
-    val shoulderWidth: Dp = 12.dp,
-    val shoulderDepth: Dp = 19.dp,
-    val tail: Dp = 27.dp,
-    val curl: Float = 0.15f,
-)
-
-fun DrawScope.drawTab(
-    config: TabShapeConfig,
-    background: Color = Color.Unspecified,
-    borderColor: Color = Color.Unspecified,
-    strokeWidth: Dp = 1.dp,
-) {
-    val w = size.width
-    val h = size.height
-    val sw = config.shoulderWidth.toPx()
-    val sd = config.shoulderDepth.toPx()
-    val t = config.tail.toPx()
-
-    val path = Path().apply {
-        moveTo(-t, h)
-        // Bottom left curve
-        cubicTo(0f, h, 0f, h, 0f, h - sd)
-        lineTo(0f, sw)
-
-        // Top left curve
-        cubicTo(0f, 0f, 0f, 0f, sw, 0f)
-        lineTo(w - sw, 0f)
-
-        // Top right curve
-        cubicTo(w, 0f, w, 0f, w, sw)
-
-        // Bottom right curve
-        lineTo(w, h - sd)
-        cubicTo(w, h, w, h, w + t, h)
-    }
-
-    if (borderColor != Color.Unspecified) {
-        val paint = Paint().apply {
-            this.color = borderColor
-            this.style = PaintingStyle.Stroke
-            this.strokeWidth = strokeWidth.toPx()
-            this.strokeCap = StrokeCap.Round
-            this.isAntiAlias = true
-        }
-        drawIntoCanvas {
-            it.drawPath(
-                path = path,
-                paint = paint
-            )
-        }
-    }
-
-    if (background != Color.Unspecified) {
-        drawPath(path.also { it.close() }, color = background)
-    }
 }
 
 @Suppress("MAGIC_NUMBER")
@@ -297,12 +278,10 @@ private fun DeviceTab(
         modifier = Modifier
             .then(
                 if (device.isActive) {
-                    val background = colorScheme.surface
-                    val outlineColor = colorScheme.outline
                     Modifier.drawBehind {
                         drawTab(
                             config = shape,
-                            background = background,
+                            background = colorScheme.surface,
                             borderColor = colorScheme.outline,
                         )
                     }

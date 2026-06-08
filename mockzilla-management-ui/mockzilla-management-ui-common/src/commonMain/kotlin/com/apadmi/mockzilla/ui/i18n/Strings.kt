@@ -249,7 +249,7 @@ data class Strings(
          * @property addDevice
          * @property connected
          * @property disconnected
-         * @property devices
+         * @property empty
          * @property closeButtonDescription
          */
         data class DeviceTabs(
