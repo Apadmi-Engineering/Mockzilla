@@ -3,21 +3,22 @@ package com.apadmi.mockzilla.desktop.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -29,6 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionWidget
@@ -64,11 +67,12 @@ private const val editPresetWidgetId = "edit-preset"
 private const val createPresetWidgetId = "create-preset"
 private const val globalControlsWidgetId = "global-controls"
 private const val animationDuration = 300
+private const val createPresetPanelWidth = 500
+private const val scrimAlpha = 0.5f
 private const val defaultLeftPanelWidth = 300
 private const val defaultRightPanelWidth = 900
 private const val globalControlsWidth = 400
 private const val crossfadeDuration = 200
-private const val topBarHeight = 48
 private val leftPanelWidth = defaultLeftPanelWidth.dp
 private val rightPanelWidth = defaultRightPanelWidth.dp
 
@@ -111,6 +115,11 @@ fun DesktopApp(
             },
         )
 
+        val connectedState = state as? AppRootViewModel.State.Connected
+        val isPresetOpen = connectedState != null &&
+                (createPresetWidgetId in openWidgets || editPresetWidgetId in openWidgets) &&
+                connectedState.selectedEndpoint != null
+
         Box(modifier = Modifier.fillMaxSize()) {
             WidgetScaffold(
                 modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
@@ -130,55 +139,30 @@ fun DesktopApp(
                             onSelected(globalControlsWidgetId)
                         }
                     },
-                    onCloseEditor = {
+                    onSelected = onSelected,
+                    initialLeftPanelWidth = leftPanelWidth,
+                    initialRightPanelWidth = rightPanelWidth,
+                    isPresetOpen = isPresetOpen,
+                    connectedState = connectedState,
+                    creatingNewPreset = createPresetWidgetId in openWidgets,
+                    onCancelPreset = {
                         openWidgets = openWidgets
                             .minus(editPresetWidgetId)
                             .minus(createPresetWidgetId)
-                    }
-                ) {
-                    viewModel.setSelectedEndpoint(it)
-                    if (!openWidgets.contains(endpointDetailsWidgetId)) {
-                        onSelected(endpointDetailsWidgetId)
-                    }
-                },
-                bottom = bottomPanelWidgets(
+                    },
+                    globalControlsOpen = openWidgets.contains(globalControlsWidgetId),
+                    onCloseGlobalControls = { onSelected(globalControlsWidgetId) },
+                )
+
+                // ── Bottom logs panel ─────────────────────────────────────────
+                bottomPanelWidgets(
                     state = state,
                     onViewDetail = {
                         logDetail = it
                         onSelected(logDetailsWidgetId)
                     },
                     strings = strings,
-                ),
-                onSelected = onSelected,
-                initialLeftPanelWidth = leftPanelWidth,
-                initialRightPanelWidth = rightPanelWidth
-
-            )
-
-            // Global Controls Overlay
-            val connectedState = state as? AppRootViewModel.State.Connected
-            AnimatedVisibility(
-                visible = openWidgets.contains(globalControlsWidgetId) && connectedState != null,
-                enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
-                exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
-                modifier = Modifier.align(Alignment.CenterEnd).padding(top = topBarHeight.dp)  // Adjust top padding to match top bar height
-            ) {
-                connectedState?.let {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(globalControlsWidth.dp)
-                            .shadow(8.dp)
-                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(topStart = 8.dp)),
-                        color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(topStart = 8.dp)
-                    ) {
-                        GlobalControlsWidget(
-                            device = connectedState.activeDevice.device,
-                            onClose = { onSelected(globalControlsWidgetId) }
-                        )
-                    }
-                }
+                ).forEach { widget -> widget.ui() }
             }
 
             AnimatedErrorBanner(
@@ -186,6 +170,117 @@ fun DesktopApp(
                 viewModel::refreshAll,
                 viewModel::dismissError
             )
+        }
+    }
+}
+
+/**
+ * The middle content area: left/middle/right scaffold panels plus the
+ * Create-Preset, Global-Controls, and scrim overlays.
+ *
+ * This lives in its own composable so that [ColumnScope] is **not** an ambient
+ * implicit receiver, which would cause the compiler to resolve [AnimatedVisibility]
+ * to [ColumnScope.AnimatedVisibility] and produce an "cannot be called in this
+ * context" error.
+ */
+@Suppress("TOO_LONG_FUNCTION", "MAGIC_NUMBER")
+@Composable
+private fun MiddleContentArea(
+    modifier: Modifier = Modifier,
+    openWidgets: Set<String>,
+    left: List<Widget>,
+    middle: List<Widget>,
+    right: List<Widget>,
+    onSelected: (String) -> Unit,
+    initialLeftPanelWidth: Dp,
+    initialRightPanelWidth: Dp,
+    isPresetOpen: Boolean,
+    connectedState: AppRootViewModel.State.Connected?,
+    creatingNewPreset: Boolean,
+    onCancelPreset: () -> Unit,
+    globalControlsOpen: Boolean,
+    onCloseGlobalControls: () -> Unit,
+) {
+    Box(modifier = modifier) {
+        WidgetScaffold(
+            modifier = Modifier.fillMaxSize(),
+            openWidgets = openWidgets,
+            top = {},
+            left = left,
+            right = right,
+            middle = middle,
+            bottom = emptyList(),
+            onSelected = onSelected,
+            initialLeftPanelWidth = initialLeftPanelWidth,
+            initialRightPanelWidth = initialRightPanelWidth,
+        )
+
+        // Scrim — dims everything when Create/Edit Preset is open
+        AnimatedVisibility(
+            visible = isPresetOpen,
+            enter = fadeIn(animationSpec = tween(animationDuration)),
+            exit = fadeOut(animationSpec = tween(animationDuration)),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = scrimAlpha))
+            )
+        }
+
+        // Create / Edit Preset overlay
+        AnimatedVisibility(
+            visible = isPresetOpen,
+            enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
+            exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
+            modifier = Modifier.align(Alignment.CenterEnd),
+        ) {
+            connectedState?.selectedEndpoint?.let { endpoint ->
+                Surface(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(createPresetPanelWidth.dp)
+                        .shadow(8.dp)
+                        .border(1.dp, MaterialTheme.colorScheme.outline),
+                    color = MaterialTheme.colorScheme.surface,
+                ) {
+                    CreateEditPresetWidget(
+                        device = connectedState.activeDevice.device,
+                        activeEndpoint = endpoint,
+                        creatingNewPreset = creatingNewPreset,
+                        onCancel = onCancelPreset,
+                    )
+                }
+            }
+        }
+
+        // Global Controls overlay
+        AnimatedVisibility(
+            visible = globalControlsOpen && connectedState != null,
+            enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
+            exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
+            modifier = Modifier.align(Alignment.CenterEnd),
+        ) {
+            connectedState?.let {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(globalControlsWidth.dp)
+                        .shadow(8.dp)
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.outline,
+                            RoundedCornerShape(topStart = 8.dp)
+                        ),
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(topStart = 8.dp),
+                ) {
+                    GlobalControlsWidget(
+                        device = connectedState.activeDevice.device,
+                        onClose = onCloseGlobalControls,
+                    )
+                }
+            }
         }
     }
 }
@@ -209,9 +304,7 @@ private fun bottomPanelWidgets(
 @Suppress("diktat") // Diktat generates an invalid else block for some reason
 private fun middleWidgets(
     state: AppRootViewModel.State,
-    openWidgets: Set<String>,
     onOpenGlobalControls: () -> Unit,
-    onCloseEditor: () -> Unit,
     onEndpointClicked: (EndpointConfiguration.Key) -> Unit,
 ) = listOf(when (state) {
     is AppRootViewModel.State.Connected -> Widget(id = "endpoints") {

@@ -71,7 +71,8 @@ class CreateEditPresetViewModel(
                 responseType = inferResponseTypeFromBody(
                     current?.response?.body.takeIf { isEditing }
                 ),
-                variant = variant
+                variant = variant,
+                endpointName = config?.name ?: key.raw,
             )
         }.fold(
             onSuccess = { it },
@@ -224,6 +225,7 @@ class CreateEditPresetViewModel(
          * @property responseType
          * @property hasBodyError
          * @property variant
+         * @property endpointName The display name of the endpoint shown in the list
          */
         data class Editing(
             val isSaving: Boolean,
@@ -234,9 +236,13 @@ class CreateEditPresetViewModel(
             val newHeader: RequestHeader = RequestHeader(),
             val responseType: ResponseType,
             val variant: Variant,
+            val endpointName: String = "",
         ) : State() {
+            @Suppress("EnumEntryOrder")
             enum class ResponseType {
+                Html,
                 Json,
+                None,
                 PlainText,
                 ;
             }
