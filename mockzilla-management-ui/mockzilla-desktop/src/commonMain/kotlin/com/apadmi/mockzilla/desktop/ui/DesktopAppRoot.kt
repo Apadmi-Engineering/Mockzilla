@@ -121,23 +121,27 @@ fun DesktopApp(
                 connectedState.selectedEndpoint != null
 
         Box(modifier = Modifier.fillMaxSize()) {
-            WidgetScaffold(
-                modifier = Modifier.mobileStatusBarPadding().fillMaxSize(),
-                openWidgets = openWidgets,
-                top = {
-                    DeviceTabsWidget(
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                },
-                left = leftPanelWidgets(state),
-                right = rightWidgets,
-                middle = middleWidgets(
-                    state,
-                    openWidgets,
-                    onOpenGlobalControls = {
-                        if (!openWidgets.contains(globalControlsWidgetId)) {
-                            onSelected(globalControlsWidgetId)
-                        }
+            Column(modifier = Modifier.mobileStatusBarPadding().fillMaxSize()) {
+                // ── Top bar ──────────────────────────────────────────────────
+                DeviceTabsWidget(
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                MiddleContentArea(
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    openWidgets = openWidgets,
+                    left = leftPanelWidgets(state),
+                    right = rightWidgets,
+                    middle = middleWidgets(
+                        state,
+                        onOpenGlobalControls = {
+                            if (!openWidgets.contains(globalControlsWidgetId)) {
+                                onSelected(globalControlsWidgetId)
+                            }
+                        },
+                    ) {
+                        viewModel.setSelectedEndpoint(it)
+                        onSelected(endpointDetailsWidgetId)
                     },
                     onSelected = onSelected,
                     initialLeftPanelWidth = leftPanelWidth,
@@ -308,27 +312,11 @@ private fun middleWidgets(
     onEndpointClicked: (EndpointConfiguration.Key) -> Unit,
 ) = listOf(when (state) {
     is AppRootViewModel.State.Connected -> Widget(id = "endpoints") {
-        val selectedEndpoint = state.selectedEndpoint
-        when {
-            (createPresetWidgetId in openWidgets || editPresetWidgetId in openWidgets)
-                    && selectedEndpoint != null -> Column {
-                IconButton(
-                    modifier = Modifier.align(Alignment.End),
-                    onClick = onCloseEditor,
-                ) { CloseButtonIcon() }
-                CreateEditPresetWidget(
-                    device = state.activeDevice.device,
-                    activeEndpoint = selectedEndpoint,
-                    creatingNewPreset = createPresetWidgetId in openWidgets
-                )
-            }
-
-            else -> EndpointsWidget(
-                state.activeDevice.device,
-                onEndpointClicked,
-                onGlobalControlsClicked = onOpenGlobalControls,
-            )
-        }
+        EndpointsWidget(
+            state.activeDevice.device,
+            onEndpointClicked,
+            onGlobalControlsClicked = onOpenGlobalControls
+        )
     }
 
     AppRootViewModel.State.NewDeviceConnection -> Widget(id = "device-connection") {
