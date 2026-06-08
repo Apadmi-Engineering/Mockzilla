@@ -386,17 +386,15 @@ private fun EndpointsWidgetContent(
                     CircularProgressIndicator()
                 }
 
-                is EndpointsViewModel.State.EndpointsList -> {
-                    EndpointsList(
-                        state = state,
-                        selectedKey = selectedKey,
-                        onFilterUpdate = onFilterUpdate,
-                        onRowDensityChanged = onRowDensityChanged,
-                        onEndpointClicked = onEndpointClicked,
-                        onGlobalControlsClicked = onGlobalControlsClicked,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
+                is EndpointsViewModel.State.EndpointsList -> EndpointsList(
+                    state = state,
+                    selectedKey = selectedKey,
+                    onFilterUpdate = onFilterUpdate,
+                    onRowDensityChanged = onRowDensityChanged,
+                    onEndpointClicked = onEndpointClicked,
+                    onGlobalControlsClicked = onGlobalControlsClicked,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
