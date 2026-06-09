@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MetaDataWidgetViewModel(
+internal class MetaDataWidgetViewModel(
     private val device: Device,
     private val metaDataUseCase: MetaDataUseCase,
     private val monitorLogsUseCase: MonitorLogsUseCase,

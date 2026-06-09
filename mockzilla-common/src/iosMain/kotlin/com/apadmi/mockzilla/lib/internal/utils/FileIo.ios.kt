@@ -1,9 +1,11 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import platform.Foundation.*
 
 import kotlinx.cinterop.ExperimentalForeignApi
 
+@InternalMockzillaApi
 @OptIn(ExperimentalForeignApi::class)
 actual class FileIo {
     private val directoryPath by lazy {
@@ -37,4 +39,5 @@ actual class FileIo {
     private fun filePath(filename: String) = "$directoryPath/$filename"
 }
 
+@InternalMockzillaApi
 actual fun createFileIoforTesting() = FileIo()

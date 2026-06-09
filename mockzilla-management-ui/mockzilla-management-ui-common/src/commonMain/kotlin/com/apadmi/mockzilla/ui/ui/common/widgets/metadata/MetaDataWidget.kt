@@ -70,8 +70,23 @@ fun MetaDataWidget(device: Device) {
     MetaDataWidgetContent(state, device)
 }
 
+@Preview
 @Composable
-fun MetaDataWidgetContent(
+fun MetaDataListViewPreview() = PreviewSurface {
+    MetaDataListView(
+        metaData = MetaData(
+            appName = "App name",
+            appPackage = "app.package",
+            operatingSystemVersion = "OS",
+            deviceModel = "Model",
+            appVersion = "App version",
+            mockzillaVersion = "Mockzilla version"
+        )
+    )
+}
+
+@Composable
+internal fun MetaDataWidgetContent(
     state: MetaDataWidgetViewModel.State,
     device: Device? = null,
     strings: Strings = LocalStrings.current
@@ -89,8 +104,8 @@ fun MetaDataWidgetContent(
 }
 
 @Composable
-fun MetaDataListView(
-    state: MetaDataWidgetViewModel.State.DisplayMetaData,
+internal fun MetaDataListView(
+    metaData: MetaData,
     device: Device? = null,
     strings: Strings = LocalStrings.current
 ) = Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
@@ -113,7 +128,7 @@ fun MetaDataListView(
 }
 
 @Composable
-fun MetaDataRow(
+internal fun MetaDataRow(
     label: String,
     value: String,
     showDivider: Boolean = true

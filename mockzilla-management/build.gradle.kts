@@ -84,6 +84,12 @@ kotlin {
             /* Logging */
             implementation(libs.kermit)
         }
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
         commonTest.dependencies {
             implementation(kotlin("test"))
             implementation(libs.kotlinx.coroutines.test)
@@ -94,6 +100,7 @@ kotlin {
     }
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+        freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
     }
 }
 

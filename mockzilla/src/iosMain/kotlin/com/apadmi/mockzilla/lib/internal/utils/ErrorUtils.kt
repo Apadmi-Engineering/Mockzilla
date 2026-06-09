@@ -4,4 +4,4 @@ package com.apadmi.mockzilla.lib.internal.utils
 
 import io.ktor.utils.io.errors.PosixException.AddressAlreadyInUseException as KtorAddressAlreadyInUseException
 
-actual typealias AddressAlreadyInUseException = KtorAddressAlreadyInUseException
+internal actual typealias AddressAlreadyInUseException = KtorAddressAlreadyInUseException

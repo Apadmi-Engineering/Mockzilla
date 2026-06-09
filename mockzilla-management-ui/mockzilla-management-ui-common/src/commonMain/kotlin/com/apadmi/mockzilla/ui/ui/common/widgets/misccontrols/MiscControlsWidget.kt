@@ -80,8 +80,17 @@ fun MiscControlsWidget(
     )
 }
 
+@Preview
 @Composable
-fun MiscControlsWidgetContent(
+fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
+    MiscControlsWidgetContent(
+        onRefreshAll = {},
+        onClearAllOverrides = {}
+    )
+}
+
+@Composable
+internal fun MiscControlsWidgetContent(
     onRefreshAll: () -> Unit,
     onClearAllOverrides: () -> Unit,
     strings: Strings = LocalStrings.current
@@ -147,15 +156,6 @@ fun MiscControlsWidgetContent(
 
         DarkModeSettings()
     }
-}
-
-@Preview
-@Composable
-fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
-    MiscControlsWidgetContent(
-        onRefreshAll = {},
-        onClearAllOverrides = {}
-    )
 }
 
 @Composable

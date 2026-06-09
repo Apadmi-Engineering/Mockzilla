@@ -119,6 +119,7 @@ kotlin {
     }
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+        freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
     }
 }
 

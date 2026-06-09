@@ -14,7 +14,7 @@ interface MetaDataUseCase {
     suspend fun getMetaData(device: Device, isPolling: Boolean = false): Result<MetaData>
 }
 
-class MetaDataUseCaseImpl(
+internal class MetaDataUseCaseImpl(
     private val managementMetaDataService: MockzillaManagement.MetaDataService,
     private val currentTimeStamp: TimeStampAccessor = { Clock.System.now().toEpochMilliseconds() }
 ) : MetaDataUseCase {

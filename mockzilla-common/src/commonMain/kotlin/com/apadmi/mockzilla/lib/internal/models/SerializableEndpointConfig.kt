@@ -2,6 +2,7 @@
 
 package com.apadmi.mockzilla.lib.internal.models
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -91,6 +92,7 @@ data class SerializableEndpointConfig(
  * @property errorHeaders
  * @property appliedPresetOverride
  */
+@InternalMockzillaApi
 @Suppress("TYPE_ALIAS")
 @Serializable
 data class SerializableEndpointPatchItemDto(
@@ -137,6 +139,7 @@ data class SerializableEndpointPatchItemDto(
 /**
  * @property entries
  */
+@InternalMockzillaApi
 @Serializable
 data class MockDataResponseDto(
     val entries: List<SerializableEndpointConfig>
@@ -145,6 +148,7 @@ data class MockDataResponseDto(
 /**
  * @property entries
  */
+@InternalMockzillaApi
 @Serializable
 data class SerializableEndpointConfigPatchRequestDto(
     val entries: List<SerializableEndpointPatchItemDto>
@@ -152,6 +156,7 @@ data class SerializableEndpointConfigPatchRequestDto(
     constructor(entry: SerializableEndpointPatchItemDto) : this(listOf(entry))
 }
 
+@InternalMockzillaApi
 @Serializable(with = ServiceResultSerializer::class)
 sealed class SetOrDont<out T> {
     @Serializable
@@ -166,6 +171,7 @@ sealed class SetOrDont<out T> {
     data class Set<T>(val value: T) : SetOrDont<T>()
 }
 
+@InternalMockzillaApi
 class ServiceResultSerializer<T : Any>(
     serializer: KSerializer<T?>
 ) : KSerializer<SetOrDont<T?>> {

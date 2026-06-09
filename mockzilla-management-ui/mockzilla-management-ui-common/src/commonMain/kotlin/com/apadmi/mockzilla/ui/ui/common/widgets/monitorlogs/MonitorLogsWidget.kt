@@ -99,7 +99,31 @@ fun MonitorLogsWidget(
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun MonitorLogsWidgetContent(
+fun MonitorLogsWidgetPreview() = PreviewSurface {
+    MonitorLogsWidgetContent(
+        state = MonitorLogsViewModel.State.DisplayLogs(
+            entries = sequenceOf(
+                LogEvent(
+                    timestamp = 1000,
+                    url = "https://www.example.com/url",
+                    requestBody = "request body",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = "response body",
+                    status = HttpStatusCode.OK,
+                    delay = 50,
+                    method = "GET",
+                    isIntendedFailure = false
+                )
+            ),
+        ),
+        onClearAll = {},
+        onViewDetail = { _ -> }
+    )
+}
+
+@Composable
+internal fun MonitorLogsWidgetContent(
     state: MonitorLogsViewModel.State.DisplayLogs,
     onClearAll: () -> Unit,
     onViewDetail: (LogEvent) -> Unit,
@@ -268,7 +292,6 @@ fun LogRow(
     }
 }
 
-@Preview
 @Composable
 fun MonitorLogsWidgetPreview() = PreviewSurface {
     MonitorLogsWidgetContent(

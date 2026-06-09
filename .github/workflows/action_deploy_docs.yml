@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           name: generated_docs
-          path: './generated_docs'
+          path: './docs/site'
 
   # Deployment job
   deploy:

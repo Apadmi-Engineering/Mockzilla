@@ -271,7 +271,7 @@ fun EndpointDetailsWidget(
 }
 
 @Composable
-fun EndpointDetailsWidgetContent(
+internal fun EndpointDetailsWidgetContent(
     state: State,
     onDelayChange: (Int?) -> Unit,
     onFailChange: (Boolean?) -> Unit,

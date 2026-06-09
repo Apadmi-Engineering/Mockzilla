@@ -4,7 +4,7 @@ import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
 
-interface ZeroConfDiscoveryService {
+internal interface ZeroConfDiscoveryService {
     suspend fun makeDiscoverable(metaData: MetaData, port: Int)
     suspend fun stop()
 }
