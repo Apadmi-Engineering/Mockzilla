@@ -143,7 +143,9 @@ fun DesktopApp(
                         },
                     ) {
                         viewModel.setSelectedEndpoint(it)
-                        onSelected(endpointDetailsWidgetId)
+                        if (!openWidgets.contains(endpointDetailsWidgetId)) {
+                            onSelected(endpointDetailsWidgetId)
+                        }
                     },
                     onSelected = onSelected,
                     initialLeftPanelWidth = leftPanelWidth,
