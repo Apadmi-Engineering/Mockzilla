@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 /** Controls how much information each row in the endpoint list shows. */
-enum class RowDensity {
+internal enum class RowDensity {
     Comfy, Compact
 }
 

@@ -210,7 +210,17 @@ interface MockzillaManagement {
         val disableProxy: Boolean = false
     )
 
+    /**
+     * Fetches the app icon from a connected device.
+     */
     interface AppIconService {
+        /**
+         * Fetches the app icon from the app at [connection] as a byte array
+         *
+         * @param connection The device to target.
+         * @return [Result.success] wrapping the raw byts of the icon, or [Result.failure] if the
+         * request could not be completed.
+         */
         suspend fun fetchAppIcon(connection: MockzillaConnectionConfig): Result<ByteArray?>
     }
 
