@@ -249,7 +249,7 @@ data class Strings(
          * @property addDevice
          * @property connected
          * @property disconnected
-         * @property devices
+         * @property empty
          * @property closeButtonDescription
          */
         data class DeviceTabs(
@@ -257,7 +257,7 @@ data class Strings(
             val addDevice: String,
             val connected: String,
             val disconnected: String,
-            val devices: (number: Int) -> String,
+            val empty: String,
             val closeButtonDescription: String,
         )
 

@@ -55,12 +55,7 @@ val EnStrings = Strings(
             addDevice = "Add Device",
             connected = "Connected",
             disconnected = "Disconnected",
-            devices = { number ->
-                when (number) {
-                    1 -> "1 device"
-                    else -> "$number devices"
-                }
-            },
+            empty = "0 devices",
             closeButtonDescription = "Close"
         ),
         metaData = Strings.Widgets.MetaData(

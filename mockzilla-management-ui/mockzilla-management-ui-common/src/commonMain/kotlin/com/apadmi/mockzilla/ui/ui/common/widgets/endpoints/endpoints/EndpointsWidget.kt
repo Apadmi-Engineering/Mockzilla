@@ -27,9 +27,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -49,7 +49,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration.*
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -123,6 +122,7 @@ private fun EndpointsList(
     onEndpointClicked: (Key) -> Unit,
     onFilterUpdate: (String) -> Unit,
     onRowDensityChanged: (RowDensity) -> Unit,
+    onGlobalControlsClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) = Column(modifier = modifier) {
     Column(modifier = Modifier.padding(12.dp)) {
@@ -132,6 +132,10 @@ private fun EndpointsList(
             totalCount = state.allEndpoints.size,
             selectedRowDensity = state.rowDensity,
             onRowDensityChanged = onRowDensityChanged,
+        )
+        GlobalControlsButton(
+            isOpen = false,
+            onClick = onGlobalControlsClicked
         )
     }
     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
@@ -153,6 +157,40 @@ private fun EndpointsList(
                 )
             }
         }
+    }
+}
+
+@Suppress("MAGIC_NUMBER")
+@Composable
+private fun GlobalControlsButton(
+    isOpen: Boolean,
+    strings: Strings = LocalStrings.current,
+    onClick: () -> Unit
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val shape = RoundedCornerShape(8.dp)
+
+    Row(
+        modifier = Modifier
+            .clip(shape)
+            .background(if (isOpen) colorScheme.primary else colorScheme.surface)
+            .border(1.dp, if (isOpen) colorScheme.primary else colorScheme.outline, shape)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Tune,
+            contentDescription = null,
+            tint = if (isOpen) colorScheme.onPrimary else colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(16.dp),
+        )
+        Text(
+            text = strings.widgets.globalControls.title,
+            style = MaterialTheme.typography.labelMedium,
+            color = if (isOpen) colorScheme.onPrimary else colorScheme.onSurface,
+        )
     }
 }
 
@@ -348,30 +386,15 @@ private fun EndpointsWidgetContent(
                     CircularProgressIndicator()
                 }
 
-                is EndpointsViewModel.State.EndpointsList -> {
-                    EndpointsList(
-                        state = state,
-                        selectedKey = selectedKey,
-                        onFilterUpdate = onFilterUpdate,
-                        onRowDensityChanged = onRowDensityChanged,
-                        onEndpointClicked = onEndpointClicked,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                    FloatingActionButton(
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .align(Alignment.BottomEnd)
-                            .zIndex(1f),
-                        onClick = onGlobalControlsClicked,
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = strings.widgets.globalControls.title
-                        )
-                    }
-                }
+                is EndpointsViewModel.State.EndpointsList -> EndpointsList(
+                    state = state,
+                    selectedKey = selectedKey,
+                    onFilterUpdate = onFilterUpdate,
+                    onRowDensityChanged = onRowDensityChanged,
+                    onEndpointClicked = onEndpointClicked,
+                    onGlobalControlsClicked = onGlobalControlsClicked,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }

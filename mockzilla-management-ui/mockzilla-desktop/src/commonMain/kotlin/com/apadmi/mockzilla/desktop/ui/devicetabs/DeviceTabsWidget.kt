@@ -1,25 +1,32 @@
 package com.apadmi.mockzilla.desktop.ui.devicetabs
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,32 +35,108 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.PaintingStyle
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.State
 import com.apadmi.mockzilla.desktop.ui.utils.desktopTertiaryPointerClick
+import com.apadmi.mockzilla.desktop.ui.utils.isOsx
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 
+import kotlin.Float
+
+private const val horizontalOsxButtonPaddingDp = 70
+
+/**
+ * @property shoulderWidth
+ * @property shoulderDepth
+ * @property tail
+ * @property curl
+ */
+private data class TabShapeConfig(
+    val shoulderWidth: Dp = 12.dp,
+    val shoulderDepth: Dp = 19.dp,
+    val tail: Dp = 27.dp,
+    val curl: Float = 0.15f,
+)
+
+private enum class FadeDirection {
+    Left, Right
+}
+
+private fun DrawScope.drawTab(
+    config: TabShapeConfig,
+    background: Color = Color.Unspecified,
+    borderColor: Color = Color.Unspecified,
+    strokeWidth: Dp = 1.dp,
+) {
+    val width = size.width
+    val height = size.height
+    val sw = config.shoulderWidth.toPx()
+    val sd = config.shoulderDepth.toPx()
+    val tail = config.tail.toPx()
+
+    val path = Path().apply {
+        moveTo(-tail, height)
+        // Bottom left curve
+        cubicTo(0f, height, 0f, height, 0f, height - sd)
+        lineTo(0f, sw)
+
+        // Top left curve
+        cubicTo(0f, 0f, 0f, 0f, sw, 0f)
+        lineTo(width - sw, 0f)
+
+        // Top right curve
+        cubicTo(width, 0f, width, 0f, width, sw)
+
+        // Bottom right curve
+        lineTo(width, height - sd)
+        cubicTo(width, height, width, height, width + tail, height)
+    }
+
+    if (borderColor != Color.Unspecified) {
+        val paint = Paint().apply {
+            this.color = borderColor
+            this.style = PaintingStyle.Stroke
+            this.strokeWidth = strokeWidth.toPx()
+            this.strokeCap = StrokeCap.Round
+            this.isAntiAlias = true
+        }
+        drawIntoCanvas {
+            it.drawPath(
+                path = path,
+                paint = paint
+            )
+        }
+    }
+
+    if (background != Color.Unspecified) {
+        drawPath(path.also { it.close() }, color = background)
+    }
+}
+
 @Composable
 fun DeviceTabsWidget(
     modifier: Modifier,
-    isGlobalControlsOpen: Boolean = false,
-    onGlobalControlsClick: () -> Unit = {},
 ) {
     val viewModel = getViewModel<DeviceTabsViewModel>()
     val state by viewModel.state.collectAsState()
@@ -63,8 +146,6 @@ fun DeviceTabsWidget(
         onSelect = viewModel::onChangeDevice,
         onAddNewDevice = viewModel::addNewDevice,
         onCloseTab = viewModel::removeDevice,
-        isGlobalControlsOpen = isGlobalControlsOpen,
-        onGlobalControlsClick = onGlobalControlsClick,
         modifier = modifier,
     )
 }
@@ -73,109 +154,143 @@ fun DeviceTabsWidget(
 fun DeviceTabsWidgetContent(
     state: State,
     modifier: Modifier = Modifier,
-    isGlobalControlsOpen: Boolean = false,
     strings: Strings = LocalStrings.current,
     onSelect: (State.DeviceTabEntry) -> Unit,
     onAddNewDevice: () -> Unit,
     onCloseTab: (State.DeviceTabEntry) -> Unit,
-    onGlobalControlsClick: () -> Unit = {},
 ) = Column {
     val colorScheme = MaterialTheme.colorScheme
+    val scrollState = rememberScrollState()
 
-    Column(modifier = modifier.background(colorScheme.surfaceContainerLow)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+        modifier = modifier
+            .background(colorScheme.background)
+    ) {
+        if (state.devices.isNotEmpty()) {
+            HorizontalDivider(
+                color = colorScheme.outline,
+                thickness = 1.dp
+            )
+        }
+
+        Box(
+            modifier =
+                Modifier
+                    .padding(
+                        start = if (isOsx()) horizontalOsxButtonPaddingDp.dp else 0.dp,
+                    )
+                    .height(IntrinsicSize.Min)
         ) {
             Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .horizontalScroll(scrollState),
+                verticalAlignment = Alignment.Bottom,
             ) {
-                if (state.devices.isEmpty()) {
-                    Text(
-                        text = strings.widgets.deviceTabs.devices(0),
-                        style = MaterialTheme
-                            .typography
-                            .labelSmall
-                            .copy(
-                                fontFamily = LocalMonoFontFamily.current,
-                                lineHeightStyle = LineHeightStyle(
-                                    alignment = LineHeightStyle.Alignment.Center,
-                                    trim = LineHeightStyle.Trim.None
-                                )
-                            ),
-                        color = colorScheme.onSurfaceFaint,
-                        modifier = Modifier.padding(vertical = 6.dp)
+                Box(Modifier.width(8.dp))  // Accounts for left curve of active tab background
+
+                state.devices.forEach { device ->
+                    DeviceTab(
+                        device = device,
+                        strings = strings,
+                        onSelect = { onSelect(device) },
+                        onClose = { onCloseTab(device) },
+                        shape = TabShapeConfig()
                     )
-                } else {
-                    state.devices.forEach { device ->
-                        DeviceChip(
-                            device = device,
-                            strings = strings,
-                            onSelect = { onSelect(device) },
-                            onClose = { onCloseTab(device) },
+                }
+                if (state.devices.isNotEmpty()) {
+                    IconButton(onClick = onAddNewDevice) {
+                        Icon(
+                            modifier = Modifier.size(18.dp),
+                            imageVector = Icons.Filled.Add,
+                            tint = colorScheme.onSurfaceVariant,
+                            contentDescription = strings.widgets.deviceTabs.addDevice,
                         )
                     }
                 }
+            }
 
-                if (state.devices.isNotEmpty()) {
-                    BaseButton(
-                        label = strings.widgets.deviceTabs.addDevice,
-                        leadingIcon = Icons.Default.Add,
-                        variant = ButtonVariant.Ghost,
-                        size = ButtonSize.Sm,
-                        onClick = onAddNewDevice
-                    )
-                }
-            }
-            if (state.devices.any { it.isActive }) {
-                GlobalControlsButton(
-                    label = strings.widgets.globalControls.title,
-                    isOpen = isGlobalControlsOpen,
-                    onClick = onGlobalControlsClick
-                )
-            }
+            FadeEdge(
+                modifier = Modifier.align(Alignment.CenterStart),
+                width = 36.dp,
+                color = colorScheme.background,
+                direction = FadeDirection.Left,
+                visible = scrollState.value > 0,
+            )
+            FadeEdge(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                width = 52.dp,
+                color = colorScheme.background,
+                direction = FadeDirection.Right,
+                visible = scrollState.value < scrollState.maxValue,
+            )
         }
     }
+}
 
-    HorizontalDivider(color = colorScheme.outline, thickness = 1.dp)
+@Composable
+private fun FadeEdge(
+    modifier: Modifier = Modifier,
+    width: Dp,
+    color: Color,
+    direction: FadeDirection,
+    visible: Boolean,
+) = AnimatedVisibility(
+    visible = visible,
+    modifier = modifier,
+    enter = fadeIn(),
+    exit = fadeOut(),
+) {
+    Spacer(
+        modifier = Modifier
+            .width(width)
+            .fillMaxHeight()
+            .padding(bottom = 1.dp)  // Avoid the border
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = when (direction) {
+                        FadeDirection.Left -> listOf(color, Color.Transparent)
+                        FadeDirection.Right -> listOf(Color.Transparent, color)
+                    }
+                )
+            )
+    )
 }
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-private fun DeviceChip(
+private fun DeviceTab(
     device: State.DeviceTabEntry,
     strings: Strings,
     onSelect: () -> Unit,
     onClose: () -> Unit,
+    shape: TabShapeConfig,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val chipShape = RoundedCornerShape(8.dp)
-    val dotColor = if (device.isConnected) colorScheme.success.primary else colorScheme.onSurfaceFaint
+    val dotColor =
+        if (device.isConnected) colorScheme.success.primary else colorScheme.onSurfaceFaint
 
     Box(
         modifier = Modifier
-            .clip(chipShape)
-            .background(if (device.isActive) colorScheme.surfaceContainerHigh else Color.Transparent)
             .then(
                 if (device.isActive) {
-                    Modifier.border(
-                        width = 1.dp,
-                        color = colorScheme.outline,
-                        shape = chipShape
-                    )
+                    Modifier.drawBehind {
+                        drawTab(
+                            config = shape,
+                            background = colorScheme.surface,
+                            borderColor = colorScheme.outline,
+                        )
+                    }
                 } else {
                     Modifier
                 }
             )
             .clickable(onClick = onSelect)
             .desktopTertiaryPointerClick(onClick = onClose)
-            .padding(start = 10.dp, end = 4.dp, top = 6.dp, bottom = 6.dp),
+            // Slightly odd padding values needed here since the border curve throws things off
+            .padding(start = 12.dp, end = 10.dp, top = 8.dp, bottom = 10.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -203,13 +318,11 @@ private fun DeviceChip(
                     color = if (device.isActive) colorScheme.onSurface else colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = "${device.deviceName} · ${
-                        if (device.isConnected) {
-                            strings.widgets.deviceTabs.connected
-                        } else {
-                            strings.widgets.deviceTabs.disconnected
-                        }
-                    }",
+                    text = if (device.isConnected) {
+                        device.deviceName
+                    } else {
+                        strings.widgets.deviceTabs.disconnected
+                    },
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = FontWeight.Normal,
                         fontFamily = LocalMonoFontFamily.current
@@ -220,7 +333,7 @@ private fun DeviceChip(
 
             Box(
                 modifier = Modifier
-                    .size(20.dp)
+                    .size(12.dp)
                     .clip(RoundedCornerShape(4.dp))
                     .clickable(onClick = onClose),
                 contentAlignment = Alignment.Center,
@@ -233,40 +346,6 @@ private fun DeviceChip(
                 )
             }
         }
-    }
-}
-
-@Suppress("MAGIC_NUMBER")
-@Composable
-private fun GlobalControlsButton(
-    label: String,
-    isOpen: Boolean,
-    onClick: () -> Unit
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    val shape = RoundedCornerShape(8.dp)
-
-    Row(
-        modifier = Modifier
-            .clip(shape)
-            .background(if (isOpen) colorScheme.primary else colorScheme.surface)
-            .border(1.dp, if (isOpen) colorScheme.primary else colorScheme.outline, shape)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Tune,
-            contentDescription = null,
-            tint = if (isOpen) colorScheme.onPrimary else colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(16.dp),
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = if (isOpen) colorScheme.onPrimary else colorScheme.onSurface,
-        )
     }
 }
 

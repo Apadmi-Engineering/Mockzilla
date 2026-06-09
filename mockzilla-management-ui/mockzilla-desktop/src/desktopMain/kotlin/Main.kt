@@ -1,5 +1,8 @@
 @file:Suppress("PACKAGE_NAME_MISSING")
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -8,13 +11,19 @@ import androidx.compose.ui.window.*
 import com.apadmi.mockzilla.desktop.di.startDesktopMockzillaKoin
 import com.apadmi.mockzilla.desktop.engine.connection.ZeroConfSdkWrapper
 import com.apadmi.mockzilla.desktop.ui.DesktopApp
+import com.apadmi.mockzilla.desktop.utils.handleOsxZoomBehaviour
 import com.apadmi.mockzilla.desktop.utils.rememberAppIcon
 import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
+import org.jetbrains.skiko.OS
+import org.jetbrains.skiko.hostOs
 
 import java.awt.Dimension
 import java.awt.GraphicsEnvironment
 
 private const val minWindowSizeDp = 400
+
+@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
+val LocalAppWindow = staticCompositionLocalOf<java.awt.Window> { error("No window provided") }
 
 fun main() = application {
     val state = rememberWindowState(
@@ -35,21 +44,37 @@ fun main() = application {
             exitApplication()
         },
         content = {
-            window.minimumSize = with(LocalDensity.current) {
-                val screenSize = GraphicsEnvironment
-                    .getLocalGraphicsEnvironment()
-                    .defaultScreenDevice
-                    .displayMode
+            // Makes the UI edge to edge on OSX so that the tabs appear more naturally
+            if (hostOs == OS.MacOS) {
+                window.rootPane.apply {
+                    putClientProperty("apple.awt.fullWindowContent", true)
+                    putClientProperty("apple.awt.transparentTitleBar", true)
+                    putClientProperty("apple.awt.windowTitleVisible", false)
+                }
 
-                val minDimension = minOf(
-                    screenSize.height,
-                    screenSize.width,
-                    minWindowSizeDp.dp.toPx().toInt()
-                )
-                Dimension(minDimension, minDimension)
+                window.handleOsxZoomBehaviour(state)
             }
-            
-            DesktopApp()
+
+            window.minimumSize = getMinWindowSize()
+
+            CompositionLocalProvider(LocalAppWindow provides window) {
+                DesktopApp()
+            }
         }
     )
+}
+
+@Composable
+private fun getMinWindowSize(): Dimension = with(LocalDensity.current) {
+    val screenSize = GraphicsEnvironment
+        .getLocalGraphicsEnvironment()
+        .defaultScreenDevice
+        .displayMode
+
+    val minDimension = minOf(
+        screenSize.height,
+        screenSize.width,
+        minWindowSizeDp.dp.toPx().toInt()
+    )
+    Dimension(minDimension, minDimension)
 }

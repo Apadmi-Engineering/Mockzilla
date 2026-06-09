@@ -125,8 +125,6 @@ fun DesktopApp(
                 // ── Top bar ──────────────────────────────────────────────────
                 DeviceTabsWidget(
                     modifier = Modifier.fillMaxWidth(),
-                    isGlobalControlsOpen = openWidgets.contains(globalControlsWidgetId),
-                    onGlobalControlsClick = { onSelected(globalControlsWidgetId) }
                 )
 
                 MiddleContentArea(
