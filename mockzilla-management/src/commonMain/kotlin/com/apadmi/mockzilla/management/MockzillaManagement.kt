@@ -246,7 +246,7 @@ interface MockzillaManagement {
          */
         fun constructInstance(config: Config = Config()): MockzillaManagement {
             val repo = MockzillaManagementRepositoryImpl.create(config)
-            return Instance(repo, UpdateServiceImpl(repo), repo, repo, repo, repo)
+            return Instance(repo, UpdateServiceImpl(repo), repo, repo, repo, repo, repo)
         }
     }
 }

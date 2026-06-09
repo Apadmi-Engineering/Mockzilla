@@ -98,6 +98,7 @@ fun MonitorLogsWidget(
 }
 
 @Suppress("MAGIC_NUMBER")
+@Preview
 @Composable
 fun MonitorLogsWidgetPreview() = PreviewSurface {
     MonitorLogsWidgetContent(
@@ -290,66 +291,6 @@ fun LogRow(
             modifier = Modifier.defaultMinSize(minWidth = 52.dp),
         )
     }
-}
-
-@Composable
-fun MonitorLogsWidgetPreview() = PreviewSurface {
-    MonitorLogsWidgetContent(
-        state = MonitorLogsViewModel.State.DisplayLogs(
-            entries = sequenceOf(
-                LogEvent(
-                    timestamp = 1_716_566_657_201,
-                    url = "https://www.example.com/repairs/list",
-                    requestBody = "",
-                    requestHeaders = mapOf(),
-                    responseHeaders = mapOf(),
-                    responseBody = """{"items":[{"id":1,"status":"upcoming"}]}""",
-                    status = HttpStatusCode.OK,
-                    delay = 342,
-                    method = "GET",
-                    isIntendedFailure = false,
-                ),
-                LogEvent(
-                    timestamp = 1_716_566_659_014,
-                    url = "https://www.example.com/customer/get",
-                    requestBody = "",
-                    requestHeaders = mapOf(),
-                    responseHeaders = mapOf(),
-                    responseBody = """{"id":42,"name":"John"}""",
-                    status = HttpStatusCode.OK,
-                    delay = 12,
-                    method = "GET",
-                    isIntendedFailure = false,
-                ),
-                LogEvent(
-                    timestamp = 1_716_566_661_889,
-                    url = "https://www.example.com/auth/token",
-                    requestBody = """{"user":"test"}""",
-                    requestHeaders = mapOf(),
-                    responseHeaders = mapOf(),
-                    responseBody = """{"error":"forced failure"}""",
-                    status = HttpStatusCode.InternalServerError,
-                    delay = 1,
-                    method = "POST",
-                    isIntendedFailure = true,
-                ),
-                LogEvent(
-                    timestamp = 1_716_566_664_501,
-                    url = "https://www.example.com/repairs/expired",
-                    requestBody = "",
-                    requestHeaders = mapOf(),
-                    responseHeaders = mapOf(),
-                    responseBody = """{"error":"unauthorised"}""",
-                    status = HttpStatusCode.Unauthorized,
-                    delay = 1502,
-                    method = "GET",
-                    isIntendedFailure = false,
-                ),
-            ),
-        ),
-        onClearAll = {},
-        onViewDetail = { _ -> },
-    )
 }
 
 @Composable
