@@ -70,6 +70,29 @@ fun MetaDataWidget(device: Device) {
     MetaDataWidgetContent(state, device)
 }
 
+// ── Preview ───────────────────────────────────────────────────────────────────
+
+@Suppress("COMPLEX_EXPRESSION")
+@Preview
+@Composable
+fun MetaDataListViewPreview() = PreviewSurface() {
+    MetaDataListView(
+        state = MetaDataWidgetViewModel.State.DisplayMetaData(
+            metaData = MetaData(
+                appName = "Runner",
+                appPackage = "uk.co.homeserve.pega.sus.internal",
+                operatingSystemVersion = "Version 18.5 (Build 22F77)",
+                deviceModel = "iPhone 16 Plus",
+                appVersion = "999.999.1",
+                mockzillaVersion = "3.0.0-alpha2",
+                runTarget = RunTarget.IosSimulator
+            ),
+            requestCount = 17,
+        ),
+        device = Device(ip = "127.0.0.1", port = "49812")
+    )
+}
+
 @Composable
 internal fun MetaDataWidgetContent(
     state: MetaDataWidgetViewModel.State,
@@ -81,7 +104,12 @@ internal fun MetaDataWidgetContent(
         contentAlignment = Alignment.Center
     ) {
         when (state) {
-            is MetaDataWidgetViewModel.State.DisplayMetaData -> MetaDataListView(state, device, strings)
+            is MetaDataWidgetViewModel.State.DisplayMetaData -> MetaDataListView(
+                state,
+                device,
+                strings
+            )
+
             MetaDataWidgetViewModel.State.Error -> Text(strings.widgets.metaData.error)
             MetaDataWidgetViewModel.State.Loading -> CircularProgressIndicator()
         }
@@ -90,10 +118,14 @@ internal fun MetaDataWidgetContent(
 
 @Composable
 internal fun MetaDataListView(
-    state: MetaDataWidgetViewModel.State.DisplayMetaData ,
+    state: MetaDataWidgetViewModel.State.DisplayMetaData,
     device: Device? = null,
     strings: Strings = LocalStrings.current
-) = Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+) = Column(
+    modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 8.dp)
+) {
     AppHeader(
         appName = state.metaData.appName,
         appPackage = state.metaData.appPackage,
@@ -141,29 +173,6 @@ internal fun MetaDataRow(
     if (showDivider) {
         DashedDivider()
     }
-}
-
-// ── Preview ───────────────────────────────────────────────────────────────────
-
-@Suppress("COMPLEX_EXPRESSION")
-@Preview
-@Composable
-fun MetaDataListViewPreview() = PreviewSurface() {
-    MetaDataListView(
-        state = MetaDataWidgetViewModel.State.DisplayMetaData(
-            metaData = MetaData(
-                appName = "Runner",
-                appPackage = "uk.co.homeserve.pega.sus.internal",
-                operatingSystemVersion = "Version 18.5 (Build 22F77)",
-                deviceModel = "iPhone 16 Plus",
-                appVersion = "999.999.1",
-                mockzillaVersion = "3.0.0-alpha2",
-                runTarget = RunTarget.IosSimulator
-            ),
-            requestCount = 17,
-        ),
-        device = Device(ip = "127.0.0.1", port = "49812")
-    )
 }
 
 // ── Sections ─────────────────────────────────────────────────────────────────

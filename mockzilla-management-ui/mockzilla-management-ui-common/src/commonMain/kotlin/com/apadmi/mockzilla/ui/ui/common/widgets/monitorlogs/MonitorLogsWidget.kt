@@ -98,6 +98,87 @@ fun MonitorLogsWidget(
 }
 
 @Suppress("MAGIC_NUMBER")
+@Composable
+fun LogRow(
+    modifier: Modifier,
+    event: LogEvent,
+) {
+    val monoFont = LocalMonoFontFamily.current
+    val cs = MaterialTheme.colorScheme
+    val isSlowRequest = (event.delay ?: 0) > 1000
+    val isRealError = event.status.value >= 400 && !event.isIntendedFailure
+    val errorColor = cs.error
+    val errorBgColor = cs.errorContainer
+    val faintColor = cs.onSurface.copy(alpha = 0.3f)
+    val slowColor = cs.warning.primary
+
+    Row(
+        modifier = modifier
+            .background(if (isRealError) errorBgColor else Color.Transparent)
+            .drawBehind {
+                if (isRealError) {
+                    drawRect(color = errorColor, size = Size(3.dp.toPx(), size.height))
+                }
+            }
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = event.timestamp.formatTimestamp(),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontFamily = monoFont,
+                    fontWeight = FontWeight.Normal,
+                ),
+                color = faintColor,
+                modifier = Modifier.defaultMinSize(minWidth = 88.dp),
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = event.url,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontFamily = monoFont,
+                    fontWeight = FontWeight.Medium,
+                ),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+            )
+            if (event.isIntendedFailure || isRealError) {
+                Spacer(modifier = Modifier.width(8.dp))
+                if (event.isIntendedFailure) {
+                    StatusChip(label = "FORCED", tone = ChipTone.Err)
+                } else {
+                    StatusChip(label = "REAL", tone = ChipTone.Err)
+                }
+            }
+        }
+
+        Text(
+            text = event.status.value.toString(),
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = monoFont,
+                fontWeight = FontWeight.SemiBold,
+            ),
+            color = event.status.statusColor(event.isIntendedFailure),
+            textAlign = TextAlign.End,
+            modifier = Modifier.defaultMinSize(minWidth = 32.dp),
+        )
+
+        Text(
+            text = "${event.delay}ms",
+            style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+            color = when {
+                isRealError -> errorColor
+                isSlowRequest -> slowColor
+                else -> faintColor
+            },
+            textAlign = TextAlign.End,
+            modifier = Modifier.defaultMinSize(minWidth = 52.dp),
+        )
+    }
+}
+
 @Preview
 @Composable
 fun MonitorLogsWidgetPreview() = PreviewSurface {
@@ -105,24 +186,61 @@ fun MonitorLogsWidgetPreview() = PreviewSurface {
         state = MonitorLogsViewModel.State.DisplayLogs(
             entries = sequenceOf(
                 LogEvent(
-                    timestamp = 1000,
-                    url = "https://www.example.com/url",
-                    requestBody = "request body",
+                    timestamp = 1_716_566_657_201,
+                    url = "https://www.example.com/repairs/list",
+                    requestBody = "",
                     requestHeaders = mapOf(),
                     responseHeaders = mapOf(),
-                    responseBody = "response body",
+                    responseBody = """{"items":[{"id":1,"status":"upcoming"}]}""",
                     status = HttpStatusCode.OK,
-                    delay = 50,
+                    delay = 342,
                     method = "GET",
-                    isIntendedFailure = false
-                )
+                    isIntendedFailure = false,
+                ),
+                LogEvent(
+                    timestamp = 1_716_566_659_014,
+                    url = "https://www.example.com/customer/get",
+                    requestBody = "",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = """{"id":42,"name":"John"}""",
+                    status = HttpStatusCode.OK,
+                    delay = 12,
+                    method = "GET",
+                    isIntendedFailure = false,
+                ),
+                LogEvent(
+                    timestamp = 1_716_566_661_889,
+                    url = "https://www.example.com/auth/token",
+                    requestBody = """{"user":"test"}""",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = """{"error":"forced failure"}""",
+                    status = HttpStatusCode.InternalServerError,
+                    delay = 1,
+                    method = "POST",
+                    isIntendedFailure = true,
+                ),
+                LogEvent(
+                    timestamp = 1_716_566_664_501,
+                    url = "https://www.example.com/repairs/expired",
+                    requestBody = "",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = """{"error":"unauthorised"}""",
+                    status = HttpStatusCode.Unauthorized,
+                    delay = 1502,
+                    method = "GET",
+                    isIntendedFailure = false,
+                ),
             ),
         ),
         onClearAll = {},
-        onViewDetail = { _ -> }
+        onViewDetail = { _ -> },
     )
 }
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 internal fun MonitorLogsWidgetContent(
     state: MonitorLogsViewModel.State.DisplayLogs,
@@ -208,88 +326,6 @@ internal fun MonitorLogsWidgetContent(
                 modifier = Modifier.height(280.dp),
             )
         }
-    }
-}
-
-@Suppress("MAGIC_NUMBER")
-@Composable
-fun LogRow(
-    modifier: Modifier,
-    event: LogEvent,
-) {
-    val monoFont = LocalMonoFontFamily.current
-    val cs = MaterialTheme.colorScheme
-    val isSlowRequest = (event.delay ?: 0) > 1000
-    val isRealError = event.status.value >= 400 && !event.isIntendedFailure
-    val errorColor = cs.error
-    val errorBgColor = cs.errorContainer
-    val faintColor = cs.onSurface.copy(alpha = 0.3f)
-    val slowColor = cs.warning.primary
-
-    Row(
-        modifier = modifier
-            .background(if (isRealError) errorBgColor else Color.Transparent)
-            .drawBehind {
-                if (isRealError) {
-                    drawRect(color = errorColor, size = Size(3.dp.toPx(), size.height))
-                }
-            }
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = event.timestamp.formatTimestamp(),
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontFamily = monoFont,
-                    fontWeight = FontWeight.Normal,
-                ),
-                color = faintColor,
-                modifier = Modifier.defaultMinSize(minWidth = 88.dp),
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = event.url,
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontFamily = monoFont,
-                    fontWeight = FontWeight.Medium,
-                ),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-            )
-            if (event.isIntendedFailure || isRealError) {
-                Spacer(modifier = Modifier.width(8.dp))
-                if (event.isIntendedFailure) {
-                    StatusChip(label = "FORCED", tone = ChipTone.Err)
-                } else {
-                    StatusChip(label = "REAL", tone = ChipTone.Err)
-                }
-            }
-        }
-
-        Text(
-            text = event.status.value.toString(),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = monoFont,
-                fontWeight = FontWeight.SemiBold,
-            ),
-            color = event.status.statusColor(event.isIntendedFailure),
-            textAlign = TextAlign.End,
-            modifier = Modifier.defaultMinSize(minWidth = 32.dp),
-        )
-
-        Text(
-            text = "${event.delay}ms",
-            style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
-            color = when {
-                isRealError -> errorColor
-                isSlowRequest -> slowColor
-                else -> faintColor
-            },
-            textAlign = TextAlign.End,
-            modifier = Modifier.defaultMinSize(minWidth = 52.dp),
-        )
     }
 }
 
