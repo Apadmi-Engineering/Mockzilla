@@ -165,7 +165,9 @@ fun DesktopApp(
                     state = state,
                     onViewDetail = {
                         logDetail = it
-                        onSelected(logDetailsWidgetId)
+                        if (!openWidgets.contains(logDetailsWidgetId)) {
+                            onSelected(logDetailsWidgetId)
+                        }
                     },
                     strings = strings,
                 ).forEach { widget -> widget.ui() }
