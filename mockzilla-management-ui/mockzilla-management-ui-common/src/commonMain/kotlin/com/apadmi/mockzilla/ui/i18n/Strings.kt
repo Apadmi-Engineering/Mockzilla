@@ -484,6 +484,8 @@ data class Strings(
             val addHeaderTitle: String,
             val addHeaderButton: String,
             val responseBodyPlaceholder: String,
+            val htmlBodyPlaceholder: String,
+            val plainBodyPlaceholder: String,
             val addHeaderKeyPlaceholder: String,
             val addHeaderValuePlaceholder: String,
             val unset: String,

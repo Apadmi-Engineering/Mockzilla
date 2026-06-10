@@ -29,12 +29,6 @@ enum class Token {
     ;
 }
 
-private fun isKeyString(body: String, afterIndex: Int): Boolean {
-    var i = afterIndex
-    while (i < body.length && body[i] in " \t\r\n") i++
-    return i < body.length && body[i] == ':'
-}
-
 object JsonTokens {
     private val startOfNumberTokens = listOf(
         "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "+"
@@ -191,4 +185,12 @@ object JsonTokens {
             token = null
         )
     }
+}
+
+private fun isKeyString(body: String, afterIndex: Int): Boolean {
+    var i = afterIndex
+    while (i < body.length && body[i] in " \t\r\n") {
+        i++
+    }
+    return i < body.length && body[i] == ':'
 }

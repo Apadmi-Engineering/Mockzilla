@@ -63,6 +63,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -90,6 +91,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointBodyVisualTransformation
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.HtmlBodyVisualTransformation
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.urlToTitle
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
@@ -203,10 +205,16 @@ private fun ColumnScope.BodySection(
         }
     }
 
-    JsonBodyTextField(
+    BodyTextField(
         body = state.body ?: "",
         onBodyChange = onNewResponseBody,
-        placeholder = strings.responseBodyPlaceholder,
+        responseType = state.responseType,
+        placeholder = when (state.responseType) {
+            State.Editing.ResponseType.Json -> strings.responseBodyPlaceholder
+            State.Editing.ResponseType.Html -> strings.htmlBodyPlaceholder
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.None -> strings.plainBodyPlaceholder
+        },
         isError = isJsonError,
         modifier = Modifier
             .fillMaxWidth()
@@ -575,14 +583,11 @@ private fun chipToneForStatusCode(code: Int) = when (code) {
     else -> ChipTone.Err
 }
 
-/**
- * Editable text field that applies [buildJsonAnnotatedString] syntax highlighting
- * on every keystroke without reformatting the user's text.
- */
 @Composable
-private fun JsonBodyTextField(
+private fun BodyTextField(
     body: String,
     onBodyChange: (String) -> Unit,
+    responseType: State.Editing.ResponseType,
     modifier: Modifier = Modifier,
     placeholder: String,
     isError: Boolean = false,
@@ -602,18 +607,30 @@ private fun JsonBodyTextField(
         }
     }
 
-    val visualTransformation = remember(highlight, colorScheme.onSurface, colorScheme.onSurfaceVariant) {
-        EndpointBodyVisualTransformation(
-            comment = SpanStyle(color = colorScheme.onSurface.copy(alpha = 0.5f)),
-            brace = SpanStyle(color = colorScheme.onSurfaceVariant),
-            comma = SpanStyle(color = colorScheme.onSurfaceVariant),
-            colon = SpanStyle(color = colorScheme.onSurfaceVariant),
-            key = SpanStyle(color = highlight.keyColor),
-            string = SpanStyle(color = highlight.stringColor),
-            keyword = SpanStyle(color = highlight.boolColor),
-            number = SpanStyle(color = highlight.numberColor),
-            default = SpanStyle(color = colorScheme.onSurface),
-        )
+    val visualTransformation = remember(responseType, highlight, colorScheme.onSurface, colorScheme.onSurfaceVariant) {
+        when (responseType) {
+            State.Editing.ResponseType.Json -> EndpointBodyVisualTransformation(
+                comment = SpanStyle(color = colorScheme.onSurface.copy(alpha = 0.5f)),
+                brace = SpanStyle(color = colorScheme.onSurfaceVariant),
+                comma = SpanStyle(color = colorScheme.onSurfaceVariant),
+                colon = SpanStyle(color = colorScheme.onSurfaceVariant),
+                key = SpanStyle(color = highlight.keyColor),
+                string = SpanStyle(color = highlight.stringColor),
+                keyword = SpanStyle(color = highlight.boolColor),
+                number = SpanStyle(color = highlight.numberColor),
+                default = SpanStyle(color = colorScheme.onSurface),
+            )
+            State.Editing.ResponseType.Html -> HtmlBodyVisualTransformation(
+                bracket = SpanStyle(color = colorScheme.onSurfaceVariant),
+                tagName = SpanStyle(color = highlight.keyColor),
+                attributeName = SpanStyle(color = highlight.stringColor),
+                attributeValue = SpanStyle(color = highlight.numberColor),
+                comment = SpanStyle(color = colorScheme.onSurface.copy(alpha = 0.5f)),
+                default = SpanStyle(color = colorScheme.onSurface),
+            )
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.None -> VisualTransformation.None
+        }
     }
 
     Box(modifier = modifier) {
