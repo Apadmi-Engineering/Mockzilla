@@ -8,39 +8,39 @@ package com.apadmi.mockzilla.ui.ui.common.theme
 import androidx.compose.ui.graphics.Color
 
 // ── Surface tones ────────────────────────────────────────────────────────────
-internal val darkBackground = Color(0xFF0B0D11)  // T0
-internal val darkSurface = Color(0xFF111418)  // T1
-internal val darkContainer = Color(0xFF181B1F)  // T2
-internal val darkVariant = Color(0xFF21242A)  // T3
-internal val darkElevated = Color(0xFF2D3137)  // T4
+internal val darkBackground = Color(0xFF14171C)
+internal val darkSurface = Color(0xFF181C21)
+internal val darkContainer = Color(0xFF1E2228)
+internal val darkVariant = Color(0xFF262B32)
+internal val darkElevated = Color(0xFF323841)
 
-internal val lightBackground = Color(0xFFE9EBEE)  // T0
-internal val lightSurface = Color(0xFFFDFDFF)  // T1
-internal val lightContainer = Color(0xFFF2F3F6)  // T2
-internal val lightVariant = Color(0xFFE2E5E9)  // T3
-internal val lightElevated = Color(0xFFCBCED3)  // T4
+internal val lightBackground = Color(0xFFD8DCE1)
+internal val lightSurface = Color(0xFFEBEDF0)
+internal val lightContainer = Color(0xFFE1E4E8)
+internal val lightVariant = Color(0xFFCDD2D8)
+internal val lightElevated = Color(0xFFBABFC6)
 
 // ── On-surface text ──────────────────────────────────────────────────────────
-internal val darkOnSurface = Color(0xFFF6F9FC)
+internal val darkOnSurface = Color(0xFFECEFF3)
 internal val darkOnSurfaceVariant = Color(0xFFC0C4CB)
 internal val darkOnSurfaceMuted = Color(0xFF888C94)
 internal val darkOnSurfaceFaint = Color(0xFF5A5E65)
 
-internal val lightOnSurface = Color(0xFF0E1217)
+internal val lightOnSurface = Color(0xFF161A20)
 internal val lightOnSurfaceVariant = Color(0xFF2A2E34)
 internal val lightOnSurfaceMuted = Color(0xFF494D55)
 internal val lightOnSurfaceFaint = Color(0xFF646971)
 
 // ── Outline ──────────────────────────────────────────────────────────────────
-internal val darkOutline = Color(0xFF2B2E33)
-internal val darkOutlineVariant = Color(0xFF373B41)
-internal val lightOutline = Color(0xFFC1C4C9)
-internal val lightOutlineVariant = Color(0xFFA7ABB1)
+internal val darkOutline = Color(0xFF2E323A)
+internal val darkOutlineVariant = Color(0xFF3B404A)
+internal val lightOutline = Color(0xFFC4C7CD)
+internal val lightOutlineVariant = Color(0xFFABAFB5)
 
 // ── Primary (Mockzilla teal) ─────────────────────────────────────────────────
 internal val darkPrimary = Color(0xFF00ECF8)
 internal val darkOnPrimary = Color(0xFF07090D)
-internal val darkPrimaryContainer = Color(0xFF0E2C2D)
+internal val darkPrimaryContainer = Color(0xFF123738)
 internal val darkInversePrimary = Color(0xFF00858D)
 
 internal val lightPrimary = Color(0xFF00858D)
@@ -50,13 +50,13 @@ internal val lightInversePrimary = Color(0xFF68D5DA)
 
 // ── State colours ────────────────────────────────────────────────────────────
 internal val darkSuccess = Color(0xFF61DA92)
-internal val darkSuccessContainer = Color(0xFF092917)
+internal val darkSuccessContainer = Color(0xFF0E3320)
 internal val darkWarning = Color(0xFFF3B94C)
-internal val darkWarningContainer = Color(0xFF312103)
+internal val darkWarningContainer = Color(0xFF3A2906)
 internal val darkError = Color(0xFFFD736D)
-internal val darkErrorContainer = Color(0xFF401312)
+internal val darkErrorContainer = Color(0xFF4A1C1A)
 internal val darkInfo = Color(0xFF59C5F5)
-internal val darkInfoContainer = Color(0xFF002635)
+internal val darkInfoContainer = Color(0xFF073241)
 
 internal val lightSuccess = Color(0xFF007C36)
 internal val lightSuccessContainer = Color(0xFFC0F3D0)
