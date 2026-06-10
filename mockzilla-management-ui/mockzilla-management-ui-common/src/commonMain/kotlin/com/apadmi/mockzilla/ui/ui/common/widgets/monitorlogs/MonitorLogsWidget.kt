@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +54,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
+import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
@@ -329,12 +331,32 @@ internal fun MonitorLogsWidgetContent(
     }
 }
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 private fun MonitorLogsList(
     entryList: List<LogEvent>,
     onViewDetail: (LogEvent) -> Unit,
     modifier: Modifier = Modifier,
+    strings: Strings = LocalStrings.current,
 ) {
+    if (entryList.isEmpty()) {
+        val iconTint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+        EmptyState(
+            title = strings.widgets.logs.emptyTitle,
+            description = strings.widgets.logs.emptyDescription,
+            modifier = modifier,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = null,
+                    tint = iconTint,
+                    modifier = Modifier.size(28.dp),
+                )
+            },
+        )
+        return
+    }
+
     val listState = rememberLazyListState()
     var previousSize by remember { mutableStateOf(entryList.size) }
 
