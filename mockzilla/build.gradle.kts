@@ -129,6 +129,8 @@ kotlin {
 
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.ktor.client.core)
+        }
+        jvmTest.dependencies {
             implementation(libs.ktor.client.cio)
         }
         jsTest.dependencies {
