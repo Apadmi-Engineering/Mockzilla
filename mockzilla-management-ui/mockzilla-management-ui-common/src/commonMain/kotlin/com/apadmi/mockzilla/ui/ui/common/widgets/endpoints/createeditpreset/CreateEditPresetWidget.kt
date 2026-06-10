@@ -479,7 +479,7 @@ fun CreateEditPresetWidget(
 }
 
 @Composable
-fun CreateEditPresetWidgetContent(
+internal fun CreateEditPresetWidgetContent(
     state: State,
     endpointName: String? = null,
     onCancel: () -> Unit = {},

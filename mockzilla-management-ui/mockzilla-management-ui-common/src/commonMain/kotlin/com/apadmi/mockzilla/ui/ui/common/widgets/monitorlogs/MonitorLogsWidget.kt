@@ -99,95 +99,6 @@ fun MonitorLogsWidget(
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun MonitorLogsWidgetContent(
-    state: MonitorLogsViewModel.State.DisplayLogs,
-    onClearAll: () -> Unit,
-    onViewDetail: (LogEvent) -> Unit,
-    onOpenPanel: () -> Unit = {},
-    strings: Strings = LocalStrings.current,
-) {
-    val monoFont = LocalMonoFontFamily.current
-    val cs = MaterialTheme.colorScheme
-    val streamingColor = cs.success.primary
-    val dimColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-    val faintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-    val entryList = state.entries.toList()
-    val titleStyle = MaterialTheme.typography.labelSmall.copy(
-        fontFamily = monoFont,
-        fontWeight = FontWeight.SemiBold,
-    )
-    val logsTitle = strings.widgets.logs.title.uppercase()
-
-    var isExpanded by remember { mutableStateOf(false) }
-    val chevronRotation by animateFloatAsState(
-        targetValue = if (isExpanded) 90f else 0f,
-        animationSpec = tween(durationMillis = 150),
-        label = "chevronRotation",
-    )
-
-    Column(modifier = Modifier.background(cs.background)) {
-        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { isExpanded = !isExpanded }
-                .padding(horizontal = 12.dp, vertical = 7.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
-                contentDescription = null,
-                tint = faintColor,
-                modifier = Modifier.size(14.dp).rotate(chevronRotation),
-            )
-            Text(
-                text = logsTitle,
-                style = titleStyle,
-                color = dimColor,
-            )
-            Canvas(modifier = Modifier.size(6.dp)) { drawCircle(color = streamingColor) }
-            Text(
-                text = strings.widgets.logs.streaming,
-                style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
-                color = streamingColor,
-            )
-            Text(
-                text = strings.widgets.logs.clickToInspect,
-                style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
-                color = faintColor,
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                modifier = Modifier.clickable(onClick = onOpenPanel),
-                text = strings.widgets.logs.openInPanel,
-                style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
-                color = dimColor,
-            )
-        }
-
-        AnimatedVisibility(
-            visible = isExpanded,
-            enter = expandVertically(
-                expandFrom = Alignment.Top,
-                animationSpec = tween(durationMillis = 160),
-            ) + fadeIn(animationSpec = tween(durationMillis = 120)),
-            exit = shrinkVertically(
-                shrinkTowards = Alignment.Top,
-                animationSpec = tween(durationMillis = 130),
-            ) + fadeOut(animationSpec = tween(durationMillis = 100)),
-        ) {
-            MonitorLogsList(
-                entryList = entryList,
-                onViewDetail = onViewDetail,
-                modifier = Modifier.height(280.dp),
-            )
-        }
-    }
-}
-
-@Suppress("MAGIC_NUMBER")
-@Composable
 fun LogRow(
     modifier: Modifier,
     event: LogEvent,
@@ -327,6 +238,95 @@ fun MonitorLogsWidgetPreview() = PreviewSurface {
         onClearAll = {},
         onViewDetail = { _ -> },
     )
+}
+
+@Suppress("MAGIC_NUMBER")
+@Composable
+internal fun MonitorLogsWidgetContent(
+    state: MonitorLogsViewModel.State.DisplayLogs,
+    onClearAll: () -> Unit,
+    onViewDetail: (LogEvent) -> Unit,
+    onOpenPanel: () -> Unit = {},
+    strings: Strings = LocalStrings.current,
+) {
+    val monoFont = LocalMonoFontFamily.current
+    val cs = MaterialTheme.colorScheme
+    val streamingColor = cs.success.primary
+    val dimColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+    val faintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+    val entryList = state.entries.toList()
+    val titleStyle = MaterialTheme.typography.labelSmall.copy(
+        fontFamily = monoFont,
+        fontWeight = FontWeight.SemiBold,
+    )
+    val logsTitle = strings.widgets.logs.title.uppercase()
+
+    var isExpanded by remember { mutableStateOf(false) }
+    val chevronRotation by animateFloatAsState(
+        targetValue = if (isExpanded) 90f else 0f,
+        animationSpec = tween(durationMillis = 150),
+        label = "chevronRotation",
+    )
+
+    Column(modifier = Modifier.background(cs.background)) {
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { isExpanded = !isExpanded }
+                .padding(horizontal = 12.dp, vertical = 7.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowRight,
+                contentDescription = null,
+                tint = faintColor,
+                modifier = Modifier.size(14.dp).rotate(chevronRotation),
+            )
+            Text(
+                text = logsTitle,
+                style = titleStyle,
+                color = dimColor,
+            )
+            Canvas(modifier = Modifier.size(6.dp)) { drawCircle(color = streamingColor) }
+            Text(
+                text = strings.widgets.logs.streaming,
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+                color = streamingColor,
+            )
+            Text(
+                text = strings.widgets.logs.clickToInspect,
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+                color = faintColor,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier.clickable(onClick = onOpenPanel),
+                text = strings.widgets.logs.openInPanel,
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+                color = dimColor,
+            )
+        }
+
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = expandVertically(
+                expandFrom = Alignment.Top,
+                animationSpec = tween(durationMillis = 160),
+            ) + fadeIn(animationSpec = tween(durationMillis = 120)),
+            exit = shrinkVertically(
+                shrinkTowards = Alignment.Top,
+                animationSpec = tween(durationMillis = 130),
+            ) + fadeOut(animationSpec = tween(durationMillis = 100)),
+        ) {
+            MonitorLogsList(
+                entryList = entryList,
+                onViewDetail = onViewDetail,
+                modifier = Modifier.height(280.dp),
+            )
+        }
+    }
 }
 
 @Composable

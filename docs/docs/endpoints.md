@@ -1,3 +1,7 @@
+---
+description: Learn how to configure Mockzilla endpoints — define custom handlers for your mock HTTP server.
+---
+
 # Configuring Endpoints
 
 ## Simple Example

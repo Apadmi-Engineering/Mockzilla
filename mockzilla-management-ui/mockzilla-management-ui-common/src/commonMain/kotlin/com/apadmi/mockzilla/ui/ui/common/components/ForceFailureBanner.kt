@@ -42,7 +42,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 private const val bannerCornerRadius = 8
 
-enum class ForceFailureBannerState {
+internal enum class ForceFailureBannerState {
     FullFailure,
     Normal,
     PartialFailure,

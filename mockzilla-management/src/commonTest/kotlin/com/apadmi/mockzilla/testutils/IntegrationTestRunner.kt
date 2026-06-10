@@ -5,6 +5,7 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaRuntimeParams
 import com.apadmi.mockzilla.lib.stopMockzilla
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
+import com.apadmi.mockzilla.management.MockzillaManagement.*
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepositoryImpl
 import io.ktor.client.plugins.logging.Logger
@@ -35,7 +36,10 @@ internal fun <Sut> runIntegrationTest(
     testBlock: TestBlock<Sut>
 ) = runTest {
     /* Setup */
-    val repo = MockzillaManagementRepositoryImpl.create(logger = Logger.SIMPLE)
+    val repo = MockzillaManagementRepositoryImpl.create(
+        config = Config(),
+        logger = Logger.SIMPLE
+    )
     val runtimeParams = startTestingMockzilla(appName, appVersion, config)
 
     /* Run Test */

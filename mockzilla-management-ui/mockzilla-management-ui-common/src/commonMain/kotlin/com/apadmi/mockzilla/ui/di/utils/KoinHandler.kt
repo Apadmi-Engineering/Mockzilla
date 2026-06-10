@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBusImpl
+import com.apadmi.mockzilla.ui.utils.Platform
 
 import org.koin.core.module.Module
 import org.koin.dsl.binds
@@ -22,16 +23,22 @@ object MockzillaUiKoinContext {
 
     @OptIn(DelicateCoroutinesApi::class)
     private val koinApp = koinApplication {
+        val mockzillaManagement = MockzillaManagement.constructInstance(config = MockzillaManagement.Config(
+            // Bypasses proxy when running on mobile devices since the server is on device
+            // going via a proxy can redirect calls to the proxy machine instead of the local device
+            // (Notably this is needed for Mockzilla to run on Browserstack)
+            disableProxy = Platform.current != Platform.Desktop
+        ))
         modules(
             viewModelModule(),
             useCaseModule(),
             module {
-                single { MockzillaManagement.instance.appIconService }
-                single { MockzillaManagement.instance.metaDataService }
-                single { MockzillaManagement.instance.logsService }
-                single { MockzillaManagement.instance.endpointsService }
-                single { MockzillaManagement.instance.updateService }
-                single { MockzillaManagement.instance.cacheClearingService }
+                single { mockzillaManagement.appIconService }
+                single { mockzillaManagement.metaDataService }
+                single { mockzillaManagement.logsService }
+                single { mockzillaManagement.endpointsService }
+                single { mockzillaManagement.updateService }
+                single { mockzillaManagement.cacheClearingService }
                 single<EventBus> { EventBusImpl(GlobalScope) }
                 single { ActiveDeviceManagerImpl(get(), GlobalScope) } binds arrayOf(
                     ActiveDeviceMonitor::class,

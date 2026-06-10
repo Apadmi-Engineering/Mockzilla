@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class MonitorLogsViewModel(
+internal class MonitorLogsViewModel(
     private val device: Device,
     private val monitorLogsUseCase: MonitorLogsUseCase,
     scope: CoroutineScope? = null

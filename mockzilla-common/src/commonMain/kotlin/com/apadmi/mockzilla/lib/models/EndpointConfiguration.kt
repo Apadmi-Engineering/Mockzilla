@@ -10,15 +10,27 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 
 /**
- * @property name
- * @property key
- * @property shouldFail
- * @property delay
- * @property endpointMatcher
- * @property versionCode
- * @property defaultHandler
- * @property errorHandler
- * @property dashboardOptionsConfig
+ * Configures a single mock endpoint within a Mockzilla server. Defines how incoming requests are
+ * matched to this endpoint and what response to return, along with optional dashboard presets and
+ * latency simulation.
+ *
+ * Construct via [Builder].
+ *
+ * @property name Human-readable display name shown in the management dashboard.
+ * @property key Unique identifier for this endpoint, used in management API operations.
+ * @property shouldFail Whether this endpoint returns an error response by default. When `true`,
+ * [errorHandler] is called instead of [defaultHandler].
+ * @property delay Artificial response delay in milliseconds. `null` falls back to the global delay
+ * set on [MockzillaConfig.Builder].
+ * @property dashboardOptionsConfig Preset responses available to users in the management dashboard.
+ * @property versionCode Version number for this endpoint's configuration. Incrementing this value
+ * automatically invalidates any cached responses on connected devices.
+ * @property endpointMatcher Predicate that determines whether an incoming request should be routed
+ * to this endpoint. The first matching endpoint wins.
+ * @property defaultHandler Called when a request matches this endpoint and [shouldFail] is `false`.
+ * Returns the mock response to send back to the caller.
+ * @property errorHandler Called when a request matches this endpoint and [shouldFail] is `true`.
+ * Returns the simulated error response to send back to the caller.
  */
 data class EndpointConfiguration(
     val name: String,
@@ -32,7 +44,10 @@ data class EndpointConfiguration(
     val errorHandler: suspend MockzillaHttpRequest.() -> MockzillaHttpResponse,
 ) {
     /**
-     * @property raw
+     * Unique serializable identifier for an [EndpointConfiguration]. Used to reference endpoints
+     * in management API operations such as cache clearing or runtime overrides.
+     *
+     * @property raw The raw string value of the key.
      */
     @Serializable
     @JvmInline
@@ -59,7 +74,7 @@ data class EndpointConfiguration(
         /**
          * Sets the human readable name of the endpoint (defaults to the value of the `key`)
          *
-         * @param name
+         * @param name The human-readable display name for this endpoint.
          */
         fun setName(name: String) = apply {
             config = config.copy(name = name)
@@ -98,17 +113,17 @@ data class EndpointConfiguration(
          * [setShouldFail] causes Mockzilla to generate a failure response, then this block
          * will *not* be called, instead the block specified by [setErrorHandler] is called.
          *
-         * @param handler
+         * @param handler Lambda invoked with the incoming request that returns the mock response.
          */
         fun setDefaultHandler(handler: suspend MockzillaHttpRequest.() -> MockzillaHttpResponse) = apply {
             config = config.copy(defaultHandler = handler)
         }
 
         /**
-         * The block called when a network request is made to this endpoint but Mockzilladecides to
+         * The block called when a network request is made to this endpoint but Mockzilla decides to
          * simulate a server failure.
          *
-         * @param handler
+         * @param handler Lambda invoked with the incoming request that returns the simulated error response.
          */
         fun setErrorHandler(handler: suspend MockzillaHttpRequest.() -> MockzillaHttpResponse) = apply {
             config = config.copy(errorHandler = handler)
@@ -117,8 +132,8 @@ data class EndpointConfiguration(
         /**
          * Configure the presets that are available to users of the dashboard.
          *
-         * @param action
-         * @return
+         * @param action Builder block for configuring dashboard presets.
+         * @return This builder, for chaining.
          */
         fun configureDashboardOverrides(
             action: DashboardOptionsConfig.Builder.() -> DashboardOptionsConfig.Builder
@@ -142,7 +157,7 @@ data class EndpointConfiguration(
          *
          * This is just a utility wrapper around the more flexible [setPatternMatcher] endpoint.
          *
-         * @param regex
+         * @param regex The regular expression to match against the full request URI.
          */
         @Suppress("unused")
         fun setPattern(regex: String) = apply {
@@ -170,9 +185,13 @@ data class EndpointConfiguration(
 }
 
 /**
- * @property statusCode
- * @property headers
- * @property body
+ * An HTTP response returned by a mock endpoint handler. Returned from
+ * [EndpointConfiguration.Builder.setDefaultHandler] and [EndpointConfiguration.Builder.setErrorHandler]
+ * lambdas.
+ *
+ * @property statusCode The HTTP status code of the response. Defaults to `200 OK`.
+ * @property headers HTTP response headers.
+ * @property body The response body as a string.
  */
 @Serializable
 data class MockzillaHttpResponse(
@@ -185,9 +204,12 @@ data class MockzillaHttpResponse(
 }
 
 /**
- * @property statusCode
- * @property headers
- * @property body
+ * A partial HTTP response used by dashboard presets, allowing a subset of response fields to
+ * be overridden. `null` fields are left unchanged from the endpoint's default response.
+ *
+ * @property statusCode The HTTP status code override, or `null` to leave unchanged.
+ * @property headers HTTP response headers override, or `null` to leave unchanged.
+ * @property body The response body override, or `null` to leave unchanged.
  */
 @Serializable
 data class PartialMockzillaHttpResponse(
@@ -227,6 +249,12 @@ interface MockzillaHttpRequest {
 }
 
 /**
+ * Configures the preset responses available to users in the Mockzilla management dashboard for a
+ * specific endpoint. Presets let dashboard users quickly switch between common response scenarios
+ * without modifying code.
+ *
+ * Construct via [Builder] and attach to an endpoint using
+ * [EndpointConfiguration.Builder.configureDashboardOverrides].
  * @property errorPresets
  * @property successPresets
  */
@@ -242,10 +270,24 @@ data class DashboardOptionsConfig(
     @JsonNames("presets")
     val successPresets: List<DashboardOverridePreset>
 ) {
+    /**
+     * The list of preset responses available in the dashboard for this endpoint.
+     */
     val presets get() = successPresets
 
     class Builder {
         private val presets = mutableListOf<DashboardOverridePreset>()
+
+        /**
+         * Adds a preset response option to the dashboard for this endpoint.
+         *
+         * @param response The full response this preset applies when selected.
+         * @param name Display name for this preset in the dashboard. Defaults to "Preset N".
+         * @param description Optional description shown alongside the preset.
+         * @param type Visual classification for this preset. Defaults to a type inferred from the
+         * response status code when `null`.
+         * @return This builder, for chaining.
+         */
         fun addPreset(
             response: MockzillaHttpResponse,
             name: String? = null,
@@ -253,6 +295,17 @@ data class DashboardOptionsConfig(
             type: DashboardOverridePreset.Type? = null
         ) = addPreset(response.toPartial(), name, description, type)
 
+        /**
+         * Adds a partial preset response option to the dashboard for this endpoint. Only fields
+         * set on [response] are overridden; `null` fields retain the endpoint's default values.
+         *
+         * @param response The partial response this preset applies when selected.
+         * @param name Display name for this preset in the dashboard. Defaults to "Preset N".
+         * @param description Optional description shown alongside the preset.
+         * @param type Visual classification for this preset. Defaults to a type inferred from the
+         * response status code when `null`.
+         * @return This builder, for chaining.
+         */
         fun addPreset(
             response: PartialMockzillaHttpResponse,
             name: String? = null,
@@ -290,11 +343,17 @@ data class DashboardOptionsConfig(
 }
 
 /**
- * @property name
- * @property description
- * @property type Overrides the type of the preset shown in UI, defaults to correspond with status code
- * @property response
- * @property isManagementUiDefinedCustomPreset
+ * A named response configuration that can be applied to an endpoint from the Mockzilla management
+ * dashboard, overriding the endpoint's default or error response for a session.
+ *
+ * @property name Display name shown in the dashboard preset list.
+ * @property description Optional description shown alongside the preset in the dashboard.
+ * @property type Visual classification for the preset in the dashboard. Defaults to a type
+ * inferred from the response status code when `null`.
+ * @property response The partial response this preset applies when selected.
+ * @property isManagementUiDefinedCustomPreset `true` when this preset was created interactively
+ * by a user in the management dashboard, as opposed to being defined in code via
+ * [EndpointConfiguration.Builder.configureDashboardOverrides].
  */
 @Serializable
 data class DashboardOverridePreset(
@@ -304,6 +363,10 @@ data class DashboardOverridePreset(
     val response: PartialMockzillaHttpResponse,
     val isManagementUiDefinedCustomPreset: Boolean = false
 ) {
+    /**
+     * Visual classification for a [DashboardOverridePreset] in the management dashboard. Used to
+     * display presets with appropriate styling.
+     */
     @Serializable
     enum class Type {
         ClientError,

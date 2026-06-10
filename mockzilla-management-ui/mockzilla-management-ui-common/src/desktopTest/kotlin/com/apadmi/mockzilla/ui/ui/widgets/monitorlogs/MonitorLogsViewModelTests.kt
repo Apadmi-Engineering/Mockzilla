@@ -16,7 +16,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.yield
 
-class MonitorLogsViewModelTests : CoroutineTest() {
+internal class MonitorLogsViewModelTests : CoroutineTest() {
     private val dummyActiveDevice = Device.dummy()
     private val dummyLogEvent = LogEvent(
         timestamp = 1,

@@ -1,11 +1,13 @@
+@file:JvmName("FileIoKt")
+
 package com.apadmi.mockzilla.lib.internal.utils
 
-import android.annotation.TargetApi
-import android.os.Build
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 
+@InternalMockzillaApi
 actual class FileIo(private val cacheDir: File) {
     private val cacheDirectory
         get() = File(
@@ -14,6 +16,7 @@ actual class FileIo(private val cacheDir: File) {
         ).also { it.mkdirs() }
 
     private fun String.fileInCache() = File(cacheDirectory, this)
+
     actual suspend fun readFromCache(
         filename: String,
     ): String? = filename.fileInCache()
@@ -44,5 +47,5 @@ actual class FileIo(private val cacheDir: File) {
     }
 }
 
-@TargetApi(Build.VERSION_CODES.O)
-actual fun createFileIoforTesting() = FileIo(Files.createTempDirectory("").toFile())
+@InternalMockzillaApi
+actual fun createFileIoforTesting(): FileIo = FileIo(Files.createTempDirectory("").toFile())

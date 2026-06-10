@@ -6,7 +6,7 @@ import kotlinx.serialization.json.Json
 // or comments are allowed for JSON responses so we can match the application's validation
 private val jsonConfiguration = Json
 
-class JsonEditor(
+internal class JsonEditor(
     private val body: String
 ) {
     fun isValidJson(): Boolean = try {
