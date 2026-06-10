@@ -211,13 +211,26 @@ private fun ColumnScope.PopulatedState(
                 }
             }
             Spacer(Modifier.width(8.dp))
-            BaseButton(
-                label = "Custom",
-                leadingIcon = Icons.Default.Add,
-                variant = ButtonVariant.Ghost,
-                size = ButtonSize.Sm,
-                onClick = onCreatePreset
-            )
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .clickable(onClick = onCreatePreset)
+                    .padding(horizontal = 8.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(12.dp),
+                )
+                Text(
+                    text = "Custom",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
         }
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
