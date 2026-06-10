@@ -6,6 +6,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -271,6 +274,8 @@ private fun DeviceTab(
     val colorScheme = MaterialTheme.colorScheme
     val dotColor =
         if (device.isConnected) colorScheme.success.primary else colorScheme.onSurfaceFaint
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
 
     Box(
         modifier = Modifier
@@ -283,11 +288,18 @@ private fun DeviceTab(
                             borderColor = colorScheme.outline,
                         )
                     }
+                } else if (isHovered) {
+                    Modifier.background(
+                        color = colorScheme.onSurface.copy(alpha = 0.08f),
+                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                    )
                 } else {
                     Modifier
                 }
             )
-            .clickable(onClick = onSelect)
+            // indication = null: built-in ripple ignores the tab's custom drawn shape and clips
+            // to the element bounds, so we manage hover manually above instead.
+            .clickable(interactionSource = interactionSource, indication = null, onClick = onSelect)
             .desktopTertiaryPointerClick(onClick = onClose)
             // Slightly odd padding values needed here since the border curve throws things off
             .padding(start = 12.dp, end = 10.dp, top = 8.dp, bottom = 10.dp)
