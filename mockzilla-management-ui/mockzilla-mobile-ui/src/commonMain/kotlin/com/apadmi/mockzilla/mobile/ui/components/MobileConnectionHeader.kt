@@ -172,6 +172,8 @@ internal fun MobileConnectionHeader(
             }
         }
 
+        HorizontalDivider(color = colorScheme.outline)
+
         // Expanded section with white background
         AnimatedVisibility(visible = isExpanded) {
             Column(
@@ -213,8 +215,6 @@ internal fun MobileConnectionHeader(
                 }
             }
         }
-        
-        HorizontalDivider(color = colorScheme.outline)
     }
 }
 
@@ -275,23 +275,23 @@ private fun InfoRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top
         ) {
             Text(
                 text = label,
+                modifier = Modifier.weight(0.35f),
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorScheme.onSurfaceFaint
             )
             Text(
                 text = value,
+                modifier = Modifier.weight(0.65f),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontFamily = FontFamily.Monospace,
                     fontSize = 14.sp
                 ),
                 color = colorScheme.onSurface,
-                textAlign = TextAlign.End,
-                modifier = Modifier.weight(1f).padding(start = 24.dp)
+                textAlign = TextAlign.Start
             )
         }
         if (showDivider) {
