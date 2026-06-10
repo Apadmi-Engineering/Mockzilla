@@ -53,11 +53,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -87,6 +89,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointBodyVisualTransformation
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.urlToTitle
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
@@ -585,49 +588,42 @@ private fun JsonBodyTextField(
     isError: Boolean = false,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    // Capture at @Composable scope — these have @Composable getters and cannot be accessed
-    // inside remember{}, LaunchedEffect{}, or onValueChange{}.
     val highlight = colorScheme.jsonHighlight
     val placeholderColor = colorScheme.onSurfaceMuted
     val density = LocalDensity.current
 
     var fieldHeight by remember { mutableStateOf(200.dp) }
 
-    var fieldValue by remember {
-        mutableStateOf(
-            TextFieldValue(
-                annotatedString = buildHighlightedAnnotatedString(body, highlight, reformat = false)
-            )
-        )
-    }
+    var fieldValue by remember { mutableStateOf(TextFieldValue(body)) }
 
-    // Sync external changes (e.g. ViewModel load) without resetting cursor
     LaunchedEffect(body) {
         if (fieldValue.text != body) {
-            fieldValue = TextFieldValue(
-                annotatedString = buildHighlightedAnnotatedString(
-                    body,
-                    highlight,
-                    reformat = false
-                ),
-                selection = TextRange(body.length),
-            )
+            fieldValue = TextFieldValue(body, selection = TextRange(body.length))
         }
+    }
+
+    val visualTransformation = remember(highlight, colorScheme.onSurface, colorScheme.onSurfaceVariant) {
+        EndpointBodyVisualTransformation(
+            comment = SpanStyle(color = colorScheme.onSurface.copy(alpha = 0.5f)),
+            brace = SpanStyle(color = colorScheme.onSurfaceVariant),
+            comma = SpanStyle(color = colorScheme.onSurfaceVariant),
+            colon = SpanStyle(color = colorScheme.onSurfaceVariant),
+            string = SpanStyle(color = highlight.stringColor),
+            keyword = SpanStyle(color = highlight.boolColor),
+            number = SpanStyle(color = highlight.numberColor),
+            default = SpanStyle(color = colorScheme.onSurface),
+        )
     }
 
     Box(modifier = modifier) {
         BasicTextField(
             value = fieldValue,
             onValueChange = { newValue ->
-                fieldValue = newValue.copy(
-                    annotatedString = buildHighlightedAnnotatedString(
-                        newValue.text,
-                        highlight,
-                        reformat = false
-                    )
-                )
+                fieldValue = newValue
                 onBodyChange(newValue.text)
             },
+            visualTransformation = visualTransformation,
+            cursorBrush = SolidColor(colorScheme.primary),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(fieldHeight)
