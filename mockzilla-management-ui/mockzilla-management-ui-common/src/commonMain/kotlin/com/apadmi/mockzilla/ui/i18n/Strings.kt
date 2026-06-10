@@ -156,7 +156,14 @@ data class Strings(
          * @property jvm
          * @property js
          * @property deviceSection
+         * @property appSection
+         * @property sessionSection
          * @property error
+         * @property uptime
+         * @property requests
+         * @property port
+         * @property overrides
+         * @property overridesLabel
          */
         data class MetaData(
             val title: String,
@@ -173,7 +180,14 @@ data class Strings(
             val jvm: String,
             val js: String,
             val deviceSection: String,
+            val appSection: String,
+            val sessionSection: String,
             val error: String,
+            val uptime: String,
+            val requests: String,
+            val port: String,
+            val overrides: (Int) -> String,
+            val overridesLabel: String,
         )
 
         /**

@@ -77,8 +77,20 @@ val EnStrings = Strings(
             ios = "iOS",
             jvm = "JVM",
             js = "Web - JS",
-            deviceSection = "Device",
+            deviceSection = "DEVICE",
+            appSection = "APP",
+            sessionSection = "SESSION",
             error = "Failed to load device info",
+            uptime = "uptime",
+            requests = "requests",
+            port = "port",
+            overrides = { number ->
+                when (number) {
+                    1 -> "1 override active"
+                    else -> "$number overrides active"
+                }
+            },
+            overridesLabel = "overrides",
         ),
         logs = Strings.Widgets.Logs(
             title = "Logs",
@@ -109,8 +121,8 @@ val EnStrings = Strings(
             },
             overrides = { number ->
                 when (number) {
-                    1 -> "1 override:"
-                    else -> "$number overrides:"
+                    1 -> "1 override active"
+                    else -> "$number overrides active"
                 }
             },
             noOverrides = "no overrides",
