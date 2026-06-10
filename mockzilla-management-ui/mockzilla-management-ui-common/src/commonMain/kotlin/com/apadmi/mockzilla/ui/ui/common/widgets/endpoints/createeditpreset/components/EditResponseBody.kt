@@ -196,6 +196,7 @@ private fun Editor(
             string = SpanStyle(),
             keyword = SpanStyle(),
             number = SpanStyle(),
+            key = SpanStyle(),
             default = SpanStyle(localContentColor.copy(alpha = 0.7F)),
         ).takeIf { type == State.Editing.ResponseType.Json } ?: VisualTransformation.None,
         singleLine = false

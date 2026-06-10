@@ -15,6 +15,7 @@ class EndpointBodyVisualTransformation(
     private val brace: SpanStyle,
     private val comma: SpanStyle,
     private val colon: SpanStyle,
+    private val key: SpanStyle,
     private val string: SpanStyle,
     private val keyword: SpanStyle,
     private val number: SpanStyle,
@@ -36,6 +37,7 @@ class EndpointBodyVisualTransformation(
                             Token.OpenObject, Token.CloseObject -> brace
                             Token.OpenArray, Token.CloseArray -> brace
                             Token.BlockComment, Token.LineComment -> comment
+                            Token.Key -> key
                             Token.String -> string
                             Token.Boolean, Token.Null -> keyword
                             Token.ValueSeparator -> comma

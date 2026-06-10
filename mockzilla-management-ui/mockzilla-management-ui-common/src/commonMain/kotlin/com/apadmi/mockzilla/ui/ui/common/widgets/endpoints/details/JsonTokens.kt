@@ -16,6 +16,7 @@ enum class Token {
     Boolean,  // true or false
     CloseArray,  // ]
     CloseObject,  // }
+    Key,  // "foo" when followed by :
     @Suppress("COMMENT_WHITE_SPACE")
     KeySeparator, // :
     LineComment,  // //
@@ -23,9 +24,15 @@ enum class Token {
     Number,  // 123.45
     OpenArray,  // [
     OpenObject,  // {
-    String,  // "foo"
+    String,  // "foo" when not followed by :
     ValueSeparator,  // ,
     ;
+}
+
+private fun isKeyString(body: String, afterIndex: Int): Boolean {
+    var i = afterIndex
+    while (i < body.length && body[i] in " \t\r\n") i++
+    return i < body.length && body[i] == ':'
 }
 
 object JsonTokens {
@@ -147,7 +154,7 @@ object JsonTokens {
                 return TokenIndex(
                     startIndex = index,
                     endIndex = i,
-                    token = Token.String
+                    token = if (isKeyString(body, i)) Token.Key else Token.String
                 )
             }
             if (token == "true") {

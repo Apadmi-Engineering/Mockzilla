@@ -608,6 +608,7 @@ private fun JsonBodyTextField(
             brace = SpanStyle(color = colorScheme.onSurfaceVariant),
             comma = SpanStyle(color = colorScheme.onSurfaceVariant),
             colon = SpanStyle(color = colorScheme.onSurfaceVariant),
+            key = SpanStyle(color = highlight.keyColor),
             string = SpanStyle(color = highlight.stringColor),
             keyword = SpanStyle(color = highlight.boolColor),
             number = SpanStyle(color = highlight.numberColor),
