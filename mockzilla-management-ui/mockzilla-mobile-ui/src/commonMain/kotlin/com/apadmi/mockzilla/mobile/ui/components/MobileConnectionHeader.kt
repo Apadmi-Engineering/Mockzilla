@@ -53,6 +53,7 @@ import com.apadmi.mockzilla.ui.engine.device.StatefulDevice
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 private fun RunTarget.label(strings: Strings) = when (this) {
@@ -81,11 +82,11 @@ internal fun MobileConnectionHeader(
     val colorScheme = MaterialTheme.colorScheme
 
     Column(modifier = modifier.fillMaxWidth()) {
-        // Top section with light background
+        // Top section
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(colorScheme.surfaceContainer)
+                .background(colorScheme.background)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             Row(
@@ -101,7 +102,7 @@ internal fun MobileConnectionHeader(
                         .weight(1f)
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(colorScheme.background)
+                        .background(colorScheme.surfaceContainer)
                         .clickable { isExpanded = !isExpanded }
                         .padding(horizontal = 12.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -144,8 +145,6 @@ internal fun MobileConnectionHeader(
                         Text(
                             text = strings.widgets.metaData.overrides(activeOverridesCount),
                             style = MaterialTheme.typography.bodySmall.copy(
-                                fontSize = 13.sp,
-                                fontFamily = FontFamily.Monospace,
                                 fontWeight = FontWeight.Medium
                             ),
                             color = if (activeOverridesCount > 0) colorScheme.primary else colorScheme.onSurfaceFaint
@@ -167,43 +166,37 @@ internal fun MobileConnectionHeader(
                             imageVector = Icons.Default.Sync,
                             contentDescription = strings.widgets.errorBanner.refreshButton,
                             modifier = Modifier.size(24.dp),
-                            tint = colorScheme.onSurfaceVariant
+                            tint = colorScheme.onSurface
                         )
                     }
                 }
             }
         }
 
-        HorizontalDivider(color = colorScheme.outline)
+        HorizontalDivider(color = colorScheme.outline.copy(alpha = 0.2f))
 
-        // Expanded section with white background
+        // Expanded section
         AnimatedVisibility(visible = isExpanded) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(colorScheme.surface)
+                    .background(colorScheme.background)
                     .padding(horizontal = 16.dp, vertical = 16.dp)
             ) {
-                InfoSection(
-                    title = strings.widgets.metaData.appSection,
-                    rows = listOf(
-                        strings.widgets.metaData.appName to statefulDevice.metaData.appName,
-                        strings.widgets.metaData.appPackage to statefulDevice.metaData.appPackage,
-                        strings.widgets.metaData.appVersion to statefulDevice.metaData.appVersion,
-                        strings.widgets.metaData.mockzillaVersion to statefulDevice.metaData.mockzillaVersion
-                    )
-                )
+                InfoSection(title = strings.widgets.metaData.appSection) {
+                    InfoRow(strings.widgets.metaData.appName, statefulDevice.metaData.appName)
+                    InfoRow(strings.widgets.metaData.appPackage, statefulDevice.metaData.appPackage, useMonoValue = true)
+                    InfoRow(strings.widgets.metaData.appVersion, statefulDevice.metaData.appVersion, useMonoValue = true)
+                    InfoRow(strings.widgets.metaData.mockzillaVersion, statefulDevice.metaData.mockzillaVersion, useMonoValue = true)
+                }
 
                 Spacer(Modifier.height(20.dp))
 
-                InfoSection(
-                    title = strings.widgets.metaData.deviceSection,
-                    rows = listOf(
-                        strings.widgets.metaData.deviceModel to statefulDevice.metaData.deviceModel,
-                        strings.widgets.metaData.operatingSystem to (statefulDevice.metaData.runTarget?.label(strings) ?: "-"),
-                        strings.widgets.metaData.operatingSystemVersion to statefulDevice.metaData.operatingSystemVersion
-                    )
-                )
+                InfoSection(title = strings.widgets.metaData.deviceSection) {
+                    InfoRow(strings.widgets.metaData.deviceModel, statefulDevice.metaData.deviceModel)
+                    InfoRow(strings.widgets.metaData.operatingSystem, (statefulDevice.metaData.runTarget?.label(strings) ?: "-"))
+                    InfoRow(strings.widgets.metaData.operatingSystemVersion, statefulDevice.metaData.operatingSystemVersion, useMonoValue = true)
+                }
 
                 Spacer(Modifier.height(20.dp))
 
@@ -216,19 +209,6 @@ internal fun MobileConnectionHeader(
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun InfoSection(
-    title: String,
-    rows: List<Pair<String, String>>
-) {
-    Column {
-        SectionHeader(title)
-        rows.forEach { (label, value) ->
-            InfoRow(label, value)
         }
     }
 }
@@ -261,7 +241,7 @@ private fun SectionHeader(title: String) {
             color = colorScheme.onSurfaceFaint
         )
         Spacer(Modifier.width(8.dp))
-        HorizontalDivider(modifier = Modifier.weight(1f), color = colorScheme.outline.copy(alpha = 0.5f))
+        HorizontalDivider(modifier = Modifier.weight(1f), color = colorScheme.outline.copy(alpha = 0.2f))
     }
 }
 
@@ -269,8 +249,10 @@ private fun SectionHeader(title: String) {
 private fun InfoRow(
     label: String,
     value: String,
+    useMonoValue: Boolean = false
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val monoFont = LocalMonoFontFamily.current
     Column {
         Row(
             modifier = Modifier
@@ -288,8 +270,7 @@ private fun InfoRow(
                 text = value,
                 modifier = Modifier.weight(0.65f),
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 14.sp
+                    fontFamily = if (useMonoValue) monoFont else FontFamily.Default
                 ),
                 color = colorScheme.onSurface,
                 textAlign = TextAlign.Start
@@ -302,7 +283,7 @@ private fun InfoRow(
 @Composable
 private fun DashedDivider(
     modifier: Modifier = Modifier.fillMaxWidth(),
-    color: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+    color: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
 ) {
     Canvas(
         modifier.height(1.dp)
@@ -328,7 +309,7 @@ private fun SessionCard(
     val strings = LocalStrings.current
     val colorScheme = MaterialTheme.colorScheme
     Surface(
-        color = colorScheme.background,
+        color = colorScheme.surfaceContainer,
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, colorScheme.outline)
     ) {
@@ -349,23 +330,22 @@ private fun SessionCard(
 @Composable
 private fun SessionRow(label: String, value: String) {
     val colorScheme = MaterialTheme.colorScheme
+    val monoFont = LocalMonoFontFamily.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodySmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 13.sp
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = monoFont,
             ),
             color = colorScheme.onSurfaceFaint
         )
         Text(
             text = value,
-            style = MaterialTheme.typography.bodySmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 13.sp,
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = monoFont,
                 fontWeight = FontWeight.Bold
             ),
             color = colorScheme.onSurface
