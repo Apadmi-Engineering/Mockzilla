@@ -40,7 +40,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -225,8 +227,8 @@ private fun InfoSection(
 ) {
     Column {
         SectionHeader(title)
-        rows.forEachIndexed { index, (label, value) ->
-            InfoRow(label, value, showDivider = index < rows.size - 1)
+        rows.forEach { (label, value) ->
+            InfoRow(label, value)
         }
     }
 }
@@ -267,7 +269,6 @@ private fun SectionHeader(title: String) {
 private fun InfoRow(
     label: String,
     value: String,
-    showDivider: Boolean
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Column {
@@ -294,25 +295,25 @@ private fun InfoRow(
                 textAlign = TextAlign.Start
             )
         }
-        if (showDivider) {
-            DashedDivider()
-        }
+        DashedDivider()
     }
 }
 
 @Composable
-private fun DashedDivider() {
-    val colorScheme = MaterialTheme.colorScheme
+private fun DashedDivider(
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    color: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+) {
     Canvas(
-        Modifier
-            .fillMaxWidth()
-            .height(1.dp)
+        modifier.height(1.dp)
     ) {
         drawLine(
-            color = colorScheme.outline,
-            start = Offset(0f, 0.5f),
-            end = Offset(size.width, 0.5f),
-            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+            color = color,
+            start = Offset(0f, size.height / 2),
+            end = Offset(size.width, size.height / 2),
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 4.dp.toPx()), 0f),
+            strokeWidth = 1.dp.toPx(),
+            cap = StrokeCap.Round
         )
     }
 }
