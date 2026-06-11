@@ -462,6 +462,8 @@ data class Strings(
          * @property bodyTypeLabel
          * @property responseSectionLabel
          * @property bodyLabel
+         * @property htmlBodyPlaceholder
+         * @property plainBodyPlaceholder
          */
         data class CreateEditPreset(
             val createTitle: String,

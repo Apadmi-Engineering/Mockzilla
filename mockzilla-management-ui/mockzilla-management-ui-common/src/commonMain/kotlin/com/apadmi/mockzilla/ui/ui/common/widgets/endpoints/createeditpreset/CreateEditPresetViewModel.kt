@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset
 
 import androidx.compose.runtime.mutableStateOf
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
@@ -10,6 +10,7 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
@@ -154,8 +155,12 @@ internal class CreateEditPresetViewModel(
         val currentState = state.value as? State.Editing ?: return
         val bodyResponse = currentState.body ?: return
 
-        val prettyJson = Json { prettyPrint = true }
-        val formatted = prettyJson.encodeToString(Json.parseToJsonElement(bodyResponse))
+        val formatted = when (currentState.responseType) {
+            State.Editing.ResponseType.Json -> bodyResponse.prettyPrintJson()
+            State.Editing.ResponseType.Html,
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.None -> return
+        }
 
         state.value = currentState.copy(body = formatted)
     }

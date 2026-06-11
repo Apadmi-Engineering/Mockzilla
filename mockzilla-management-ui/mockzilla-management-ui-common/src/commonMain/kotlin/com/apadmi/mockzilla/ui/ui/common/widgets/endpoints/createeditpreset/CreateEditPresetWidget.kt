@@ -32,6 +32,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AlignVerticalTop
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
@@ -55,6 +56,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.input.pointer.pointerInput
@@ -169,6 +175,7 @@ private fun ColumnScope.PanelHeader(
 private fun ColumnScope.BodySection(
     state: State.Editing,
     onNewResponseBody: (String) -> Unit,
+    onFormatResponseBody: () -> Unit,
     strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
 ) = Column(
     modifier = Modifier
@@ -177,12 +184,14 @@ private fun ColumnScope.BodySection(
 ) {
     val isJsonError = state.responseType == State.Editing.ResponseType.Json &&
             state.body?.isNotEmpty() == true && state.hasBodyError
+    val isFormattable = state.responseType == State.Editing.ResponseType.Json
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = strings.bodyLabel,
@@ -201,6 +210,15 @@ private fun ColumnScope.BodySection(
                 text = strings.responseCharacters(state.body?.length ?: 0),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.success.primary,
+            )
+        }
+        if (isFormattable) {
+            CustomOutlineButton(
+                leadingIcon = Icons.Default.AlignVerticalTop,
+                label = strings.responseBodyFormat,
+                enabled = !isJsonError,
+                variant = OutlineButtonVariant.Secondary,
+                onClick = onFormatResponseBody,
             )
         }
     }
@@ -355,6 +373,7 @@ private fun ColumnScope.PopulatedState(
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
+    onFormatResponseBody: () -> Unit,
     onUpdateNewHeader: (String?, String?) -> Unit,
     onAddHeader: () -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
@@ -424,7 +443,7 @@ private fun ColumnScope.PopulatedState(
     if (state.responseType != State.Editing.ResponseType.None) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-        BodySection(state, onNewResponseBody, str)
+        BodySection(state, onNewResponseBody, onFormatResponseBody, str)
     }
 
     // ── HEADERS section ───────────────────────────────────────────────────────
@@ -483,6 +502,7 @@ fun CreateEditPresetWidget(
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
+        onFormatResponseBody = viewModel::onFormatResponseBody,
         onUpdateNewHeader = viewModel::onUpdateNewHeader,
         onAddHeader = viewModel::onAddHeader,
         onRemoveHeader = viewModel::onRemoveHeader,
@@ -498,6 +518,7 @@ internal fun CreateEditPresetWidgetContent(
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
+    onFormatResponseBody: () -> Unit = {},
     onUpdateNewHeader: (String?, String?) -> Unit,
     onAddHeader: () -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
@@ -523,6 +544,7 @@ internal fun CreateEditPresetWidgetContent(
             onStatusCodeSelected = onStatusCodeSelected,
             onNewResponseType = onNewResponseType,
             onNewResponseBody = onNewResponseBody,
+            onFormatResponseBody = onFormatResponseBody,
             onUpdateNewHeader = onUpdateNewHeader,
             onAddHeader = onAddHeader,
             onRemoveHeader = onRemoveHeader,
@@ -583,6 +605,30 @@ private fun chipToneForStatusCode(code: Int) = when (code) {
     else -> ChipTone.Err
 }
 
+private fun processJsonInput(
+    newValue: TextFieldValue,
+    oldValue: TextFieldValue,
+): TextFieldValue {
+    val newText = newValue.text
+    val cursor = newValue.selection.start
+    if (newValue.selection.collapsed
+        && newText.length == oldValue.text.length + 1
+        && cursor > 0
+        && newText[cursor - 1] == '\n'
+    ) {
+        val prevLineStart = newText.lastIndexOf('\n', cursor - 2) + 1
+        var i = prevLineStart
+        while (i < cursor - 1 && (newText[i] == ' ' || newText[i] == '\t')) i++
+        val indent = newText.substring(prevLineStart, i)
+        val prevLineContent = newText.substring(prevLineStart, cursor - 1).trimEnd()
+        val extra = if (prevLineContent.lastOrNull() in listOf('{', '[')) "  " else ""
+        val insert = indent + extra
+        val adjusted = newText.substring(0, cursor) + insert + newText.substring(cursor)
+        return TextFieldValue(adjusted, selection = TextRange(cursor + insert.length))
+    }
+    return newValue
+}
+
 @Composable
 private fun BodyTextField(
     body: String,
@@ -637,8 +683,13 @@ private fun BodyTextField(
         BasicTextField(
             value = fieldValue,
             onValueChange = { newValue ->
-                fieldValue = newValue
-                onBodyChange(newValue.text)
+                val processed = if (responseType == State.Editing.ResponseType.Json) {
+                    processJsonInput(newValue, fieldValue)
+                } else {
+                    newValue
+                }
+                fieldValue = processed
+                onBodyChange(processed.text)
             },
             visualTransformation = visualTransformation,
             cursorBrush = SolidColor(colorScheme.primary),
@@ -648,8 +699,26 @@ private fun BodyTextField(
                 .clipToBounds()
                 .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
                 .border(1.dp, if (isError) colorScheme.error else colorScheme.outline, RoundedCornerShape(8.dp))
-                .padding(horizontal = 12.dp, vertical = 12.dp),
-            textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
+                .padding(horizontal = 12.dp, vertical = 12.dp)
+                .onKeyEvent { event ->
+                    if (responseType == State.Editing.ResponseType.Json
+                        && event.type == KeyEventType.KeyDown
+                        && event.key == Key.Tab
+                    ) {
+                        val pos = fieldValue.selection.start
+                        val newText = fieldValue.text.substring(0, pos) + "  " + fieldValue.text.substring(pos)
+                        val updated = TextFieldValue(newText, selection = TextRange(pos + 2))
+                        fieldValue = updated
+                        onBodyChange(newText)
+                        true
+                    } else {
+                        false
+                    }
+                },
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = colorScheme.onSurface,
+                fontFamily = LocalMonoFontFamily.current
+            ),
             decorationBox = { innerTextField ->
                 Box {
                     if (fieldValue.text.isEmpty()) {
