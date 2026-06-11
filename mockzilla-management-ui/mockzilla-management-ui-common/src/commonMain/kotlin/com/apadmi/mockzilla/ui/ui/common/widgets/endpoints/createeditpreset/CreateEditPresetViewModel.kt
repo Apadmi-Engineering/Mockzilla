@@ -142,13 +142,15 @@ internal class CreateEditPresetViewModel(
 
     fun onNewResponseBody(newBody: String) {
         val currentState = state.value as? State.Editing ?: return
+        var parseError: String? = null
         val hasBodyError = try {
             Json.parseToJsonElement(newBody)
             false
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            parseError = e.message?.substringBefore("\nJSON input:")?.trim()
             true
         }
-        state.value = currentState.copy(body = newBody, hasBodyError = hasBodyError)
+        state.value = currentState.copy(body = newBody, hasBodyError = hasBodyError, bodyParseError = parseError)
     }
 
     fun onFormatResponseBody() {
@@ -237,6 +239,7 @@ internal class CreateEditPresetViewModel(
             val statusCode: HttpStatusCode?,
             val body: String? = null,
             val hasBodyError: Boolean = false,
+            val bodyParseError: String? = null,
             val headers: List<RequestHeader> = emptyList(),
             val newHeader: RequestHeader = RequestHeader(),
             val responseType: ResponseType,

@@ -70,6 +70,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -198,10 +199,10 @@ private fun ColumnScope.BodySection(
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.weight(1f),
         )
-        // Right side: "invalid JSON" in red when error, otherwise char count in green
+        // Right side: "invalid JSON · X chars" in red when error, otherwise char count in green
         if (isJsonError) {
             Text(
-                text = strings.invalidLabel,
+                text = "${strings.invalidLabel} · ${strings.responseCharacters(state.body?.length ?: 0)}",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.error,
             )
@@ -234,6 +235,7 @@ private fun ColumnScope.BodySection(
             State.Editing.ResponseType.None -> strings.plainBodyPlaceholder
         },
         isError = isJsonError,
+        parseError = if (isJsonError) state.bodyParseError else null,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
@@ -598,6 +600,11 @@ internal fun buildJsonAnnotatedString(text: String) =
 // Helpers
 // ──────────────────────────────────────────────────────────────────────────────
 
+private fun formatJsonErrorTitle(rawMessage: String?): String {
+    if (rawMessage == null) return "Invalid JSON"
+    return rawMessage
+}
+
 private fun chipToneForStatusCode(code: Int) = when (code) {
     in 200..299 -> ChipTone.Ok
     in 300..399 -> ChipTone.Info
@@ -637,6 +644,7 @@ private fun BodyTextField(
     modifier: Modifier = Modifier,
     placeholder: String,
     isError: Boolean = false,
+    parseError: String? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val highlight = colorScheme.jsonHighlight
@@ -679,73 +687,121 @@ private fun BodyTextField(
         }
     }
 
-    Box(modifier = modifier) {
-        BasicTextField(
-            value = fieldValue,
-            onValueChange = { newValue ->
-                val processed = if (responseType == State.Editing.ResponseType.Json) {
-                    processJsonInput(newValue, fieldValue)
-                } else {
-                    newValue
-                }
-                fieldValue = processed
-                onBodyChange(processed.text)
-            },
-            visualTransformation = visualTransformation,
-            cursorBrush = SolidColor(colorScheme.primary),
+    Column(modifier = modifier) {
+        Box {
+            BasicTextField(
+                value = fieldValue,
+                onValueChange = { newValue ->
+                    val processed = if (responseType == State.Editing.ResponseType.Json) {
+                        processJsonInput(newValue, fieldValue)
+                    } else {
+                        newValue
+                    }
+                    fieldValue = processed
+                    onBodyChange(processed.text)
+                },
+                visualTransformation = visualTransformation,
+                cursorBrush = SolidColor(colorScheme.primary),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(fieldHeight)
+                    .clipToBounds()
+                    .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
+                    .border(1.dp, if (isError) colorScheme.error else colorScheme.outline, RoundedCornerShape(8.dp))
+                    .padding(horizontal = 12.dp, vertical = 12.dp)
+                    .onKeyEvent { event ->
+                        if (responseType == State.Editing.ResponseType.Json
+                            && event.type == KeyEventType.KeyDown
+                            && event.key == Key.Tab
+                        ) {
+                            val pos = fieldValue.selection.start
+                            val newText = fieldValue.text.substring(0, pos) + "  " + fieldValue.text.substring(pos)
+                            val updated = TextFieldValue(newText, selection = TextRange(pos + 2))
+                            fieldValue = updated
+                            onBodyChange(newText)
+                            true
+                        } else {
+                            false
+                        }
+                    },
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    color = colorScheme.onSurface,
+                    fontFamily = LocalMonoFontFamily.current
+                ),
+                decorationBox = { innerTextField ->
+                    Box {
+                        if (fieldValue.text.isEmpty()) {
+                            Text(
+                                text = placeholder,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = placeholderColor,
+                            )
+                        }
+                        innerTextField()
+                    }
+                },
+            )
+            Icon(
+                imageVector = Icons.DragCorner,
+                contentDescription = null,
+                tint = colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(16.dp)
+                    .pointerInput(Unit) {
+                        detectDragGestures { _, dragAmount ->
+                            val delta = with(density) { dragAmount.y.toDp() }
+                            fieldHeight = (fieldHeight + delta).coerceIn(100.dp, 600.dp)
+                        }
+                    },
+            )
+        }
+
+        // Fixed-height area always reserved so the layout below doesn't shift when an error appears/disappears.
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(fieldHeight)
-                .clipToBounds()
-                .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
-                .border(1.dp, if (isError) colorScheme.error else colorScheme.outline, RoundedCornerShape(8.dp))
-                .padding(horizontal = 12.dp, vertical = 12.dp)
-                .onKeyEvent { event ->
-                    if (responseType == State.Editing.ResponseType.Json
-                        && event.type == KeyEventType.KeyDown
-                        && event.key == Key.Tab
+                .padding(top = 4.dp)
+                .height(44.dp),
+        ) {
+            if (isError && parseError != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(colorScheme.errorContainer, RoundedCornerShape(6.dp))
+                        .padding(horizontal = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = null,
+                        tint = colorScheme.onErrorContainer,
+                        modifier = Modifier.size(12.dp),
+                    )
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
                     ) {
-                        val pos = fieldValue.selection.start
-                        val newText = fieldValue.text.substring(0, pos) + "  " + fieldValue.text.substring(pos)
-                        val updated = TextFieldValue(newText, selection = TextRange(pos + 2))
-                        fieldValue = updated
-                        onBodyChange(newText)
-                        true
-                    } else {
-                        false
-                    }
-                },
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                color = colorScheme.onSurface,
-                fontFamily = LocalMonoFontFamily.current
-            ),
-            decorationBox = { innerTextField ->
-                Box {
-                    if (fieldValue.text.isEmpty()) {
                         Text(
-                            text = placeholder,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = placeholderColor,
+                            text = formatJsonErrorTitle(parseError),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = colorScheme.onErrorContainer,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(
+                            text = parseError,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = colorScheme.onErrorContainer.copy(alpha = 0.75f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    innerTextField()
                 }
-            },
-        )
-        Icon(
-            imageVector = Icons.DragCorner,
-            contentDescription = null,
-            tint = colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .size(16.dp)
-                .pointerInput(Unit) {
-                    detectDragGestures { _, dragAmount ->
-                        val delta = with(density) { dragAmount.y.toDp() }
-                        fieldHeight = (fieldHeight + delta).coerceIn(100.dp, 600.dp)
-                    }
-                },
-        )
+            }
+        }
     }
 }
 
