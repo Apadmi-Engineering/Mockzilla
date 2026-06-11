@@ -34,6 +34,29 @@ It's a good idea to sanity check your work by using the library through the demo
 Open the root of this repo in Android Studio and run the `samples.demo-kmm.AndroidApp` or `samples.demo-android` targets. The KMM iOS app can also be run through XCode as normal.
 Note: Currently there's no way to test the Swift package locally without it first being deployed.
 
+## Internal API (`@InternalMockzillaApi`)
+
+Some types must be `public` because they are shared across library modules (e.g. DTOs used by both `mockzilla` and `mockzilla-management`), but they are **not intended for use by external consumers**.
+
+These are annotated with `@InternalMockzillaApi` (defined in `mockzilla-common`). The annotation is a `@RequiresOptIn` at the `ERROR` level, so consumers who accidentally reference an internal type will get a compile-time error.
+
+**When to apply it:** Any public declaration (class, interface, function, property) that lives in a `*.internal.*` package.
+
+**When NOT to apply it:**
+- Swift/Objective-C interop entry points (e.g. `AsyncUtils.kt`, `NestedClassBridgeGeneration.kt` on iOS) — Swift has no way to satisfy `@OptIn` requirements, so annotating these would break the Swift bridge.
+- `@JsExport` declarations in `jsinterface/JsInterface.kt` — these are intentionally public JS API even though they happen to live in an `internal` package.
+- Declarations that already have the Kotlin `internal` visibility modifier — the compiler already prevents access, so no annotation is needed (`private` and `internal` Kotlin modifiers should be preferred if they're possible).
+
+**How library modules opt in:** All modules in this repo are inside the internal-API boundary. Rather than adding `@file:OptIn` to every file, each module's `build.gradle.kts` opts in at the module level:
+
+```kotlin
+compilerOptions {
+    freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
+}
+```
+
+**For `expect`/`actual` declarations:** The annotation must be present on both the `expect` declaration and **every** `actual` declaration across all platforms. Missing one platform will cause a compile error.
+
 ## Spotless
 
 We use Spotless to reformat and organise all of our library code. It runs automatically on compilation so please ensure you've compiled your code before submitting a pull request.

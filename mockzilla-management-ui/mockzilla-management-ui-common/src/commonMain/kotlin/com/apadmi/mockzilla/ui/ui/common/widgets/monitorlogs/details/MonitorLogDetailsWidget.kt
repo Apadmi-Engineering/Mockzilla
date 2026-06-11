@@ -84,9 +84,48 @@ fun MonitorLogDetailsWidget(
 }
 
 @Composable
-fun MonitorLogDetailsContent(
+fun MonitorLogDetailsWidgetEmptyPreview() = PreviewSurface {
+    Box(modifier = Modifier.size(300.dp)) {
+        MonitorLogDetailsEmptyContent()
+    }
+}
+
+@Suppress("COMPLEX_EXPRESSION", "MAGIC_NUMBER")
+@Preview
+@Composable
+fun MonitorLogDetailsWidgetPreview() {
+    val previewBody = """{"repairs":[{"id":"HSR-9455","repairStatus":"Upcoming","faultDescription":"Boiler pilot light"}]}"""
+    val previewStatus = HttpStatusCode.OK
+    val authHeader = "Authorization" to "Bearer token123"
+    val contentTypeHeader = "Content-Type" to "application/json"
+    val previewRequestHeaders = mapOf(authHeader)
+    val previewResponseHeaders = mapOf(contentTypeHeader)
+    val previewState = ViewDetails(selectedTab = Tab.Response)
+    val previewEvent = LogEvent(
+        timestamp = 1_716_474_257_201L,
+        url = "https://api.example.com/repairs",
+        requestBody = "",
+        requestHeaders = previewRequestHeaders,
+        responseHeaders = previewResponseHeaders,
+        responseBody = previewBody,
+        status = previewStatus,
+        delay = 342,
+        method = "GET",
+        isIntendedFailure = false,
+    )
+    PreviewSurface {
+        LogDetailsContent(
+            logDetail = previewEvent,
+            state = previewState,
+            onTabSelected = {},
+        )
+    }
+}
+
+@Composable
+internal fun MonitorLogDetailsContent(
     logDetail: LogEvent?,
-    state: MonitorLogDetailsViewModel.State.ViewDetails,
+    state: ViewDetails,
     onTabSelected: (Tab) -> Unit,
     onClose: () -> Unit = {},
 ) {
@@ -99,7 +138,7 @@ fun MonitorLogDetailsContent(
 
 @Suppress("TOO_LONG_FUNCTION")
 @Composable
-fun LogDetailsContent(
+internal fun LogDetailsContent(
     logDetail: LogEvent,
     state: MonitorLogDetailsViewModel.State.ViewDetails,
     onTabSelected: (Tab) -> Unit,
@@ -142,7 +181,9 @@ fun LogDetailsContent(
 }
 
 @Composable
-fun MonitorLogDetailsEmptyContent(strings: Strings = LocalStrings.current) {
+internal fun MonitorLogDetailsEmptyContent(
+    strings: Strings = LocalStrings.current,
+) {
     EmptyState(
         title = strings.widgets.logDetails.emptyTitle,
         description = strings.widgets.logDetails.emptyDescription,
@@ -156,46 +197,6 @@ fun MonitorLogDetailsEmptyContent(strings: Strings = LocalStrings.current) {
             )
         }
     )
-}
-
-@Preview
-@Composable
-fun MonitorLogDetailsWidgetEmptyPreview() = PreviewSurface {
-    Box(modifier = Modifier.size(300.dp)) {
-        MonitorLogDetailsEmptyContent()
-    }
-}
-
-@Suppress("COMPLEX_EXPRESSION", "MAGIC_NUMBER")
-@Preview
-@Composable
-fun MonitorLogDetailsWidgetPreview() {
-    val previewBody = """{"repairs":[{"id":"HSR-9455","repairStatus":"Upcoming","faultDescription":"Boiler pilot light"}]}"""
-    val previewStatus = HttpStatusCode.OK
-    val authHeader = "Authorization" to "Bearer token123"
-    val contentTypeHeader = "Content-Type" to "application/json"
-    val previewRequestHeaders = mapOf(authHeader)
-    val previewResponseHeaders = mapOf(contentTypeHeader)
-    val previewState = ViewDetails(selectedTab = Tab.Response)
-    val previewEvent = LogEvent(
-        timestamp = 1_716_474_257_201L,
-        url = "https://api.example.com/repairs",
-        requestBody = "",
-        requestHeaders = previewRequestHeaders,
-        responseHeaders = previewResponseHeaders,
-        responseBody = previewBody,
-        status = previewStatus,
-        delay = 342,
-        method = "GET",
-        isIntendedFailure = false,
-    )
-    PreviewSurface {
-        LogDetailsContent(
-            logDetail = previewEvent,
-            state = previewState,
-            onTabSelected = {},
-        )
-    }
 }
 
 // ── Header bar ────────────────────────────────────────────────────────────────

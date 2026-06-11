@@ -17,7 +17,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class EndpointsViewModel(
+/** Controls how much information each row in the endpoint list shows. */
+internal enum class RowDensity {
+    Comfy, Compact
+}
+
+internal class EndpointsViewModel(
     private val device: Device,
     private val endpointsService: MockzillaManagement.EndpointsService,
     private val eventBus: EventBus,
@@ -104,15 +109,10 @@ class EndpointsViewModel(
     }
 }
 
-/** Controls how much information each row in the endpoint list shows. */
-enum class RowDensity {
-    Comfy, Compact
-}
-
 /**
  * @property displayName
  */
-enum class EndpointProperties(val displayName: String) {
+internal enum class EndpointProperties(val displayName: String) {
     Body("Body"),
     Delay("Latency"),
     Headers("Headers"),

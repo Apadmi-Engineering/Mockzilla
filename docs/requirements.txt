@@ -1,2 +1,1 @@
-mkdocs-material==9.6.20
-mkdocs-macros-plugin==1.0.5
+zensical==0.0.43

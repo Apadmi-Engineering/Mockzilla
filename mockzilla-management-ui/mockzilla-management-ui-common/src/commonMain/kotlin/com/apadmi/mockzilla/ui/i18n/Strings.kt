@@ -82,6 +82,8 @@ data class Strings(
          * @property openInPanel
          * @property streaming
          * @property clickToInspect
+         * @property emptyTitle
+         * @property emptyDescription
          */
         data class Logs(
             val title: String,
@@ -89,6 +91,8 @@ data class Strings(
             val openInPanel: String,
             val streaming: String,
             val clickToInspect: String,
+            val emptyTitle: String,
+            val emptyDescription: String,
         )
 
         /**
@@ -263,7 +267,7 @@ data class Strings(
          * @property addDevice
          * @property connected
          * @property disconnected
-         * @property devices
+         * @property empty
          * @property closeButtonDescription
          */
         data class DeviceTabs(
@@ -271,7 +275,7 @@ data class Strings(
             val addDevice: String,
             val connected: String,
             val disconnected: String,
-            val devices: (number: Int) -> String,
+            val empty: String,
             val closeButtonDescription: String,
         )
 
@@ -451,6 +455,8 @@ data class Strings(
          * @property bodyTitle
          * @property bodyTypeJson
          * @property bodyTypePlain
+         * @property bodyTypeHtml
+         * @property bodyTypeNone
          * @property responseBodyFormat
          * @property responseBodyCopy
          * @property responseCharacters
@@ -464,6 +470,12 @@ data class Strings(
          * @property addHeaderValuePlaceholder
          * @property save
          * @property unset
+         * @property cancel
+         * @property endpointSubtitle
+         * @property statusCodeRowLabel
+         * @property bodyTypeLabel
+         * @property responseSectionLabel
+         * @property bodyLabel
          */
         data class CreateEditPreset(
             val createTitle: String,
@@ -474,6 +486,9 @@ data class Strings(
             val bodyTitle: String,
             val bodyTypeJson: String,
             val bodyTypePlain: String,
+
+            val bodyTypeHtml: String,
+            val bodyTypeNone: String,
             val responseBodyFormat: String,
             val responseBodyCopy: String,
             val responseCharacters: (numChars: Int) -> String,
@@ -487,6 +502,12 @@ data class Strings(
             val addHeaderValuePlaceholder: String,
             val unset: String,
             val save: String,
+            val cancel: String,
+            val endpointSubtitle: (endpointName: String) -> String,
+            val statusCodeRowLabel: String,
+            val bodyTypeLabel: String,
+            val responseSectionLabel: String,
+            val bodyLabel: String,
         )
 
         /**

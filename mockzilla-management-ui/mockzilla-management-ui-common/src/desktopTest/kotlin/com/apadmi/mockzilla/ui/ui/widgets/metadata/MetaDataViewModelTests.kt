@@ -23,7 +23,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.yield
 
-class MetaDataViewModelTests : CoroutineTest() {
+internal class MetaDataViewModelTests : CoroutineTest() {
     @RelaxedMockK
     lateinit var metaDataUseCaseMock: MetaDataUseCase
 

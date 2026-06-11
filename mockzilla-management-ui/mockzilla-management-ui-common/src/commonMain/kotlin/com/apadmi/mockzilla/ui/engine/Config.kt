@@ -3,7 +3,7 @@ package com.apadmi.mockzilla.ui.engine
 import com.apadmi.mockzilla.ui.utils.Platform
 import io.github.z4kn4fein.semver.Version
 
-object Config {
+internal object Config {
     val minSupportedMockzillaVersion get() = when (Platform.current) {
         Platform.Desktop -> Version.parse("1.99.99")
         Platform.Android,

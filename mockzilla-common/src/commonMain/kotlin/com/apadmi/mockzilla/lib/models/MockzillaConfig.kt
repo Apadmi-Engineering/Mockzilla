@@ -7,14 +7,20 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * @property port
- * @property endpoints
- * @property logLevel
- * @property isRelease
- * @property releaseModeConfig
- * @property localhostOnly
- * @property additionalLogWriters
- * @property isNetworkDiscoveryEnabled
+ * Top-level configuration for a Mockzilla server instance. All properties are set via
+ * [MockzillaConfig.Builder].
+ *
+ * @property port The port the server binds to. `0` causes the OS to assign an available port.
+ * @property endpoints The mock endpoints registered on this server.
+ * @property isRelease When `true`, activates release mode: rate limiting, token authentication,
+ * and localhost-only restrictions are applied. See [ReleaseModeConfig] for details.
+ * @property localhostOnly When `true`, the server only accepts connections from `127.0.0.1`,
+ * blocking the management desktop interface and other external tools.
+ * @property logLevel Verbosity of Mockzilla's internal logging.
+ * @property releaseModeConfig Rate limiting and authentication config applied in release mode.
+ * @property isNetworkDiscoveryEnabled When `true`, Mockzilla broadcasts itself via ZeroConf
+ * (Bonjour) so the management desktop can discover it. Always disabled in release mode.
+ * @property additionalLogWriters Extra log sinks in addition to standard output.
  */
 data class MockzillaConfig(
     val port: Int,
@@ -26,6 +32,9 @@ data class MockzillaConfig(
     val isNetworkDiscoveryEnabled: Boolean,
     val additionalLogWriters: List<MockzillaLogWriter>
 ) {
+    /**
+     * Defines the verbosity of Mockzilla's internal logging.
+     */
     enum class LogLevel {
         Assert,
         Debug,
@@ -72,9 +81,9 @@ data class MockzillaConfig(
 
         /**
          * Sets the port which the server will bind to. Setting port to `0` will cause the server to
-         * choose it's port auto-magically.
+         * choose its port automatically.
          *
-         * @param port
+         * @param port Port number to bind to. Use `0` for automatic port assignment.
          */
         fun setPort(port: Int): Builder = apply {
             this.port = port
@@ -129,7 +138,7 @@ data class MockzillaConfig(
         /**
          * Enable or disable release mode. See [setReleaseModeConfig] for more details
          *
-         * @param isRelease
+         * @param isRelease `true` to enable release mode, `false` to disable.
          */
         fun setIsReleaseModeEnabled(isRelease: Boolean) = apply {
             this.isRelease = isRelease
@@ -139,7 +148,7 @@ data class MockzillaConfig(
          * Setting this value to `true` means the mockzilla server will only accept calls from localhost.
          * Calls from other IPs will be blocked (including blocking the Mockzilla desktop interface)
          *
-         * @param localhostOnly
+         * @param localhostOnly `true` to restrict connections to localhost only.
          */
         fun setLocalhostOnly(localhostOnly: Boolean) = apply {
             this.localhostOnly = localhostOnly
@@ -160,15 +169,15 @@ data class MockzillaConfig(
         /**
          * Register an new endpoint configuration
          *
-         * @param endpoint
+         * @param endpoint The endpoint builder to register.
          */
         fun addEndpoint(endpoint: EndpointConfiguration.Builder) = addEndpoint(endpoint.build())
 
         /**
          * Register an new endpoint configuration
          *
-         * @param endpoint
-         * @return
+         * @param endpoint The endpoint configuration to register.
+         * @return This builder, for chaining.
          */
         fun addEndpoint(endpoint: EndpointConfiguration) = apply {
             endpoints.add(endpoint)
@@ -179,8 +188,8 @@ data class MockzillaConfig(
          *
          * Mockzilla logs will then log to standard output and to any additional log writers
          *
-         * @param logWriter
-         * @return
+         * @param logWriter The log writer to register.
+         * @return This builder, for chaining.
          */
         fun addLogWriter(logWriter: MockzillaLogWriter) = apply {
             additionalLogWriters += logWriter
@@ -197,7 +206,7 @@ data class MockzillaConfig(
         /**
          * Completes the builder pattern, returning an immutable config.
          *
-         * @return
+         * @return The fully constructed [MockzillaConfig].
          */
         fun build() = MockzillaConfig(port, endpoints.map {
             it.copy(
@@ -212,13 +221,18 @@ data class MockzillaConfig(
 }
 
 /**
- * @property config
- * @property mockBaseUrl
- * @property apiBaseUrl
- * @property port
- * @property authHeaderProvider
- * @property mockzillaVersion
- * @property ip
+ * Runtime details of a started Mockzilla server, returned by `startMockzilla`. Use [mockBaseUrl]
+ * as the base URL in the app under test's HTTP client to route requests through the mock server.
+ *
+ * @property config The configuration the server was started with.
+ * @property ip The IP address the server is listening on.
+ * @property mockBaseUrl Base URL for mock endpoint requests. Configure the app under test's HTTP
+ * client to use this URL.
+ * @property apiBaseUrl Base URL for the Mockzilla control API.
+ * @property port The port the server is bound to.
+ * @property authHeaderProvider Provides authentication headers for making requests to this server
+ * instance.
+ * @property mockzillaVersion The version of the Mockzilla library.
  */
 data class MockzillaRuntimeParams(
     val config: MockzillaConfig,

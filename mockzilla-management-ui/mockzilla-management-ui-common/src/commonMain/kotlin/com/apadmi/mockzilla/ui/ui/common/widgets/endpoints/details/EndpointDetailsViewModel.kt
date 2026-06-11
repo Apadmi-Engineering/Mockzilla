@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 private typealias UpdateServerBlock = (config: SerializableEndpointConfig, device: Device) -> Unit
 private typealias UpdateStateBlock = EndpointDetailsViewModel.State.Endpoint.() -> EndpointDetailsViewModel.State.Endpoint
 
-class EndpointDetailsViewModel(
+internal class EndpointDetailsViewModel(
     private val key: EndpointConfiguration.Key?,
     private val device: Device,
     private val endpointsService: MockzillaManagement.EndpointsService,

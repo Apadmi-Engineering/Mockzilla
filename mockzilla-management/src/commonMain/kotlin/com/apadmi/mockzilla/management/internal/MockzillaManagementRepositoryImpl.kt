@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.management.internal
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
@@ -34,6 +35,7 @@ import io.ktor.http.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+@InternalMockzillaApi
 interface MockzillaManagementRepository {
     suspend fun fetchMetaData(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MetaData>
     suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
@@ -161,10 +163,13 @@ MockzillaManagement.AppIconService {
     }
 
     companion object {
-        internal fun create(logger: KtorLogger) = MockzillaManagementRepositoryImpl(
-            KtorRequestRunner(KtorClientProvider.createKtorClient(logger = logger))
+        internal fun create(config: MockzillaManagement.Config, logger: KtorLogger) = MockzillaManagementRepositoryImpl(
+            KtorRequestRunner(KtorClientProvider.createKtorClient(
+                disableProxy = config.disableProxy,
+                logger = logger
+            ))
         )
 
-        fun create() = create(KtorLogger.SIMPLE)
+        fun create(config: MockzillaManagement.Config) = create(config, KtorLogger.SIMPLE)
     }
 }

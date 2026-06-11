@@ -55,12 +55,7 @@ val EnStrings = Strings(
             addDevice = "Add Device",
             connected = "Connected",
             disconnected = "Disconnected",
-            devices = { number ->
-                when (number) {
-                    1 -> "1 device"
-                    else -> "$number devices"
-                }
-            },
+            empty = "0 devices",
             closeButtonDescription = "Close"
         ),
         metaData = Strings.Widgets.MetaData(
@@ -98,6 +93,8 @@ val EnStrings = Strings(
             openInPanel = "Open in panel →",
             streaming = "STREAMING",
             clickToInspect = "·  CLICK ROW TO INSPECT",
+            emptyTitle = "No logs yet",
+            emptyDescription = "Make some requests to see them here",
         ),
         logDetails = Strings.Widgets.LogDetails(
             title = "Log Detail",
@@ -234,19 +231,28 @@ val EnStrings = Strings(
             bodyTitle = "Response Body",
             bodyTypeJson = "JSON",
             bodyTypePlain = "Plain Text",
+
+            bodyTypeHtml = "HTML",
+            bodyTypeNone = "None",
             responseBodyFormat = "Format",
             responseBodyCopy = "Copy",
-            responseBodyPlaceholder = "Enter response body...",
-            responseCharacters = { chars -> "$chars characters" },
+            responseBodyPlaceholder = "{\"key\": \"value\"}",
+            responseCharacters = { chars -> "$chars chars" },
             validLabel = "Valid",
-            invalidLabel = "Invalid",
+            invalidLabel = "invalid JSON",
             headersTitle = "Headers",
             addHeaderTitle = "Add New Header",
             addHeaderButton = "Add Header",
             save = "Save",
             addHeaderKeyPlaceholder = "Header name",
-            addHeaderValuePlaceholder = "Header value",
-            unset = "Unset"
+            addHeaderValuePlaceholder = "Value",
+            unset = "Unset",
+            cancel = "Cancel",
+            endpointSubtitle = { name -> "for $name" },
+            statusCodeRowLabel = "Status code",
+            bodyTypeLabel = "Body type",
+            responseSectionLabel = "Response",
+            bodyLabel = "Body",
         )
     )
 )

@@ -1,21 +1,25 @@
 package com.apadmi.mockzilla.lib.internal.msw
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import org.w3c.fetch.Request
 import org.w3c.fetch.Response
 import kotlin.js.Promise
 
+@InternalMockzillaApi
 @JsModule("msw/browser")
 @JsNonModule
 external object MswBrowser {
     fun setupWorker(vararg handlers: RestHandler): ServiceWorkerInstance
 }
 
+@InternalMockzillaApi
 @JsModule("msw")
 @JsNonModule
 external object Msw {
     val http: Rest
 }
 
+@InternalMockzillaApi
 external object Rest {
     fun all(
         path: String,
@@ -53,21 +57,25 @@ external object Rest {
     ): RestHandler
 }
 
+@InternalMockzillaApi
 external interface ResponseResolverInfo {
     val request: Request
     val requestId: String
 }
 
+@InternalMockzillaApi
 external interface DefaultContext {
     fun status(status: Int): dynamic
     fun json(body: Any): dynamic
     fun text(body: String): dynamic
 }
 
+@InternalMockzillaApi
 external interface StartServiceWorkerOptions {
     var onUnhandledRequest: String
 }
 
+@InternalMockzillaApi
 external interface ServiceWorkerInstance {
     val context: ServiceWorkerContext
     fun start(options: StartServiceWorkerOptions): Promise<Unit>
@@ -76,8 +84,10 @@ external interface ServiceWorkerInstance {
     fun stop(): Promise<Unit>
 }
 
+@InternalMockzillaApi
 external interface ServiceWorkerContext {
     val isMockingEnabled: Boolean
 }
 
+@InternalMockzillaApi
 external interface RestHandler

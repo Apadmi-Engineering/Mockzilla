@@ -16,6 +16,7 @@ generated_docs/*
 .kotlin
 docs/__pycache__/
 docs/site
+docs/docs/overrides/homepage-content.html
 **/.gradle/**
 **/build/**
 **/.idea/**
