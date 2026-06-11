@@ -89,7 +89,7 @@ internal fun ForceFailureBanner(
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
             .clip(shape)
-            .background(color = if (isDark) colors.soft.copy(alpha = 0.5f) else colors.soft)
+            .background(color = if (isDark) Color(0xFF_141_71C) else Color.White)
             .border(
                 width = 1.dp,
                 color = colors.accent.copy(alpha = 0.5f),

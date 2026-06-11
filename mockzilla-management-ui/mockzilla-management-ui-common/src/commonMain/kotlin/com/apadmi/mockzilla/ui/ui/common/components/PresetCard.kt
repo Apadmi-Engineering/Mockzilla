@@ -2,6 +2,11 @@
 
 package com.apadmi.mockzilla.ui.ui.common.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,11 +31,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -50,6 +60,7 @@ import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
@@ -68,7 +79,7 @@ internal enum class PresetCardVariant {
 }
 
 @Composable
-private fun DashboardOverridePreset.statusColors(): StateColors {
+internal fun DashboardOverridePreset.statusColors(): StateColors {
     val colorScheme = MaterialTheme.colorScheme
     val effectiveType = type ?: response.statusCode?.let {
         when (it.value) {
@@ -130,6 +141,7 @@ internal fun PresetCard(
     variant: PresetCardVariant,
     preset: DashboardOverridePreset,
     onClicked: (DashboardOverridePreset) -> Unit,
+    onEdit: () -> Unit = {},
     layoutMode: LayoutMode = LayoutMode.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
@@ -143,11 +155,18 @@ internal fun PresetCard(
     val iconTint = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant
     val titleColor = if (isSelected) colorScheme.primary else colorScheme.onSurface
 
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val chevronRotation by animateFloatAsState(
+        targetValue = if (expanded) 0f else -90f,
+        animationSpec = tween(200),
+        label = "chevron",
+    )
+
     Column(
         Modifier.fillMaxWidth()
             .clip(shape = shape)
-            .clickable { onClicked(preset) }
             .focusProperties { canFocus = false }
+            .background(if (isSelected) colorScheme.primary.copy(alpha = 0.08f) else Color.Transparent)
             .drawBehind {
                 val indicatorWidth = 2.dp.toPx()
                 drawRect(
@@ -155,86 +174,126 @@ internal fun PresetCard(
                     topLeft = Offset.Zero,
                     size = Size(indicatorWidth, size.height)
                 )
-            }
-            .padding(12.dp),
+            },
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            // Replaced the custom preset icons with the standard chevron
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded }
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
-                modifier = Modifier.size(20.dp),
-                tint = iconTint
+                modifier = Modifier.size(16.dp).rotate(chevronRotation),
+                tint = iconTint,
             )
             Spacer(Modifier.size(8.dp))
 
-            // Standardized to always be bold, matching the target screenshot
             Text(
                 modifier = Modifier.weight(1f),
                 text = preset.name,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = titleColor,
-                fontWeight = FontWeight.Bold
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             )
             Spacer(Modifier.size(8.dp))
 
-            // Status tag updated to a fixed light green pill layout
             Tag(
                 label = preset.response.statusCode?.value?.toString() ?: strings.statusCodeFallback,
                 textColor = statusColors.primary,
                 borderColor = statusColors.primary,
                 backgroundColor = if (isDark) Color.Transparent else statusColors.container,
                 shape = CircleShape,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
             )
             Spacer(Modifier.size(8.dp))
 
             when (variant) {
-                PresetCardVariant.Selected -> Tag(
-                    prefix = {
+                PresetCardVariant.Selected -> Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(6.dp))
+                            .clickable { onEdit() }
+                            .padding(horizontal = 10.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
                         Icon(
-                            modifier = Modifier.size(14.dp),
-                            imageVector = Icons.Default.Check,
+                            imageVector = Icons.EditUnderscore,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            modifier = Modifier.size(14.dp),
+                            tint = colorScheme.onSurfaceVariant,
                         )
-                    },
-                    label = strings.appliedLabel,
-                    textColor = MaterialTheme.colorScheme.onPrimary,
-                    borderColor = Color.Transparent,
-                    backgroundColor = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(6.dp),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-                )
+                        Text(
+                            text = strings.editLabel,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = colorScheme.onSurfaceVariant,
+                        )
+                    }
 
-                PresetCardVariant.Selectable -> Tag(
-                    label = strings.applyLabel,
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    borderColor = MaterialTheme.colorScheme.outline,
-                    backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
-                    shape = RoundedCornerShape(6.dp),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-                )
+                    Tag(
+                        prefix = {
+                            Icon(
+                                modifier = Modifier.size(14.dp),
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = colorScheme.onPrimary,
+                            )
+                        },
+                        label = strings.appliedLabel,
+                        textColor = colorScheme.onPrimary,
+                        borderColor = Color.Transparent,
+                        backgroundColor = colorScheme.primary,
+                        shape = RoundedCornerShape(6.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                    )
+                }
+
+                PresetCardVariant.Selectable -> Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .clickable { onClicked(preset) }
+                ) {
+                    Tag(
+                        label = strings.applyLabel,
+                        textColor = colorScheme.onSurface,
+                        borderColor = colorScheme.outline,
+                        backgroundColor = colorScheme.surfaceContainer,
+                        shape = RoundedCornerShape(6.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                    )
+                }
             }
         }
 
-        // Moved the description up directly under the title
-        if (!isCompact && !preset.description.isNullOrBlank()) {
-            Spacer(Modifier.size(4.dp))
-            Text(
-                modifier = Modifier.padding(start = 28.dp),
-                text = preset.description ?: "",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically(),
+            exit = shrinkVertically(),
+        ) {
+            Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)) {
+                if (!isCompact && !preset.description.isNullOrBlank()) {
+                    Spacer(Modifier.size(4.dp))
+                    Text(
+                        modifier = Modifier.padding(start = 28.dp),
+                        text = preset.description ?: "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colorScheme.onSurfaceVariant,
+                    )
+                }
 
-        // JSON body
-        preset.response.body?.takeIf { it.isNotBlank() }
-            ?.let {
-                Spacer(Modifier.size(12.dp))
-                ExpandableResponseBody(preset.response.body ?: "", isCompact)
+                preset.response.body?.takeIf { it.isNotBlank() }
+                    ?.let {
+                        Spacer(Modifier.size(12.dp))
+                        ExpandableResponseBody(it, isCompact)
+                    }
             }
+        }
     }
 }
 @Composable
@@ -287,7 +346,7 @@ internal fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
         Modifier
             .fillMaxWidth()
             .background(
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                color = if (LocalForceDarkMode.current) Color(0xFF_141_71C) else Color(0xFF_D8D_CE1),
                 shape = RoundedCornerShape(8.dp)
             )
             .border(

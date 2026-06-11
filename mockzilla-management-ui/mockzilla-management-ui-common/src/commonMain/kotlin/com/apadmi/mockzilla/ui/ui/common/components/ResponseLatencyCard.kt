@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +39,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import kotlin.math.max
@@ -160,7 +162,7 @@ internal fun ResponseLatencyCard(
                     .weight(1f)
                     .height(44.dp)
                     .background(
-                        color = colorScheme.surfaceContainer,
+                        color = if (isDark) Color(0xFF_141_71C) else Color.White,
                         shape = componentShape,
                     )
                     .border(
@@ -173,12 +175,13 @@ internal fun ResponseLatencyCard(
             ) {
                 Text(
                     text = value?.let { strings.widgets.latency.millisecondLabel(it) } ?: strings.widgets.latency.notSet,
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    style = MaterialTheme.typography.bodySmall.copy(
                         fontFamily = mockzillaMonoFontFamily(),
                         color = value?.let {
                             colorScheme.warning.primary
-                        } ?: colorScheme.onSurfaceVariant,
-                        fontSize = 16.sp
+                        } ?: colorScheme.onSurfaceMuted,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal,
                     ),
                     textAlign = TextAlign.Start,
                     modifier = Modifier.fillMaxWidth()
@@ -225,14 +228,16 @@ internal fun ResponseLatencyCard(
                     text = strings.widgets.latency.sliderMin,
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = colorScheme.onSurfaceVariant,
-                        fontSize = 12.sp
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Normal,
                     )
                 )
                 Text(
                     text = strings.widgets.latency.sliderMax,
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = colorScheme.onSurfaceVariant,
-                        fontSize = 12.sp
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Normal,
                     )
                 )
             }
@@ -245,6 +250,7 @@ internal fun ResponseLatencyCard(
             listOf(0, 300, 1000, 3000, 10000).forEach { ms ->
                 val isSelected = value == ms
                 val label = when {
+                    ms == 0 -> "0"
                     ms < 1000 -> strings.widgets.latency.millisecondLabel(ms)
                     else -> strings.widgets.latency.secondLabel(ms / 1000)
                 }
@@ -252,24 +258,28 @@ internal fun ResponseLatencyCard(
                 Box(
                     modifier = Modifier
                         .clip(componentShape)
-                        .background(colorScheme.surfaceContainer)
                         .border(
                             width = 1.dp,
-                            color = if (isSelected) colorScheme.primary else colorScheme.outline,
-                            shape = componentShape
+                            color = if (isSelected) colorScheme.primary.copy(alpha = 0.5f) else colorScheme.outline,
+                            shape = componentShape,
                         )
-                        .clickable {
-                            updateValue(ms)
-                        }
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                        .background(
+                            if (isSelected) {
+                                colorScheme.primaryContainer
+                            } else {
+                                colorScheme.surfaceContainer
+                            }
+                        )
+                        .clickable { updateValue(ms) }
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = label,
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            color = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                            fontSize = 12.sp
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontFamily = mockzillaMonoFontFamily(),
+                            color = if (isSelected) colorScheme.primary else colorScheme.onSurfaceMuted,
+                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                         )
                     )
                 }

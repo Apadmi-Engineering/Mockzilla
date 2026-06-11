@@ -5,23 +5,30 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,12 +36,13 @@ import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.endpointDetailsWidgetSuccessState
@@ -46,6 +54,7 @@ internal fun PresetsContainer(
     onPresetFilterChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
+    onEditPreset: () -> Unit = {},
     modifier: Modifier = Modifier,
     showBorder: Boolean = true,
     showTitle: Boolean = true,
@@ -85,13 +94,14 @@ internal fun PresetsContainer(
                         Modifier
                     }
                 ),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.Top
         ) {
             if (state.presets.allPresets.isNotEmpty()) {
                 PopulatedPresets(
                     presets = state.presets,
                     onPresetFilterChanged = onPresetFilterChanged,
                     onDefaultPresetSelected = onDefaultPresetSelected,
+                    onEditPreset = onEditPreset,
                     showTitle = showTitle,
                     layoutMode = state.layoutMode
                 )
@@ -127,16 +137,24 @@ internal fun PresetsContainer(
     }
 }
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 private fun PopulatedPresets(
     presets: State.Endpoint.Presets,
     onPresetFilterChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
+    onEditPreset: () -> Unit = {},
     showTitle: Boolean = true,
     layoutMode: LayoutMode = LayoutMode.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
-    Column {
+    val isDark = LocalForceDarkMode.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(if (isDark) Color(0xFF_181_C21) else Color(0xFF_EBE_DF0))
+            .padding(horizontal = 14.dp, vertical = 12.dp)
+    ) {
         if (showTitle) {
             Text(
                 style = MaterialTheme.typography.titleMedium,
@@ -147,37 +165,82 @@ private fun PopulatedPresets(
             if (showTitle) {
                 Spacer(Modifier.size(8.dp))
             }
-            CustomTextField(
-                modifier = Modifier.fillMaxWidth(),
+            val bgColor = MaterialTheme.colorScheme.surfaceContainer
+            val borderColor = MaterialTheme.colorScheme.outline
+            val hintColor = MaterialTheme.colorScheme.onSurfaceMuted
+            val textColor = MaterialTheme.colorScheme.onSurface
+            val fieldShape = RoundedCornerShape(8.dp)
+
+            BasicTextField(
                 value = presets.filter,
                 onValueChange = onPresetFilterChanged,
-                prefix = {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = null)
-                },
-                placeholder = { Text(strings.filterPlaceholder) }
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(color = textColor),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(fieldShape)
+                    .background(bgColor, fieldShape)
+                    .border(1.dp, borderColor, fieldShape)
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                decorationBox = { innerTextField ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            tint = hintColor,
+                            modifier = Modifier.size(16.dp),
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Box {
+                            if (presets.filter.isEmpty()) {
+                                Text(
+                                    text = strings.filterPlaceholder,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = hintColor,
+                                )
+                            }
+                            innerTextField()
+                        }
+                    }
+                }
             )
         }
-        Spacer(Modifier.size(8.dp))
     }
 
-    if (presets.visiblePresets.isEmpty()) {
-        Text(strings.filterPlaceholderEmpty)
-    }
+    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
 
-    presets.visiblePresets.forEach { preset ->
-        PresetCard(
-            variant = if (preset.name == presets.appliedPreset?.name) {
-                PresetCardVariant.Selected
-            } else {
-                PresetCardVariant.Selectable
-            },
-            preset = preset,
-            onClicked = onDefaultPresetSelected,
-            layoutMode = layoutMode
-        )
-    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(if (isDark) Color(0xFF_141_71C) else Color(0xFF_D8D_CE1))
+    ) {
+        if (presets.visiblePresets.isEmpty()) {
+            Text(
+                text = strings.filterPlaceholderEmpty,
+                modifier = Modifier.padding(vertical = 12.dp),
+            )
+        }
 
-    Spacer(modifier = Modifier.height(8.dp))
+        presets.visiblePresets.forEachIndexed { index, preset ->
+            if (index > 0) {
+                Spacer(Modifier.height(4.dp))
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
+                Spacer(Modifier.height(4.dp))
+            }
+            PresetCard(
+                variant = if (preset.name == presets.appliedPreset?.name) {
+                    PresetCardVariant.Selected
+                } else {
+                    PresetCardVariant.Selectable
+                },
+                preset = preset,
+                onClicked = onDefaultPresetSelected,
+                onEdit = onEditPreset,
+                layoutMode = layoutMode
+            )
+        }
+    }
 }
 
 @Preview

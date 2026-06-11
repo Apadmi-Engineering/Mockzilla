@@ -10,6 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,12 +54,13 @@ fun EdSection(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     initiallyExpanded: Boolean = true,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 14.dp, vertical = 12.dp),
     headerActions: @Composable RowScope.() -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
-    val sectionShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(sectionCornerRadius.dp)
+    val sectionShape = RoundedCornerShape(0.dp)
 
     var expanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
     val chevronRotation by animateFloatAsState(
@@ -90,7 +92,7 @@ fun EdSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (isDark) Color.Transparent else colorScheme.surfaceContainer)
+                .background(colorScheme.surfaceContainer)
                 .clickable { expanded = !expanded }
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -127,8 +129,8 @@ fun EdSection(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(if (isDark) Color.Transparent else colorScheme.surface)
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                    .background(if (isDark) Color(0xFF_181_C21) else Color(0xFF_EBE_DF0))
+                    .padding(contentPadding),
             ) {
                 content()
             }
