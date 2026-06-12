@@ -271,28 +271,27 @@ internal fun PresetCard(
             }
         }
 
+        if (!isCompact && !preset.description.isNullOrBlank()) {
+            Text(
+                modifier = Modifier.padding(start = 36.dp, end = 12.dp, bottom = 4.dp),
+                text = preset.description ?: "",
+                style = MaterialTheme.typography.bodySmall,
+                color = colorScheme.onSurfaceVariant,
+            )
+        }
+
         AnimatedVisibility(
             visible = expanded,
             enter = expandVertically(),
             exit = shrinkVertically(),
         ) {
-            Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)) {
-                if (!isCompact && !preset.description.isNullOrBlank()) {
-                    Spacer(Modifier.size(4.dp))
-                    Text(
-                        modifier = Modifier.padding(start = 28.dp),
-                        text = preset.description ?: "",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = colorScheme.onSurfaceVariant,
-                    )
-                }
-
-                preset.response.body?.takeIf { it.isNotBlank() }
-                    ?.let {
-                        Spacer(Modifier.size(12.dp))
+            preset.response.body?.takeIf { it.isNotBlank() }
+                ?.let {
+                    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)) {
+                        Spacer(Modifier.size(4.dp))
                         ExpandableResponseBody(it, isCompact)
                     }
-            }
+                }
         }
     }
 }
