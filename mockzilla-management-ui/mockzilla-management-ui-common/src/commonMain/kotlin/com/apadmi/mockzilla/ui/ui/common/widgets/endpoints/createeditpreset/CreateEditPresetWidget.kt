@@ -53,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
@@ -81,6 +82,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
@@ -615,6 +617,7 @@ private fun JsonBodyTextField(
         }
     }
 
+    val isDark = LocalForceDarkMode.current
     Box(modifier = modifier) {
         BasicTextField(
             value = fieldValue,
@@ -632,7 +635,7 @@ private fun JsonBodyTextField(
                 .fillMaxWidth()
                 .height(fieldHeight)
                 .clipToBounds()
-                .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
+                .background(if (isDark) colorScheme.surfaceContainerLowest else Color.White, RoundedCornerShape(8.dp))
                 .border(1.dp, if (isError) colorScheme.error else colorScheme.outline, RoundedCornerShape(8.dp))
                 .padding(horizontal = 12.dp, vertical = 12.dp),
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
@@ -703,12 +706,13 @@ private fun StatusCodeDropdown(
         fontFamily = monoFont,
         fontWeight = FontWeight.SemiBold,
     )
+    val isDark = LocalForceDarkMode.current
     Box(modifier = modifier) {
         Row(
             modifier = Modifier
                 .width(130.dp)
                 .clickable { expanded = true }
-                .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
+                .background(if (isDark) colorScheme.surfaceContainerLowest else Color.White, RoundedCornerShape(8.dp))
                 .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
                 .padding(horizontal = 10.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,

@@ -86,7 +86,7 @@ internal fun ResponseLatencyCard(
             .then(
                 if (showBackground) {
                     Modifier.background(
-                        color = colorScheme.surfaceVariant,
+                        color = colorScheme.surfaceContainer,
                         shape = cardShape
                     )
                 } else {
@@ -97,7 +97,7 @@ internal fun ResponseLatencyCard(
                 if (showBorder) {
                     Modifier.border(
                         width = 1.dp,
-                        color = colorScheme.outline.copy(alpha = 0.5f),
+                        color = colorScheme.outlineVariant,
                         shape = cardShape
                     )
                 } else {
@@ -158,12 +158,12 @@ internal fun ResponseLatencyCard(
                     .weight(1f)
                     .height(44.dp)
                     .background(
-                        color = colorScheme.outline.copy(alpha = 0.1f),
+                        color = colorScheme.surfaceContainerHigh,
                         shape = componentShape,
                     )
                     .border(
                         width = 1.dp,
-                        color = colorScheme.outline.copy(alpha = 0.2f),
+                        color = colorScheme.outlineVariant,
                         shape = componentShape,
                     )
                     .padding(horizontal = 12.dp),
@@ -248,7 +248,7 @@ internal fun ResponseLatencyCard(
                 Box(
                     modifier = Modifier
                         .clip(componentShape)
-                        .background(colorScheme.outline.copy(alpha = 0.15f))
+                        .background(colorScheme.surfaceContainerHigh)
                         .then(
                             if (isSelected) {
                                 Modifier.border(
@@ -293,10 +293,10 @@ private fun SmallSquareButton(
         modifier = Modifier
             .size(44.dp)
             .clip(shape)
-            .background(colorScheme.outline.copy(alpha = 0.15f))
+            .background(colorScheme.surfaceContainerHigh)
             .border(
                 width = 1.dp,
-                color = colorScheme.outline.copy(alpha = 0.2f),
+                color = colorScheme.outlineVariant,
                 shape = shape
             )
             .clickable(onClick = onClick),

@@ -171,10 +171,17 @@ private fun GlobalControlsButton(
     val colorScheme = MaterialTheme.colorScheme
     val shape = RoundedCornerShape(8.dp)
 
+    val isDark = LocalForceDarkMode.current
     Row(
         modifier = Modifier
             .clip(shape)
-            .background(if (isOpen) colorScheme.primary else colorScheme.surfaceContainerLowest)
+            .background(if (isOpen) {
+                colorScheme.primary
+            } else if (isDark) {
+                colorScheme.surfaceContainerLowest
+            } else {
+                Color.White
+            })
             .border(1.dp, if (isOpen) colorScheme.primary else colorScheme.outline, shape)
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 6.dp),
@@ -269,6 +276,7 @@ private fun EndpointRow(
         isSelected -> cs.primary
         else -> Color.Transparent
     }
+    val isDark = LocalForceDarkMode.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -276,8 +284,10 @@ private fun EndpointRow(
             .background(
                 if (isSelected || isHovered) {
                     cs.onSurface.copy(alpha = HOVER_ALPHA)
-                } else {
+                } else if (isDark) {
                     cs.surfaceContainerLowest
+                } else {
+                    Color.White
                 }
             )
             .drawBehind {
