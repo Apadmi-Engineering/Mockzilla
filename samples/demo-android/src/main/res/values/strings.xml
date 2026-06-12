@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">demo-android</string>
+    <string name="main_title">Mockzilla Farm</string>
+    <string name="button_refresh">Refresh</string>
+    <string name="button_launch_management_ui">Launch Mockzilla Management UI</string>
+    <string name="instructions">Enter the owner of your animals below and then refresh!</string>
+    <string name="placeholder_animals_owner">Animals Owner</string>
+    <string name="no_cow_found">No cow found</string>
+    <string name="no_sheep_found">No sheep found</string>
+    <string name="no_pig_found">No pig found</string>
+    <string name="error_occurred">An error occurred&#8230;</string>
+    <string name="app_bar_release_mode">Release Mode:</string>
+    <string name="animal_type_cow">\uD83D\uDC04 Cow</string>
+    <string name="animal_type_sheep">\uD83D\uDC11 Sheep</string>
+    <string name="animal_type_pig">\uD83D\uDC16 Pig</string>
+    <string name="animal_age">%1$d years old</string>
+    <string name="animal_owner_label">Owner: </string>
+    <string name="animal_owner_placeholder">Set the owner in the field above</string>
 </resources>

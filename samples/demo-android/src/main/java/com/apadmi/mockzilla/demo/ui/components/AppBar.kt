@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.stringResource
+import com.apadmi.mockzilla.android.sample.R
 import com.apadmi.mockzilla.demo.ui.MainViewModel
 
 @Composable
@@ -29,7 +31,7 @@ internal fun AppBar(
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "Release Mode:")
+        Text(text = stringResource(R.string.app_bar_release_mode))
         Switch(
             modifier = Modifier.scale(0.75f),
             checked = state.values.isRelease,

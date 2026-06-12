@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,7 +61,7 @@ fun MainContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Mockzilla Farm",
+                    text = stringResource(R.string.main_title),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold
@@ -70,7 +71,7 @@ fun MainContent(
                     onClick = { makeRequest(state.values.requestBody) },
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Text(text = "Refresh")
+                    Text(text = stringResource(R.string.button_refresh))
                 }
             }
 
@@ -96,12 +97,12 @@ fun MainContent(
                 onClick = launchManagementUi,
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Text(text = "Launch Mockzilla Management UI")
+                Text(text = stringResource(R.string.button_launch_management_ui))
                 Spacer(modifier = Modifier.width(8.dp))
                 Image(
                     modifier = Modifier.size(20.dp),
                     painter = painterResource(id = R.drawable.mockzilla_logo),
-                    contentDescription = "Launch Mockzilla Management UI"
+                    contentDescription = stringResource(R.string.button_launch_management_ui)
                 )
             }
         }
@@ -119,26 +120,26 @@ private fun SuccessContent(
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        Text(text = "Enter the owner of your animals below and then refresh!")
+        Text(text = stringResource(R.string.instructions))
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.values.requestBody,
             onValueChange = setRequestText,
-            placeholder = { Text(text = "Animals Owner") }
+            placeholder = { Text(text = stringResource(R.string.placeholder_animals_owner)) }
         )
     }
 
     state.cowResult?.let { cow ->
         AnimalCard(animal = cow)
-    } ?: Text(text = "No cow found")
+    } ?: Text(text = stringResource(R.string.no_cow_found))
 
     state.sheepResult?.let { sheep ->
         AnimalCard(animal = sheep)
-    } ?: Text(text = "No sheep found")
+    } ?: Text(text = stringResource(R.string.no_sheep_found))
 
     state.pigResult?.let { pig ->
         AnimalCard(animal = pig)
-    } ?: Text(text = "No pig found")
+    } ?: Text(text = stringResource(R.string.no_pig_found))
 }
 
 @Composable
@@ -149,7 +150,7 @@ private fun ErrorContent(
     horizontalAlignment = Alignment.CenterHorizontally
 ) {
     Text(
-        text = "An error occurred...",
+        text = stringResource(R.string.error_occurred),
         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
     )
     Text(

@@ -13,16 +13,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.apadmi.mockzilla.android.sample.R
 import com.apadmi.mockzilla.demo.engine.AnimalDto
 
 @Composable
 private fun AnimalDto.AnimalTypeDto.text() = when (this) {
-    AnimalDto.AnimalTypeDto.Cow -> "\uD83D\uDC04 Cow"
-    AnimalDto.AnimalTypeDto.Sheep -> "\uD83D\uDC11 Sheep"
-    AnimalDto.AnimalTypeDto.Pig -> "\uD83D\uDC16 Pig"
+    AnimalDto.AnimalTypeDto.Cow -> stringResource(R.string.animal_type_cow)
+    AnimalDto.AnimalTypeDto.Sheep -> stringResource(R.string.animal_type_sheep)
+    AnimalDto.AnimalTypeDto.Pig -> stringResource(R.string.animal_type_pig)
 }
 
 @Composable
@@ -56,7 +58,7 @@ internal fun AnimalCard(
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
             )
             Text(
-                text = "${animal.age} years old",
+                text = stringResource(R.string.animal_age, animal.age),
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -78,11 +80,11 @@ internal fun AnimalCard(
 
     Row {
         Text(
-            text = "Owner: ",
+            text = stringResource(R.string.animal_owner_label),
             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
         )
         Text(
-            text = animal.owner.ifBlank { "Set the owner in the field above" },
+            text = animal.owner.ifBlank { stringResource(R.string.animal_owner_placeholder) },
             style = MaterialTheme.typography.bodyMedium.copy(fontStyle = FontStyle.Italic)
         )
     }
