@@ -474,7 +474,6 @@ data class Strings(
             val bodyTitle: String,
             val bodyTypeJson: String,
             val bodyTypePlain: String,
-
             val bodyTypeHtml: String,
             val bodyTypeNone: String,
             val responseBodyFormat: String,
@@ -498,6 +497,7 @@ data class Strings(
             val bodyTypeLabel: String,
             val responseSectionLabel: String,
             val bodyLabel: String,
+            val jsonErrorTitle: String,
         )
 
         /**

@@ -243,8 +243,7 @@ private fun ColumnScope.BodySection(
             State.Editing.ResponseType.PlainText,
             State.Editing.ResponseType.None -> strings.plainBodyPlaceholder
         },
-        isError = isJsonError,
-        parseError = if (isJsonError) state.bodyParseError else null,
+        parseError = state.bodyParseError.takeIf { isJsonError },
         modifier = Modifier
             .fillMaxWidth()
             .then(if (isExpanded) Modifier.weight(1f) else Modifier)

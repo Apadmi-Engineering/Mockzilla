@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -159,12 +161,12 @@ private fun EditorContent(
             modifier = Modifier
                 .fillMaxHeight()
                 .width(gutterWidth + 8.dp)
-                .background(colorScheme.surfaceContainerLow),
+                .background(colorScheme.surfaceContainerLow, shape = RoundedCornerShape(8.dp)),
         )
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .verticalScroll(scrollState)
                 .padding(start = 8.dp, top = 12.dp, end = 12.dp, bottom = 12.dp),
             verticalAlignment = Alignment.Top,
@@ -182,7 +184,8 @@ private fun EditorContent(
                     cursorBrush = SolidColor(colorScheme.primary),
                     onTextLayout = { result -> lineCount = result.lineCount },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
+                        .heightIn(min = fieldHeight - 20.dp)
                         .onKeyEvent { event ->
                             if (mode == EditorMode.Json &&
                                     event.type == KeyEventType.KeyDown &&
@@ -199,7 +202,7 @@ private fun EditorContent(
                         },
                     textStyle = textStyle,
                     decorationBox = { innerTextField ->
-                        Box {
+                        Box(modifier.fillMaxSize()) {
                             if (fieldValue.text.isEmpty()) {
                                 Text(
                                     text = placeholder,

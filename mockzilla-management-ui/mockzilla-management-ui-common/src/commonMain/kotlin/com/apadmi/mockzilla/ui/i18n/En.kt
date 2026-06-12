@@ -243,6 +243,7 @@ val EnStrings = Strings(
             bodyTypeLabel = "Body type",
             responseSectionLabel = "Response",
             bodyLabel = "Body",
+            jsonErrorTitle = "Invalid JSON:",
         )
     )
 )
