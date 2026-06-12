@@ -4,19 +4,23 @@ package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
-import com.apadmi.mockzilla.ui.ui.common.assets.Play
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
@@ -41,6 +44,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 private const val bannerCornerRadius = 8
+private const val resumeButtonCornerRadius = 6
 
 internal enum class ForceFailureBannerState {
     FullFailure,
@@ -87,9 +91,9 @@ internal fun ForceFailureBanner(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+            .height(64.dp)
             .clip(shape)
-            .background(color = if (isDark) Color(0xFF_141_71C) else Color.White)
+            .background(color = if (isDark) Color(0xFF_141_71C) else Color(0xFF_D8D_CE1))
             .border(
                 width = 1.dp,
                 color = colors.accent.copy(alpha = 0.5f),
@@ -118,6 +122,7 @@ internal fun ForceFailureBanner(
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                 )
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     color = colorScheme.onSurfaceMuted,
                     text = titleAndSubtitle.subtitle,
@@ -140,13 +145,30 @@ internal fun ForceFailureBanner(
                 }
 
                 if (state != ForceFailureBannerState.Normal) {
-                    BaseButton(
-                        label = strings.widgets.globalControls.restoreButtonLabel,
-                        leadingIcon = Icons.Play,
-                        variant = ButtonVariant.Solid,
-                        size = ButtonSize.Sm,
-                        onClick = onRestoreApiClicked,
-                    )
+                    val successColor = colorScheme.success.primary
+                    val resumeShape = RoundedCornerShape(resumeButtonCornerRadius.dp)
+                    Row(
+                        modifier = Modifier
+                            .clip(resumeShape)
+                            .border(1.dp, successColor, resumeShape)
+                            .clickable { onRestoreApiClicked() }
+                            .padding(horizontal = 12.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            tint = successColor,
+                            modifier = Modifier.size(14.dp),
+                        )
+                        Text(
+                            text = strings.widgets.globalControls.restoreButtonLabel,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = successColor,
+                            fontWeight = FontWeight.Medium,
+                        )
+                    }
                 }
             }
         }

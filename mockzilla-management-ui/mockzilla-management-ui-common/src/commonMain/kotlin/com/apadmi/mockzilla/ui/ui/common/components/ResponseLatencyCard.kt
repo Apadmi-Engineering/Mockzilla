@@ -162,7 +162,7 @@ internal fun ResponseLatencyCard(
                     .weight(1f)
                     .height(44.dp)
                     .background(
-                        color = if (isDark) Color(0xFF_141_71C) else Color.White,
+                        color = if (isDark) Color(0xFF_141_71C) else Color(0xFF_D8D_CE1),
                         shape = componentShape,
                     )
                     .border(
@@ -266,8 +266,10 @@ internal fun ResponseLatencyCard(
                         .background(
                             if (isSelected) {
                                 colorScheme.primaryContainer
-                            } else {
+                            } else if (isDark) {
                                 colorScheme.surfaceContainer
+                            } else {
+                                Color(0xFF_D8D_CE1)
                             }
                         )
                         .clickable { updateValue(ms) }

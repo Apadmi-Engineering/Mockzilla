@@ -130,10 +130,6 @@ internal fun PresetsContainer(
                 }
             }
         }
-
-        if (state.config.shouldFail == true) {
-            ForcedFailureOverlayBanner(borderShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
-        }
     }
 }
 

@@ -119,7 +119,8 @@ private fun ColumnScope.PopulatedState(
             },
             content = {
                 val overrides = state.config.getOverriddenProperties()
-                if (overrides.isEmpty()) {
+                val isForced = state.config.shouldFail == true
+                if (overrides.isEmpty() && !isForced) {
                     Text(
                         text = strings.widgets.endpoints.noOverrides,
                         style = MaterialTheme.typography.labelSmall.copy(
@@ -130,6 +131,16 @@ private fun ColumnScope.PopulatedState(
                     )
                 } else {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        if (isForced) {
+                            Tag(
+                                label = strings.widgets.endpoints.forced,
+                                textColor = colorScheme.error,
+                                borderColor = colorScheme.error.copy(alpha = 0.5f),
+                                backgroundColor = colorScheme.error.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(4.dp),
+                                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
                         overrides.forEach { property ->
                             Tag(
                                 label = property.displayName.uppercase(),
@@ -194,33 +205,40 @@ private fun ColumnScope.PopulatedState(
         headerActions = {
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(2.dp),
+                    .border(1.dp, colorScheme.outline, RoundedCornerShape(4.dp))
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(if (isDark) MaterialTheme.colorScheme.surfaceContainer else Color(0xFF_D8D_CE1))
+                    .padding(3.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 listOf(LayoutMode.Comfy to "comfy", LayoutMode.Compact to "compact").forEach { (mode, label) ->
                     val isSelected = state.layoutMode == mode
-                    val chipShape = RoundedCornerShape(6.dp)
+                    val chipShape = RoundedCornerShape(4.dp)
                     Box(
                         modifier = Modifier
-                            .clip(chipShape)
                             .then(
                                 if (isSelected) {
                                     Modifier
-                                        .background(MaterialTheme.colorScheme.surfaceContainerHigh, chipShape)
-                                        .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f), chipShape)
+                                        .border(1.dp, colorScheme.outline, chipShape)
+                                        .clip(chipShape)
                                 } else {
-                                    Modifier.background(Color.Transparent)
+                                    Modifier.clip(chipShape)
+                                }
+                            )
+                            .background(
+                                if (isSelected) {
+                                    if (isDark) MaterialTheme.colorScheme.surfaceContainerHigh else Color.White
+                                } else {
+                                    Color.Transparent
                                 }
                             )
                             .clickable { onLayoutModeChanged(mode) }
-                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
                             text = label,
                             style = MaterialTheme.typography.labelSmall,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            fontWeight = FontWeight.Normal,
                             color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
