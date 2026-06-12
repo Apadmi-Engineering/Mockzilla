@@ -209,7 +209,7 @@ private fun ColumnScope.PopulatedState(
                                 if (isSelected) {
                                     Modifier
                                         .background(MaterialTheme.colorScheme.surfaceContainerHigh, chipShape)
-                                        .border(1.dp, MaterialTheme.colorScheme.outline, chipShape)
+                                        .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f), chipShape)
                                 } else {
                                     Modifier.background(Color.Transparent)
                                 }
