@@ -4,7 +4,6 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -38,8 +37,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,6 +45,7 @@ import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.DashedDivider
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionTitle
@@ -424,23 +422,5 @@ private fun HeadersContent(headers: List<Pair<String, String>>, strings: Strings
                 DashedDivider(color = dividerColor)
             }
         }
-    }
-}
-
-@Suppress("MAGIC_NUMBER")
-@Composable
-private fun DashedDivider(color: Color) {
-    Canvas(modifier = Modifier.fillMaxWidth().height(1.dp)) {
-        drawLine(
-            color = color,
-            start = androidx.compose.ui.geometry.Offset(0f, 0f),
-            end = androidx.compose.ui.geometry.Offset(size.width, 0f),
-            strokeWidth = 1.dp.toPx(),
-            cap = StrokeCap.Round,
-            pathEffect = PathEffect.dashPathEffect(
-                intervals = floatArrayOf(4.dp.toPx(), 4.dp.toPx()),
-                phase = 0f,
-            ),
-        )
     }
 }

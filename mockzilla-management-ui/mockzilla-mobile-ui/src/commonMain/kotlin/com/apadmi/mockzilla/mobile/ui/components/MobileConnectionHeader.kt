@@ -1,9 +1,6 @@
 package com.apadmi.mockzilla.mobile.ui.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,9 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DragIndicator
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -32,58 +28,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.apadmi.mockzilla.lib.models.RunTarget
-import com.apadmi.mockzilla.ui.engine.device.StatefulDevice
+
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
-import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
-private fun RunTarget.label(strings: Strings) = when (this) {
-    RunTarget.AndroidDevice,
-    RunTarget.AndroidEmulator -> strings.widgets.metaData.android
-
-    RunTarget.IosDevice,
-    RunTarget.IosSimulator -> strings.widgets.metaData.ios
-
-    RunTarget.Jvm -> strings.widgets.metaData.jvm
-    RunTarget.Js -> strings.widgets.metaData.js
-}
-
-@Suppress("MAGIC_NUMBER")
+@Suppress("MAGIC_NUMBER", "LONG_PARAMETER_LIST")
 @Composable
 internal fun MobileConnectionHeader(
-    statefulDevice: StatefulDevice,
-    requestCount: Int,
     activeOverridesCount: Int,
-    uptime: String,
     onRefresh: () -> Unit,
     onGlobalControlsClick: () -> Unit,
+    onMetaDataClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
     val strings = LocalStrings.current
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = LocalForceDarkMode.current
+    val isDark = MaterialTheme.colorScheme.primary.luminance() < 0.5f // Simple dark check
     val accentColor = if (isDark) colorScheme.primary else Color(0xFF_0D9_488)
 
     Column(modifier = modifier.fillMaxWidth().background(colorScheme.surface)) {
@@ -108,7 +76,7 @@ internal fun MobileConnectionHeader(
                         .clip(RoundedCornerShape(12.dp))
                         .background(colorScheme.surfaceContainer)
                         .border(1.dp, colorScheme.outlineVariant, RoundedCornerShape(12.dp))
-                        .clickable { isExpanded = !isExpanded }
+                        .clickable { onMetaDataClick() }
                         .padding(horizontal = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -124,10 +92,11 @@ internal fun MobileConnectionHeader(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            Image(
+                            Icon(
                                 imageVector = Icons.MockzillaLogo,
                                 contentDescription = null,
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(24.dp),
+                                tint = colorScheme.primary
                             )
                         }
                     }
@@ -144,10 +113,10 @@ internal fun MobileConnectionHeader(
                             )
                             Spacer(Modifier.width(4.dp))
                             Icon(
-                                imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                 contentDescription = null,
                                 modifier = Modifier.size(16.dp),
-                                tint = colorScheme.onSurfaceFaint
+                                tint = colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                             )
                         }
                         Text(
@@ -156,7 +125,7 @@ internal fun MobileConnectionHeader(
                                 fontWeight = FontWeight.Medium,
                                 fontFamily = LocalMonoFontFamily.current
                             ),
-                            color = if (activeOverridesCount > 0) accentColor else colorScheme.onSurfaceFaint
+                            color = if (activeOverridesCount > 0) accentColor else colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                         )
                     }
                 }
@@ -198,208 +167,12 @@ internal fun MobileConnectionHeader(
         }
 
         HorizontalDivider(color = colorScheme.outlineVariant)
-
-        // Expanded section
-        AnimatedVisibility(visible = isExpanded) {
-            Column(modifier = Modifier.fillMaxWidth().background(if (isDark) colorScheme.surface else Color.White)) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 16.dp)
-                ) {
-                    InfoSection(title = strings.widgets.metaData.appSection) {
-                        InfoRow(strings.widgets.metaData.appName, statefulDevice.metaData.appName)
-                        InfoRow(
-                            strings.widgets.metaData.appPackage,
-                            statefulDevice.metaData.appPackage,
-                            useMonoValue = true
-                        )
-                        InfoRow(
-                            strings.widgets.metaData.appVersion,
-                            statefulDevice.metaData.appVersion,
-                            useMonoValue = true
-                        )
-                        InfoRow(
-                            strings.widgets.metaData.mockzillaVersion,
-                            statefulDevice.metaData.mockzillaVersion,
-                            useMonoValue = true
-                        )
-                    }
-
-                    Spacer(Modifier.height(20.dp))
-
-                    InfoSection(title = strings.widgets.metaData.deviceSection) {
-                        InfoRow(
-                            strings.widgets.metaData.deviceModel,
-                            statefulDevice.metaData.deviceModel
-                        )
-                        InfoRow(
-                            strings.widgets.metaData.operatingSystem,
-                            (statefulDevice.metaData.runTarget?.label(strings) ?: "-")
-                        )
-                        InfoRow(
-                            strings.widgets.metaData.operatingSystemVersion,
-                            statefulDevice.metaData.operatingSystemVersion
-                        )
-                    }
-
-                    Spacer(Modifier.height(20.dp))
-
-                    InfoSection(title = strings.widgets.metaData.sessionSection) {
-                        SessionCard(
-                            uptime = uptime,
-                            requests = requestCount.toString(),
-                            port = statefulDevice.device.port,
-                            overrides = activeOverridesCount.toString()
-                        )
-                    }
-                }
-                HorizontalDivider(color = colorScheme.outlineVariant)
-            }
-        }
     }
 }
 
-@Composable
-private fun InfoSection(
-    title: String,
-    content: @Composable () -> Unit
-) {
-    Column {
-        SectionHeader(title)
-        content()
-    }
-}
-
-@Composable
-private fun SectionHeader(title: String) {
-    val colorScheme = MaterialTheme.colorScheme
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(bottom = 8.dp)
-    ) {
-        Text(
-            text = title.uppercase(),
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = 13.sp,
-                letterSpacing = 1.sp
-            ),
-            color = colorScheme.onSurfaceMuted
-        )
-        Spacer(Modifier.width(8.dp))
-        HorizontalDivider(modifier = Modifier.weight(1f), color = colorScheme.outlineVariant)
-    }
-}
-
-@Composable
-private fun InfoRow(
-    label: String,
-    value: String,
-    useMonoValue: Boolean = false
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    val monoFont = LocalMonoFontFamily.current
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Text(
-                text = label,
-                modifier = Modifier.weight(0.35f),
-                style = MaterialTheme.typography.bodyMedium,
-                color = colorScheme.onSurfaceMuted
-            )
-            Text(
-                text = value,
-                modifier = Modifier.weight(0.65f),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontFamily = if (useMonoValue) monoFont else FontFamily.Default
-                ),
-                color = colorScheme.onSurface,
-                textAlign = TextAlign.Start
-            )
-        }
-        DashedDivider()
-    }
-}
-
-@Composable
-private fun DashedDivider(
-    modifier: Modifier = Modifier.fillMaxWidth(),
-    color: Color = MaterialTheme.colorScheme.outlineVariant
-) {
-    Canvas(
-        modifier.height(1.dp)
-    ) {
-        drawLine(
-            color = color,
-            start = Offset(0f, size.height / 2),
-            end = Offset(size.width, size.height / 2),
-            pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 4.dp.toPx()), 0f),
-            strokeWidth = 1.dp.toPx(),
-            cap = StrokeCap.Round
-        )
-    }
-}
-
-@Composable
-private fun SessionCard(
-    uptime: String,
-    requests: String,
-    port: String,
-    overrides: String
-) {
-    val strings = LocalStrings.current
-    val colorScheme = MaterialTheme.colorScheme
-    Surface(
-        color = if (LocalForceDarkMode.current) {
-            colorScheme.surfaceContainerLowest
-        } else {
-            colorScheme.surfaceContainer
-        },
-        shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(1.dp, colorScheme.outlineVariant)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            SessionRow(strings.widgets.metaData.uptime, uptime)
-            SessionRow(strings.widgets.metaData.requests, requests)
-            SessionRow(strings.widgets.metaData.port, ":$port")
-            SessionRow(strings.widgets.metaData.overridesLabel, overrides)
-        }
-    }
-}
-
-@Composable
-private fun SessionRow(label: String, value: String) {
-    val colorScheme = MaterialTheme.colorScheme
-    val monoFont = LocalMonoFontFamily.current
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = monoFont,
-            ),
-            color = colorScheme.onSurfaceMuted
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = monoFont,
-                fontWeight = FontWeight.Bold
-            ),
-            color = colorScheme.onSurface
-        )
-    }
+private fun Color.luminance(): Float {
+    val r = red
+    val g = green
+    val b = blue
+    return 0.2126f * r + 0.7152f * g + 0.0722f * b
 }

@@ -14,7 +14,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal fun viewModelModule(): Module = module {
-    viewModel { MetaDataWidgetViewModel(get(), get(), get(), get()) }
+    viewModel { parameters -> MetaDataWidgetViewModel(parameters.get(), get(), get(), get(), get()) }
     viewModel { MonitorLogsViewModel(get(), get()) }
     viewModel { MonitorLogDetailsViewModel() }
     viewModel { params -> EndpointsViewModel(params.get(), get(), get()) }

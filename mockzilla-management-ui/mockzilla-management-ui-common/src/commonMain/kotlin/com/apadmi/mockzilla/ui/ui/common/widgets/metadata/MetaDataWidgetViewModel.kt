@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.metadata
 import androidx.compose.runtime.Immutable
 
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.AppIconUseCase
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MetaDataUseCase
@@ -20,15 +21,20 @@ internal class MetaDataWidgetViewModel(
     private val metaDataUseCase: MetaDataUseCase,
     private val monitorLogsUseCase: MonitorLogsUseCase,
     private val appIconUseCase: AppIconUseCase,
+    private val endpointsService: MockzillaManagement.EndpointsService,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
     val state = MutableStateFlow<State>(State.Loading)
     private var latestRequestCount: Int? = null
+    private var latestOverridesCount: Int? = null
+    private var uptimeSeconds = 0
 
     init {
         viewModelScope.launch {
             reloadData()
             launch { pollRequests() }
+            launch { pollOverrides() }
+            launch { pollUptime() }
         }
     }
 
@@ -51,12 +57,39 @@ internal class MetaDataWidgetViewModel(
         }
     }
 
+    private suspend fun pollOverrides() {
+        while (true) {
+            endpointsService.fetchAllEndpointConfigs(device).onSuccess { list ->
+                latestOverridesCount = list.count { it.shouldFail == true || it.delayMs != null || it.appliedPresetOverride != null }
+                updateSessionStats()
+            }
+            delay(5_000)
+        }
+    }
+
+    private suspend fun pollUptime() {
+        while (true) {
+            delay(1_000)
+            uptimeSeconds++
+            updateSessionStats()
+        }
+    }
+
     private fun updateSessionStats() {
         state.update { current ->
             (current as? State.DisplayMetaData)?.copy(
-                requestCount = latestRequestCount
+                requestCount = latestRequestCount,
+                overridesCount = latestOverridesCount,
+                uptime = formatUptime(uptimeSeconds)
             ) ?: current
         }
+    }
+
+    private fun formatUptime(totalSeconds: Int): String {
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = totalSeconds % 60
+        return "${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
     }
 
     @Immutable
@@ -66,6 +99,8 @@ internal class MetaDataWidgetViewModel(
         data class DisplayMetaData(
             val metaData: MetaData,
             val requestCount: Int? = null,
+            val uptime: String? = null,
+            val overridesCount: Int? = null,
             val appIconBytes: ByteArray? = null,
         ) : State() {
             override fun equals(other: Any?): Boolean {
@@ -77,6 +112,8 @@ internal class MetaDataWidgetViewModel(
                 }
                 return metaData == other.metaData &&
                         requestCount == other.requestCount &&
+                        uptime == other.uptime &&
+                        overridesCount == other.overridesCount &&
                         (appIconBytes == null && other.appIconBytes == null ||
                                 appIconBytes != null && other.appIconBytes != null &&
                                         appIconBytes.contentEquals(other.appIconBytes))
@@ -86,6 +123,8 @@ internal class MetaDataWidgetViewModel(
             override fun hashCode(): Int {
                 var result = metaData.hashCode()
                 result = 31 * result + (requestCount ?: 0)
+                result = 31 * result + (uptime?.hashCode() ?: 0)
+                result = 31 * result + (overridesCount ?: 0)
                 result = 31 * result + (appIconBytes?.contentHashCode() ?: 0)
                 return result
             }

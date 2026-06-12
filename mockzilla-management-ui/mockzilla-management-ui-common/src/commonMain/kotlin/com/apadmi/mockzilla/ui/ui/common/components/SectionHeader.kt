@@ -28,9 +28,9 @@ fun SectionHeader(
     Text(
         text = title.uppercase(),
         style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onSurface,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
         letterSpacing = 1.5.sp,
-        fontWeight = FontWeight.SemiBold
+        fontWeight = FontWeight.Bold
     )
     HorizontalDivider(
         modifier = Modifier.weight(1f),

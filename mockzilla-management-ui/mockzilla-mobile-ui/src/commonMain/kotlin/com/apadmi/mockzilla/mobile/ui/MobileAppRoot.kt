@@ -13,12 +13,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -28,13 +24,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.management.MockzillaManagement
-import com.apadmi.mockzilla.mobile.ui.components.MobileConnectionHeader
 import com.apadmi.mockzilla.mobile.ui.deviceconnection.MobileDeviceConnectionWidget
 import com.apadmi.mockzilla.mobile.ui.utils.Destination
-import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
-import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
@@ -48,7 +40,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.Crea
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsWidget
-import kotlinx.coroutines.delay
+import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidget
 
 @Suppress("MAGIC_NUMBER")
 @Composable
@@ -83,13 +75,6 @@ internal fun MobileAppRoot(
 }
 
 @Suppress("MAGIC_NUMBER")
-private fun formatUptime(totalSeconds: Int): String {
-    val hours = totalSeconds / 3600
-    val minutes = (totalSeconds % 3600) / 60
-    val seconds = totalSeconds % 60
-    return "${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
-}
-
 @Composable
 private fun ConnectedState(
     navController: NavHostController,
@@ -97,33 +82,8 @@ private fun ConnectedState(
     onRefresh: () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val monitorLogsUseCase = MockzillaUiKoinContext.koin.get<MonitorLogsUseCase>()
-    val endpointsService = MockzillaUiKoinContext.koin.get<MockzillaManagement.EndpointsService>()
     val isDark = LocalForceDarkMode.current
     val backgroundColor = if (isDark) colorScheme.surface else Color.White
-
-    var requestCount by remember { mutableStateOf(0) }
-    var activeOverridesCount by remember { mutableStateOf(0) }
-    var uptimeSeconds by remember { mutableStateOf(0) }
-
-    LaunchedEffect(currentState.activeDevice.device) {
-        while (true) {
-            endpointsService.fetchAllEndpointConfigs(currentState.activeDevice.device).onSuccess { list ->
-                activeOverridesCount = list.count { it.shouldFail == true || it.delayMs != null || it.appliedPresetOverride != null }
-            }
-            monitorLogsUseCase.getMonitorLogs(currentState.activeDevice.device).onSuccess {
-                requestCount = it.count()
-            }
-            delay(5000)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(1000)
-            uptimeSeconds++
-        }
-    }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route ?: ""
@@ -131,11 +91,8 @@ private fun ConnectedState(
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (!isGlobalControls) {
-            MobileConnectionHeader(
-                statefulDevice = currentState.activeDevice,
-                requestCount = requestCount,
-                activeOverridesCount = activeOverridesCount,
-                uptime = formatUptime(uptimeSeconds),
+            MetaDataWidget(
+                device = currentState.activeDevice.device,
                 onRefresh = onRefresh,
                 onGlobalControlsClick = {
                     navController.navigate(Destination.GlobalControls)
