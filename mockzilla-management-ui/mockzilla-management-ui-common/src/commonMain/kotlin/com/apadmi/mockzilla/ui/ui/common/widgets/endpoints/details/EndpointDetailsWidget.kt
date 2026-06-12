@@ -138,7 +138,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     state.presets.appliedPreset?.let { preset ->
-        ActivePresetBanner(preset = preset, onClear = onResetAll)
+        ActivePresetBanner(preset = preset, onClear = onResetAll, strings = strings)
     }
 
     EdSection(
@@ -189,7 +189,7 @@ private fun ColumnScope.PopulatedState(
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(
-                        text = "comfy",
+                        text = strings.widgets.endpoints.rowDensityComfy,
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = if (state.layoutMode == LayoutMode.Comfy) FontWeight.Bold else FontWeight.Normal,
                         color = if (state.layoutMode == LayoutMode.Comfy) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
@@ -203,7 +203,7 @@ private fun ColumnScope.PopulatedState(
                         .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
                     Text(
-                        text = "compact",
+                        text = strings.widgets.endpoints.rowDensityCompact,
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = if (state.layoutMode == LayoutMode.Compact) FontWeight.Bold else FontWeight.Normal,
                         color = if (state.layoutMode == LayoutMode.Compact) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
@@ -212,7 +212,7 @@ private fun ColumnScope.PopulatedState(
             }
             Spacer(Modifier.width(8.dp))
             BaseButton(
-                label = "Custom",
+                label = strings.widgets.endpointDetails.customLabel,
                 leadingIcon = Icons.Default.Add,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Sm,
@@ -284,12 +284,13 @@ internal fun EndpointDetailsWidgetContent(
     strings: Strings = LocalStrings.current,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = LocalForceDarkMode.current
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .navigationBarsPadding()
-            .background(color = colorScheme.surface)
+            .background(color = if (isDark) colorScheme.surface else Color.White)
     ) {
         when (state) {
             is State.Empty -> EmptyState(
@@ -330,7 +331,8 @@ internal fun EndpointDetailsWidgetContent(
 @Composable
 private fun ActivePresetBanner(
     preset: DashboardOverridePreset,
-    onClear: () -> Unit
+    onClear: () -> Unit,
+    strings: Strings = LocalStrings.current
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
@@ -385,7 +387,7 @@ private fun ActivePresetBanner(
             )
         }
         Text(
-            text = "Preset",
+            text = strings.widgets.endpointDetails.presetLabel,
             style = MaterialTheme.typography.labelSmall,
             color = colorScheme.onSurfaceVariant
         )

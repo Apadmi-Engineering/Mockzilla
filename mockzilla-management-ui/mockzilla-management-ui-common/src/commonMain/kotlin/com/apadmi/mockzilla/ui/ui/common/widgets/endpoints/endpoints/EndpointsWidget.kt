@@ -60,6 +60,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
@@ -173,7 +174,7 @@ private fun GlobalControlsButton(
     Row(
         modifier = Modifier
             .clip(shape)
-            .background(if (isOpen) colorScheme.primary else colorScheme.surface)
+            .background(if (isOpen) colorScheme.primary else colorScheme.surfaceContainerLowest)
             .border(1.dp, if (isOpen) colorScheme.primary else colorScheme.outline, shape)
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 6.dp),
@@ -200,6 +201,7 @@ private fun EndpointsHeader(
     totalCount: Int,
     selectedRowDensity: RowDensity,
     onRowDensityChanged: (RowDensity) -> Unit,
+    strings: Strings = LocalStrings.current,
 ) {
     Row(
         modifier = Modifier
@@ -216,7 +218,10 @@ private fun EndpointsHeader(
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             listOf(RowDensity.Compact, RowDensity.Comfy).forEach { density ->
                 RowDensityButton(
-                    label = density.name.lowercase(),
+                    label = when (density) {
+                        RowDensity.Compact -> strings.widgets.endpoints.rowDensityCompact
+                        RowDensity.Comfy -> strings.widgets.endpoints.rowDensityComfy
+                    },
                     isSelected = selectedRowDensity == density,
                     onClick = { onRowDensityChanged(density) },
                 )
@@ -272,7 +277,7 @@ private fun EndpointRow(
                 if (isSelected || isHovered) {
                     cs.onSurface.copy(alpha = HOVER_ALPHA)
                 } else {
-                    Color.Transparent
+                    cs.surfaceContainerLowest
                 }
             )
             .drawBehind {
@@ -366,10 +371,11 @@ private fun EndpointsWidgetContent(
     strings: Strings = LocalStrings.current
 ) {
     val scrollState = rememberScrollState()
+    val isDark = LocalForceDarkMode.current
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surface)
+            .background(color = if (isDark) MaterialTheme.colorScheme.surface else Color.White)
     ) {
         val contentWidth = maxOf(maxWidth, minContentWidthDp.dp)
         Box(
@@ -405,20 +411,28 @@ private fun FilterTextField(
     value: String,
     onFilterUpdate: (String) -> Unit,
     strings: Strings = LocalStrings.current
-) = CustomTextField(
-    modifier = Modifier.fillMaxWidth(),
-    value = value,
-    onValueChange = onFilterUpdate,
-    placeholderText = strings.widgets.endpoints.filterPlaceholder,
-    leadingIcon = {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceMuted,
-        )
-    },
-    singleLine = true,
-)
+) {
+    val isDark = LocalForceDarkMode.current
+    CustomTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = value,
+        onValueChange = onFilterUpdate,
+        placeholderText = strings.widgets.endpoints.filterPlaceholder,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceMuted,
+            )
+        },
+        singleLine = true,
+        containerColor = if (isDark) {
+            MaterialTheme.colorScheme.surfaceContainerLowest
+        } else {
+            Color.White
+        },
+    )
+}
 
 @Preview
 @Composable

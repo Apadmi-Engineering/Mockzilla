@@ -20,9 +20,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -39,6 +41,7 @@ import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.State
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.widgets.debug.DebugWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetWidget
@@ -57,8 +60,10 @@ internal fun MobileAppRoot(
     val viewModel = getViewModel<AppRootViewModel>()
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
+    val isDark = LocalForceDarkMode.current
+    val backgroundColor = if (isDark) colorScheme.surface else Color.White
 
-    Column(modifier = Modifier.fillMaxSize().background(colorScheme.surface)) {
+    Column(modifier = Modifier.fillMaxSize().background(backgroundColor)) {
         when (val currentState = state) {
             is State.Connected -> ConnectedState(
                 navController = navController,
@@ -94,6 +99,8 @@ private fun ConnectedState(
     val colorScheme = MaterialTheme.colorScheme
     val monitorLogsUseCase = MockzillaUiKoinContext.koin.get<MonitorLogsUseCase>()
     val endpointsService = MockzillaUiKoinContext.koin.get<MockzillaManagement.EndpointsService>()
+    val isDark = LocalForceDarkMode.current
+    val backgroundColor = if (isDark) colorScheme.surface else Color.White
 
     var requestCount by remember { mutableStateOf(0) }
     var activeOverridesCount by remember { mutableStateOf(0) }
@@ -118,16 +125,25 @@ private fun ConnectedState(
         }
     }
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route ?: ""
+    val isGlobalControls = currentRoute.contains("GlobalControls") || currentRoute.contains("Destination.GlobalControls")
+
     Column(modifier = Modifier.fillMaxSize()) {
-        MobileConnectionHeader(
-            statefulDevice = currentState.activeDevice,
-            requestCount = requestCount,
-            activeOverridesCount = activeOverridesCount,
-            uptime = formatUptime(uptimeSeconds),
-            onRefresh = onRefresh
-        )
+        if (!isGlobalControls) {
+            MobileConnectionHeader(
+                statefulDevice = currentState.activeDevice,
+                requestCount = requestCount,
+                activeOverridesCount = activeOverridesCount,
+                uptime = formatUptime(uptimeSeconds),
+                onRefresh = onRefresh,
+                onGlobalControlsClick = {
+                    navController.navigate(Destination.GlobalControls)
+                }
+            )
+        }
         NavHost(
-            modifier = Modifier.weight(1f).background(color = colorScheme.surface),
+            modifier = Modifier.weight(1f).background(color = backgroundColor),
             navController = navController,
             startDestination = Destination.EndpointList,
             enterTransition = {
@@ -170,7 +186,7 @@ private fun ConnectedState(
             }
 
             composable<Destination.EndpointList> {
-                Box(modifier = Modifier.fillMaxSize().background(colorScheme.surface)) {
+                Box(modifier = Modifier.fillMaxSize().background(backgroundColor)) {
                     EndpointsWidget(
                         device = currentState.activeDevice.device,
                         onEndpointClicked = {
@@ -184,25 +200,29 @@ private fun ConnectedState(
             }
 
             composable<Destination.GlobalControls> {
-                Box(modifier = Modifier.fillMaxSize().background(colorScheme.surface)) {
-                    GlobalControlsWidget(device = currentState.activeDevice.device)
+                Box(modifier = Modifier.fillMaxSize().background(backgroundColor)) {
+                    GlobalControlsWidget(
+                        device = currentState.activeDevice.device,
+                        onClose = { navController.popBackStack() }
+                    )
                 }
             }
 
             composable<Destination.CreateEditPreset> { backStackEntry ->
-                Box(modifier = Modifier.fillMaxSize().background(colorScheme.surface)) {
+                Box(modifier = Modifier.fillMaxSize().background(backgroundColor)) {
                     CreateEditPresetWidget(
                         device = currentState.activeDevice.device,
                         activeEndpoint = EndpointConfiguration.Key(
                             backStackEntry.toRoute<Destination.CreateEditPreset>().key,
                         ),
                         creatingNewPreset = backStackEntry.toRoute<Destination.CreateEditPreset>().creatingNewPreset,
+                        onCancel = { navController.popBackStack() }
                     )
                 }
             }
 
             composable<Destination.Debug> {
-                Box(modifier = Modifier.fillMaxSize().background(colorScheme.surface)) {
+                Box(modifier = Modifier.fillMaxSize().background(backgroundColor)) {
                     DebugWidget()
                 }
             }

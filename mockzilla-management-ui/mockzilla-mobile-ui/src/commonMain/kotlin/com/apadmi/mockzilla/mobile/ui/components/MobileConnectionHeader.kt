@@ -13,8 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Sync
@@ -53,8 +53,10 @@ import com.apadmi.mockzilla.ui.engine.device.StatefulDevice
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 private fun RunTarget.label(strings: Strings) = when (this) {
     RunTarget.AndroidDevice,
@@ -75,18 +77,20 @@ internal fun MobileConnectionHeader(
     activeOverridesCount: Int,
     uptime: String,
     onRefresh: () -> Unit,
+    onGlobalControlsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val strings = LocalStrings.current
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = LocalForceDarkMode.current
+    val accentColor = if (isDark) colorScheme.primary else Color(0xFF_0D9_488)
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().background(colorScheme.surface)) {
         // Top section
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(colorScheme.background)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             Row(
@@ -100,28 +104,32 @@ internal fun MobileConnectionHeader(
                 Row(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight()
+                        .height(48.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(colorScheme.surfaceContainer)
+                        .border(1.dp, colorScheme.outlineVariant, RoundedCornerShape(12.dp))
                         .clickable { isExpanded = !isExpanded }
-                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                        .padding(horizontal = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     // Logo box
-                    Box(
-                        modifier = Modifier
-                            .size(44.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(colorScheme.background)
-                            .border(1.dp, colorScheme.outline, RoundedCornerShape(10.dp)),
-                        contentAlignment = Alignment.Center
+                    Surface(
+                        modifier = Modifier.size(32.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        color = colorScheme.surfaceContainer,
+                        border = BorderStroke(1.dp, colorScheme.outlineVariant)
                     ) {
-                        Image(
-                            imageVector = Icons.MockzillaLogo,
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp)
-                        )
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Image(
+                                imageVector = Icons.MockzillaLogo,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                     }
 
                     Column(modifier = Modifier.weight(1f)) {
@@ -145,69 +153,108 @@ internal fun MobileConnectionHeader(
                         Text(
                             text = strings.widgets.metaData.overrides(activeOverridesCount),
                             style = MaterialTheme.typography.bodySmall.copy(
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
+                                fontFamily = LocalMonoFontFamily.current
                             ),
-                            color = if (activeOverridesCount > 0) colorScheme.primary else colorScheme.onSurfaceFaint
+                            color = if (activeOverridesCount > 0) accentColor else colorScheme.onSurfaceFaint
+                        )
+                    }
+                }
+
+                // Global controls button
+                Surface(
+                    modifier = Modifier.size(48.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = colorScheme.surface,
+                    border = BorderStroke(1.dp, colorScheme.outlineVariant)
+                ) {
+                    IconButton(onClick = onGlobalControlsClick) {
+                        Icon(
+                            imageVector = Icons.Default.DragIndicator,
+                            contentDescription = strings.widgets.globalControls.title,
+                            modifier = Modifier.size(24.dp),
+                            tint = colorScheme.onSurfaceVariant
                         )
                     }
                 }
 
                 // Refresh button
                 Surface(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .aspectRatio(1f),
+                    modifier = Modifier.size(48.dp),
                     shape = RoundedCornerShape(12.dp),
-                    color = colorScheme.surfaceContainer,
-                    border = BorderStroke(1.dp, colorScheme.outline)
+                    color = colorScheme.surface,
+                    border = BorderStroke(1.dp, colorScheme.outlineVariant)
                 ) {
                     IconButton(onClick = onRefresh) {
                         Icon(
                             imageVector = Icons.Default.Sync,
                             contentDescription = strings.widgets.errorBanner.refreshButton,
                             modifier = Modifier.size(24.dp),
-                            tint = colorScheme.onSurface
+                            tint = colorScheme.onSurfaceVariant
                         )
                     }
                 }
             }
         }
 
-        HorizontalDivider(color = colorScheme.outline.copy(alpha = 0.2f))
+        HorizontalDivider(color = colorScheme.outlineVariant)
 
         // Expanded section
         AnimatedVisibility(visible = isExpanded) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(colorScheme.background)
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-            ) {
-                InfoSection(title = strings.widgets.metaData.appSection) {
-                    InfoRow(strings.widgets.metaData.appName, statefulDevice.metaData.appName)
-                    InfoRow(strings.widgets.metaData.appPackage, statefulDevice.metaData.appPackage, useMonoValue = true)
-                    InfoRow(strings.widgets.metaData.appVersion, statefulDevice.metaData.appVersion, useMonoValue = true)
-                    InfoRow(strings.widgets.metaData.mockzillaVersion, statefulDevice.metaData.mockzillaVersion, useMonoValue = true)
+            Column(modifier = Modifier.fillMaxWidth().background(if (isDark) colorScheme.surface else Color.White)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 16.dp)
+                ) {
+                    InfoSection(title = strings.widgets.metaData.appSection) {
+                        InfoRow(strings.widgets.metaData.appName, statefulDevice.metaData.appName)
+                        InfoRow(
+                            strings.widgets.metaData.appPackage,
+                            statefulDevice.metaData.appPackage,
+                            useMonoValue = true
+                        )
+                        InfoRow(
+                            strings.widgets.metaData.appVersion,
+                            statefulDevice.metaData.appVersion,
+                            useMonoValue = true
+                        )
+                        InfoRow(
+                            strings.widgets.metaData.mockzillaVersion,
+                            statefulDevice.metaData.mockzillaVersion,
+                            useMonoValue = true
+                        )
+                    }
+
+                    Spacer(Modifier.height(20.dp))
+
+                    InfoSection(title = strings.widgets.metaData.deviceSection) {
+                        InfoRow(
+                            strings.widgets.metaData.deviceModel,
+                            statefulDevice.metaData.deviceModel
+                        )
+                        InfoRow(
+                            strings.widgets.metaData.operatingSystem,
+                            (statefulDevice.metaData.runTarget?.label(strings) ?: "-")
+                        )
+                        InfoRow(
+                            strings.widgets.metaData.operatingSystemVersion,
+                            statefulDevice.metaData.operatingSystemVersion
+                        )
+                    }
+
+                    Spacer(Modifier.height(20.dp))
+
+                    InfoSection(title = strings.widgets.metaData.sessionSection) {
+                        SessionCard(
+                            uptime = uptime,
+                            requests = requestCount.toString(),
+                            port = statefulDevice.device.port,
+                            overrides = activeOverridesCount.toString()
+                        )
+                    }
                 }
-
-                Spacer(Modifier.height(20.dp))
-
-                InfoSection(title = strings.widgets.metaData.deviceSection) {
-                    InfoRow(strings.widgets.metaData.deviceModel, statefulDevice.metaData.deviceModel)
-                    InfoRow(strings.widgets.metaData.operatingSystem, (statefulDevice.metaData.runTarget?.label(strings) ?: "-"))
-                    InfoRow(strings.widgets.metaData.operatingSystemVersion, statefulDevice.metaData.operatingSystemVersion, useMonoValue = true)
-                }
-
-                Spacer(Modifier.height(20.dp))
-
-                InfoSection(title = strings.widgets.metaData.sessionSection) {
-                    SessionCard(
-                        uptime = uptime,
-                        requests = requestCount.toString(),
-                        port = statefulDevice.device.port,
-                        overrides = activeOverridesCount.toString()
-                    )
-                }
+                HorizontalDivider(color = colorScheme.outlineVariant)
             }
         }
     }
@@ -232,16 +279,16 @@ private fun SectionHeader(title: String) {
         modifier = Modifier.padding(bottom = 8.dp)
     ) {
         Text(
-            text = title,
+            text = title.uppercase(),
             style = MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
                 letterSpacing = 1.sp
             ),
-            color = colorScheme.onSurfaceFaint
+            color = colorScheme.onSurfaceMuted
         )
         Spacer(Modifier.width(8.dp))
-        HorizontalDivider(modifier = Modifier.weight(1f), color = colorScheme.outline.copy(alpha = 0.2f))
+        HorizontalDivider(modifier = Modifier.weight(1f), color = colorScheme.outlineVariant)
     }
 }
 
@@ -257,14 +304,14 @@ private fun InfoRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp),
+                .padding(vertical = 8.dp),
             verticalAlignment = Alignment.Top
         ) {
             Text(
                 text = label,
                 modifier = Modifier.weight(0.35f),
                 style = MaterialTheme.typography.bodyMedium,
-                color = colorScheme.onSurfaceFaint
+                color = colorScheme.onSurfaceMuted
             )
             Text(
                 text = value,
@@ -283,7 +330,7 @@ private fun InfoRow(
 @Composable
 private fun DashedDivider(
     modifier: Modifier = Modifier.fillMaxWidth(),
-    color: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+    color: Color = MaterialTheme.colorScheme.outlineVariant
 ) {
     Canvas(
         modifier.height(1.dp)
@@ -311,7 +358,7 @@ private fun SessionCard(
     Surface(
         color = colorScheme.surfaceContainer,
         shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(1.dp, colorScheme.outline)
+        border = BorderStroke(1.dp, colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier
@@ -340,7 +387,7 @@ private fun SessionRow(label: String, value: String) {
             style = MaterialTheme.typography.labelSmall.copy(
                 fontFamily = monoFont,
             ),
-            color = colorScheme.onSurfaceFaint
+            color = colorScheme.onSurfaceMuted
         )
         Text(
             text = value,

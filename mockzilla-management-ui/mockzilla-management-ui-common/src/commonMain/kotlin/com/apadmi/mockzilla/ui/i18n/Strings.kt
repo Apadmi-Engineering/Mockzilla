@@ -287,6 +287,8 @@ data class Strings(
          * @property forced
          * @property emptyTitle
          * @property emptyDescription
+         * @property rowDensityComfy
+         * @property rowDensityCompact
          */
         data class Endpoints(
             val filterPlaceholder: String,
@@ -296,6 +298,8 @@ data class Strings(
             val forced: String,
             val emptyTitle: String,
             val emptyDescription: String,
+            val rowDensityComfy: String,
+            val rowDensityCompact: String,
         )
 
         /**
@@ -377,6 +381,8 @@ data class Strings(
          * @property presets
          * @property behavior
          * @property latency
+         * @property presetLabel
+         * @property customLabel
          */
         data class EndpointDetails(
             val title: String,
@@ -393,6 +399,8 @@ data class Strings(
             val forcedApiFailureBannerSubtitle: String,
             val behavior: String,
             val latency: String,
+            val presetLabel: String,
+            val customLabel: String,
             val presets: Presets
         ) {
             /**

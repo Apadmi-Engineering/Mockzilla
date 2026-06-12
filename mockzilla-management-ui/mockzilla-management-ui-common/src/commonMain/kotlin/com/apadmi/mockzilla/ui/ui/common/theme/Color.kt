@@ -14,11 +14,11 @@ internal val darkContainer = Color(0xFF1E2228)
 internal val darkVariant = Color(0xFF262B32)
 internal val darkElevated = Color(0xFF323841)
 
-internal val lightBackground = Color(0xFFD8DCE1)
-internal val lightSurface = Color(0xFFEBEDF0)
-internal val lightContainer = Color(0xFFE1E4E8)
-internal val lightVariant = Color(0xFFCDD2D8)
-internal val lightElevated = Color(0xFFBABFC6)
+internal val lightBackground = Color(0xFFF8FAFC)
+internal val lightSurface = Color(0xFFF1F5F9)
+internal val lightContainer = Color(0xFFE2E8F0)
+internal val lightVariant = Color(0xFFCBD5E1)
+internal val lightElevated = Color(0xFF94A3B8)
 
 // ── On-surface text ──────────────────────────────────────────────────────────
 internal val darkOnSurface = Color(0xFFECEFF3)
@@ -34,8 +34,8 @@ internal val lightOnSurfaceFaint = Color(0xFF646971)
 // ── Outline ──────────────────────────────────────────────────────────────────
 internal val darkOutline = Color(0xFF2E323A)
 internal val darkOutlineVariant = Color(0xFF3B404A)
-internal val lightOutline = Color(0xFFC4C7CD)
-internal val lightOutlineVariant = Color(0xFFABAFB5)
+internal val lightOutline = Color(0xFFE2E8F0)
+internal val lightOutlineVariant = Color(0xFFCBD5E1)
 
 // ── Primary (Mockzilla teal) ─────────────────────────────────────────────────
 internal val darkPrimary = Color(0xFF00ECF8)

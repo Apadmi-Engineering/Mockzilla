@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,6 +26,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,8 +51,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
-import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.State
@@ -109,6 +111,7 @@ internal fun GlobalControlsWidgetContent(
     }
 }
 
+@Suppress("MAGIC_NUMBER")
 @Composable
 internal fun GlobalControlsWidgetIdleContent(
     state: State.Idle,
@@ -121,9 +124,14 @@ internal fun GlobalControlsWidgetIdleContent(
     onResetLatency: () -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val isDark = LocalForceDarkMode.current
+    val backgroundColor = if (isDark) colorScheme.surface else Color.White
+    val tealAccent = Color(0xFF_0D9_488)
+    val accentColor = if (isDark) colorScheme.primary else tealAccent
+
     Column(
         modifier = Modifier.fillMaxSize()
-            .background(color = colorScheme.surface)
+            .background(color = backgroundColor)
             .navigationBarsPadding(),
     ) {
         // Header
@@ -134,10 +142,24 @@ internal fun GlobalControlsWidgetIdleContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(modifier = Modifier.weight(1f)) {
+            Surface(
+                modifier = Modifier.size(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                color = colorScheme.outline.copy(alpha = 0.15f),
+            ) {
+                IconButton(onClick = onClose) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = strings.common.backDescription,
+                        tint = colorScheme.onSurface
+                    )
+                }
+            }
+
+            Column(modifier = Modifier.weight(1f).padding(start = 4.dp)) {
                 Text(
                     text = strings.widgets.globalControls.title,
-                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
+                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp),
                     color = colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
@@ -150,41 +172,45 @@ internal fun GlobalControlsWidgetIdleContent(
                     Text(
                         text = strings.widgets.globalControls.activeOverrides(state.activeOverridesCount),
                         style = MaterialTheme.typography.bodySmall,
-                        color = colorScheme.primary,
-                        fontWeight = FontWeight.Bold
+                        color = colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
 
+            Spacer(Modifier.weight(0.05f))
+
             BaseButton(
                 modifier = Modifier.height(32.dp),
                 label = strings.widgets.globalControls.resetAllLabel,
-                variant = ButtonVariant.Ghost,
+                variant = ButtonVariant.Outline,
                 size = ButtonSize.Sm,
                 leadingIcon = Icons.Default.Refresh,
                 onClick = onResetClicked
             )
 
-            IconButton(
-                modifier = Modifier.size(24.dp),
-                onClick = onClose
+            Surface(
+                modifier = Modifier.size(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                color = colorScheme.outline.copy(alpha = 0.15f),
             ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = strings.common.closeDescription,
-                    tint = colorScheme.onSurfaceFaint,
-                    modifier = Modifier.size(16.dp)
-                )
+                IconButton(onClick = onClose) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = strings.common.closeDescription,
+                        tint = colorScheme.onSurface
+                    )
+                }
             }
         }
 
-        HorizontalDivider(color = colorScheme.outline)
+        HorizontalDivider(color = colorScheme.outline.copy(alpha = 0.3f))
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .background(colorScheme.surface)
+                .background(backgroundColor)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -202,7 +228,8 @@ internal fun GlobalControlsWidgetIdleContent(
                 initialValue = state.initialLatencyMs,
                 onChange = onLatencyChanged,
                 onReset = onResetLatency,
-                strings = strings
+                strings = strings,
+                showClearButton = false
             )
 
             // Per-Endpoint Status Section
@@ -219,7 +246,7 @@ internal fun GlobalControlsWidgetIdleContent(
                 )
 
                 state.endpoints.filter { it.overriddenProperties.isNotEmpty() || it.fail }.forEach { endpoint ->
-                    EndpointStatusRow(endpoint, strings)
+                    EndpointStatusRow(endpoint, strings, accentColor)
                 }
             }
         }
@@ -240,16 +267,15 @@ private fun ForceFailureCard(
         ForceFailureBannerState.Normal -> strings.widgets.globalControls.normalBehaviourBannerConfig
     }
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+            .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(12.dp))
+            .border(1.dp, colorScheme.outline.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
             .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(modifier = Modifier.weight(1f)) {
+        Column {
             Text(
                 text = titleAndSubtitle.title,
                 style = MaterialTheme.typography.titleMedium,
@@ -265,17 +291,20 @@ private fun ForceFailureCard(
 
         if (state == ForceFailureBannerState.Normal) {
             BaseButton(
+                modifier = Modifier.fillMaxWidth(),
                 label = strings.widgets.globalControls.failButtonLabel,
-                variant = ButtonVariant.Danger,
-                size = ButtonSize.Sm,
+                variant = ButtonVariant.Outline,
+                size = ButtonSize.Md,
                 leadingIcon = Icons.LightningBolt,
+                contentColor = colorScheme.error,
                 onClick = onForceFailureClicked
             )
         } else {
             BaseButton(
+                modifier = Modifier.fillMaxWidth(),
                 label = strings.widgets.globalControls.restoreButtonLabel,
                 variant = ButtonVariant.Solid,
-                size = ButtonSize.Sm,
+                size = ButtonSize.Md,
                 onClick = onRestoreApiClicked
             )
         }
@@ -285,14 +314,15 @@ private fun ForceFailureCard(
 @Composable
 private fun EndpointStatusRow(
     endpoint: EndpointsViewModel.State.EndpointConfig,
-    strings: Strings
+    strings: Strings,
+    accentColor: Color
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+            .background(color = colorScheme.outline.copy(alpha = 0.05f), shape = RoundedCornerShape(8.dp))
+            .border(1.dp, colorScheme.outline.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
             .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -320,10 +350,7 @@ private fun EndpointStatusRow(
                         EndpointProperties.Headers -> strings.widgets.globalControls.headersStatus
                         EndpointProperties.Status -> strings.widgets.globalControls.statusStatus
                     },
-                    color = when (property) {
-                        EndpointProperties.Delay -> colorScheme.warning.primary
-                        else -> colorScheme.primary
-                    }
+                    color = accentColor
                 )
             }
         }
@@ -334,13 +361,13 @@ private fun EndpointStatusRow(
 private fun StatusChip(label: String, color: Color) {
     Box(
         modifier = Modifier
-            .border(0.5.dp, color, RoundedCornerShape(4.dp))
+            .border(1.dp, color.copy(alpha = 0.5f), RoundedCornerShape(4.dp))
             .background(color.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
             .padding(horizontal = 6.dp, vertical = 2.dp)
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.ExtraBold),
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp, fontWeight = FontWeight.Bold),
             color = color
         )
     }

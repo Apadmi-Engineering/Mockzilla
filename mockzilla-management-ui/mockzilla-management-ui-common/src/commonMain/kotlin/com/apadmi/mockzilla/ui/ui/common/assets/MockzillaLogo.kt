@@ -20,7 +20,7 @@ val Icons.MockzillaLogo: ImageVector
         _mockzillaLogo = Builder(name = "MockzillaLogo", defaultWidth = 590.67.dp, defaultHeight =
             494.88.dp, viewportWidth = 590.67f, viewportHeight = 494.88f).apply {
             path(fill = SolidColor(Color(0xFF4eced8)), stroke = SolidColor(Color(0xFF000000)),
-                strokeAlpha = 0.0f, strokeLineWidth = 0.264583f, strokeLineCap = Butt,
+                strokeAlpha = 1.0f, strokeLineWidth = 0.264583f, strokeLineCap = Butt,
                 strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType = NonZero) {
                 moveToRelative(377.34f, 396.9f)
                 curveToRelative(-8.52f, 27.6f, -16.97f, 55.0f, -25.42f, 82.39f)
@@ -62,7 +62,7 @@ val Icons.MockzillaLogo: ImageVector
                 close()
             }
             path(fill = SolidColor(Color(0xFF4eccd7)), stroke = SolidColor(Color(0xFF000000)),
-                strokeAlpha = 0.0f, strokeLineWidth = 0.264583f, strokeLineCap = Butt,
+                strokeAlpha = 1.0f, strokeLineWidth = 0.264583f, strokeLineCap = Butt,
                 strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType = NonZero) {
                 moveToRelative(564.48f, 418.98f)
                 curveToRelative(0.0f, -84.65f, 0.0f, -169.04f, 0.0f, -253.42f)
@@ -83,7 +83,7 @@ val Icons.MockzillaLogo: ImageVector
                 close()
             }
             path(fill = SolidColor(Color(0xFF4dcad4)), stroke = SolidColor(Color(0xFF000000)),
-                strokeAlpha = 0.0f, strokeLineWidth = 0.264583f, strokeLineCap = Butt,
+                strokeAlpha = 1.0f, strokeLineWidth = 0.264583f, strokeLineCap = Butt,
                 strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType = NonZero) {
                 moveToRelative(460.83f, 10.87f)
                 curveToRelative(-20.63f, 0.0f, -40.99f, 0.0f, -61.56f, 0.0f)
@@ -110,7 +110,7 @@ val Icons.MockzillaLogo: ImageVector
                 close()
             }
             path(fill = SolidColor(Color(0xFF4dcad3)), stroke = SolidColor(Color(0xFF000000)),
-                strokeAlpha = 0.0f, strokeLineWidth = 0.264583f, strokeLineCap = Butt,
+                strokeAlpha = 1.0f, strokeLineWidth = 0.264583f, strokeLineCap = Butt,
                 strokeLineJoin = Miter, strokeLineMiter = 4.0f, pathFillType = NonZero) {
                 moveToRelative(436.36f, 437.5f)
                 curveToRelative(0.0f, 10.47f, 0.0f, 20.68f, 0.0f, 30.94f)

@@ -131,7 +131,7 @@ private fun BottomSheetWrapper(onDismiss: () -> Unit) {
                 .align(Alignment.BottomCenter)
                 .offset { IntOffset(x = 0, y = offset.value.roundToInt()) }
                 .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                 .navigationBarsPadding()
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -139,7 +139,7 @@ private fun BottomSheetWrapper(onDismiss: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(32.dp)
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                         .draggable(
                             orientation = Orientation.Vertical,
                             state = rememberDraggableState { delta ->
