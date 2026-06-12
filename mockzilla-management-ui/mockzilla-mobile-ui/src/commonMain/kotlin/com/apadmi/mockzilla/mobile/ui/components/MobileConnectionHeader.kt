@@ -356,7 +356,11 @@ private fun SessionCard(
     val strings = LocalStrings.current
     val colorScheme = MaterialTheme.colorScheme
     Surface(
-        color = colorScheme.surfaceContainer,
+        color = if (LocalForceDarkMode.current) {
+            colorScheme.surfaceContainerLowest
+        } else {
+            colorScheme.surfaceContainer
+        },
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(1.dp, colorScheme.outlineVariant)
     ) {
