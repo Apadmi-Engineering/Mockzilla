@@ -1,16 +1,14 @@
-@file:Suppress("MAGIC_NUMBER")
+@file:Suppress("FILE_NAME_MATCH_CLASS")
 
 package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
@@ -66,8 +63,11 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointBodyVisualTransformation
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.HtmlBodyVisualTransformation
 
-internal enum class EditorMode { Json, Html, PlainText }
+private const val editorDefaultHeightDp = 200
 
+internal enum class EditorMode {
+    Html, Json, PlainText
+}
 @Composable
 internal fun EditorTextField(
     body: String,
@@ -83,7 +83,7 @@ internal fun EditorTextField(
     val monoFont = LocalMonoFontFamily.current
     val scrollState = rememberScrollState()
 
-    var fieldHeight by remember { mutableStateOf(200.dp) }
+    var fieldHeight by remember { mutableStateOf(editorDefaultHeightDp.dp) }
     var fieldValue by remember { mutableStateOf(TextFieldValue(body)) }
 
     LaunchedEffect(body) {
@@ -185,8 +185,8 @@ private fun EditorContent(
                         .fillMaxWidth()
                         .onKeyEvent { event ->
                             if (mode == EditorMode.Json &&
-                                event.type == KeyEventType.KeyDown &&
-                                event.key == Key.Tab
+                                    event.type == KeyEventType.KeyDown &&
+                                    event.key == Key.Tab
                             ) {
                                 val pos = fieldValue.selection.start
                                 val newText =
@@ -214,8 +214,8 @@ private fun EditorContent(
             }
         }
 
-        VerticalScrollbar(
-            adapter = rememberScrollbarAdapter(scrollState),
+        PlatformVerticalScrollbar(
+            scrollState = scrollState,
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .fillMaxHeight()
@@ -355,9 +355,9 @@ private fun processJsonInput(
     val newText = newValue.text
     val cursor = newValue.selection.start
     if (newValue.selection.collapsed &&
-        newText.length == oldValue.text.length + 1 &&
-        cursor > 0 &&
-        newText[cursor - 1] == '\n'
+            newText.length == oldValue.text.length + 1 &&
+            cursor > 0 &&
+            newText[cursor - 1] == '\n'
     ) {
         val prevLineStart = newText.lastIndexOf('\n', cursor - 2) + 1
         var i = prevLineStart

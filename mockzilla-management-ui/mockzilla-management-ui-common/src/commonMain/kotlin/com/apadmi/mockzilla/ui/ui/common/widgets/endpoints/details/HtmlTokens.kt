@@ -1,3 +1,5 @@
+@file:Suppress("MAGIC_NUMBER")
+
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 
 /**
@@ -14,47 +16,13 @@ data class HtmlTokenIndex(
 enum class HtmlToken {
     @Suppress("COMMENT_WHITE_SPACE")
     AttributeEquals,  // =
-    AttributeName,    // identifier for attribute (class, id, href…)
-    AttributeValue,   // "..." or '...'
-    Bracket,          // < > </ />
-    Comment,          // <!-- ... -->
-    DocType,          // <!DOCTYPE ...>
-    TagName,          // element name after < or </
+    AttributeName,  // identifier for attribute (class, id, href…)
+    AttributeValue,  // "..." or '...'
+    Bracket,  // < > </ />
+    Comment,  // <!-- ... -->
+    DocType,  // <!DOCTYPE ...>
+    TagName,  // element name after < or </
     ;
-}
-
-private fun isInsideTag(body: String, index: Int): Boolean {
-    for (i in index - 1 downTo 0) {
-        when (body[i]) {
-            '<' -> return true
-            '>' -> return false
-        }
-    }
-    return false
-}
-
-private fun isTagNameContext(body: String, index: Int): Boolean {
-    var i = index - 1
-    while (i >= 0 && body[i] in " \t\r\n/") i--
-    return i >= 0 && body[i] == '<'
-}
-
-private fun readIdentifier(body: String, startIndex: Int): Int {
-    var i = startIndex
-    while (i < body.length && (body[i].isLetterOrDigit() || body[i] == '-' || body[i] == '_' || body[i] == ':')) {
-        i++
-    }
-    return i
-}
-
-private fun identifierAt(body: String, startIndex: Int): Triple<Int, Int, HtmlToken>? {
-    var i = startIndex
-    while (i < body.length && body[i] in " \t\r\n") i++
-    if (i >= body.length || (!body[i].isLetter() && body[i] != '_')) return null
-    if (!isInsideTag(body, i)) return null
-    val endIdx = readIdentifier(body, i)
-    val token = if (isTagNameContext(body, i)) HtmlToken.TagName else HtmlToken.AttributeName
-    return Triple(i, endIdx, token)
 }
 
 object HtmlTokens {
@@ -80,7 +48,7 @@ object HtmlTokens {
 
             when (token) {
                 "<!--" -> {
-                    val end = body.indexOf("-->", index + 4)
+                    val end = body.indexOf("-->", index + 4)  // 4 is length of the comment close
                     return if (end == -1) {
                         HtmlTokenIndex(index, body.length, HtmlToken.Comment)
                     } else {
@@ -121,4 +89,49 @@ object HtmlTokens {
 
         return HtmlTokenIndex(startIndex, startIndex + 1, null)
     }
+}
+
+private fun isInsideTag(body: String, index: Int): Boolean {
+    for (i in index - 1 downTo 0) {
+        when (body[i]) {
+            '<' -> return true
+            '>' -> return false
+            else -> {
+                // this is a generated else block
+            }
+        }
+    }
+    return false
+}
+
+private fun isTagNameContext(body: String, index: Int): Boolean {
+    var i = index - 1
+    while (i >= 0 && body[i] in " \t\r\n/") {
+        i--
+    }
+    return i >= 0 && body[i] == '<'
+}
+
+private fun readIdentifier(body: String, startIndex: Int): Int {
+    var i = startIndex
+    while (i < body.length && (body[i].isLetterOrDigit() || body[i] == '-' || body[i] == '_' || body[i] == ':')) {
+        i++
+    }
+    return i
+}
+
+private fun identifierAt(body: String, startIndex: Int): Triple<Int, Int, HtmlToken>? {
+    var i = startIndex
+    while (i < body.length && body[i] in " \t\r\n") {
+        i++
+    }
+    if (i >= body.length || (!body[i].isLetter() && body[i] != '_')) {
+        return null
+    }
+    if (!isInsideTag(body, i)) {
+        return null
+    }
+    val endIdx = readIdentifier(body, i)
+    val token = if (isTagNameContext(body, i)) HtmlToken.TagName else HtmlToken.AttributeName
+    return Triple(i, endIdx, token)
 }

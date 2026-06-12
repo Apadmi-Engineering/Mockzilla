@@ -72,9 +72,9 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
+import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.components.EditorTextField
-import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
