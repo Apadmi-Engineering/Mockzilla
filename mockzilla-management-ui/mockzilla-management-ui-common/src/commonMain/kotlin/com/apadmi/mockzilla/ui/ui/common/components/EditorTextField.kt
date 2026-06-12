@@ -2,6 +2,7 @@
 
 package com.apadmi.mockzilla.ui.ui.common.components
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,15 +15,18 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.OutputTransformation
+import androidx.compose.foundation.text.input.TextFieldBuffer
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
@@ -34,9 +38,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
@@ -45,15 +51,14 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -65,11 +70,15 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointBodyVisualTransformation
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.HtmlBodyVisualTransformation
 
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+
 private const val editorDefaultHeightDp = 200
 
 internal enum class EditorMode {
     Html, Json, PlainText
 }
+
 @Composable
 internal fun EditorTextField(
     body: String,
@@ -86,31 +95,36 @@ internal fun EditorTextField(
     val scrollState = rememberScrollState()
 
     var fieldHeight by remember { mutableStateOf(editorDefaultHeightDp.dp) }
-    var fieldValue by remember { mutableStateOf(TextFieldValue(body)) }
+    val textFieldState = rememberTextFieldState(body)
 
     LaunchedEffect(body) {
-        if (fieldValue.text != body) {
-            fieldValue = TextFieldValue(body, selection = TextRange(body.length))
+        if (textFieldState.text.toString() != body) {
+            textFieldState.edit {
+                replace(0, length, body)
+                selection = TextRange(length)
+            }
         }
+    }
+
+    LaunchedEffect(textFieldState) {
+        snapshotFlow { textFieldState.text.toString() }
+            .drop(1)
+            .distinctUntilChanged()
+            .collect { onBodyChange(it) }
     }
 
     val textStyle = MaterialTheme.typography.bodyMedium.copy(
         color = colorScheme.onSurface,
         fontFamily = monoFont,
     )
-    val visualTransformation = buildEditorVisualTransformation(mode)
+    val outputTransformation = buildEditorOutputTransformation(mode)
 
     Column(modifier = modifier) {
         EditorContent(
-            fieldValue = fieldValue,
-            onFieldValueChange = { newValue ->
-                val processed = if (mode == EditorMode.Json) processJsonInput(newValue, fieldValue) else newValue
-                fieldValue = processed
-                onBodyChange(processed.text)
-            },
+            textFieldState = textFieldState,
             scrollState = scrollState,
             textStyle = textStyle,
-            visualTransformation = visualTransformation,
+            outputTransformation = outputTransformation,
             mode = mode,
             isExpanded = isExpanded,
             fieldHeight = fieldHeight,
@@ -125,11 +139,10 @@ internal fun EditorTextField(
 
 @Composable
 private fun EditorContent(
-    fieldValue: TextFieldValue,
-    onFieldValueChange: (TextFieldValue) -> Unit,
+    textFieldState: TextFieldState,
     scrollState: ScrollState,
     textStyle: TextStyle,
-    visualTransformation: VisualTransformation,
+    outputTransformation: OutputTransformation?,
     mode: EditorMode,
     isExpanded: Boolean,
     fieldHeight: Dp,
@@ -140,10 +153,16 @@ private fun EditorContent(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val density = LocalDensity.current
+    val textMeasurer = rememberTextMeasurer(cacheSize = 64)
 
     var lineCount by remember { mutableStateOf(1) }
-    var gutterWidthPx by remember { mutableStateOf(0) }
-    val gutterWidth = with(density) { gutterWidthPx.toDp() }
+    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+    val gutterContentWidthPx = remember(lineCount, textStyle, textMeasurer) {
+        textMeasurer.measure("$lineCount", textStyle).size.width
+    }
+    val gutterWidth = with(density) { gutterContentWidthPx.toDp() }
+    val gutterTextStyle = textStyle.copy(color = colorScheme.onSurfaceMuted)
 
     Box(
         modifier = modifier
@@ -157,65 +176,85 @@ private fun EditorContent(
                 RoundedCornerShape(8.dp),
             ),
     ) {
+        // Gutter background + Canvas line numbers (fixed, outside TextField scroll)
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(gutterWidth + 8.dp)
-                .background(colorScheme.surfaceContainerLow, shape = RoundedCornerShape(8.dp)),
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(start = 8.dp, top = 12.dp, end = 12.dp, bottom = 12.dp),
-            verticalAlignment = Alignment.Top,
+                .width(gutterWidth + 16.dp)
+                .background(colorScheme.surfaceContainerLow, shape = RoundedCornerShape(8.dp))
+                .clipToBounds(),
         ) {
-            LineNumbersGutter(
-                lineCount = lineCount,
-                textStyle = textStyle,
-                onWidthChange = { gutterWidthPx = it },
-            )
-            Box(modifier = Modifier.weight(1f).padding(start = 8.dp)) {
-                BasicTextField(
-                    value = fieldValue,
-                    onValueChange = onFieldValueChange,
-                    visualTransformation = visualTransformation,
-                    cursorBrush = SolidColor(colorScheme.primary),
-                    onTextLayout = { result -> lineCount = result.lineCount },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .heightIn(min = fieldHeight - 20.dp)
-                        .onKeyEvent { event ->
-                            if (mode == EditorMode.Json &&
-                                    event.type == KeyEventType.KeyDown &&
-                                    event.key == Key.Tab
-                            ) {
-                                val pos = fieldValue.selection.start
-                                val newText =
-                                    fieldValue.text.substring(0, pos) + "  " + fieldValue.text.substring(pos)
-                                onFieldValueChange(TextFieldValue(newText, selection = TextRange(pos + 2)))
-                                true
-                            } else {
-                                false
-                            }
-                        },
-                    textStyle = textStyle,
-                    decorationBox = { innerTextField ->
-                        Box(modifier.fillMaxSize()) {
-                            if (fieldValue.text.isEmpty()) {
-                                Text(
-                                    text = placeholder,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = colorScheme.onSurfaceMuted,
-                                )
-                            }
-                            innerTextField()
-                        }
-                    },
-                )
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val layout = textLayoutResult ?: return@Canvas
+                val scrollOffset = scrollState.value.toFloat()
+                val paddingTopPx = with(density) { 12.dp.toPx() }
+
+                for (line in 0 until layout.lineCount) {
+                    val lineTopOnScreen = paddingTopPx + layout.getLineTop(line) - scrollOffset
+                    val lineBottomOnScreen = paddingTopPx + layout.getLineBottom(line) - scrollOffset
+                    if (lineBottomOnScreen < 0f) continue
+                    if (lineTopOnScreen > size.height) break
+
+                    val measured = textMeasurer.measure("${line + 1}", gutterTextStyle)
+                    val x = size.width - measured.size.width - with(density) { 4.dp.toPx() }
+                    val lineH = lineBottomOnScreen - lineTopOnScreen
+                    val y = lineTopOnScreen + (lineH - measured.size.height) / 2f
+                    drawText(measured, topLeft = Offset(x, y))
+                }
             }
         }
+
+        // Placeholder (shown when empty, sits at the same position as text content)
+        if (textFieldState.text.isEmpty()) {
+            Text(
+                text = placeholder,
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorScheme.onSurfaceMuted,
+                modifier = Modifier.padding(
+                    start = gutterWidth + 24.dp,
+                    top = 12.dp,
+                ),
+            )
+        }
+
+        BasicTextField(
+            state = textFieldState,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    start = gutterWidth + 16.dp,
+                    top = 12.dp,
+                    end = 12.dp,
+                    bottom = 12.dp,
+                )
+                .onKeyEvent { event ->
+                    if (mode == EditorMode.Json &&
+                            event.type == KeyEventType.KeyDown &&
+                            event.key == Key.Tab
+                    ) {
+                        val pos = textFieldState.selection.start
+                        textFieldState.edit {
+                            replace(pos, pos, "  ")
+                            selection = TextRange(pos + 2)
+                        }
+                        true
+                    } else {
+                        false
+                    }
+                },
+            textStyle = textStyle,
+            cursorBrush = SolidColor(colorScheme.primary),
+            scrollState = scrollState,
+            lineLimits = TextFieldLineLimits.MultiLine(),
+            inputTransformation = if (mode == EditorMode.Json) JsonAutoIndentTransformation() else null,
+            outputTransformation = outputTransformation,
+            onTextLayout = { getResult ->
+                getResult()?.let { result ->
+                    lineCount = result.lineCount
+                    textLayoutResult = result
+                }
+            },
+        )
 
         PlatformVerticalScrollbar(
             scrollState = scrollState,
@@ -239,30 +278,6 @@ private fun EditorContent(
                             onHeightDrag(delta)
                         }
                     },
-            )
-        }
-    }
-}
-
-@Composable
-private fun LineNumbersGutter(
-    lineCount: Int,
-    textStyle: TextStyle,
-    onWidthChange: (Int) -> Unit,
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    Column(
-        modifier = Modifier
-            .widthIn(min = 20.dp)
-            .onSizeChanged { onWidthChange(it.width) },
-        horizontalAlignment = Alignment.End,
-    ) {
-        repeat(lineCount) { i ->
-            Text(
-                text = "${i + 1}",
-                style = textStyle,
-                color = colorScheme.onSurfaceMuted,
-                textAlign = TextAlign.End,
             )
         }
     }
@@ -322,7 +337,7 @@ private fun EditorErrorBanner(
 }
 
 @Composable
-private fun buildEditorVisualTransformation(mode: EditorMode): VisualTransformation {
+private fun buildEditorOutputTransformation(mode: EditorMode): OutputTransformation? {
     val colorScheme = MaterialTheme.colorScheme
     val highlight = colorScheme.jsonHighlight
     return remember(mode, highlight, colorScheme.onSurface, colorScheme.onSurfaceVariant) {
@@ -346,33 +361,29 @@ private fun buildEditorVisualTransformation(mode: EditorMode): VisualTransformat
                 comment = SpanStyle(color = colorScheme.onSurface.copy(alpha = 0.5f)),
                 default = SpanStyle(color = colorScheme.onSurface),
             )
-            EditorMode.PlainText -> VisualTransformation.None
+            EditorMode.PlainText -> null
         }
     }
 }
 
-private fun processJsonInput(
-    newValue: TextFieldValue,
-    oldValue: TextFieldValue,
-): TextFieldValue {
-    val newText = newValue.text
-    val cursor = newValue.selection.start
-    if (newValue.selection.collapsed &&
-            newText.length == oldValue.text.length + 1 &&
-            cursor > 0 &&
-            newText[cursor - 1] == '\n'
-    ) {
-        val prevLineStart = newText.lastIndexOf('\n', cursor - 2) + 1
+private class JsonAutoIndentTransformation : InputTransformation {
+    override fun TextFieldBuffer.transformInput() {
+        val cursor = selection.start
+        if (!selection.collapsed || cursor == 0) return
+        val text = toString()
+        if (text[cursor - 1] != '\n') return
+        val prevLineStart = text.lastIndexOf('\n', cursor - 2) + 1
         var i = prevLineStart
-        while (i < cursor - 1 && (newText[i] == ' ' || newText[i] == '\t')) {
+        while (i < cursor - 1 && (text[i] == ' ' || text[i] == '\t')) {
             i++
         }
-        val indent = newText.substring(prevLineStart, i)
-        val prevLineContent = newText.substring(prevLineStart, cursor - 1).trimEnd()
+        val indent = text.substring(prevLineStart, i)
+        val prevLineContent = text.substring(prevLineStart, cursor - 1).trimEnd()
         val extra = if (prevLineContent.lastOrNull() in listOf('{', '[')) "  " else ""
         val insert = indent + extra
-        val adjusted = newText.substring(0, cursor) + insert + newText.substring(cursor)
-        return TextFieldValue(adjusted, selection = TextRange(cursor + insert.length))
+        if (insert.isNotEmpty()) {
+            replace(cursor, cursor, insert)
+            selection = TextRange(cursor + insert.length)
+        }
     }
-    return newValue
 }
