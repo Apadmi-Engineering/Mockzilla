@@ -227,9 +227,14 @@ val EnStrings = Strings(
             responseBodyPlaceholder = "{\"key\": \"value\"}",
             htmlBodyPlaceholder = "<p>Hello world</p>",
             plainBodyPlaceholder = "Response body...",
-            responseCharacters = { chars -> "$chars chars" },
+            responseCharacters = { chars ->
+                when {
+                    chars > 9999 -> "${(chars / 1000)}k chars"
+                    else -> "$chars chars"
+                }
+            },
             validLabel = "Valid",
-            invalidLabel = "invalid JSON",
+            invalidLabel = "Invalid JSON",
             headersTitle = "Headers",
             addHeaderTitle = "Add New Header",
             addHeaderButton = "Add Header",

@@ -57,6 +57,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -86,6 +87,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
@@ -183,41 +185,43 @@ private fun ColumnScope.BodySection(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = strings.bodyLabel,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f),
         )
-        // Right side: "invalid JSON · X chars" in red when error, otherwise char count in green
+
         if (isJsonError) {
             Text(
-                text = "${strings.invalidLabel} · ${strings.responseCharacters(state.body?.length ?: 0)}",
-                style = MaterialTheme.typography.labelSmall,
+                text = "${strings.invalidLabel} · ${strings.responseCharacters(state.body.length)}",
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.weight(1f)
             )
         } else {
             Text(
                 text = strings.responseCharacters(state.body?.length ?: 0),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.success.primary,
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.onSurfaceFaint,
+                modifier = Modifier.weight(1f)
             )
         }
-        if (isFormattable) {
-            CustomOutlineButton(
-                leadingIcon = Icons.Default.AlignVerticalTop,
-                label = strings.responseBodyFormat,
-                enabled = !isJsonError,
-                variant = OutlineButtonVariant.Secondary,
-                onClick = onFormatResponseBody,
-            )
-        }
+
+        CustomOutlineButton(
+            leadingIcon = Icons.Default.AlignVerticalTop,
+            label = strings.responseBodyFormat,
+            enabled = !isJsonError && isFormattable,
+            variant = OutlineButtonVariant.Secondary,
+            onClick = onFormatResponseBody,
+            modifier = Modifier.alpha(if (isFormattable) 1f else 0f)
+        )
+
         IconButton(
             onClick = onToggleExpand,
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier.size(40.dp),
         ) {
             Icon(
                 imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
