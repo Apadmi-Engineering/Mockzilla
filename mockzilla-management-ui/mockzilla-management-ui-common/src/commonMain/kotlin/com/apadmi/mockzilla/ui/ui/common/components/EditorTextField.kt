@@ -2,6 +2,7 @@
 
 package com.apadmi.mockzilla.ui.ui.common.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -29,6 +30,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -62,6 +64,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.apadmi.mockzilla.ui.i18n.LocalStrings
 
 import com.apadmi.mockzilla.ui.ui.common.assets.DragCorner
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
@@ -88,7 +91,6 @@ internal fun EditorTextField(
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
     placeholder: String,
-    isError: Boolean = false,
     parseError: String? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -122,7 +124,13 @@ internal fun EditorTextField(
     )
     val outputTransformation = buildEditorOutputTransformation(mode)
 
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier.border(
+            1.dp,
+            if (parseError != null) colorScheme.error else colorScheme.outline,
+            RoundedCornerShape(8.dp),
+        )
+    ) {
         EditorContent(
             textFieldState = textFieldState,
             scrollState = scrollState,
@@ -132,14 +140,29 @@ internal fun EditorTextField(
             isExpanded = isExpanded,
             fieldHeight = fieldHeight,
             onHeightDrag = { delta -> fieldHeight = (fieldHeight + delta).coerceIn(100.dp, 600.dp) },
-            isError = isError,
             isLargeFile = isLargeFile,
             lineCount = lineCount,
             placeholder = placeholder,
             onLineCountChange = { lineCount = it },
             modifier = if (isExpanded) Modifier.weight(1f).fillMaxWidth() else Modifier,
         )
-        EditorErrorBanner(isError = isError, parseError = parseError, isLargeFile = isLargeFile)
+
+        if (isLargeFile) {
+            Text(
+                text = "Syntax highlighting disabled for large files",
+                style = MaterialTheme.typography.labelSmall,
+                color = colorScheme.onSurfaceMuted,
+                modifier = Modifier
+                    .padding(16.dp),
+            )
+        }
+
+
+        AnimatedVisibility(
+            visible = parseError != null
+        ) {
+            EditorErrorBanner(parseError = parseError)
+        }
     }
 }
 
@@ -153,7 +176,6 @@ private fun EditorContent(
     isExpanded: Boolean,
     fieldHeight: Dp,
     onHeightDrag: (Dp) -> Unit,
-    isError: Boolean,
     isLargeFile: Boolean,
     lineCount: Int,
     placeholder: String,
@@ -177,12 +199,7 @@ private fun EditorContent(
             .fillMaxWidth()
             .then(if (isExpanded) Modifier.fillMaxHeight() else Modifier.height(fieldHeight))
             .clipToBounds()
-            .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
-            .border(
-                1.dp,
-                if (isError) colorScheme.error else colorScheme.outline,
-                RoundedCornerShape(8.dp),
-            ),
+            .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp)),
     ) {
         // Gutter background + Canvas line numbers (fixed, outside TextField scroll)
         Box(
@@ -230,7 +247,7 @@ private fun EditorContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
-                    start = gutterWidth + 4.dp,
+                    start = gutterWidth + 6.dp,
                     top = 12.dp,
                     end = 12.dp,
                     bottom = 12.dp,
@@ -293,63 +310,44 @@ private fun EditorContent(
 
 @Composable
 private fun EditorErrorBanner(
-    isError: Boolean,
-    parseError: String?,
-    isLargeFile: Boolean,
-    modifier: Modifier = Modifier,
+    parseError: String?
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 4.dp)
-            .height(44.dp),
-    ) {
-        if (!isError && isLargeFile) {
-            Text(
-                text = "Syntax highlighting disabled for large files",
-                style = MaterialTheme.typography.labelSmall,
-                color = colorScheme.onSurfaceMuted,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(horizontal = 4.dp),
-            )
-        }
-        if (isError && parseError != null) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(colorScheme.errorContainer, RoundedCornerShape(6.dp))
-                    .padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = null,
-                    tint = colorScheme.onErrorContainer,
-                    modifier = Modifier.size(12.dp),
+    if (parseError != null) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    colorScheme.errorContainer,
+                    RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp),
                 )
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                ) {
-                    Text(
-                        text = parseError,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = colorScheme.onErrorContainer,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        text = parseError,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = colorScheme.onErrorContainer.copy(alpha = 0.75f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Default.Error,
+                contentDescription = null,
+                tint = colorScheme.onErrorContainer,
+                modifier = Modifier.padding(vertical = 2.dp).size(12.dp),
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                Text(
+                    text = LocalStrings.current.widgets.createEditPreset.jsonErrorTitle,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = colorScheme.onErrorContainer,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = parseError,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = colorScheme.onSurfaceMuted
+                )
             }
         }
     }

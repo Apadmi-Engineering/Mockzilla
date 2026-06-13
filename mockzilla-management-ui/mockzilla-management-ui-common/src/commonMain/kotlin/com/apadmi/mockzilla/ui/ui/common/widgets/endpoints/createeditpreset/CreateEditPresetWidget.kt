@@ -1,6 +1,5 @@
 @file:Suppress(
     "FILE_NAME_MATCH_CLASS",
-    "MAGIC_NUMBER",
     "TYPE_ALIAS"
 )
 
@@ -11,6 +10,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -59,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
@@ -98,21 +99,6 @@ import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Kept for EditResponseBody.kt compatibility – do NOT remove or rename.
-// ──────────────────────────────────────────────────────────────────────────────
-
-@Composable
-internal fun Modifier.card() = fillMaxWidth()
-    .background(
-        color = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(12.dp)
-    )
-    .border(
-        width = 1.dp,
-        color = MaterialTheme.colorScheme.outline,
-        shape = RoundedCornerShape(12.dp)
-    )
 
 @Composable
 private fun ColumnScope.PanelHeader(
@@ -121,47 +107,43 @@ private fun ColumnScope.PanelHeader(
     onCancel: () -> Unit,
     onSave: () -> Unit,
     strings: Strings = LocalStrings.current,
+) = Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+        .padding(horizontal = 12.dp, vertical = 6.dp),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .padding(horizontal = 12.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
+    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            text = when (state.variant) {
+                State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
+                State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
+            },
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+        )
+        endpointName?.let {
             Text(
-                text = when (state.variant) {
-                    State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
-                    State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
-                },
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+                text = strings.widgets.createEditPreset.endpointSubtitle(it),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceMuted,
             )
-            endpointName?.let {
-                Text(
-                    text = strings.widgets.createEditPreset.endpointSubtitle(it),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
         }
-        CustomOutlineButton(
-            label = strings.widgets.createEditPreset.cancel,
-            variant = OutlineButtonVariant.Secondary,
-            onClick = onCancel,
-        )
-        BaseButton(
-            label = strings.widgets.createEditPreset.save,
-            variant = ButtonVariant.Solid,
-            size = ButtonSize.Md,
-            leadingIcon = Icons.Default.Done,
-            onClick = onSave,
-        )
     }
-
-    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+    CustomOutlineButton(
+        label = strings.widgets.createEditPreset.cancel,
+        variant = OutlineButtonVariant.Secondary,
+        onClick = onCancel,
+    )
+    BaseButton(
+        label = strings.widgets.createEditPreset.save,
+        variant = ButtonVariant.Solid,
+        size = ButtonSize.Md,
+        leadingIcon = Icons.Default.Done,
+        onClick = onSave,
+    )
 }
 
 @Composable
@@ -196,7 +178,7 @@ private fun ColumnScope.BodySection(
 
         if (isJsonError) {
             Text(
-                text = "${strings.invalidLabel} · ${strings.responseCharacters(state.body.length)}",
+                text = strings.responseCharacters(state.body.length),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f)
@@ -254,9 +236,7 @@ private fun ColumnScope.BodySection(
             .padding(horizontal = 16.dp),
     )
 
-    if (!isExpanded) {
-        Spacer(modifier = Modifier.height(16.dp))
-    }
+    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable
@@ -278,7 +258,7 @@ private fun ColumnScope.HeadersSection(
             Text(
                 text = header.key,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.jsonKey,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f),
             )
             Row(
@@ -414,10 +394,10 @@ private fun ColumnScope.PopulatedState(
         exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
         Column {
-            // ── RESPONSE section ─────────────────────────────────────────────
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             SectionLabel(str.responseSectionLabel)
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            // Status code — label left, dropdown aligned with body-type toggle start
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -509,10 +489,6 @@ private fun ColumnScope.PopulatedState(
         }
     }
 }
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Public API
-// ──────────────────────────────────────────────────────────────────────────────
 
 @Composable
 fun CreateEditPresetWidget(
@@ -606,61 +582,12 @@ internal fun CreateEditPresetWidgetContent(
     }
 }
 
-@Composable
-internal fun TitleRow(
-    isSet: Boolean,
-    icon: ImageVector,
-    onReset: () -> Unit,
-    title: String,
-    strings: Strings = LocalStrings.current,
-) = Row(
-    modifier = Modifier.padding(start = 12.dp, end = 4.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(8.dp)
-) {
-    Icon(imageVector = icon, modifier = Modifier.size(16.dp), contentDescription = null)
-    Text(modifier = Modifier.weight(1f), text = title, style = MaterialTheme.typography.titleMedium)
-    if (isSet) {
-        IconButton(onClick = onReset) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                imageVector = Icons.Default.Restore,
-                contentDescription = strings.common.resetDescription
-            )
-        }
-    }
-}
-
-/**
- * Applies JSON syntax highlighting to [text] without reformatting it.
- * Uses the theme's [jsonHighlight] colour palette so it adapts to light/dark mode.
- * Suitable for editable fields because it never reorders the characters.
- *
- * @param text The raw JSON (or plain) string to highlight.
- * @return
- */
-@Composable
-internal fun buildJsonAnnotatedString(text: String) =
-    buildHighlightedAnnotatedString(
-        text = text,
-        colors = MaterialTheme.colorScheme.jsonHighlight,
-        reformat = false,
-    )
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ──────────────────────────────────────────────────────────────────────────────
-
 private fun chipToneForStatusCode(code: Int) = when (code) {
     in 200..299 -> ChipTone.Ok
     in 300..399 -> ChipTone.Info
     in 400..499 -> ChipTone.Warn
     else -> ChipTone.Err
 }
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Design components
-// ──────────────────────────────────────────────────────────────────────────────
 
 @Composable
 private fun SectionLabel(title: String) {
@@ -698,10 +625,10 @@ private fun StatusCodeDropdown(
     Box(modifier = modifier) {
         Row(
             modifier = Modifier
-                .width(130.dp)
-                .clickable { expanded = true }
+                .clip(RoundedCornerShape(8.dp))
                 .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
                 .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+                .clickable { expanded = true }
                 .padding(horizontal = 10.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
