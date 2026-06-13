@@ -101,7 +101,7 @@ import org.koin.core.parameter.parametersOf
 
 
 @Composable
-private fun ColumnScope.PanelHeader(
+private fun PanelHeader(
     state: State.Editing,
     endpointName: String?,
     onCancel: () -> Unit,
