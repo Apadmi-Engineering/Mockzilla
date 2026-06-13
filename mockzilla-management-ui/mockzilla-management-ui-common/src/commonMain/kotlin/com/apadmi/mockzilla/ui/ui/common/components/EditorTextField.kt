@@ -74,6 +74,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 
 private const val editorDefaultHeightDp = 200
+private const val syntaxHighlightLineLimit = 500
 
 internal enum class EditorMode {
     Html, Json, PlainText
@@ -95,6 +96,8 @@ internal fun EditorTextField(
     val scrollState = rememberScrollState()
 
     var fieldHeight by remember { mutableStateOf(editorDefaultHeightDp.dp) }
+    var lineCount by remember { mutableStateOf(1) }
+    val isLargeFile = lineCount > syntaxHighlightLineLimit
     val textFieldState = rememberTextFieldState(body)
 
     LaunchedEffect(body) {
@@ -130,10 +133,13 @@ internal fun EditorTextField(
             fieldHeight = fieldHeight,
             onHeightDrag = { delta -> fieldHeight = (fieldHeight + delta).coerceIn(100.dp, 600.dp) },
             isError = isError,
+            isLargeFile = isLargeFile,
+            lineCount = lineCount,
             placeholder = placeholder,
+            onLineCountChange = { lineCount = it },
             modifier = if (isExpanded) Modifier.weight(1f).fillMaxWidth() else Modifier,
         )
-        EditorErrorBanner(isError = isError, parseError = parseError)
+        EditorErrorBanner(isError = isError, parseError = parseError, isLargeFile = isLargeFile)
     }
 }
 
@@ -148,14 +154,16 @@ private fun EditorContent(
     fieldHeight: Dp,
     onHeightDrag: (Dp) -> Unit,
     isError: Boolean,
+    isLargeFile: Boolean,
+    lineCount: Int,
     placeholder: String,
+    onLineCountChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val density = LocalDensity.current
     val textMeasurer = rememberTextMeasurer(cacheSize = 64)
 
-    var lineCount by remember { mutableStateOf(1) }
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
     val gutterContentWidthPx = remember(lineCount, textStyle, textMeasurer) {
@@ -246,11 +254,11 @@ private fun EditorContent(
             cursorBrush = SolidColor(colorScheme.primary),
             scrollState = scrollState,
             lineLimits = TextFieldLineLimits.MultiLine(),
-            inputTransformation = if (mode == EditorMode.Json) JsonAutoIndentTransformation() else null,
-            outputTransformation = outputTransformation,
+            inputTransformation = if (mode == EditorMode.Json && !isLargeFile) JsonAutoIndentTransformation() else null,
+            outputTransformation = if (!isLargeFile) outputTransformation else null,
             onTextLayout = { getResult ->
                 getResult()?.let { result ->
-                    lineCount = result.lineCount
+                    onLineCountChange(result.lineCount)
                     textLayoutResult = result
                 }
             },
@@ -287,6 +295,7 @@ private fun EditorContent(
 private fun EditorErrorBanner(
     isError: Boolean,
     parseError: String?,
+    isLargeFile: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -296,6 +305,16 @@ private fun EditorErrorBanner(
             .padding(top = 4.dp)
             .height(44.dp),
     ) {
+        if (!isError && isLargeFile) {
+            Text(
+                text = "Syntax highlighting disabled for large files",
+                style = MaterialTheme.typography.labelSmall,
+                color = colorScheme.onSurfaceMuted,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(horizontal = 4.dp),
+            )
+        }
         if (isError && parseError != null) {
             Row(
                 modifier = Modifier
@@ -375,37 +394,46 @@ private class JsonAutoIndentTransformation : InputTransformation {
         val cursorPos = selection.start
         if (!selection.collapsed || cursorPos == 0) return
 
-        val text = toString()
-
         // Only act on insertions (e.g. Enter), not deletions (e.g. Backspace). Without
         // this check, backspacing on an empty line lands the cursor after the previous
         // line's '\n', which looks identical to pressing Enter — and the indent gets
         // re-inserted, making the backspace appear to do nothing.
         if (length <= originalText.length) return
 
-        when (text[cursorPos - 1]) {
+        // asCharSequence() returns a live view of the buffer with no full-text copy —
+        // TextFieldBuffer doesn't implement CharSequence directly, but this gives us
+        // all the standard Kotlin CharSequence extensions (lastIndexOf, substring, get).
+        val seq = asCharSequence()
+
+        when (seq[cursorPos - 1]) {
             '\n' -> {
                 // Find where the previous line started. `cursorPos - 1` is the '\n' we just
                 // inserted, so we search backwards from `cursorPos - 2` for the newline that
                 // opened that previous line. Adding 1 skips past that opening newline
                 // (or lands at 0 if we're on the first line).
-                val prevLineStartIndex = text.lastIndexOf('\n', cursorPos - 2) + 1
+                val prevLineStartIndex = seq.lastIndexOf('\n', cursorPos - 2) + 1
 
                 // Scan forward through the previous line to measure its leading whitespace.
                 var indentEndIndex = prevLineStartIndex
-                while (indentEndIndex < cursorPos - 1 && (text[indentEndIndex] == ' ' || text[indentEndIndex] == '\t')) {
+                while (indentEndIndex < cursorPos - 1 &&
+                        (seq[indentEndIndex] == ' ' || seq[indentEndIndex] == '\t')) {
                     indentEndIndex++
                 }
 
-                // The whitespace prefix shared with the previous line.
-                val baseIndent = text.substring(prevLineStartIndex, indentEndIndex)
+                // The whitespace prefix shared with the previous line (small allocation).
+                val baseIndent = seq.substring(prevLineStartIndex, indentEndIndex)
 
-                // The full previous line content, trimmed of trailing spaces so we can
-                // reliably check its last meaningful character.
-                val prevLineText = text.substring(prevLineStartIndex, cursorPos - 1).trimEnd()
+                // Scan backward for the last meaningful character on the previous line,
+                // skipping trailing whitespace — avoids creating a trimEnd() substring.
+                var lastMeaningfulIndex = cursorPos - 2
+                while (lastMeaningfulIndex >= prevLineStartIndex &&
+                        (seq[lastMeaningfulIndex] == ' ' || seq[lastMeaningfulIndex] == '\t')) {
+                    lastMeaningfulIndex--
+                }
+                val prevLineLastChar = if (lastMeaningfulIndex >= prevLineStartIndex) seq[lastMeaningfulIndex] else null
 
                 // Add one extra indent level when the previous line opened a JSON block.
-                val extraIndent = if (prevLineText.lastOrNull() in listOf('{', '[')) "  " else ""
+                val extraIndent = if (prevLineLastChar == '{' || prevLineLastChar == '[') "  " else ""
 
                 val indentToInsert = baseIndent + extraIndent
                 if (indentToInsert.isNotEmpty()) {
@@ -417,10 +445,16 @@ private class JsonAutoIndentTransformation : InputTransformation {
                 // Un-indent when a closing brace/bracket is typed on an otherwise blank line.
                 // Only strips whitespace when every character before the closer on this line
                 // is whitespace — i.e. the user hasn't started typing content before it.
-                val lineStartIndex = text.lastIndexOf('\n', cursorPos - 2) + 1
-                val beforeBrace = text.substring(lineStartIndex, cursorPos - 1)
-                if (beforeBrace.isNotEmpty() && beforeBrace.all { it == ' ' || it == '\t' }) {
-                    val toRemove = beforeBrace.length.coerceAtMost(2)
+                val lineStartIndex = seq.lastIndexOf('\n', cursorPos - 2) + 1
+                var allWhitespace = lineStartIndex < cursorPos - 1
+                for (i in lineStartIndex until cursorPos - 1) {
+                    if (seq[i] != ' ' && seq[i] != '\t') {
+                        allWhitespace = false
+                        break
+                    }
+                }
+                if (allWhitespace) {
+                    val toRemove = (cursorPos - 1 - lineStartIndex).coerceAtMost(2)
                     replace(lineStartIndex, lineStartIndex + toRemove, "")
                     selection = TextRange(cursorPos - toRemove)
                 }
