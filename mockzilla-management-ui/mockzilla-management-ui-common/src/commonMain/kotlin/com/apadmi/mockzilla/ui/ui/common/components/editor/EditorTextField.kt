@@ -1,6 +1,6 @@
-@file:Suppress("FILE_NAME_MATCH_CLASS")
+@file:Suppress("FILE_NAME_MATCH_CLASS", "MAGIC_NUMBER")
 
-package com.apadmi.mockzilla.ui.ui.common.components
+package com.apadmi.mockzilla.ui.ui.common.components.editor
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
@@ -22,14 +22,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.OutputTransformation
-import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -45,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -65,8 +61,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
+import com.apadmi.mockzilla.ui.i18n.Strings
 
 import com.apadmi.mockzilla.ui.ui.common.assets.DragCorner
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
@@ -78,6 +76,7 @@ import kotlinx.coroutines.flow.drop
 
 private const val editorDefaultHeightDp = 200
 private const val syntaxHighlightLineLimit = 500
+private const val textMeasureCacheSize = 64
 
 internal enum class EditorMode {
     Html, Json, PlainText
@@ -127,7 +126,9 @@ internal fun EditorTextField(
     Column(
         modifier = modifier.border(
             1.dp,
-            if (parseError != null) colorScheme.error else colorScheme.outline,
+            parseError?.let {
+                colorScheme.error
+            } ?: colorScheme.outline,
             RoundedCornerShape(8.dp),
         )
     ) {
@@ -139,7 +140,9 @@ internal fun EditorTextField(
             mode = mode,
             isExpanded = isExpanded,
             fieldHeight = fieldHeight,
-            onHeightDrag = { delta -> fieldHeight = (fieldHeight + delta).coerceIn(100.dp, 600.dp) },
+            onHeightDrag = { delta ->
+                fieldHeight = (fieldHeight + delta).coerceIn(100.dp, 600.dp)
+            },
             isLargeFile = isLargeFile,
             lineCount = lineCount,
             placeholder = placeholder,
@@ -156,8 +159,6 @@ internal fun EditorTextField(
                     .padding(16.dp),
             )
         }
-
-
         AnimatedVisibility(
             visible = parseError != null
         ) {
@@ -166,6 +167,7 @@ internal fun EditorTextField(
     }
 }
 
+@Suppress("FLOAT_IN_ACCURATE_CALCULATIONS")
 @Composable
 private fun EditorContent(
     textFieldState: TextFieldState,
@@ -184,13 +186,15 @@ private fun EditorContent(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val density = LocalDensity.current
-    val textMeasurer = rememberTextMeasurer(cacheSize = 64)
+    val textMeasurer = rememberTextMeasurer(cacheSize = textMeasureCacheSize)
 
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
     val gutterContentWidthPx = remember(lineCount, textStyle, textMeasurer) {
-        textMeasurer.measure("$lineCount", textStyle).size.width
+        textMeasurer.measure(lineCount.toString(), textStyle).size.width
     }
+
+    @Suppress("MAGIC_NUMBER")
     val gutterWidth = with(density) { gutterContentWidthPx.toDp() + 16.dp }
     val gutterTextStyle = textStyle.copy(color = colorScheme.onSurfaceMuted)
 
@@ -216,14 +220,19 @@ private fun EditorContent(
 
                 for (line in 0 until layout.lineCount) {
                     val lineTopOnScreen = paddingTopPx + layout.getLineTop(line) - scrollOffset
-                    val lineBottomOnScreen = paddingTopPx + layout.getLineBottom(line) - scrollOffset
-                    if (lineBottomOnScreen < 0f) continue
-                    if (lineTopOnScreen > size.height) break
+                    val lineBottomOnScreen =
+                        paddingTopPx + layout.getLineBottom(line) - scrollOffset
+                    if (lineBottomOnScreen < 0f) {
+                        continue
+                    }
+                    if (lineTopOnScreen > size.height) {
+                        break
+                    }
 
                     val measured = textMeasurer.measure("${line + 1}", gutterTextStyle)
                     val x = size.width - measured.size.width - with(density) { 4.dp.toPx() }
-                    val lineH = lineBottomOnScreen - lineTopOnScreen
-                    val y = lineTopOnScreen + (lineH - measured.size.height) / 2f
+                    val lineHeight = lineBottomOnScreen - lineTopOnScreen
+                    val y = lineTopOnScreen + (lineHeight - measured.size.height) / 2f
                     drawText(measured, topLeft = Offset(x, y))
                 }
             }
@@ -310,10 +319,11 @@ private fun EditorContent(
 
 @Composable
 private fun EditorErrorBanner(
-    parseError: String?
+    parseError: String?,
+    strings: Strings = LocalStrings.current
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    if (parseError != null) {
+    parseError?.let {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -336,7 +346,7 @@ private fun EditorErrorBanner(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 Text(
-                    text = LocalStrings.current.widgets.createEditPreset.jsonErrorTitle,
+                    text = strings.widgets.createEditPreset.jsonErrorTitle,
                     style = MaterialTheme.typography.labelLarge,
                     color = colorScheme.onErrorContainer,
                     fontWeight = FontWeight.SemiBold,
@@ -370,6 +380,7 @@ private fun buildEditorOutputTransformation(mode: EditorMode): OutputTransformat
                 number = SpanStyle(color = highlight.numberColor),
                 default = SpanStyle(color = colorScheme.onSurface),
             )
+
             EditorMode.Html -> HtmlBodyVisualTransformation(
                 bracket = SpanStyle(color = colorScheme.onSurfaceVariant),
                 tagName = SpanStyle(color = highlight.keyColor),
@@ -378,85 +389,8 @@ private fun buildEditorOutputTransformation(mode: EditorMode): OutputTransformat
                 comment = SpanStyle(color = colorScheme.onSurface.copy(alpha = 0.5f)),
                 default = SpanStyle(color = colorScheme.onSurface),
             )
+
             EditorMode.PlainText -> null
-        }
-    }
-}
-
-// Automatically indents new lines to match the indentation of the line above,
-// with an extra level when the previous line opens a block with '{' or '['.
-private class JsonAutoIndentTransformation : InputTransformation {
-    override fun TextFieldBuffer.transformInput() {
-        // `selection.collapsed` means it's a cursor (no range selected). We only
-        // auto-indent on a plain cursor, and not when it's at the very start.
-        val cursorPos = selection.start
-        if (!selection.collapsed || cursorPos == 0) return
-
-        // Only act on insertions (e.g. Enter), not deletions (e.g. Backspace). Without
-        // this check, backspacing on an empty line lands the cursor after the previous
-        // line's '\n', which looks identical to pressing Enter — and the indent gets
-        // re-inserted, making the backspace appear to do nothing.
-        if (length <= originalText.length) return
-
-        // asCharSequence() returns a live view of the buffer with no full-text copy —
-        // TextFieldBuffer doesn't implement CharSequence directly, but this gives us
-        // all the standard Kotlin CharSequence extensions (lastIndexOf, substring, get).
-        val seq = asCharSequence()
-
-        when (seq[cursorPos - 1]) {
-            '\n' -> {
-                // Find where the previous line started. `cursorPos - 1` is the '\n' we just
-                // inserted, so we search backwards from `cursorPos - 2` for the newline that
-                // opened that previous line. Adding 1 skips past that opening newline
-                // (or lands at 0 if we're on the first line).
-                val prevLineStartIndex = seq.lastIndexOf('\n', cursorPos - 2) + 1
-
-                // Scan forward through the previous line to measure its leading whitespace.
-                var indentEndIndex = prevLineStartIndex
-                while (indentEndIndex < cursorPos - 1 &&
-                        (seq[indentEndIndex] == ' ' || seq[indentEndIndex] == '\t')) {
-                    indentEndIndex++
-                }
-
-                // The whitespace prefix shared with the previous line (small allocation).
-                val baseIndent = seq.substring(prevLineStartIndex, indentEndIndex)
-
-                // Scan backward for the last meaningful character on the previous line,
-                // skipping trailing whitespace — avoids creating a trimEnd() substring.
-                var lastMeaningfulIndex = cursorPos - 2
-                while (lastMeaningfulIndex >= prevLineStartIndex &&
-                        (seq[lastMeaningfulIndex] == ' ' || seq[lastMeaningfulIndex] == '\t')) {
-                    lastMeaningfulIndex--
-                }
-                val prevLineLastChar = if (lastMeaningfulIndex >= prevLineStartIndex) seq[lastMeaningfulIndex] else null
-
-                // Add one extra indent level when the previous line opened a JSON block.
-                val extraIndent = if (prevLineLastChar == '{' || prevLineLastChar == '[') "  " else ""
-
-                val indentToInsert = baseIndent + extraIndent
-                if (indentToInsert.isNotEmpty()) {
-                    replace(cursorPos, cursorPos, indentToInsert)
-                    selection = TextRange(cursorPos + indentToInsert.length)
-                }
-            }
-            '}', ']' -> {
-                // Un-indent when a closing brace/bracket is typed on an otherwise blank line.
-                // Only strips whitespace when every character before the closer on this line
-                // is whitespace — i.e. the user hasn't started typing content before it.
-                val lineStartIndex = seq.lastIndexOf('\n', cursorPos - 2) + 1
-                var allWhitespace = lineStartIndex < cursorPos - 1
-                for (i in lineStartIndex until cursorPos - 1) {
-                    if (seq[i] != ' ' && seq[i] != '\t') {
-                        allWhitespace = false
-                        break
-                    }
-                }
-                if (allWhitespace) {
-                    val toRemove = (cursorPos - 1 - lineStartIndex).coerceAtMost(2)
-                    replace(lineStartIndex, lineStartIndex + toRemove, "")
-                    selection = TextRange(cursorPos - toRemove)
-                }
-            }
         }
     }
 }

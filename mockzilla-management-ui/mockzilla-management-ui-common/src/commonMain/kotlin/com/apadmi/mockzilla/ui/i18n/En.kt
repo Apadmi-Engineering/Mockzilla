@@ -1,4 +1,4 @@
-@file:Suppress("COMPLEX_EXPRESSION")
+@file:Suppress("COMPLEX_EXPRESSION", "MAGIC_NUMBER")
 
 package com.apadmi.mockzilla.ui.i18n
 

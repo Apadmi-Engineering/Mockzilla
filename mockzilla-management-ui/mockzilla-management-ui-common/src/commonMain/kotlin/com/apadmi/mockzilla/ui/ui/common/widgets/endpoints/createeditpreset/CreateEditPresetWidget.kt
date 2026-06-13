@@ -1,5 +1,6 @@
 @file:Suppress(
     "FILE_NAME_MATCH_CLASS",
+    "MAGIC_NUMBER",
     "TYPE_ALIAS"
 )
 
@@ -10,7 +11,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -41,7 +40,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.FullscreenExit
-import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -59,8 +57,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
@@ -75,8 +71,6 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
-import com.apadmi.mockzilla.ui.ui.common.components.EditorMode
-import com.apadmi.mockzilla.ui.ui.common.components.EditorTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
@@ -85,159 +79,17 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
+import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorTextField
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
-import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
-import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
-import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.urlToTitle
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
-
-
-@Composable
-private fun PanelHeader(
-    state: State.Editing,
-    endpointName: String?,
-    onCancel: () -> Unit,
-    onSave: () -> Unit,
-    strings: Strings = LocalStrings.current,
-) = Row(
-    modifier = Modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-        .padding(horizontal = 12.dp, vertical = 6.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(8.dp),
-) {
-    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(
-            text = when (state.variant) {
-                State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
-                State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
-            },
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-        )
-        endpointName?.let {
-            Text(
-                text = strings.widgets.createEditPreset.endpointSubtitle(it),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceMuted,
-            )
-        }
-    }
-    CustomOutlineButton(
-        label = strings.widgets.createEditPreset.cancel,
-        variant = OutlineButtonVariant.Secondary,
-        onClick = onCancel,
-    )
-    BaseButton(
-        label = strings.widgets.createEditPreset.save,
-        variant = ButtonVariant.Solid,
-        size = ButtonSize.Md,
-        leadingIcon = Icons.Default.Done,
-        onClick = onSave,
-    )
-}
-
-@Composable
-private fun ColumnScope.BodySection(
-    state: State.Editing,
-    onNewResponseBody: (String) -> Unit,
-    onFormatResponseBody: () -> Unit,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
-    modifier: Modifier = Modifier,
-    strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
-) = Column(
-    modifier = modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.surfaceContainer),
-) {
-    val isJsonError = state.responseType == State.Editing.ResponseType.Json &&
-            state.body?.isNotEmpty() == true && state.hasBodyError
-    val isFormattable = state.responseType == State.Editing.ResponseType.Json
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            text = strings.bodyLabel,
-            style = MaterialTheme.typography.bodyMedium,
-        )
-
-        if (isJsonError) {
-            Text(
-                text = strings.responseCharacters(state.body.length),
-                style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.weight(1f)
-            )
-        } else {
-            Text(
-                text = strings.responseCharacters(state.body?.length ?: 0),
-                style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
-                color = MaterialTheme.colorScheme.onSurfaceFaint,
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        CustomOutlineButton(
-            leadingIcon = Icons.Default.AlignVerticalTop,
-            label = strings.responseBodyFormat,
-            enabled = !isJsonError && isFormattable,
-            variant = OutlineButtonVariant.Secondary,
-            onClick = onFormatResponseBody,
-            modifier = Modifier.alpha(if (isFormattable) 1f else 0f)
-        )
-
-        IconButton(
-            onClick = onToggleExpand,
-            modifier = Modifier.size(40.dp),
-        ) {
-            Icon(
-                imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
-                contentDescription = if (isExpanded) "Collapse" else "Expand",
-                modifier = Modifier.size(18.dp),
-            )
-        }
-    }
-
-    EditorTextField(
-        body = state.body ?: "",
-        onBodyChange = onNewResponseBody,
-        mode = when (state.responseType) {
-            State.Editing.ResponseType.Json -> EditorMode.Json
-            State.Editing.ResponseType.Html -> EditorMode.Html
-            State.Editing.ResponseType.PlainText,
-            State.Editing.ResponseType.None -> EditorMode.PlainText
-        },
-        isExpanded = isExpanded,
-        placeholder = when (state.responseType) {
-            State.Editing.ResponseType.Json -> strings.responseBodyPlaceholder
-            State.Editing.ResponseType.Html -> strings.htmlBodyPlaceholder
-            State.Editing.ResponseType.PlainText,
-            State.Editing.ResponseType.None -> strings.plainBodyPlaceholder
-        },
-        parseError = state.bodyParseError.takeIf { isJsonError },
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(if (isExpanded) Modifier.weight(1f) else Modifier)
-            .padding(horizontal = 16.dp),
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-}
 
 @Composable
 private fun ColumnScope.HeadersSection(
@@ -457,10 +309,10 @@ private fun ColumnScope.PopulatedState(
             state = state,
             onNewResponseBody = onNewResponseBody,
             onFormatResponseBody = onFormatResponseBody,
-            strings = str,
             isExpanded = isBodyExpanded,
             onToggleExpand = onToggleBodyExpanded,
             modifier = if (isBodyExpanded) Modifier.weight(1f) else Modifier,
+            strings = str,
         )
     }
 
@@ -541,6 +393,7 @@ internal fun CreateEditPresetWidgetContent(
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
+    @Suppress("SAY_NO_TO_VAR")
     var isBodyExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect((state as? State.Editing)?.responseType) {
@@ -580,6 +433,145 @@ internal fun CreateEditPresetWidgetContent(
             )
         }
     }
+}
+
+@Composable
+private fun BodySection(
+    state: State.Editing,
+    onNewResponseBody: (String) -> Unit,
+    onFormatResponseBody: () -> Unit,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+    modifier: Modifier = Modifier,
+    strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
+) = Column(
+    modifier = modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.surfaceContainer),
+) {
+    val isJsonError = state.responseType == State.Editing.ResponseType.Json &&
+            state.body?.isNotEmpty() == true && state.bodyParseError != null
+    val isFormattable = state.responseType == State.Editing.ResponseType.Json
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = strings.bodyLabel,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        if (isJsonError) {
+            Text(
+                text = strings.responseCharacters(state.body.length),
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.weight(1f)
+            )
+        } else {
+            Text(
+                text = strings.responseCharacters(state.body?.length ?: 0),
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.onSurfaceFaint,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        CustomOutlineButton(
+            leadingIcon = Icons.Default.AlignVerticalTop,
+            label = strings.responseBodyFormat,
+            enabled = !isJsonError && isFormattable,
+            variant = OutlineButtonVariant.Secondary,
+            onClick = onFormatResponseBody,
+            modifier = Modifier.alpha(if (isFormattable) 1f else 0f)
+        )
+
+        IconButton(
+            onClick = onToggleExpand,
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
+                contentDescription = if (isExpanded) "Collapse" else "Expand",
+                modifier = Modifier.size(18.dp),
+            )
+        }
+    }
+
+    EditorTextField(
+        body = state.body ?: "",
+        onBodyChange = onNewResponseBody,
+        mode = when (state.responseType) {
+            State.Editing.ResponseType.Json -> EditorMode.Json
+            State.Editing.ResponseType.Html -> EditorMode.Html
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.None -> EditorMode.PlainText
+        },
+        isExpanded = isExpanded,
+        placeholder = when (state.responseType) {
+            State.Editing.ResponseType.Json -> strings.responseBodyPlaceholder
+            State.Editing.ResponseType.Html -> strings.htmlBodyPlaceholder
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.None -> strings.plainBodyPlaceholder
+        },
+        parseError = state.bodyParseError.takeIf { isJsonError },
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(if (isExpanded) Modifier.weight(1f) else Modifier)
+            .padding(horizontal = 16.dp),
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+}
+
+@Composable
+private fun PanelHeader(
+    state: State.Editing,
+    endpointName: String?,
+    onCancel: () -> Unit,
+    onSave: () -> Unit,
+    strings: Strings = LocalStrings.current,
+) = Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+        .padding(horizontal = 12.dp, vertical = 6.dp),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+) {
+    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            text = when (state.variant) {
+                State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
+                State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
+            },
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+        )
+        endpointName?.let {
+            Text(
+                text = strings.widgets.createEditPreset.endpointSubtitle(it),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceMuted,
+            )
+        }
+    }
+    CustomOutlineButton(
+        label = strings.widgets.createEditPreset.cancel,
+        variant = OutlineButtonVariant.Secondary,
+        onClick = onCancel,
+    )
+    BaseButton(
+        label = strings.widgets.createEditPreset.save,
+        variant = ButtonVariant.Solid,
+        size = ButtonSize.Md,
+        leadingIcon = Icons.Default.Done,
+        onClick = onSave,
+    )
 }
 
 private fun chipToneForStatusCode(code: Int) = when (code) {
@@ -756,7 +748,6 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
             isSaving = false,
             statusCode = HttpStatusCode.OK,
             body = "{\"key\": \"value\"}",
-            hasBodyError = false,
             headers = listOf(
                 State.Editing.RequestHeader(key = "Content-Type", value = "application/json"),
             ),

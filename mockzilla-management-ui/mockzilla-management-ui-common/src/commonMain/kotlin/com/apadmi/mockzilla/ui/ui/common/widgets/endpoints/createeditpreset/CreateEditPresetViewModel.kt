@@ -63,9 +63,7 @@ internal class CreateEditPresetViewModel(
                 isSaving = false,
                 statusCode = current?.response?.statusCode.takeIf { isEditing },
                 body = current?.response?.body.takeIf { isEditing },
-                // Always starts as false because we assume plaintext if parsing
-                // the body as JSON fails
-                hasBodyError = false,
+                bodyParseError = null,
                 headers = current?.response?.headers
                     ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
                     .takeIf { isEditing } ?: emptyList(),
@@ -142,15 +140,18 @@ internal class CreateEditPresetViewModel(
 
     fun onNewResponseBody(newBody: String) {
         val currentState = state.value as? State.Editing ?: return
-        var parseError: String? = null
-        val hasBodyError = try {
+        state.value = try {
             Json.parseToJsonElement(newBody)
-            false
+            currentState.copy(
+                body = newBody,
+                bodyParseError = newBody,
+            )
         } catch (e: Exception) {
-            parseError = e.message?.substringBefore("\nJSON input:")?.trim()
-            true
+            currentState.copy(
+                body = newBody,
+                bodyParseError = e.message?.substringBefore("\nJSON input:")?.trim(),
+            )
         }
-        state.value = currentState.copy(body = newBody, hasBodyError = hasBodyError, bodyParseError = parseError)
     }
 
     fun onFormatResponseBody() {
@@ -230,15 +231,14 @@ internal class CreateEditPresetViewModel(
          * @property headers
          * @property newHeader The header currently being edited by the user in the UI
          * @property responseType
-         * @property hasBodyError
          * @property variant
          * @property endpointName The display name of the endpoint shown in the list
+         * @property bodyParseError
          */
         data class Editing(
             val isSaving: Boolean,
             val statusCode: HttpStatusCode?,
             val body: String? = null,
-            val hasBodyError: Boolean = false,
             val bodyParseError: String? = null,
             val headers: List<RequestHeader> = emptyList(),
             val newHeader: RequestHeader = RequestHeader(),
