@@ -17,7 +17,9 @@ class EndpointBodyVisualTransformation(
 ) : OutputTransformation {
     @Suppress("TOO_LONG_FUNCTION")
     override fun TextFieldBuffer.transformOutput() {
-        if (length == 0) return
+        if (length == 0) {
+            return
+        }
         val body = toString()
         var cursor = 0
         while (cursor < body.length) {

@@ -377,35 +377,54 @@ private class JsonAutoIndentTransformation : InputTransformation {
 
         val text = toString()
 
-        // Only act immediately after the user pressed Enter.
-        if (text[cursorPos - 1] != '\n') return
+        // Only act on insertions (e.g. Enter), not deletions (e.g. Backspace). Without
+        // this check, backspacing on an empty line lands the cursor after the previous
+        // line's '\n', which looks identical to pressing Enter — and the indent gets
+        // re-inserted, making the backspace appear to do nothing.
+        if (length <= originalText.length) return
 
-        // Find where the previous line started. `cursorPos - 1` is the '\n' we just
-        // inserted, so we search backwards from `cursorPos - 2` for the newline that
-        // opened that previous line. Adding 1 skips past that opening newline
-        // (or lands at 0 if we're on the first line).
-        val prevLineStartIndex = text.lastIndexOf('\n', cursorPos - 2) + 1
+        when (text[cursorPos - 1]) {
+            '\n' -> {
+                // Find where the previous line started. `cursorPos - 1` is the '\n' we just
+                // inserted, so we search backwards from `cursorPos - 2` for the newline that
+                // opened that previous line. Adding 1 skips past that opening newline
+                // (or lands at 0 if we're on the first line).
+                val prevLineStartIndex = text.lastIndexOf('\n', cursorPos - 2) + 1
 
-        // Scan forward through the previous line to measure its leading whitespace.
-        var indentEndIndex = prevLineStartIndex
-        while (indentEndIndex < cursorPos - 1 && (text[indentEndIndex] == ' ' || text[indentEndIndex] == '\t')) {
-            indentEndIndex++
-        }
+                // Scan forward through the previous line to measure its leading whitespace.
+                var indentEndIndex = prevLineStartIndex
+                while (indentEndIndex < cursorPos - 1 && (text[indentEndIndex] == ' ' || text[indentEndIndex] == '\t')) {
+                    indentEndIndex++
+                }
 
-        // The whitespace prefix shared with the previous line.
-        val baseIndent = text.substring(prevLineStartIndex, indentEndIndex)
+                // The whitespace prefix shared with the previous line.
+                val baseIndent = text.substring(prevLineStartIndex, indentEndIndex)
 
-        // The full previous line content, trimmed of trailing spaces so we can
-        // reliably check its last meaningful character.
-        val prevLineText = text.substring(prevLineStartIndex, cursorPos - 1).trimEnd()
+                // The full previous line content, trimmed of trailing spaces so we can
+                // reliably check its last meaningful character.
+                val prevLineText = text.substring(prevLineStartIndex, cursorPos - 1).trimEnd()
 
-        // Add one extra indent level when the previous line opened a JSON block.
-        val extraIndent = if (prevLineText.lastOrNull() in listOf('{', '[')) "  " else ""
+                // Add one extra indent level when the previous line opened a JSON block.
+                val extraIndent = if (prevLineText.lastOrNull() in listOf('{', '[')) "  " else ""
 
-        val indentToInsert = baseIndent + extraIndent
-        if (indentToInsert.isNotEmpty()) {
-            replace(cursorPos, cursorPos, indentToInsert)
-            selection = TextRange(cursorPos + indentToInsert.length)
+                val indentToInsert = baseIndent + extraIndent
+                if (indentToInsert.isNotEmpty()) {
+                    replace(cursorPos, cursorPos, indentToInsert)
+                    selection = TextRange(cursorPos + indentToInsert.length)
+                }
+            }
+            '}', ']' -> {
+                // Un-indent when a closing brace/bracket is typed on an otherwise blank line.
+                // Only strips whitespace when every character before the closer on this line
+                // is whitespace — i.e. the user hasn't started typing content before it.
+                val lineStartIndex = text.lastIndexOf('\n', cursorPos - 2) + 1
+                val beforeBrace = text.substring(lineStartIndex, cursorPos - 1)
+                if (beforeBrace.isNotEmpty() && beforeBrace.all { it == ' ' || it == '\t' }) {
+                    val toRemove = beforeBrace.length.coerceAtMost(2)
+                    replace(lineStartIndex, lineStartIndex + toRemove, "")
+                    selection = TextRange(cursorPos - toRemove)
+                }
+            }
         }
     }
 }

@@ -464,6 +464,7 @@ data class Strings(
          * @property bodyLabel
          * @property htmlBodyPlaceholder
          * @property plainBodyPlaceholder
+         * @property jsonErrorTitle
          */
         data class CreateEditPreset(
             val createTitle: String,
