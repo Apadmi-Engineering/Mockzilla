@@ -161,7 +161,7 @@ private fun EditorContent(
     val gutterContentWidthPx = remember(lineCount, textStyle, textMeasurer) {
         textMeasurer.measure("$lineCount", textStyle).size.width
     }
-    val gutterWidth = with(density) { gutterContentWidthPx.toDp() }
+    val gutterWidth = with(density) { gutterContentWidthPx.toDp() + 16.dp }
     val gutterTextStyle = textStyle.copy(color = colorScheme.onSurfaceMuted)
 
     Box(
@@ -180,7 +180,7 @@ private fun EditorContent(
         Box(
             modifier = Modifier
                 .fillMaxHeight()
-                .width(gutterWidth + 16.dp)
+                .width(gutterWidth)
                 .background(colorScheme.surfaceContainerLow, shape = RoundedCornerShape(8.dp))
                 .clipToBounds(),
         ) {
@@ -211,7 +211,7 @@ private fun EditorContent(
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorScheme.onSurfaceMuted,
                 modifier = Modifier.padding(
-                    start = gutterWidth + 24.dp,
+                    start = gutterWidth + 4.dp,
                     top = 12.dp,
                 ),
             )
@@ -222,7 +222,7 @@ private fun EditorContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
-                    start = gutterWidth + 16.dp,
+                    start = gutterWidth + 4.dp,
                     top = 12.dp,
                     end = 12.dp,
                     bottom = 12.dp,
@@ -366,24 +366,46 @@ private fun buildEditorOutputTransformation(mode: EditorMode): OutputTransformat
     }
 }
 
+// Automatically indents new lines to match the indentation of the line above,
+// with an extra level when the previous line opens a block with '{' or '['.
 private class JsonAutoIndentTransformation : InputTransformation {
     override fun TextFieldBuffer.transformInput() {
-        val cursor = selection.start
-        if (!selection.collapsed || cursor == 0) return
+        // `selection.collapsed` means it's a cursor (no range selected). We only
+        // auto-indent on a plain cursor, and not when it's at the very start.
+        val cursorPos = selection.start
+        if (!selection.collapsed || cursorPos == 0) return
+
         val text = toString()
-        if (text[cursor - 1] != '\n') return
-        val prevLineStart = text.lastIndexOf('\n', cursor - 2) + 1
-        var i = prevLineStart
-        while (i < cursor - 1 && (text[i] == ' ' || text[i] == '\t')) {
-            i++
+
+        // Only act immediately after the user pressed Enter.
+        if (text[cursorPos - 1] != '\n') return
+
+        // Find where the previous line started. `cursorPos - 1` is the '\n' we just
+        // inserted, so we search backwards from `cursorPos - 2` for the newline that
+        // opened that previous line. Adding 1 skips past that opening newline
+        // (or lands at 0 if we're on the first line).
+        val prevLineStartIndex = text.lastIndexOf('\n', cursorPos - 2) + 1
+
+        // Scan forward through the previous line to measure its leading whitespace.
+        var indentEndIndex = prevLineStartIndex
+        while (indentEndIndex < cursorPos - 1 && (text[indentEndIndex] == ' ' || text[indentEndIndex] == '\t')) {
+            indentEndIndex++
         }
-        val indent = text.substring(prevLineStart, i)
-        val prevLineContent = text.substring(prevLineStart, cursor - 1).trimEnd()
-        val extra = if (prevLineContent.lastOrNull() in listOf('{', '[')) "  " else ""
-        val insert = indent + extra
-        if (insert.isNotEmpty()) {
-            replace(cursor, cursor, insert)
-            selection = TextRange(cursor + insert.length)
+
+        // The whitespace prefix shared with the previous line.
+        val baseIndent = text.substring(prevLineStartIndex, indentEndIndex)
+
+        // The full previous line content, trimmed of trailing spaces so we can
+        // reliably check its last meaningful character.
+        val prevLineText = text.substring(prevLineStartIndex, cursorPos - 1).trimEnd()
+
+        // Add one extra indent level when the previous line opened a JSON block.
+        val extraIndent = if (prevLineText.lastOrNull() in listOf('{', '[')) "  " else ""
+
+        val indentToInsert = baseIndent + extraIndent
+        if (indentToInsert.isNotEmpty()) {
+            replace(cursorPos, cursorPos, indentToInsert)
+            selection = TextRange(cursorPos + indentToInsert.length)
         }
     }
 }
