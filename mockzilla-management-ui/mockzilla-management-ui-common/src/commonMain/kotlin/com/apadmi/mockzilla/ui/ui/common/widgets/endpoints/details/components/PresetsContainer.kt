@@ -146,7 +146,7 @@ private fun PopulatedPresets(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(horizontal = 14.dp, vertical = 12.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         if (showTitle) {
             Text(
