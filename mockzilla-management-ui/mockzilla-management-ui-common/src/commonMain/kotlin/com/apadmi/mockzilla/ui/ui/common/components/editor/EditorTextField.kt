@@ -91,6 +91,7 @@ internal fun EditorTextField(
     modifier: Modifier = Modifier,
     placeholder: String,
     parseError: String? = null,
+    additionalOutputTransformation: OutputTransformation? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val monoFont = LocalMonoFontFamily.current
@@ -121,7 +122,14 @@ internal fun EditorTextField(
         color = colorScheme.onSurface,
         fontFamily = monoFont,
     )
-    val outputTransformation = buildEditorOutputTransformation(mode)
+    val syntaxTransformation = buildEditorOutputTransformation(mode)
+    val outputTransformation = remember(syntaxTransformation, additionalOutputTransformation) {
+        when {
+            syntaxTransformation != null && additionalOutputTransformation != null ->
+                CompositeOutputTransformation(syntaxTransformation, additionalOutputTransformation)
+            else -> syntaxTransformation ?: additionalOutputTransformation
+        }
+    }
 
     Column(
         modifier = modifier.border(
