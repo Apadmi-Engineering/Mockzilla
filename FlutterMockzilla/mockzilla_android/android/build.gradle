@@ -27,7 +27,7 @@ apply plugin: 'com.android.library'
 
 android {
     if (project.android.hasProperty("namespace")) {
-        namespace 'com.apadmi.mockzilld'
+        namespace 'com.apadmi.mockzilla'
     }
 
     compileSdkVersion 36
