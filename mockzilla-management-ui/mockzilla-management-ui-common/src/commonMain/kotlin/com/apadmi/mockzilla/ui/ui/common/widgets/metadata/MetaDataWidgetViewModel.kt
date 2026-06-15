@@ -27,25 +27,35 @@ class MetaDataWidgetViewModel(
     val state = MutableStateFlow<State>(State.Loading)
     private var latestRequestCount: Int? = null
     private var latestOverridesCount: Int? = null
-    private var uptimeSeconds = 0
 
     init {
         viewModelScope.launch {
             reloadData()
             launch { pollRequests() }
             launch { pollOverrides() }
-            launch { pollUptime() }
         }
     }
 
     private suspend fun reloadData() {
         val metaDataResult = metaDataUseCase.getMetaData(device)
         val iconResult = appIconUseCase.getAppIcon(device)
+        val overridesResult = endpointsService.fetchAllEndpointConfigs(device)
+
         state.value = metaDataResult.fold(
-            onSuccess = { State.DisplayMetaData(it, appIconBytes = iconResult.getOrNull()) },
+            onSuccess = {
+                State.DisplayMetaData(
+                    it,
+                    requestCount = latestRequestCount,
+                    overridesCount = overridesResult.getOrNull()?.countOverrides() ?: 0,
+                    appIconBytes = iconResult.getOrNull()
+                )
+            },
             onFailure = { State.Error }
         )
     }
+
+    private fun List<com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig>.countOverrides() =
+        count { it.shouldFail != null || it.delayMs != null || it.appliedPresetOverride != null }
 
     private suspend fun pollRequests() {
         while (true) {
@@ -59,19 +69,11 @@ class MetaDataWidgetViewModel(
 
     private suspend fun pollOverrides() {
         while (true) {
-            endpointsService.fetchAllEndpointConfigs(device).onSuccess { list ->
-                latestOverridesCount = list.count { it.shouldFail == true || it.delayMs != null || it.appliedPresetOverride != null }
+            endpointsService.fetchAllEndpointConfigs(device).onSuccess { endpoints ->
+                latestOverridesCount = endpoints.countOverrides()
                 updateSessionStats()
             }
-            delay(5_000)
-        }
-    }
-
-    private suspend fun pollUptime() {
-        while (true) {
             delay(1_000)
-            uptimeSeconds++
-            updateSessionStats()
         }
     }
 
@@ -79,17 +81,9 @@ class MetaDataWidgetViewModel(
         state.update { current ->
             (current as? State.DisplayMetaData)?.copy(
                 requestCount = latestRequestCount,
-                overridesCount = latestOverridesCount,
-                uptime = formatUptime(uptimeSeconds)
+                overridesCount = latestOverridesCount ?: (current as? State.DisplayMetaData)?.overridesCount ?: 0
             ) ?: current
         }
-    }
-
-    private fun formatUptime(totalSeconds: Int): String {
-        val hours = totalSeconds / SECONDS_IN_HOUR
-        val minutes = (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE
-        val seconds = totalSeconds % SECONDS_IN_MINUTE
-        return "${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
     }
 
     @Immutable
@@ -99,8 +93,7 @@ class MetaDataWidgetViewModel(
         data class DisplayMetaData(
             val metaData: MetaData,
             val requestCount: Int? = null,
-            val uptime: String? = null,
-            val overridesCount: Int? = null,
+            val overridesCount: Int = 0,
             val appIconBytes: ByteArray? = null,
         ) : State() {
             override fun equals(other: Any?): Boolean {
@@ -112,7 +105,6 @@ class MetaDataWidgetViewModel(
                 }
                 return metaData == other.metaData &&
                         requestCount == other.requestCount &&
-                        uptime == other.uptime &&
                         overridesCount == other.overridesCount &&
                         (appIconBytes == null && other.appIconBytes == null ||
                                 appIconBytes != null && other.appIconBytes != null &&
@@ -123,16 +115,10 @@ class MetaDataWidgetViewModel(
             override fun hashCode(): Int {
                 var result = metaData.hashCode()
                 result = 31 * result + (requestCount ?: 0)
-                result = 31 * result + (uptime?.hashCode() ?: 0)
-                result = 31 * result + (overridesCount ?: 0)
+                result = 31 * result + overridesCount
                 result = 31 * result + (appIconBytes?.contentHashCode() ?: 0)
                 return result
             }
         }
-    }
-
-    private companion object {
-        const val SECONDS_IN_HOUR = 3600
-        const val SECONDS_IN_MINUTE = 60
     }
 }

@@ -1,11 +1,8 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.metadata
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,32 +13,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.DragIndicator
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,14 +36,13 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
-import com.apadmi.mockzilla.ui.ui.common.components.DashedDivider
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.components.SectionTitle
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.components.SectionHeader
 import org.koin.core.parameter.parametersOf
 
-private fun RunTarget.label(strings: Strings) = when (this) {
+import kotlin.String
+
+fun RunTarget.label(strings: Strings) = when (this) {
     RunTarget.AndroidDevice,
     RunTarget.AndroidEmulator -> strings.widgets.metaData.android
 
@@ -71,80 +54,12 @@ private fun RunTarget.label(strings: Strings) = when (this) {
 }
 
 @Composable
-fun MetaDataWidget(
-    device: Device,
-    onClose: (() -> Unit)? = null,
-    onRefresh: (() -> Unit)? = null,
-    onGlobalControlsClick: (() -> Unit)? = null
-) {
+fun MetaDataWidget(device: Device) {
     val viewModel =
         getViewModel<MetaDataWidgetViewModel>(key = device.toString()) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
-    var isExpanded by remember { mutableStateOf(false) }
 
-    MetaDataWidgetContent(
-        state = state,
-        device = device,
-        onClose = onClose,
-        onRefresh = onRefresh,
-        onGlobalControlsClick = onGlobalControlsClick,
-        isExpanded = isExpanded,
-        onToggleExpand = { isExpanded = !isExpanded }
-    )
-}
-
-@Composable
-fun MetaDataRow(
-    label: String,
-    value: String,
-    showDivider: Boolean = true
-) = Column(modifier = Modifier.padding(horizontal = 4.dp)) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Start,
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceMuted
-        )
-        Text(
-            modifier = Modifier.weight(2f),
-            textAlign = TextAlign.Start,
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            fontFamily = FontFamily.Monospace,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 2
-        )
-    }
-    if (showDivider) {
-        DashedDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
-    }
-}
-
-// ── Row components ────────────────────────────────────────────────────────────
-
-@Composable
-fun SessionRow(label: String, value: String) = Row(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.SpaceBetween
-) {
-    Text(
-        text = label,
-        style = MaterialTheme.typography.bodySmall,
-        fontFamily = FontFamily.Monospace,
-        color = MaterialTheme.colorScheme.onSurfaceMuted
-    )
-    Text(
-        text = value,
-        style = MaterialTheme.typography.bodySmall,
-        fontFamily = FontFamily.Monospace,
-        color = MaterialTheme.colorScheme.onSurface
-    )
+    MetaDataWidgetContent(state, device)
 }
 
 // ── Preview ───────────────────────────────────────────────────────────────────
@@ -153,7 +68,7 @@ fun SessionRow(label: String, value: String) = Row(
 @Preview
 @Composable
 fun MetaDataListViewPreview() = PreviewSurface() {
-    MetaDataWidgetContent(
+    MetaDataListView(
         state = MetaDataWidgetViewModel.State.DisplayMetaData(
             metaData = MetaData(
                 appName = "Runner",
@@ -165,77 +80,31 @@ fun MetaDataListViewPreview() = PreviewSurface() {
                 runTarget = RunTarget.IosSimulator
             ),
             requestCount = 1284,
-            uptime = "00:42:11",
             overridesCount = 1
         ),
-        device = Device(ip = "127.0.0.1", port = "49812"),
-        onClose = {},
-        onRefresh = {},
-        onGlobalControlsClick = {},
-        isExpanded = false,
-        onToggleExpand = {}
+        device = Device(ip = "127.0.0.1", port = "49812")
     )
 }
 
 @Composable
 fun MetaDataWidgetContent(
     state: MetaDataWidgetViewModel.State,
-    device: Device,
-    onClose: (() -> Unit)?,
-    onRefresh: (() -> Unit)?,
-    onGlobalControlsClick: (() -> Unit)?,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
+    device: Device? = null,
     strings: Strings = LocalStrings.current
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
     ) {
-        MetaDataHeader(
-            state = state,
-            onClose = onClose,
-            onRefresh = onRefresh,
-            onGlobalControlsClick = onGlobalControlsClick,
-            isExpanded = isExpanded,
-            onToggleExpand = onToggleExpand,
-            strings = strings
-        )
+        when (state) {
+            is MetaDataWidgetViewModel.State.DisplayMetaData -> MetaDataListView(
+                state,
+                device,
+                strings
+            )
 
-        AnimatedVisibility(
-            visible = isExpanded,
-            enter = expandVertically(),
-            exit = shrinkVertically()
-        ) {
-            Column {
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.1f))
-
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    when (state) {
-                        is MetaDataWidgetViewModel.State.DisplayMetaData -> MetaDataListView(
-                            state,
-                            device,
-                            strings
-                        )
-
-                        MetaDataWidgetViewModel.State.Error -> Text(
-                            text = strings.widgets.metaData.error,
-                            modifier = Modifier.padding(16.dp)
-                        )
-
-                        MetaDataWidgetViewModel.State.Loading -> Box(
-                            Modifier.fillMaxWidth().height(200.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-                }
-            }
+            MetaDataWidgetViewModel.State.Error -> Text(strings.widgets.metaData.error)
+            MetaDataWidgetViewModel.State.Loading -> CircularProgressIndicator()
         }
     }
 }
@@ -259,101 +128,41 @@ fun MetaDataListView(
     Spacer(modifier = Modifier.height(16.dp))
 
     SessionSection(
-        uptime = state.uptime ?: "-",
         requests = state.requestCount?.toString() ?: "–",
         port = device?.port,
-        overrides = state.overridesCount?.toString() ?: "-",
+        overridesCount = state.overridesCount,
         strings = strings
     )
 }
 
 @Composable
-fun MetaDataHeader(
-    state: MetaDataWidgetViewModel.State,
-    onClose: (() -> Unit)?,
-    onRefresh: (() -> Unit)?,
-    onGlobalControlsClick: (() -> Unit)?,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
-    strings: Strings
-) {
-    val colorScheme = MaterialTheme.colorScheme
-
+fun MetaDataRow(
+    label: String,
+    value: String,
+    showDivider: Boolean = true
+) = Column(modifier = Modifier.padding(horizontal = 4.dp)) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Mockzilla Logo and Title
-        Surface(
-            modifier = Modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(8.dp))
-                .clickable(onClick = onToggleExpand),
-            shape = RoundedCornerShape(8.dp),
-            color = colorScheme.onSurface.copy(alpha = 0.05f),
-            border = androidx.compose.foundation.BorderStroke(1.dp, colorScheme.outline.copy(alpha = 0.1f))
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Surface(
-                    modifier = Modifier.size(40.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    color = Color.Black.copy(alpha = 0.2f)
-                ) {
-                    Icon(
-                        imageVector = Icons.MockzillaLogo,
-                        contentDescription = null,
-                        modifier = Modifier.padding(6.dp),
-                        tint = Color.Unspecified
-                    )
-                }
-
-                Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = strings.widgets.deviceConnection.title,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = colorScheme.onSurface
-                        )
-                        Icon(
-                            imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            tint = colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    if (state is MetaDataWidgetViewModel.State.DisplayMetaData) {
-                        Text(
-                            text = strings.widgets.metaData.overrides(state.overridesCount ?: 0),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = colorScheme.primary,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
-            }
-        }
-
-        // Action Buttons
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            onGlobalControlsClick?.let {
-                HeaderActionButton(icon = Icons.Default.DragIndicator, onClick = it)
-            }
-            onRefresh?.let {
-                HeaderActionButton(icon = Icons.Default.Refresh, onClick = it)
-            }
-            onClose?.let {
-                HeaderActionButton(icon = Icons.Default.Close, onClick = it)
-            }
-        }
+        Text(
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Start,
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        )
+        Text(
+            modifier = Modifier.weight(2f),
+            textAlign = TextAlign.Start,
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+    if (showDivider) {
+        DashedDivider()
     }
 }
 
@@ -361,68 +170,81 @@ fun MetaDataHeader(
 
 @Composable
 fun AppSection(metaData: MetaData, strings: Strings) = Column {
-    SectionTitle(label = strings.widgets.metaData.appSection)
+    SectionHeader(title = strings.widgets.metaData.appSection)
     MetaDataRow(strings.widgets.metaData.appName, metaData.appName)
     MetaDataRow(strings.widgets.metaData.appPackage, metaData.appPackage)
     MetaDataRow(strings.widgets.metaData.appVersion, metaData.appVersion)
-    MetaDataRow(strings.widgets.metaData.mockzillaVersion, metaData.mockzillaVersion, showDivider = false)
+    MetaDataRow(strings.widgets.metaData.mockzillaVersion, metaData.mockzillaVersion)
 }
 
 @Composable
 fun DeviceSection(metaData: MetaData, strings: Strings) = Column {
-    SectionTitle(label = strings.widgets.metaData.deviceSection)
+    SectionHeader(title = strings.widgets.metaData.deviceSection)
     MetaDataRow(strings.widgets.metaData.deviceModel, metaData.deviceModel)
     MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget?.label(strings) ?: "-")
-    MetaDataRow(strings.widgets.metaData.operatingSystemVersion, metaData.operatingSystemVersion, showDivider = false)
+    MetaDataRow(strings.widgets.metaData.operatingSystemVersion, metaData.operatingSystemVersion)
 }
 
 @Suppress("MAGIC_NUMBER")
 @Composable
 fun SessionSection(
-    uptime: String,
     requests: String,
     port: String?,
-    overrides: String,
+    overridesCount: Int,
     strings: Strings
 ) = Column {
-    SectionTitle(label = strings.widgets.metaData.sessionSection)
-    val cardShape = RoundedCornerShape(12.dp)
+    SectionHeader(title = strings.widgets.metaData.sessionSection)
+    val cardShape = RoundedCornerShape(8.dp)
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(cardShape)
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
-            .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f), cardShape)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), cardShape)
             .padding(16.dp)
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            SessionRow(label = strings.widgets.metaData.uptime, value = uptime)
             SessionRow(label = strings.widgets.metaData.requests, value = requests)
             SessionRow(label = strings.widgets.metaData.port, value = port?.let { ":$it" } ?: "–")
-            SessionRow(label = strings.widgets.metaData.overridesLabel, value = overrides)
+            SessionRow(label = strings.widgets.metaData.overridesLabel, value = overridesCount.toString())
         }
     }
 }
 
+// ── Row components ────────────────────────────────────────────────────────────
+
 @Composable
-private fun HeaderActionButton(
-    icon: ImageVector,
-    onClick: () -> Unit
+fun SessionRow(label: String, value: String) = Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.SpaceBetween
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    Surface(
-        modifier = Modifier.size(44.dp),
-        shape = RoundedCornerShape(10.dp),
-        color = colorScheme.onSurface.copy(alpha = 0.05f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, colorScheme.outline.copy(alpha = 0.1f))
-    ) {
-        IconButton(onClick = onClick) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(20.dp)
-            )
-        }
+    Text(
+        text = label,
+        style = MaterialTheme.typography.bodySmall,
+        fontFamily = FontFamily.Monospace,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+    )
+    Text(
+        text = value,
+        style = MaterialTheme.typography.bodySmall,
+        fontFamily = FontFamily.Monospace,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
+
+// ── Primitives ────────────────────────────────────────────────────────────────
+
+@Suppress("MAGIC_NUMBER")
+@Composable
+fun DashedDivider() {
+    val dividerColor = Color.Gray.copy(alpha = 0.25f)
+    Canvas(modifier = Modifier.fillMaxWidth().height(1.dp)) {
+        drawLine(
+            color = dividerColor,
+            start = Offset(0f, size.height / 2),
+            end = Offset(size.width, size.height / 2),
+            strokeWidth = 1.dp.toPx(),
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 8f), 0f)
+        )
     }
 }
