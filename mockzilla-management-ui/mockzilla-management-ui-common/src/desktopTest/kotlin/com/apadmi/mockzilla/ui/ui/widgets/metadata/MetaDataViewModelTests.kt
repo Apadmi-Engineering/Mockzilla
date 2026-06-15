@@ -3,6 +3,7 @@
 package com.apadmi.mockzilla.ui.ui.widgets.metadata
 
 import com.apadmi.mockzilla.lib.models.MetaData
+import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import com.apadmi.mockzilla.ui.engine.device.AppIconUseCase
@@ -33,11 +34,15 @@ internal class MetaDataViewModelTests : CoroutineTest() {
     @RelaxedMockK
     lateinit var appIconUseCaseMock: AppIconUseCase
 
+    @RelaxedMockK
+    lateinit var endpointsServiceMock: MockzillaManagement.EndpointsService
+
     private fun createSut() = MetaDataWidgetViewModel(
         Device.dummy(),
         metaDataUseCaseMock,
         monitorLogsUseCaseMock,
         appIconUseCaseMock,
+        endpointsServiceMock,
         testScope.backgroundScope
     )
 
@@ -48,6 +53,7 @@ internal class MetaDataViewModelTests : CoroutineTest() {
             .returns(Result.success(MetaData.dummy()))
         coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
         coEvery { appIconUseCaseMock.getAppIcon(Device.dummy()) } returns Result.success(null)
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) } returns Result.success(emptyList())
 
         /* Run Test */
         createSut().state.test {
@@ -63,6 +69,7 @@ internal class MetaDataViewModelTests : CoroutineTest() {
         coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(Result.failure(Exception()))
         coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
         coEvery { appIconUseCaseMock.getAppIcon(Device.dummy()) } returns Result.success(null)
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) } returns Result.success(emptyList())
 
         /* Run Test */
         createSut().state.test {
@@ -80,6 +87,7 @@ internal class MetaDataViewModelTests : CoroutineTest() {
             .returns(Result.success(MetaData.dummy()))
         coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
         coEvery { appIconUseCaseMock.getAppIcon(Device.dummy()) } returns Result.success(bytes)
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) } returns Result.success(emptyList())
 
         /* Run Test */
         createSut().state.test {
@@ -97,6 +105,7 @@ internal class MetaDataViewModelTests : CoroutineTest() {
             .returns(Result.success(MetaData.dummy()))
         coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
         coEvery { appIconUseCaseMock.getAppIcon(Device.dummy()) } returns Result.failure(Exception())
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) } returns Result.success(emptyList())
 
         /* Run Test */
         createSut().state.test {
@@ -114,6 +123,7 @@ internal class MetaDataViewModelTests : CoroutineTest() {
             .returns(Result.success(MetaData.dummy()))
         coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
         coEvery { appIconUseCaseMock.getAppIcon(Device.dummy()) } returns Result.success(null)
+        coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) } returns Result.success(emptyList())
 
         /* Run Test */
         createSut().state.test {
