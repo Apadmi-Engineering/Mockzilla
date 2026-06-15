@@ -240,6 +240,7 @@ private fun ColumnScope.PopulatedState(
                 }
             }
             Spacer(Modifier.width(8.dp))
+            val customLabel = strings.widgets.endpointDetails.presets.typeDescriptions.other
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
@@ -255,7 +256,7 @@ private fun ColumnScope.PopulatedState(
                     modifier = Modifier.size(12.dp),
                 )
                 Text(
-                    text = "Custom",
+                    text = customLabel,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
