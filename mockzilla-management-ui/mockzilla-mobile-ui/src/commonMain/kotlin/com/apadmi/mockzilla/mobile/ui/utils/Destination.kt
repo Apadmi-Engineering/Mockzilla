@@ -13,9 +13,6 @@ internal sealed class Destination {
     @Serializable
     internal data object Debug : Destination()
 
-    @Serializable
-    internal data object MetaData : Destination()
-
     /**
      * @property key
      * @property creatingNewPreset

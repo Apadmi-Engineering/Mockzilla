@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-internal class MetaDataWidgetViewModel(
+class MetaDataWidgetViewModel(
     private val device: Device,
     private val metaDataUseCase: MetaDataUseCase,
     private val monitorLogsUseCase: MonitorLogsUseCase,
@@ -86,9 +86,9 @@ internal class MetaDataWidgetViewModel(
     }
 
     private fun formatUptime(totalSeconds: Int): String {
-        val hours = totalSeconds / 3600
-        val minutes = (totalSeconds % 3600) / 60
-        val seconds = totalSeconds % 60
+        val hours = totalSeconds / SECONDS_IN_HOUR
+        val minutes = (totalSeconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE
+        val seconds = totalSeconds % SECONDS_IN_MINUTE
         return "${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
     }
 
@@ -129,5 +129,10 @@ internal class MetaDataWidgetViewModel(
                 return result
             }
         }
+    }
+
+    private companion object {
+        const val SECONDS_IN_HOUR = 3600
+        const val SECONDS_IN_MINUTE = 60
     }
 }

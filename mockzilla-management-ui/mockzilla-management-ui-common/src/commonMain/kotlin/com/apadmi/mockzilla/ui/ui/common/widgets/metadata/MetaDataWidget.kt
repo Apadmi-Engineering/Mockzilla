@@ -178,7 +178,7 @@ fun MetaDataListViewPreview() = PreviewSurface() {
 }
 
 @Composable
-internal fun MetaDataWidgetContent(
+fun MetaDataWidgetContent(
     state: MetaDataWidgetViewModel.State,
     device: Device,
     onClose: (() -> Unit)?,
@@ -241,7 +241,7 @@ internal fun MetaDataWidgetContent(
 }
 
 @Composable
-internal fun MetaDataListView(
+fun MetaDataListView(
     state: MetaDataWidgetViewModel.State.DisplayMetaData,
     device: Device? = null,
     strings: Strings = LocalStrings.current
@@ -268,7 +268,7 @@ internal fun MetaDataListView(
 }
 
 @Composable
-private fun MetaDataHeader(
+fun MetaDataHeader(
     state: MetaDataWidgetViewModel.State,
     onClose: (() -> Unit)?,
     onRefresh: (() -> Unit)?,
@@ -357,33 +357,10 @@ private fun MetaDataHeader(
     }
 }
 
-@Composable
-private fun HeaderActionButton(
-    icon: ImageVector,
-    onClick: () -> Unit
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    Surface(
-        modifier = Modifier.size(44.dp),
-        shape = RoundedCornerShape(10.dp),
-        color = colorScheme.onSurface.copy(alpha = 0.05f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, colorScheme.outline.copy(alpha = 0.1f))
-    ) {
-        IconButton(onClick = onClick) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-    }
-}
-
 // ── Sections ─────────────────────────────────────────────────────────────────
 
 @Composable
-private fun AppSection(metaData: MetaData, strings: Strings) = Column {
+fun AppSection(metaData: MetaData, strings: Strings) = Column {
     SectionTitle(label = strings.widgets.metaData.appSection)
     MetaDataRow(strings.widgets.metaData.appName, metaData.appName)
     MetaDataRow(strings.widgets.metaData.appPackage, metaData.appPackage)
@@ -392,7 +369,7 @@ private fun AppSection(metaData: MetaData, strings: Strings) = Column {
 }
 
 @Composable
-private fun DeviceSection(metaData: MetaData, strings: Strings) = Column {
+fun DeviceSection(metaData: MetaData, strings: Strings) = Column {
     SectionTitle(label = strings.widgets.metaData.deviceSection)
     MetaDataRow(strings.widgets.metaData.deviceModel, metaData.deviceModel)
     MetaDataRow(strings.widgets.metaData.operatingSystem, metaData.runTarget?.label(strings) ?: "-")
@@ -401,7 +378,7 @@ private fun DeviceSection(metaData: MetaData, strings: Strings) = Column {
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-private fun SessionSection(
+fun SessionSection(
     uptime: String,
     requests: String,
     port: String?,
@@ -423,6 +400,29 @@ private fun SessionSection(
             SessionRow(label = strings.widgets.metaData.requests, value = requests)
             SessionRow(label = strings.widgets.metaData.port, value = port?.let { ":$it" } ?: "–")
             SessionRow(label = strings.widgets.metaData.overridesLabel, value = overrides)
+        }
+    }
+}
+
+@Composable
+private fun HeaderActionButton(
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    Surface(
+        modifier = Modifier.size(44.dp),
+        shape = RoundedCornerShape(10.dp),
+        color = colorScheme.onSurface.copy(alpha = 0.05f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, colorScheme.outline.copy(alpha = 0.1f))
+    ) {
+        IconButton(onClick = onClick) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }
