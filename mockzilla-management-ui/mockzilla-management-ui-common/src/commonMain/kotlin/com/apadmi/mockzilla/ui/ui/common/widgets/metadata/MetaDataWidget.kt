@@ -27,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.font.FontFamily
@@ -282,7 +281,7 @@ private fun AppHeader(
 @Suppress("MAGIC_NUMBER")
 @Composable
 private fun DashedDivider() {
-    val dividerColor = Color.Gray.copy(alpha = 0.25f)
+    val dividerColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
     Canvas(modifier = Modifier.fillMaxWidth().height(1.dp)) {
         drawLine(
             color = dividerColor,

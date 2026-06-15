@@ -38,7 +38,6 @@ import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
@@ -85,7 +84,6 @@ internal fun ForceFailureBanner(
         ForceFailureBannerState.Normal -> strings.widgets.globalControls.normalBehaviourBannerConfig
     }
 
-    val isDark = LocalForceDarkMode.current
     val shape = RoundedCornerShape(bannerCornerRadius.dp)
 
     Row(
@@ -93,7 +91,7 @@ internal fun ForceFailureBanner(
             .fillMaxWidth()
             .height(64.dp)
             .clip(shape)
-            .background(color = if (isDark) Color(0xFF_141_71C) else Color(0xFF_D8D_CE1))
+            .background(color = colorScheme.background)
             .border(
                 width = 1.dp,
                 color = colors.accent.copy(alpha = 0.5f),

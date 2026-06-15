@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -162,7 +161,7 @@ internal fun ResponseLatencyCard(
                     .weight(1f)
                     .height(44.dp)
                     .background(
-                        color = if (isDark) Color(0xFF_141_71C) else Color(0xFF_D8D_CE1),
+                        color = colorScheme.background,
                         shape = componentShape,
                     )
                     .border(
@@ -269,7 +268,7 @@ internal fun ResponseLatencyCard(
                             } else if (isDark) {
                                 colorScheme.surfaceContainer
                             } else {
-                                Color(0xFF_D8D_CE1)
+                                colorScheme.background
                             }
                         )
                         .clickable { updateValue(ms) }

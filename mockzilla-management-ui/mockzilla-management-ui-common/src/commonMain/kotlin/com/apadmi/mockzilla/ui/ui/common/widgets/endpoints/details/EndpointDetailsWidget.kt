@@ -74,6 +74,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.statusColors
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.chipSelectedBackground
 import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
@@ -82,8 +83,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.Pr
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 
 import org.koin.core.parameter.parametersOf
-
-private val tealColor = Color(0xFF_0D9_488)
 
 @Composable
 private fun ColumnScope.PopulatedState(
@@ -101,7 +100,7 @@ private fun ColumnScope.PopulatedState(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
-    val accentColor = if (isDark) colorScheme.primary else tealColor
+    val accentColor = colorScheme.primary
 
     Box {
         SurfaceHeader(
@@ -207,7 +206,7 @@ private fun ColumnScope.PopulatedState(
                 modifier = Modifier
                     .border(1.dp, colorScheme.outline, RoundedCornerShape(4.dp))
                     .clip(RoundedCornerShape(4.dp))
-                    .background(if (isDark) MaterialTheme.colorScheme.surfaceContainer else Color(0xFF_D8D_CE1))
+                    .background(if (isDark) colorScheme.surfaceContainer else colorScheme.background)
                     .padding(3.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -226,11 +225,7 @@ private fun ColumnScope.PopulatedState(
                                 }
                             )
                             .background(
-                                if (isSelected) {
-                                    if (isDark) MaterialTheme.colorScheme.surfaceContainerHigh else Color.White
-                                } else {
-                                    Color.Transparent
-                                }
+                                if (isSelected) colorScheme.chipSelectedBackground else Color.Transparent
                             )
                             .clickable { onLayoutModeChanged(mode) }
                             .padding(horizontal = 8.dp, vertical = 4.dp)

@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,7 +40,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
@@ -144,11 +142,10 @@ private fun PopulatedPresets(
     layoutMode: LayoutMode = LayoutMode.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
-    val isDark = LocalForceDarkMode.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(if (isDark) Color(0xFF_181_C21) else Color(0xFF_EBE_DF0))
+            .background(MaterialTheme.colorScheme.surface)
             .padding(horizontal = 14.dp, vertical = 12.dp)
     ) {
         if (showTitle) {
@@ -209,7 +206,7 @@ private fun PopulatedPresets(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(if (isDark) Color(0xFF_141_71C) else Color(0xFF_D8D_CE1))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         if (presets.visiblePresets.isEmpty()) {
             Text(
