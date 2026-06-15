@@ -345,7 +345,7 @@ internal fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
         Modifier
             .fillMaxWidth()
             .background(
-                color = if (LocalForceDarkMode.current) Color(0xFF_141_71C) else Color(0xFF_D8D_CE1),
+                color = MaterialTheme.colorScheme.background,
                 shape = RoundedCornerShape(8.dp)
             )
             .border(
