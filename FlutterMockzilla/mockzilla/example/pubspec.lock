@@ -424,28 +424,25 @@ packages:
     source: path
     version: "2.0.0"
   mockzilla_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: mockzilla_android
-      sha256: "61a6e5ef5b13898d5c861f3d3522678b287fae58bd3a3b09feac84fa6dcecf2f"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../mockzilla_android"
+      relative: true
+    source: path
     version: "2.0.0"
   mockzilla_ios:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: mockzilla_ios
-      sha256: "540f22b6db1f6d4b9e7f6e899a726392100237af1762485b1590391bc447a364"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../mockzilla_ios"
+      relative: true
+    source: path
     version: "2.0.0"
   mockzilla_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: mockzilla_platform_interface
-      sha256: e0b640c29fdb6603ae3d58a246d1b4d998f59514f3a9dfe2569ab4e6e429a5a4
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../mockzilla_platform_interface"
+      relative: true
+    source: path
     version: "2.0.0"
   mockzilla_ui_mobile:
     dependency: "direct main"
@@ -455,12 +452,11 @@ packages:
     source: path
     version: "1.0.0"
   mockzilla_web:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: mockzilla_web
-      sha256: dacac402c5f7efd992f8f2dab47940ea658e77cc94fc836008665e56e2438923
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../mockzilla_web"
+      relative: true
+    source: path
     version: "0.0.3"
   package_config:
     dependency: transitive

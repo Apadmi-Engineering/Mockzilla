@@ -155,12 +155,11 @@ packages:
     source: path
     version: "2.0.0"
   mockzilla_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: mockzilla_platform_interface
-      sha256: e0b640c29fdb6603ae3d58a246d1b4d998f59514f3a9dfe2569ab4e6e429a5a4
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../mockzilla_platform_interface"
+      relative: true
+    source: path
     version: "2.0.0"
   path:
     dependency: transitive
@@ -248,5 +247,5 @@ packages:
     source: hosted
     version: "15.0.0"
 sdks:
-  dart: ">=3.12.0 <4.0.0"
-  flutter: ">=3.44.0"
+  dart: ">=3.10.0-0 <4.0.0"
+  flutter: ">=3.18.0-18.0.pre.54"
