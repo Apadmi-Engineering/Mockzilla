@@ -24,46 +24,26 @@ import 'package:mockzilla_platform_interface/src/models.dart' as _i2;
 // ignore_for_file: subtype_of_sealed_class
 
 class _FakeDuration_0 extends _i1.SmartFake implements Duration {
-  _FakeDuration_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeDuration_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeDashboardOptionsConfig_1 extends _i1.SmartFake
     implements _i2.DashboardOptionsConfig {
-  _FakeDashboardOptionsConfig_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeDashboardOptionsConfig_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeMockzillaHttpResponse_2 extends _i1.SmartFake
     implements _i2.MockzillaHttpResponse {
-  _FakeMockzillaHttpResponse_2(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeMockzillaHttpResponse_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _Fake$EndpointConfigCopyWith_3<$Res> extends _i1.SmartFake
     implements _i2.$EndpointConfigCopyWith<$Res> {
-  _Fake$EndpointConfigCopyWith_3(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _Fake$EndpointConfigCopyWith_3(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _Fake$MockzillaHttpRequestCopyWith_4<$Res> extends _i1.SmartFake
@@ -71,10 +51,7 @@ class _Fake$MockzillaHttpRequestCopyWith_4<$Res> extends _i1.SmartFake
   _Fake$MockzillaHttpRequestCopyWith_4(
     Object parent,
     Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  ) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [EndpointConfig].
@@ -82,133 +59,148 @@ class _Fake$MockzillaHttpRequestCopyWith_4<$Res> extends _i1.SmartFake
 /// See the documentation for Mockito's code generation for more information.
 class MockEndpointConfig extends _i1.Mock implements _i2.EndpointConfig {
   @override
-  String get key => (super.noSuchMethod(
-        Invocation.getter(#key),
-        returnValue: _i3.dummyValue<String>(
-          this,
-          Invocation.getter(#key),
-        ),
-        returnValueForMissingStub: _i3.dummyValue<String>(
-          this,
-          Invocation.getter(#key),
-        ),
-      ) as String);
+  String get key =>
+      (super.noSuchMethod(
+            Invocation.getter(#key),
+            returnValue: _i3.dummyValue<String>(this, Invocation.getter(#key)),
+            returnValueForMissingStub: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#key),
+            ),
+          )
+          as String);
 
   @override
-  String get name => (super.noSuchMethod(
-        Invocation.getter(#name),
-        returnValue: _i3.dummyValue<String>(
-          this,
-          Invocation.getter(#name),
-        ),
-        returnValueForMissingStub: _i3.dummyValue<String>(
-          this,
-          Invocation.getter(#name),
-        ),
-      ) as String);
+  String get name =>
+      (super.noSuchMethod(
+            Invocation.getter(#name),
+            returnValue: _i3.dummyValue<String>(this, Invocation.getter(#name)),
+            returnValueForMissingStub: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#name),
+            ),
+          )
+          as String);
 
   @override
-  bool get shouldFail => (super.noSuchMethod(
-        Invocation.getter(#shouldFail),
-        returnValue: false,
-        returnValueForMissingStub: false,
-      ) as bool);
+  bool get shouldFail =>
+      (super.noSuchMethod(
+            Invocation.getter(#shouldFail),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
 
   @override
-  Duration get delay => (super.noSuchMethod(
-        Invocation.getter(#delay),
-        returnValue: _FakeDuration_0(
-          this,
-          Invocation.getter(#delay),
-        ),
-        returnValueForMissingStub: _FakeDuration_0(
-          this,
-          Invocation.getter(#delay),
-        ),
-      ) as Duration);
+  Duration get delay =>
+      (super.noSuchMethod(
+            Invocation.getter(#delay),
+            returnValue: _FakeDuration_0(this, Invocation.getter(#delay)),
+            returnValueForMissingStub: _FakeDuration_0(
+              this,
+              Invocation.getter(#delay),
+            ),
+          )
+          as Duration);
 
   @override
-  int get versionCode => (super.noSuchMethod(
-        Invocation.getter(#versionCode),
-        returnValue: 0,
-        returnValueForMissingStub: 0,
-      ) as int);
+  int get versionCode =>
+      (super.noSuchMethod(
+            Invocation.getter(#versionCode),
+            returnValue: 0,
+            returnValueForMissingStub: 0,
+          )
+          as int);
 
   @override
   _i4.FutureOr<bool> Function(_i2.MockzillaHttpRequest) get endpointMatcher =>
       (super.noSuchMethod(
-        Invocation.getter(#endpointMatcher),
-        returnValue: (_i2.MockzillaHttpRequest request) =>
-            _i4.Future<bool>.value(false),
-        returnValueForMissingStub: (_i2.MockzillaHttpRequest request) =>
-            _i4.Future<bool>.value(false),
-      ) as _i4.FutureOr<bool> Function(_i2.MockzillaHttpRequest));
+            Invocation.getter(#endpointMatcher),
+            returnValue: (_i2.MockzillaHttpRequest request) =>
+                _i4.Future<bool>.value(false),
+            returnValueForMissingStub: (_i2.MockzillaHttpRequest request) =>
+                _i4.Future<bool>.value(false),
+          )
+          as _i4.FutureOr<bool> Function(_i2.MockzillaHttpRequest));
 
   @override
-  _i2.DashboardOptionsConfig get dashboardOptionsConfig => (super.noSuchMethod(
-        Invocation.getter(#dashboardOptionsConfig),
-        returnValue: _FakeDashboardOptionsConfig_1(
-          this,
-          Invocation.getter(#dashboardOptionsConfig),
-        ),
-        returnValueForMissingStub: _FakeDashboardOptionsConfig_1(
-          this,
-          Invocation.getter(#dashboardOptionsConfig),
-        ),
-      ) as _i2.DashboardOptionsConfig);
+  _i2.DashboardOptionsConfig get dashboardOptionsConfig =>
+      (super.noSuchMethod(
+            Invocation.getter(#dashboardOptionsConfig),
+            returnValue: _FakeDashboardOptionsConfig_1(
+              this,
+              Invocation.getter(#dashboardOptionsConfig),
+            ),
+            returnValueForMissingStub: _FakeDashboardOptionsConfig_1(
+              this,
+              Invocation.getter(#dashboardOptionsConfig),
+            ),
+          )
+          as _i2.DashboardOptionsConfig);
 
   @override
   _i4.FutureOr<_i2.MockzillaHttpResponse> Function(_i2.MockzillaHttpRequest)
-      get defaultHandler => (super.noSuchMethod(
+  get defaultHandler =>
+      (super.noSuchMethod(
             Invocation.getter(#defaultHandler),
             returnValue: (_i2.MockzillaHttpRequest request) =>
                 _i4.Future<_i2.MockzillaHttpResponse>.value(
-                    _FakeMockzillaHttpResponse_2(
-              this,
-              Invocation.getter(#defaultHandler),
-            )),
+                  _FakeMockzillaHttpResponse_2(
+                    this,
+                    Invocation.getter(#defaultHandler),
+                  ),
+                ),
             returnValueForMissingStub: (_i2.MockzillaHttpRequest request) =>
                 _i4.Future<_i2.MockzillaHttpResponse>.value(
-                    _FakeMockzillaHttpResponse_2(
-              this,
-              Invocation.getter(#defaultHandler),
-            )),
-          ) as _i4.FutureOr<_i2.MockzillaHttpResponse> Function(
-              _i2.MockzillaHttpRequest));
+                  _FakeMockzillaHttpResponse_2(
+                    this,
+                    Invocation.getter(#defaultHandler),
+                  ),
+                ),
+          )
+          as _i4.FutureOr<_i2.MockzillaHttpResponse> Function(
+            _i2.MockzillaHttpRequest,
+          ));
 
   @override
   _i4.FutureOr<_i2.MockzillaHttpResponse> Function(_i2.MockzillaHttpRequest)
-      get errorHandler => (super.noSuchMethod(
+  get errorHandler =>
+      (super.noSuchMethod(
             Invocation.getter(#errorHandler),
             returnValue: (_i2.MockzillaHttpRequest request) =>
                 _i4.Future<_i2.MockzillaHttpResponse>.value(
-                    _FakeMockzillaHttpResponse_2(
-              this,
-              Invocation.getter(#errorHandler),
-            )),
+                  _FakeMockzillaHttpResponse_2(
+                    this,
+                    Invocation.getter(#errorHandler),
+                  ),
+                ),
             returnValueForMissingStub: (_i2.MockzillaHttpRequest request) =>
                 _i4.Future<_i2.MockzillaHttpResponse>.value(
-                    _FakeMockzillaHttpResponse_2(
-              this,
-              Invocation.getter(#errorHandler),
-            )),
-          ) as _i4.FutureOr<_i2.MockzillaHttpResponse> Function(
-              _i2.MockzillaHttpRequest));
+                  _FakeMockzillaHttpResponse_2(
+                    this,
+                    Invocation.getter(#errorHandler),
+                  ),
+                ),
+          )
+          as _i4.FutureOr<_i2.MockzillaHttpResponse> Function(
+            _i2.MockzillaHttpRequest,
+          ));
 
   @override
   _i2.$EndpointConfigCopyWith<_i2.EndpointConfig> get copyWith =>
       (super.noSuchMethod(
-        Invocation.getter(#copyWith),
-        returnValue: _Fake$EndpointConfigCopyWith_3<_i2.EndpointConfig>(
-          this,
-          Invocation.getter(#copyWith),
-        ),
-        returnValueForMissingStub:
-            _Fake$EndpointConfigCopyWith_3<_i2.EndpointConfig>(
-          this,
-          Invocation.getter(#copyWith),
-        ),
-      ) as _i2.$EndpointConfigCopyWith<_i2.EndpointConfig>);
+            Invocation.getter(#copyWith),
+            returnValue: _Fake$EndpointConfigCopyWith_3<_i2.EndpointConfig>(
+              this,
+              Invocation.getter(#copyWith),
+            ),
+            returnValueForMissingStub:
+                _Fake$EndpointConfigCopyWith_3<_i2.EndpointConfig>(
+                  this,
+                  Invocation.getter(#copyWith),
+                ),
+          )
+          as _i2.$EndpointConfigCopyWith<_i2.EndpointConfig>);
 }
 
 /// A class which mocks [MockzillaLogger].
@@ -221,19 +213,10 @@ class MockMockzillaLogger extends _i1.Mock implements _i2.MockzillaLogger {
     String? message,
     String? tag,
     Exception? exception,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #log,
-          [
-            level,
-            message,
-            tag,
-            exception,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
+  ) => super.noSuchMethod(
+    Invocation.method(#log, [level, message, tag, exception]),
+    returnValueForMissingStub: null,
+  );
 }
 
 /// A class which mocks [MockzillaHttpRequest].
@@ -242,58 +225,61 @@ class MockMockzillaLogger extends _i1.Mock implements _i2.MockzillaLogger {
 class MockMockzillaHttpRequest extends _i1.Mock
     implements _i2.MockzillaHttpRequest {
   @override
-  String get uri => (super.noSuchMethod(
-        Invocation.getter(#uri),
-        returnValue: _i3.dummyValue<String>(
-          this,
-          Invocation.getter(#uri),
-        ),
-        returnValueForMissingStub: _i3.dummyValue<String>(
-          this,
-          Invocation.getter(#uri),
-        ),
-      ) as String);
+  String get uri =>
+      (super.noSuchMethod(
+            Invocation.getter(#uri),
+            returnValue: _i3.dummyValue<String>(this, Invocation.getter(#uri)),
+            returnValueForMissingStub: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#uri),
+            ),
+          )
+          as String);
 
   @override
-  Map<String, String> get headers => (super.noSuchMethod(
-        Invocation.getter(#headers),
-        returnValue: <String, String>{},
-        returnValueForMissingStub: <String, String>{},
-      ) as Map<String, String>);
+  Map<String, String> get headers =>
+      (super.noSuchMethod(
+            Invocation.getter(#headers),
+            returnValue: <String, String>{},
+            returnValueForMissingStub: <String, String>{},
+          )
+          as Map<String, String>);
 
   @override
-  String get body => (super.noSuchMethod(
-        Invocation.getter(#body),
-        returnValue: _i3.dummyValue<String>(
-          this,
-          Invocation.getter(#body),
-        ),
-        returnValueForMissingStub: _i3.dummyValue<String>(
-          this,
-          Invocation.getter(#body),
-        ),
-      ) as String);
+  String get body =>
+      (super.noSuchMethod(
+            Invocation.getter(#body),
+            returnValue: _i3.dummyValue<String>(this, Invocation.getter(#body)),
+            returnValueForMissingStub: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#body),
+            ),
+          )
+          as String);
 
   @override
-  _i2.HttpMethod get method => (super.noSuchMethod(
-        Invocation.getter(#method),
-        returnValue: _i2.HttpMethod.get,
-        returnValueForMissingStub: _i2.HttpMethod.get,
-      ) as _i2.HttpMethod);
+  _i2.HttpMethod get method =>
+      (super.noSuchMethod(
+            Invocation.getter(#method),
+            returnValue: _i2.HttpMethod.get,
+            returnValueForMissingStub: _i2.HttpMethod.get,
+          )
+          as _i2.HttpMethod);
 
   @override
   _i2.$MockzillaHttpRequestCopyWith<_i2.MockzillaHttpRequest> get copyWith =>
       (super.noSuchMethod(
-        Invocation.getter(#copyWith),
-        returnValue:
-            _Fake$MockzillaHttpRequestCopyWith_4<_i2.MockzillaHttpRequest>(
-          this,
-          Invocation.getter(#copyWith),
-        ),
-        returnValueForMissingStub:
-            _Fake$MockzillaHttpRequestCopyWith_4<_i2.MockzillaHttpRequest>(
-          this,
-          Invocation.getter(#copyWith),
-        ),
-      ) as _i2.$MockzillaHttpRequestCopyWith<_i2.MockzillaHttpRequest>);
+            Invocation.getter(#copyWith),
+            returnValue:
+                _Fake$MockzillaHttpRequestCopyWith_4<_i2.MockzillaHttpRequest>(
+                  this,
+                  Invocation.getter(#copyWith),
+                ),
+            returnValueForMissingStub:
+                _Fake$MockzillaHttpRequestCopyWith_4<_i2.MockzillaHttpRequest>(
+                  this,
+                  Invocation.getter(#copyWith),
+                ),
+          )
+          as _i2.$MockzillaHttpRequestCopyWith<_i2.MockzillaHttpRequest>);
 }
