@@ -109,7 +109,7 @@ fun Tag(
     borderColor: Color,
     backgroundColor: Color = Color.Transparent,
     shape: Shape = RoundedCornerShape(8.dp),
-    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
 ) = Row(
     modifier = modifier
         .border(
@@ -206,7 +206,7 @@ internal fun PresetCard(
                 borderColor = statusColors.primary,
                 backgroundColor = if (isDark) Color.Transparent else statusColors.container,
                 shape = CircleShape,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
             )
             Spacer(Modifier.size(8.dp))
 

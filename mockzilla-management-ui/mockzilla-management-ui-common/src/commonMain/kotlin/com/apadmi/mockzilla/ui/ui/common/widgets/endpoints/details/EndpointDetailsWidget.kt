@@ -428,7 +428,7 @@ private fun ActivePresetBanner(
                 borderColor = statusColors.primary,
                 backgroundColor = Color.Transparent,
                 shape = CircleShape,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
             )
         }
         Text(

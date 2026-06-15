@@ -53,7 +53,7 @@ fun EdSection(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     initiallyExpanded: Boolean = true,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 14.dp, vertical = 12.dp),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
     headerActions: @Composable RowScope.() -> Unit = {},
     content: @Composable () -> Unit,
 ) {
