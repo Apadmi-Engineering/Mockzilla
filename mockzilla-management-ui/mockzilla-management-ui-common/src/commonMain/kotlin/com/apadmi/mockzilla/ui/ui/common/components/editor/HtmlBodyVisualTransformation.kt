@@ -1,10 +1,10 @@
-package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
+package com.apadmi.mockzilla.ui.ui.common.components.editor
 
 import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.ui.text.SpanStyle
 
-class HtmlBodyVisualTransformation(
+internal class HtmlBodyVisualTransformation(
     private val bracket: SpanStyle,
     private val tagName: SpanStyle,
     private val attributeName: SpanStyle,

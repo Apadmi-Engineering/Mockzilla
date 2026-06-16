@@ -1,19 +1,19 @@
 @file:Suppress("MAGIC_NUMBER")
 
-package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
+package com.apadmi.mockzilla.ui.ui.common.components.editor
 
 /**
  * @property startIndex First index of token in html
  * @property endIndex Last index of token in html
  * @property token Token type
  */
-data class HtmlTokenIndex(
+internal data class HtmlTokenIndex(
     val startIndex: Int,
     val endIndex: Int,
     val token: HtmlToken?
 )
 
-enum class HtmlToken {
+internal enum class HtmlToken {
     @Suppress("COMMENT_WHITE_SPACE")
     AttributeEquals,  // =
     AttributeName,  // identifier for attribute (class, id, href…)
@@ -25,7 +25,7 @@ enum class HtmlToken {
     ;
 }
 
-object HtmlTokens {
+internal object HtmlTokens {
     private val nextTokenList = listOf(
         "<!--", "<!DOCTYPE", "<!doctype",
         "</", "/>", "<", ">",

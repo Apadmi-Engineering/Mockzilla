@@ -144,7 +144,7 @@ internal class CreateEditPresetViewModel(
             Json.parseToJsonElement(newBody)
             currentState.copy(
                 body = newBody,
-                bodyParseError = newBody,
+                bodyParseError = null,
             )
         } catch (e: Exception) {
             currentState.copy(
@@ -179,24 +179,6 @@ internal class CreateEditPresetViewModel(
             newHeader = currentState.newHeader.copy(
                 key = key ?: currentState.newHeader.key,
                 value = value ?: currentState.newHeader.value
-            )
-        )
-    }
-
-    fun onUpdateHeader(
-        header: State.Editing.RequestHeader,
-        key: String? = null,
-        value: String? = null
-    ) {
-        val currentState = state.value as? State.Editing ?: return
-        val updatedHeader = currentState.headers.firstOrNull { it == header } ?: return
-
-        state.value = currentState.copy(
-            headers = currentState.headers.filter { it != header }.plus(
-                State.Editing.RequestHeader(
-                    key = key ?: updatedHeader.key,
-                    value = value ?: updatedHeader.value
-                )
             )
         )
     }

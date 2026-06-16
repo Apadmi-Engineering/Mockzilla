@@ -248,7 +248,12 @@ val EnStrings = Strings(
             bodyTypeLabel = "Body type",
             responseSectionLabel = "Response",
             bodyLabel = "Body",
-            jsonErrorTitle = "Invalid JSON:",
         )
+    ),
+    components = Strings.Components(
+        editor = Strings.Components.Editor(
+            largeFileSyntaxHighlightError = "Syntax highlighting disabled for large files",
+            jsonErrorTitle = "Invalid JSON:",
+        ),
     )
 )
