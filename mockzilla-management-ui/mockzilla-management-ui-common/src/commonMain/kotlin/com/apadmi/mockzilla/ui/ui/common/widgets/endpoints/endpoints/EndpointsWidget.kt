@@ -58,6 +58,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
@@ -147,15 +148,24 @@ private fun EndpointsList(
             modifier = Modifier.fillMaxSize()
         )
     } else {
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            state.endpoints.forEach { endpoint ->
-                EndpointRow(
-                    endpoint = endpoint,
-                    rowDensity = state.rowDensity,
-                    isSelected = endpoint.key == selectedKey,
-                    onEndpointClicked = onEndpointClicked,
-                )
+        val scrollState = rememberScrollState()
+        Box {
+            Column(modifier = Modifier.verticalScroll(scrollState)) {
+                state.endpoints.forEach { endpoint ->
+                    EndpointRow(
+                        endpoint = endpoint,
+                        rowDensity = state.rowDensity,
+                        isSelected = endpoint.key == selectedKey,
+                        onEndpointClicked = onEndpointClicked,
+                    )
+                }
             }
+            PlatformVerticalScrollbar(
+                scrollState = scrollState,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+            )
         }
     }
 }
