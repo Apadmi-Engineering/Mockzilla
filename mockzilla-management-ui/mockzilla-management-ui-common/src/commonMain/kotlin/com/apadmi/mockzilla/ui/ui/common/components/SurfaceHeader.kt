@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
@@ -32,7 +31,7 @@ fun SurfaceHeader(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = if (isDark) Color.Transparent else colorScheme.surface)
+            .background(color = colorScheme.surfaceContainer)
             .drawBehind {
                 if (isDark) {
                     val strokeWidth = 1.dp.toPx()

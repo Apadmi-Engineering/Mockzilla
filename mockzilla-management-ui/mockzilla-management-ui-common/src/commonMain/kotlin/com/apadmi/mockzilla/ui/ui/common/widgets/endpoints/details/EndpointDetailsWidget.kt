@@ -3,6 +3,7 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,6 +58,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.Clock
+import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.EdSection
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
@@ -70,16 +72,17 @@ import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.statusColors
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
-import com.apadmi.mockzilla.ui.ui.common.theme.success
+import com.apadmi.mockzilla.ui.ui.common.theme.chipSelectedBackground
+import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 
 import org.koin.core.parameter.parametersOf
-
-private val tealColor = Color(0xFF_0D9_488)
 
 @Composable
 private fun ColumnScope.PopulatedState(
@@ -93,10 +96,11 @@ private fun ColumnScope.PopulatedState(
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
+    onEditPreset: () -> Unit = {},
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
-    val accentColor = if (isDark) colorScheme.primary else tealColor
+    val accentColor = colorScheme.primary
 
     Box {
         SurfaceHeader(
@@ -113,16 +117,39 @@ private fun ColumnScope.PopulatedState(
                 )
             },
             content = {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    state.config.getOverriddenProperties().forEach { property ->
-                        Tag(
-                            label = property.displayName.uppercase(),
-                            textColor = accentColor,
-                            borderColor = accentColor.copy(alpha = 0.5f),
-                            backgroundColor = accentColor.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(4.dp),
-                            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
-                        )
+                val overrides = state.config.getOverriddenProperties()
+                val isForced = state.config.shouldFail == true
+                if (overrides.isEmpty() && !isForced) {
+                    Text(
+                        text = strings.widgets.endpoints.noOverrides,
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontFamily = mockzillaMonoFontFamily(),
+                            color = colorScheme.onSurfaceMuted,
+                            fontWeight = FontWeight.Normal,
+                        ),
+                    )
+                } else {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        if (isForced) {
+                            Tag(
+                                label = strings.widgets.endpoints.forced,
+                                textColor = colorScheme.error,
+                                borderColor = colorScheme.error.copy(alpha = 0.5f),
+                                backgroundColor = colorScheme.error.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(4.dp),
+                                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                        overrides.forEach { property ->
+                            Tag(
+                                label = property.displayName.uppercase(),
+                                textColor = accentColor,
+                                borderColor = accentColor.copy(alpha = 0.5f),
+                                backgroundColor = accentColor.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(4.dp),
+                                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -138,7 +165,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     state.presets.appliedPreset?.let { preset ->
-        ActivePresetBanner(preset = preset, onClear = onResetAll)
+        ActivePresetBanner(preset = preset, onClear = onResetAll, onEdit = onEditPreset)
     }
 
     EdSection(
@@ -173,51 +200,67 @@ private fun ColumnScope.PopulatedState(
     EdSection(
         label = "${strings.widgets.endpointDetails.presets.title} (${state.presets.allPresets.size})",
         icon = Icons.Default.DragIndicator,
+        contentPadding = PaddingValues(0.dp),
         headerActions = {
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(2.dp),
+                    .border(1.dp, colorScheme.outline, RoundedCornerShape(4.dp))
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(if (isDark) colorScheme.surfaceContainer else colorScheme.background)
+                    .padding(3.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(if (state.layoutMode == LayoutMode.Comfy) MaterialTheme.colorScheme.surface else Color.Transparent)
-                        .clickable { onLayoutModeChanged(LayoutMode.Comfy) }
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = "comfy",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = if (state.layoutMode == LayoutMode.Comfy) FontWeight.Bold else FontWeight.Normal,
-                        color = if (state.layoutMode == LayoutMode.Comfy) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(if (state.layoutMode == LayoutMode.Compact) MaterialTheme.colorScheme.surface else Color.Transparent)
-                        .clickable { onLayoutModeChanged(LayoutMode.Compact) }
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = "compact",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = if (state.layoutMode == LayoutMode.Compact) FontWeight.Bold else FontWeight.Normal,
-                        color = if (state.layoutMode == LayoutMode.Compact) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                listOf(LayoutMode.Comfy to "comfy", LayoutMode.Compact to "compact").forEach { (mode, label) ->
+                    val isSelected = state.layoutMode == mode
+                    val chipShape = RoundedCornerShape(4.dp)
+                    Box(
+                        modifier = Modifier
+                            .then(
+                                if (isSelected) {
+                                    Modifier
+                                        .border(1.dp, colorScheme.outline, chipShape)
+                                        .clip(chipShape)
+                                } else {
+                                    Modifier.clip(chipShape)
+                                }
+                            )
+                            .background(
+                                if (isSelected) colorScheme.chipSelectedBackground else Color.Transparent
+                            )
+                            .clickable { onLayoutModeChanged(mode) }
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Normal,
+                            color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
             Spacer(Modifier.width(8.dp))
-            BaseButton(
-                label = "Custom",
-                leadingIcon = Icons.Default.Add,
-                variant = ButtonVariant.Ghost,
-                size = ButtonSize.Sm,
-                onClick = onCreatePreset
-            )
+            val customLabel = strings.widgets.endpointDetails.presets.typeDescriptions.other
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .clickable(onClick = onCreatePreset)
+                    .padding(horizontal = 8.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(12.dp),
+                )
+                Text(
+                    text = customLabel,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
         }
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -226,6 +269,7 @@ private fun ColumnScope.PopulatedState(
                 onPresetFilterChanged = onFilterPresetChanged,
                 onDefaultPresetSelected = onDefaultPresetSelected,
                 onPresetMoreInfoClicked = onPresetMoreInfoClicked,
+                onEditPreset = onEditPreset,
                 showBorder = false,
                 showTitle = false
             )
@@ -247,6 +291,7 @@ fun EndpointDetailsWidget(
     device: Device,
     activeEndpoint: EndpointConfiguration.Key?,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
+    onEditPreset: (EndpointConfiguration.Key) -> Unit = {},
 ) {
     val uriHandler = LocalUriHandler.current
     val viewModel = getViewModel<EndpointDetailsViewModel>(
@@ -263,6 +308,7 @@ fun EndpointDetailsWidget(
         onFilterPresetChanged = viewModel::onFilterPresetChanged,
         onLayoutModeChanged = viewModel::onLayoutModeChanged,
         onCreatePreset = { activeEndpoint?.let { onCreatePreset(activeEndpoint) } },
+        onEditPreset = { activeEndpoint?.let { onEditPreset(activeEndpoint) } },
         onPresetMoreInfoClicked = {
             // TODO, Add preset docs and update link
             uriHandler.openUri("https://mockzilla.apadmi.dev/")
@@ -281,6 +327,7 @@ internal fun EndpointDetailsWidgetContent(
     onLayoutModeChanged: (LayoutMode) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
+    onEditPreset: () -> Unit = {},
     strings: Strings = LocalStrings.current,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -320,7 +367,8 @@ internal fun EndpointDetailsWidgetContent(
                     onLayoutModeChanged,
                     onDefaultPresetSelected,
                     onPresetMoreInfoClicked,
-                    onCreatePreset
+                    onCreatePreset,
+                    onEditPreset,
                 )
             }
         }
@@ -330,21 +378,21 @@ internal fun EndpointDetailsWidgetContent(
 @Composable
 private fun ActivePresetBanner(
     preset: DashboardOverridePreset,
-    onClear: () -> Unit
+    onClear: () -> Unit,
+    onEdit: () -> Unit = {},
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
-    val bannerBg = if (isDark) Color.Transparent else Color(0xFF_F0F_DFA)
-    val successColors = colorScheme.success
+    val statusColors = preset.statusColors()
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(bannerBg)
+            .background(statusColors.primary.copy(alpha = 0.08f))
             .drawBehind {
                 val strokeWidth = 1.dp.toPx()
                 drawLine(
-                    color = successColors.primary,
+                    color = statusColors.primary,
                     start = Offset(0f, 0f),
                     end = Offset(size.width, 0f),
                     strokeWidth = strokeWidth
@@ -365,23 +413,23 @@ private fun ActivePresetBanner(
         Icon(
             imageVector = Icons.Default.Check,
             contentDescription = null,
-            tint = successColors.primary,
+            tint = statusColors.primary,
             modifier = Modifier.size(16.dp)
         )
         Text(
             text = preset.name,
             style = MaterialTheme.typography.titleSmall,
-            color = successColors.primary,
+            color = statusColors.primary,
             fontWeight = FontWeight.Bold,
         )
         preset.response.statusCode?.let {
             Tag(
                 label = it.value.toString(),
-                textColor = successColors.primary,
-                borderColor = successColors.primary,
+                textColor = statusColors.primary,
+                borderColor = statusColors.primary,
                 backgroundColor = Color.Transparent,
                 shape = CircleShape,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
             )
         }
         Text(
@@ -390,6 +438,26 @@ private fun ActivePresetBanner(
             color = colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.weight(1f))
+        Row(
+            modifier = Modifier
+                .clip(RoundedCornerShape(6.dp))
+                .clickable { onEdit() }
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Icon(
+                imageVector = Icons.EditUnderscore,
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+                tint = colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = "Edit",
+                style = MaterialTheme.typography.labelMedium,
+                color = colorScheme.onSurfaceVariant,
+            )
+        }
         IconButton(onClick = onClear, modifier = Modifier.size(24.dp)) {
             Icon(
                 imageVector = Icons.Default.Close,
