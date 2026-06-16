@@ -158,30 +158,24 @@ private fun PopulatedPresets(
             if (showTitle) {
                 Spacer(Modifier.size(8.dp))
             }
-            val bgColor = MaterialTheme.colorScheme.surfaceContainer
-            val borderColor = MaterialTheme.colorScheme.outline
-            val hintColor = MaterialTheme.colorScheme.onSurfaceMuted
-            val textColor = MaterialTheme.colorScheme.onSurface
-            val fieldShape = RoundedCornerShape(8.dp)
-
             BasicTextField(
                 value = presets.filter,
                 onValueChange = onPresetFilterChanged,
                 singleLine = true,
-                textStyle = MaterialTheme.typography.bodyMedium.copy(color = textColor),
+                textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(fieldShape)
-                    .background(bgColor, fieldShape)
-                    .border(1.dp, borderColor, fieldShape)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp))
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 decorationBox = { innerTextField ->
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = null,
-                            tint = hintColor,
+                            tint = MaterialTheme.colorScheme.onSurfaceMuted,
                             modifier = Modifier.size(16.dp),
                         )
                         Spacer(Modifier.width(8.dp))
@@ -190,7 +184,7 @@ private fun PopulatedPresets(
                                 Text(
                                     text = strings.filterPlaceholder,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = hintColor,
+                                    color = MaterialTheme.colorScheme.onSurfaceMuted,
                                 )
                             }
                             innerTextField()
