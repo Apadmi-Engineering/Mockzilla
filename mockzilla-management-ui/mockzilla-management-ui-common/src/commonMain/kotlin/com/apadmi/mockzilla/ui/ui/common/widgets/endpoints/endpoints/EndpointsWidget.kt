@@ -21,9 +21,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Search
@@ -148,10 +150,10 @@ private fun EndpointsList(
             modifier = Modifier.fillMaxSize()
         )
     } else {
-        val scrollState = rememberScrollState()
+        val listState = rememberLazyListState()
         Box {
-            Column(modifier = Modifier.verticalScroll(scrollState)) {
-                state.endpoints.forEach { endpoint ->
+            LazyColumn(state = listState) {
+                items(state.endpoints) { endpoint ->
                     EndpointRow(
                         endpoint = endpoint,
                         rowDensity = state.rowDensity,
@@ -161,7 +163,7 @@ private fun EndpointsList(
                 }
             }
             PlatformVerticalScrollbar(
-                scrollState = scrollState,
+                scrollState = listState,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .fillMaxHeight()
