@@ -260,6 +260,7 @@ private fun ColumnScope.PopulatedState(
                 Text(
                     text = str.statusCodeRowLabel,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
                 )
                 Box(
@@ -285,6 +286,7 @@ private fun ColumnScope.PopulatedState(
                 Text(
                     text = str.bodyTypeLabel,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
                 )
                 Box(
@@ -463,6 +465,7 @@ private fun BodySection(
         Text(
             text = strings.bodyLabel,
             style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         if (isJsonError) {
@@ -498,6 +501,7 @@ private fun BodySection(
                 imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
                 contentDescription = if (isExpanded) "Collapse" else "Expand",
                 modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -550,6 +554,7 @@ private fun PanelHeader(
                 State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
             },
             style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold,
         )
         endpointName?.let {
@@ -632,7 +637,8 @@ private fun StatusCodeDropdown(
                 )
                 Text(
                     text = statusCode.description,
-                    style = titleStyle
+                    style = titleStyle,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             } ?: Text(
                 text = strings.noOverrideStatusCode,
