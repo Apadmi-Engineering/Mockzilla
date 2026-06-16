@@ -1,21 +1,22 @@
-package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
+package com.apadmi.mockzilla.ui.ui.common.components.editor
 
 /**
  * @property startIndex First index of token in json
  * @property endIndex Last index of token in json
  * @property token Token type
  */
-data class TokenIndex(
+internal data class TokenIndex(
     val startIndex: Int,
     val endIndex: Int,
     val token: Token?
 )
 
-enum class Token {
+internal enum class Token {
     BlockComment,  // /* .... */
     Boolean,  // true or false
     CloseArray,  // ]
     CloseObject,  // }
+    Key,  // "foo" when followed by :
     @Suppress("COMMENT_WHITE_SPACE")
     KeySeparator, // :
     LineComment,  // //
@@ -23,12 +24,12 @@ enum class Token {
     Number,  // 123.45
     OpenArray,  // [
     OpenObject,  // {
-    String,  // "foo"
+    String,  // "foo" when not followed by :
     ValueSeparator,  // ,
     ;
 }
 
-object JsonTokens {
+internal object JsonTokens {
     private val startOfNumberTokens = listOf(
         "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "+"
     )
@@ -147,7 +148,7 @@ object JsonTokens {
                 return TokenIndex(
                     startIndex = index,
                     endIndex = i,
-                    token = Token.String
+                    token = if (isKeyString(body, i)) Token.Key else Token.String
                 )
             }
             if (token == "true") {
@@ -184,4 +185,12 @@ object JsonTokens {
             token = null
         )
     }
+}
+
+private fun isKeyString(body: String, afterIndex: Int): Boolean {
+    var i = afterIndex
+    while (i < body.length && body[i] in " \t\r\n") {
+        i++
+    }
+    return i < body.length && body[i] == ':'
 }

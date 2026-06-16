@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.ui.ui.widgets.endpoints.details
 
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.JsonTokens
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.Token
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.TokenIndex
+import com.apadmi.mockzilla.ui.ui.common.components.editor.JsonTokens
+import com.apadmi.mockzilla.ui.ui.common.components.editor.Token
+import com.apadmi.mockzilla.ui.ui.common.components.editor.TokenIndex
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -32,24 +32,24 @@ class JsonTokensTests {
         assertEquals(
             listOf(
                 TokenIndex(startIndex = 0, endIndex = 1, token = Token.OpenObject),
-                TokenIndex(startIndex = 5, endIndex = 10, token = Token.String),
+                TokenIndex(startIndex = 5, endIndex = 10, token = Token.Key),
                 TokenIndex(startIndex = 10, endIndex = 11, token = Token.KeySeparator),
                 TokenIndex(startIndex = 12, endIndex = 17, token = Token.String),
                 TokenIndex(startIndex = 17, endIndex = 18, token = Token.ValueSeparator),
-                TokenIndex(startIndex = 22, endIndex = 28, token = Token.String),
+                TokenIndex(startIndex = 22, endIndex = 28, token = Token.Key),
                 TokenIndex(startIndex = 28, endIndex = 29, token = Token.KeySeparator),
                 TokenIndex(startIndex = 30, endIndex = 34, token = Token.Boolean),
                 TokenIndex(startIndex = 34, endIndex = 35, token = Token.ValueSeparator),
                 TokenIndex(startIndex = 36, endIndex = 49, token = Token.LineComment),
-                TokenIndex(startIndex = 52, endIndex = 59, token = Token.String),
+                TokenIndex(startIndex = 52, endIndex = 59, token = Token.Key),
                 TokenIndex(startIndex = 59, endIndex = 60, token = Token.KeySeparator),
                 TokenIndex(startIndex = 61, endIndex = 66, token = Token.Boolean),
                 TokenIndex(startIndex = 66, endIndex = 67, token = Token.ValueSeparator),
-                TokenIndex(startIndex = 72, endIndex = 78, token = Token.String),
+                TokenIndex(startIndex = 72, endIndex = 78, token = Token.Key),
                 TokenIndex(startIndex = 78, endIndex = 79, token = Token.KeySeparator),
                 TokenIndex(startIndex = 80, endIndex = 84, token = Token.Null),
                 TokenIndex(startIndex = 84, endIndex = 85, token = Token.ValueSeparator),
-                TokenIndex(startIndex = 90, endIndex = 96, token = Token.String),
+                TokenIndex(startIndex = 90, endIndex = 96, token = Token.Key),
                 TokenIndex(startIndex = 96, endIndex = 97, token = Token.KeySeparator),
                 TokenIndex(startIndex = 98, endIndex = 99, token = Token.OpenArray),
                 TokenIndex(startIndex = 100, endIndex = 105, token = Token.Boolean),
@@ -66,7 +66,7 @@ class JsonTokensTests {
                 TokenIndex(startIndex = 162, endIndex = 166, token = Token.String),
                 TokenIndex(startIndex = 167, endIndex = 168, token = Token.CloseArray),
                 TokenIndex(startIndex = 168, endIndex = 169, token = Token.ValueSeparator),
-                TokenIndex(startIndex = 174, endIndex = 183, token = Token.String),
+                TokenIndex(startIndex = 174, endIndex = 183, token = Token.Key),
                 TokenIndex(startIndex = 183, endIndex = 184, token = Token.KeySeparator),
                 TokenIndex(startIndex = 185, endIndex = 186, token = Token.OpenArray),
                 TokenIndex(startIndex = 187, endIndex = 188, token = Token.Number),

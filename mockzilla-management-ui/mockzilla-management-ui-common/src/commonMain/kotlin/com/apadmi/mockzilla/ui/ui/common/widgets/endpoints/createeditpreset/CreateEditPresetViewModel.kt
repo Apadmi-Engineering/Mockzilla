@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset
 
 import androidx.compose.runtime.mutableStateOf
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
@@ -10,6 +10,7 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
@@ -62,9 +63,7 @@ internal class CreateEditPresetViewModel(
                 isSaving = false,
                 statusCode = current?.response?.statusCode.takeIf { isEditing },
                 body = current?.response?.body.takeIf { isEditing },
-                // Always starts as false because we assume plaintext if parsing
-                // the body as JSON fails
-                hasBodyError = false,
+                bodyParseError = null,
                 headers = current?.response?.headers
                     ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
                     .takeIf { isEditing } ?: emptyList(),
@@ -141,21 +140,30 @@ internal class CreateEditPresetViewModel(
 
     fun onNewResponseBody(newBody: String) {
         val currentState = state.value as? State.Editing ?: return
-        val hasBodyError = try {
+        state.value = try {
             Json.parseToJsonElement(newBody)
-            false
-        } catch (_: Exception) {
-            true
+            currentState.copy(
+                body = newBody,
+                bodyParseError = null,
+            )
+        } catch (e: Exception) {
+            currentState.copy(
+                body = newBody,
+                bodyParseError = e.message?.substringBefore("\nJSON input:")?.trim(),
+            )
         }
-        state.value = currentState.copy(body = newBody, hasBodyError = hasBodyError)
     }
 
     fun onFormatResponseBody() {
         val currentState = state.value as? State.Editing ?: return
         val bodyResponse = currentState.body ?: return
 
-        val prettyJson = Json { prettyPrint = true }
-        val formatted = prettyJson.encodeToString(Json.parseToJsonElement(bodyResponse))
+        val formatted = when (currentState.responseType) {
+            State.Editing.ResponseType.Json -> bodyResponse.prettyPrintJson()
+            State.Editing.ResponseType.Html,
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.None -> return
+        }
 
         state.value = currentState.copy(body = formatted)
     }
@@ -171,24 +179,6 @@ internal class CreateEditPresetViewModel(
             newHeader = currentState.newHeader.copy(
                 key = key ?: currentState.newHeader.key,
                 value = value ?: currentState.newHeader.value
-            )
-        )
-    }
-
-    fun onUpdateHeader(
-        header: State.Editing.RequestHeader,
-        key: String? = null,
-        value: String? = null
-    ) {
-        val currentState = state.value as? State.Editing ?: return
-        val updatedHeader = currentState.headers.firstOrNull { it == header } ?: return
-
-        state.value = currentState.copy(
-            headers = currentState.headers.filter { it != header }.plus(
-                State.Editing.RequestHeader(
-                    key = key ?: updatedHeader.key,
-                    value = value ?: updatedHeader.value
-                )
             )
         )
     }
@@ -223,15 +213,15 @@ internal class CreateEditPresetViewModel(
          * @property headers
          * @property newHeader The header currently being edited by the user in the UI
          * @property responseType
-         * @property hasBodyError
          * @property variant
          * @property endpointName The display name of the endpoint shown in the list
+         * @property bodyParseError
          */
         data class Editing(
             val isSaving: Boolean,
             val statusCode: HttpStatusCode?,
             val body: String? = null,
-            val hasBodyError: Boolean = false,
+            val bodyParseError: String? = null,
             val headers: List<RequestHeader> = emptyList(),
             val newHeader: RequestHeader = RequestHeader(),
             val responseType: ResponseType,

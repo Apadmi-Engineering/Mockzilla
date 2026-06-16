@@ -397,6 +397,7 @@
 # This rule prohibits usage of `var`s as local variables - the only exception is accumulators and counters
 - name: SAY_NO_TO_VAR
   enabled: true
+  ignoreAnnotated: [ Composable ]
 # Inspection that checks if string template has redundant quotes
 - name: STRING_TEMPLATE_QUOTES
   enabled: true

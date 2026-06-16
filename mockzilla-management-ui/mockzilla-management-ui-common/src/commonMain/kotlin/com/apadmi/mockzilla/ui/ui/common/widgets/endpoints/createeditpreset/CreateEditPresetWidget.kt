@@ -6,10 +6,14 @@
 
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -25,17 +29,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AlignVerticalTop
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material.icons.filled.Fullscreen
+import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -51,16 +55,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,7 +69,6 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.assets.DragCorner
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
@@ -81,137 +79,17 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
+import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorTextField
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
-import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
-import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
-import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.urlToTitle
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Kept for EditResponseBody.kt compatibility – do NOT remove or rename.
-// ──────────────────────────────────────────────────────────────────────────────
-
-@Composable
-internal fun Modifier.card() = fillMaxWidth()
-    .background(
-        color = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(12.dp)
-    )
-    .border(
-        width = 1.dp,
-        color = MaterialTheme.colorScheme.outline,
-        shape = RoundedCornerShape(12.dp)
-    )
-
-@Composable
-private fun ColumnScope.PanelHeader(
-    state: State.Editing,
-    endpointName: String?,
-    onCancel: () -> Unit,
-    onSave: () -> Unit,
-    strings: Strings = LocalStrings.current,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-            .padding(horizontal = 12.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = when (state.variant) {
-                    State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
-                    State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
-                },
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-            )
-            endpointName?.let {
-                Text(
-                    text = strings.widgets.createEditPreset.endpointSubtitle(it),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-        CustomOutlineButton(
-            label = strings.widgets.createEditPreset.cancel,
-            variant = OutlineButtonVariant.Secondary,
-            onClick = onCancel,
-        )
-        BaseButton(
-            label = strings.widgets.createEditPreset.save,
-            variant = ButtonVariant.Solid,
-            size = ButtonSize.Md,
-            leadingIcon = Icons.Default.Done,
-            onClick = onSave,
-        )
-    }
-
-    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-}
-
-@Composable
-private fun ColumnScope.BodySection(
-    state: State.Editing,
-    onNewResponseBody: (String) -> Unit,
-    strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
-) = Column(
-    modifier = Modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.surfaceContainer),
-) {
-    val isJsonError = state.responseType == State.Editing.ResponseType.Json &&
-            state.body?.isNotEmpty() == true && state.hasBodyError
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = strings.bodyLabel,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f),
-        )
-        // Right side: "invalid JSON" in red when error, otherwise char count in green
-        if (isJsonError) {
-            Text(
-                text = strings.invalidLabel,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.error,
-            )
-        } else {
-            Text(
-                text = strings.responseCharacters(state.body?.length ?: 0),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.success.primary,
-            )
-        }
-    }
-
-    JsonBodyTextField(
-        body = state.body ?: "",
-        onBodyChange = onNewResponseBody,
-        placeholder = strings.responseBodyPlaceholder,
-        isError = isJsonError,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-}
 
 @Composable
 private fun ColumnScope.HeadersSection(
@@ -232,7 +110,7 @@ private fun ColumnScope.HeadersSection(
             Text(
                 text = header.key,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.jsonKey,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f),
             )
             Row(
@@ -344,104 +222,125 @@ private fun ColumnScope.PopulatedState(
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
+    onFormatResponseBody: () -> Unit,
     onUpdateNewHeader: (String?, String?) -> Unit,
     onAddHeader: () -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
+    isBodyExpanded: Boolean,
+    onToggleBodyExpanded: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
     val str = strings.widgets.createEditPreset
 
-    PanelHeader(state, endpointName, onCancel, onSave, strings)
-
-    // ── RESPONSE section ─────────────────────────────────────────────────────
-    SectionLabel(str.responseSectionLabel)
-
-    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-    // Status code — label left, dropdown aligned with body-type toggle start
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
+    AnimatedVisibility(
+        visible = !isBodyExpanded,
+        enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
-        Text(
-            text = str.statusCodeRowLabel,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f),
-        )
-        Box(
-            modifier = Modifier.weight(3f),
-            contentAlignment = Alignment.CenterStart,
-        ) {
-            StatusCodeDropdown(
-                statusCode = state.statusCode,
-                onSelected = onStatusCodeSelected,
-                strings = str,
-            )
-        }
+        PanelHeader(state, endpointName, onCancel, onSave, strings)
     }
 
-    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-    // Body type — label left, toggle starts at same x as dropdown above
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
+    AnimatedVisibility(
+        visible = !isBodyExpanded,
+        enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
-        Text(
-            text = str.bodyTypeLabel,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f),
-        )
-        Box(
-            modifier = Modifier.weight(3f),
-            contentAlignment = Alignment.CenterStart,
-        ) {
-            BodyTypeToggle(
-                selected = state.responseType,
-                onSelect = onNewResponseType,
-                strings = str,
-            )
+        Column {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            SectionLabel(str.responseSectionLabel)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = str.statusCodeRowLabel,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f),
+                )
+                Box(
+                    modifier = Modifier.weight(3f),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    StatusCodeDropdown(
+                        statusCode = state.statusCode,
+                        onSelected = onStatusCodeSelected,
+                        strings = str,
+                    )
+                }
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            // Body type — label left, toggle starts at same x as dropdown above
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = str.bodyTypeLabel,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f),
+                )
+                Box(
+                    modifier = Modifier.weight(3f),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    BodyTypeToggle(
+                        selected = state.responseType,
+                        onSelect = onNewResponseType,
+                        strings = str,
+                    )
+                }
+            }
+            if (state.responseType != State.Editing.ResponseType.None) {
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            }
         }
     }
 
     if (state.responseType != State.Editing.ResponseType.None) {
-        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-        BodySection(state, onNewResponseBody, str)
+        BodySection(
+            state = state,
+            onNewResponseBody = onNewResponseBody,
+            onFormatResponseBody = onFormatResponseBody,
+            isExpanded = isBodyExpanded,
+            onToggleExpand = onToggleBodyExpanded,
+            modifier = if (isBodyExpanded) Modifier.weight(1f) else Modifier,
+            strings = str,
+        )
     }
 
-    // ── HEADERS section ───────────────────────────────────────────────────────
-    val headerCount = state.headers.size
-    val headersLabel = if (headerCount > 0) {
-        "${strings.widgets.createEditPreset.headersTitle} ($headerCount)"
-    } else {
-        strings.widgets.createEditPreset.headersTitle
+    AnimatedVisibility(
+        visible = !isBodyExpanded,
+        enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
+        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
+    ) {
+        val headerCount = state.headers.size
+        val headersLabel = if (headerCount > 0) {
+            "${strings.widgets.createEditPreset.headersTitle} ($headerCount)"
+        } else {
+            strings.widgets.createEditPreset.headersTitle
+        }
+        Column {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            SectionLabel(headersLabel)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            HeadersSection(
+                state = state,
+                onUpdateNewHeader = onUpdateNewHeader,
+                onAddHeader = onAddHeader,
+                onRemoveHeader = onRemoveHeader,
+                strings = str,
+            )
+        }
     }
-
-    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-    SectionLabel(headersLabel)
-
-    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-    HeadersSection(
-        state = state,
-        onUpdateNewHeader = onUpdateNewHeader,
-        onAddHeader = onAddHeader,
-        onRemoveHeader = onRemoveHeader,
-        strings = str,
-    )
 }
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Public API
-// ──────────────────────────────────────────────────────────────────────────────
 
 @Composable
 fun CreateEditPresetWidget(
@@ -472,6 +371,7 @@ fun CreateEditPresetWidget(
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
+        onFormatResponseBody = viewModel::onFormatResponseBody,
         onUpdateNewHeader = viewModel::onUpdateNewHeader,
         onAddHeader = viewModel::onAddHeader,
         onRemoveHeader = viewModel::onRemoveHeader,
@@ -487,83 +387,192 @@ internal fun CreateEditPresetWidgetContent(
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
+    onFormatResponseBody: () -> Unit = {},
     onUpdateNewHeader: (String?, String?) -> Unit,
     onAddHeader: () -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
     strings: Strings = LocalStrings.current,
-) = Column(
-    modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(rememberScrollState())
-        .background(color = MaterialTheme.colorScheme.surfaceContainer)
-        .navigationBarsPadding(),
 ) {
-    when (state) {
-        is State.Loading -> EmptyState(
-            title = strings.widgets.endpointDetails.emptyTitle,
-            description = strings.widgets.endpointDetails.emptyDescription,
-        )
+    @Suppress("SAY_NO_TO_VAR")
+    var isBodyExpanded by remember { mutableStateOf(false) }
 
-        is State.Editing -> PopulatedState(
-            state = state,
-            endpointName = endpointName,
-            onCancel = onCancel,
-            onSave = onSave,
-            onStatusCodeSelected = onStatusCodeSelected,
-            onNewResponseType = onNewResponseType,
-            onNewResponseBody = onNewResponseBody,
-            onUpdateNewHeader = onUpdateNewHeader,
-            onAddHeader = onAddHeader,
-            onRemoveHeader = onRemoveHeader,
-            strings = strings,
-        )
+    LaunchedEffect((state as? State.Editing)?.responseType) {
+        if ((state as? State.Editing)?.responseType == State.Editing.ResponseType.None) {
+            isBodyExpanded = false
+        }
     }
-}
 
-@Composable
-internal fun TitleRow(
-    isSet: Boolean,
-    icon: ImageVector,
-    onReset: () -> Unit,
-    title: String,
-    strings: Strings = LocalStrings.current,
-) = Row(
-    modifier = Modifier.padding(start = 12.dp, end = 4.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(8.dp)
-) {
-    Icon(imageVector = icon, modifier = Modifier.size(16.dp), contentDescription = null)
-    Text(modifier = Modifier.weight(1f), text = title, style = MaterialTheme.typography.titleMedium)
-    if (isSet) {
-        IconButton(onClick = onReset) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                imageVector = Icons.Default.Restore,
-                contentDescription = strings.common.resetDescription
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(if (!isBodyExpanded) Modifier.verticalScroll(rememberScrollState()) else Modifier)
+            .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .navigationBarsPadding(),
+    ) {
+        when (state) {
+            is State.Loading -> EmptyState(
+                title = strings.widgets.endpointDetails.emptyTitle,
+                description = strings.widgets.endpointDetails.emptyDescription,
+            )
+
+            is State.Editing -> PopulatedState(
+                state = state,
+                endpointName = endpointName,
+                onCancel = onCancel,
+                onSave = onSave,
+                onStatusCodeSelected = onStatusCodeSelected,
+                onNewResponseType = onNewResponseType,
+                onNewResponseBody = onNewResponseBody,
+                onFormatResponseBody = onFormatResponseBody,
+                onUpdateNewHeader = onUpdateNewHeader,
+                onAddHeader = onAddHeader,
+                onRemoveHeader = onRemoveHeader,
+                isBodyExpanded = isBodyExpanded,
+                onToggleBodyExpanded = { isBodyExpanded = !isBodyExpanded },
+                strings = strings,
             )
         }
     }
 }
 
-/**
- * Applies JSON syntax highlighting to [text] without reformatting it.
- * Uses the theme's [jsonHighlight] colour palette so it adapts to light/dark mode.
- * Suitable for editable fields because it never reorders the characters.
- *
- * @param text The raw JSON (or plain) string to highlight.
- * @return
- */
 @Composable
-internal fun buildJsonAnnotatedString(text: String) =
-    buildHighlightedAnnotatedString(
-        text = text,
-        colors = MaterialTheme.colorScheme.jsonHighlight,
-        reformat = false,
+private fun BodySection(
+    state: State.Editing,
+    onNewResponseBody: (String) -> Unit,
+    onFormatResponseBody: () -> Unit,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+    modifier: Modifier = Modifier,
+    strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
+) = Column(
+    modifier = modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.surfaceContainer),
+) {
+    val isJsonError = state.responseType == State.Editing.ResponseType.Json &&
+            state.body?.isNotEmpty() == true && state.bodyParseError != null
+    val isFormattable = state.responseType == State.Editing.ResponseType.Json
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = strings.bodyLabel,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        if (isJsonError) {
+            Text(
+                text = strings.responseCharacters(state.body.length),
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.weight(1f)
+            )
+        } else {
+            Text(
+                text = strings.responseCharacters(state.body?.length ?: 0),
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.onSurfaceFaint,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        CustomOutlineButton(
+            leadingIcon = Icons.Default.AlignVerticalTop,
+            label = strings.responseBodyFormat,
+            enabled = !isJsonError && isFormattable,
+            variant = OutlineButtonVariant.Secondary,
+            onClick = onFormatResponseBody,
+            modifier = Modifier.alpha(if (isFormattable) 1f else 0f)
+        )
+
+        IconButton(
+            onClick = onToggleExpand,
+            modifier = Modifier.size(40.dp),
+        ) {
+            Icon(
+                imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
+                contentDescription = if (isExpanded) "Collapse" else "Expand",
+                modifier = Modifier.size(18.dp),
+            )
+        }
+    }
+
+    EditorTextField(
+        body = state.body ?: "",
+        onBodyChange = onNewResponseBody,
+        mode = when (state.responseType) {
+            State.Editing.ResponseType.Json -> EditorMode.Json
+            State.Editing.ResponseType.Html -> EditorMode.Html
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.None -> EditorMode.PlainText
+        },
+        isExpanded = isExpanded,
+        placeholder = when (state.responseType) {
+            State.Editing.ResponseType.Json -> strings.responseBodyPlaceholder
+            State.Editing.ResponseType.Html -> strings.htmlBodyPlaceholder
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.None -> strings.plainBodyPlaceholder
+        },
+        parseError = state.bodyParseError.takeIf { isJsonError },
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(if (isExpanded) Modifier.weight(1f) else Modifier)
+            .padding(horizontal = 16.dp),
     )
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ──────────────────────────────────────────────────────────────────────────────
+    Spacer(modifier = Modifier.height(16.dp))
+}
+
+@Composable
+private fun PanelHeader(
+    state: State.Editing,
+    endpointName: String?,
+    onCancel: () -> Unit,
+    onSave: () -> Unit,
+    strings: Strings = LocalStrings.current,
+) = Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+        .padding(horizontal = 12.dp, vertical = 6.dp),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+) {
+    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            text = when (state.variant) {
+                State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
+                State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
+            },
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+        )
+        endpointName?.let {
+            Text(
+                text = strings.widgets.createEditPreset.endpointSubtitle(it),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceMuted,
+            )
+        }
+    }
+    CustomOutlineButton(
+        label = strings.widgets.createEditPreset.cancel,
+        variant = OutlineButtonVariant.Secondary,
+        onClick = onCancel,
+    )
+    BaseButton(
+        label = strings.widgets.createEditPreset.save,
+        variant = ButtonVariant.Solid,
+        size = ButtonSize.Md,
+        leadingIcon = Icons.Default.Done,
+        onClick = onSave,
+    )
+}
 
 private fun chipToneForStatusCode(code: Int) = when (code) {
     in 200..299 -> ChipTone.Ok
@@ -571,104 +580,6 @@ private fun chipToneForStatusCode(code: Int) = when (code) {
     in 400..499 -> ChipTone.Warn
     else -> ChipTone.Err
 }
-
-/**
- * Editable text field that applies [buildJsonAnnotatedString] syntax highlighting
- * on every keystroke without reformatting the user's text.
- */
-@Composable
-private fun JsonBodyTextField(
-    body: String,
-    onBodyChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    placeholder: String,
-    isError: Boolean = false,
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    // Capture at @Composable scope — these have @Composable getters and cannot be accessed
-    // inside remember{}, LaunchedEffect{}, or onValueChange{}.
-    val highlight = colorScheme.jsonHighlight
-    val placeholderColor = colorScheme.onSurfaceMuted
-    val density = LocalDensity.current
-
-    var fieldHeight by remember { mutableStateOf(200.dp) }
-
-    var fieldValue by remember {
-        mutableStateOf(
-            TextFieldValue(
-                annotatedString = buildHighlightedAnnotatedString(body, highlight, reformat = false)
-            )
-        )
-    }
-
-    // Sync external changes (e.g. ViewModel load) without resetting cursor
-    LaunchedEffect(body) {
-        if (fieldValue.text != body) {
-            fieldValue = TextFieldValue(
-                annotatedString = buildHighlightedAnnotatedString(
-                    body,
-                    highlight,
-                    reformat = false
-                ),
-                selection = TextRange(body.length),
-            )
-        }
-    }
-
-    Box(modifier = modifier) {
-        BasicTextField(
-            value = fieldValue,
-            onValueChange = { newValue ->
-                fieldValue = newValue.copy(
-                    annotatedString = buildHighlightedAnnotatedString(
-                        newValue.text,
-                        highlight,
-                        reformat = false
-                    )
-                )
-                onBodyChange(newValue.text)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(fieldHeight)
-                .clipToBounds()
-                .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
-                .border(1.dp, if (isError) colorScheme.error else colorScheme.outline, RoundedCornerShape(8.dp))
-                .padding(horizontal = 12.dp, vertical = 12.dp),
-            textStyle = MaterialTheme.typography.bodyMedium.copy(color = colorScheme.onSurface),
-            decorationBox = { innerTextField ->
-                Box {
-                    if (fieldValue.text.isEmpty()) {
-                        Text(
-                            text = placeholder,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = placeholderColor,
-                        )
-                    }
-                    innerTextField()
-                }
-            },
-        )
-        Icon(
-            imageVector = Icons.DragCorner,
-            contentDescription = null,
-            tint = colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .size(16.dp)
-                .pointerInput(Unit) {
-                    detectDragGestures { _, dragAmount ->
-                        val delta = with(density) { dragAmount.y.toDp() }
-                        fieldHeight = (fieldHeight + delta).coerceIn(100.dp, 600.dp)
-                    }
-                },
-        )
-    }
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Design components
-// ──────────────────────────────────────────────────────────────────────────────
 
 @Composable
 private fun SectionLabel(title: String) {
@@ -706,10 +617,10 @@ private fun StatusCodeDropdown(
     Box(modifier = modifier) {
         Row(
             modifier = Modifier
-                .width(130.dp)
-                .clickable { expanded = true }
+                .clip(RoundedCornerShape(8.dp))
                 .background(colorScheme.surfaceContainerLowest, RoundedCornerShape(8.dp))
                 .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+                .clickable { expanded = true }
                 .padding(horizontal = 10.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -837,7 +748,6 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
             isSaving = false,
             statusCode = HttpStatusCode.OK,
             body = "{\"key\": \"value\"}",
-            hasBodyError = false,
             headers = listOf(
                 State.Editing.RequestHeader(key = "Content-Type", value = "application/json"),
             ),

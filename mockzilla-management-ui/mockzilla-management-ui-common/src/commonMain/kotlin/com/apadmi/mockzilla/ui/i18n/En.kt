@@ -1,4 +1,4 @@
-@file:Suppress("COMPLEX_EXPRESSION")
+@file:Suppress("COMPLEX_EXPRESSION", "MAGIC_NUMBER")
 
 package com.apadmi.mockzilla.ui.i18n
 
@@ -225,9 +225,16 @@ val EnStrings = Strings(
             responseBodyFormat = "Format",
             responseBodyCopy = "Copy",
             responseBodyPlaceholder = "{\"key\": \"value\"}",
-            responseCharacters = { chars -> "$chars chars" },
+            htmlBodyPlaceholder = "<p>Hello world</p>",
+            plainBodyPlaceholder = "Response body...",
+            responseCharacters = { chars ->
+                when {
+                    chars > 9999 -> "${(chars / 1000)}k chars"
+                    else -> "$chars chars"
+                }
+            },
             validLabel = "Valid",
-            invalidLabel = "invalid JSON",
+            invalidLabel = "Invalid JSON",
             headersTitle = "Headers",
             addHeaderTitle = "Add New Header",
             addHeaderButton = "Add Header",
@@ -242,5 +249,11 @@ val EnStrings = Strings(
             responseSectionLabel = "Response",
             bodyLabel = "Body",
         )
+    ),
+    components = Strings.Components(
+        editor = Strings.Components.Editor(
+            largeFileSyntaxHighlightError = "Syntax highlighting disabled for large files",
+            jsonErrorTitle = "Invalid JSON:",
+        ),
     )
 )

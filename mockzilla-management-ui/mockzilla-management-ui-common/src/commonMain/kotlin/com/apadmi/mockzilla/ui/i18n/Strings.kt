@@ -16,11 +16,28 @@ private val strings = mapOf(
 /**
  * @property widgets
  * @property common
+ * @property components
  */
 data class Strings(
     val common: Common,
-    val widgets: Widgets
+    val widgets: Widgets,
+    val components: Components
 ) {
+    /**
+     * @property editor
+     */
+    data class Components(
+        val editor: Editor
+    ) {
+        /**
+         * @property largeFileSyntaxHighlightError
+         * @property jsonErrorTitle
+         */
+        data class Editor(
+            val largeFileSyntaxHighlightError: String,
+            val jsonErrorTitle: String,
+        )
+    }
     /**
      * @property closeDescription
      * @property backDescription
@@ -462,6 +479,8 @@ data class Strings(
          * @property bodyTypeLabel
          * @property responseSectionLabel
          * @property bodyLabel
+         * @property htmlBodyPlaceholder
+         * @property plainBodyPlaceholder
          */
         data class CreateEditPreset(
             val createTitle: String,
@@ -472,7 +491,6 @@ data class Strings(
             val bodyTitle: String,
             val bodyTypeJson: String,
             val bodyTypePlain: String,
-
             val bodyTypeHtml: String,
             val bodyTypeNone: String,
             val responseBodyFormat: String,
@@ -484,6 +502,8 @@ data class Strings(
             val addHeaderTitle: String,
             val addHeaderButton: String,
             val responseBodyPlaceholder: String,
+            val htmlBodyPlaceholder: String,
+            val plainBodyPlaceholder: String,
             val addHeaderKeyPlaceholder: String,
             val addHeaderValuePlaceholder: String,
             val unset: String,
