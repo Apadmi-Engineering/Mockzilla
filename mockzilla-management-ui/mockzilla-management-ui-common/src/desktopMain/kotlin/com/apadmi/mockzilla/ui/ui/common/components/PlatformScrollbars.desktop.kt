@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-private fun scrollbarStyle() = defaultScrollbarStyle().copy(
-    unhoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-    hoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-)
+actual fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier) =
+    HorizontalScrollbar(
+        adapter = rememberScrollbarAdapter(scrollState),
+        modifier = modifier,
+        style = scrollbarStyle(),
+    )
 
 @Composable
 internal actual fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier: Modifier) =
@@ -33,9 +35,7 @@ internal actual fun PlatformVerticalScrollbar(scrollState: LazyListState, modifi
     )
 
 @Composable
-actual fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier) =
-    HorizontalScrollbar(
-        adapter = rememberScrollbarAdapter(scrollState),
-        modifier = modifier,
-        style = scrollbarStyle(),
-    )
+private fun scrollbarStyle() = defaultScrollbarStyle().copy(
+    unhoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+    hoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+)
