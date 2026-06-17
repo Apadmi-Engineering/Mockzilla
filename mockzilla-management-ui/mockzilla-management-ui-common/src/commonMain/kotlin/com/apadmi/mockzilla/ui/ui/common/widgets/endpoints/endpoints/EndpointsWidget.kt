@@ -21,9 +21,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Search
@@ -58,6 +60,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
@@ -147,15 +150,24 @@ private fun EndpointsList(
             modifier = Modifier.fillMaxSize()
         )
     } else {
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            state.endpoints.forEach { endpoint ->
-                EndpointRow(
-                    endpoint = endpoint,
-                    rowDensity = state.rowDensity,
-                    isSelected = endpoint.key == selectedKey,
-                    onEndpointClicked = onEndpointClicked,
-                )
+        val listState = rememberLazyListState()
+        Box {
+            LazyColumn(state = listState) {
+                items(state.endpoints) { endpoint ->
+                    EndpointRow(
+                        endpoint = endpoint,
+                        rowDensity = state.rowDensity,
+                        isSelected = endpoint.key == selectedKey,
+                        onEndpointClicked = onEndpointClicked,
+                    )
+                }
             }
+            PlatformVerticalScrollbar(
+                scrollState = listState,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+            )
         }
     }
 }

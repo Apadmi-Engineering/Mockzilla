@@ -49,6 +49,7 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionTitle
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
@@ -144,40 +145,51 @@ internal fun LogDetailsContent(
     onTabSelected: (Tab) -> Unit,
     onClose: () -> Unit = {},
     strings: Strings = LocalStrings.current,
-) = Column(
-    modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-        .verticalScroll(rememberScrollState())
-        .background(MaterialTheme.colorScheme.surface)
-) {
-    LogHeaderBar(logDetail = logDetail, onClose = onClose)
-    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-    LogTabBar(selectedTab = state.selectedTab, onTabSelected = onTabSelected)
-    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+) = Box {
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+            .fillMaxHeight()
+            .verticalScroll(scrollState)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
-        when (state.selectedTab) {
-            Tab.Response -> {
-                SectionTitle(label = strings.widgets.logDetails.responseHeaders)
-                HeadersContent(logDetail.responseHeaders.toList(), strings)
-                Spacer(Modifier.height(8.dp))
-                SectionTitle(label = strings.widgets.logDetails.responseBody)
-                BodyContent(logDetail.responseBody, strings)
-            }
-            Tab.Request -> {
-                SectionTitle(label = strings.widgets.logDetails.requestHeaders)
-                HeadersContent(logDetail.requestHeaders.toList(), strings)
-                Spacer(Modifier.height(8.dp))
-                SectionTitle(label = strings.widgets.logDetails.requestBody)
-                BodyContent(logDetail.requestBody, strings)
+        LogHeaderBar(logDetail = logDetail, onClose = onClose)
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+        LogTabBar(selectedTab = state.selectedTab, onTabSelected = onTabSelected)
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            when (state.selectedTab) {
+                Tab.Response -> {
+                    SectionTitle(label = strings.widgets.logDetails.responseHeaders)
+                    HeadersContent(logDetail.responseHeaders.toList(), strings)
+                    Spacer(Modifier.height(8.dp))
+                    SectionTitle(label = strings.widgets.logDetails.responseBody)
+                    BodyContent(logDetail.responseBody, strings)
+                }
+
+                Tab.Request -> {
+                    SectionTitle(label = strings.widgets.logDetails.requestHeaders)
+                    HeadersContent(logDetail.requestHeaders.toList(), strings)
+                    Spacer(Modifier.height(8.dp))
+                    SectionTitle(label = strings.widgets.logDetails.requestBody)
+                    BodyContent(logDetail.requestBody, strings)
+                }
             }
         }
     }
+
+    PlatformVerticalScrollbar(
+        scrollState = scrollState,
+        modifier = Modifier
+            .align(Alignment.CenterEnd)
+            .fillMaxHeight()
+    )
 }
 
 @Composable
