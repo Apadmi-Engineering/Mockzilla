@@ -67,7 +67,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 
 import kotlin.Float
-import kotlin.random.Random
 
 private const val horizontalOsxButtonPaddingDp = 70
 
@@ -302,7 +301,7 @@ private fun DeviceTab(
                 } else if (isHovered) {
                     Modifier.background(
                         color = colorScheme.onSurface.copy(alpha = 0.08f),
-                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                        shape = RoundedCornerShape(8.dp),
                     )
                 } else {
                     Modifier
