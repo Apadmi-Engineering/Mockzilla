@@ -10,3 +10,6 @@ internal actual fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier
 
 @Composable
 internal actual fun PlatformVerticalScrollbar(scrollState: LazyListState, modifier: Modifier) = Unit
+
+@Composable
+internal actual fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier) = Unit
