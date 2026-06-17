@@ -14,10 +14,13 @@ import com.malinskiy.adam.request.forwarding.LocalTcpPortSpec
 import com.malinskiy.adam.request.forwarding.PortForwardRequest
 import com.malinskiy.adam.request.forwarding.RemoteTcpPortSpec
 import com.malinskiy.adam.request.shell.v2.ShellCommandRequest
+
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 
@@ -38,8 +41,14 @@ interface AdbConnectorService {
 
 object AdbConnectorServiceImpl : AdbConnectorService {
     private val ipParsingRegex = "addr:\\s*([^\\/\\s]*)".toRegex()
-    private suspend fun prepareAdb(): AndroidDebugBridgeClient {
-        StartAdbInteractor().execute()
+    var isStarted = false
+    val startedMutex = Mutex()
+    private suspend fun createClient(): AndroidDebugBridgeClient = startedMutex.withLock {
+        if (!isStarted) {
+            StartAdbInteractor().execute()
+            isStarted = true
+        }
+
         return AndroidDebugBridgeClientFactory().build()
     }
 
@@ -50,7 +59,7 @@ object AdbConnectorServiceImpl : AdbConnectorService {
         try {
             withTimeout(timeout) {
                 runCatching {
-                    block(prepareAdb())
+                    createClient().use { block(it) }
                 }
             }
         } catch (e: CancellationException) {
