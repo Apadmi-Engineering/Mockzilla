@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,6 +53,8 @@ import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionTitle
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.BodyVisualTransformation
+import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
@@ -59,6 +62,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsViewModel.State.ViewDetails
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsViewModel.State.ViewDetails.Tab
+import io.ktor.http.HttpHeaders
 
 import io.ktor.http.HttpStatusCode
 
@@ -141,7 +145,7 @@ internal fun MonitorLogDetailsContent(
 @Composable
 internal fun LogDetailsContent(
     logDetail: LogEvent,
-    state: MonitorLogDetailsViewModel.State.ViewDetails,
+    state: ViewDetails,
     onTabSelected: (Tab) -> Unit,
     onClose: () -> Unit = {},
     strings: Strings = LocalStrings.current,
@@ -170,7 +174,7 @@ internal fun LogDetailsContent(
                     HeadersContent(logDetail.responseHeaders.toList(), strings)
                     Spacer(Modifier.height(8.dp))
                     SectionTitle(label = strings.widgets.logDetails.responseBody)
-                    BodyContent(logDetail.responseBody, strings)
+                    BodyContent(logDetail.responseBody, logDetail.responseTypeFormat, strings)
                 }
 
                 Tab.Request -> {
@@ -178,7 +182,7 @@ internal fun LogDetailsContent(
                     HeadersContent(logDetail.requestHeaders.toList(), strings)
                     Spacer(Modifier.height(8.dp))
                     SectionTitle(label = strings.widgets.logDetails.requestBody)
-                    BodyContent(logDetail.requestBody, strings)
+                    BodyContent(logDetail.requestBody, logDetail.requestTypeFormat,strings)
                 }
             }
         }
@@ -190,6 +194,18 @@ internal fun LogDetailsContent(
             .align(Alignment.CenterEnd)
             .fillMaxHeight()
     )
+}
+
+private val LogEvent.responseTypeFormat: EditorMode
+    get() = responseHeaders[HttpHeaders.ContentType]?.lowercase().contentTypeToEditorMode()
+
+private val LogEvent.requestTypeFormat: EditorMode
+    get() = requestHeaders[HttpHeaders.ContentType]?.lowercase().contentTypeToEditorMode()
+
+private fun String?.contentTypeToEditorMode() = when {
+    this?.contains("json") == true -> EditorMode.Json
+    this?.contains("html") == true -> EditorMode.Html
+    else -> EditorMode.PlainText
 }
 
 @Composable
@@ -366,30 +382,33 @@ private fun LogTabBar(
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-private fun BodyContent(body: String, strings: Strings) {
+private fun BodyContent(
+    body: String,
+    mode: EditorMode,
+    strings: Strings = LocalStrings.current
+) {
     val monoFont = LocalMonoFontFamily.current
-    val cs = MaterialTheme.colorScheme
-    val trimmed = body.trim()
-    val isEmpty = trimmed.isEmpty() || trimmed == "{}" || trimmed == "[]"
+    val annotatedBody = BodyVisualTransformation.buildEditorOutputTransformation(mode)?.highlight(body)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = cs.onSurface.copy(alpha = 0.06f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
                 shape = RoundedCornerShape(6.dp),
             )
             .padding(10.dp),
     ) {
-        if (isEmpty) {
+        if (body.isEmpty()) {
             Text(
                 text = strings.widgets.logDetails.emptyBody,
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
-                color = cs.onSurface.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
             )
         } else {
             SelectionContainer {
                 Text(
-                    text = buildHighlightedAnnotatedString(body, MaterialTheme.colorScheme.jsonHighlight),
+                    text = annotatedBody ?: AnnotatedString(body),
                     style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
                 )
             }
