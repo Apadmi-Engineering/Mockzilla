@@ -178,9 +178,11 @@ data class Strings(
          * @property js
          * @property deviceSection
          * @property error
+         * @property viewAppMetaData
          */
         data class MetaData(
             val title: String,
+            val viewAppMetaData: String,
             val noDeviceConnected: String,
             val appName: String,
             val appPackage: String,
