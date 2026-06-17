@@ -350,6 +350,7 @@ fun CreateEditPresetWidget(
     activeEndpoint: EndpointConfiguration.Key,
     creatingNewPreset: Boolean,
     onCancel: () -> Unit = {},
+    onSave: () -> Unit = {},
 ) {
     val viewModel = getViewModel<CreateEditPresetViewModel>(
         key = "${activeEndpoint.raw}-$device"
@@ -369,7 +370,10 @@ fun CreateEditPresetWidget(
         state = state,
         endpointName = urlToTitle(activeEndpoint.raw),
         onCancel = onCancel,
-        onSave = viewModel::save,
+        onSave = {
+            viewModel.save()
+            onSave()
+        },
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,

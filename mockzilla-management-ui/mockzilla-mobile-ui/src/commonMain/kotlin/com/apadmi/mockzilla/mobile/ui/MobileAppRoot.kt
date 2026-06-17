@@ -195,6 +195,9 @@ private fun ConnectedState(
                         onCreatePreset = {
                             navController.navigate(Destination.CreateEditPreset(it.raw, true))
                         },
+                        onEditPreset = {
+                            navController.navigate(Destination.CreateEditPreset(it.raw, false))
+                        },
                     )
                 }
             }
@@ -227,6 +230,7 @@ private fun ConnectedState(
                             backStackEntry.toRoute<Destination.CreateEditPreset>().key,
                         ),
                         creatingNewPreset = backStackEntry.toRoute<Destination.CreateEditPreset>().creatingNewPreset,
+                        onSave = navController::navigateUp,
                     )
                 }
             }
