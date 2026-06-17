@@ -13,10 +13,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,6 +67,7 @@ import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
@@ -155,12 +159,14 @@ internal fun PresetCard(
     val iconTint = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant
     val titleColor = if (isSelected) colorScheme.primary else colorScheme.onSurface
 
+    val hasExpandableContent = !preset.response.body.isNullOrBlank()
     var expanded by rememberSaveable { mutableStateOf(false) }
     val chevronRotation by animateFloatAsState(
         targetValue = if (expanded) 0f else -90f,
         animationSpec = tween(200),
         label = "chevron",
     )
+    val chevronTint = if (hasExpandableContent) iconTint else colorScheme.onSurface.copy(alpha = 0.3f)
 
     Column(
         Modifier.fillMaxWidth()
@@ -179,7 +185,7 @@ internal fun PresetCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { expanded = !expanded }
+                .clickable(enabled = hasExpandableContent) { expanded = !expanded }
                 .padding(horizontal = 12.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -187,7 +193,7 @@ internal fun PresetCard(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp).rotate(chevronRotation),
-                tint = iconTint,
+                tint = chevronTint,
             )
             Spacer(Modifier.size(8.dp))
 
@@ -212,31 +218,39 @@ internal fun PresetCard(
 
             when (variant) {
                 PresetCardVariant.Selected -> Row(
+                    modifier = Modifier
+                        .height(IntrinsicSize.Min)
+                        .padding(vertical = 6.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Row(
+                    Box(
                         modifier = Modifier
+                            .fillMaxHeight()
                             .clip(RoundedCornerShape(6.dp))
                             .clickable { onEdit() }
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
-                        Icon(
-                            imageVector = Icons.EditUnderscore,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = strings.editLabel,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = colorScheme.onSurfaceVariant,
+                        Tag(
+                            modifier = Modifier.fillMaxHeight(),
+                            prefix = {
+                                Icon(
+                                    imageVector = Icons.EditUnderscore,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp),
+                                    tint = colorScheme.onSurface,
+                                )
+                            },
+                            label = strings.editLabel,
+                            textColor = colorScheme.onSurface,
+                            borderColor = colorScheme.outline,
+                            backgroundColor = colorScheme.surfaceContainer,
+                            shape = RoundedCornerShape(6.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                         )
                     }
 
                     Tag(
+                        modifier = Modifier.fillMaxHeight(),
                         prefix = {
                             Icon(
                                 modifier = Modifier.size(14.dp),
@@ -271,12 +285,12 @@ internal fun PresetCard(
             }
         }
 
-        if (!isCompact && !preset.description.isNullOrBlank()) {
+        if (expanded && !preset.description.isNullOrBlank()) {
             Text(
-                modifier = Modifier.padding(start = 36.dp, end = 12.dp, bottom = 4.dp),
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
                 text = preset.description ?: "",
                 style = MaterialTheme.typography.bodySmall,
-                color = colorScheme.onSurfaceVariant,
+                color = colorScheme.onSurfaceMuted,
             )
         }
 
