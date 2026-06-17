@@ -376,7 +376,7 @@ private fun MonitorLogsList(
 
     LazyColumn(modifier = modifier, state = listState) {
         entryList.forEach { logEvent ->
-            item(key = logEvent.timestamp) {
+            item(key = logEvent.id) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),

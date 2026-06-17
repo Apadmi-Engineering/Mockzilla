@@ -1,7 +1,13 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package com.apadmi.mockzilla.lib.internal.models
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
+
 import io.ktor.http.*
+
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import kotlinx.serialization.Serializable
 
 /**
@@ -15,9 +21,11 @@ import kotlinx.serialization.Serializable
  * @property delay
  * @property method
  * @property isIntendedFailure
+ * @property id
  */
 @Serializable
 data class LogEvent(
+    val id: String = Uuid.random().toString(),
     val timestamp: Long,
     val url: String,
     val requestBody: String,
