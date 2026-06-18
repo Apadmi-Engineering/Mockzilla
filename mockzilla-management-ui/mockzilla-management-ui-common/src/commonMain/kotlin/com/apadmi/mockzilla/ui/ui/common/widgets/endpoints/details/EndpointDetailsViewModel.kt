@@ -8,6 +8,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.deriveLegacyPreset
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
@@ -64,7 +65,7 @@ internal class EndpointDetailsViewModel(
                                 delayMillis = config.delayMs,
                                 isLoading = false,
                                 layoutMode = (currentState as? State.Endpoint)?.layoutMode
-                                    ?: State.Endpoint.LayoutMode.Compact,
+                                    ?: RowDensity.Compact,
                                 presets = State.Endpoint.Presets(
                                     appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
                                         // Remove all this once deprecated properties are removed
@@ -174,7 +175,7 @@ internal class EndpointDetailsViewModel(
         )
     }, { _, _ -> })
 
-    fun onLayoutModeChanged(layoutMode: State.Endpoint.LayoutMode) = onPropertyChanged({
+    fun onRowDensityChanged(layoutMode: RowDensity) = onPropertyChanged({
         copy(layoutMode = layoutMode)
     }, { _, _ -> })
 
@@ -199,13 +200,9 @@ internal class EndpointDetailsViewModel(
             val fail: Boolean?,
             val delayMillis: Int?,
             val isLoading: Boolean,
-            val layoutMode: LayoutMode,
+            val layoutMode: RowDensity,
             val presets: Presets,
         ) : State() {
-            enum class LayoutMode {
-                Comfy, Compact
-            }
-
             /**
              * @property appliedPreset
              * @property visiblePresets

@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,12 +41,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,15 +76,15 @@ import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
 import com.apadmi.mockzilla.ui.ui.common.components.statusColors
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
-import com.apadmi.mockzilla.ui.ui.common.theme.chipSelectedBackground
 import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 
 import org.koin.core.parameter.parametersOf
 
@@ -93,7 +96,7 @@ private fun ColumnScope.PopulatedState(
     onFailChange: (Boolean?) -> Unit,
     onDelayChange: (Int?) -> Unit,
     onFilterPresetChanged: (String) -> Unit,
-    onLayoutModeChanged: (LayoutMode) -> Unit,
+    onRowDensityChanged: (RowDensity) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
@@ -172,6 +175,10 @@ private fun ColumnScope.PopulatedState(
     EdSection(
         label = strings.widgets.endpointDetails.behavior,
         icon = Icons.LightningBolt,
+        headerActions = {
+            // Invisible control just to ensure the rows are a consistent height
+            RowDensityControls(modifier = Modifier.alpha(0f).clearAndSetSemantics {})
+        }
     ) {
         ForceFailureBanner(
             state = if (state.config.shouldFail == true) {
@@ -187,6 +194,10 @@ private fun ColumnScope.PopulatedState(
     EdSection(
         label = strings.widgets.endpointDetails.latency,
         icon = Icons.Clock,
+        headerActions = {
+            // Invisible control just to ensure the rows are a consistent height
+            RowDensityControls(modifier = Modifier.alpha(0f).clearAndSetSemantics {})
+        }
     ) {
         ResponseLatencyCard(
             initialValue = state.config.delayMs,
@@ -203,43 +214,10 @@ private fun ColumnScope.PopulatedState(
         icon = Icons.Default.DragIndicator,
         contentPadding = PaddingValues(0.dp),
         headerActions = {
-            Row(
-                modifier = Modifier
-                    .border(1.dp, colorScheme.outline, RoundedCornerShape(4.dp))
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(if (isDark) colorScheme.surfaceContainer else colorScheme.background)
-                    .padding(3.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                listOf(LayoutMode.Comfy to "comfy", LayoutMode.Compact to "compact").forEach { (mode, label) ->
-                    val isSelected = state.layoutMode == mode
-                    val chipShape = RoundedCornerShape(4.dp)
-                    Box(
-                        modifier = Modifier
-                            .then(
-                                if (isSelected) {
-                                    Modifier
-                                        .border(1.dp, colorScheme.outline, chipShape)
-                                        .clip(chipShape)
-                                } else {
-                                    Modifier.clip(chipShape)
-                                }
-                            )
-                            .background(
-                                if (isSelected) colorScheme.chipSelectedBackground else Color.Transparent
-                            )
-                            .clickable { onLayoutModeChanged(mode) }
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                    ) {
-                        Text(
-                            text = label,
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Normal,
-                            color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
+            RowDensityControls(
+                selected = state.layoutMode,
+                onChanged = onRowDensityChanged
+            )
             Spacer(Modifier.width(8.dp))
             val customLabel = strings.widgets.endpointDetails.presets.typeDescriptions.other
             Row(
@@ -270,9 +248,7 @@ private fun ColumnScope.PopulatedState(
                 onPresetFilterChanged = onFilterPresetChanged,
                 onDefaultPresetSelected = onDefaultPresetSelected,
                 onPresetMoreInfoClicked = onPresetMoreInfoClicked,
-                onEditPreset = onEditPreset,
-                showBorder = false,
-                showTitle = false
+                onEditPreset = onEditPreset
             )
         }
     }
@@ -307,12 +283,11 @@ fun EndpointDetailsWidget(
         onDefaultPresetSelected = viewModel::onPresetSelected,
         onResetAll = viewModel::onResetAll,
         onFilterPresetChanged = viewModel::onFilterPresetChanged,
-        onLayoutModeChanged = viewModel::onLayoutModeChanged,
+        onRowDensityChanged = viewModel::onRowDensityChanged,
         onCreatePreset = { activeEndpoint?.let { onCreatePreset(activeEndpoint) } },
         onEditPreset = { activeEndpoint?.let { onEditPreset(activeEndpoint) } },
         onPresetMoreInfoClicked = {
-            // TODO, Add preset docs and update link
-            uriHandler.openUri("https://mockzilla.apadmi.dev/")
+            uriHandler.openUri("https://mockzilla.apadmi.dev/presets/")
         }
     )
 }
@@ -325,7 +300,7 @@ internal fun EndpointDetailsWidgetContent(
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onResetAll: () -> Unit,
     onFilterPresetChanged: (String) -> Unit,
-    onLayoutModeChanged: (LayoutMode) -> Unit,
+    onRowDensityChanged: (RowDensity) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
     onEditPreset: () -> Unit = {},
@@ -368,7 +343,7 @@ internal fun EndpointDetailsWidgetContent(
                             onFailChange,
                             onDelayChange,
                             onFilterPresetChanged,
-                            onLayoutModeChanged,
+                            onRowDensityChanged,
                             onDefaultPresetSelected,
                             onPresetMoreInfoClicked,
                             onCreatePreset,

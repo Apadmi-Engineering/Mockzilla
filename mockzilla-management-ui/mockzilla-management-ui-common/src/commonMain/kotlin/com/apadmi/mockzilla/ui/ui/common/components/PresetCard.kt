@@ -74,7 +74,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.utils.formatting.BodyVisualTransformation
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.minifyJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.typeFormat
@@ -152,11 +152,11 @@ internal fun PresetCard(
     preset: DashboardOverridePreset,
     onClicked: (DashboardOverridePreset) -> Unit,
     onEdit: () -> Unit = {},
-    layoutMode: LayoutMode = LayoutMode.Compact,
+    layoutMode: RowDensity = RowDensity.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     val isDark = LocalForceDarkMode.current
-    val isCompact = layoutMode == LayoutMode.Compact
+    val isCompact = layoutMode == RowDensity.Compact
     val isSelected = variant == PresetCardVariant.Selected
     val shape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
     val statusColors = preset.statusColors()
@@ -303,13 +303,12 @@ internal fun PresetCard(
                     Column(modifier = Modifier.padding(bottom = 12.dp)) {
                         if (!preset.description.isNullOrBlank()) {
                             Text(
-                                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp),
+                                modifier = Modifier.padding(horizontal = 12.dp),
                                 text = preset.description ?: "",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = colorScheme.onSurfaceMuted,
                             )
                         }
-
                        Spacer(Modifier.size(4.dp))
                        ExpandableResponseBody(it, isCompact)
                     }
