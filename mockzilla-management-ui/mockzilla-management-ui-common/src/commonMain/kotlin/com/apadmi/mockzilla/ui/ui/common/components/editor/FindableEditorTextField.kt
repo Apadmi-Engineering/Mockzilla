@@ -13,8 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.OutputTransformation
-import androidx.compose.foundation.text.input.TextFieldBuffer
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -36,28 +35,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.isMetaPressed
 import androidx.compose.ui.input.key.isShiftPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
+
+import com.apadmi.mockzilla.ui.engine.find.FindReplaceState
+import com.apadmi.mockzilla.ui.engine.find.findMatches
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
-
-import androidx.compose.ui.input.key.isCtrlPressed
-
-private data class FindReplaceState(
-    val searchTerm: String = "",
-    val replaceTerm: String = "",
-    val matches: List<IntRange> = emptyList(),
-    val currentMatchIndex: Int = 0,
-    val isPanelOpen: Boolean = false,
-    val isReplaceMode: Boolean = false,
-)
 
 @Composable
 internal fun FindableEditorTextField(
@@ -69,6 +59,7 @@ internal fun FindableEditorTextField(
     placeholder: String,
     parseError: String? = null,
 ) {
+    val textFieldState = rememberTextFieldState(body)
     var state by remember { mutableStateOf(FindReplaceState()) }
 
     LaunchedEffect(body, state.searchTerm) {
@@ -86,10 +77,11 @@ internal fun FindableEditorTextField(
     val highlightTransformation = remember(
         state.matches,
         state.currentMatchIndex,
+        state.isPanelOpen,
         colorScheme.primary,
         colorScheme.onSurface,
     ) {
-        if (state.matches.isEmpty() || state.searchTerm.isEmpty()) {
+        if (state.matches.isEmpty() || state.searchTerm.isEmpty() || !state.isPanelOpen) {
             null
         } else {
             FindHighlightOutputTransformation(
@@ -101,25 +93,40 @@ internal fun FindableEditorTextField(
         }
     }
 
-    fun navigateNext() {
-        if (state.matches.isEmpty()) return
-        state = state.copy(currentMatchIndex = (state.currentMatchIndex + 1) % state.matches.size)
+    val navigateNext = {
+        if (state.matches.isNotEmpty()) {
+            state = state.copy(currentMatchIndex = (state.currentMatchIndex + 1) % state.matches.size)
+        }
     }
 
-    fun navigatePrev() {
-        if (state.matches.isEmpty()) return
-        state = state.copy(
-            currentMatchIndex = (state.currentMatchIndex - 1 + state.matches.size) % state.matches.size
-        )
+    val navigatePrev = {
+        if (state.matches.isNotEmpty()) {
+            state = state.copy(
+                currentMatchIndex = (state.currentMatchIndex - 1 + state.matches.size) % state.matches.size
+            )
+        }
     }
 
     Box(
         modifier = modifier.onKeyEvent { event ->
-            if (event.type != KeyEventType.KeyDown) return@onKeyEvent false
+            if (event.type != KeyEventType.KeyDown) {
+                return@onKeyEvent false
+            }
             val isModifier = event.isMetaPressed || event.isCtrlPressed
             when {
                 isModifier && event.key == Key.F -> {
-                    state = state.copy(isPanelOpen = true, isReplaceMode = false)
+                    val sel = textFieldState.selection
+                    val selectedText = if (!sel.collapsed) {
+                        textFieldState.text.substring(sel.min, sel.max)
+                    } else {
+                        ""
+                    }
+                    state = state.copy(
+                        isPanelOpen = true,
+                        isReplaceMode = false,
+                        searchTerm = if (selectedText.isNotEmpty()) selectedText else state.searchTerm,
+                        currentMatchIndex = 0,
+                    )
                     true
                 }
                 isModifier && event.key == Key.R -> {
@@ -143,6 +150,8 @@ internal fun FindableEditorTextField(
             placeholder = placeholder,
             parseError = parseError,
             additionalOutputTransformation = highlightTransformation,
+            currentMatch = if (state.isPanelOpen) state.matches.getOrNull(state.currentMatchIndex) else null,
+            textFieldState = textFieldState,
         )
 
         AnimatedVisibility(
@@ -153,8 +162,8 @@ internal fun FindableEditorTextField(
                 state = state,
                 onSearchChange = { term -> state = state.copy(searchTerm = term, currentMatchIndex = 0) },
                 onReplaceChange = { term -> state = state.copy(replaceTerm = term) },
-                onNext = ::navigateNext,
-                onPrev = ::navigatePrev,
+                onNext = navigateNext,
+                onPrev = navigatePrev,
                 onToggleReplaceMode = { state = state.copy(isReplaceMode = !state.isReplaceMode) },
                 onClose = { state = state.copy(isPanelOpen = false) },
                 onReplace = {
@@ -213,10 +222,18 @@ private fun FindReplaceBar(
                         .width(180.dp)
                         .focusRequester(focusRequester)
                         .onKeyEvent { event ->
-                            if (event.type != KeyEventType.KeyDown) return@onKeyEvent false
+                            if (event.type != KeyEventType.KeyDown) {
+                                return@onKeyEvent false
+                            }
                             when {
-                                event.key == Key.Enter && event.isShiftPressed -> { onPrev(); true }
-                                event.key == Key.Enter -> { onNext(); true }
+                                event.key == Key.Enter && event.isShiftPressed -> {
+                                    onPrev()
+                                    true
+                                }
+                                event.key == Key.Enter -> {
+                                    onNext()
+                                    true
+                                }
                                 else -> false
                             }
                         },
@@ -300,43 +317,4 @@ private fun FindReplaceBar(
             }
         }
     }
-}
-
-internal class CompositeOutputTransformation(
-    private val first: OutputTransformation,
-    private val second: OutputTransformation,
-) : OutputTransformation {
-    override fun TextFieldBuffer.transformOutput() {
-        with(first) { transformOutput() }
-        with(second) { transformOutput() }
-    }
-}
-
-private class FindHighlightOutputTransformation(
-    private val matches: List<IntRange>,
-    private val currentMatchIndex: Int,
-    private val activeColor: Color,
-    private val inactiveColor: Color,
-) : OutputTransformation {
-    override fun TextFieldBuffer.transformOutput() {
-        matches.forEachIndexed { i, range ->
-            val bg = if (i == currentMatchIndex) activeColor else inactiveColor
-            addStyle(SpanStyle(background = bg), range.first, range.last + 1)
-        }
-    }
-}
-
-private fun findMatches(text: String, query: String): List<IntRange> {
-    if (query.isBlank()) return emptyList()
-    val result = mutableListOf<IntRange>()
-    val lowerText = text.lowercase()
-    val lowerQuery = query.lowercase()
-    var index = 0
-    while (index <= lowerText.length - lowerQuery.length) {
-        val found = lowerText.indexOf(lowerQuery, index)
-        if (found == -1) break
-        result.add(found until found + lowerQuery.length)
-        index = found + 1
-    }
-    return result
 }
