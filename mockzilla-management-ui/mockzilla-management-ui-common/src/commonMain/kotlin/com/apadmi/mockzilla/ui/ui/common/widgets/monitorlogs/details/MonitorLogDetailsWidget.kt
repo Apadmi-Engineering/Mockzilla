@@ -163,52 +163,51 @@ internal fun LogDetailsContent(
     onTabSelected: (Tab) -> Unit,
     onClose: () -> Unit = {},
     strings: Strings = LocalStrings.current,
-) = Column {
-    LogHeaderBar(logDetail = logDetail, onClose = onClose)
-    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-    LogTabBar(selectedTab = state.selectedTab, onTabSelected = onTabSelected)
-    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+) = Box {
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .verticalScroll(scrollState)
+            .background(MaterialTheme.colorScheme.surface)
+    ) {
+        LogHeaderBar(logDetail = logDetail, onClose = onClose)
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+        LogTabBar(selectedTab = state.selectedTab, onTabSelected = onTabSelected)
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            when (state.selectedTab) {
+                Tab.Response -> {
+                    SectionTitle(label = strings.widgets.logDetails.responseHeaders)
+                    HeadersContent(logDetail.responseHeaders.toList(), strings)
+                    Spacer(Modifier.height(8.dp))
+                    SectionTitle(label = strings.widgets.logDetails.responseBody)
+                    BodyContent(logDetail.responseBody, logDetail.responseTypeFormat)
+                }
 
-    Box {
-        val scrollState = rememberLazyListState()
-        SelectionContainer {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-                    .background(MaterialTheme.colorScheme.surface),
-                state = scrollState,
-            ) {
-                when (state.selectedTab) {
-                    Tab.Response -> {
-                        item { SectionTitle(label = strings.widgets.logDetails.responseHeaders) }
-                        item { HeadersContent(logDetail.responseHeaders.toList(), strings) }
-                        item { Spacer(Modifier.height(8.dp)) }
-                        item { SectionTitle(label = strings.widgets.logDetails.responseBody) }
-                        item { Spacer(Modifier.height(8.dp)) }
-
-                        BodyContent(logDetail.responseBody, logDetail.responseTypeFormat)
-                    }
-
-                    Tab.Request -> {
-                        item { SectionTitle(label = strings.widgets.logDetails.requestHeaders) }
-                        item { HeadersContent(logDetail.requestHeaders.toList(), strings) }
-                        item { Spacer(Modifier.height(8.dp)) }
-                        item { SectionTitle(label = strings.widgets.logDetails.requestBody) }
-                        item { Spacer(Modifier.height(8.dp)) }
-
-                        BodyContent(logDetail.requestBody, logDetail.requestTypeFormat)
-                    }
+                Tab.Request -> {
+                    SectionTitle(label = strings.widgets.logDetails.requestHeaders)
+                    HeadersContent(logDetail.requestHeaders.toList(), strings)
+                    Spacer(Modifier.height(8.dp))
+                    SectionTitle(label = strings.widgets.logDetails.requestBody)
+                    BodyContent(logDetail.requestBody, logDetail.requestTypeFormat)
                 }
             }
         }
-        PlatformVerticalScrollbar(
-            scrollState = scrollState,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .fillMaxHeight()
-        )
     }
+
+    PlatformVerticalScrollbar(
+        scrollState = scrollState,
+        modifier = Modifier
+            .align(Alignment.CenterEnd)
+            .fillMaxHeight()
+    )
 }
 
 private val LogEvent.responseTypeFormat: EditorMode
@@ -404,44 +403,42 @@ private fun LogTabBar(
 // ── Content sections ──────────────────────────────────────────────────────────
 
 @Suppress("MAGIC_NUMBER")
-private fun LazyListScope.BodyContent(
+@Composable
+private fun BodyContent(
     body: String,
     mode: EditorMode,
-) = when {
-    body.isEmpty() -> item {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer,
-                    shape = RoundedCornerShape(8.dp),
-                )
-                .padding(12.dp),
-        ) {
+) = Column(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            shape = RoundedCornerShape(8.dp),
+        )
+        .padding(12.dp),
+) {
+    when {
+        BodyVisualTransformation.isBodyTooLarge(body) -> {
+            Text(
+                text = LocalStrings.current.components.editor.largeFileSyntaxHighlightError,
+                style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.onSurfaceMuted
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = body,
+                style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+        body.isEmpty() ->
             Text(
                 text = LocalStrings.current.widgets.logDetails.emptyBody,
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.onSurfaceFaint,
             )
-        }
-    }
-    BodyVisualTransformation.isBodyTooLarge(body) -> {
-        item {
-            Text("big boy")
-        }
-    }
-    else -> item {
-        val annotatedBody =
-            BodyVisualTransformation.buildEditorOutputTransformation(mode)?.highlight(body)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainer,
-                    shape = RoundedCornerShape(8.dp),
-                )
-                .padding(12.dp),
-        ) {
+        else -> {
+            val annotatedBody =
+                BodyVisualTransformation.buildEditorOutputTransformation(mode)?.highlight(body)
             Text(
                 text = annotatedBody ?: AnnotatedString(body),
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),

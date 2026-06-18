@@ -25,7 +25,7 @@ fun SectionTitle(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Row(
-        modifier = modifier.fillMaxWidth().padding(top = 16.dp, bottom = 4.dp),
+        modifier = modifier.fillMaxWidth().padding(bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
