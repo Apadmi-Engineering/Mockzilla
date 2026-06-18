@@ -20,9 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -47,9 +44,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -59,18 +54,16 @@ import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionTitle
-import com.apadmi.mockzilla.ui.ui.common.utils.formatting.BodyVisualTransformation
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
-import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.BodyVisualTransformation
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsViewModel.State.ViewDetails
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsViewModel.State.ViewDetails.Tab
-import io.ktor.http.HttpHeaders
 
 import io.ktor.http.HttpStatusCode
 
@@ -433,7 +426,6 @@ private fun BodyContent(
             )
         }
     }
-
 }
 
 @Suppress("MAGIC_NUMBER")

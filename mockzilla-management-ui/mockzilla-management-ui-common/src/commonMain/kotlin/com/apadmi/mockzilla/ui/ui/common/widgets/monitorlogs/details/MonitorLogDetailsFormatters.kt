@@ -37,6 +37,15 @@ private val jsonPrettyPrinter = Json {
     prettyPrintIndent = "  "
 }
 
+internal val LogEvent.responseTypeFormat: EditorMode
+    get() = responseHeaders[HttpHeaders.ContentType]?.lowercase().contentTypeToEditorMode()
+
+internal val LogEvent.requestTypeFormat: EditorMode
+    get() = requestHeaders[HttpHeaders.ContentType]?.lowercase().contentTypeToEditorMode()
+
+internal val PartialMockzillaHttpResponse.typeFormat: EditorMode
+    get() = headers?.get(HttpHeaders.ContentType)?.lowercase().contentTypeToEditorMode()
+
 internal fun String.toKbLabel(): String {
     val tenths = encodeToByteArray().size * TENTHS_FACTOR / BYTES_PER_KB
     return "${tenths / TENTHS_FACTOR}.${tenths % TENTHS_FACTOR} KB"
@@ -50,22 +59,13 @@ internal fun String.minifyJson(): String = runCatching {
     Json.encodeToString(JsonElement.serializer(), Json.parseToJsonElement(this))
 }.getOrNull() ?: this
 
-internal fun formatTimestamp(timestamp: Long): String {
-    val instant = Instant.fromEpochMilliseconds(timestamp)
-    return instant.format(timestampFormat, TimeZone.currentSystemDefault().offsetAt(instant))
-}
-
-internal val LogEvent.responseTypeFormat: EditorMode
-    get() = responseHeaders[HttpHeaders.ContentType]?.lowercase().contentTypeToEditorMode()
-
-internal val LogEvent.requestTypeFormat: EditorMode
-    get() = requestHeaders[HttpHeaders.ContentType]?.lowercase().contentTypeToEditorMode()
-
-internal val PartialMockzillaHttpResponse.typeFormat: EditorMode
-    get() = headers?.get(HttpHeaders.ContentType)?.lowercase().contentTypeToEditorMode()
-
 private fun String?.contentTypeToEditorMode() = when {
     this?.contains("json") == true -> EditorMode.Json
     this?.contains("html") == true -> EditorMode.Html
     else -> EditorMode.PlainText
+}
+
+internal fun formatTimestamp(timestamp: Long): String {
+    val instant = Instant.fromEpochMilliseconds(timestamp)
+    return instant.format(timestampFormat, TimeZone.currentSystemDefault().offsetAt(instant))
 }

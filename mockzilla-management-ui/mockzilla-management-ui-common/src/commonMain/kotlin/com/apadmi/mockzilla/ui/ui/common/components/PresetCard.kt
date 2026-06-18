@@ -180,12 +180,12 @@ internal fun PresetCard(
             .focusProperties { canFocus = false }
             .background(if (isSelected) colorScheme.primary.copy(alpha = 0.08f) else Color.Transparent)
             .drawBehind {
-                val indicatorWidth = 3.dp.toPx()
+                val indicatorWidth = 2.dp.toPx()
                 val padding = 4.dp.toPx()
                 drawRoundRect(
                     cornerRadius = CornerRadius(indicatorWidth, indicatorWidth),
                     color = indicatorColor,
-                    topLeft = Offset(padding.dp.toPx(), padding.dp.toPx()),
+                    topLeft = Offset(padding / 2, padding.dp.toPx()),
                     size = Size(indicatorWidth, size.height - padding * 2)
                 )
             },

@@ -151,21 +151,6 @@ val ColorScheme.info: StateColors
 val ColorScheme.jsonKey: Color
     get() = if (LocalForceDarkMode.current) darkJsonKey else lightJsonKey
 
-/**
- * @property keyColor Color for JSON object keys.
- * @property stringColor Color for JSON string values.
- * @property numberColor Color for JSON numeric values.
- * @property boolColor Color for JSON boolean values.
- * @property nullColor Color for JSON null values.
- */
-internal data class JsonHighlightColors(
-    val keyColor: Color,
-    val stringColor: Color,
-    val numberColor: Color,
-    val boolColor: Color,
-    val nullColor: Color,
-)
-
 @get:Composable
 internal val ColorScheme.jsonHighlight: JsonHighlightColors
     get() = JsonHighlightColors(
@@ -218,6 +203,21 @@ data object ScaleFactor {
         else -> DEFAULT_MOBILE
     }
 }
+
+/**
+ * @property keyColor Color for JSON object keys.
+ * @property stringColor Color for JSON string values.
+ * @property numberColor Color for JSON numeric values.
+ * @property boolColor Color for JSON boolean values.
+ * @property nullColor Color for JSON null values.
+ */
+internal data class JsonHighlightColors(
+    val keyColor: Color,
+    val stringColor: Color,
+    val numberColor: Color,
+    val boolColor: Color,
+    val nullColor: Color,
+)
 
 @Composable
 fun AppTheme(

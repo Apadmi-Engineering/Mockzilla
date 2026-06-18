@@ -64,7 +64,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.formatTimes
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
-import kotlinx.datetime.Instant
 
 @Suppress("MAGIC_NUMBER")
 @Composable
