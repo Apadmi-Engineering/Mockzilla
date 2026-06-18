@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -106,7 +107,8 @@ fun MonitorLogDetailsWidgetEmptyPreview() = PreviewSurface {
 @Preview
 @Composable
 fun MonitorLogDetailsWidgetPreview() {
-    val previewBody = """{"repairs":[{"id":"HSR-9455","repairStatus":"Upcoming","faultDescription":"Boiler pilot light"}]}"""
+    val previewBody =
+        """{"repairs":[{"id":"HSR-9455","repairStatus":"Upcoming","faultDescription":"Boiler pilot light"}]}"""
     val previewStatus = HttpStatusCode.OK
     val authHeader = "Authorization" to "Bearer token123"
     val contentTypeHeader = "Content-Type" to "application/json"
@@ -143,7 +145,12 @@ internal fun MonitorLogDetailsContent(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         logDetail?.let {
-            LogDetailsContent(logDetail = it, state = state, onTabSelected = onTabSelected, onClose = onClose)
+            LogDetailsContent(
+                logDetail = it,
+                state = state,
+                onTabSelected = onTabSelected,
+                onClose = onClose
+            )
         } ?: MonitorLogDetailsEmptyContent()
     }
 }
@@ -164,33 +171,33 @@ internal fun LogDetailsContent(
 
     Box {
         val scrollState = rememberLazyListState()
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.surface),
-            state = scrollState,
-        ) {
-            item {
+        SelectionContainer {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .background(MaterialTheme.colorScheme.surface),
+                state = scrollState,
+            ) {
                 when (state.selectedTab) {
                     Tab.Response -> {
-                        SectionTitle(label = strings.widgets.logDetails.responseHeaders)
-                        HeadersContent(logDetail.responseHeaders.toList(), strings)
-                        Spacer(Modifier.height(8.dp))
-                        SectionTitle(label = strings.widgets.logDetails.responseBody)
-                        BodyContent(
-                            logDetail.responseBody,
-                            logDetail.responseTypeFormat,
-                            strings
-                        )
+                        item { SectionTitle(label = strings.widgets.logDetails.responseHeaders) }
+                        item { HeadersContent(logDetail.responseHeaders.toList(), strings) }
+                        item { Spacer(Modifier.height(8.dp)) }
+                        item { SectionTitle(label = strings.widgets.logDetails.responseBody) }
+                        item { Spacer(Modifier.height(8.dp)) }
+
+                        BodyContent(logDetail.responseBody, logDetail.responseTypeFormat)
                     }
 
                     Tab.Request -> {
-                        SectionTitle(label = strings.widgets.logDetails.requestHeaders)
-                        HeadersContent(logDetail.requestHeaders.toList(), strings)
-                        Spacer(Modifier.height(8.dp))
-                        SectionTitle(label = strings.widgets.logDetails.requestBody)
-                        BodyContent(logDetail.requestBody, logDetail.requestTypeFormat, strings)
+                        item { SectionTitle(label = strings.widgets.logDetails.requestHeaders) }
+                        item { HeadersContent(logDetail.requestHeaders.toList(), strings) }
+                        item { Spacer(Modifier.height(8.dp)) }
+                        item { SectionTitle(label = strings.widgets.logDetails.requestBody) }
+                        item { Spacer(Modifier.height(8.dp)) }
+
+                        BodyContent(logDetail.requestBody, logDetail.requestTypeFormat)
                     }
                 }
             }
@@ -304,7 +311,10 @@ private fun LogStatusBadge(status: HttpStatusCode) {
         text = status.value.toString(),
         modifier = Modifier
             .border(width = 1.5.dp, color = statusColor, shape = RoundedCornerShape(percent = 50))
-            .background(color = statusColor.copy(alpha = 0.1f), shape = RoundedCornerShape(percent = 50))
+            .background(
+                color = statusColor.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(percent = 50)
+            )
             .padding(horizontal = 8.dp, vertical = 3.dp),
         style = MaterialTheme.typography.labelMedium.copy(fontFamily = monoFont),
         color = statusColor,
@@ -343,9 +353,10 @@ private fun LogTabBar(
     selectedTab: Tab,
     onTabSelected: (Tab) -> Unit,
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.surface)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         Tab.entries.forEach { tab ->
             val isSelected = tab == selectedTab
@@ -393,39 +404,51 @@ private fun LogTabBar(
 // ── Content sections ──────────────────────────────────────────────────────────
 
 @Suppress("MAGIC_NUMBER")
-@Composable
-private fun BodyContent(
+private fun LazyListScope.BodyContent(
     body: String,
     mode: EditorMode,
-    strings: Strings = LocalStrings.current
-) {
-    val monoFont = LocalMonoFontFamily.current
-    val annotatedBody = BodyVisualTransformation.buildEditorOutputTransformation(mode)?.highlight(body)
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f),
-                shape = RoundedCornerShape(6.dp),
-            )
-            .padding(10.dp),
-    ) {
-        if (body.isEmpty()) {
-            Text(
-                text = strings.widgets.logDetails.emptyBody,
-                style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-            )
-        } else {
-            SelectionContainer {
-                Text(
-                    text = annotatedBody ?: AnnotatedString(body),
-                    style = MaterialTheme.typography.bodySmall.copy(fontFamily = monoFont),
+) = when {
+    body.isEmpty() -> item {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(8.dp),
                 )
-            }
+                .padding(12.dp),
+        ) {
+            Text(
+                text = LocalStrings.current.widgets.logDetails.emptyBody,
+                style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.onSurfaceFaint,
+            )
         }
     }
+    BodyVisualTransformation.isBodyTooLarge(body) -> {
+        item {
+            Text("big boy")
+        }
+    }
+    else -> item {
+        val annotatedBody =
+            BodyVisualTransformation.buildEditorOutputTransformation(mode)?.highlight(body)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(8.dp),
+                )
+                .padding(12.dp),
+        ) {
+            Text(
+                text = annotatedBody ?: AnnotatedString(body),
+                style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
+            )
+        }
+    }
+
 }
 
 @Suppress("MAGIC_NUMBER")

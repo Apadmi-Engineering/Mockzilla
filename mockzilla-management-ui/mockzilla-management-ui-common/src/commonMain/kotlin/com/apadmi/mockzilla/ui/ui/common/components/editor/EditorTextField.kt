@@ -72,7 +72,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 
 private const val editorDefaultHeightDp = 200
-private const val syntaxHighlightLineLimit = 500
 private const val textMeasureCacheSize = 64
 
 internal enum class EditorMode {
@@ -96,7 +95,7 @@ internal fun EditorTextField(
 
     var fieldHeight by remember { mutableStateOf(editorDefaultHeightDp.dp) }
     var lineCount by remember { mutableStateOf(1) }
-    val isLargeFile = lineCount > syntaxHighlightLineLimit
+    val isLargeFile = BodyVisualTransformation.isBodyTooLarge(body)
     val textFieldState = rememberTextFieldState(body)
 
     LaunchedEffect(body) {
