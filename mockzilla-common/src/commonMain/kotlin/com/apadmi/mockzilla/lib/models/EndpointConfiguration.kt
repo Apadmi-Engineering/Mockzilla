@@ -206,7 +206,8 @@ data class MockzillaHttpResponse(
         /**
          * Creates a response with JSON content type and 200 success code for a given body
          *
-         * @property body The response body as a string.
+         * @param body The response body as a string.
+         * @return
          */
         fun successJson(body: String = "") = MockzillaHttpResponse(
             body = body,

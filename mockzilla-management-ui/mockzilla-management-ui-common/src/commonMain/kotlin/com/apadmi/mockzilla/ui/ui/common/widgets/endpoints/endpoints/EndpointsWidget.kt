@@ -233,7 +233,6 @@ private fun EndpointsHeader(
     }
 }
 
-
 @Composable
 private fun EndpointRow(
     endpoint: EndpointsViewModel.State.EndpointConfig,

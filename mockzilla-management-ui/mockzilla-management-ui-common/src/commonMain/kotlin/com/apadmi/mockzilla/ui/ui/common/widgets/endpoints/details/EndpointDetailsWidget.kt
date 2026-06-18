@@ -3,7 +3,6 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,7 +30,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -63,7 +61,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.Clock
 import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
-import com.apadmi.mockzilla.ui.ui.common.components.EdSection
+import com.apadmi.mockzilla.ui.ui.common.components.EndpointDetailsSection
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
@@ -172,12 +170,12 @@ private fun ColumnScope.PopulatedState(
         ActivePresetBanner(preset = preset, onClear = onResetAll, onEdit = onEditPreset)
     }
 
-    EdSection(
+    EndpointDetailsSection(
         label = strings.widgets.endpointDetails.behavior,
         icon = Icons.LightningBolt,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
-            RowDensityControls(modifier = Modifier.alpha(0f).clearAndSetSemantics {})
+            RowDensityControls(modifier = Modifier.alpha(0f).clearAndSetSemantics { /* No-Op*/ })
         }
     ) {
         ForceFailureBanner(
@@ -191,12 +189,12 @@ private fun ColumnScope.PopulatedState(
         )
     }
 
-    EdSection(
+    EndpointDetailsSection(
         label = strings.widgets.endpointDetails.latency,
         icon = Icons.Clock,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
-            RowDensityControls(modifier = Modifier.alpha(0f).clearAndSetSemantics {})
+            RowDensityControls(modifier = Modifier.alpha(0f).clearAndSetSemantics { /* No-Op*/ })
         }
     ) {
         ResponseLatencyCard(
@@ -209,7 +207,7 @@ private fun ColumnScope.PopulatedState(
         )
     }
 
-    EdSection(
+    EndpointDetailsSection(
         label = "${strings.widgets.endpointDetails.presets.title} (${state.presets.allPresets.size})",
         icon = Icons.Default.DragIndicator,
         contentPadding = PaddingValues(0.dp),

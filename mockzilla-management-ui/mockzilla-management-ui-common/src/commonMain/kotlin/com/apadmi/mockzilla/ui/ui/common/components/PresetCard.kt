@@ -23,10 +23,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -42,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.geometry.CornerRadius
@@ -69,7 +66,6 @@ import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
-import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
@@ -293,26 +289,25 @@ internal fun PresetCard(
             }
         }
 
-        AnimatedVisibility(
-            visible = expanded,
-            enter = expandVertically(),
-            exit = shrinkVertically(),
-        ) {
-            preset.response.takeUnless { it.body.isNullOrBlank() }
-                ?.let {
-                    Column(modifier = Modifier.padding(bottom = 12.dp)) {
-                        if (!preset.description.isNullOrBlank()) {
-                            Text(
-                                modifier = Modifier.padding(horizontal = 12.dp),
-                                text = preset.description ?: "",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = colorScheme.onSurfaceMuted,
-                            )
-                        }
-                       Spacer(Modifier.size(4.dp))
-                       ExpandableResponseBody(it, isCompact)
+        if (!preset.response.body.isNullOrBlank()) {
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
+            ) {
+                Column(modifier = Modifier.padding(bottom = 12.dp)) {
+                    if (!preset.description.isNullOrBlank()) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            text = preset.description ?: "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = colorScheme.onSurfaceMuted,
+                        )
                     }
+                    Spacer(Modifier.size(4.dp))
+                    ExpandableResponseBody(preset.response, isCompact)
                 }
+            }
         }
     }
 }
@@ -356,7 +351,7 @@ internal fun NoPresetCard(
 }
 
 @Composable
-internal fun ExpandableResponseBody(
+private fun ExpandableResponseBody(
     response: PartialMockzillaHttpResponse,
     isCompact: Boolean = false,
 ) = Box(
@@ -375,9 +370,8 @@ internal fun ExpandableResponseBody(
         .clip(shape = RoundedCornerShape(8.dp))
 ) {
     val mode = response.typeFormat
-    val body = when  {
-        // Truncate handled by maxLines on text field
-        BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body
+    val body = when {
+        BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body?.take(1000) + "…"
         mode == EditorMode.Json -> if (isCompact) {
             response.body?.minifyJson()
         } else {
