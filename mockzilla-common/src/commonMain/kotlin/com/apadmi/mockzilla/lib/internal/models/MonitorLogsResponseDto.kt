@@ -38,6 +38,8 @@ data class LogEvent(
     val isIntendedFailure: Boolean,
     val isRequestBodyTruncated: Boolean = false,
     val isResponseBodyTruncated: Boolean = false,
+    val requestSizeBytes: Int? = null,
+    val responseSizeBytes: Int? = null
 )
 
 /**

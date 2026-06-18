@@ -55,8 +55,8 @@ internal data class JsonHighlightColors(
     val nullColor: Color,
 )
 
-internal fun String.toKbLabel(): String {
-    val tenths = encodeToByteArray().size * TENTHS_FACTOR / BYTES_PER_KB
+internal fun Int.toKbLabel(): String {
+    val tenths = this * TENTHS_FACTOR / BYTES_PER_KB
     return "${tenths / TENTHS_FACTOR}.${tenths % TENTHS_FACTOR} KB"
 }
 

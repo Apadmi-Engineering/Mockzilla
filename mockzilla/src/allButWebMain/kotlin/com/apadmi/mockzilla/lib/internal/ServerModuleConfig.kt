@@ -17,6 +17,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.withContext
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 @Suppress("TOO_LONG_FUNCTION")
 internal fun Application.configureEndpoints(
@@ -119,7 +121,9 @@ internal fun Application.configureEndpoints(
                     call.respond(HttpStatusCode.BadRequest)
                     return@safeResponse
                 }
+                println("GETTING DETAIL ${Clock.System.now()}")
                 val detail = di.managementApiController.getLogDetail(logId)
+                println("GOT DETAIL ${Clock.System.now()}")
                 if (detail != null) call.respond(detail) else call.respond(HttpStatusCode.NotFound)
             }
         }
