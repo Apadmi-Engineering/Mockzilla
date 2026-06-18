@@ -287,7 +287,7 @@ internal fun PresetCard(
 
         if (expanded && !preset.description.isNullOrBlank()) {
             Text(
-                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp),
                 text = preset.description ?: "",
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onSurfaceMuted,
