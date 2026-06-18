@@ -213,9 +213,7 @@ private fun PopulatedPresets(
             if (index == 0) {
                 Spacer(Modifier.height(4.dp))
             } else {
-                Spacer(Modifier.height(4.dp))
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
-                Spacer(Modifier.height(4.dp))
             }
             PresetCard(
                 variant = if (preset.name == presets.appliedPreset?.name) {

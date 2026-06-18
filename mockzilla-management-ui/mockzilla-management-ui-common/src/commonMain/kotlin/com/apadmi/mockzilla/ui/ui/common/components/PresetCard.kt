@@ -166,7 +166,7 @@ internal fun PresetCard(
     val titleColor = if (isSelected) colorScheme.primary else colorScheme.onSurface
 
     val hasExpandableContent = !preset.response.body.isNullOrBlank()
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(true) }
     val chevronRotation by animateFloatAsState(
         targetValue = if (expanded) 0f else -90f,
         animationSpec = tween(200),
@@ -180,11 +180,13 @@ internal fun PresetCard(
             .focusProperties { canFocus = false }
             .background(if (isSelected) colorScheme.primary.copy(alpha = 0.08f) else Color.Transparent)
             .drawBehind {
-                val indicatorWidth = 2.dp.toPx()
-                drawRect(
+                val indicatorWidth = 3.dp.toPx()
+                val padding = 4.dp.toPx()
+                drawRoundRect(
+                    cornerRadius = CornerRadius(indicatorWidth, indicatorWidth),
                     color = indicatorColor,
-                    topLeft = Offset.Zero,
-                    size = Size(indicatorWidth, size.height)
+                    topLeft = Offset(padding.dp.toPx(), padding.dp.toPx()),
+                    size = Size(indicatorWidth, size.height - padding * 2)
                 )
             },
     ) {
@@ -192,7 +194,7 @@ internal fun PresetCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(enabled = hasExpandableContent) { expanded = !expanded }
-                .padding(horizontal = 12.dp, vertical = 4.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -208,7 +210,7 @@ internal fun PresetCard(
                 text = preset.name,
                 style = MaterialTheme.typography.bodyMedium,
                 color = titleColor,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
             )
             Spacer(Modifier.size(8.dp))
 
@@ -291,15 +293,6 @@ internal fun PresetCard(
             }
         }
 
-        if (expanded && !preset.description.isNullOrBlank()) {
-            Text(
-                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp),
-                text = preset.description ?: "",
-                style = MaterialTheme.typography.bodySmall,
-                color = colorScheme.onSurfaceMuted,
-            )
-        }
-
         AnimatedVisibility(
             visible = expanded,
             enter = expandVertically(),
@@ -307,9 +300,18 @@ internal fun PresetCard(
         ) {
             preset.response.takeUnless { it.body.isNullOrBlank() }
                 ?.let {
-                    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)) {
-                        Spacer(Modifier.size(4.dp))
-                        ExpandableResponseBody(it, isCompact)
+                    Column(modifier = Modifier.padding(bottom = 12.dp)) {
+                        if (!preset.description.isNullOrBlank()) {
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 4.dp),
+                                text = preset.description ?: "",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = colorScheme.onSurfaceMuted,
+                            )
+                        }
+
+                       Spacer(Modifier.size(4.dp))
+                       ExpandableResponseBody(it, isCompact)
                     }
                 }
         }
@@ -358,49 +360,43 @@ internal fun NoPresetCard(
 internal fun ExpandableResponseBody(
     response: PartialMockzillaHttpResponse,
     isCompact: Boolean = false,
-    ) {
-    val scrollState = rememberScrollState()
-
-    // Made the scrollbar color slightly darker so it's easier to see against the background
-    val scrollbarColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.background,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .clip(shape = RoundedCornerShape(8.dp))
-    ) {
-        val mode = response.typeFormat
-        val body = when  {
-            // Truncate handled by maxLines on text field
-            BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body
-            mode == EditorMode.Json -> if (isCompact) {
-                response.body?.minifyJson()
-            } else {
-                response.body?.prettyPrintJson()
-            }
-            else -> response.body
-        }
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = (BodyVisualTransformation
-                .buildEditorOutputTransformation(mode)
-                ?.highlight(body ?: "")
-                ?: AnnotatedString(body ?: "")),
-            maxLines = if (isCompact) 4 else 16,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+) = Box(
+    modifier = Modifier
+        .padding(horizontal = 12.dp)
+        .fillMaxWidth()
+        .background(
+            color = MaterialTheme.colorScheme.background,
+            shape = RoundedCornerShape(8.dp)
         )
+        .border(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant,
+            shape = RoundedCornerShape(8.dp)
+        )
+        .clip(shape = RoundedCornerShape(8.dp))
+) {
+    val mode = response.typeFormat
+    val body = when  {
+        // Truncate handled by maxLines on text field
+        BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body
+        mode == EditorMode.Json -> if (isCompact) {
+            response.body?.minifyJson()
+        } else {
+            response.body?.prettyPrintJson()
+        }
+        else -> response.body
     }
+    Text(
+        modifier = Modifier.padding(8.dp),
+        text = (BodyVisualTransformation
+            .buildEditorOutputTransformation(mode)
+            ?.highlight(body ?: "")
+            ?: AnnotatedString(body ?: "")),
+        maxLines = if (isCompact) 4 else 16,
+        overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 }
 
 @Preview
