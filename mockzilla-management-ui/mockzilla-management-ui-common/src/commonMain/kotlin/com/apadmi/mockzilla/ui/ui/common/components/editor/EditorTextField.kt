@@ -125,7 +125,7 @@ internal fun EditorTextField(
     val syntaxTransformation = buildEditorOutputTransformation(mode)
     val outputTransformation = remember(syntaxTransformation, additionalOutputTransformation) {
         when {
-            syntaxTransformation != null && additionalOutputTransformation != null -> CompositeOutputTransformation(syntaxHighlightLineLimit, additionalOutputTransformation)
+            syntaxTransformation != null && additionalOutputTransformation != null -> CompositeOutputTransformation(syntaxTransformation, additionalOutputTransformation)
             else -> syntaxTransformation ?: additionalOutputTransformation
         }
     }
@@ -401,5 +401,3 @@ private fun buildEditorOutputTransformation(mode: EditorMode): OutputTransformat
         }
     }
 }
-
-    additionalOutputTransformation: OutputTransformation? = null,
