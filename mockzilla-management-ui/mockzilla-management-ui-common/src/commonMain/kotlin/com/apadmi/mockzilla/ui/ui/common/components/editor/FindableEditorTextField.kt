@@ -3,12 +3,17 @@
 package com.apadmi.mockzilla.ui.ui.common.components.editor
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -16,6 +21,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DoneAll
+import androidx.compose.material.icons.filled.FindReplace
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -24,7 +31,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.Key
@@ -48,6 +55,9 @@ import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.engine.find.FindReplaceState
 import com.apadmi.mockzilla.ui.engine.find.findMatches
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 
 @Composable
 internal fun FindableEditorTextField(
@@ -185,6 +195,7 @@ internal fun FindableEditorTextField(
     }
 }
 
+@Suppress("LONG_METHOD")
 @Composable
 private fun FindReplaceBar(
     state: FindReplaceState,
@@ -201,25 +212,72 @@ private fun FindReplaceBar(
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
     val colorScheme = MaterialTheme.colorScheme
+    val isNoMatch = state.searchTerm.isNotEmpty() && state.matches.isEmpty()
 
+    val chevronRotation by animateFloatAsState(
+        targetValue = if (state.isReplaceMode) 90f else 0f,
+        animationSpec = tween(150),
+        label = "replace_chevron",
+    )
+
+    val matchLabel = when {
+        state.searchTerm.isEmpty() -> ""
+        state.matches.isEmpty() -> "No results"
+        else -> "${state.currentMatchIndex + 1}/${state.matches.size}"
+    }
+
+    val panelShape = RoundedCornerShape(bottomStart = 24.dp, topEnd = 8.dp)
     Surface(
-        shape = RoundedCornerShape(bottomStart = 8.dp),
+        shape = panelShape,
         color = colorScheme.surfaceContainerHigh,
-        shadowElevation = 4.dp,
-        modifier = Modifier.padding(end = 2.dp, top = 1.dp),
+        modifier = Modifier
+            .width(380.dp)
+            .border(width = 1.dp, color = colorScheme.outlineVariant, shape = panelShape),
     ) {
-        Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)) {
+        Column(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
+                IconButton(
+                    onClick = onToggleReplaceMode,
+                    modifier = Modifier.size(24.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowRight,
+                        contentDescription = if (state.isReplaceMode) "Collapse replace" else "Expand replace",
+                        modifier = Modifier
+                            .size(16.dp)
+                            .rotate(chevronRotation),
+                        tint = colorScheme.onSurfaceVariant,
+                    )
+                }
+
                 CustomTextField(
                     value = state.searchTerm,
                     onValueChange = onSearchChange,
                     placeholderText = "Find",
                     singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    containerColor = colorScheme.surface,
+                    textStyle = MaterialTheme.typography.bodySmall,
+                    suffix = if (matchLabel.isNotEmpty()) {
+                        {
+                            Text(
+                                text = matchLabel,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (isNoMatch) colorScheme.error else colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    } else {
+                        null
+                    },
                     modifier = Modifier
-                        .width(180.dp)
+                        .height(30.dp)
+                        .weight(1f)
                         .focusRequester(focusRequester)
                         .onKeyEvent { event ->
                             if (event.type != KeyEventType.KeyDown) {
@@ -237,52 +295,36 @@ private fun FindReplaceBar(
                                 else -> false
                             }
                         },
-                    textStyle = MaterialTheme.typography.bodySmall,
                 )
-
-                val matchLabel = when {
-                    state.searchTerm.isEmpty() -> ""
-                    state.matches.isEmpty() -> "No results"
-                    else -> "${state.currentMatchIndex + 1} / ${state.matches.size}"
-                }
-                if (matchLabel.isNotEmpty()) {
-                    Text(
-                        text = matchLabel,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = colorScheme.onSurfaceVariant,
-                    )
-                }
 
                 IconButton(onClick = onPrev, modifier = Modifier.size(28.dp)) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
                         contentDescription = "Previous match",
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(16.dp),
+                        tint = colorScheme.onSurfaceVariant,
                     )
                 }
                 IconButton(onClick = onNext, modifier = Modifier.size(28.dp)) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Next match",
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(16.dp),
+                        tint = colorScheme.onSurfaceVariant,
                     )
                 }
-                IconButton(onClick = onToggleReplaceMode, modifier = Modifier.size(28.dp)) {
-                    Icon(
-                        imageVector = if (state.isReplaceMode) {
-                            Icons.Default.KeyboardArrowDown
-                        } else {
-                            Icons.Default.KeyboardArrowRight
-                        },
-                        contentDescription = "Toggle replace",
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
+                Box(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .width(1.dp)
+                        .background(colorScheme.outlineVariant),
+                )
                 IconButton(onClick = onClose, modifier = Modifier.size(28.dp)) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Close find bar",
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(14.dp),
+                        tint = colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -290,29 +332,39 @@ private fun FindReplaceBar(
             AnimatedVisibility(visible = state.isReplaceMode) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.padding(top = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
+                    Spacer(modifier = Modifier.size(24.dp))
+
                     CustomTextField(
                         value = state.replaceTerm,
                         onValueChange = onReplaceChange,
                         placeholderText = "Replace",
                         singleLine = true,
-                        modifier = Modifier.width(180.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        containerColor = colorScheme.surface,
                         textStyle = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .height(30.dp)
+                            .weight(1f),
                     )
-                    TextButton(
+
+                    BaseButton(
+                        label = "Replace",
+                        leadingIcon = Icons.Default.FindReplace,
+                        variant = ButtonVariant.Soft,
+                        size = ButtonSize.Sm,
+                        modifier = Modifier.height(30.dp),
                         onClick = onReplace,
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                    ) {
-                        Text("Replace", style = MaterialTheme.typography.labelSmall)
-                    }
-                    TextButton(
+                    )
+                    BaseButton(
+                        label = "All",
+                        leadingIcon = Icons.Default.DoneAll,
+                        variant = ButtonVariant.Soft,
+                        size = ButtonSize.Sm,
+                        modifier = Modifier.height(30.dp),
                         onClick = onReplaceAll,
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                    ) {
-                        Text("All", style = MaterialTheme.typography.labelSmall)
-                    }
+                    )
                 }
             }
         }
