@@ -3,6 +3,8 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.ui.text.SpanStyle
+import com.apadmi.mockzilla.ui.ui.common.components.editor.JsonTokens
+import com.apadmi.mockzilla.ui.ui.common.components.editor.Token
 
 class EndpointBodyVisualTransformation(
     private val comment: SpanStyle,

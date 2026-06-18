@@ -3,9 +3,9 @@ package com.apadmi.mockzilla.ui.ui.common.utils
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-
 import com.apadmi.mockzilla.ui.ui.common.theme.darkError
 import com.apadmi.mockzilla.ui.ui.common.theme.darkMethodPatch
+import com.apadmi.mockzilla.ui.ui.common.theme.darkOnSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.darkSuccess
 import com.apadmi.mockzilla.ui.ui.common.theme.darkWarning
 import com.apadmi.mockzilla.ui.ui.common.theme.methodDelete
@@ -41,7 +41,7 @@ fun HttpStatusCode.colorStatic(): Color = when (this.value) {
     in 300..399 -> darkMethodPatch
     in 400..499 -> darkWarning
     in 500..599 -> darkError
-    else -> Color.Gray
+    else -> darkOnSurfaceMuted
 }
 
 @Suppress("MAGIC_NUMBER")

@@ -16,11 +16,28 @@ private val strings = mapOf(
 /**
  * @property widgets
  * @property common
+ * @property components
  */
 data class Strings(
     val common: Common,
-    val widgets: Widgets
+    val widgets: Widgets,
+    val components: Components
 ) {
+    /**
+     * @property editor
+     */
+    data class Components(
+        val editor: Editor
+    ) {
+        /**
+         * @property largeFileSyntaxHighlightError
+         * @property jsonErrorTitle
+         */
+        data class Editor(
+            val largeFileSyntaxHighlightError: String,
+            val jsonErrorTitle: String,
+        )
+    }
     /**
      * @property closeDescription
      * @property backDescription
@@ -464,7 +481,6 @@ data class Strings(
          * @property bodyLabel
          * @property htmlBodyPlaceholder
          * @property plainBodyPlaceholder
-         * @property jsonErrorTitle
          */
         data class CreateEditPreset(
             val createTitle: String,

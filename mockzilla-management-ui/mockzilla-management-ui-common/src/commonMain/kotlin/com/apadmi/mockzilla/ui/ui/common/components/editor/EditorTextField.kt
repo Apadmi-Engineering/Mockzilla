@@ -69,7 +69,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointBodyVisualTransformation
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.HtmlBodyVisualTransformation
 
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -91,8 +90,9 @@ internal fun EditorTextField(
     modifier: Modifier = Modifier,
     placeholder: String,
     parseError: String? = null,
-    additionalOutputTransformation: OutputTransformation? = null,
+    additionalOutputTransformation: OutputTransformation? = null
 ) {
+    val strings = LocalStrings.current.components.editor
     val colorScheme = MaterialTheme.colorScheme
     val monoFont = LocalMonoFontFamily.current
     val scrollState = rememberScrollState()
@@ -125,8 +125,7 @@ internal fun EditorTextField(
     val syntaxTransformation = buildEditorOutputTransformation(mode)
     val outputTransformation = remember(syntaxTransformation, additionalOutputTransformation) {
         when {
-            syntaxTransformation != null && additionalOutputTransformation != null ->
-                CompositeOutputTransformation(syntaxTransformation, additionalOutputTransformation)
+            syntaxTransformation != null && additionalOutputTransformation != null -> CompositeOutputTransformation(syntaxHighlightLineLimit, additionalOutputTransformation)
             else -> syntaxTransformation ?: additionalOutputTransformation
         }
     }
@@ -160,7 +159,7 @@ internal fun EditorTextField(
 
         if (isLargeFile) {
             Text(
-                text = "Syntax highlighting disabled for large files",
+                text = strings.largeFileSyntaxHighlightError,
                 style = MaterialTheme.typography.labelSmall,
                 color = colorScheme.onSurfaceMuted,
                 modifier = Modifier
@@ -354,7 +353,7 @@ private fun EditorErrorBanner(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 Text(
-                    text = strings.widgets.createEditPreset.jsonErrorTitle,
+                    text = strings.components.editor.jsonErrorTitle,
                     style = MaterialTheme.typography.labelLarge,
                     color = colorScheme.onErrorContainer,
                     fontWeight = FontWeight.SemiBold,
@@ -402,3 +401,5 @@ private fun buildEditorOutputTransformation(mode: EditorMode): OutputTransformat
         }
     }
 }
+
+    additionalOutputTransformation: OutputTransformation? = null,

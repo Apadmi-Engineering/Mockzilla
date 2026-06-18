@@ -121,6 +121,10 @@ val ColorScheme.onSurfaceFaint: Color
     get() = if (LocalForceDarkMode.current) darkOnSurfaceFaint else lightOnSurfaceFaint
 
 @get:Composable
+val ColorScheme.chipSelectedBackground: Color
+    get() = if (LocalForceDarkMode.current) surfaceContainerHigh else Color.White
+
+@get:Composable
 val ColorScheme.success: StateColors
     get() = if (LocalForceDarkMode.current) {
         StateColors(primary = darkSuccess, container = darkSuccessContainer)

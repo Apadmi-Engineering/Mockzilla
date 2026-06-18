@@ -80,7 +80,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
-import com.apadmi.mockzilla.ui.ui.common.components.editor.FindableEditorTextField
+import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorTextField
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
@@ -260,6 +260,7 @@ private fun ColumnScope.PopulatedState(
                 Text(
                     text = str.statusCodeRowLabel,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
                 )
                 Box(
@@ -285,6 +286,7 @@ private fun ColumnScope.PopulatedState(
                 Text(
                     text = str.bodyTypeLabel,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
                 )
                 Box(
@@ -348,6 +350,7 @@ fun CreateEditPresetWidget(
     activeEndpoint: EndpointConfiguration.Key,
     creatingNewPreset: Boolean,
     onCancel: () -> Unit = {},
+    onSave: () -> Unit = {},
 ) {
     val viewModel = getViewModel<CreateEditPresetViewModel>(
         key = "${activeEndpoint.raw}-$device"
@@ -367,7 +370,10 @@ fun CreateEditPresetWidget(
         state = state,
         endpointName = urlToTitle(activeEndpoint.raw),
         onCancel = onCancel,
-        onSave = viewModel::save,
+        onSave = {
+            viewModel.save()
+            onSave()
+        },
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
@@ -463,6 +469,7 @@ private fun BodySection(
         Text(
             text = strings.bodyLabel,
             style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         if (isJsonError) {
@@ -498,6 +505,7 @@ private fun BodySection(
                 imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
                 contentDescription = if (isExpanded) "Collapse" else "Expand",
                 modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurface,
             )
         }
     }
@@ -550,6 +558,7 @@ private fun PanelHeader(
                 State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
             },
             style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold,
         )
         endpointName?.let {
@@ -632,7 +641,8 @@ private fun StatusCodeDropdown(
                 )
                 Text(
                     text = statusCode.description,
-                    style = titleStyle
+                    style = titleStyle,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             } ?: Text(
                 text = strings.noOverrideStatusCode,
