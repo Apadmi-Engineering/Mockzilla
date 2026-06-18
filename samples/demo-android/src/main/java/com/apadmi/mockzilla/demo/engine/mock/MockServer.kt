@@ -18,7 +18,7 @@ private val getMyPig = EndpointConfiguration
     .configureDashboardOverrides {
         addPreset(
             name = "George",
-            response = MockzillaHttpResponse(
+            response = MockzillaHttpResponse.successJson(
                 body = Json.encodeToString(
                     AnimalDto(
                         animal = AnimalDto.AnimalTypeDto.Pig,
@@ -27,7 +27,7 @@ private val getMyPig = EndpointConfiguration
                         biography = "George Pig is a fictional character in the hugely popular British animated television series, Peppa Pig. He is the younger brother of the show's star, Peppa Pig.",
                         owner = "Daddy Pig"
                     )
-                )
+                ),
             )
         )
 
@@ -42,7 +42,7 @@ private val getMyPig = EndpointConfiguration
         )
     }
     .setDefaultHandler {
-        MockzillaHttpResponse(
+        MockzillaHttpResponse.successJson(
             body = Json.encodeToString(
                 AnimalDto(
                     animal = AnimalDto.AnimalTypeDto.Pig,
@@ -63,7 +63,7 @@ private val getMySheep = EndpointConfiguration
     .configureDashboardOverrides {
         addPreset(
             name = "",
-            response = MockzillaHttpResponse(
+            response = MockzillaHttpResponse.successJson(
                 body = Json.encodeToString(
                     AnimalDto(
                         animal = AnimalDto.AnimalTypeDto.Sheep,
@@ -87,7 +87,7 @@ private val getMySheep = EndpointConfiguration
         )
     }
     .setDefaultHandler {
-        MockzillaHttpResponse(
+        MockzillaHttpResponse.successJson(
             body = Json.encodeToString(
                 AnimalDto(
                     animal = AnimalDto.AnimalTypeDto.Sheep,
@@ -108,7 +108,7 @@ private val getMyCow = EndpointConfiguration
     .configureDashboardOverrides {
         addPreset(
             name = "Angry Bessie",
-            response = MockzillaHttpResponse(
+            response = MockzillaHttpResponse.successJson(
                 body = Json.encodeToString(
                     AnimalDto(
                         animal = AnimalDto.AnimalTypeDto.Cow,
@@ -132,7 +132,7 @@ private val getMyCow = EndpointConfiguration
         )
     }
     .setDefaultHandler {
-        MockzillaHttpResponse(
+        MockzillaHttpResponse.successJson(
             body = Json.encodeToString(
                 AnimalDto(
                     animal = AnimalDto.AnimalTypeDto.Cow,
