@@ -25,6 +25,10 @@ actual class FileIo(private val filePrefix: String = "mockzilla_cache_") {
             .filterNotNull()
             .forEach { localStorage.removeItem(it) }
     }
+
+    actual suspend fun deleteDirectory(dirName: String) {
+        // JS target uses localStorage — no real directory concept; no-op
+    }
 }
 @InternalMockzillaApi
 actual fun createFileIoforTesting() = FileIo(

@@ -2,37 +2,86 @@ package com.apadmi.mockzilla.ui.engine.device
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.management.MockzillaManagement
+import com.apadmi.mockzilla.ui.engine.Config
+import io.github.z4kn4fein.semver.toVersion
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 internal interface MonitorLogsUseCase {
     suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>>
     suspend fun clearMonitorLogs(device: Device): Result<Unit>
+    suspend fun fetchLogDetail(device: Device, logId: String): Result<LogEvent>
 }
 
 internal class MonitorLogsUseCaseImpl(
     private val managementLogsService: MockzillaManagement.LogsService,
-    private val managementMetaDataService: MockzillaManagement.MetaDataService,
+    private val metaDataUseCase: MetaDataUseCase,
 ) : MonitorLogsUseCase {
     private val mutex = Mutex()
-    private val cache = mutableMapOf<CacheKey, Sequence<LogEvent>>()
+    private val cache = mutableMapOf<CacheKey, List<LogEvent>>()
+
+    private suspend fun supportsNonDestructiveLogs(device: Device): Boolean =
+        metaDataUseCase.getMetaData(device)
+            .map { it.mockzillaVersion.toVersion() >= Config.nonDestructiveLogsMinVersion || true  }
+            .getOrDefault(false)
 
     override suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>> = mutex.withLock {
-        managementLogsService.fetchMonitorLogsAndClearBuffer(device, hideFromLogs = true).map { response ->
-            val cacheKey = CacheKey(device, response.appPackage)
-            val existingLogs = cache.getOrElse(cacheKey) { sequenceOf() }
-            existingLogs
-            (existingLogs + response.logs).also {
-                cache[cacheKey] = it
-            }
+        if (supportsNonDestructiveLogs(device)) {
+            getMonitorLogsNewPath(device)
+        } else {
+            getMonitorLogsLegacyPath(device)
         }
     }
 
-    override suspend fun clearMonitorLogs(device: Device): Result<Unit> = mutex.withLock {
-        managementMetaDataService.fetchMetaData(device, hideFromLogs = true).map { response ->
-            val cacheKey = CacheKey(device, response.appPackage)
-            cache[cacheKey] = emptySequence()
+    private suspend fun getMonitorLogsNewPath(device: Device): Result<Sequence<LogEvent>> {
+        val cacheKey = cache.keys.firstOrNull { it.device == device }
+        val existing = cacheKey?.let { cache[it] } ?: emptyList()
+        val since = existing.lastOrNull()?.timestamp?.let { it - 1 }
+
+        return managementLogsService.fetchMonitorLogsSince(device, since).map { response ->
+            val key = cacheKey ?: CacheKey(device, response.appPackage)
+            val merged = (existing + response.logs)
+                .distinctBy { it.id }
+                .sortedBy { it.timestamp }
+                .takeLast(clientMemoryCapacity)
+            cache[key] = merged
+            merged.asSequence()
         }
+    }
+
+    private suspend fun getMonitorLogsLegacyPath(device: Device): Result<Sequence<LogEvent>> =
+        managementLogsService.fetchMonitorLogsAndClearBuffer(device, hideFromLogs = true).map { response ->
+            val cacheKey = CacheKey(device, response.appPackage)
+            val existingLogs = cache.getOrElse(cacheKey) { emptyList() }
+            (existingLogs + response.logs).also {
+                cache[cacheKey] = it
+            }.asSequence()
+        }
+
+    override suspend fun clearMonitorLogs(device: Device): Result<Unit> = mutex.withLock {
+        val metaData = metaDataUseCase.getMetaData(device).getOrElse {
+            return@withLock Result.failure(it)
+        }
+        if (metaData.mockzillaVersion.toVersion() >= Config.nonDestructiveLogsMinVersion) {
+            managementLogsService.deleteMonitorLogs(device).onSuccess {
+                cache.keys.filter { it.device == device }.forEach { cache[it] = emptyList() }
+            }
+        } else {
+            val cacheKey = CacheKey(device, metaData.appPackage)
+            cache[cacheKey] = emptyList()
+            Result.success(Unit)
+        }
+    }
+
+    override suspend fun fetchLogDetail(device: Device, logId: String): Result<LogEvent> =
+        if (supportsNonDestructiveLogs(device)) {
+            managementLogsService.fetchLogDetail(device, logId)
+        } else {
+            Result.failure(UnsupportedOperationException("Server version does not support log detail fetching"))
+        }
+
+    companion object {
+        private const val clientMemoryCapacity = 1000
     }
 }
 

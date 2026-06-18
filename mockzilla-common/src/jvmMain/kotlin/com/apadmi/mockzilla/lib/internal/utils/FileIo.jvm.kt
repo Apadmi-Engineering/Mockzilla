@@ -26,6 +26,7 @@ actual class FileIo(private val cacheDir: File) {
 
     actual suspend fun saveToCache(filename: String, contents: String) =
         filename.fileInCache().also {
+            it.parentFile?.mkdirs()
             it.createNewFile()
         }.writeText(contents)
 
@@ -44,6 +45,10 @@ actual class FileIo(private val cacheDir: File) {
         if (!it) {
             throw IOException("Failed to delete caches")
         }
+    }
+
+    actual suspend fun deleteDirectory(dirName: String) {
+        File(cacheDirectory, dirName).deleteRecursively()
     }
 }
 

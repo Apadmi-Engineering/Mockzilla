@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.management
 
+import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
@@ -198,6 +199,44 @@ interface MockzillaManagement {
             connection: MockzillaConnectionConfig,
             hideFromLogs: Boolean
         ): Result<MonitorLogsResponse>
+
+        /**
+         * Non-destructively polls log entries since the given timestamp. Safe to call repeatedly
+         * without losing entries.
+         *
+         * @param connection The device to target.
+         * @param since Only return entries with timestamp strictly after this value (epoch ms).
+         *   Pass `null` to retrieve all buffered entries.
+         * @return [Result.success] wrapping the log response, or [Result.failure] if the
+         * request could not be completed.
+         */
+        suspend fun fetchMonitorLogsSince(
+            connection: MockzillaConnectionConfig,
+            since: Long?,
+        ): Result<MonitorLogsResponse>
+
+        /**
+         * Fetches the full detail for a single log entry, including any body content that was
+         * truncated in the list response.
+         *
+         * @param connection The device to target.
+         * @param logId The [LogEvent.id] of the entry to retrieve.
+         * @return [Result.success] wrapping the full [LogEvent], or [Result.failure] if the entry
+         * no longer exists or the request could not be completed.
+         */
+        suspend fun fetchLogDetail(
+            connection: MockzillaConnectionConfig,
+            logId: String,
+        ): Result<LogEvent>
+
+        /**
+         * Deletes all buffered log entries on the device at [connection] and clears disk-cached
+         * body files.
+         *
+         * @param connection The device to target.
+         * @return [Result.success] on success, [Result.failure] if the request could not be completed.
+         */
+        suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>
     }
 
     /**

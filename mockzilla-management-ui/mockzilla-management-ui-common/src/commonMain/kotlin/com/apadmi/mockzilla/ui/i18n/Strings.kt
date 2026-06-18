@@ -126,6 +126,7 @@ data class Strings(
          * @property noHeaders
          * @property noBody
          * @property emptyBody
+         * @property bodyLoadError
          */
         data class LogDetails(
             val title: String,
@@ -141,6 +142,7 @@ data class Strings(
             val noHeaders: String,
             val noBody: String,
             val emptyBody: String,
+            val bodyLoadError: String,
         )
 
         /**

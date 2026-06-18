@@ -31,15 +31,28 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
     lateinit var managementLogsService: MockzillaManagement.LogsService
 
     @RelaxedMockK
-    lateinit var managementMetaDataService: MockzillaManagement.MetaDataService
+    lateinit var metaDataUseCase: MetaDataUseCase
 
     private fun createSut() = MonitorLogsUseCaseImpl(
-        managementLogsService, managementMetaDataService
+        managementLogsService, metaDataUseCase
     )
 
+    private fun givenOldServer() {
+        coEvery { metaDataUseCase.getMetaData(Device.dummy(), any()) }
+            .returns(Result.success(MetaData.dummy()))
+    }
+
+    private fun givenNewServer() {
+        coEvery { metaDataUseCase.getMetaData(Device.dummy(), any()) }
+            .returns(Result.success(MetaData.dummy().copy(mockzillaVersion = "4.0.0")))
+    }
+
+    // ===== Old path (server < 4.0.0) =====
+
     @Test
-    fun `getMonitorLogs fails - returns failure`() = runBlockingTest {
+    fun `getMonitorLogs old path - fails - returns failure`() = runBlockingTest {
         /* Setup */
+        givenOldServer()
         coEvery {
             managementLogsService.fetchMonitorLogsAndClearBuffer(
                 Device.dummy(),
@@ -56,8 +69,9 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
     }
 
     @Test
-    fun `getMonitorLogs success - returns and combines with cache`() = runBlockingTest {
+    fun `getMonitorLogs old path - success - returns and combines with cache`() = runBlockingTest {
         /* Setup */
+        givenOldServer()
         coEvery {
             managementLogsService.fetchMonitorLogsAndClearBuffer(
                 Device.dummy(),
@@ -94,29 +108,18 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
     }
 
     @Test
-    fun `clearMonitorLogs success - removes cache`() = runBlockingTest {
+    fun `clearMonitorLogs old path - success - removes cache`() = runBlockingTest {
         /* Setup */
+        givenOldServer()
         coEvery {
             managementLogsService.fetchMonitorLogsAndClearBuffer(
                 Device.dummy(),
                 hideFromLogs = true
             )
         }.returnsMany(
-            Result.success(
-                MonitorLogsResponse(
-                    appPackage = "package",
-                    logs = listOf(dummyLogEvent)
-                )
-            ),
-            Result.success(
-                MonitorLogsResponse(
-                    appPackage = "package",
-                    logs = listOf()
-                )
-            )
+            Result.success(MonitorLogsResponse(appPackage = "package", logs = listOf(dummyLogEvent))),
+            Result.success(MonitorLogsResponse(appPackage = "package", logs = listOf()))
         )
-        coEvery { managementMetaDataService.fetchMetaData(Device.dummy(), hideFromLogs = true) }
-            .returns(Result.success(MetaData.dummy().copy(appPackage = "package")))
         val sut = createSut()
 
         /* Run Test */
@@ -125,21 +128,142 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify */
-        assertEquals(
-            listOf<LogEvent>(),
-            result.getOrThrow().toList()
-        )
+        assertEquals(listOf<LogEvent>(), result.getOrThrow().toList())
     }
 
     @Test
-    fun `clearMonitorLogs fails - returns failure`() = runBlockingTest {
+    fun `clearMonitorLogs old path - metaData fails - returns failure`() = runBlockingTest {
         /* Setup */
-        coEvery { managementMetaDataService.fetchMetaData(Device.dummy(), hideFromLogs = true) }
+        coEvery { metaDataUseCase.getMetaData(Device.dummy(), any()) }
             .returns(Result.failure(Exception()))
         val sut = createSut()
 
         /* Run Test */
         val result = sut.clearMonitorLogs(Device.dummy())
+
+        /* Verify */
+        assertTrue(result.isFailure)
+    }
+
+    // ===== New path (server >= 4.0.0) =====
+
+    @Test
+    fun `getMonitorLogs new path - first poll returns all entries`() = runBlockingTest {
+        /* Setup */
+        givenNewServer()
+        coEvery {
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+        }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
+        val sut = createSut()
+
+        /* Run Test */
+        val result = sut.getMonitorLogs(Device.dummy())
+
+        /* Verify */
+        assertEquals(listOf(dummyLogEvent), result.getOrThrow().toList())
+    }
+
+    @Test
+    fun `getMonitorLogs new path - subsequent poll uses since cursor`() = runBlockingTest {
+        /* Setup */
+        givenNewServer()
+        val secondEvent = dummyLogEvent.copy(timestamp = 2, url = "https://www.other.com")
+        coEvery {
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+        }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
+        coEvery {
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), 0L)  // last.timestamp - 1 = 1 - 1 = 0
+        }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(secondEvent))))
+        val sut = createSut()
+
+        /* Run Test */
+        sut.getMonitorLogs(Device.dummy())
+        val result = sut.getMonitorLogs(Device.dummy())
+
+        /* Verify */
+        assertEquals(listOf(dummyLogEvent, secondEvent), result.getOrThrow().toList())
+    }
+
+    @Test
+    fun `getMonitorLogs new path - deduplicates by id`() = runBlockingTest {
+        /* Setup */
+        givenNewServer()
+        coEvery {
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+        }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
+        coEvery {
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), 0L)
+        }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
+        val sut = createSut()
+
+        /* Run Test */
+        sut.getMonitorLogs(Device.dummy())
+        val result = sut.getMonitorLogs(Device.dummy())
+
+        /* Verify — same event returned in both polls should only appear once */
+        assertEquals(listOf(dummyLogEvent), result.getOrThrow().toList())
+    }
+
+    @Test
+    fun `getMonitorLogs new path - sorts by timestamp`() = runBlockingTest {
+        /* Setup */
+        givenNewServer()
+        val eventAtT3 = dummyLogEvent.copy(timestamp = 3)
+        val eventAtT1 = dummyLogEvent.copy(timestamp = 1, url = "other")
+        coEvery {
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+        }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(eventAtT3, eventAtT1))))
+        val sut = createSut()
+
+        /* Run Test */
+        val result = sut.getMonitorLogs(Device.dummy())
+
+        /* Verify */
+        assertEquals(listOf(eventAtT1, eventAtT3), result.getOrThrow().toList())
+    }
+
+    @Test
+    fun `clearMonitorLogs new path - calls deleteMonitorLogs and clears cache`() = runBlockingTest {
+        /* Setup */
+        givenNewServer()
+        coEvery {
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+        }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
+        coEvery { managementLogsService.deleteMonitorLogs(Device.dummy()) }
+            .returns(Result.success(Unit))
+        val sut = createSut()
+
+        /* Run Test */
+        sut.getMonitorLogs(Device.dummy())
+        val clearResult = sut.clearMonitorLogs(Device.dummy())
+
+        /* Verify */
+        assertTrue(clearResult.isSuccess)
+    }
+
+    @Test
+    fun `fetchLogDetail new path - delegates to logsService`() = runBlockingTest {
+        /* Setup */
+        givenNewServer()
+        coEvery { managementLogsService.fetchLogDetail(Device.dummy(), dummyLogEvent.id) }
+            .returns(Result.success(dummyLogEvent))
+        val sut = createSut()
+
+        /* Run Test */
+        val result = sut.fetchLogDetail(Device.dummy(), dummyLogEvent.id)
+
+        /* Verify */
+        assertEquals(dummyLogEvent, result.getOrThrow())
+    }
+
+    @Test
+    fun `fetchLogDetail old path - returns failure`() = runBlockingTest {
+        /* Setup */
+        givenOldServer()
+        val sut = createSut()
+
+        /* Run Test */
+        val result = sut.fetchLogDetail(Device.dummy(), dummyLogEvent.id)
 
         /* Verify */
         assertTrue(result.isFailure)

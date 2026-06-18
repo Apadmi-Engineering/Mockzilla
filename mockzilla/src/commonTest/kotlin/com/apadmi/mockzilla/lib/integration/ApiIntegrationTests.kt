@@ -278,10 +278,11 @@ class ApiIntegrationTests {
         assertTrue(responseBody.logs
             .map { it.timestamp }
             .all { abs(it - timestamp) <= 300 })
-        // Check entry is correct ignoring the timestamp and request headers
+        // Check entry is correct ignoring the timestamp, id, and request headers
         assertEquals(
             listOf(
                 LogEvent(
+                    id = "",
                     timestamp = 0,
                     url = "/local-mock/my-id",
                     requestBody = "",
@@ -294,7 +295,7 @@ class ApiIntegrationTests {
                     isIntendedFailure = false
                 )
             ),
-            responseBody.logs.map { it.copy(timestamp = 0, requestHeaders = emptyMap()) }
+            responseBody.logs.map { it.copy(id = "", timestamp = 0, requestHeaders = emptyMap()) }
         )
     }
 }

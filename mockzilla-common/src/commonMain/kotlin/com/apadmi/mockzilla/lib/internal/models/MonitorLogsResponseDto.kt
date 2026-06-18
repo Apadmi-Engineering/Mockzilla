@@ -36,6 +36,8 @@ data class LogEvent(
     val delay: Long,
     val method: String,
     val isIntendedFailure: Boolean,
+    val isRequestBodyTruncated: Boolean = false,
+    val isResponseBodyTruncated: Boolean = false,
 )
 
 /**
