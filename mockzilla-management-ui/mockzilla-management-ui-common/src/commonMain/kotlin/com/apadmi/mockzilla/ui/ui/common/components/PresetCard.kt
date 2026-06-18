@@ -50,9 +50,11 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -61,13 +63,16 @@ import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
+import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
-import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.BodyVisualTransformation
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.minifyJson
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.typeFormat
 
 import io.ktor.http.HttpStatusCode
 
@@ -285,7 +290,7 @@ internal fun PresetCard(
             enter = expandVertically(),
             exit = shrinkVertically(),
         ) {
-            preset.response.body?.takeIf { it.isNotBlank() }
+            preset.response.takeUnless { it.body.isNullOrBlank() }
                 ?.let {
                     Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)) {
                         Spacer(Modifier.size(4.dp))
@@ -335,7 +340,10 @@ internal fun NoPresetCard(
 }
 
 @Composable
-internal fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
+internal fun ExpandableResponseBody(
+    response: PartialMockzillaHttpResponse,
+    isCompact: Boolean = false,
+    ) {
     val scrollState = rememberScrollState()
 
     // Made the scrollbar color slightly darker so it's easier to see against the background
@@ -354,42 +362,26 @@ internal fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
                 shape = RoundedCornerShape(8.dp)
             )
             .clip(shape = RoundedCornerShape(8.dp))
-            .then(
-                if (isCompact) {
-                    Modifier
-                        // LOWERED to 48.dp (roughly 2 lines of text) to force the content to overflow!
-                        .heightIn(max = 48.dp)
-                        .verticalScroll(scrollState)
-                        .drawWithContent {
-                            drawContent()
-
-                            // Only draw if the text actually exceeds the 48.dp height
-                            if (scrollState.maxValue > 0) {
-                                val visibleHeight = size.height
-                                val contentHeight = visibleHeight + scrollState.maxValue
-
-                                val scrollbarHeight = visibleHeight * (visibleHeight / contentHeight)
-                                val scrollbarVertical = (scrollState.value.toFloat() / scrollState.maxValue) * (visibleHeight - scrollbarHeight)
-                                val scrollbarWidth = 4.dp.toPx()
-                                val paddingEnd = 4.dp.toPx()
-
-                                drawRoundRect(
-                                    color = scrollbarColor,
-                                    topLeft = Offset(size.width - scrollbarWidth - paddingEnd, scrollbarVertical),
-                                    size = Size(scrollbarWidth, scrollbarHeight),
-                                    cornerRadius = CornerRadius(2.dp.toPx())
-                                )
-                            }
-                        }
-                } else {
-                    Modifier
-                }
-            ),
     ) {
+        val mode = response.typeFormat
+        val body = when  {
+            // Truncate handled by maxLines on text field
+            BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body
+            mode == EditorMode.Json -> if (isCompact) {
+                response.body?.minifyJson()
+            } else {
+                response.body?.prettyPrintJson()
+            }
+            else -> response.body
+        }
         Text(
             modifier = Modifier.padding(8.dp),
-            text = buildHighlightedAnnotatedString(body, MaterialTheme.colorScheme.jsonHighlight, isMinified = isCompact),
-            maxLines = Int.MAX_VALUE,
+            text = (BodyVisualTransformation
+                .buildEditorOutputTransformation(mode)
+                ?.highlight(body ?: "")
+                ?: AnnotatedString(body ?: "")),
+            maxLines = if (isCompact) 4 else 16,
+            overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

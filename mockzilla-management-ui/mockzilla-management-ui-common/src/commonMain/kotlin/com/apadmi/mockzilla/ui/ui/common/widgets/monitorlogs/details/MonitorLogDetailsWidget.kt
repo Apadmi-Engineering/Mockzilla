@@ -210,18 +210,6 @@ internal fun LogDetailsContent(
     )
 }
 
-private val LogEvent.responseTypeFormat: EditorMode
-    get() = responseHeaders[HttpHeaders.ContentType]?.lowercase().contentTypeToEditorMode()
-
-private val LogEvent.requestTypeFormat: EditorMode
-    get() = requestHeaders[HttpHeaders.ContentType]?.lowercase().contentTypeToEditorMode()
-
-private fun String?.contentTypeToEditorMode() = when {
-    this?.contains("json") == true -> EditorMode.Json
-    this?.contains("html") == true -> EditorMode.Html
-    else -> EditorMode.PlainText
-}
-
 @Composable
 internal fun MonitorLogDetailsEmptyContent(
     strings: Strings = LocalStrings.current,

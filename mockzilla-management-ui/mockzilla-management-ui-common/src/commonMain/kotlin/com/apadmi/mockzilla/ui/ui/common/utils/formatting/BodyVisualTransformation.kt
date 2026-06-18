@@ -9,7 +9,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 
 internal object BodyVisualTransformation {
-    internal fun isBodyTooLarge(body: String) = body.length >= 25_000
+    internal fun isBodyTooLarge(body: String?) = body != null && body.length >= 25_000
 
     @Composable
     internal fun buildEditorOutputTransformation(mode: EditorMode): HighlightingTransformation? {
