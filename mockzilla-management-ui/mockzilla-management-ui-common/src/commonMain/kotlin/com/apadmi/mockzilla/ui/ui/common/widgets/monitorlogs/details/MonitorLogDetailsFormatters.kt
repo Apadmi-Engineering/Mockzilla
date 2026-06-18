@@ -10,9 +10,11 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 
 import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.format.char
+import kotlinx.datetime.offsetAt
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -110,15 +112,10 @@ private fun AnnotatedString.Builder.processHighlightToken(
     }
 }
 
-internal fun urlToTitle(url: String): String = url
-    .trimEnd('/')
-    .substringAfterLast('/')
-    .substringBefore('?')
-    .replaceFirstChar { it.uppercaseChar() }
-    .ifBlank { url }
-
-internal fun formatTimestamp(timestamp: Long): String =
-    Instant.fromEpochMilliseconds(timestamp).format(timestampFormat)
+internal fun formatTimestamp(timestamp: Long): String {
+    val instant = Instant.fromEpochMilliseconds(timestamp)
+    return instant.format(timestampFormat, TimeZone.currentSystemDefault().offsetAt(instant))
+}
 
 internal fun buildHighlightedAnnotatedString(
     text: String,

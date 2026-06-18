@@ -85,7 +85,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.urlToTitle
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
 
 import io.ktor.http.HttpStatusCode
@@ -237,7 +236,7 @@ private fun ColumnScope.PopulatedState(
         enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
         exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
-        PanelHeader(state, endpointName, onCancel, onSave, strings)
+        PanelHeader(state, onCancel, onSave, strings)
     }
 
     AnimatedVisibility(
@@ -368,7 +367,7 @@ fun CreateEditPresetWidget(
 
     CreateEditPresetWidgetContent(
         state = state,
-        endpointName = urlToTitle(activeEndpoint.raw),
+        endpointName = activeEndpoint.raw,
         onCancel = onCancel,
         onSave = {
             viewModel.save()
@@ -539,7 +538,6 @@ private fun BodySection(
 @Composable
 private fun PanelHeader(
     state: State.Editing,
-    endpointName: String?,
     onCancel: () -> Unit,
     onSave: () -> Unit,
     strings: Strings = LocalStrings.current,
@@ -561,13 +559,11 @@ private fun PanelHeader(
             color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold,
         )
-        endpointName?.let {
-            Text(
-                text = strings.widgets.createEditPreset.endpointSubtitle(it),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceMuted,
-            )
-        }
+        Text(
+            text = strings.widgets.createEditPreset.endpointSubtitle(state.endpointName),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
+        )
     }
     CustomOutlineButton(
         label = strings.widgets.createEditPreset.cancel,

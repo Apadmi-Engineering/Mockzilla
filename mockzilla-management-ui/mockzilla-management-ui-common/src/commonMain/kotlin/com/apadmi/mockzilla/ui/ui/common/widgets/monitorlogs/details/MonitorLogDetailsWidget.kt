@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -42,8 +44,11 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -58,6 +63,8 @@ import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsViewModel.State.ViewDetails
@@ -149,51 +156,52 @@ internal fun LogDetailsContent(
     onTabSelected: (Tab) -> Unit,
     onClose: () -> Unit = {},
     strings: Strings = LocalStrings.current,
-) = Box {
-    val scrollState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .verticalScroll(scrollState)
-            .background(MaterialTheme.colorScheme.surface)
-    ) {
-        LogHeaderBar(logDetail = logDetail, onClose = onClose)
-        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-        LogTabBar(selectedTab = state.selectedTab, onTabSelected = onTabSelected)
-        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-        Column(
+) = Column {
+    LogHeaderBar(logDetail = logDetail, onClose = onClose)
+    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+    LogTabBar(selectedTab = state.selectedTab, onTabSelected = onTabSelected)
+    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+
+    Box {
+        val scrollState = rememberLazyListState()
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.surface),
+            state = scrollState,
         ) {
-            when (state.selectedTab) {
-                Tab.Response -> {
-                    SectionTitle(label = strings.widgets.logDetails.responseHeaders)
-                    HeadersContent(logDetail.responseHeaders.toList(), strings)
-                    Spacer(Modifier.height(8.dp))
-                    SectionTitle(label = strings.widgets.logDetails.responseBody)
-                    BodyContent(logDetail.responseBody, logDetail.responseTypeFormat, strings)
-                }
+            item {
+                when (state.selectedTab) {
+                    Tab.Response -> {
+                        SectionTitle(label = strings.widgets.logDetails.responseHeaders)
+                        HeadersContent(logDetail.responseHeaders.toList(), strings)
+                        Spacer(Modifier.height(8.dp))
+                        SectionTitle(label = strings.widgets.logDetails.responseBody)
+                        BodyContent(
+                            logDetail.responseBody,
+                            logDetail.responseTypeFormat,
+                            strings
+                        )
+                    }
 
-                Tab.Request -> {
-                    SectionTitle(label = strings.widgets.logDetails.requestHeaders)
-                    HeadersContent(logDetail.requestHeaders.toList(), strings)
-                    Spacer(Modifier.height(8.dp))
-                    SectionTitle(label = strings.widgets.logDetails.requestBody)
-                    BodyContent(logDetail.requestBody, logDetail.requestTypeFormat,strings)
+                    Tab.Request -> {
+                        SectionTitle(label = strings.widgets.logDetails.requestHeaders)
+                        HeadersContent(logDetail.requestHeaders.toList(), strings)
+                        Spacer(Modifier.height(8.dp))
+                        SectionTitle(label = strings.widgets.logDetails.requestBody)
+                        BodyContent(logDetail.requestBody, logDetail.requestTypeFormat, strings)
+                    }
                 }
             }
         }
+        PlatformVerticalScrollbar(
+            scrollState = scrollState,
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight()
+        )
     }
-
-    PlatformVerticalScrollbar(
-        scrollState = scrollState,
-        modifier = Modifier
-            .align(Alignment.CenterEnd)
-            .fillMaxHeight()
-    )
 }
 
 private val LogEvent.responseTypeFormat: EditorMode
@@ -227,20 +235,19 @@ internal fun MonitorLogDetailsEmptyContent(
     )
 }
 
-// ── Header bar ────────────────────────────────────────────────────────────────
-
-@Suppress("MAGIC_NUMBER")
 @Composable
-private fun LogHeaderBar(logDetail: LogEvent, onClose: () -> Unit) {
-    val metaColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+private fun LogHeaderBar(
+    logDetail: LogEvent,
+    onClose: () -> Unit
+) = Box {
     val monoFont = LocalMonoFontFamily.current
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f))
-            .padding(horizontal = 14.dp, vertical = 6.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -248,33 +255,37 @@ private fun LogHeaderBar(logDetail: LogEvent, onClose: () -> Unit) {
         ) {
             LogStatusBadge(status = logDetail.status)
             Text(
-                text = urlToTitle(logDetail.url),
+                text = logDetail.url,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
+                fontFamily = monoFont,
+                maxLines = 1,
+                overflow = TextOverflow.StartEllipsis,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).padding(end = 20.dp),
             )
-            IconButton(onClick = onClose) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            MetaItem(icon = "⏱", label = "${logDetail.delay}ms", color = metaColor)
-            MetaItem(icon = "↑", label = logDetail.requestBody.toKbLabel(), color = metaColor)
-            MetaItem(icon = "↓", label = logDetail.responseBody.toKbLabel(), color = metaColor)
+            MetaItem(icon = "⏱", label = "${logDetail.delay}ms")
+            MetaItem(icon = "↑", label = logDetail.requestBody.toKbLabel())
+            MetaItem(icon = "↓", label = logDetail.responseBody.toKbLabel())
             Text(
                 text = formatTimestamp(logDetail.timestamp),
                 style = MaterialTheme.typography.labelMedium.copy(fontFamily = monoFont),
-                color = metaColor,
+                color = MaterialTheme.colorScheme.onSurfaceFaint,
             )
         }
+    }
+
+    IconButton(onClick = onClose, Modifier.align(Alignment.TopEnd)) {
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(16.dp),
+        )
     }
 }
 
@@ -305,7 +316,6 @@ private fun LogStatusBadge(status: HttpStatusCode) {
 private fun MetaItem(
     icon: String,
     label: String,
-    color: Color
 ) {
     val monoFont = LocalMonoFontFamily.current
     Row(
@@ -315,12 +325,12 @@ private fun MetaItem(
         Text(
             text = icon,
             style = MaterialTheme.typography.labelSmall,
-            color = color,
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
         )
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium.copy(fontFamily = monoFont),
-            color = color,
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
         )
     }
 }
@@ -333,9 +343,11 @@ private fun LogTabBar(
     selectedTab: Tab,
     onTabSelected: (Tab) -> Unit,
 ) {
-    Row {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.surface)
+    ) {
         Tab.entries.forEach { tab ->
-
             val isSelected = tab == selectedTab
 
             val selectedColor = if (isSelected) {
