@@ -210,7 +210,9 @@ private fun PopulatedPresets(
         }
 
         presets.visiblePresets.forEachIndexed { index, preset ->
-            if (index > 0) {
+            if (index == 0) {
+                Spacer(Modifier.height(4.dp))
+            } else {
                 Spacer(Modifier.height(4.dp))
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
                 Spacer(Modifier.height(4.dp))
@@ -226,6 +228,9 @@ private fun PopulatedPresets(
                 onEdit = onEditPreset,
                 layoutMode = layoutMode
             )
+            if (index == presets.visiblePresets.lastIndex) {
+                Spacer(Modifier.height(4.dp))
+            }
         }
     }
 }
