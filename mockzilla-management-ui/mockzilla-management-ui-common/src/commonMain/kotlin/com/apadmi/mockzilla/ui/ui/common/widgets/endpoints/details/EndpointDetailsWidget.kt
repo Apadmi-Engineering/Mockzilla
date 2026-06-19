@@ -61,8 +61,8 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.Clock
 import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
-import com.apadmi.mockzilla.ui.ui.common.components.EndpointDetailsSection
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.EndpointDetailsSection
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar

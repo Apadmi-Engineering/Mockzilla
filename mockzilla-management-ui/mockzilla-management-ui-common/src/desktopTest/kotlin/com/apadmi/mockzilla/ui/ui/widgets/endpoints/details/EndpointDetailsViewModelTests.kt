@@ -12,7 +12,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.RowDensity
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
