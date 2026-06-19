@@ -248,12 +248,26 @@ val EnStrings = Strings(
             bodyTypeLabel = "Body type",
             responseSectionLabel = "Response",
             bodyLabel = "Body",
+            jsonErrorTitle = "Invalid JSON:",
         )
     ),
     components = Strings.Components(
         editor = Strings.Components.Editor(
             largeFileSyntaxHighlightError = "Syntax highlighting disabled for large files",
             jsonErrorTitle = "Invalid JSON:",
+        ),
+        findReplace = Strings.Components.FindReplace(
+            findPlaceholder = "Find",
+            replacePlaceholder = "Replace",
+            noResults = "No results",
+            matchCount = { current, total -> "$current/$total" },
+            collapseReplaceDescription = "Collapse replace",
+            expandReplaceDescription = "Expand replace",
+            previousMatchDescription = "Previous match",
+            nextMatchDescription = "Next match",
+            closeFindBarDescription = "Close find bar",
+            replaceButton = "Replace",
+            replaceAllButton = "All",
         ),
     )
 )
