@@ -39,7 +39,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
 
     private fun givenOldServer() {
         coEvery { metaDataUseCase.getMetaData(Device.dummy(), any()) }
-            .returns(Result.success(MetaData.dummy()))
+            .returns(Result.success(MetaData.dummy().copy(mockzillaVersion = "1.0.0")))
     }
 
     private fun givenNewServer() {
@@ -117,8 +117,18 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
                 hideFromLogs = true
             )
         }.returnsMany(
-            Result.success(MonitorLogsResponse(appPackage = "package", logs = listOf(dummyLogEvent))),
-            Result.success(MonitorLogsResponse(appPackage = "package", logs = listOf()))
+            Result.success(
+                MonitorLogsResponse(
+                    appPackage = MetaData.dummy().appPackage,
+                    logs = listOf(dummyLogEvent)
+                )
+            ),
+            Result.success(
+                MonitorLogsResponse(
+                    appPackage = MetaData.dummy().appPackage,
+                    logs = listOf()
+                )
+            )
         )
         val sut = createSut()
 
@@ -167,7 +177,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
     fun `getMonitorLogs new path - subsequent poll uses since cursor`() = runBlockingTest {
         /* Setup */
         givenNewServer()
-        val secondEvent = dummyLogEvent.copy(timestamp = 2, url = "https://www.other.com")
+        val secondEvent = dummyLogEvent.copy(timestamp = 2, id = "other-id", url = "https://www.other.com")
         coEvery {
             managementLogsService.fetchMonitorLogsSince(Device.dummy(), null, any())
         }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
@@ -208,7 +218,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
     fun `getMonitorLogs new path - sorts by timestamp`() = runBlockingTest {
         /* Setup */
         givenNewServer()
-        val eventAtT3 = dummyLogEvent.copy(timestamp = 3)
+        val eventAtT3 = dummyLogEvent.copy(timestamp = 3, id = "first")
         val eventAtT1 = dummyLogEvent.copy(timestamp = 1, url = "other")
         coEvery {
             managementLogsService.fetchMonitorLogsSince(Device.dummy(), null, any())

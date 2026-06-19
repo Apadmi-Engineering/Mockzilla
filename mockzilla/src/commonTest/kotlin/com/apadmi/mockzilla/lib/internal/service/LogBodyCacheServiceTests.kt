@@ -1,64 +1,83 @@
 package com.apadmi.mockzilla.lib.internal.service
 
+import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
+
+import io.ktor.http.HttpStatusCode
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 
+@Suppress("MAGIC_NUMBER")
 class LogBodyCacheServiceTests {
+    private fun makeEvent(
+        id: String = "test-id",
+        timestamp: Long = 1000L,
+        requestBody: String = "request body",
+        responseBody: String = "response body",
+    ) = LogEvent(
+        id = id,
+        timestamp = timestamp,
+        url = "https://example.com",
+        requestBody = requestBody,
+        requestHeaders = emptyMap(),
+        responseHeaders = emptyMap(),
+        responseBody = responseBody,
+        status = HttpStatusCode.OK,
+        delay = 0,
+        method = "GET",
+        isIntendedFailure = false,
+    )
+
     @Test
-    fun `storeAndFetchRequestBody - stores and retrieves body`() = runTest {
+    fun `storeFullEntry and fetchFullEntry - stores and retrieves full event`() = runTest {
         val sut = LocalBodyCacheService(createFileIoforTesting())
-        sut.storeRequestBody("id1", "request body content")
-        assertEquals("request body content", sut.fetchRequestBody("id1"))
+        val event = makeEvent()
+        sut.storeFullEntry(event)
+        val retrieved = sut.fetchFullEntry(event.id)
+        assertNotNull(retrieved)
+        assertEquals(event.requestBody, retrieved.requestBody)
+        assertEquals(event.responseBody, retrieved.responseBody)
+        assertEquals(event.url, retrieved.url)
     }
 
     @Test
-    fun `storeAndFetchResponseBody - stores and retrieves body`() = runTest {
+    fun `fetchFullEntry - not stored - returns null`() = runTest {
         val sut = LocalBodyCacheService(createFileIoforTesting())
-        sut.storeResponseBody("id1", "response body content")
-        assertEquals("response body content", sut.fetchResponseBody("id1"))
+        assertNull(sut.fetchFullEntry("doesNotExist"))
     }
 
     @Test
-    fun `fetchRequestBody - not stored - returns null`() = runTest {
+    fun `deleteOldFullEntries - removes entries older than threshold`() = runTest {
         val sut = LocalBodyCacheService(createFileIoforTesting())
-        assertNull(sut.fetchRequestBody("doesNotExist"))
+        val old = makeEvent(id = "old", timestamp = 1000L)
+        val recent = makeEvent(id = "recent", timestamp = 5000L)
+        sut.storeFullEntry(old)
+        sut.storeFullEntry(recent)
+        sut.deleteOldFullEntries(olderThan = 3000L)
+        assertNull(sut.fetchFullEntry("old"))
+        assertNotNull(sut.fetchFullEntry("recent"))
     }
 
     @Test
-    fun `fetchResponseBody - not stored - returns null`() = runTest {
+    fun `deleteOldFullEntries - threshold equals timestamp - does not delete entry at threshold`() = runTest {
         val sut = LocalBodyCacheService(createFileIoforTesting())
-        assertNull(sut.fetchResponseBody("doesNotExist"))
+        val event = makeEvent(id = "exact", timestamp = 3000L)
+        sut.storeFullEntry(event)
+        sut.deleteOldFullEntries(olderThan = 3000L)
+        assertNotNull(sut.fetchFullEntry("exact"))
     }
 
     @Test
-    fun `evict - removes both body files`() = runTest {
+    fun `clearAll - removes all stored entries`() = runTest {
         val sut = LocalBodyCacheService(createFileIoforTesting())
-        sut.storeRequestBody("id1", "req")
-        sut.storeResponseBody("id1", "res")
-        sut.evict("id1")
-        assertNull(sut.fetchRequestBody("id1"))
-        assertNull(sut.fetchResponseBody("id1"))
-    }
-
-    @Test
-    fun `evict - called when no files exist - does not throw`() = runTest {
-        val sut = LocalBodyCacheService(createFileIoforTesting())
-        sut.evict("nonExistent")
-    }
-
-    @Test
-    fun `clearAll - removes all stored bodies`() = runTest {
-        val sut = LocalBodyCacheService(createFileIoforTesting())
-        sut.storeRequestBody("a", "req-a")
-        sut.storeResponseBody("a", "res-a")
-        sut.storeRequestBody("b", "req-b")
+        sut.storeFullEntry(makeEvent(id = "a"))
+        sut.storeFullEntry(makeEvent(id = "b"))
         sut.clearAll()
-        assertNull(sut.fetchRequestBody("a"))
-        assertNull(sut.fetchResponseBody("a"))
-        assertNull(sut.fetchRequestBody("b"))
+        assertNull(sut.fetchFullEntry("a"))
+        assertNull(sut.fetchFullEntry("b"))
     }
 }

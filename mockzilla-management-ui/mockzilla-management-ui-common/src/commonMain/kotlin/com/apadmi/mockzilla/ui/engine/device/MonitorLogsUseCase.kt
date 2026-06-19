@@ -26,7 +26,7 @@ internal class MonitorLogsUseCaseImpl(
 
     private suspend fun supportsNonDestructiveLogs(device: Device): Boolean =
         metaDataUseCase.getMetaData(device)
-            .map { it.mockzillaVersion.toVersion() >= Config.nonDestructiveLogsMinVersion || true  }
+            .map { it.mockzillaVersion.toVersion() >= Config.nonDestructiveLogsMinVersion  }
             .getOrDefault(false)
 
     override suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>> = mutex.withLock {
@@ -57,6 +57,7 @@ internal class MonitorLogsUseCaseImpl(
         managementLogsService.fetchMonitorLogsAndClearBuffer(device, hideFromLogs = true).map { response ->
             val cacheKey = CacheKey(device, response.appPackage)
             val existingLogs = cache.getOrElse(cacheKey) { emptyList() }
+
             (existingLogs + response.logs).also {
                 cache[cacheKey] = it
             }.asSequence()
@@ -66,13 +67,12 @@ internal class MonitorLogsUseCaseImpl(
         val metaData = metaDataUseCase.getMetaData(device).getOrElse {
             return@withLock Result.failure(it)
         }
+        val cacheKey = CacheKey(device, metaData.appPackage)
+        cache[cacheKey] = emptyList()
+
         if (metaData.mockzillaVersion.toVersion() >= Config.nonDestructiveLogsMinVersion) {
-            managementLogsService.deleteMonitorLogs(device).onSuccess {
-                cache.keys.filter { it.device == device }.forEach { cache[it] = emptyList() }
-            }
+            managementLogsService.deleteMonitorLogs(device)
         } else {
-            val cacheKey = CacheKey(device, metaData.appPackage)
-            cache[cacheKey] = emptyList()
             Result.success(Unit)
         }
     }
