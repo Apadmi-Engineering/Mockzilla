@@ -104,9 +104,9 @@ internal class MockServerMonitorImpl(
     companion object {
 
         // These values are to stop the memory usage of the app from being unbounded as logs accumulate
-        // With these values the max footprint is ~20mb
+        // With these values the max footprint is ~15mb
         private const val memoryCapacity = 500
-        private const val maxUntruncatedBodySizeBytes = 20_000
+        private const val maxUntruncatedBodySizeBytes = 15_000
     }
 
     private fun LogEvent.requestBodyOversized() = requestBody.length > maxUntruncatedBodySizeBytes

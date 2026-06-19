@@ -399,7 +399,6 @@ private fun BodyContent(
         )
         .padding(12.dp),
 ) {
-    Text("${body::class} $body")
     when {
         BodyVisualTransformation.isBodyTooLarge(body.bodyOrPreview) -> {
             Text(

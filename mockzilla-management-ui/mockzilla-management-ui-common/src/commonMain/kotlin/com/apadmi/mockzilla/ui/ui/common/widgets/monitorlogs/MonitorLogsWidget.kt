@@ -179,7 +179,7 @@ fun LogRow(
 fun MonitorLogsWidgetPreview() = PreviewSurface {
     MonitorLogsWidgetContent(
         state = MonitorLogsViewModel.State.DisplayLogs(
-            entries = sequenceOf(
+            entries = listOf(
                 LogEvent(
                     timestamp = 1_716_566_657_201,
                     url = "https://www.example.com/repairs/list",
