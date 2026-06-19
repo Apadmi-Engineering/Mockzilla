@@ -22,6 +22,10 @@ import kotlinx.serialization.Serializable
  * @property method
  * @property isIntendedFailure
  * @property id
+ * @property isRequestBodyTruncated
+ * @property isResponseBodyTruncated
+ * @property requestSizeBytes
+ * @property responseSizeBytes
  */
 @Serializable
 data class LogEvent(

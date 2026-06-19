@@ -17,8 +17,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.withContext
-import kotlin.time.Clock
-import kotlin.time.Instant
 
 @Suppress("TOO_LONG_FUNCTION")
 internal fun Application.configureEndpoints(
@@ -46,7 +44,7 @@ internal fun Application.configureEndpoints(
             call.respond("")
         }
         get("/api/meta") {
-//            di.logger.v { "Handling GET meta: ${call.request.uri}" }
+            // di.logger.v { "Handling GET meta: ${call.request.uri}" }
             safeResponse(di.logger) { call ->
                 call.allowCors()
                 call.respond(di.metaData)
@@ -124,8 +122,10 @@ internal fun Application.configureEndpoints(
                     return@safeResponse
                 }
                 val detail = di.managementApiController.getLogDetail(logId)
-                di.logger.i { "Got detail for log id ${logId}: ${detail?.hashCode()}" }
-                if (detail != null) call.respond(detail) else call.respond(HttpStatusCode.NotFound)
+                di.logger.i { "Got detail for log id $logId: ${detail?.hashCode()}" }
+                detail?.let {
+                    call.respond(detail)
+                } ?: call.respond(HttpStatusCode.NotFound)
             }
         }
         get("/api/monitor-logs/{logId}/full-body") {
@@ -136,7 +136,9 @@ internal fun Application.configureEndpoints(
                     return@safeResponse
                 }
                 val detail = di.managementApiController.getFullBodyLogDetail(logId)
-                if (detail != null) call.respond(detail) else call.respond(HttpStatusCode.NotFound)
+                detail?.let {
+                    call.respond(detail)
+                } ?: call.respond(HttpStatusCode.NotFound)
             }
         }
         delete("/api/monitor-logs") {

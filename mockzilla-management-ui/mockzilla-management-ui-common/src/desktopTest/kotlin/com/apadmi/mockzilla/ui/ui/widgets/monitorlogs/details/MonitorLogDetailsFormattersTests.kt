@@ -22,17 +22,17 @@ class MonitorLogDetailsFormattersTests {
 
     @Test
     fun `toKbLabel returns zero for empty string`() {
-        assertEquals("0.0 KB", "".toKbLabel())
+        assertEquals("0.0 KB", "".length.toKbLabel())
     }
 
     @Test
     fun `toKbLabel returns half a kilobyte for 512 bytes`() {
-        assertEquals("0.5 KB", "a".repeat(512).toKbLabel())
+        assertEquals("0.5 KB", "a".repeat(512).length.toKbLabel())
     }
 
     @Test
     fun `toKbLabel returns 1 point 0 for exactly 1024 bytes`() {
-        assertEquals("1.0 KB", "a".repeat(1024).toKbLabel())
+        assertEquals("1.0 KB", "a".repeat(1024).length.toKbLabel())
     }
 
     @Test

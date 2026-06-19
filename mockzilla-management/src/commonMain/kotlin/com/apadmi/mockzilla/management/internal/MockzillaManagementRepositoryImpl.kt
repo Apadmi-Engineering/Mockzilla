@@ -52,7 +52,11 @@ interface MockzillaManagementRepository {
     ): Result<Unit>
 
     suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MonitorLogsResponse>
-    suspend fun fetchMonitorLogsSince(connection: MockzillaConnectionConfig, since: Long?, clientSessionStart: Long): Result<MonitorLogsResponse>
+    suspend fun fetchMonitorLogsSince(
+        connection: MockzillaConnectionConfig,
+        since: Long?,
+        clientSessionStart: Long
+    ): Result<MonitorLogsResponse>
     suspend fun fetchLogDetail(connection: MockzillaConnectionConfig, logId: String): Result<LogEvent>
     suspend fun fetchFullBodyLogDetail(connection: MockzillaConnectionConfig, logId: String): Result<LogEvent>
     suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>

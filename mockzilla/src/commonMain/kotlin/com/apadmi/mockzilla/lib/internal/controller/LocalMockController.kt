@@ -95,10 +95,7 @@ internal suspend fun MockServerMonitor.log(
         delay = delay,
         method = request.method.value,
         isIntendedFailure = isIntendedFailure,
-        requestSizeBytes = request.uri.length
-                + request.headers.map { it.key.length + it.value.length }.sum()
-                + request.bodyAsBytes().size,
-        responseSizeBytes = response.headers.map { it.key.length + it.value.length }.sum()
-                + response.body.length
+        requestSizeBytes = request.uri.length + request.headers.map { it.key.length + it.value.length }.sum() + request.bodyAsBytes().size,
+        responseSizeBytes = response.headers.map { it.key.length + it.value.length }.sum() + response.body.length
     )
 )

@@ -5,7 +5,6 @@ import com.apadmi.mockzilla.lib.internal.utils.FileIo
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 
 internal class LocalBodyCacheService(private val fileIo: FileIo) {
-
     suspend fun storeFullEntry(event: LogEvent) {
         val filename = "$fullEntriesDir/${event.timestamp}_${event.id}.json"
         fileIo.saveToCache(filename, JsonProvider.json.encodeToString(LogEvent.serializer(), event))

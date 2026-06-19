@@ -14,5 +14,7 @@ class FakeMockServerMonitor(
     override suspend fun consumeCurrentLogs(): List<LogEvent> = consumeCurrentLogsReturnValue
     override suspend fun getLogsSince(since: Long?): List<LogEvent> = getLogsSinceReturnValue
     override suspend fun getLogDetail(logId: String): LogEvent? = getLogDetailReturnValue
-    override suspend fun clearAllLogs() { clearAllLogsCallCount++ }
+    override suspend fun clearAllLogs() {
+        clearAllLogsCallCount++
+    }
 }

@@ -46,8 +46,8 @@ internal val LogEvent.requestTypeFormat: EditorMode
 internal val PartialMockzillaHttpResponse.typeFormat: EditorMode
     get() = headers?.get(HttpHeaders.ContentType)?.lowercase().contentTypeToEditorMode()
 
-internal fun String.toKbLabel(): String {
-    val tenths = encodeToByteArray().size * TENTHS_FACTOR / BYTES_PER_KB
+internal fun Int.toKbLabel(): String {
+    val tenths = this * TENTHS_FACTOR / BYTES_PER_KB
     return "${tenths / TENTHS_FACTOR}.${tenths % TENTHS_FACTOR} KB"
 }
 

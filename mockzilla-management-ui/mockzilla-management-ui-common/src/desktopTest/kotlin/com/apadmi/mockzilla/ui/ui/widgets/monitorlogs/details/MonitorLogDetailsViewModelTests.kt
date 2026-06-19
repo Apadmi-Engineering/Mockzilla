@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
 @Suppress("MAGIC_NUMBER")
-class MonitorLogDetailsViewModelTests : CoroutineTest() {
+internal class MonitorLogDetailsViewModelTests : CoroutineTest() {
     private val dummyDevice = Device.dummy()
     private val dummyLogEvent = LogEvent(
         id = "test-id",
