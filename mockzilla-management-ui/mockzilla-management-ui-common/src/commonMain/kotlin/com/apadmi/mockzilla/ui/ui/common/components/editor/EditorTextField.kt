@@ -87,6 +87,9 @@ internal fun EditorTextField(
     modifier: Modifier = Modifier,
     placeholder: String,
     parseError: String? = null,
+    additionalOutputTransformation: OutputTransformation? = null,
+    currentMatch: IntRange? = null,
+    textFieldState: TextFieldState = rememberTextFieldState(body),
 ) {
     val strings = LocalStrings.current.components.editor
     val colorScheme = MaterialTheme.colorScheme
@@ -118,7 +121,13 @@ internal fun EditorTextField(
         color = colorScheme.onSurface,
         fontFamily = monoFont,
     )
-    val outputTransformation = BodyVisualTransformation.buildEditorOutputTransformation(mode)
+    val syntaxTransformation = BodyVisualTransformation.buildEditorOutputTransformation(mode)
+    val outputTransformation = remember(syntaxTransformation, additionalOutputTransformation) {
+        when {
+            syntaxTransformation != null && additionalOutputTransformation != null -> CompositeOutputTransformation(syntaxTransformation, additionalOutputTransformation)
+            else -> syntaxTransformation ?: additionalOutputTransformation
+        }
+    }
 
     Column(
         modifier = modifier.border(
@@ -144,6 +153,7 @@ internal fun EditorTextField(
             lineCount = lineCount,
             placeholder = placeholder,
             onLineCountChange = { lineCount = it },
+            currentMatch = currentMatch,
             modifier = if (isExpanded) Modifier.weight(1f).fillMaxWidth() else Modifier,
         )
 
@@ -179,6 +189,7 @@ private fun EditorContent(
     lineCount: Int,
     placeholder: String,
     onLineCountChange: (Int) -> Unit,
+    currentMatch: IntRange? = null,
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -186,6 +197,25 @@ private fun EditorContent(
     val textMeasurer = rememberTextMeasurer(cacheSize = textMeasureCacheSize)
 
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+
+    LaunchedEffect(currentMatch, textLayoutResult) {
+        val match = currentMatch ?: return@LaunchedEffect
+        val layout = textLayoutResult ?: return@LaunchedEffect
+        if (match.first >= layout.layoutInput.text.length) {
+            return@LaunchedEffect
+        }
+        val boundingBox = layout.getBoundingBox(match.first)
+        val matchTop = boundingBox.top.toInt()
+        val matchBottom = boundingBox.bottom.toInt()
+        val viewportHeight = scrollState.viewportSize
+        val padding = with(density) { 24.dp.roundToPx() }
+        when {
+            matchTop < scrollState.value + padding ->
+                scrollState.animateScrollTo((matchTop - padding).coerceAtLeast(0))
+            matchBottom > scrollState.value + viewportHeight - padding ->
+                scrollState.animateScrollTo(matchBottom - viewportHeight + padding)
+        }
+    }
 
     val gutterContentWidthPx = remember(lineCount, textStyle, textMeasurer) {
         textMeasurer.measure(lineCount.toString(), textStyle).size.width
