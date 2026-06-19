@@ -32,7 +32,6 @@ internal class MonitorLogDetailsViewModel(
     }
 
     private suspend fun loadFullBodies() {
-        println("LOADING FULL BODIES")
         monitorLogsUseCase.fetchLogDetail(device, logEvent!!.id)
             .onSuccess { full ->
                 state.update { current ->

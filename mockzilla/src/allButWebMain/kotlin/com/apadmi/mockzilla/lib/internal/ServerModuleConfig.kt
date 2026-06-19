@@ -122,7 +122,6 @@ internal fun Application.configureEndpoints(
                     return@safeResponse
                 }
                 val detail = di.managementApiController.getLogDetail(logId)
-                di.logger.i { "Got detail for log id $logId: ${detail?.hashCode()}" }
                 detail?.let {
                     call.respond(detail)
                 } ?: call.respond(HttpStatusCode.NotFound)

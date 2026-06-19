@@ -10,6 +10,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
 internal interface MockServerMonitor {
@@ -32,8 +33,11 @@ internal class MockServerMonitorImpl(
     private var lastKnownClientSessionStart: Long? = null
 
     init {
+        // Clear all the old log files from disk assuming a client doesn't connect which might
+        // want them. If one does connect only log entries older than it knows about are cleared
+        // in `onClientSessionStart`
         scope.launch {
-            delay(60_000L)
+            delay(1.minutes)
             if (lastKnownClientSessionStart == null) {
                 val threeDaysAgo = Clock.System.now().toEpochMilliseconds() - 3.days.inWholeMilliseconds
                 localBodyCacheService.deleteOldFullEntries(threeDaysAgo)
@@ -48,13 +52,13 @@ internal class MockServerMonitorImpl(
         }
         if (event.requestBodyOversized()) {
             storedEvent = storedEvent.copy(
-                requestBody = event.requestBody.take(LocalBodyCacheService.bodySizeLimit),
+                requestBody = event.requestBody.take(maxUntruncatedBodySizeBytes),
                 isRequestBodyTruncated = true,
             )
         }
         if (event.responseBodyOversized()) {
             storedEvent = storedEvent.copy(
-                responseBody = event.responseBody.take(LocalBodyCacheService.bodySizeLimit),
+                responseBody = event.responseBody.take(maxUntruncatedBodySizeBytes),
                 isResponseBodyTruncated = true,
             )
         }
@@ -88,8 +92,7 @@ internal class MockServerMonitorImpl(
     override suspend fun onClientSessionStart(sessionStart: Long) {
         if (sessionStart == lastKnownClientSessionStart) return
         lastKnownClientSessionStart = sessionStart
-        val oldestInMemory = lockingMutex.withLock { events.firstOrNull()?.timestamp }
-            ?: Long.MAX_VALUE
+        val oldestInMemory = events.firstOrNull()?.timestamp ?: Long.MAX_VALUE
         localBodyCacheService.deleteOldFullEntries(minOf(oldestInMemory, sessionStart))
     }
 
@@ -99,10 +102,15 @@ internal class MockServerMonitorImpl(
     }
 
     companion object {
+
+        // These values are to stop the memory usage of the app from being unbounded as logs accumulate
+        // With these values the max footprint is ~20mb
         private const val memoryCapacity = 500
+        private const val maxUntruncatedBodySizeBytes = 20_000
     }
+
+    private fun LogEvent.requestBodyOversized() = requestBody.length > maxUntruncatedBodySizeBytes
+    private fun LogEvent.responseBodyOversized() = responseBody.length > maxUntruncatedBodySizeBytes
+    private fun LogEvent.hasOversizedBody() = requestBodyOversized() || responseBodyOversized()
 }
 
-private fun LogEvent.requestBodyOversized() = requestBody.length > LocalBodyCacheService.bodySizeLimit
-private fun LogEvent.responseBodyOversized() = responseBody.length > LocalBodyCacheService.bodySizeLimit
-private fun LogEvent.hasOversizedBody() = requestBodyOversized() || responseBodyOversized()

@@ -30,7 +30,6 @@ internal class LocalBodyCacheService(private val fileIo: FileIo) {
     suspend fun clearAll() = fileIo.deleteDirectory(fullEntriesDir)
 
     companion object {
-        const val bodySizeLimit = 10
         const val fullEntriesDir = "mockzilla_log_full_entries"
     }
 }
