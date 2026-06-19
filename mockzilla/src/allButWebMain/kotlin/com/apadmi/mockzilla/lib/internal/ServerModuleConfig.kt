@@ -46,7 +46,7 @@ internal fun Application.configureEndpoints(
             call.respond("")
         }
         get("/api/meta") {
-            di.logger.v { "Handling GET meta: ${call.request.uri}" }
+//            di.logger.v { "Handling GET meta: ${call.request.uri}" }
             safeResponse(di.logger) { call ->
                 call.allowCors()
                 call.respond(di.metaData)
@@ -109,6 +109,8 @@ internal fun Application.configureEndpoints(
             safeResponse(di.logger) { call ->
                 call.allowCors()
                 val since = call.request.queryParameters["since"]?.toLongOrNull()
+                val clientSessionStart = call.request.queryParameters["clientSessionStart"]?.toLongOrNull()
+                clientSessionStart?.let { di.managementApiController.onClientSessionStart(it) }
                 call.respond(
                     MonitorLogsResponse(di.metaData.appPackage, di.managementApiController.getLogsSince(since))
                 )
@@ -121,9 +123,19 @@ internal fun Application.configureEndpoints(
                     call.respond(HttpStatusCode.BadRequest)
                     return@safeResponse
                 }
-                println("GETTING DETAIL ${Clock.System.now()}")
                 val detail = di.managementApiController.getLogDetail(logId)
                 di.logger.i { "Got detail for log id ${logId}: ${detail?.hashCode()}" }
+                if (detail != null) call.respond(detail) else call.respond(HttpStatusCode.NotFound)
+            }
+        }
+        get("/api/monitor-logs/{logId}/full-body") {
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                val logId = call.parameters["logId"] ?: run {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@safeResponse
+                }
+                val detail = di.managementApiController.getFullBodyLogDetail(logId)
                 if (detail != null) call.respond(detail) else call.respond(HttpStatusCode.NotFound)
             }
         }

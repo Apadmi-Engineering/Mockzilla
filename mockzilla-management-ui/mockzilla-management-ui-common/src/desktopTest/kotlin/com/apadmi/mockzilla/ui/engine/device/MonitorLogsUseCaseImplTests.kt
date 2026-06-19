@@ -152,7 +152,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         /* Setup */
         givenNewServer()
         coEvery {
-            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null, any())
         }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
         val sut = createSut()
 
@@ -169,10 +169,10 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         givenNewServer()
         val secondEvent = dummyLogEvent.copy(timestamp = 2, url = "https://www.other.com")
         coEvery {
-            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null, any())
         }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
         coEvery {
-            managementLogsService.fetchMonitorLogsSince(Device.dummy(), 0L)  // last.timestamp - 1 = 1 - 1 = 0
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), 0L, any())  // last.timestamp - 1 = 1 - 1 = 0
         }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(secondEvent))))
         val sut = createSut()
 
@@ -189,10 +189,10 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         /* Setup */
         givenNewServer()
         coEvery {
-            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null, any())
         }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
         coEvery {
-            managementLogsService.fetchMonitorLogsSince(Device.dummy(), 0L)
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), 0L, any())
         }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
         val sut = createSut()
 
@@ -211,7 +211,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val eventAtT3 = dummyLogEvent.copy(timestamp = 3)
         val eventAtT1 = dummyLogEvent.copy(timestamp = 1, url = "other")
         coEvery {
-            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null, any())
         }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(eventAtT3, eventAtT1))))
         val sut = createSut()
 
@@ -227,7 +227,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         /* Setup */
         givenNewServer()
         coEvery {
-            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null)
+            managementLogsService.fetchMonitorLogsSince(Device.dummy(), null, any())
         }.returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
         coEvery { managementLogsService.deleteMonitorLogs(Device.dummy()) }
             .returns(Result.success(Unit))
@@ -242,10 +242,10 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
     }
 
     @Test
-    fun `fetchLogDetail new path - delegates to logsService`() = runBlockingTest {
+    fun `fetchLogDetail new path - delegates to fetchFullBodyLogDetail`() = runBlockingTest {
         /* Setup */
         givenNewServer()
-        coEvery { managementLogsService.fetchLogDetail(Device.dummy(), dummyLogEvent.id) }
+        coEvery { managementLogsService.fetchFullBodyLogDetail(Device.dummy(), dummyLogEvent.id) }
             .returns(Result.success(dummyLogEvent))
         val sut = createSut()
 

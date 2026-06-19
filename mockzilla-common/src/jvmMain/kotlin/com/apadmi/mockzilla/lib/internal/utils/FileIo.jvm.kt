@@ -50,6 +50,9 @@ actual class FileIo(private val cacheDir: File) {
     actual suspend fun deleteDirectory(dirName: String) {
         File(cacheDirectory, dirName).deleteRecursively()
     }
+
+    actual suspend fun listFiles(dirName: String): List<String> =
+        File(cacheDirectory, dirName).listFiles()?.map { it.name } ?: emptyList()
 }
 
 @InternalMockzillaApi

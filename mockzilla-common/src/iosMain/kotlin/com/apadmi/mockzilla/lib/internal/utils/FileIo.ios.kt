@@ -41,6 +41,11 @@ actual class FileIo {
         NSFileManager.defaultManager.removeItemAtPath("$directoryPath/$dirName", null)
     }
 
+    actual suspend fun listFiles(dirName: String): List<String> =
+        NSFileManager.defaultManager
+            .contentsOfDirectoryAtPath("$directoryPath/$dirName", null)
+            ?.filterIsInstance<String>() ?: emptyList()
+
     private fun filePath(filename: String) = "$directoryPath/$filename"
 }
 

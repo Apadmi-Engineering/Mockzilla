@@ -34,7 +34,8 @@ class MockServerMonitorImplTests {
         isIntendedFailure = false,
     )
 
-    private fun createSut() = MockServerMonitorImpl(LocalBodyCacheService(createFileIoforTesting()))
+    private fun createBodyCacheService() = LocalBodyCacheService(createFileIoforTesting())
+    private fun createSut(store: LocalBodyCacheService = createBodyCacheService()) = MockServerMonitorImpl(store)
 
     @Test
     fun `log - small body - stored in memory without truncation`() = runTest {
@@ -134,15 +135,14 @@ class MockServerMonitorImplTests {
     }
 
     @Test
-    fun `clearAllLogs - clears body files from disk`() = runTest {
-        val fileIo = createFileIoforTesting()
-        val store = LocalBodyCacheService(fileIo)
-        val sut = MockServerMonitorImpl(store)
+    fun `clearAllLogs - clears full-entry files from disk`() = runTest {
+        val store = createBodyCacheService()
+        val sut = createSut(store)
         val largeBody = "z".repeat(LocalBodyCacheService.bodySizeLimit + 1)
         val event = makeEvent(id = "disk-event", responseBody = largeBody)
         sut.log(event)
         sut.clearAllLogs()
-        // After clear, disk files should be gone (fetching returns null)
-        assertNull(store.fetchResponseBody("disk-event"))
+        // After clear, full-entry file should be gone
+        assertNull(store.fetchFullEntry("disk-event"))
     }
 }

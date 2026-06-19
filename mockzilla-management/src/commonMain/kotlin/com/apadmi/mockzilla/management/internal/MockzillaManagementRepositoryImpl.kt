@@ -52,8 +52,9 @@ interface MockzillaManagementRepository {
     ): Result<Unit>
 
     suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MonitorLogsResponse>
-    suspend fun fetchMonitorLogsSince(connection: MockzillaConnectionConfig, since: Long?): Result<MonitorLogsResponse>
+    suspend fun fetchMonitorLogsSince(connection: MockzillaConnectionConfig, since: Long?, clientSessionStart: Long): Result<MonitorLogsResponse>
     suspend fun fetchLogDetail(connection: MockzillaConnectionConfig, logId: String): Result<LogEvent>
+    suspend fun fetchFullBodyLogDetail(connection: MockzillaConnectionConfig, logId: String): Result<LogEvent>
     suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>
     suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
     suspend fun clearCaches(connection: MockzillaConnectionConfig, keys: List<EndpointConfiguration.Key>): Result<Unit>
@@ -135,9 +136,11 @@ MockzillaManagement.AppIconService {
     override suspend fun fetchMonitorLogsSince(
         connection: MockzillaConnectionConfig,
         since: Long?,
+        clientSessionStart: Long,
     ) = runner<MonitorLogsResponse> {
         get(connection, "/api/monitor-logs/poll") {
             since?.let { parameter("since", it) }
+            parameter("clientSessionStart", clientSessionStart)
             header(CustomHeaders.HideFromLogs, true)
         }
     }.onFailure {
@@ -151,6 +154,15 @@ MockzillaManagement.AppIconService {
         get(connection, "/api/monitor-logs/$logId")
     }.onFailure {
         Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs/$logId" }
+    }
+
+    override suspend fun fetchFullBodyLogDetail(
+        connection: MockzillaConnectionConfig,
+        logId: String,
+    ) = runner<LogEvent> {
+        get(connection, "/api/monitor-logs/$logId/full-body")
+    }.onFailure {
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs/$logId/full-body" }
     }
 
     override suspend fun deleteMonitorLogs(

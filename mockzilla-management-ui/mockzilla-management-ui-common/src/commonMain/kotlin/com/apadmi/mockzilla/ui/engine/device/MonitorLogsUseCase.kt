@@ -6,6 +6,8 @@ import com.apadmi.mockzilla.ui.engine.Config
 import io.github.z4kn4fein.semver.toVersion
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 internal interface MonitorLogsUseCase {
     suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>>
@@ -13,12 +15,14 @@ internal interface MonitorLogsUseCase {
     suspend fun fetchLogDetail(device: Device, logId: String): Result<LogEvent>
 }
 
+@OptIn(ExperimentalTime::class)
 internal class MonitorLogsUseCaseImpl(
     private val managementLogsService: MockzillaManagement.LogsService,
     private val metaDataUseCase: MetaDataUseCase,
 ) : MonitorLogsUseCase {
     private val mutex = Mutex()
     private val cache = mutableMapOf<CacheKey, List<LogEvent>>()
+    private val clientSessionStart = Clock.System.now().toEpochMilliseconds()
 
     private suspend fun supportsNonDestructiveLogs(device: Device): Boolean =
         metaDataUseCase.getMetaData(device)
@@ -38,7 +42,7 @@ internal class MonitorLogsUseCaseImpl(
         val existing = cacheKey?.let { cache[it] } ?: emptyList()
         val since = existing.lastOrNull()?.timestamp?.let { it - 1 }
 
-        return managementLogsService.fetchMonitorLogsSince(device, since).map { response ->
+        return managementLogsService.fetchMonitorLogsSince(device, since, clientSessionStart).map { response ->
             val key = cacheKey ?: CacheKey(device, response.appPackage)
             val merged = (existing + response.logs)
                 .distinctBy { it.id }
@@ -75,7 +79,7 @@ internal class MonitorLogsUseCaseImpl(
 
     override suspend fun fetchLogDetail(device: Device, logId: String): Result<LogEvent> =
         if (supportsNonDestructiveLogs(device)) {
-            managementLogsService.fetchLogDetail(device, logId)
+            managementLogsService.fetchFullBodyLogDetail(device, logId)
         } else {
             Result.failure(UnsupportedOperationException("Server version does not support log detail fetching"))
         }
