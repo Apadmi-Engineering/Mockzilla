@@ -249,7 +249,7 @@ internal fun MonitorLogsWidgetContent(
     val streamingColor = cs.success.primary
     val dimColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     val faintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-    val entryList = state.entries.toList()
+    val entryList = state.entries
     val titleStyle = MaterialTheme.typography.labelSmall.copy(
         fontFamily = monoFont,
         fontWeight = FontWeight.SemiBold,

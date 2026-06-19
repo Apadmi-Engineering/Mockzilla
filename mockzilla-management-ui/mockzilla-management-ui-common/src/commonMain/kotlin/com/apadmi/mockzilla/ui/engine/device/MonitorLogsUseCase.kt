@@ -10,7 +10,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 internal interface MonitorLogsUseCase {
-    suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>>
+    suspend fun getMonitorLogs(device: Device): Result<List<LogEvent>>
     suspend fun clearMonitorLogs(device: Device): Result<Unit>
     suspend fun fetchLogDetail(device: Device, logId: String): Result<LogEvent>
 }
@@ -29,7 +29,7 @@ internal class MonitorLogsUseCaseImpl(
             .map { it.mockzillaVersion.toVersion() >= Config.nonDestructiveLogsMinVersion  }
             .getOrDefault(false)
 
-    override suspend fun getMonitorLogs(device: Device): Result<Sequence<LogEvent>> = mutex.withLock {
+    override suspend fun getMonitorLogs(device: Device): Result<List<LogEvent>> = mutex.withLock {
         if (supportsNonDestructiveLogs(device)) {
             getMonitorLogsNewPath(device)
         } else {
@@ -37,7 +37,7 @@ internal class MonitorLogsUseCaseImpl(
         }
     }
 
-    private suspend fun getMonitorLogsNewPath(device: Device): Result<Sequence<LogEvent>> {
+    private suspend fun getMonitorLogsNewPath(device: Device): Result<List<LogEvent>> {
         val cacheKey = cache.keys.firstOrNull { it.device == device }
         val existing = cacheKey?.let { cache[it] } ?: emptyList()
         val since = existing.lastOrNull()?.timestamp?.let { it - 1 }
@@ -49,18 +49,18 @@ internal class MonitorLogsUseCaseImpl(
                 .sortedBy { it.timestamp }
                 .takeLast(clientMemoryCapacity)
             cache[key] = merged
-            merged.asSequence()
+            merged
         }
     }
 
-    private suspend fun getMonitorLogsLegacyPath(device: Device): Result<Sequence<LogEvent>> =
+    private suspend fun getMonitorLogsLegacyPath(device: Device): Result<List<LogEvent>> =
         managementLogsService.fetchMonitorLogsAndClearBuffer(device, hideFromLogs = true).map { response ->
             val cacheKey = CacheKey(device, response.appPackage)
             val existingLogs = cache.getOrElse(cacheKey) { emptyList() }
 
             (existingLogs + response.logs).also {
                 cache[cacheKey] = it
-            }.asSequence()
+            }
         }
 
     override suspend fun clearMonitorLogs(device: Device): Result<Unit> = mutex.withLock {

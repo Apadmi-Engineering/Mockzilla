@@ -138,7 +138,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify */
-        assertEquals(listOf<LogEvent>(), result.getOrThrow().toList())
+        assertEquals(listOf<LogEvent>(), result.getOrThrow())
     }
 
     @Test
@@ -170,7 +170,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify */
-        assertEquals(listOf(dummyLogEvent), result.getOrThrow().toList())
+        assertEquals(listOf(dummyLogEvent), result.getOrThrow())
     }
 
     @Test
@@ -191,7 +191,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify */
-        assertEquals(listOf(dummyLogEvent, secondEvent), result.getOrThrow().toList())
+        assertEquals(listOf(dummyLogEvent, secondEvent), result.getOrThrow())
     }
 
     @Test
@@ -211,7 +211,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify — same event returned in both polls should only appear once */
-        assertEquals(listOf(dummyLogEvent), result.getOrThrow().toList())
+        assertEquals(listOf(dummyLogEvent), result.getOrThrow())
     }
 
     @Test
@@ -229,7 +229,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify */
-        assertEquals(listOf(eventAtT1, eventAtT3), result.getOrThrow().toList())
+        assertEquals(listOf(eventAtT1, eventAtT3), result.getOrThrow())
     }
 
     @Test
