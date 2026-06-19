@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.ui.ui.widgets.endpoints.details
 
-import com.apadmi.mockzilla.ui.ui.common.components.editor.HtmlToken
-import com.apadmi.mockzilla.ui.ui.common.components.editor.HtmlTokenIndex
-import com.apadmi.mockzilla.ui.ui.common.components.editor.HtmlTokens
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.HtmlToken
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.HtmlTokenIndex
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.HtmlTokens
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

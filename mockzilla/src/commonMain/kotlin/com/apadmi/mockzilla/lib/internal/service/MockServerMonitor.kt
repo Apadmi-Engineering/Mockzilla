@@ -13,24 +13,24 @@ internal interface MockServerMonitor {
 }
 
 internal class MockServerMonitorImpl(
-    private val logBodyStore: LogBodyStore,
+    private val localBodyCacheService: LocalBodyCacheService,
 ) : MockServerMonitor {
     private val lockingMutex = Mutex()
     private val events: MutableList<LogEvent> = mutableListOf()
 
     override suspend fun log(event: LogEvent) {
         var storedEvent = event
-        if (event.requestBody.length > LogBodyStore.bodySizeLimit) {
-            logBodyStore.storeRequestBody(event.id, event.requestBody)
+        if (event.requestBody.length > LocalBodyCacheService.bodySizeLimit) {
+            localBodyCacheService.storeRequestBody(event.id, event.requestBody)
             storedEvent = storedEvent.copy(
-                requestBody = event.requestBody.take(LogBodyStore.bodySizeLimit),
+                requestBody = event.requestBody.take(LocalBodyCacheService.bodySizeLimit),
                 isRequestBodyTruncated = true,
             )
         }
-        if (event.responseBody.length > LogBodyStore.bodySizeLimit) {
-            logBodyStore.storeResponseBody(event.id, event.responseBody)
+        if (event.responseBody.length > LocalBodyCacheService.bodySizeLimit) {
+            localBodyCacheService.storeResponseBody(event.id, event.responseBody)
             storedEvent = storedEvent.copy(
-                responseBody = event.responseBody.take(LogBodyStore.bodySizeLimit),
+                responseBody = event.responseBody.take(LocalBodyCacheService.bodySizeLimit),
                 isResponseBodyTruncated = true,
             )
         }
@@ -39,7 +39,8 @@ internal class MockServerMonitorImpl(
             events.add(storedEvent)
             if (events.size > memoryCapacity) events.removeFirst() else null
         }
-        evicted?.let { logBodyStore.evict(it.id) }
+
+        evicted?.let { localBodyCacheService.evict(it.id) }
     }
 
     /** Legacy destructive drain — kept intact for backward compat. */
@@ -60,10 +61,10 @@ internal class MockServerMonitorImpl(
         if (!event.isRequestBodyTruncated && !event.isResponseBodyTruncated) return event
         return event.copy(
             requestBody = if (event.isRequestBodyTruncated)
-                logBodyStore.fetchRequestBody(logId) ?: event.requestBody
+                localBodyCacheService.fetchRequestBody(logId) ?: event.requestBody
             else event.requestBody,
             responseBody = if (event.isResponseBodyTruncated)
-                logBodyStore.fetchResponseBody(logId) ?: event.responseBody
+                localBodyCacheService.fetchResponseBody(logId) ?: event.responseBody
             else event.responseBody,
             isRequestBodyTruncated = false,
             isResponseBodyTruncated = false,
@@ -72,7 +73,7 @@ internal class MockServerMonitorImpl(
 
     override suspend fun clearAllLogs() {
         lockingMutex.withLock { events.clear() }
-        logBodyStore.clearAll()
+        localBodyCacheService.clearAll()
     }
 
     companion object {

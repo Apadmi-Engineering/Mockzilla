@@ -36,6 +36,6 @@ internal actual fun PlatformVerticalScrollbar(scrollState: LazyListState, modifi
 
 @Composable
 private fun scrollbarStyle() = defaultScrollbarStyle().copy(
-    unhoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+    unhoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f),
     hoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
 )

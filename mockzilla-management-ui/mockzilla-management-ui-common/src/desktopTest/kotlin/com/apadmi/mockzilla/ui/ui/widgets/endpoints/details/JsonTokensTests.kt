@@ -1,8 +1,8 @@
 package com.apadmi.mockzilla.ui.ui.widgets.endpoints.details
 
-import com.apadmi.mockzilla.ui.ui.common.components.editor.JsonTokens
-import com.apadmi.mockzilla.ui.ui.common.components.editor.Token
-import com.apadmi.mockzilla.ui.ui.common.components.editor.TokenIndex
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.JsonTokens
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.Token
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.TokenIndex
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

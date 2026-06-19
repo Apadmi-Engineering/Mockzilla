@@ -123,7 +123,7 @@ internal fun Application.configureEndpoints(
                 }
                 println("GETTING DETAIL ${Clock.System.now()}")
                 val detail = di.managementApiController.getLogDetail(logId)
-                println("GOT DETAIL ${Clock.System.now()}")
+                di.logger.i { "Got detail for log id ${logId}: ${detail?.hashCode()}" }
                 if (detail != null) call.respond(detail) else call.respond(HttpStatusCode.NotFound)
             }
         }

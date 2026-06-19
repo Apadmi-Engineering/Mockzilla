@@ -34,7 +34,7 @@ class MockServerMonitorImplTests {
         isIntendedFailure = false,
     )
 
-    private fun createSut() = MockServerMonitorImpl(LogBodyStore(createFileIoforTesting()))
+    private fun createSut() = MockServerMonitorImpl(LocalBodyCacheService(createFileIoforTesting()))
 
     @Test
     fun `log - small body - stored in memory without truncation`() = runTest {
@@ -51,25 +51,25 @@ class MockServerMonitorImplTests {
     @Test
     fun `log - request body exceeds limit - truncated in memory and stored on disk`() = runTest {
         val sut = createSut()
-        val largeBody = "x".repeat(LogBodyStore.bodySizeLimit + 1)
+        val largeBody = "x".repeat(LocalBodyCacheService.bodySizeLimit + 1)
         val event = makeEvent(requestBody = largeBody)
         sut.log(event)
         val logs = sut.getLogsSince(null)
         assertEquals(1, logs.size)
         assertTrue(logs[0].isRequestBodyTruncated)
-        assertEquals(LogBodyStore.bodySizeLimit, logs[0].requestBody.length)
+        assertEquals(LocalBodyCacheService.bodySizeLimit, logs[0].requestBody.length)
     }
 
     @Test
     fun `log - response body exceeds limit - truncated in memory and stored on disk`() = runTest {
         val sut = createSut()
-        val largeBody = "y".repeat(LogBodyStore.bodySizeLimit + 1)
+        val largeBody = "y".repeat(LocalBodyCacheService.bodySizeLimit + 1)
         val event = makeEvent(responseBody = largeBody)
         sut.log(event)
         val logs = sut.getLogsSince(null)
         assertEquals(1, logs.size)
         assertTrue(logs[0].isResponseBodyTruncated)
-        assertEquals(LogBodyStore.bodySizeLimit, logs[0].responseBody.length)
+        assertEquals(LocalBodyCacheService.bodySizeLimit, logs[0].responseBody.length)
     }
 
     @Test
@@ -106,8 +106,8 @@ class MockServerMonitorImplTests {
     @Test
     fun `getLogDetail - truncated event - returns enriched event from disk`() = runTest {
         val sut = createSut()
-        val largeReq = "r".repeat(LogBodyStore.bodySizeLimit + 1)
-        val largeRes = "s".repeat(LogBodyStore.bodySizeLimit + 1)
+        val largeReq = "r".repeat(LocalBodyCacheService.bodySizeLimit + 1)
+        val largeRes = "s".repeat(LocalBodyCacheService.bodySizeLimit + 1)
         val event = makeEvent(id = "enrich-me", requestBody = largeReq, responseBody = largeRes)
         sut.log(event)
         val detail = sut.getLogDetail("enrich-me")
@@ -136,9 +136,9 @@ class MockServerMonitorImplTests {
     @Test
     fun `clearAllLogs - clears body files from disk`() = runTest {
         val fileIo = createFileIoforTesting()
-        val store = LogBodyStore(fileIo)
+        val store = LocalBodyCacheService(fileIo)
         val sut = MockServerMonitorImpl(store)
-        val largeBody = "z".repeat(LogBodyStore.bodySizeLimit + 1)
+        val largeBody = "z".repeat(LocalBodyCacheService.bodySizeLimit + 1)
         val event = makeEvent(id = "disk-event", responseBody = largeBody)
         sut.log(event)
         sut.clearAllLogs()

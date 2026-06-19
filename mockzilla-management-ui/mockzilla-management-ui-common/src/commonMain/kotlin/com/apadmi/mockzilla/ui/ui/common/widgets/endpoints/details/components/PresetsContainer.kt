@@ -9,14 +9,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.HorizontalDivider
@@ -42,9 +39,9 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.endpointDetailsWidgetSuccessState
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.mockPresets
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 
 @Composable
 internal fun PresetsContainer(
@@ -54,78 +51,44 @@ internal fun PresetsContainer(
     onPresetMoreInfoClicked: () -> Unit,
     onEditPreset: () -> Unit = {},
     modifier: Modifier = Modifier,
-    showBorder: Boolean = true,
-    showTitle: Boolean = true,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
+) = Box(
+    modifier = modifier
+        .fillMaxWidth()
 ) {
-    val isCompact = state.layoutMode == LayoutMode.Compact
-    val scrollState = rememberScrollState()
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .then(if (showBorder) {
-                Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = if (state.config.shouldFail == true) {
-                            MaterialTheme.colorScheme.error
-                        } else {
-                            MaterialTheme.colorScheme.outline
-                        },
-                        shape = RoundedCornerShape(12.dp)
-                    )
-            } else {
-                Modifier
-            })
+    Column(
+        verticalArrangement = Arrangement.Top
     ) {
-        Column(
-            modifier = Modifier
-                .padding(if (showBorder) 16.dp else 0.dp)
-                .then(
-                    if (isCompact) {
-                        Modifier.heightIn(max = 400.dp).verticalScroll(scrollState)
-                    } else {
-                        Modifier
-                    }
-                ),
-            verticalArrangement = Arrangement.Top
-        ) {
-            if (state.presets.allPresets.isNotEmpty()) {
-                PopulatedPresets(
-                    presets = state.presets,
-                    onPresetFilterChanged = onPresetFilterChanged,
-                    onDefaultPresetSelected = onDefaultPresetSelected,
-                    onEditPreset = onEditPreset,
-                    showTitle = showTitle,
-                    layoutMode = state.layoutMode
+        if (state.presets.allPresets.isNotEmpty()) {
+            PopulatedPresets(
+                presets = state.presets,
+                onPresetFilterChanged = onPresetFilterChanged,
+                onDefaultPresetSelected = onDefaultPresetSelected,
+                onEditPreset = onEditPreset,
+                layoutMode = state.layoutMode
+            )
+        } else {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = strings.noAvailablePresetsTitle,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium
                 )
-            } else {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = strings.noAvailablePresetsTitle,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = strings.noAvailablePresetsBody,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    Spacer(modifier = Modifier.size(4.dp))
-                    CustomOutlineButton(
-                        label = strings.moreInfoButton,
-                        onClick = onPresetMoreInfoClicked,
-                        variant = OutlineButtonVariant.Secondary,
-                    )
-                }
+                Text(
+                    text = strings.noAvailablePresetsBody,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(modifier = Modifier.size(4.dp))
+                CustomOutlineButton(
+                    label = strings.moreInfoButton,
+                    onClick = onPresetMoreInfoClicked,
+                    variant = OutlineButtonVariant.Secondary,
+                )
             }
         }
     }
@@ -138,8 +101,7 @@ private fun PopulatedPresets(
     onPresetFilterChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onEditPreset: () -> Unit = {},
-    showTitle: Boolean = true,
-    layoutMode: LayoutMode = LayoutMode.Compact,
+    layoutMode: RowDensity = RowDensity.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     Column(
@@ -148,16 +110,7 @@ private fun PopulatedPresets(
             .background(MaterialTheme.colorScheme.surface)
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        if (showTitle) {
-            Text(
-                style = MaterialTheme.typography.titleMedium,
-                text = strings.title
-            )
-        }
         if (presets.allPresets.size > 1) {
-            if (showTitle) {
-                Spacer(Modifier.size(8.dp))
-            }
             BasicTextField(
                 value = presets.filter,
                 onValueChange = onPresetFilterChanged,
@@ -210,10 +163,10 @@ private fun PopulatedPresets(
         }
 
         presets.visiblePresets.forEachIndexed { index, preset ->
-            if (index > 0) {
+            if (index == 0) {
                 Spacer(Modifier.height(4.dp))
+            } else {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
-                Spacer(Modifier.height(4.dp))
             }
             PresetCard(
                 variant = if (preset.name == presets.appliedPreset?.name) {
@@ -226,6 +179,9 @@ private fun PopulatedPresets(
                 onEdit = onEditPreset,
                 layoutMode = layoutMode
             )
+            if (index == presets.visiblePresets.lastIndex) {
+                Spacer(Modifier.height(4.dp))
+            }
         }
     }
 }

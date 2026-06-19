@@ -63,10 +63,10 @@ internal class MonitorLogDetailsViewModel(
     }
 
     sealed class State {
-        sealed class BodyState {
-            data class Available(val text: String) : BodyState()
-            data class Loading(val preview: String) : BodyState()
-            data class Error(val preview: String) : BodyState()
+        sealed class BodyState(val bodyOrPreview: String) {
+            data class Available(val text: String) : BodyState(text)
+            data class Loading(val preview: String) : BodyState(preview)
+            data class Error(val preview: String) : BodyState(preview)
 
             companion object {
                 fun from(body: String, truncated: Boolean): BodyState =
