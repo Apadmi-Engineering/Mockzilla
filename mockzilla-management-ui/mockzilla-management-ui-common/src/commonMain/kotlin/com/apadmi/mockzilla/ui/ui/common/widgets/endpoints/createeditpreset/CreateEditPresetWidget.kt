@@ -80,7 +80,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
-import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorTextField
+import com.apadmi.mockzilla.ui.ui.common.components.editor.FindableEditorTextField
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
@@ -350,6 +350,7 @@ fun CreateEditPresetWidget(
     activeEndpoint: EndpointConfiguration.Key,
     creatingNewPreset: Boolean,
     onCancel: () -> Unit = {},
+    onSave: () -> Unit = {},
 ) {
     val viewModel = getViewModel<CreateEditPresetViewModel>(
         key = "${activeEndpoint.raw}-$device"
@@ -369,7 +370,10 @@ fun CreateEditPresetWidget(
         state = state,
         endpointName = urlToTitle(activeEndpoint.raw),
         onCancel = onCancel,
-        onSave = viewModel::save,
+        onSave = {
+            viewModel.save()
+            onSave()
+        },
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
@@ -506,7 +510,7 @@ private fun BodySection(
         }
     }
 
-    EditorTextField(
+    FindableEditorTextField(
         body = state.body ?: "",
         onBodyChange = onNewResponseBody,
         mode = when (state.responseType) {

@@ -64,6 +64,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.EdSection
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
 import com.apadmi.mockzilla.ui.ui.common.components.SurfaceHeader
@@ -352,24 +353,35 @@ internal fun EndpointDetailsWidgetContent(
                 }
             )
 
-            is State.Endpoint -> Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                PopulatedState(
-                    state,
-                    strings,
-                    onResetAll,
-                    onFailChange,
-                    onDelayChange,
-                    onFilterPresetChanged,
-                    onLayoutModeChanged,
-                    onDefaultPresetSelected,
-                    onPresetMoreInfoClicked,
-                    onCreatePreset,
-                    onEditPreset,
-                )
+            is State.Endpoint -> {
+                val scrollState = rememberScrollState()
+                Box(modifier = Modifier.fillMaxHeight()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .verticalScroll(scrollState)
+                    ) {
+                        PopulatedState(
+                            state,
+                            strings,
+                            onResetAll,
+                            onFailChange,
+                            onDelayChange,
+                            onFilterPresetChanged,
+                            onLayoutModeChanged,
+                            onDefaultPresetSelected,
+                            onPresetMoreInfoClicked,
+                            onCreatePreset,
+                            onEditPreset,
+                        )
+                    }
+                    PlatformVerticalScrollbar(
+                        scrollState = scrollState,
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .fillMaxHeight()
+                    )
+                }
             }
         }
     }
