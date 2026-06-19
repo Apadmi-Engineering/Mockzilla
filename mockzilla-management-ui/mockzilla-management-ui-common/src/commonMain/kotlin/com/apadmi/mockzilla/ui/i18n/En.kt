@@ -256,5 +256,18 @@ val EnStrings = Strings(
             largeFileSyntaxHighlightError = "Syntax highlighting disabled for large files",
             jsonErrorTitle = "Invalid JSON:",
         ),
+        findReplace = Strings.Components.FindReplace(
+            findPlaceholder = "Find",
+            replacePlaceholder = "Replace",
+            noResults = "No results",
+            matchCount = { current, total -> "$current/$total" },
+            collapseReplaceDescription = "Collapse replace",
+            expandReplaceDescription = "Expand replace",
+            previousMatchDescription = "Previous match",
+            nextMatchDescription = "Next match",
+            closeFindBarDescription = "Close find bar",
+            replaceButton = "Replace",
+            replaceAllButton = "All",
+        ),
     )
 )

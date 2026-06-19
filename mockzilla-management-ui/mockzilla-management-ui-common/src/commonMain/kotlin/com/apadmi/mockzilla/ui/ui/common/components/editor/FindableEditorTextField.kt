@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.engine.find.FindReplaceState
 import com.apadmi.mockzilla.ui.engine.find.findMatches
+import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
@@ -212,6 +213,7 @@ private fun FindReplaceBar(
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
     val colorScheme = MaterialTheme.colorScheme
+    val strings = LocalStrings.current.components.findReplace
     val isNoMatch = state.searchTerm.isNotEmpty() && state.matches.isEmpty()
 
     val chevronRotation by animateFloatAsState(
@@ -222,8 +224,8 @@ private fun FindReplaceBar(
 
     val matchLabel = when {
         state.searchTerm.isEmpty() -> ""
-        state.matches.isEmpty() -> "No results"
-        else -> "${state.currentMatchIndex + 1}/${state.matches.size}"
+        state.matches.isEmpty() -> strings.noResults
+        else -> strings.matchCount(state.currentMatchIndex + 1, state.matches.size)
     }
 
     val panelShape = RoundedCornerShape(bottomStart = 24.dp, topEnd = 8.dp)
@@ -248,7 +250,7 @@ private fun FindReplaceBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowRight,
-                        contentDescription = if (state.isReplaceMode) "Collapse replace" else "Expand replace",
+                        contentDescription = if (state.isReplaceMode) strings.collapseReplaceDescription else strings.expandReplaceDescription,
                         modifier = Modifier
                             .size(16.dp)
                             .rotate(chevronRotation),
@@ -259,7 +261,7 @@ private fun FindReplaceBar(
                 CustomTextField(
                     value = state.searchTerm,
                     onValueChange = onSearchChange,
-                    placeholderText = "Find",
+                    placeholderText = strings.findPlaceholder,
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     containerColor = colorScheme.surface,
@@ -300,7 +302,7 @@ private fun FindReplaceBar(
                 IconButton(onClick = onPrev, modifier = Modifier.size(28.dp)) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = "Previous match",
+                        contentDescription = strings.previousMatchDescription,
                         modifier = Modifier.size(16.dp),
                         tint = colorScheme.onSurfaceVariant,
                     )
@@ -308,7 +310,7 @@ private fun FindReplaceBar(
                 IconButton(onClick = onNext, modifier = Modifier.size(28.dp)) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Next match",
+                        contentDescription = strings.nextMatchDescription,
                         modifier = Modifier.size(16.dp),
                         tint = colorScheme.onSurfaceVariant,
                     )
@@ -322,7 +324,7 @@ private fun FindReplaceBar(
                 IconButton(onClick = onClose, modifier = Modifier.size(28.dp)) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Close find bar",
+                        contentDescription = strings.closeFindBarDescription,
                         modifier = Modifier.size(14.dp),
                         tint = colorScheme.onSurfaceVariant,
                     )
@@ -339,7 +341,7 @@ private fun FindReplaceBar(
                     CustomTextField(
                         value = state.replaceTerm,
                         onValueChange = onReplaceChange,
-                        placeholderText = "Replace",
+                        placeholderText = strings.replacePlaceholder,
                         singleLine = true,
                         shape = RoundedCornerShape(8.dp),
                         containerColor = colorScheme.surface,
@@ -350,7 +352,7 @@ private fun FindReplaceBar(
                     )
 
                     BaseButton(
-                        label = "Replace",
+                        label = strings.replaceButton,
                         leadingIcon = Icons.Default.FindReplace,
                         variant = ButtonVariant.Soft,
                         size = ButtonSize.Sm,
@@ -358,7 +360,7 @@ private fun FindReplaceBar(
                         onClick = onReplace,
                     )
                     BaseButton(
-                        label = "All",
+                        label = strings.replaceAllButton,
                         leadingIcon = Icons.Default.DoneAll,
                         variant = ButtonVariant.Soft,
                         size = ButtonSize.Sm,
