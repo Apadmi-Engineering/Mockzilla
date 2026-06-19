@@ -11,10 +11,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +27,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,15 +36,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -79,7 +84,16 @@ internal fun MobileAppRoot(
         val state by viewModel.state.collectAsState()
         val navController = rememberNavController()
 
-        Column(modifier = Modifier.fillMaxSize().background(colorScheme.background)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorScheme.background)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {}
+                )
+        ) {
             when (val currentState = state) {
                 is State.Connected -> ConnectedState(
                     navController = navController,
@@ -103,21 +117,38 @@ internal fun MobileAppRoot(
 }
 
 @Composable
-private fun MobilePageScaffold(
+private fun MobilePageHeader(
     onBack: () -> Unit,
     onClose: () -> Unit,
-    colorScheme: androidx.compose.material3.ColorScheme,
+    colorScheme: ColorScheme,
     strings: Strings = LocalStrings.current,
-    content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        Row(
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(colorScheme.background)
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(colorScheme.background)
-                .padding(horizontal = 8.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .size(44.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center,
         ) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    tint = colorScheme.onSurface,
+                    contentDescription = strings.common.backDescription,
+                )
+            }
+        }
+
+        Spacer(Modifier.weight(1f))
+
+        AnimatedVisibility(false) {
             Box(
                 modifier = Modifier
                     .size(44.dp)
@@ -125,36 +156,15 @@ private fun MobilePageScaffold(
                     .background(colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center,
             ) {
-                IconButton(onClick = onBack) {
+                IconButton(onClick = onClose) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        tint = colorScheme.onSurface,
-                        contentDescription = strings.common.backDescription,
+                        imageVector = Icons.Filled.Close,
+                        tint = colorScheme.onSurfaceVariant,
+                        contentDescription = strings.common.closeDescription,
                     )
                 }
             }
-
-            Spacer(Modifier.weight(1f))
-
-            AnimatedVisibility(false) {
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    IconButton(onClick = onClose) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            tint = colorScheme.onSurfaceVariant,
-                            contentDescription = strings.common.closeDescription,
-                        )
-                    }
-                }
-            }
         }
-        content()
     }
 }
 
@@ -165,9 +175,24 @@ private fun ConnectedState(
     currentState: State.Connected,
     onRefresh: () -> Unit,
     onClose: () -> Unit,
-    colorScheme: androidx.compose.material3.ColorScheme,
+    colorScheme: ColorScheme,
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
     Column(modifier = Modifier.fillMaxSize()) {
+        if (navBackStackEntry?.destination?.hasRoute<Destination.EndpointList>() == true) {
+            MockzillaBanner(
+                onClick = { navController.navigate(Destination.MetaData) },
+                onRefresh = onRefresh,
+                colorScheme = colorScheme
+            )
+        } else {
+            MobilePageHeader(
+                onBack = navController::navigateUp,
+                onClose = onClose,
+                colorScheme = colorScheme
+            )
+        }
+
         NavHost(
             modifier = Modifier.weight(1f).background(color = colorScheme.background),
             navController = navController,
@@ -198,97 +223,60 @@ private fun ConnectedState(
             },
         ) {
             composable<Destination.EndpointDetails> { backStackEntry ->
-                MobilePageScaffold(
-                    onBack = navController::navigateUp,
-                    onClose = onClose,
-                    colorScheme = colorScheme
-                ) {
-                    EndpointDetailsWidget(
+                EndpointDetailsWidget(
+                    device = currentState.activeDevice.device,
+                    activeEndpoint = EndpointConfiguration.Key(
+                        backStackEntry.toRoute<Destination.EndpointDetails>().key,
+                    ),
+                    onCreatePreset = {
+                        navController.navigate(Destination.CreateEditPreset(it.raw, true))
+                    },
+                )
+            }
+
+            composable<Destination.EndpointList> {
+                MaterialTheme(colorScheme = colorScheme.copy(surface = colorScheme.background)) {
+                    EndpointsWidget(
                         device = currentState.activeDevice.device,
-                        activeEndpoint = EndpointConfiguration.Key(
-                            backStackEntry.toRoute<Destination.EndpointDetails>().key,
-                        ),
-                        onCreatePreset = {
-                            navController.navigate(Destination.CreateEditPreset(it.raw, true))
+                        onEndpointClicked = {
+                            navController.navigate(Destination.EndpointDetails(it.raw))
+                        },
+                        onGlobalControlsClicked = {
+                            navController.navigate(Destination.GlobalControls)
                         },
                     )
                 }
             }
 
-            composable<Destination.EndpointList> {
-                Column(modifier = Modifier.fillMaxSize().background(colorScheme.background)) {
-                    MockzillaBanner(
-                        onClick = { navController.navigate(Destination.MetaData) },
-                        onRefresh = onRefresh,
-                        colorScheme = colorScheme
-                    )
-                    Box(modifier = Modifier.weight(1f)) {
-                        MaterialTheme(colorScheme = colorScheme.copy(surface = colorScheme.background)) {
-                            EndpointsWidget(
-                                device = currentState.activeDevice.device,
-                                onEndpointClicked = {
-                                    navController.navigate(Destination.EndpointDetails(it.raw))
-                                },
-                                onGlobalControlsClicked = {
-                                    navController.navigate(Destination.GlobalControls)
-                                },
-                            )
-                        }
-                    }
-                }
-            }
-
             composable<Destination.MetaData> {
-                MobilePageScaffold(
-                    onBack = navController::navigateUp,
-                    onClose = onClose,
-                    colorScheme = colorScheme
+                MaterialTheme(
+                    colorScheme = colorScheme,
+                    typography = MaterialTheme.typography.copy(
+                        titleLarge = MaterialTheme.typography.titleLarge.copy(color = Color.White)
+                    )
                 ) {
-                    MaterialTheme(
-                        colorScheme = colorScheme,
-                        typography = MaterialTheme.typography.copy(
-                            titleLarge = MaterialTheme.typography.titleLarge.copy(color = Color.White)
-                        )
-                    ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                         MetaDataWidget(device = currentState.activeDevice.device)
                     }
                 }
             }
 
             composable<Destination.GlobalControls> {
-                MobilePageScaffold(
-                    onBack = navController::navigateUp,
-                    onClose = onClose,
-                    colorScheme = colorScheme
-                ) {
-                    GlobalControlsWidget(device = currentState.activeDevice.device)
-                }
+                GlobalControlsWidget(device = currentState.activeDevice.device)
             }
 
             composable<Destination.CreateEditPreset> { backStackEntry ->
-                MobilePageScaffold(
-                    onBack = navController::navigateUp,
-                    onClose = onClose,
-                    colorScheme = colorScheme
-                ) {
-                    CreateEditPresetWidget(
-                        device = currentState.activeDevice.device,
-                        activeEndpoint = EndpointConfiguration.Key(
-                            backStackEntry.toRoute<Destination.CreateEditPreset>().key,
-                        ),
-                        creatingNewPreset = backStackEntry.toRoute<Destination.CreateEditPreset>().creatingNewPreset,
-                    )
-                }
+                CreateEditPresetWidget(
+                    device = currentState.activeDevice.device,
+                    activeEndpoint = EndpointConfiguration.Key(
+                        backStackEntry.toRoute<Destination.CreateEditPreset>().key,
+                    ),
+                    creatingNewPreset = backStackEntry.toRoute<Destination.CreateEditPreset>().creatingNewPreset,
+                )
             }
 
             composable<Destination.Debug> {
-                MobilePageScaffold(
-                    onBack = navController::navigateUp,
-                    onClose = onClose,
-                    colorScheme = colorScheme
-                ) {
-                    DebugWidget()
-                }
+                DebugWidget()
             }
         }
     }
@@ -298,7 +286,7 @@ private fun ConnectedState(
 private fun MockzillaBanner(
     onClick: () -> Unit,
     onRefresh: () -> Unit,
-    colorScheme: androidx.compose.material3.ColorScheme,
+    colorScheme: ColorScheme,
     strings: Strings = LocalStrings.current
 ) {
     Column(
@@ -309,7 +297,7 @@ private fun MockzillaBanner(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 15.dp),
+                .padding(horizontal = 16.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -376,7 +364,7 @@ private fun MockzillaBanner(
                 )
             }
         }
-        androidx.compose.material3.HorizontalDivider(
+        HorizontalDivider(
             color = colorScheme.outline.copy(alpha = 0.5f)
         )
     }
