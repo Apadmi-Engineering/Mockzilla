@@ -195,6 +195,7 @@ interface MockzillaManagement {
          * @return [Result.success] wrapping the log response, or [Result.failure] if the
          * request could not be completed.
          */
+        @Deprecated("Please use `fetchMonitorLogsSince`")
         suspend fun fetchMonitorLogsAndClearBuffer(
             connection: MockzillaConnectionConfig,
             hideFromLogs: Boolean

@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
+import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
 import com.apadmi.mockzilla.ui.utils.launchUnit
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 internal class MonitorLogsViewModel(
     private val device: Device,
     private val monitorLogsUseCase: MonitorLogsUseCase,
+    private val activeDeviceSelector: ActiveDeviceSelector,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
     val state = MutableStateFlow(State.DisplayLogs(emptyList()))
@@ -28,9 +30,12 @@ internal class MonitorLogsViewModel(
         pollingJob?.cancel()
         pollingJob = viewModelScope.launch {
             while (true) {
-                monitorLogsUseCase.getMonitorLogs(device).onSuccess { logs ->
-                    state.value = State.DisplayLogs(logs)
-                }
+                monitorLogsUseCase.getMonitorLogs(device)
+                    .onSuccess { result ->
+                        state.value = State.DisplayLogs(result.logs)
+                        activeDeviceSelector.onLogPollSuccess(device, result.appPackage)
+                    }
+                    .onFailure { activeDeviceSelector.onLogPollFailure(device) }
 
                 delay(200)
             }

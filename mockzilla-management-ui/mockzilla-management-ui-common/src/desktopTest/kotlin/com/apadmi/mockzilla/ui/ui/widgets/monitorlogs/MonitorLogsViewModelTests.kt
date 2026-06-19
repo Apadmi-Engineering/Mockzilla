@@ -1,8 +1,10 @@
 package com.apadmi.mockzilla.ui.ui.widgets.monitorlogs
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
+import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
+import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsViewModel
@@ -34,15 +36,18 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
     @RelaxedMockK
     lateinit var monitorLogsUseCase: MonitorLogsUseCase
 
+    @RelaxedMockK
+    lateinit var activeDeviceSelector: ActiveDeviceSelector
+
     private fun createSut() = MonitorLogsViewModel(
-        dummyActiveDevice, monitorLogsUseCase, testScope.backgroundScope
+        dummyActiveDevice, monitorLogsUseCase, activeDeviceSelector, testScope.backgroundScope
     )
 
     @Test
     fun `init - pulls latest data from monitor and updates state`() = runBlockingTest {
         /* Setup */
         coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }
-            .returns(Result.success(listOf(dummyLogEvent)))
+            .returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
         val sut = createSut()
 
         /* Run Test */
@@ -64,7 +69,7 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
         /* Setup */
         var logs = arrayOf(dummyLogEvent)
         coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }
-            .answers { Result.success(logs.toList()) }
+            .answers { Result.success(MonitorLogsResponse(appPackage = "pkg", logs = logs.toList())) }
         coEvery { monitorLogsUseCase.clearMonitorLogs(dummyActiveDevice) }.answers {
             logs = arrayOf()
             Result.success(Unit)
