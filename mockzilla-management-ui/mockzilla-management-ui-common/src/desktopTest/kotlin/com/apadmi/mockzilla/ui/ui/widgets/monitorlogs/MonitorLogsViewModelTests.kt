@@ -16,6 +16,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Test
 
 import kotlin.test.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.yield
 
 internal class MonitorLogsViewModelTests : CoroutineTest() {
@@ -62,6 +65,54 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
                 awaitItem().entries
             )
         }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `polling - after one failure - backs off to 1 second`() = runBlockingTest {
+        /* Setup */
+        var pollCount = 0
+        coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }.answers {
+            pollCount++
+            Result.failure(Exception())
+        }
+        createSut()
+        runCurrent()
+        assertEquals(1, pollCount)
+
+        /* Still within 1s backoff window */
+        advanceTimeBy(999)
+        assertEquals(1, pollCount)
+
+        /* Past 1s — second poll fires */
+        advanceTimeBy(2)
+        assertEquals(2, pollCount)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `polling - after two failures - backs off to 2 seconds`() = runBlockingTest {
+        /* Setup */
+        var pollCount = 0
+        coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }.answers {
+            pollCount++
+            Result.failure(Exception())
+        }
+        createSut()
+        runCurrent()
+        assertEquals(1, pollCount)
+
+        /* Past 1s — second poll fires, consecutiveFailures = 2 */
+        advanceTimeBy(1001)
+        assertEquals(2, pollCount)
+
+        /* Still within 2s backoff window */
+        advanceTimeBy(1999)
+        assertEquals(2, pollCount)
+
+        /* Past 2s — third poll fires */
+        advanceTimeBy(2)
+        assertEquals(3, pollCount)
     }
 
     @Test

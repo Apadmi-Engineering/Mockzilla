@@ -7,11 +7,14 @@ import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
 import com.apadmi.mockzilla.ui.utils.launchUnit
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
 
 internal class MonitorLogsViewModel(
     private val device: Device,
@@ -29,15 +32,26 @@ internal class MonitorLogsViewModel(
     private fun pollForLogs(device: Device) {
         pollingJob?.cancel()
         pollingJob = viewModelScope.launch {
+            var consecutiveFailures = 0
             while (true) {
                 monitorLogsUseCase.getMonitorLogs(device)
                     .onSuccess { result ->
+                        consecutiveFailures = 0
                         state.value = State.DisplayLogs(result.logs)
                         activeDeviceSelector.onLogPollSuccess(device, result.appPackage)
                     }
-                    .onFailure { activeDeviceSelector.onLogPollFailure(device) }
+                    .onFailure {
+                        consecutiveFailures++
+                        activeDeviceSelector.onLogPollFailure(device)
+                    }
 
-                delay(200)
+                delay(
+                    when (consecutiveFailures) {
+                        0 -> 500.milliseconds
+                        1 -> 1.seconds
+                        else -> 2.seconds
+                    }
+                )
             }
         }
     }

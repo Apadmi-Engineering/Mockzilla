@@ -36,6 +36,7 @@ import io.ktor.http.isSuccess
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.io.IOException
 
 @InternalMockzillaApi
 interface MockzillaManagementRepository {
@@ -123,7 +124,7 @@ MockzillaManagement.AppIconService {
             setBody(SerializableEndpointConfigPatchRequestDto(entries))
         }
     }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
     }
 
     override suspend fun fetchMonitorLogsAndClearBuffer(
@@ -134,7 +135,11 @@ MockzillaManagement.AppIconService {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
     }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
+        if (it is IOException) {
+            Logger.v(tag = "Management") { "Disconnected: /api/monitor-logs" }
+        } else {
+            Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
+        }
     }
 
     override suspend fun fetchMonitorLogsSince(
@@ -182,7 +187,7 @@ MockzillaManagement.AppIconService {
     ) = runner<Unit> {
         delete(connection, "/api/mock-data/all")
     }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data/all" }
     }
 
     override suspend fun clearCaches(
