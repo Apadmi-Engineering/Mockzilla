@@ -17,12 +17,13 @@ internal class MonitorLogDetailsViewModel(
     scope: CoroutineScope? = null,
 ) : ViewModel(scope) {
     val state: MutableStateFlow<State> = MutableStateFlow(
-        if (logEvent == null) State.Empty
-        else State.ViewDetails(
-            logEvent = logEvent,
-            requestBodyState = State.BodyState.from(logEvent.requestBody, logEvent.isRequestBodyTruncated),
-            responseBodyState = State.BodyState.from(logEvent.responseBody, logEvent.isResponseBodyTruncated),
-        )
+        logEvent?.let {
+            State.ViewDetails(
+                logEvent = logEvent,
+                requestBodyState = State.BodyState.from(logEvent.requestBody, logEvent.isRequestBodyTruncated),
+                responseBodyState = State.BodyState.from(logEvent.responseBody, logEvent.isResponseBodyTruncated),
+            )
+        } ?: State.Empty
     )
 
     init {
@@ -44,12 +45,16 @@ internal class MonitorLogDetailsViewModel(
             .onFailure {
                 state.update { current ->
                     (current as? State.ViewDetails)?.copy(
-                        requestBodyState = if (logEvent.isRequestBodyTruncated)
+                        requestBodyState = if (logEvent.isRequestBodyTruncated) {
                             State.BodyState.Error(logEvent.requestBody)
-                        else current.requestBodyState,
-                        responseBodyState = if (logEvent.isResponseBodyTruncated)
+                        } else {
+                            current.requestBodyState
+                        },
+                        responseBodyState = if (logEvent.isResponseBodyTruncated) {
                             State.BodyState.Error(logEvent.responseBody)
-                        else current.responseBodyState,
+                        } else {
+                            current.responseBodyState
+                        },
                     ) ?: current
                 }
             }
@@ -61,27 +66,37 @@ internal class MonitorLogDetailsViewModel(
         }
     }
 
-    sealed class State {
-        sealed class BodyState(val bodyOrPreview: String) {
-            data class Available(val text: String) : BodyState(text)
-            data class Loading(val preview: String) : BodyState(preview)
-            data class Error(val preview: String) : BodyState(preview)
-
-            companion object {
-                fun from(body: String, truncated: Boolean): BodyState =
-                    if (truncated) Loading(body) else Available(body)
-            }
-        }
-
-        data object Empty : State()
+    internal sealed class State {
+        internal data object Empty : State()
 
         /**
+         * @property bodyOrPreview
+         */
+        internal sealed class BodyState(val bodyOrPreview: String) {
+            /**
+             * @property text
+             */
+            internal data class Available(val text: String) : BodyState(text)
+            /**
+             * @property preview
+             */
+            internal data class Loading(val preview: String) : BodyState(preview)
+            /**
+             * @property preview
+             */
+            internal data class Error(val preview: String) : BodyState(preview)
+
+            internal companion object {
+                internal fun from(body: String, truncated: Boolean): BodyState =
+                    if (truncated) Loading(body) else Available(body)
+            }
+        } /**
          * @property logEvent
          * @property selectedTab
          * @property requestBodyState
          * @property responseBodyState
          */
-        data class ViewDetails(
+        class ViewDetails(
             val logEvent: LogEvent,
             val selectedTab: Tab = Tab.Response,
             val requestBodyState: BodyState = BodyState.Available(""),
@@ -91,5 +106,7 @@ internal class MonitorLogDetailsViewModel(
                 Request, Response
             }
         }
+
+        interface Data
     }
 }
