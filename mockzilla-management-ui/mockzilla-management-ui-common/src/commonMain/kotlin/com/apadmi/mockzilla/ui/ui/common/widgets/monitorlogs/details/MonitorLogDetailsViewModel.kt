@@ -96,7 +96,7 @@ internal class MonitorLogDetailsViewModel(
          * @property requestBodyState
          * @property responseBodyState
          */
-        class ViewDetails(
+        data class ViewDetails(
             val logEvent: LogEvent,
             val selectedTab: Tab = Tab.Response,
             val requestBodyState: BodyState = BodyState.Available(""),
