@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +44,7 @@ import com.apadmi.mockzilla.desktop.ui.utils.mobileStatusBarPadding
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
+import com.apadmi.mockzilla.ui.di.utils.evictDesktopViewModelsForKey
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.ui.engine.device.Device
@@ -91,6 +93,18 @@ fun DesktopApp(
         val selectedDevice = selectedStatefulDevice?.device
         val stateHolder = rememberSaveableStateHolder()
 
+        // Evict per-device ViewModels when their device leaves allDevices entirely (not just
+        // temporarily disconnected — the VM handles disconnection gracefully while preserving
+        // selectedEndpoint). allDevices is a live collection, updated before the flow fires.
+        LaunchedEffect(Unit) {
+            var knownKeys = activeDeviceMonitor.allDevices.map { it.device.toString() }.toSet()
+            activeDeviceMonitor.onDeviceConnectionStateChange.collect {
+                val currentKeys = activeDeviceMonitor.allDevices.map { it.device.toString() }.toSet()
+                (knownKeys - currentKeys).forEach { evictDesktopViewModelsForKey(it) }
+                knownKeys = currentKeys
+            }
+        }
+
         Column(modifier = Modifier.mobileStatusBarPadding().fillMaxSize()) {
             DeviceTabsWidget(modifier = Modifier.fillMaxWidth())
 
@@ -114,9 +128,23 @@ private fun DeviceContent(
     ) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
+    when (val local = state) {
+        DeviceRootViewModel.State.UnsupportedDeviceMockzillaVersion -> UnsupportedDeviceMockzillaVersionWidget()
+        is DeviceRootViewModel.State.Connected -> DeviceWidgetScaffoldContainer(local, strings, viewModel)
+        else -> {
+            // this is a generated else block
+        }
+    }
+}
+
+@Composable
+private fun DeviceWidgetScaffoldContainer(
+    connectedState: DeviceRootViewModel.State.Connected,
+    strings: Strings,
+    viewModel: DeviceRootViewModel
+) {
     var openWidgets by rememberSaveable { mutableStateOf(setOf(devicePanelWidgetId)) }
     var logDetail by remember { mutableStateOf<LogEvent?>(null) }
-
     val onSelected: (String) -> Unit = { id ->
         val isExclusive = id == endpointDetailsWidgetId || id == logDetailsWidgetId
         openWidgets = if (openWidgets.contains(id)) {
@@ -131,7 +159,7 @@ private fun DeviceContent(
     }
 
     val rightWidgets = rightPanelWidgets(
-        state = state,
+        connectedState = connectedState,
         logDetail = logDetail,
         strings = strings,
         onCreatePreset = {
@@ -150,9 +178,7 @@ private fun DeviceContent(
         },
     )
 
-    val connectedState = state as? DeviceRootViewModel.State.Connected
-    val isPresetOpen = connectedState != null &&
-            (createPresetWidgetId in openWidgets || editPresetWidgetId in openWidgets) &&
+    val isPresetOpen = (createPresetWidgetId in openWidgets || editPresetWidgetId in openWidgets) &&
             connectedState.selectedEndpoint != null
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -160,10 +186,10 @@ private fun DeviceContent(
             MiddleContentArea(
                 modifier = Modifier.weight(1f).fillMaxWidth(),
                 openWidgets = openWidgets,
-                left = leftPanelWidgets(state),
+                left = leftPanelWidgets(connectedState),
                 right = rightWidgets,
                 middle = middleWidgets(
-                    state,
+                    connectedState,
                     onOpenGlobalControls = {
                         if (!openWidgets.contains(globalControlsWidgetId)) {
                             onSelected(globalControlsWidgetId)
@@ -191,7 +217,7 @@ private fun DeviceContent(
             )
 
             bottomPanelWidgets(
-                state = state,
+                connectedState = connectedState,
                 onViewDetail = {
                     logDetail = it
                     if (!openWidgets.contains(logDetailsWidgetId)) {
@@ -203,7 +229,7 @@ private fun DeviceContent(
         }
 
         AnimatedErrorBanner(
-            (state as? DeviceRootViewModel.State.Connected)?.error,
+            connectedState.error,
             viewModel::refreshAll,
             viewModel::dismissError
         )
@@ -213,11 +239,6 @@ private fun DeviceContent(
 /**
  * The middle content area: left/middle/right scaffold panels plus the
  * Create-Preset, Global-Controls, and scrim overlays.
- *
- * This lives in its own composable so that [ColumnScope] is **not** an ambient
- * implicit receiver, which would cause the compiler to resolve [AnimatedVisibility]
- * to [ColumnScope.AnimatedVisibility] and produce an "cannot be called in this
- * context" error.
  */
 @Suppress("TOO_LONG_FUNCTION", "MAGIC_NUMBER")
 @Composable
@@ -231,7 +252,7 @@ private fun MiddleContentArea(
     initialLeftPanelWidth: Dp,
     initialRightPanelWidth: Dp,
     isPresetOpen: Boolean,
-    connectedState: DeviceRootViewModel.State.Connected?,
+    connectedState: DeviceRootViewModel.State.Connected,
     creatingNewPreset: Boolean,
     onCancelPreset: () -> Unit,
     globalControlsOpen: Boolean,
@@ -271,7 +292,7 @@ private fun MiddleContentArea(
             exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
             modifier = Modifier.align(Alignment.CenterEnd),
         ) {
-            connectedState?.selectedEndpoint?.let { endpoint ->
+            connectedState.selectedEndpoint?.let { endpoint ->
                 Surface(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -292,30 +313,28 @@ private fun MiddleContentArea(
 
         // Global Controls overlay
         AnimatedVisibility(
-            visible = globalControlsOpen && connectedState != null,
+            visible = globalControlsOpen,
             enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
             exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
             modifier = Modifier.align(Alignment.CenterEnd),
         ) {
-            connectedState?.let {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(globalControlsWidth.dp)
-                        .shadow(8.dp)
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.outline,
-                            RoundedCornerShape(topStart = 8.dp)
-                        ),
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(topStart = 8.dp),
-                ) {
-                    GlobalControlsWidget(
-                        device = connectedState.activeDevice.device,
-                        onClose = onCloseGlobalControls,
-                    )
-                }
+            Surface(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(globalControlsWidth.dp)
+                    .shadow(8.dp)
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline,
+                        RoundedCornerShape(topStart = 8.dp)
+                    ),
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(topStart = 8.dp),
+            ) {
+                GlobalControlsWidget(
+                    device = connectedState.activeDevice.device,
+                    onClose = onCloseGlobalControls,
+                )
             }
         }
     }
@@ -323,86 +342,75 @@ private fun MiddleContentArea(
 
 @Suppress("LAMBDA_IS_NOT_LAST_PARAMETER")
 private fun bottomPanelWidgets(
-    state: DeviceRootViewModel.State,
+    connectedState: DeviceRootViewModel.State.Connected,
     onViewDetail: (LogEvent) -> Unit,
     strings: Strings
-) = (state as? DeviceRootViewModel.State.Connected)?.let { connectedState ->
-    listOf(
-        Widget(id = "monitor-logs", strings.widgets.logs.title) {
-            MonitorLogsWidget(
-                device = connectedState.activeDevice.device,
-                onViewDetail = onViewDetail
-            )
-        }
-    )
-} ?: emptyList()
+) = listOf(
+    Widget(id = "monitor-logs", strings.widgets.logs.title) {
+        MonitorLogsWidget(
+            device = connectedState.activeDevice.device,
+            onViewDetail = onViewDetail
+        )
+    }
+)
 
-@Suppress("diktat") // Diktat generates an invalid else block for some reason
 private fun middleWidgets(
-    state: DeviceRootViewModel.State,
+    connectedState: DeviceRootViewModel.State.Connected,
     onOpenGlobalControls: () -> Unit,
     onEndpointClicked: (EndpointConfiguration.Key) -> Unit,
-) = listOf(when (state) {
-    is DeviceRootViewModel.State.Connected -> Widget(id = "endpoints") {
+) = listOf(
+    Widget(id = "endpoints") {
         EndpointsWidget(
-            state.activeDevice.device,
+            connectedState.activeDevice.device,
             onEndpointClicked,
             onGlobalControlsClicked = onOpenGlobalControls
         )
     }
-
-    DeviceRootViewModel.State.UnsupportedDeviceMockzillaVersion -> Widget(id = "unsupported-mockzilla") {
-        UnsupportedDeviceMockzillaVersionWidget()
-    }
-})
+)
 
 private fun rightPanelWidgets(
-    state: DeviceRootViewModel.State,
+    connectedState: DeviceRootViewModel.State.Connected,
     logDetail: LogEvent?,
     strings: Strings,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
     onEditPreset: (EndpointConfiguration.Key) -> Unit,
     onCloseLogDetail: () -> Unit,
-) = (state as? DeviceRootViewModel.State.Connected)?.let { connectedState ->
-    buildList {
-        add(
-            Widget(
-                id = endpointDetailsWidgetId, title = strings.widgets.endpointDetails.title
-            ) {
-                EndpointDetailsWidget(
-                    device = connectedState.activeDevice.device,
-                    activeEndpoint = connectedState.selectedEndpoint,
-                    onCreatePreset = onCreatePreset,
-                    onEditPreset = onEditPreset,
-                )
-            }
-        )
-        add(
-            Widget(
-                id = logDetailsWidgetId, title = strings.widgets.logDetails.title
-            ) {
-                MonitorLogDetailsWidget(
-                    device = connectedState.activeDevice.device,
-                    logDetail = logDetail,
-                    onClose = onCloseLogDetail,
-                )
-            }
-        )
-    }
-} ?: emptyList()
-
-private fun leftPanelWidgets(
-    state: DeviceRootViewModel.State,
-) = (state as? DeviceRootViewModel.State.Connected)?.let { connectedState ->
-    listOf(
-        Widget(id = devicePanelWidgetId) {
-            Column {
-                MetaDataWidget(connectedState.activeDevice.device)
-                MiscControlsWidget(connectedState.activeDevice.device)
-            }
+) = buildList {
+    add(
+        Widget(
+            id = endpointDetailsWidgetId, title = strings.widgets.endpointDetails.title
+        ) {
+            EndpointDetailsWidget(
+                device = connectedState.activeDevice.device,
+                activeEndpoint = connectedState.selectedEndpoint,
+                onCreatePreset = onCreatePreset,
+                onEditPreset = onEditPreset,
+            )
         }
     )
-} ?: emptyList()
+    add(
+        Widget(
+            id = logDetailsWidgetId, title = strings.widgets.logDetails.title
+        ) {
+            MonitorLogDetailsWidget(
+                device = connectedState.activeDevice.device,
+                logDetail = logDetail,
+                onClose = onCloseLogDetail,
+            )
+        }
+    )
+}
+
+private fun leftPanelWidgets(
+    connectedState: DeviceRootViewModel.State.Connected,
+) = listOf(
+    Widget(id = devicePanelWidgetId) {
+        Column {
+            MetaDataWidget(connectedState.activeDevice.device)
+            MiscControlsWidget(connectedState.activeDevice.device)
+        }
+    }
+)
 
 @Composable
 private fun CloseButtonIcon() = Icon(
