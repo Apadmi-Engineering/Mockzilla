@@ -3,11 +3,13 @@ package com.apadmi.mockzilla.ui.engine.device
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.Config
+
 import io.github.z4kn4fein.semver.toVersion
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal interface MonitorLogsUseCase {
     suspend fun getMonitorLogs(device: Device): Result<List<LogEvent>>
@@ -24,13 +26,13 @@ internal class MonitorLogsUseCaseImpl(
     private val cache = mutableMapOf<CacheKey, List<LogEvent>>()
     private val clientSessionStart = Clock.System.now().toEpochMilliseconds()
 
-    private suspend fun supportsNonDestructiveLogs(device: Device): Boolean =
+    private suspend fun doesSupportNonDestructiveLogs(device: Device): Boolean =
         metaDataUseCase.getMetaData(device)
-            .map { it.mockzillaVersion.toVersion() >= Config.nonDestructiveLogsMinVersion  }
+            .map { it.mockzillaVersion.toVersion() >= Config.nonDestructiveLogsMinVersion }
             .getOrDefault(false)
 
     override suspend fun getMonitorLogs(device: Device): Result<List<LogEvent>> = mutex.withLock {
-        if (supportsNonDestructiveLogs(device)) {
+        if (doesSupportNonDestructiveLogs(device)) {
             getMonitorLogsNewPath(device)
         } else {
             getMonitorLogsLegacyPath(device)
@@ -78,7 +80,7 @@ internal class MonitorLogsUseCaseImpl(
     }
 
     override suspend fun fetchLogDetail(device: Device, logId: String): Result<LogEvent> =
-        if (supportsNonDestructiveLogs(device)) {
+        if (doesSupportNonDestructiveLogs(device)) {
             managementLogsService.fetchFullBodyLogDetail(device, logId)
         } else {
             Result.failure(UnsupportedOperationException("Server version does not support log detail fetching"))

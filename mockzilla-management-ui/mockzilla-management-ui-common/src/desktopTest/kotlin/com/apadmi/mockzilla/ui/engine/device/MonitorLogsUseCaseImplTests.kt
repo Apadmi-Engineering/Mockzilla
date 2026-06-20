@@ -1,3 +1,5 @@
+@file:Suppress("MAGIC_NUMBER")
+
 package com.apadmi.mockzilla.ui.engine.device
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
