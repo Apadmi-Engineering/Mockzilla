@@ -573,7 +573,7 @@ private fun PanelHeader(
             modifier = Modifier.fillMaxWidth(),
             isLoading = state.isSaving,
             trackColor = Color.Transparent,
-            delayMs = 100 // Usually saves are so fast the loading animation is a flicker so delay for these cases
+            delayMs = 100  // Usually saves are so fast the loading animation is a flicker so delay for these cases
         )
     }
 
