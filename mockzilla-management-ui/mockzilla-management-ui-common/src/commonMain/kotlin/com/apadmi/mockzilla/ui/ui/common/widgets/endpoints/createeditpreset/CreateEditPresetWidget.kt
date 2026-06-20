@@ -57,6 +57,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
@@ -74,6 +76,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
@@ -376,14 +379,18 @@ fun CreateEditPresetWidget(
     }
     val state by viewModel.state
 
+    LaunchedEffect((state as? State.Editing)?.navigateUp) {
+        if ((state as? State.Editing)?.navigateUp == true) {
+            onSave()
+            viewModel.consumeNavigateUp()
+        }
+    }
+
     CreateEditPresetWidgetContent(
         state = state,
         endpointName = activeEndpoint.raw,
         onCancel = onCancel,
-        onSave = {
-            viewModel.save()
-            onSave()
-        },
+        onSave = viewModel::save,
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
@@ -556,42 +563,54 @@ private fun PanelHeader(
     onCancel: () -> Unit,
     onSave: () -> Unit,
     strings: Strings = LocalStrings.current,
-) = Row(
+) = Column(
     modifier = Modifier
         .fillMaxWidth()
         .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-        .padding(horizontal = 12.dp, vertical = 6.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(8.dp),
 ) {
-    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(
-            text = when (state.variant) {
-                State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
-                State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
-            } + if (state.isDirty) "*" else "",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = if (state.isDirty) FontWeight.ExtraBold else FontWeight.Bold,
-        )
-        Text(
-            text = strings.widgets.createEditPreset.endpointSubtitle(state.endpointName),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceMuted,
+    Box(Modifier.height(6.dp).fillMaxWidth().clipToBounds()) {
+        TogglableProgressIndicator(
+            modifier = Modifier.fillMaxWidth(),
+            isLoading = state.isSaving,
+            trackColor = Color.Transparent,
+            delayMs = 100 // Usually saves are so fast the loading animation is a flicker so delay for these cases
         )
     }
-    CustomOutlineButton(
-        label = strings.widgets.createEditPreset.cancel,
-        variant = OutlineButtonVariant.Secondary,
-        onClick = onCancel,
-    )
-    BaseButton(
-        label = strings.widgets.createEditPreset.save,
-        variant = ButtonVariant.Solid,
-        size = ButtonSize.Md,
-        leadingIcon = Icons.Default.Done,
-        onClick = onSave,
-    )
+
+    Row(
+        modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = when (state.variant) {
+                    State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
+                    State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
+                } + if (state.isDirty) "*" else "",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = if (state.isDirty) FontWeight.ExtraBold else FontWeight.Bold,
+            )
+            Text(
+                text = strings.widgets.createEditPreset.endpointSubtitle(state.endpointName),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceMuted,
+            )
+        }
+        CustomOutlineButton(
+            label = strings.widgets.createEditPreset.cancel,
+            variant = OutlineButtonVariant.Secondary,
+            onClick = onCancel,
+        )
+        BaseButton(
+            label = strings.widgets.createEditPreset.save,
+            variant = ButtonVariant.Solid,
+            size = ButtonSize.Md,
+            leadingIcon = Icons.Default.Done,
+            onClick = onSave,
+        )
+    }
 }
 
 private fun chipToneForStatusCode(code: Int) = when (code) {
@@ -778,7 +797,6 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
             committedBody = null,
             committedStatusCode = null,
             committedHeaders = emptyList(),
-            committedResponseType = State.Editing.ResponseType.PlainText,
         ),
         endpointName = "Repairs",
         onSave = {},

@@ -81,7 +81,6 @@ internal class CreateEditPresetViewModel(
                 committedBody = body,
                 committedStatusCode = statusCode,
                 committedHeaders = headers,
-                committedResponseType = responseType,
             )
         }.fold(
             onSuccess = { it },
@@ -134,7 +133,7 @@ internal class CreateEditPresetViewModel(
                 committedBody = currentState.body,
                 committedStatusCode = currentState.statusCode,
                 committedHeaders = currentState.headers,
-                committedResponseType = currentState.responseType,
+                navigateUp = true
             )
         }.onFailure {
             eventBus.send(Event.GenericError)
@@ -144,11 +143,6 @@ internal class CreateEditPresetViewModel(
     fun onNewStatusCode(newStatusCode: HttpStatusCode) {
         val currentState = state.value as? State.Editing ?: return
         state.value = currentState.copy(statusCode = newStatusCode)
-    }
-
-    fun clearStatusCode() {
-        val currentState = state.value as? State.Editing ?: return
-        state.value = currentState.copy(statusCode = null)
     }
 
     fun onNewResponseType(newResponseType: State.Editing.ResponseType) {
@@ -187,11 +181,6 @@ internal class CreateEditPresetViewModel(
         state.value = currentState.copy(body = formatted, syncToken = ++syncCounter)
     }
 
-    fun clearResponseBody() {
-        val currentState = state.value as? State.Editing ?: return
-        state.value = currentState.copy(body = null)
-    }
-
     fun onAddHeader(key: String, value: String) {
         val currentState = state.value as? State.Editing ?: return
         state.value = currentState.copy(
@@ -206,9 +195,9 @@ internal class CreateEditPresetViewModel(
         )
     }
 
-    fun clearHeaders() {
+    fun consumeNavigateUp() {
         val currentState = state.value as? State.Editing ?: return
-        state.value = currentState.copy(headers = emptyList())
+        state.value = currentState.copy(navigateUp = false)
     }
 
     sealed class State {
@@ -216,7 +205,10 @@ internal class CreateEditPresetViewModel(
 
         /**
          * @property isSaving
-         * @property syncToken Incremented on server reload or format-apply; drives LaunchedEffect in the UI
+         * @property syncToken Incremented on server reload or format-apply; drives LaunchedEffect in the UI.
+         * Committed values alone would suffice for server reload, but format changes [body] without
+         * touching [committedBody], so syncToken is the only signal available to push the reformatted
+         * content into the text field.
          * @property statusCode
          * @property body
          * @property headers
@@ -242,13 +234,12 @@ internal class CreateEditPresetViewModel(
             val committedBody: String? = null,
             val committedStatusCode: HttpStatusCode? = null,
             val committedHeaders: List<RequestHeader> = emptyList(),
-            val committedResponseType: ResponseType = ResponseType.PlainText,
+            val navigateUp: Boolean = false
         ) : State() {
             val isDirty: Boolean
                 get() = body != committedBody ||
                         statusCode != committedStatusCode ||
-                        headers != committedHeaders ||
-                        responseType != committedResponseType
+                        headers != committedHeaders
 
             @Suppress("EnumEntryOrder")
             enum class ResponseType {
