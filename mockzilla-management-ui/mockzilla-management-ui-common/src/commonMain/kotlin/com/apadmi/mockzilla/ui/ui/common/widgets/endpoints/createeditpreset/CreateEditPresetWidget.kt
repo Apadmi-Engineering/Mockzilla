@@ -93,11 +93,19 @@ import org.koin.core.parameter.parametersOf
 @Composable
 private fun ColumnScope.HeadersSection(
     state: State.Editing,
-    onUpdateNewHeader: (String?, String?) -> Unit,
-    onAddHeader: () -> Unit,
+    onAddHeader: (key: String, value: String) -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
     strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
 ) {
+    var localKey by remember { mutableStateOf("") }
+    var localValue by remember { mutableStateOf("") }
+
+    // Reset draft inputs whenever the server data reloads
+    LaunchedEffect(state.syncToken) {
+        localKey = ""
+        localValue = ""
+    }
+
     state.headers.forEach { header ->
         Row(
             modifier = Modifier
@@ -152,7 +160,7 @@ private fun ColumnScope.HeadersSection(
         )
         CustomTextField(
             modifier = Modifier.weight(1f).height(30.dp),
-            value = state.newHeader.key,
+            value = localKey,
             singleLine = true,
             containerColor = inputBg,
             placeholder = {
@@ -162,11 +170,11 @@ private fun ColumnScope.HeadersSection(
                     color = mutedColor,
                 )
             },
-            onValueChange = { onUpdateNewHeader(it, null) },
+            onValueChange = { localKey = it },
         )
         CustomTextField(
             modifier = Modifier.weight(1f).height(30.dp),
-            value = state.newHeader.value,
+            value = localValue,
             singleLine = true,
             containerColor = inputBg,
             placeholder = {
@@ -176,9 +184,9 @@ private fun ColumnScope.HeadersSection(
                     color = mutedColor,
                 )
             },
-            onValueChange = { onUpdateNewHeader(null, it) },
+            onValueChange = { localValue = it },
         )
-        val canAdd = state.newHeader.key.isNotEmpty() && state.newHeader.value.isNotEmpty()
+        val canAdd = localKey.isNotEmpty() && localValue.isNotEmpty()
         Box(
             modifier = Modifier
                 .size(28.dp)
@@ -192,7 +200,14 @@ private fun ColumnScope.HeadersSection(
                     },
                     shape = RoundedCornerShape(6.dp),
                 )
-                .clickable(enabled = canAdd, onClick = onAddHeader)
+                .clickable(
+                    enabled = canAdd,
+                    onClick = {
+                        onAddHeader(localKey, localValue)
+                        localKey = ""
+                        localValue = ""
+                    }
+                )
                 .pointerHoverIcon(if (canAdd) PointerIcon.Hand else blockedPointerIcon),
             contentAlignment = Alignment.Center,
         ) {
@@ -222,21 +237,18 @@ private fun ColumnScope.PopulatedState(
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
     onFormatResponseBody: () -> Unit,
-    onUpdateNewHeader: (String?, String?) -> Unit,
-    onAddHeader: () -> Unit,
+    onAddHeader: (key: String, value: String) -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
     isBodyExpanded: Boolean,
     onToggleBodyExpanded: () -> Unit,
-    strings: Strings = LocalStrings.current,
+    strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
 ) {
-    val str = strings.widgets.createEditPreset
-
     AnimatedVisibility(
         visible = !isBodyExpanded,
         enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
         exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
-        PanelHeader(state, onCancel, onSave, strings)
+        PanelHeader(state, onCancel, onSave)
     }
 
     AnimatedVisibility(
@@ -246,7 +258,7 @@ private fun ColumnScope.PopulatedState(
     ) {
         Column {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            SectionLabel(str.responseSectionLabel)
+            SectionLabel(strings.responseSectionLabel)
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
             Row(
@@ -257,7 +269,7 @@ private fun ColumnScope.PopulatedState(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = str.statusCodeRowLabel,
+                    text = strings.statusCodeRowLabel,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
@@ -269,7 +281,7 @@ private fun ColumnScope.PopulatedState(
                     StatusCodeDropdown(
                         statusCode = state.statusCode,
                         onSelected = onStatusCodeSelected,
-                        strings = str,
+                        strings = strings,
                     )
                 }
             }
@@ -283,7 +295,7 @@ private fun ColumnScope.PopulatedState(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = str.bodyTypeLabel,
+                    text = strings.bodyTypeLabel,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
@@ -295,7 +307,7 @@ private fun ColumnScope.PopulatedState(
                     BodyTypeToggle(
                         selected = state.responseType,
                         onSelect = onNewResponseType,
-                        strings = str,
+                        strings = strings,
                     )
                 }
             }
@@ -313,7 +325,7 @@ private fun ColumnScope.PopulatedState(
             isExpanded = isBodyExpanded,
             onToggleExpand = onToggleBodyExpanded,
             modifier = if (isBodyExpanded) Modifier.weight(1f) else Modifier,
-            strings = str,
+            strings = strings,
         )
     }
 
@@ -324,9 +336,9 @@ private fun ColumnScope.PopulatedState(
     ) {
         val headerCount = state.headers.size
         val headersLabel = if (headerCount > 0) {
-            "${strings.widgets.createEditPreset.headersTitle} ($headerCount)"
+            "${strings.headersTitle} ($headerCount)"
         } else {
-            strings.widgets.createEditPreset.headersTitle
+            strings.headersTitle
         }
         Column {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -334,10 +346,9 @@ private fun ColumnScope.PopulatedState(
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             HeadersSection(
                 state = state,
-                onUpdateNewHeader = onUpdateNewHeader,
                 onAddHeader = onAddHeader,
                 onRemoveHeader = onRemoveHeader,
-                strings = str,
+                strings = strings,
             )
         }
     }
@@ -377,7 +388,6 @@ fun CreateEditPresetWidget(
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
         onFormatResponseBody = viewModel::onFormatResponseBody,
-        onUpdateNewHeader = viewModel::onUpdateNewHeader,
         onAddHeader = viewModel::onAddHeader,
         onRemoveHeader = viewModel::onRemoveHeader,
     )
@@ -393,8 +403,7 @@ internal fun CreateEditPresetWidgetContent(
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
     onFormatResponseBody: () -> Unit = {},
-    onUpdateNewHeader: (String?, String?) -> Unit,
-    onAddHeader: () -> Unit,
+    onAddHeader: (key: String, value: String) -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
@@ -429,12 +438,10 @@ internal fun CreateEditPresetWidgetContent(
                 onNewResponseType = onNewResponseType,
                 onNewResponseBody = onNewResponseBody,
                 onFormatResponseBody = onFormatResponseBody,
-                onUpdateNewHeader = onUpdateNewHeader,
                 onAddHeader = onAddHeader,
                 onRemoveHeader = onRemoveHeader,
                 isBodyExpanded = isBodyExpanded,
-                onToggleBodyExpanded = { isBodyExpanded = !isBodyExpanded },
-                strings = strings,
+                onToggleBodyExpanded = { isBodyExpanded = !isBodyExpanded }
             )
         }
     }
@@ -454,8 +461,13 @@ private fun BodySection(
         .fillMaxWidth()
         .background(MaterialTheme.colorScheme.surfaceContainer),
 ) {
+    // Local state drives the text field to avoid cursor-jump glitches from the VM round-trip.
+    // Syncs from VM only when syncToken changes (server reload or format applied).
+    var localBody by remember { mutableStateOf(state.body ?: "") }
+    LaunchedEffect(state.syncToken) { localBody = state.body ?: "" }
+
     val isJsonError = state.responseType == State.Editing.ResponseType.Json &&
-            state.body?.isNotEmpty() == true && state.bodyParseError != null
+            localBody.isNotEmpty() && state.bodyParseError != null
     val isFormattable = state.responseType == State.Editing.ResponseType.Json
 
     Row(
@@ -473,14 +485,14 @@ private fun BodySection(
 
         if (isJsonError) {
             Text(
-                text = strings.responseCharacters(state.body.length),
+                text = strings.responseCharacters(localBody.length),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f)
             )
         } else {
             Text(
-                text = strings.responseCharacters(state.body?.length ?: 0),
+                text = strings.responseCharacters(localBody.length),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.onSurfaceFaint,
                 modifier = Modifier.weight(1f)
@@ -510,8 +522,11 @@ private fun BodySection(
     }
 
     FindableEditorTextField(
-        body = state.body ?: "",
-        onBodyChange = onNewResponseBody,
+        body = localBody,
+        onBodyChange = {
+            localBody = it
+            onNewResponseBody(it)
+        },
         mode = when (state.responseType) {
             State.Editing.ResponseType.Json -> EditorMode.Json
             State.Editing.ResponseType.Html -> EditorMode.Html
@@ -554,10 +569,10 @@ private fun PanelHeader(
             text = when (state.variant) {
                 State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
                 State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
-            },
+            } + if (state.isDirty) "*" else "",
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Bold,
+            fontWeight = if (state.isDirty) FontWeight.ExtraBold else FontWeight.Bold,
         )
         Text(
             text = strings.widgets.createEditPreset.endpointSubtitle(state.endpointName),
@@ -752,6 +767,7 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
     CreateEditPresetWidgetContent(
         state = State.Editing(
             isSaving = false,
+            syncToken = 0L,
             statusCode = HttpStatusCode.OK,
             body = "{\"key\": \"value\"}",
             headers = listOf(
@@ -759,14 +775,17 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
             ),
             responseType = State.Editing.ResponseType.Json,
             variant = State.Editing.Variant.Create,
+            committedBody = null,
+            committedStatusCode = null,
+            committedHeaders = emptyList(),
+            committedResponseType = State.Editing.ResponseType.PlainText,
         ),
         endpointName = "Repairs",
         onSave = {},
         onStatusCodeSelected = {},
         onNewResponseType = {},
         onNewResponseBody = {},
-        onUpdateNewHeader = { _, _ -> },
-        onAddHeader = {},
+        onAddHeader = { _, _ -> },
         onRemoveHeader = {},
     )
 }

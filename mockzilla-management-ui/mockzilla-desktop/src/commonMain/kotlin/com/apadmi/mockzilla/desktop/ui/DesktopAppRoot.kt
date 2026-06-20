@@ -262,6 +262,7 @@ private fun MiddleContentArea(
                         activeEndpoint = endpoint,
                         creatingNewPreset = creatingNewPreset,
                         onCancel = onCancelPreset,
+                        onSave = onCancelPreset
                     )
                 }
             }
