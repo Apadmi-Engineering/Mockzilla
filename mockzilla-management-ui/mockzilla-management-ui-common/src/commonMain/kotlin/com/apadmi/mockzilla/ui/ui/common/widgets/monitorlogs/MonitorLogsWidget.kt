@@ -1,7 +1,10 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -78,6 +81,7 @@ fun MonitorLogsWidget(
     modifier: Modifier = Modifier,
     topHandle: @Composable () -> Unit = {},
     isExpanded: Boolean = false,
+    expandedHeightDp: Float = 220f,
     onExpandToggled: () -> Unit = {},
     onViewDetail: (LogEvent) -> Unit,
 ) {
@@ -89,6 +93,7 @@ fun MonitorLogsWidget(
         modifier = modifier,
         topHandle = topHandle,
         isExpanded = isExpanded,
+        expandedHeightDp = expandedHeightDp,
         onExpandToggled = onExpandToggled,
         onViewDetail = onViewDetail,
         onClearAll = viewModel::clearLogs,
@@ -181,7 +186,6 @@ fun LogRow(
 @Composable
 fun MonitorLogsWidgetPreview() = PreviewSurface {
     MonitorLogsWidgetContent(
-        modifier = Modifier.height(320.dp),
         isExpanded = true,
         state = MonitorLogsViewModel.State.DisplayLogs(
             entries = listOf(
@@ -247,6 +251,7 @@ internal fun MonitorLogsWidgetContent(
     modifier: Modifier = Modifier,
     topHandle: @Composable () -> Unit = {},
     isExpanded: Boolean = false,
+    expandedHeightDp: Float = 220f,
     onExpandToggled: () -> Unit = {},
     onClearAll: () -> Unit,
     onViewDetail: (LogEvent) -> Unit,
@@ -312,11 +317,15 @@ internal fun MonitorLogsWidgetContent(
             )
         }
 
-        if (isExpanded) {
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = expandVertically(animationSpec = tween(durationMillis = 150)),
+            exit = shrinkVertically(animationSpec = tween(durationMillis = 150)),
+        ) {
             MonitorLogsList(
                 entryList = entryList,
                 onViewDetail = onViewDetail,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.height(expandedHeightDp.dp),
             )
         }
     }

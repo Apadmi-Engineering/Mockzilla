@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -408,15 +407,12 @@ private fun ConnectedDeviceLayout(
                 }
             }
 
-            // Monitor Logs — full width; collapsed = wrap to header height, expanded = saved height
+            // Monitor Logs — full width; height driven entirely by widget content
             MonitorLogsWidget(
-                modifier = if (state.logsExpanded) {
-                    Modifier.fillMaxWidth().height(state.logsExpandedHeightDp.dp)
-                } else {
-                    Modifier.fillMaxWidth()
-                },
+                modifier = Modifier.fillMaxWidth(),
                 device = connectedState.activeDevice.device,
                 isExpanded = state.logsExpanded,
+                expandedHeightDp = state.logsExpandedHeightDp,
                 onExpandToggled = { state = state.copy(logsExpanded = !state.logsExpanded) },
                 topHandle = {
                     VerticalDraggableDivider(
