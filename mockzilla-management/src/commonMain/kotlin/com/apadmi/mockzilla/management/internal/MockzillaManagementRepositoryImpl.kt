@@ -83,19 +83,13 @@ MockzillaManagement.AppIconService {
         get(connection, "/api/meta") {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
-    }.onFailure {
-        if (!hideFromLogs) {
-            Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/meta" }
-        }
-    }
+    }.apply { if (!hideFromLogs) alsoLogFailure("/api/meta") }
 
     override suspend fun fetchAllEndpointConfigs(
         connection: MockzillaConnectionConfig
     ) = runner<MockDataResponseDto> {
         get(connection, "/api/mock-data")
-    }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
-    }.map { it.entries }
+    }.alsoLogFailure("/api/mock-data").map { it.entries }
 
     override suspend fun fetchDashboardOptionsConfig(
         connection: MockzillaConnectionConfig,
@@ -106,9 +100,7 @@ MockzillaManagement.AppIconService {
                 appendPathSegments(key.raw, "dashboard-config")
             }
         }
-    }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data/{key}/dashboard-config" }
-    }
+    }.alsoLogFailure("/api/mock-data/{key}/dashboard-config")
 
     override suspend fun updateMockDataEntry(
         entry: SerializableEndpointPatchItemDto,
@@ -123,9 +115,7 @@ MockzillaManagement.AppIconService {
             contentType(ContentType.Application.Json)
             setBody(SerializableEndpointConfigPatchRequestDto(entries))
         }
-    }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
-    }
+    }.alsoLogFailure("/api/mock-data")
 
     override suspend fun fetchMonitorLogsAndClearBuffer(
         connection: MockzillaConnectionConfig,
@@ -134,13 +124,7 @@ MockzillaManagement.AppIconService {
         get(connection, "/api/monitor-logs") {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
-    }.onFailure {
-        if (it is IOException) {
-            Logger.v(tag = "Management") { "Disconnected: /api/monitor-logs" }
-        } else {
-            Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
-        }
-    }
+    }.alsoLogFailure("/api/monitor-logs")
 
     override suspend fun fetchMonitorLogsSince(
         connection: MockzillaConnectionConfig,
@@ -152,9 +136,7 @@ MockzillaManagement.AppIconService {
             parameter("clientSessionStart", clientSessionStart)
             header(CustomHeaders.HideFromLogs, true)
         }
-    }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs/poll" }
-    }
+    }.alsoLogFailure("/api/monitor-logs/poll")
 
     override suspend fun fetchLogDetail(
         connection: MockzillaConnectionConfig,
@@ -170,25 +152,19 @@ MockzillaManagement.AppIconService {
         logId: String,
     ) = runner<LogEvent> {
         get(connection, "/api/monitor-logs/$logId/full-body")
-    }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs/$logId/full-body" }
-    }
+    }.alsoLogFailure("/api/monitor-logs/$logId/full-body")
 
     override suspend fun deleteMonitorLogs(
         connection: MockzillaConnectionConfig,
     ) = runner<Unit> {
         delete(connection, "/api/monitor-logs")
-    }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: DELETE /api/monitor-logs" }
-    }
+    }.alsoLogFailure("DELETE /api/monitor-logs")
 
     override suspend fun clearAllCaches(
         connection: MockzillaConnectionConfig
     ) = runner<Unit> {
         delete(connection, "/api/mock-data/all")
-    }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data/all" }
-    }
+    }.alsoLogFailure("/api/mock-data/all")
 
     override suspend fun clearCaches(
         connection: MockzillaConnectionConfig,
@@ -198,9 +174,7 @@ MockzillaManagement.AppIconService {
             contentType(ContentType.Application.Json)
             setBody(ClearCachesRequestDto(keys))
         }
-    }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/mock-data" }
-    }
+    }.alsoLogFailure("/api/mock-data")
 
     override suspend fun fetchAppIcon(
         connection: MockzillaConnectionConfig
@@ -212,8 +186,14 @@ MockzillaManagement.AppIconService {
                 response.status == HttpStatusCode.NotFound -> null
                 else -> throw Exception("Failed fetching app icon (${response.status})")
             }
-        }.onFailure {
-            Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/app-icon" }
+        }.alsoLogFailure("/api/app-icon")
+    }
+
+    fun <T> Result<T>.alsoLogFailure(path: String): Result<T> = onFailure {
+        if (it is IOException) {
+            Logger.v(tag = "Management") { "Disconnected: $path" }
+        } else {
+            Logger.v(tag = "Management", throwable = it) { "Request Failed: $path" }
         }
     }
 
