@@ -69,9 +69,7 @@ internal class MonitorLogDetailsViewModel(
     internal sealed class State {
         internal data object Empty : State()
 
-
         internal sealed class BodyState(val bodyOrPreview: String) {
-
             internal data class Available(val text: String) : BodyState(text)
             internal data class Loading(val preview: String) : BodyState(preview)
             internal data class Error(val preview: String) : BodyState(preview)
@@ -82,15 +80,13 @@ internal class MonitorLogDetailsViewModel(
             }
         }
 
-        data object Empty : State()
-
         /**
          * @property logEvent
          * @property selectedTab
          * @property requestBodyState
          * @property responseBodyState
          */
-        class ViewDetails(
+        internal data class ViewDetails(
             val logEvent: LogEvent,
             val selectedTab: Tab = Tab.Response,
             val requestBodyState: BodyState = BodyState.Available(""),
@@ -100,7 +96,5 @@ internal class MonitorLogDetailsViewModel(
                 Request, Response
             }
         }
-
-        interface Data
     }
 }
