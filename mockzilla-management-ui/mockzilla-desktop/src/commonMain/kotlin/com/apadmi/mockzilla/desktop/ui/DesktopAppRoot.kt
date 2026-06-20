@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.VerticalDivider
@@ -57,6 +59,7 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTabList
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
@@ -227,12 +230,7 @@ private fun ConnectedDeviceLayout(
             ) {
                 Row(modifier = Modifier.fillMaxSize()) {
                     // Left panel: always visible, resizable
-                    Surface(modifier = Modifier.fillMaxHeight().width(state.leftWidthDp.dp)) {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            MetaDataWidget(connectedState.activeDevice.device)
-                            MiscControlsWidget(connectedState.activeDevice.device)
-                        }
-                    }
+                    LeftTab(state, connectedState)
                     HorizontalDraggableDivider(
                         onDrag = { offset ->
                             leftDragWidth += with(density) { offset.toDp() }
@@ -436,6 +434,28 @@ private fun ConnectedDeviceLayout(
             connectedState.error,
             viewModel::refreshAll,
             viewModel::dismissError,
+        )
+    }
+}
+
+@Composable
+private fun LeftTab(
+    state: LayoutState,
+    connectedState: DeviceRootViewModel.State.Connected
+) {
+    val scrollState = rememberScrollState()
+
+    Box(modifier = Modifier.fillMaxHeight().width(state.leftWidthDp.dp)) {
+        Column(modifier = Modifier.verticalScroll(scrollState).fillMaxSize()) {
+            MetaDataWidget(connectedState.activeDevice.device)
+            MiscControlsWidget(connectedState.activeDevice.device)
+        }
+
+        PlatformVerticalScrollbar(
+            scrollState = scrollState,
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight()
         )
     }
 }
