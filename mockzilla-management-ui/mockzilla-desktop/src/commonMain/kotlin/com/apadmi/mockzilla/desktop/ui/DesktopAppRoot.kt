@@ -48,7 +48,7 @@ import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
+import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
@@ -62,7 +62,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsWidget
 
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 
 import kotlin.collections.buildList
 import kotlin.let
@@ -95,13 +94,11 @@ fun DesktopApp(
         Column(modifier = Modifier.mobileStatusBarPadding().fillMaxSize()) {
             DeviceTabsWidget(modifier = Modifier.fillMaxWidth())
 
-            if (selectedDevice == null) {
-                DeviceConnectionWidget()
-            } else {
+            selectedDevice?.let {
                 stateHolder.SaveableStateProvider(key = selectedDevice.toString()) {
                     DeviceContent(device = selectedDevice, strings = strings)
                 }
-            }
+            } ?: DeviceConnectionWidget()
         }
     }
 }
@@ -112,8 +109,7 @@ private fun DeviceContent(
     device: Device,
     strings: Strings
 ) {
-    val viewModel = getViewModel<AppRootViewModel>(
-        qualifier = named("perDevice"),
+    val viewModel = getViewModel<DeviceRootViewModel>(
         key = device.toString()
     ) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
@@ -154,7 +150,7 @@ private fun DeviceContent(
         },
     )
 
-    val connectedState = state as? AppRootViewModel.State.Connected
+    val connectedState = state as? DeviceRootViewModel.State.Connected
     val isPresetOpen = connectedState != null &&
             (createPresetWidgetId in openWidgets || editPresetWidgetId in openWidgets) &&
             connectedState.selectedEndpoint != null
@@ -207,7 +203,7 @@ private fun DeviceContent(
         }
 
         AnimatedErrorBanner(
-            (state as? AppRootViewModel.State.Connected)?.error,
+            (state as? DeviceRootViewModel.State.Connected)?.error,
             viewModel::refreshAll,
             viewModel::dismissError
         )
@@ -235,7 +231,7 @@ private fun MiddleContentArea(
     initialLeftPanelWidth: Dp,
     initialRightPanelWidth: Dp,
     isPresetOpen: Boolean,
-    connectedState: AppRootViewModel.State.Connected?,
+    connectedState: DeviceRootViewModel.State.Connected?,
     creatingNewPreset: Boolean,
     onCancelPreset: () -> Unit,
     globalControlsOpen: Boolean,
@@ -327,10 +323,10 @@ private fun MiddleContentArea(
 
 @Suppress("LAMBDA_IS_NOT_LAST_PARAMETER")
 private fun bottomPanelWidgets(
-    state: AppRootViewModel.State,
+    state: DeviceRootViewModel.State,
     onViewDetail: (LogEvent) -> Unit,
     strings: Strings
-) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
+) = (state as? DeviceRootViewModel.State.Connected)?.let { connectedState ->
     listOf(
         Widget(id = "monitor-logs", strings.widgets.logs.title) {
             MonitorLogsWidget(
@@ -343,11 +339,11 @@ private fun bottomPanelWidgets(
 
 @Suppress("diktat") // Diktat generates an invalid else block for some reason
 private fun middleWidgets(
-    state: AppRootViewModel.State,
+    state: DeviceRootViewModel.State,
     onOpenGlobalControls: () -> Unit,
     onEndpointClicked: (EndpointConfiguration.Key) -> Unit,
 ) = listOf(when (state) {
-    is AppRootViewModel.State.Connected -> Widget(id = "endpoints") {
+    is DeviceRootViewModel.State.Connected -> Widget(id = "endpoints") {
         EndpointsWidget(
             state.activeDevice.device,
             onEndpointClicked,
@@ -355,23 +351,19 @@ private fun middleWidgets(
         )
     }
 
-    AppRootViewModel.State.NewDeviceConnection -> Widget(id = "device-connection") {
-        DeviceConnectionWidget()
-    }
-
-    AppRootViewModel.State.UnsupportedDeviceMockzillaVersion -> Widget(id = "unsupported-mockzilla") {
+    DeviceRootViewModel.State.UnsupportedDeviceMockzillaVersion -> Widget(id = "unsupported-mockzilla") {
         UnsupportedDeviceMockzillaVersionWidget()
     }
 })
 
 private fun rightPanelWidgets(
-    state: AppRootViewModel.State,
+    state: DeviceRootViewModel.State,
     logDetail: LogEvent?,
     strings: Strings,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
     onEditPreset: (EndpointConfiguration.Key) -> Unit,
     onCloseLogDetail: () -> Unit,
-) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
+) = (state as? DeviceRootViewModel.State.Connected)?.let { connectedState ->
     buildList {
         add(
             Widget(
@@ -400,8 +392,8 @@ private fun rightPanelWidgets(
 } ?: emptyList()
 
 private fun leftPanelWidgets(
-    state: AppRootViewModel.State,
-) = (state as? AppRootViewModel.State.Connected)?.let { connectedState ->
+    state: DeviceRootViewModel.State,
+) = (state as? DeviceRootViewModel.State.Connected)?.let { connectedState ->
     listOf(
         Widget(id = devicePanelWidgetId) {
             Column {

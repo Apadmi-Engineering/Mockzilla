@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,11 +44,13 @@ import com.apadmi.mockzilla.lib.MockzillaBuildConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.mobile.ui.deviceconnection.MobileDeviceConnectionWidget
 import com.apadmi.mockzilla.mobile.ui.utils.Destination
+import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
+import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
-import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel.*
+import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.widgets.debug.DebugWidget
@@ -57,6 +60,8 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetai
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsWidget
 
+import org.koin.core.parameter.parametersOf
+
 @Suppress("MAGIC_NUMBER")
 @Composable
 internal fun MobileAppRoot(
@@ -64,8 +69,9 @@ internal fun MobileAppRoot(
     onClose: () -> Unit,
 ) = AppTheme {
     val colorScheme = MaterialTheme.colorScheme
-    val viewModel = getViewModel<AppRootViewModel>()
-    val state by viewModel.state.collectAsState()
+    val activeDeviceMonitor = remember { MockzillaUiKoinContext.koin.get<ActiveDeviceMonitor>() }
+    val selectedStatefulDevice by activeDeviceMonitor.selectedDevice.collectAsState()
+    val selectedDevice = selectedStatefulDevice?.device
     val navController = rememberNavController()
     val showBackButton = navController.currentBackStack.collectAsState()
         .value
@@ -129,18 +135,30 @@ internal fun MobileAppRoot(
             }
         }
 
-        when (val currentState = state) {
-            is State.Connected -> ConnectedState(
-                navController = navController,
-                currentState = currentState,
-            )
-            State.NewDeviceConnection -> MobileDeviceConnectionWidget()
-            State.UnsupportedDeviceMockzillaVersion -> UnsupportedDeviceMockzillaVersionWidget()
+        selectedDevice?.let {
+            DeviceContent(device = selectedDevice, navController = navController)
+        } ?: MobileDeviceConnectionWidget()
+    }
+}
+
+@Composable
+private fun DeviceContent(device: Device, navController: NavHostController) {
+    val viewModel = getViewModel<DeviceRootViewModel>(key = device.toString()) { parametersOf(device) }
+    val state by viewModel.state.collectAsState()
+
+    when (val currentState = state) {
+        is DeviceRootViewModel.State.Connected -> ConnectedState(
+            navController = navController,
+            currentState = currentState,
+        )
+        DeviceRootViewModel.State.UnsupportedDeviceMockzillaVersion -> UnsupportedDeviceMockzillaVersionWidget()
+        else -> {
+            // this is a generated else block
         }
     }
 
     AnimatedErrorBanner(
-        (state as? State.Connected)?.error,
+        (state as? DeviceRootViewModel.State.Connected)?.error,
         viewModel::refreshAll,
         viewModel::dismissError,
     )
@@ -149,7 +167,7 @@ internal fun MobileAppRoot(
 @Composable
 private fun ConnectedState(
     navController: NavHostController,
-    currentState: State.Connected,
+    currentState: DeviceRootViewModel.State.Connected,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Column(modifier = Modifier.fillMaxSize()) {

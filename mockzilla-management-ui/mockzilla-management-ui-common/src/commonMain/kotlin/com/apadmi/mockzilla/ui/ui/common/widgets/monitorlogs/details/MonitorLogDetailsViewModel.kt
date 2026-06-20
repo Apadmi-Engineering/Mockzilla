@@ -17,12 +17,13 @@ internal class MonitorLogDetailsViewModel(
     scope: CoroutineScope? = null,
 ) : ViewModel(scope) {
     val state: MutableStateFlow<State> = MutableStateFlow(
-        if (logEvent == null) State.Empty
-        else State.ViewDetails(
-            logEvent = logEvent,
-            requestBodyState = State.BodyState.from(logEvent.requestBody, logEvent.isRequestBodyTruncated),
-            responseBodyState = State.BodyState.from(logEvent.responseBody, logEvent.isResponseBodyTruncated),
-        )
+        logEvent?.let {
+            State.ViewDetails(
+                logEvent = logEvent,
+                requestBodyState = State.BodyState.from(logEvent.requestBody, logEvent.isRequestBodyTruncated),
+                responseBodyState = State.BodyState.from(logEvent.responseBody, logEvent.isResponseBodyTruncated),
+            )
+        } ?: State.Empty
     )
 
     init {
@@ -44,12 +45,16 @@ internal class MonitorLogDetailsViewModel(
             .onFailure {
                 state.update { current ->
                     (current as? State.ViewDetails)?.copy(
-                        requestBodyState = if (logEvent.isRequestBodyTruncated)
+                        requestBodyState = if (logEvent.isRequestBodyTruncated) {
                             State.BodyState.Error(logEvent.requestBody)
-                        else current.requestBodyState,
-                        responseBodyState = if (logEvent.isResponseBodyTruncated)
+                        } else {
+                            current.requestBodyState
+                        },
+                        responseBodyState = if (logEvent.isResponseBodyTruncated) {
                             State.BodyState.Error(logEvent.responseBody)
-                        else current.responseBodyState,
+                        } else {
+                            current.responseBodyState
+                        },
                     ) ?: current
                 }
             }
@@ -62,9 +67,22 @@ internal class MonitorLogDetailsViewModel(
     }
 
     sealed class State {
+        data object Empty : State()
+        /**
+         * @property bodyOrPreview
+         */
         sealed class BodyState(val bodyOrPreview: String) {
+            /**
+             * @property text
+             */
             data class Available(val text: String) : BodyState(text)
+            /**
+             * @property preview
+             */
             data class Loading(val preview: String) : BodyState(preview)
+            /**
+             * @property preview
+             */
             data class Error(val preview: String) : BodyState(preview)
 
             companion object {
@@ -72,8 +90,6 @@ internal class MonitorLogDetailsViewModel(
                     if (truncated) Loading(body) else Available(body)
             }
         }
-
-        data object Empty : State()
 
         /**
          * @property logEvent

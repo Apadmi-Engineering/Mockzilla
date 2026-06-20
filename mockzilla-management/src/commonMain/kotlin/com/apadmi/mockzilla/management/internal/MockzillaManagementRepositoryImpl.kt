@@ -83,7 +83,11 @@ MockzillaManagement.AppIconService {
         get(connection, "/api/meta") {
             header(CustomHeaders.HideFromLogs, hideFromLogs)
         }
-    }.apply { if (!hideFromLogs) alsoLogFailure("/api/meta") }
+    }.apply {
+        if (!hideFromLogs) {
+            alsoLogFailure("/api/meta")
+        }
+    }
 
     override suspend fun fetchAllEndpointConfigs(
         connection: MockzillaConnectionConfig
