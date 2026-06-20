@@ -1,12 +1,7 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -80,6 +75,10 @@ private fun HttpStatusCode.statusColor(isIntendedFailure: Boolean): Color {
 @Composable
 fun MonitorLogsWidget(
     device: Device,
+    modifier: Modifier = Modifier,
+    topHandle: @Composable () -> Unit = {},
+    isExpanded: Boolean = false,
+    onExpandToggled: () -> Unit = {},
     onViewDetail: (LogEvent) -> Unit,
 ) {
     val viewModel = getViewModel<MonitorLogsViewModel>(key = device.toString()) { parametersOf(device) }
@@ -87,6 +86,10 @@ fun MonitorLogsWidget(
 
     MonitorLogsWidgetContent(
         state = state,
+        modifier = modifier,
+        topHandle = topHandle,
+        isExpanded = isExpanded,
+        onExpandToggled = onExpandToggled,
         onViewDetail = onViewDetail,
         onClearAll = viewModel::clearLogs,
     )
@@ -178,6 +181,8 @@ fun LogRow(
 @Composable
 fun MonitorLogsWidgetPreview() = PreviewSurface {
     MonitorLogsWidgetContent(
+        modifier = Modifier.height(320.dp),
+        isExpanded = true,
         state = MonitorLogsViewModel.State.DisplayLogs(
             entries = listOf(
                 LogEvent(
@@ -239,6 +244,10 @@ fun MonitorLogsWidgetPreview() = PreviewSurface {
 @Composable
 internal fun MonitorLogsWidgetContent(
     state: MonitorLogsViewModel.State.DisplayLogs,
+    modifier: Modifier = Modifier,
+    topHandle: @Composable () -> Unit = {},
+    isExpanded: Boolean = false,
+    onExpandToggled: () -> Unit = {},
     onClearAll: () -> Unit,
     onViewDetail: (LogEvent) -> Unit,
     onOpenPanel: () -> Unit = {},
@@ -255,20 +264,19 @@ internal fun MonitorLogsWidgetContent(
         fontWeight = FontWeight.SemiBold,
     )
     val logsTitle = strings.widgets.logs.title.uppercase()
-
-    var isExpanded by remember { mutableStateOf(false) }
     val chevronRotation by animateFloatAsState(
         targetValue = if (isExpanded) 90f else 0f,
         animationSpec = tween(durationMillis = 150),
         label = "chevronRotation",
     )
 
-    Column(modifier = Modifier.background(cs.background)) {
+    Column(modifier = modifier.background(cs.background)) {
+        if (isExpanded) topHandle()
         HorizontalDivider(color = MaterialTheme.colorScheme.outline)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { isExpanded = !isExpanded }
+                .clickable(onClick = onExpandToggled)
                 .padding(horizontal = 12.dp, vertical = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(5.dp),
@@ -304,21 +312,11 @@ internal fun MonitorLogsWidgetContent(
             )
         }
 
-        AnimatedVisibility(
-            visible = isExpanded,
-            enter = expandVertically(
-                expandFrom = Alignment.Top,
-                animationSpec = tween(durationMillis = 160),
-            ) + fadeIn(animationSpec = tween(durationMillis = 120)),
-            exit = shrinkVertically(
-                shrinkTowards = Alignment.Top,
-                animationSpec = tween(durationMillis = 130),
-            ) + fadeOut(animationSpec = tween(durationMillis = 100)),
-        ) {
+        if (isExpanded) {
             MonitorLogsList(
                 entryList = entryList,
                 onViewDetail = onViewDetail,
-                modifier = Modifier.height(280.dp),
+                modifier = Modifier.weight(1f),
             )
         }
     }

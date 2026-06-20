@@ -2,30 +2,33 @@ package com.apadmi.mockzilla.desktop.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
@@ -33,16 +36,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.unit.min
 
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionWidget
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsWidget
-import com.apadmi.mockzilla.desktop.ui.scaffold.Widget
-import com.apadmi.mockzilla.desktop.ui.scaffold.WidgetScaffold
+import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalDraggableDivider
+import com.apadmi.mockzilla.desktop.ui.scaffold.VerticalDraggableDivider
 import com.apadmi.mockzilla.desktop.ui.utils.mobileStatusBarPadding
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.di.utils.evictDesktopViewModelsForKey
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
@@ -52,6 +58,8 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
+import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTab
+import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTabList
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetWidget
@@ -65,23 +73,60 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogD
 
 import org.koin.core.parameter.parametersOf
 
-import kotlin.collections.buildList
-import kotlin.let
-
-private const val devicePanelWidgetId = "device-panel"
-private const val endpointDetailsWidgetId = "endpoint-details"
-private const val logDetailsWidgetId = "log-details"
-private const val editPresetWidgetId = "edit-preset"
-private const val createPresetWidgetId = "create-preset"
-private const val globalControlsWidgetId = "global-controls"
+private enum class RightPanelTab {
+    EndpointDetails,
+    LogDetails
+}
 private const val animationDuration = 300
-private const val createPresetPanelWidth = 500
+private const val rightPanelEnterDurationMs = 160
+private const val rightPanelEnterFadeDurationMs = 120
+private const val rightPanelExitDurationMs = 130
+private const val rightPanelExitFadeDurationMs = 100
 private const val scrimAlpha = 0.5f
-private const val defaultLeftPanelWidth = 300
-private const val defaultRightPanelWidth = 900
-private const val globalControlsWidth = 400
-private val leftPanelWidth = defaultLeftPanelWidth.dp
-private val rightPanelWidth = defaultRightPanelWidth.dp
+private const val leftPanelMinWidthDp = 200
+private const val rightPanelMinWidthDp = 350
+private const val presetPanelMinWidthDp = 400
+private const val globalControlsPanelMinWidthDp = 300
+private const val centerMinWidthDp = 300
+private const val logsMinHeightDp = 100
+
+private data class LayoutState(
+    val leftWidthDp: Float = 260f,
+    val rightWidthDp: Float = 500f,
+    val logsExpandedHeightDp: Float = 220f,
+    val presetWidthDp: Float = 500f,
+    val globalControlsWidthDp: Float = 400f,
+    val rightPanelTab: RightPanelTab? = null,
+    val presetOpen: Boolean = false,
+    val creatingNewPreset: Boolean = true,
+    val globalControlsOpen: Boolean = false,
+    val logsExpanded: Boolean = false,
+)
+
+// Dp cannot be stored directly by rememberSaveable, so we round-trip through a list of primitives.
+// If LayoutState fields change, update both branches of this saver accordingly.
+private val layoutStateSaver = Saver<LayoutState, List<Any?>>(
+    save = { s ->
+        listOf(
+            s.leftWidthDp, s.rightWidthDp, s.logsExpandedHeightDp, s.presetWidthDp, s.globalControlsWidthDp,
+            s.rightPanelTab, s.presetOpen, s.creatingNewPreset, s.globalControlsOpen, s.logsExpanded,
+        )
+    },
+    restore = { list ->
+        LayoutState(
+            leftWidthDp = list[0] as Float,
+            rightWidthDp = list[1] as Float,
+            logsExpandedHeightDp = list[2] as Float,
+            presetWidthDp = list[3] as Float,
+            globalControlsWidthDp = list[4] as Float,
+            rightPanelTab = RightPanelTab.entries.firstOrNull { it.name == list[5] },
+            presetOpen = list[6] as Boolean,
+            creatingNewPreset = list[7] as Boolean,
+            globalControlsOpen = list[8] as Boolean,
+            logsExpanded = list[9] as Boolean,
+        )
+    }
+)
 
 @Composable
 fun DesktopApp(
@@ -117,7 +162,6 @@ fun DesktopApp(
     }
 }
 
-@Suppress("TOO_LONG_FUNCTION")
 @Composable
 private fun DeviceContent(
     device: Device,
@@ -130,291 +174,271 @@ private fun DeviceContent(
 
     when (val local = state) {
         DeviceRootViewModel.State.UnsupportedDeviceMockzillaVersion -> UnsupportedDeviceMockzillaVersionWidget()
-        is DeviceRootViewModel.State.Connected -> DeviceWidgetScaffoldContainer(local, strings, viewModel)
-        else -> {
-            // this is a generated else block
-        }
+        is DeviceRootViewModel.State.Connected -> ConnectedDeviceLayout(local, strings, viewModel)
     }
 }
 
+@Suppress("TOO_LONG_FUNCTION", "LOCAL_VARIABLE_EARLY_DECLARATION", "MAGIC_NUMBER")
 @Composable
-private fun DeviceWidgetScaffoldContainer(
+private fun ConnectedDeviceLayout(
     connectedState: DeviceRootViewModel.State.Connected,
     strings: Strings,
-    viewModel: DeviceRootViewModel
+    viewModel: DeviceRootViewModel,
 ) {
-    var openWidgets by rememberSaveable { mutableStateOf(setOf(devicePanelWidgetId)) }
+    val density = LocalDensity.current
+    var totalWidth by remember { mutableStateOf(0.dp) }
+
+    var state by rememberSaveable(stateSaver = layoutStateSaver) { mutableStateOf(LayoutState()) }
     var logDetail by remember { mutableStateOf<LogEvent?>(null) }
-    val onSelected: (String) -> Unit = { id ->
-        val isExclusive = id == endpointDetailsWidgetId || id == logDetailsWidgetId
-        openWidgets = if (openWidgets.contains(id)) {
-            openWidgets.minus(id)
+
+    // In-flight drag widths: updated every frame during a drag, not persisted — they equal the
+    // settled state at rest and are snapped back to it when the drag stops.
+    var leftDragWidth by remember { mutableStateOf(state.leftWidthDp.dp) }
+    var rightDragWidth by remember { mutableStateOf(state.rightWidthDp.dp) }
+    var logsDragHeight by remember { mutableStateOf(state.logsExpandedHeightDp.dp) }
+    var presetDragWidth by remember { mutableStateOf(state.presetWidthDp.dp) }
+    var globalControlsDragWidth by remember { mutableStateOf(state.globalControlsWidthDp.dp) }
+
+    val clampLeft = { w: Dp ->
+        if (totalWidth > 0.dp) {
+            val remaining = max(leftPanelMinWidthDp.dp, totalWidth - centerMinWidthDp.dp - max(state.rightWidthDp.dp, rightPanelMinWidthDp.dp))
+            min(max(leftPanelMinWidthDp.dp, w), remaining)
         } else {
-            (if (isExclusive) {
-                openWidgets.minus(endpointDetailsWidgetId).minus(logDetailsWidgetId)
-            } else {
-                openWidgets
-            }).plus(id)
+            max(leftPanelMinWidthDp.dp, w)
+        }
+    }
+    val clampRight = { w: Dp ->
+        if (totalWidth > 0.dp) {
+            val remaining = max(rightPanelMinWidthDp.dp, totalWidth - centerMinWidthDp.dp - max(state.leftWidthDp.dp, leftPanelMinWidthDp.dp))
+            min(max(rightPanelMinWidthDp.dp, w), remaining)
+        } else {
+            max(rightPanelMinWidthDp.dp, w)
         }
     }
 
-    val rightWidgets = rightPanelWidgets(
-        connectedState = connectedState,
-        logDetail = logDetail,
-        strings = strings,
-        onCreatePreset = {
-            viewModel.setSelectedEndpoint(it)
-            openWidgets = openWidgets.minus(editPresetWidgetId)
-            openWidgets = openWidgets.plus(createPresetWidgetId)
-        },
-        onEditPreset = {
-            viewModel.setSelectedEndpoint(it)
-            openWidgets = openWidgets.minus(createPresetWidgetId)
-            openWidgets = openWidgets.plus(editPresetWidgetId)
-        },
-        onCloseLogDetail = {
-            logDetail = null
-            openWidgets = openWidgets.minus(logDetailsWidgetId)
-        },
-    )
-
-    val isPresetOpen = (createPresetWidgetId in openWidgets || editPresetWidgetId in openWidgets) &&
-            connectedState.selectedEndpoint != null
+    val presetVisible = state.presetOpen && connectedState.selectedEndpoint != null
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            MiddleContentArea(
-                modifier = Modifier.weight(1f).fillMaxWidth(),
-                openWidgets = openWidgets,
-                left = leftPanelWidgets(connectedState),
-                right = rightWidgets,
-                middle = middleWidgets(
-                    connectedState,
-                    onOpenGlobalControls = {
-                        if (!openWidgets.contains(globalControlsWidgetId)) {
-                            onSelected(globalControlsWidgetId)
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .onSizeChanged { size -> totalWidth = with(density) { size.width.toDp() } }
+            ) {
+                Row(modifier = Modifier.fillMaxSize()) {
+                    // Left panel: always visible, resizable
+                    Surface(modifier = Modifier.fillMaxHeight().width(state.leftWidthDp.dp)) {
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            MetaDataWidget(connectedState.activeDevice.device)
+                            MiscControlsWidget(connectedState.activeDevice.device)
                         }
-                    },
-                ) {
-                    viewModel.setSelectedEndpoint(it)
-                    if (!openWidgets.contains(endpointDetailsWidgetId)) {
-                        onSelected(endpointDetailsWidgetId)
                     }
-                },
-                onSelected = onSelected,
-                initialLeftPanelWidth = leftPanelWidth,
-                initialRightPanelWidth = rightPanelWidth,
-                isPresetOpen = isPresetOpen,
-                connectedState = connectedState,
-                creatingNewPreset = createPresetWidgetId in openWidgets,
-                onCancelPreset = {
-                    openWidgets = openWidgets
-                        .minus(editPresetWidgetId)
-                        .minus(createPresetWidgetId)
-                },
-                globalControlsOpen = openWidgets.contains(globalControlsWidgetId),
-                onCloseGlobalControls = { onSelected(globalControlsWidgetId) },
-            )
+                    HorizontalDraggableDivider(
+                        onDrag = { offset ->
+                            leftDragWidth += with(density) { offset.toDp() }
+                            state = state.copy(leftWidthDp = clampLeft(leftDragWidth).value)
+                        },
+                        onDragStopped = { leftDragWidth = state.leftWidthDp.dp },
+                    )
 
-            bottomPanelWidgets(
-                connectedState = connectedState,
-                onViewDetail = {
-                    logDetail = it
-                    if (!openWidgets.contains(logDetailsWidgetId)) {
-                        onSelected(logDetailsWidgetId)
+                    // Center: fills remaining space
+                    Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                        EndpointsWidget(
+                            device = connectedState.activeDevice.device,
+                            onEndpointClicked = { key ->
+                                viewModel.setSelectedEndpoint(key)
+                                state = state.copy(rightPanelTab = RightPanelTab.EndpointDetails)
+                            },
+                            onGlobalControlsClicked = { state = state.copy(globalControlsOpen = true) },
+                        )
                     }
+
+                    // Right panel: collapsible, resizable
+                    AnimatedVisibility(
+                        visible = state.rightPanelTab != null,
+                        enter = expandHorizontally(
+                            expandFrom = Alignment.End,
+                            animationSpec = tween(rightPanelEnterDurationMs),
+                        ) + fadeIn(animationSpec = tween(rightPanelEnterFadeDurationMs)),
+                        exit = shrinkHorizontally(
+                            shrinkTowards = Alignment.End,
+                            animationSpec = tween(rightPanelExitDurationMs),
+                        ) + fadeOut(animationSpec = tween(rightPanelExitFadeDurationMs)),
+                    ) {
+                        Row {
+                            HorizontalDraggableDivider(
+                                onDrag = { offset ->
+                                    rightDragWidth -= with(density) { offset.toDp() }
+                                    state = state.copy(rightWidthDp = clampRight(rightDragWidth).value)
+                                },
+                                onDragStopped = { rightDragWidth = state.rightWidthDp.dp },
+                            )
+                            Surface(modifier = Modifier.fillMaxHeight().width(state.rightWidthDp.dp)) {
+                                when (state.rightPanelTab) {
+                                    RightPanelTab.EndpointDetails -> EndpointDetailsWidget(
+                                        device = connectedState.activeDevice.device,
+                                        activeEndpoint = connectedState.selectedEndpoint,
+                                        onCreatePreset = { key ->
+                                            viewModel.setSelectedEndpoint(key)
+                                            state = state.copy(presetOpen = true, creatingNewPreset = true)
+                                        },
+                                        onEditPreset = { key ->
+                                            viewModel.setSelectedEndpoint(key)
+                                            state = state.copy(presetOpen = true, creatingNewPreset = false)
+                                        },
+                                    )
+                                    RightPanelTab.LogDetails -> MonitorLogDetailsWidget(
+                                        device = connectedState.activeDevice.device,
+                                        logDetail = logDetail,
+                                        onClose = {
+                                            logDetail = null
+                                            state = state.copy(rightPanelTab = null)
+                                        },
+                                    )
+                                    else -> null
+                                }
+                            }
+                        }
+                    }
+
+                    // Tab strip always visible on far right
+                    VerticalDivider(color = MaterialTheme.colorScheme.outline)
+                    VerticalTabList(
+                        tabs = listOf(
+                            VerticalTab(title = strings.widgets.endpointDetails.title),
+                            VerticalTab(title = strings.widgets.logDetails.title),
+                        ),
+                        clockwise = true,
+                        selected = listOfNotNull(RightPanelTab.entries.indexOf(state.rightPanelTab).takeIf { it >= 0 }),
+                        onSelect = { index ->
+                            val id = RightPanelTab.entries[index]
+                            state = state.copy(rightPanelTab = if (state.rightPanelTab == id) null else id)
+                            rightDragWidth = state.rightWidthDp.dp
+                        },
+                    )
+                }
+
+                // Scrim behind preset overlay — Column provides ColumnScope for AnimatedVisibility
+                Column(modifier = Modifier.fillMaxSize()) {
+                    AnimatedVisibility(
+                        visible = presetVisible,
+                        enter = fadeIn(animationSpec = tween(animationDuration)),
+                        exit = fadeOut(animationSpec = tween(animationDuration)),
+                    ) {
+                        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = scrimAlpha)))
+                    }
+                }
+
+                // Create/Edit Preset overlay — Box provides alignment; Column provides ColumnScope
+                Box(modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd)) {
+                    Column(modifier = Modifier.fillMaxHeight()) {
+                        AnimatedVisibility(
+                            visible = presetVisible,
+                            enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
+                            exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
+                        ) {
+                            connectedState.selectedEndpoint?.let { endpoint ->
+                                Row {
+                                    HorizontalDraggableDivider(
+                                        onDrag = { offset ->
+                                            presetDragWidth -= with(density) { offset.toDp() }
+                                            state = state.copy(presetWidthDp = max(presetPanelMinWidthDp.dp, presetDragWidth).value)
+                                        },
+                                        onDragStopped = { presetDragWidth = state.presetWidthDp.dp },
+                                    )
+                                    Surface(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .width(state.presetWidthDp.dp)
+                                            .shadow(8.dp)
+                                            .border(1.dp, MaterialTheme.colorScheme.outline),
+                                        color = MaterialTheme.colorScheme.surface,
+                                    ) {
+                                        CreateEditPresetWidget(
+                                            device = connectedState.activeDevice.device,
+                                            activeEndpoint = endpoint,
+                                            creatingNewPreset = state.creatingNewPreset,
+                                            onCancel = { state = state.copy(presetOpen = false) },
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Global Controls overlay — Box provides alignment; Column provides ColumnScope
+                Box(modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd)) {
+                    Column(modifier = Modifier.fillMaxHeight()) {
+                        AnimatedVisibility(
+                            visible = state.globalControlsOpen,
+                            enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
+                            exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
+                        ) {
+                            Row {
+                                HorizontalDraggableDivider(
+                                    onDrag = { offset ->
+                                        globalControlsDragWidth -= with(density) { offset.toDp() }
+                                        state = state.copy(globalControlsWidthDp = max(globalControlsPanelMinWidthDp.dp, globalControlsDragWidth).value)
+                                    },
+                                    onDragStopped = { globalControlsDragWidth = state.globalControlsWidthDp.dp },
+                                )
+                                Surface(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .width(state.globalControlsWidthDp.dp)
+                                        .shadow(8.dp)
+                                        .border(
+                                            1.dp,
+                                            MaterialTheme.colorScheme.outline,
+                                            RoundedCornerShape(topStart = 8.dp),
+                                        ),
+                                    color = MaterialTheme.colorScheme.surface,
+                                    shape = RoundedCornerShape(topStart = 8.dp),
+                                ) {
+                                    GlobalControlsWidget(
+                                        device = connectedState.activeDevice.device,
+                                        onClose = { state = state.copy(globalControlsOpen = false) },
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Monitor Logs — full width; collapsed = wrap to header height, expanded = saved height
+            MonitorLogsWidget(
+                modifier = if (state.logsExpanded) {
+                    Modifier.fillMaxWidth().height(state.logsExpandedHeightDp.dp)
+                } else {
+                    Modifier.fillMaxWidth()
                 },
-                strings = strings,
-            ).forEach { widget -> widget.ui() }
+                device = connectedState.activeDevice.device,
+                isExpanded = state.logsExpanded,
+                onExpandToggled = { state = state.copy(logsExpanded = !state.logsExpanded) },
+                topHandle = {
+                    VerticalDraggableDivider(
+                        onDrag = { offset ->
+                            logsDragHeight -= with(density) { offset.toDp() }
+                            state = state.copy(logsExpandedHeightDp = max(logsMinHeightDp.dp, logsDragHeight).value)
+                        },
+                        onDragStopped = { logsDragHeight = state.logsExpandedHeightDp.dp },
+                    )
+                },
+                onViewDetail = { logEntry ->
+                    logDetail = logEntry
+                    state = state.copy(rightPanelTab = RightPanelTab.LogDetails)
+                    rightDragWidth = state.rightWidthDp.dp
+                },
+            )
         }
 
         AnimatedErrorBanner(
             connectedState.error,
             viewModel::refreshAll,
-            viewModel::dismissError
+            viewModel::dismissError,
         )
     }
 }
-
-/**
- * The middle content area: left/middle/right scaffold panels plus the
- * Create-Preset, Global-Controls, and scrim overlays.
- */
-@Suppress("TOO_LONG_FUNCTION", "MAGIC_NUMBER")
-@Composable
-private fun MiddleContentArea(
-    modifier: Modifier = Modifier,
-    openWidgets: Set<String>,
-    left: List<Widget>,
-    middle: List<Widget>,
-    right: List<Widget>,
-    onSelected: (String) -> Unit,
-    initialLeftPanelWidth: Dp,
-    initialRightPanelWidth: Dp,
-    isPresetOpen: Boolean,
-    connectedState: DeviceRootViewModel.State.Connected,
-    creatingNewPreset: Boolean,
-    onCancelPreset: () -> Unit,
-    globalControlsOpen: Boolean,
-    onCloseGlobalControls: () -> Unit,
-) {
-    Box(modifier = modifier) {
-        WidgetScaffold(
-            modifier = Modifier.fillMaxSize(),
-            openWidgets = openWidgets,
-            top = {},
-            left = left,
-            right = right,
-            middle = middle,
-            bottom = emptyList(),
-            onSelected = onSelected,
-            initialLeftPanelWidth = initialLeftPanelWidth,
-            initialRightPanelWidth = initialRightPanelWidth,
-        )
-
-        // Scrim — dims everything when Create/Edit Preset is open
-        AnimatedVisibility(
-            visible = isPresetOpen,
-            enter = fadeIn(animationSpec = tween(animationDuration)),
-            exit = fadeOut(animationSpec = tween(animationDuration)),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = scrimAlpha))
-            )
-        }
-
-        // Create / Edit Preset overlay
-        AnimatedVisibility(
-            visible = isPresetOpen,
-            enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
-            exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
-            modifier = Modifier.align(Alignment.CenterEnd),
-        ) {
-            connectedState.selectedEndpoint?.let { endpoint ->
-                Surface(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(createPresetPanelWidth.dp)
-                        .shadow(8.dp)
-                        .border(1.dp, MaterialTheme.colorScheme.outline),
-                    color = MaterialTheme.colorScheme.surface,
-                ) {
-                    CreateEditPresetWidget(
-                        device = connectedState.activeDevice.device,
-                        activeEndpoint = endpoint,
-                        creatingNewPreset = creatingNewPreset,
-                        onCancel = onCancelPreset,
-                    )
-                }
-            }
-        }
-
-        // Global Controls overlay
-        AnimatedVisibility(
-            visible = globalControlsOpen,
-            enter = slideInHorizontally(animationSpec = tween(animationDuration)) { it },
-            exit = slideOutHorizontally(animationSpec = tween(animationDuration)) { it },
-            modifier = Modifier.align(Alignment.CenterEnd),
-        ) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(globalControlsWidth.dp)
-                    .shadow(8.dp)
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline,
-                        RoundedCornerShape(topStart = 8.dp)
-                    ),
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(topStart = 8.dp),
-            ) {
-                GlobalControlsWidget(
-                    device = connectedState.activeDevice.device,
-                    onClose = onCloseGlobalControls,
-                )
-            }
-        }
-    }
-}
-
-@Suppress("LAMBDA_IS_NOT_LAST_PARAMETER")
-private fun bottomPanelWidgets(
-    connectedState: DeviceRootViewModel.State.Connected,
-    onViewDetail: (LogEvent) -> Unit,
-    strings: Strings
-) = listOf(
-    Widget(id = "monitor-logs", strings.widgets.logs.title) {
-        MonitorLogsWidget(
-            device = connectedState.activeDevice.device,
-            onViewDetail = onViewDetail
-        )
-    }
-)
-
-private fun middleWidgets(
-    connectedState: DeviceRootViewModel.State.Connected,
-    onOpenGlobalControls: () -> Unit,
-    onEndpointClicked: (EndpointConfiguration.Key) -> Unit,
-) = listOf(
-    Widget(id = "endpoints") {
-        EndpointsWidget(
-            connectedState.activeDevice.device,
-            onEndpointClicked,
-            onGlobalControlsClicked = onOpenGlobalControls
-        )
-    }
-)
-
-private fun rightPanelWidgets(
-    connectedState: DeviceRootViewModel.State.Connected,
-    logDetail: LogEvent?,
-    strings: Strings,
-    onCreatePreset: (EndpointConfiguration.Key) -> Unit,
-    onEditPreset: (EndpointConfiguration.Key) -> Unit,
-    onCloseLogDetail: () -> Unit,
-) = buildList {
-    add(
-        Widget(
-            id = endpointDetailsWidgetId, title = strings.widgets.endpointDetails.title
-        ) {
-            EndpointDetailsWidget(
-                device = connectedState.activeDevice.device,
-                activeEndpoint = connectedState.selectedEndpoint,
-                onCreatePreset = onCreatePreset,
-                onEditPreset = onEditPreset,
-            )
-        }
-    )
-    add(
-        Widget(
-            id = logDetailsWidgetId, title = strings.widgets.logDetails.title
-        ) {
-            MonitorLogDetailsWidget(
-                device = connectedState.activeDevice.device,
-                logDetail = logDetail,
-                onClose = onCloseLogDetail,
-            )
-        }
-    )
-}
-
-private fun leftPanelWidgets(
-    connectedState: DeviceRootViewModel.State.Connected,
-) = listOf(
-    Widget(id = devicePanelWidgetId) {
-        Column {
-            MetaDataWidget(connectedState.activeDevice.device)
-            MiscControlsWidget(connectedState.activeDevice.device)
-        }
-    }
-)
-
-@Composable
-private fun CloseButtonIcon() = Icon(
-    imageVector = Icons.Default.Close,
-    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-    contentDescription = LocalStrings.current.common.backDescription,
-)
