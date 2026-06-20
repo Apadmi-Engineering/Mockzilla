@@ -16,6 +16,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -63,14 +65,17 @@ fun WidgetScaffold(
 
     var totalWidth by remember { mutableStateOf(0.dp) }
 
+    val dpSaver = Saver<Dp, Float>(save = { it.value }, restore = { it.dp })
+
     // Each panel gets a width and a settled width so we can consume drag deltas that would reduce
     // width/height below zero (when the user drags into the tab areas) but visually display the
     // restricted width/height that can't drop below 0. This ensures the dragged divider stays
     // with the cursor at all times.
-    var leftPanelWidth by remember { mutableStateOf(leftPanelMinWidthDp.dp) }
-    var leftPanelSettledWidth by remember { mutableStateOf(leftPanelMinWidthDp.dp) }
-    var rightPanelWidth by remember { mutableStateOf(rightPanelMinWidthDp.dp) }
-    var rightPanelSettledWidth by remember { mutableStateOf(rightPanelMinWidthDp.dp) }
+    // rememberSaveable preserves widths per device via SaveableStateProvider in DesktopApp.
+    var leftPanelWidth by rememberSaveable(stateSaver = dpSaver) { mutableStateOf(leftPanelMinWidthDp.dp) }
+    var leftPanelSettledWidth by rememberSaveable(stateSaver = dpSaver) { mutableStateOf(leftPanelMinWidthDp.dp) }
+    var rightPanelWidth by rememberSaveable(stateSaver = dpSaver) { mutableStateOf(rightPanelMinWidthDp.dp) }
+    var rightPanelSettledWidth by rememberSaveable(stateSaver = dpSaver) { mutableStateOf(rightPanelMinWidthDp.dp) }
 
     // Both of the horizontal panels must collectively not be so large that the center panel
     // runs out of space. We can enforce this by hoisting the width of each panel and preventing

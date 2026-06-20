@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.ui.ui.common
 
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
+import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.StatefulDevice
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.*
@@ -14,25 +15,53 @@ import kotlinx.coroutines.flow.onEach
 
 class AppRootViewModel(
     private val eventBus: EventBus,
-    activeDeviceMonitor: ActiveDeviceMonitor
+    private val activeDeviceMonitor: ActiveDeviceMonitor,
+    private val specificDevice: Device? = null
 ) : ViewModel() {
     val state = MutableStateFlow<State>(State.NewDeviceConnection)
 
     init {
-        activeDeviceMonitor.selectedDevice.onEach { device ->
-            val error = State.Connected.ErrorBannerState.ConnectionLost.takeUnless {
-                device?.isConnected == true
+        if (specificDevice != null) {
+            // Initialise synchronously so the first composition frame already shows Connected state.
+            activeDeviceMonitor.allDevices.find { it.device == specificDevice }?.let { initial ->
+                state.value = if (!initial.isCompatibleMockzillaVersion) {
+                    State.UnsupportedDeviceMockzillaVersion
+                } else {
+                    State.Connected(activeDevice = initial, error = null, selectedEndpoint = null)
+                }
             }
-            state.value = when {
-                device == null -> State.NewDeviceConnection
-                !device.isCompatibleMockzillaVersion -> State.UnsupportedDeviceMockzillaVersion
-                else -> State.Connected(
-                    activeDevice = device,
-                    error = error,
-                    selectedEndpoint = null
-                )
-            }
-        }.launchIn(viewModelScope)
+
+            activeDeviceMonitor.onDeviceConnectionStateChange.onEach {
+                val myDevice = activeDeviceMonitor.allDevices.find { it.device == specificDevice }
+                val error = State.Connected.ErrorBannerState.ConnectionLost.takeUnless {
+                    myDevice?.isConnected == true
+                }
+                state.value = when {
+                    myDevice == null -> State.NewDeviceConnection
+                    !myDevice.isCompatibleMockzillaVersion -> State.UnsupportedDeviceMockzillaVersion
+                    else -> State.Connected(
+                        activeDevice = myDevice,
+                        error = error,
+                        selectedEndpoint = (state.value as? State.Connected)?.selectedEndpoint
+                    )
+                }
+            }.launchIn(viewModelScope)
+        } else {
+            activeDeviceMonitor.selectedDevice.onEach { device ->
+                val error = State.Connected.ErrorBannerState.ConnectionLost.takeUnless {
+                    device?.isConnected == true
+                }
+                state.value = when {
+                    device == null -> State.NewDeviceConnection
+                    !device.isCompatibleMockzillaVersion -> State.UnsupportedDeviceMockzillaVersion
+                    else -> State.Connected(
+                        activeDevice = device,
+                        error = error,
+                        selectedEndpoint = null
+                    )
+                }
+            }.launchIn(viewModelScope)
+        }
 
         eventBus.handleNewErrorEvents()
         eventBus.handleClearingErrors()
