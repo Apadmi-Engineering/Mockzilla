@@ -97,17 +97,20 @@ internal fun TogglableProgressIndicator(
     color: Color = MaterialTheme.colorScheme.primary,
     trackColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+    delayMs: Int = 0,
     gapSize: Dp = 4.dp
 ) {
     // Material spec timing constants
     val firstLineHead = rememberPausableAnimation(shouldContinue = isLoading, keyframes {
         durationMillis = linearAnimationDuration
+        delayMillis = delayMs
         0f at firstLineHeadDelay using firstLineHeadEasing
         1f at firstLineHeadDuration + firstLineHeadDelay
     })
 
     val firstLineTail = rememberPausableAnimation(shouldContinue = isLoading, keyframes {
         durationMillis = linearAnimationDuration
+        delayMillis = delayMs
         0f at firstLineTailDelay using firstLineTailEasing
         1f at firstLineTailDuration + firstLineTailDelay
     })

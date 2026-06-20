@@ -359,6 +359,7 @@ private fun ConnectedDeviceLayout(
                                             activeEndpoint = endpoint,
                                             creatingNewPreset = state.creatingNewPreset,
                                             onCancel = { state = state.copy(presetOpen = false) },
+                                            onSave = { state = state.copy(presetOpen = false) }
                                         )
                                     }
                                 }

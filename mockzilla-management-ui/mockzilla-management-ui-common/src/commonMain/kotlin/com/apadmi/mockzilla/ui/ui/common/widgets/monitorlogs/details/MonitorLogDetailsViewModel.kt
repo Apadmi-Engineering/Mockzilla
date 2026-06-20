@@ -66,30 +66,23 @@ internal class MonitorLogDetailsViewModel(
         }
     }
 
-    sealed class State {
-        data object Empty : State()
-        /**
-         * @property bodyOrPreview
-         */
-        sealed class BodyState(val bodyOrPreview: String) {
-            /**
-             * @property text
-             */
-            data class Available(val text: String) : BodyState(text)
-            /**
-             * @property preview
-             */
-            data class Loading(val preview: String) : BodyState(preview)
-            /**
-             * @property preview
-             */
-            data class Error(val preview: String) : BodyState(preview)
+    internal sealed class State {
+        internal data object Empty : State()
 
-            companion object {
-                fun from(body: String, truncated: Boolean): BodyState =
+
+        internal sealed class BodyState(val bodyOrPreview: String) {
+
+            internal data class Available(val text: String) : BodyState(text)
+            internal data class Loading(val preview: String) : BodyState(preview)
+            internal data class Error(val preview: String) : BodyState(preview)
+
+            internal companion object {
+                internal fun from(body: String, truncated: Boolean): BodyState =
                     if (truncated) Loading(body) else Available(body)
             }
         }
+
+        data object Empty : State()
 
         /**
          * @property logEvent
@@ -97,7 +90,7 @@ internal class MonitorLogDetailsViewModel(
          * @property requestBodyState
          * @property responseBodyState
          */
-        data class ViewDetails(
+        class ViewDetails(
             val logEvent: LogEvent,
             val selectedTab: Tab = Tab.Response,
             val requestBodyState: BodyState = BodyState.Available(""),
@@ -107,5 +100,7 @@ internal class MonitorLogDetailsViewModel(
                 Request, Response
             }
         }
+
+        interface Data
     }
 }

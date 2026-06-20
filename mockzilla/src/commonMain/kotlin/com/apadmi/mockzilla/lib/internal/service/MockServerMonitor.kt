@@ -1,6 +1,11 @@
 package com.apadmi.mockzilla.lib.internal.service
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
+
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -8,10 +13,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.time.Clock
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.ExperimentalTime
 
 internal interface MockServerMonitor {
     suspend fun log(event: LogEvent)
@@ -38,8 +39,8 @@ internal class MockServerMonitorImpl(
         // in `onClientSessionStart`
         scope.launch {
             delay(1.minutes)
-            if (lastKnownClientSessionStart == null) {
-                val threeDaysAgo = Clock.System.now().toEpochMilliseconds() - 3.days.inWholeMilliseconds
+            lastKnownClientSessionStart ?: run {
+                val threeDaysAgo = Clock.System.now().toEpochMilliseconds() - 2.days.inWholeMilliseconds
                 localBodyCacheService.deleteOldFullEntries(threeDaysAgo)
             }
         }
@@ -64,7 +65,9 @@ internal class MockServerMonitorImpl(
         }
         lockingMutex.withLock {
             events.add(storedEvent)
-            if (events.size > memoryCapacity) events.removeFirst()
+            if (events.size > memoryCapacity) {
+                events.removeFirst()
+            }
         }
         // Disk files are NOT evicted when the ring buffer wraps — cleanup is handled
         // solely by the session-start policy and the fallback timer.
@@ -78,19 +81,20 @@ internal class MockServerMonitorImpl(
     }
 
     override suspend fun getLogsSince(since: Long?): List<LogEvent> = lockingMutex.withLock {
-        if (since == null) events.toList()
-        else events.filter { it.timestamp > since }
+        since?.let {
+            events.filter { it.timestamp > since }
+        } ?: events.toList()
     }
 
-    override suspend fun getLogDetail(logId: String): LogEvent? {
-        return localBodyCacheService.fetchFullEntry(logId) ?: events.firstOrNull { it.id == logId }
-    }
+    override suspend fun getLogDetail(logId: String): LogEvent? = localBodyCacheService.fetchFullEntry(logId) ?: events.firstOrNull { it.id == logId }
 
     override suspend fun getFullBodyLogDetail(logId: String): LogEvent? =
         localBodyCacheService.fetchFullEntry(logId)
 
     override suspend fun onClientSessionStart(sessionStart: Long) {
-        if (sessionStart == lastKnownClientSessionStart) return
+        if (sessionStart == lastKnownClientSessionStart) {
+            return
+        }
         lastKnownClientSessionStart = sessionStart
         val oldestInMemory = events.firstOrNull()?.timestamp ?: Long.MAX_VALUE
         localBodyCacheService.deleteOldFullEntries(minOf(oldestInMemory, sessionStart))
@@ -101,16 +105,15 @@ internal class MockServerMonitorImpl(
         localBodyCacheService.clearAll()
     }
 
-    companion object {
-
-        // These values are to stop the memory usage of the app from being unbounded as logs accumulate
-        // With these values the max footprint is ~15mb
-        private const val memoryCapacity = 500
-        private const val maxUntruncatedBodySizeBytes = 15_000
-    }
-
     private fun LogEvent.requestBodyOversized() = requestBody.length > maxUntruncatedBodySizeBytes
     private fun LogEvent.responseBodyOversized() = responseBody.length > maxUntruncatedBodySizeBytes
     private fun LogEvent.hasOversizedBody() = requestBodyOversized() || responseBodyOversized()
-}
 
+    companion object {
+        // With these values the max footprint is ~15mb
+        // These values are to stop the memory usage of the app from being unbounded as logs accumulate
+
+        private const val maxUntruncatedBodySizeBytes = 15_000
+        private const val memoryCapacity = 500
+    }
+}
