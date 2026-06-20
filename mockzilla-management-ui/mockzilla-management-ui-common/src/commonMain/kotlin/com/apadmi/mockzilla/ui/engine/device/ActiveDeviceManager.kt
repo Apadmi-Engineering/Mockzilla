@@ -46,7 +46,9 @@ internal class ActiveDeviceManagerImpl(
         val current = allDevicesInternal[device] ?: return
         val appPackageChanged = current.metaData.appPackage != appPackage
         val wasDisconnected = !current.isConnected
-        if (!appPackageChanged && !wasDisconnected) return
+        if (!appPackageChanged && !wasDisconnected) {
+            return
+        }
 
         scope.launch {
             metaDataUseCase.getMetaData(device).onSuccess { metaData ->
@@ -66,7 +68,9 @@ internal class ActiveDeviceManagerImpl(
 
     override fun onLogPollFailure(device: Device) {
         val current = allDevicesInternal[device] ?: return
-        if (!current.isConnected) return
+        if (!current.isConnected) {
+            return
+        }
 
         val updated = current.copy(isConnected = false)
         allDevicesInternal[device] = updated
@@ -104,5 +108,4 @@ internal class ActiveDeviceManagerImpl(
             onDeviceConnectionStateChange.emit(Unit)
         }
     }
-
 }
