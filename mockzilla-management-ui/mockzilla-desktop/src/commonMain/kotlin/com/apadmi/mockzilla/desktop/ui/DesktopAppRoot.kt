@@ -217,7 +217,7 @@ private fun ConnectedDeviceLayout(
 
     val presetVisible = state.presetOpen && connectedState.selectedEndpoint != null
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
         Column(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
