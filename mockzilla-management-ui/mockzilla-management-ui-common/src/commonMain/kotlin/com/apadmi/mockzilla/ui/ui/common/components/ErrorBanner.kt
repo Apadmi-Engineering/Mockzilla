@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
@@ -50,6 +51,7 @@ import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel.State.*
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
@@ -125,7 +127,7 @@ fun ErrorBanner(
             Icon(
                 imageVector = Icons.Default.Circle,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onErrorContainer,
+                tint = borderColor,
                 modifier = Modifier.size(8.dp)
             )
 
@@ -224,7 +226,12 @@ private fun ApiErrorDetails(state: Connected.ErrorBannerState.ApiError) = Text(
         withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
             append(LocalStrings.current.widgets.errorBanner.messageLabel)
         }
-        withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
+        withStyle(
+            SpanStyle(
+                fontWeight = FontWeight.Normal,
+                color = MaterialTheme.colorScheme.onSurfaceMuted
+            )
+        ) {
             append(state.rawError)
         }
     },
@@ -236,17 +243,25 @@ private fun ApiErrorDetails(state: Connected.ErrorBannerState.ApiError) = Text(
 @Composable
 private fun DisconnectedDetails() = Text(
     text = buildAnnotatedString {
-        LocalStrings.current.widgets.errorBanner.connectionErrorTitlesAndBodies.forEach { (title, body) ->
+        LocalStrings.current.widgets.errorBanner.connectionErrorTitlesAndBodies.forEachIndexed { index, (title, body) ->
             withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
                 append(title)
             }
-            withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
+            withStyle(
+                SpanStyle(
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colorScheme.onSurfaceMuted
+                )
+            ) {
                 append(body)
             }
-            appendLine()
+            if (index != LocalStrings.current.widgets.errorBanner.connectionErrorTitlesAndBodies.lastIndex) {
+                appendLine()
+            }
         }
     },
     style = MaterialTheme.typography.labelLarge,
+    lineHeight = 16.sp,
     color = MaterialTheme.colorScheme.onSurface
 )
 

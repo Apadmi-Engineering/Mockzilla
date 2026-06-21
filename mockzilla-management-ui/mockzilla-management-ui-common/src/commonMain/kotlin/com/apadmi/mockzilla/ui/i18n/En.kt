@@ -224,9 +224,9 @@ val EnStrings = Strings(
             },
             apiErrorDescription = "This is an unexpected error, it's likely irrecoverable. Re-syncing everything is advised. (You will lose unsaved changes)",
             connectionErrorTitlesAndBodies = listOf(
-                "· App in foreground." to " Background apps may have networking suspended by the OS.",
-                "· Same network." to " Mockzilla discovers over LAN. Check Wi-Fi vs. tethering. ",
-                "· Port reachable." to " Confirm the Mockzilla port isn't blocked by a firewall or VPN."
+                " · App in foreground." to " Background apps may have networking suspended by the OS.",
+                " · Same network." to " Mockzilla discovers over LAN. Check Wi-Fi vs. tethering. ",
+                " · Port reachable." to " Confirm the Mockzilla port isn't blocked by a firewall or VPN."
             ),
             statusLabel = "Status: ",
             messageLabel = "Message: "
