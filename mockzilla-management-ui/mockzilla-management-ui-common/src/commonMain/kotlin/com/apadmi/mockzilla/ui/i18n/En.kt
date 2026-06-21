@@ -187,7 +187,9 @@ val EnStrings = Strings(
                 statusCodeFallback = "XXX",
                 applyLabel = "Apply",
                 appliedLabel = "Set",
-                editLabel = "Edit"
+                editLabel = "Edit",
+                forceFailureBannerTitle = "Forced Failure is on.",
+                forceFailureBannerBody = "Presets are ignored and locked",
             )
         ),
         miscControls = Strings.Widgets.MiscControls(

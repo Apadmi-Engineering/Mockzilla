@@ -28,8 +28,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DragIndicator
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +49,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -221,7 +226,7 @@ private fun ColumnScope.PopulatedState(
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
-                    .clickable(onClick = onCreatePreset)
+                    .clickable(enabled = state.config.shouldFail != true, onClick = onCreatePreset)
                     .padding(horizontal = 8.dp, vertical = 2.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -241,6 +246,9 @@ private fun ColumnScope.PopulatedState(
         }
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            if (state.config.shouldFail == true) {
+                ForceFailurePresetBanner()
+            }
             PresetsContainer(
                 state = state,
                 onPresetFilterChanged = onFilterPresetChanged,
@@ -252,6 +260,47 @@ private fun ColumnScope.PopulatedState(
     }
 
     Spacer(modifier = Modifier.height(8.dp))
+}
+
+@Composable
+private fun ForceFailurePresetBanner(
+    strings: Strings = LocalStrings.current
+) = Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.errorContainer)
+        .padding(horizontal = 12.dp, vertical = 8.dp),
+    verticalAlignment = Alignment.CenterVertically
+) {
+    Icon(
+        modifier = Modifier.size(12.dp),
+        imageVector = Icons.Outlined.Lock,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.error
+    )
+    Spacer(Modifier.width(4.dp))
+    Text(
+        text = buildAnnotatedString {
+            withStyle(
+                style = MaterialTheme.typography.labelMedium.toSpanStyle().copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
+                )
+            ) {
+                append(strings.widgets.endpointDetails.presets.forceFailureBannerTitle)
+            }
+            append(" ")
+            withStyle(
+                style = MaterialTheme.typography.bodySmall.toSpanStyle().copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            ) {
+                append(strings.widgets.endpointDetails.presets.forceFailureBannerBody)
+            }
+        },
+
+        textAlign = TextAlign.Start
+    )
 }
 
 private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull(

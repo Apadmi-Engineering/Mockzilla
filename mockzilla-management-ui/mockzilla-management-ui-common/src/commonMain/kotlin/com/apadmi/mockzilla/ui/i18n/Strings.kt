@@ -461,7 +461,9 @@ data class Strings(
                 val statusCodeFallback: String,
                 val applyLabel: String,
                 val appliedLabel: String,
-                val editLabel: String
+                val editLabel: String,
+                val forceFailureBannerTitle: String,
+                val forceFailureBannerBody: String
             ) {
                 /**
                  * @property error
