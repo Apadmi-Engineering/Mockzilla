@@ -445,6 +445,9 @@ data class Strings(
              * @property applyLabel
              * @property appliedLabel
              * @property editLabel
+             * @property forceFailureBannerTitle
+             * @property forceFailureBannerBody
+             * @property forceFailureAppliedPresetMessage
              */
             data class Presets(
                 val noPresetTitle: String,
@@ -466,7 +469,6 @@ data class Strings(
                 val forceFailureBannerBody: String,
                 val forceFailureAppliedPresetMessage: String,
             ) {
-
                 /**
                  * @property error
                  * @property informational

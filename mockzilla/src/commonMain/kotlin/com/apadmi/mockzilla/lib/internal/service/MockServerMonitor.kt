@@ -113,7 +113,7 @@ internal class MockServerMonitorImpl(
         // With these values the max footprint is ~15mb
         // These values are to stop the memory usage of the app from being unbounded as logs accumulate
 
-        private const val maxUntruncatedBodySizeBytes = 15_000
+        internal const val maxUntruncatedBodySizeBytes = 15_000
         private const val memoryCapacity = 500
     }
 }
