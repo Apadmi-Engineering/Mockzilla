@@ -463,8 +463,10 @@ data class Strings(
                 val appliedLabel: String,
                 val editLabel: String,
                 val forceFailureBannerTitle: String,
-                val forceFailureBannerBody: String
+                val forceFailureBannerBody: String,
+                val forceFailureAppliedPresetMessage: String,
             ) {
+
                 /**
                  * @property error
                  * @property informational

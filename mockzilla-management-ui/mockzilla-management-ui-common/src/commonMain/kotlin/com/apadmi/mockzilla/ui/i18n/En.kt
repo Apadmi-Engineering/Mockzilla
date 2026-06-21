@@ -190,6 +190,7 @@ val EnStrings = Strings(
                 editLabel = "Edit",
                 forceFailureBannerTitle = "Forced Failure is on.",
                 forceFailureBannerBody = "Presets are ignored and locked",
+                forceFailureAppliedPresetMessage = "Ignored - Forced Failure on"
             )
         ),
         miscControls = Strings.Widgets.MiscControls(

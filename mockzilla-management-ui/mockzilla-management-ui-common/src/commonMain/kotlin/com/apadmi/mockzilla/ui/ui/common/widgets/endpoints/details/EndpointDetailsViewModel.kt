@@ -72,7 +72,9 @@ internal class EndpointDetailsViewModel(
                                         it.response == config.deriveLegacyPreset()?.response
                                     } ?: config.deriveLegacyPreset(),
                                     visiblePresets = presets.presets.filter(filter),
-                                    allPresets = presets.presets,
+                                    allPresets = listOfNotNull(
+                                        config.appliedPresetOverride?.takeIf { it.isManagementUiDefinedCustomPreset }
+                                    ) + presets.presets,
                                     filter = filter ?: ""
                                 ),
                             )

@@ -28,7 +28,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DragIndicator
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Lock
@@ -50,8 +49,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -172,7 +174,12 @@ private fun ColumnScope.PopulatedState(
     }
 
     state.presets.appliedPreset?.let { preset ->
-        ActivePresetBanner(preset = preset, onClear = onResetAll, onEdit = onEditPreset)
+        ActivePresetBanner(
+            isForceFailureEnabled = state.config.shouldFail == true,
+            preset = preset,
+            onClear = onResetAll,
+            onEdit = onEditPreset
+        )
     }
 
     EndpointDetailsSection(
@@ -411,9 +418,11 @@ internal fun EndpointDetailsWidgetContent(
 
 @Composable
 private fun ActivePresetBanner(
+    isForceFailureEnabled: Boolean,
     preset: DashboardOverridePreset,
     onClear: () -> Unit,
     onEdit: () -> Unit = {},
+    strings: Strings = LocalStrings.current
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
@@ -423,23 +432,6 @@ private fun ActivePresetBanner(
         modifier = Modifier
             .fillMaxWidth()
             .background(statusColors.primary.copy(alpha = 0.08f))
-            .drawBehind {
-                val strokeWidth = 1.dp.toPx()
-                drawLine(
-                    color = statusColors.primary,
-                    start = Offset(0f, 0f),
-                    end = Offset(size.width, 0f),
-                    strokeWidth = strokeWidth
-                )
-                if (isDark) {
-                    drawLine(
-                        color = colorScheme.outline,
-                        start = Offset(0f, size.height),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = strokeWidth
-                    )
-                }
-            }
             .padding(start = 16.dp, end = 8.dp, top = 10.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -451,12 +443,15 @@ private fun ActivePresetBanner(
             modifier = Modifier.size(16.dp)
         )
         Text(
+            modifier = Modifier.weight(1f),
             text = preset.name,
             style = MaterialTheme.typography.titleSmall,
             color = statusColors.primary,
+            overflow = TextOverflow.Ellipsis,
+            textDecoration = if (isForceFailureEnabled) TextDecoration.LineThrough else null,
             fontWeight = FontWeight.Bold,
         )
-        preset.response.statusCode?.let {
+        preset.response.statusCode?.takeUnless { isForceFailureEnabled }?.let {
             Tag(
                 label = it.value.toString(),
                 textColor = statusColors.primary,
@@ -466,12 +461,16 @@ private fun ActivePresetBanner(
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
             )
         }
-        Text(
-            text = "Preset",
-            style = MaterialTheme.typography.labelSmall,
-            color = colorScheme.onSurfaceVariant
-        )
-        Spacer(Modifier.weight(1f))
+
+        if (isForceFailureEnabled) {
+            Text(
+                text = strings.widgets.endpointDetails.presets.forceFailureAppliedPresetMessage,
+                style = MaterialTheme.typography.titleSmall,
+                color = colorScheme.error,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+
         Row(
             modifier = Modifier
                 .clip(RoundedCornerShape(6.dp))
