@@ -14,13 +14,25 @@ interface EventBus {
 
     sealed interface Event {
         data object PresetApplied : Event
-        data object GenericError : Event
+        data class GenericError(
+            val operation: GenericErrorableOperation,
+            val error: Throwable
+        ) : Event
         data object FullRefresh : Event
         /**
          * @property keys
          */
         data class EndpointDataChanged(val keys: Collection<EndpointConfiguration.Key>) : Event
     }
+}
+
+enum class GenericErrorableOperation {
+    FetchDashboardOptionsConfig,
+    FetchEndpointConfigs,
+    UpdateMockData,
+    ApplyPreset,
+    ClearCaches,
+    UpdateGlobalOverrides
 }
 
 internal class EventBusImpl(

@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.management.internal.ktor
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.utils.multiPlatformIo
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 
@@ -11,6 +12,9 @@ import io.ktor.client.request.get
 import io.ktor.client.request.patch
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.request
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.isSuccess
 
 import kotlin.coroutines.cancellation.CancellationException
@@ -36,10 +40,14 @@ internal class KtorRequestRunner(internal val client: HttpClient) {
 
     private suspend inline fun <reified SuccessType : Any> HttpResponse.toResult() =
         withContext(Dispatchers.multiPlatformIo) {
-            if (this@toResult.status.isSuccess()) {
-                kotlin.runCatching { body<SuccessType>() }
-            } else {
-                Result.failure(Exception("Failed network call ($status), see logs"))
+            when {
+                this@toResult.status.isSuccess() -> kotlin.runCatching { body<SuccessType>() }
+                else -> Result.failure(
+                    FailedHttpResponseException(
+                        status,
+                        "${this@toResult.request.method} ${this@toResult.request.url}\n${bodyAsText()}"
+                    )
+                )
             }
         }
 }
@@ -70,6 +78,12 @@ internal suspend inline fun HttpClient.delete(
     url(connection.url(path))
     block()
 }
+
+@InternalMockzillaApi
+class FailedHttpResponseException(
+    val statusCode: HttpStatusCode,
+    val body: String
+): Exception()
 
 private fun MockzillaConnectionConfig.url(path: String) =
     "http://$ip:$port/${path.removePrefix("/")}"

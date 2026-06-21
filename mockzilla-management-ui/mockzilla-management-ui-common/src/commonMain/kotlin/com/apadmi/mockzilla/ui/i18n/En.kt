@@ -3,6 +3,7 @@
 package com.apadmi.mockzilla.ui.i18n
 
 import cafe.adriel.lyricist.LyricistStrings
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import io.ktor.http.HttpStatusCode
 import kotlin.math.roundToInt
 
@@ -208,9 +209,27 @@ val EnStrings = Strings(
             footer = "Please update to the latest version of Mockzilla",
         ),
         errorBanner = Strings.Widgets.ErrorBanner(
-            connectionLost = "Connection Lost: Please check your app is in the foreground",
-            unknownError = "Something went wrong, try refreshing everything \uD83D\uDC49",
-            refreshButton = "Refresh"
+            connectionLost = "Attempting to reconnect...",
+            refreshButton = "Re-sync everything",
+            operationError = { operation ->
+                when (operation) {
+                    GenericErrorableOperation.FetchDashboardOptionsConfig -> "Couldn't fetch the dashboard config for that endpoint"
+                    GenericErrorableOperation.FetchEndpointConfigs -> "Couldn't fetch the endpoint configs"
+                    GenericErrorableOperation.UpdateMockData -> "Couldn’t push new config"
+                    GenericErrorableOperation.ApplyPreset -> "Couldn't apply the preset"
+                    GenericErrorableOperation.ClearCaches -> "Couldn't clear caches"
+                    GenericErrorableOperation.UpdateGlobalOverrides -> "Couldn't override those properties"
+                    null -> "Something went wrong"
+                }
+            },
+            apiErrorDescription = "This is an unexpected error, it's likely irrecoverable. Re-syncing everything is advised. (You will lose unsaved changes)",
+            connectionErrorTitlesAndBodies = listOf(
+                "· App in foreground." to " Background apps may have networking suspended by the OS.",
+                "· Same network." to " Mockzilla discovers over LAN. Check Wi-Fi vs. tethering. ",
+                "· Port reachable." to " Confirm the Mockzilla port isn't blocked by a firewall or VPN."
+            ),
+            statusLabel = "Status: ",
+            messageLabel = "Message: "
         ),
         createEditPreset = Strings.Widgets.CreateEditPreset(
             createTitle = "Create Preset",

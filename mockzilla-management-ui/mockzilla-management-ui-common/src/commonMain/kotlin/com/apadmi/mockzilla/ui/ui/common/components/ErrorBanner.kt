@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -15,38 +16,47 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel.State.*
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
-
-private fun Connected.ErrorBannerState.bannerText(strings: Strings): String =
-    when (this) {
-        Connected.ErrorBannerState.ConnectionLost -> strings.widgets.errorBanner.connectionLost
-        Connected.ErrorBannerState.UnknownError -> strings.widgets.errorBanner.unknownError
-    }
 
 @Composable
 private fun Connected.ErrorBannerState.backgroundColor() = when (this) {
     Connected.ErrorBannerState.ConnectionLost -> MaterialTheme.colorScheme.warning.container
-    Connected.ErrorBannerState.UnknownError -> MaterialTheme.colorScheme.errorContainer
+    is Connected.ErrorBannerState.ApiError -> MaterialTheme.colorScheme.errorContainer
 }
 
 @Composable
@@ -85,50 +95,160 @@ fun ErrorBanner(
     strings: Strings = LocalStrings.current,
     onRefreshAll: () -> Unit,
     onDismissError: () -> Unit,
-) = Box(
-    modifier = Modifier.fillMaxWidth().statusBarsPadding(),
-    contentAlignment = Alignment.CenterEnd,
 ) {
-    Row(
-        modifier = Modifier.padding(16.dp)
-            .clip(RoundedCornerShape(25))
-            .background(state.backgroundColor())
-            .padding(12.dp).pointerInput(Unit) {
-                detectDragGestures { change, _ ->
-                    change.consume()
-                    onDismissError()
-                }
-            },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    var detailsExpanded by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier.background(state.backgroundColor()).fillMaxWidth().statusBarsPadding(),
     ) {
-        val colorScheme = MaterialTheme.colorScheme
-        val onColor = when (state) {
-            Connected.ErrorBannerState.ConnectionLost -> colorScheme.warning.primary
-            Connected.ErrorBannerState.UnknownError -> colorScheme.error
+        val borderColor = when (state) {
+            is Connected.ErrorBannerState.ApiError -> MaterialTheme.colorScheme.error
+            Connected.ErrorBannerState.ConnectionLost -> MaterialTheme.colorScheme.warning.primary
         }
-        Icon(
-            imageVector = Icons.Outlined.Warning,
-            contentDescription = null,
-            tint = onColor
-        )
 
-        Text(
-            modifier = Modifier.weight(1f),
-            text = state.bannerText(strings),
-            style = MaterialTheme.typography.bodyMedium,
-            color = onColor
-        )
+        Row(
+            modifier = Modifier
+                .drawBehind {
+                    val strokeWidth = 2.dp.value * density
+                    val y = size.height - strokeWidth / 2
 
-        if (state == Connected.ErrorBannerState.UnknownError) {
-            CustomOutlineButton(
-                onClick = onRefreshAll,
-                label = strings.widgets.errorBanner.refreshButton,
-                variant = OutlineButtonVariant.Secondary
+                    drawLine(
+                        color = borderColor,
+                        start = Offset(0f, y),
+                        end = Offset(size.width, y),
+                        strokeWidth = strokeWidth
+                    )
+                }
+                .padding(start = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Circle,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onErrorContainer,
+                modifier = Modifier.size(8.dp)
             )
+
+            Text(
+                text = when (state) {
+                    is Connected.ErrorBannerState.ApiError -> strings.widgets.errorBanner.operationError(
+                        state.operation
+                    )
+
+                    Connected.ErrorBannerState.ConnectionLost -> strings.widgets.errorBanner.connectionLost
+                },
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Text(
+                modifier = Modifier.weight(1f),
+                text = buildAnnotatedString {
+                    withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurfaceMuted)) {
+                        append(strings.widgets.errorBanner.apiErrorDescription)
+                    }
+
+                    (state as? Connected.ErrorBannerState.ApiError)?.status?.let {
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                            append(" · ${it.value}")
+                        }
+                    }
+                },
+                style = MaterialTheme.typography.bodySmall,
+            )
+
+            BaseButton(variant = ButtonVariant.Soft, onClick = {
+                detailsExpanded = !detailsExpanded
+            }, label = "Details")
+
+            if (state is Connected.ErrorBannerState.ApiError) {
+                BaseButton(
+                    onClick = onRefreshAll,
+                    label = strings.widgets.errorBanner.refreshButton,
+                    variant = ButtonVariant.Solid
+                )
+            }
+
+            IconButton(onClick = onDismissError) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(12.dp),
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            visible = detailsExpanded
+        ) {
+            Box(
+                modifier = Modifier.background(
+                    MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
+                ).fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .drawBehind {
+                        val strokeWidth = 1.dp.value * density
+                        val y = size.height - strokeWidth / 2
+
+                        drawLine(
+                            color = borderColor,
+                            start = Offset(0f, y),
+                            end = Offset(size.width, y),
+                            strokeWidth = strokeWidth
+                        )
+                    }.padding(12.dp)
+            ) {
+                when (state) {
+                    is Connected.ErrorBannerState.ApiError -> ApiErrorDetails(state)
+                    Connected.ErrorBannerState.ConnectionLost -> DisconnectedDetails()
+                }
+            }
         }
     }
 }
+
+@Composable
+private fun ApiErrorDetails(state: Connected.ErrorBannerState.ApiError) = Text(
+    text = buildAnnotatedString {
+        if (state.status != null) {
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                append(LocalStrings.current.widgets.errorBanner.statusLabel)
+            }
+            withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
+                append(state.status.value.toString())
+            }
+            appendLine()
+        }
+
+        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+            append(LocalStrings.current.widgets.errorBanner.messageLabel)
+        }
+        withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
+            append(state.rawError)
+        }
+    },
+    style = MaterialTheme.typography.labelLarge,
+    color = MaterialTheme.colorScheme.onSurface,
+    fontFamily = LocalMonoFontFamily.current
+)
+
+@Composable
+private fun DisconnectedDetails() = Text(
+    text = buildAnnotatedString {
+        LocalStrings.current.widgets.errorBanner.connectionErrorTitlesAndBodies.forEach { (title, body) ->
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                append(title)
+            }
+            withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
+                append(body)
+            }
+            appendLine()
+        }
+    },
+    style = MaterialTheme.typography.labelLarge,
+    color = MaterialTheme.colorScheme.onSurface
+)
 
 @Preview
 @Composable
@@ -141,7 +261,7 @@ private fun BannerPreview(useDark: Boolean = false) = PreviewSurface(useDark) {
         )
 
         ErrorBanner(
-            state = Connected.ErrorBannerState.UnknownError,
+            state = Connected.ErrorBannerState.ConnectionLost,
             onRefreshAll = {},
             onDismissError = {}
         )

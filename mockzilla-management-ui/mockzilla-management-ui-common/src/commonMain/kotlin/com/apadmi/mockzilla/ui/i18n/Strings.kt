@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import io.ktor.http.HttpStatusCode
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
@@ -118,8 +119,12 @@ data class Strings(
          */
         data class ErrorBanner(
             val connectionLost: String,
-            val unknownError: String,
-            val refreshButton: String
+            val refreshButton: String,
+            val operationError: (GenericErrorableOperation?) -> String,
+            val apiErrorDescription: String,
+            val connectionErrorTitlesAndBodies: List<Pair<String, String>>,
+            val statusLabel: String,
+            val messageLabel: String
         )
 
         /**

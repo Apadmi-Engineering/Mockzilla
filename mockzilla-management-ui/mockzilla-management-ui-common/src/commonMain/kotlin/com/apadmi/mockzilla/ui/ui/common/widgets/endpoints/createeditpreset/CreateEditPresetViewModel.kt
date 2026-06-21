@@ -10,6 +10,7 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
@@ -85,7 +86,12 @@ internal class CreateEditPresetViewModel(
         }.fold(
             onSuccess = { it },
             onFailure = {
-                eventBus.send(Event.GenericError)
+                eventBus.send(
+                    Event.GenericError(
+                        GenericErrorableOperation.FetchEndpointConfigs,
+                        it
+                    )
+                )
                 State.Loading
             }
         )
@@ -136,7 +142,12 @@ internal class CreateEditPresetViewModel(
                 navigateUp = true
             )
         }.onFailure {
-            eventBus.send(Event.GenericError)
+            eventBus.send(
+                Event.GenericError(
+                    GenericErrorableOperation.ApplyPreset,
+                    it
+                )
+            )
         }
     }
 
