@@ -425,7 +425,6 @@ private fun ActivePresetBanner(
     strings: Strings = LocalStrings.current
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val isDark = LocalForceDarkMode.current
     val statusColors = preset.statusColors()
 
     Row(

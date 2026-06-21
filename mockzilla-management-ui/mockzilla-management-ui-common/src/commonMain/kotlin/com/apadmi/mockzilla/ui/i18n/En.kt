@@ -132,7 +132,7 @@ val EnStrings = Strings(
             ),
             forcedFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
                 title = "Forced Failure",
-                subtitle = "All requests return 500. Presets ignored.",
+                subtitle = "All requests call error handler. Presets ignored.",
             ),
             activeOverrides = { " · $it active" },
             perEndpointStatus = "PER-ENDPOINT STATUS",
@@ -190,7 +190,7 @@ val EnStrings = Strings(
                 editLabel = "Edit",
                 forceFailureBannerTitle = "Forced Failure is on.",
                 forceFailureBannerBody = "Presets are ignored and locked",
-                forceFailureAppliedPresetMessage = "Ignored - Forced Failure on"
+                forceFailureAppliedPresetMessage = "Ignored - Forced Failure is on"
             )
         ),
         miscControls = Strings.Widgets.MiscControls(
