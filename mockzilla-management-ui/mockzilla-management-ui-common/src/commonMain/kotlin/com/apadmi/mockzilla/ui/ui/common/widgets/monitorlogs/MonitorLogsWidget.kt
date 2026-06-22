@@ -60,17 +60,10 @@ import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.formatTimestamp
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
-import kotlinx.datetime.Instant
-
-/** Extracts `HH:mm:ss.mmm` from epoch millis (UTC). */
-private fun Long.formatTimestamp(): String =
-    Instant.fromEpochMilliseconds(this)
-        .toString()
-        .substringAfter("T")
-        .substringBeforeLast("Z")
 
 @Suppress("MAGIC_NUMBER")
 @Composable
@@ -128,7 +121,7 @@ fun LogRow(
     ) {
         Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = event.timestamp.formatTimestamp(),
+                text = formatTimestamp(event.timestamp),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontFamily = monoFont,
                     fontWeight = FontWeight.Normal,
@@ -186,7 +179,7 @@ fun LogRow(
 fun MonitorLogsWidgetPreview() = PreviewSurface {
     MonitorLogsWidgetContent(
         state = MonitorLogsViewModel.State.DisplayLogs(
-            entries = sequenceOf(
+            entries = listOf(
                 LogEvent(
                     timestamp = 1_716_566_657_201,
                     url = "https://www.example.com/repairs/list",
@@ -256,7 +249,7 @@ internal fun MonitorLogsWidgetContent(
     val streamingColor = cs.success.primary
     val dimColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     val faintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-    val entryList = state.entries.toList()
+    val entryList = state.entries
     val titleStyle = MaterialTheme.typography.labelSmall.copy(
         fontFamily = monoFont,
         fontWeight = FontWeight.SemiBold,
@@ -376,7 +369,7 @@ private fun MonitorLogsList(
 
     LazyColumn(modifier = modifier, state = listState) {
         entryList.forEach { logEvent ->
-            item(key = logEvent.timestamp) {
+            item(key = logEvent.id) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),

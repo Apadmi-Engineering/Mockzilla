@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.Density
 
 import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.ALPHA_MUTED
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.JsonHighlightColors
 import com.apadmi.mockzilla.ui.utils.Platform
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
@@ -204,6 +203,21 @@ data object ScaleFactor {
         else -> DEFAULT_MOBILE
     }
 }
+
+/**
+ * @property keyColor Color for JSON object keys.
+ * @property stringColor Color for JSON string values.
+ * @property numberColor Color for JSON numeric values.
+ * @property boolColor Color for JSON boolean values.
+ * @property nullColor Color for JSON null values.
+ */
+internal data class JsonHighlightColors(
+    val keyColor: Color,
+    val stringColor: Color,
+    val numberColor: Color,
+    val boolColor: Color,
+    val nullColor: Color,
+)
 
 @Composable
 fun AppTheme(

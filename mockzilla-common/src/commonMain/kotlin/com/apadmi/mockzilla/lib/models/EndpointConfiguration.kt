@@ -201,6 +201,19 @@ data class MockzillaHttpResponse(
     val body: String = "",
 ) {
     fun toPartial() = PartialMockzillaHttpResponse(statusCode, headers, body)
+
+    companion object {
+        /**
+         * Creates a response with JSON content type and 200 success code for a given body
+         *
+         * @param body The response body as a string.
+         * @return
+         */
+        fun successJson(body: String = "") = MockzillaHttpResponse(
+            body = body,
+            headers = mapOf(HttpHeaders.ContentType to "application/json")
+        )
+    }
 }
 
 /**

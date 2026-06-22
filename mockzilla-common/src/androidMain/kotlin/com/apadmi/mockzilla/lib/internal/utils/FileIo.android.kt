@@ -27,6 +27,7 @@ actual class FileIo(private val cacheDir: File) {
 
     actual suspend fun saveToCache(filename: String, contents: String) =
         filename.fileInCache().also {
+            it.parentFile?.mkdirs()
             it.createNewFile()
         }.writeText(contents)
 
@@ -46,6 +47,13 @@ actual class FileIo(private val cacheDir: File) {
             throw IOException("Failed to delete caches")
         }
     }
+
+    actual suspend fun deleteDirectory(dirName: String) {
+        File(cacheDirectory, dirName).deleteRecursively()
+    }
+
+    actual suspend fun listFiles(dirName: String): List<String> =
+        File(cacheDirectory, dirName).listFiles()?.map { it.name } ?: emptyList()
 }
 
 @InternalMockzillaApi

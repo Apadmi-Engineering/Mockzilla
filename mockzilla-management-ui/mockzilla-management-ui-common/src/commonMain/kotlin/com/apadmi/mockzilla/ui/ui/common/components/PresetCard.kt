@@ -13,17 +13,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -39,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.geometry.CornerRadius
@@ -50,9 +50,11 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -61,13 +63,17 @@ import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
+import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
-import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.buildHighlightedAnnotatedString
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.BodyVisualTransformation
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.minifyJson
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.typeFormat
 
 import io.ktor.http.HttpStatusCode
 
@@ -142,11 +148,11 @@ internal fun PresetCard(
     preset: DashboardOverridePreset,
     onClicked: (DashboardOverridePreset) -> Unit,
     onEdit: () -> Unit = {},
-    layoutMode: LayoutMode = LayoutMode.Compact,
+    layoutMode: RowDensity = RowDensity.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     val isDark = LocalForceDarkMode.current
-    val isCompact = layoutMode == LayoutMode.Compact
+    val isCompact = layoutMode == RowDensity.Compact
     val isSelected = variant == PresetCardVariant.Selected
     val shape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
     val statusColors = preset.statusColors()
@@ -155,12 +161,14 @@ internal fun PresetCard(
     val iconTint = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant
     val titleColor = if (isSelected) colorScheme.primary else colorScheme.onSurface
 
-    var expanded by rememberSaveable { mutableStateOf(false) }
+    val hasExpandableContent = !preset.response.body.isNullOrBlank()
+    var expanded by rememberSaveable { mutableStateOf(true) }
     val chevronRotation by animateFloatAsState(
         targetValue = if (expanded) 0f else -90f,
         animationSpec = tween(200),
         label = "chevron",
     )
+    val chevronTint = if (hasExpandableContent) iconTint else colorScheme.onSurface.copy(alpha = 0.3f)
 
     Column(
         Modifier.fillMaxWidth()
@@ -169,25 +177,27 @@ internal fun PresetCard(
             .background(if (isSelected) colorScheme.primary.copy(alpha = 0.08f) else Color.Transparent)
             .drawBehind {
                 val indicatorWidth = 2.dp.toPx()
-                drawRect(
+                val padding = 4.dp.toPx()
+                drawRoundRect(
+                    cornerRadius = CornerRadius(indicatorWidth, indicatorWidth),
                     color = indicatorColor,
-                    topLeft = Offset.Zero,
-                    size = Size(indicatorWidth, size.height)
+                    topLeft = Offset(padding / 2, padding.dp.toPx()),
+                    size = Size(indicatorWidth, size.height - padding * 2)
                 )
             },
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { expanded = !expanded }
-                .padding(horizontal = 12.dp, vertical = 4.dp),
+                .clickable(enabled = hasExpandableContent) { expanded = !expanded }
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp).rotate(chevronRotation),
-                tint = iconTint,
+                tint = chevronTint,
             )
             Spacer(Modifier.size(8.dp))
 
@@ -196,7 +206,7 @@ internal fun PresetCard(
                 text = preset.name,
                 style = MaterialTheme.typography.bodyMedium,
                 color = titleColor,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
             )
             Spacer(Modifier.size(8.dp))
 
@@ -212,31 +222,39 @@ internal fun PresetCard(
 
             when (variant) {
                 PresetCardVariant.Selected -> Row(
+                    modifier = Modifier
+                        .height(IntrinsicSize.Min)
+                        .padding(vertical = 6.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Row(
+                    Box(
                         modifier = Modifier
+                            .fillMaxHeight()
                             .clip(RoundedCornerShape(6.dp))
                             .clickable { onEdit() }
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
-                        Icon(
-                            imageVector = Icons.EditUnderscore,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = strings.editLabel,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = colorScheme.onSurfaceVariant,
+                        Tag(
+                            modifier = Modifier.fillMaxHeight(),
+                            prefix = {
+                                Icon(
+                                    imageVector = Icons.EditUnderscore,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp),
+                                    tint = colorScheme.onSurface,
+                                )
+                            },
+                            label = strings.editLabel,
+                            textColor = colorScheme.onSurface,
+                            borderColor = colorScheme.outline,
+                            backgroundColor = colorScheme.surfaceContainer,
+                            shape = RoundedCornerShape(6.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                         )
                     }
 
                     Tag(
+                        modifier = Modifier.fillMaxHeight(),
                         prefix = {
                             Icon(
                                 modifier = Modifier.size(14.dp),
@@ -271,27 +289,25 @@ internal fun PresetCard(
             }
         }
 
-        if (!isCompact && !preset.description.isNullOrBlank()) {
-            Text(
-                modifier = Modifier.padding(start = 36.dp, end = 12.dp, bottom = 4.dp),
-                text = preset.description ?: "",
-                style = MaterialTheme.typography.bodySmall,
-                color = colorScheme.onSurfaceVariant,
-            )
-        }
-
-        AnimatedVisibility(
-            visible = expanded,
-            enter = expandVertically(),
-            exit = shrinkVertically(),
-        ) {
-            preset.response.body?.takeIf { it.isNotBlank() }
-                ?.let {
-                    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)) {
-                        Spacer(Modifier.size(4.dp))
-                        ExpandableResponseBody(it, isCompact)
+        if (!preset.response.body.isNullOrBlank()) {
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
+            ) {
+                Column(modifier = Modifier.padding(bottom = 12.dp)) {
+                    if (!preset.description.isNullOrBlank()) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            text = preset.description ?: "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = colorScheme.onSurfaceMuted,
+                        )
                     }
+                    Spacer(Modifier.size(4.dp))
+                    ExpandableResponseBody(preset.response, isCompact)
                 }
+            }
         }
     }
 }
@@ -335,65 +351,45 @@ internal fun NoPresetCard(
 }
 
 @Composable
-internal fun ExpandableResponseBody(body: String, isCompact: Boolean = false) {
-    val scrollState = rememberScrollState()
-
-    // Made the scrollbar color slightly darker so it's easier to see against the background
-    val scrollbarColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.background,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .clip(shape = RoundedCornerShape(8.dp))
-            .then(
-                if (isCompact) {
-                    Modifier
-                        // LOWERED to 48.dp (roughly 2 lines of text) to force the content to overflow!
-                        .heightIn(max = 48.dp)
-                        .verticalScroll(scrollState)
-                        .drawWithContent {
-                            drawContent()
-
-                            // Only draw if the text actually exceeds the 48.dp height
-                            if (scrollState.maxValue > 0) {
-                                val visibleHeight = size.height
-                                val contentHeight = visibleHeight + scrollState.maxValue
-
-                                val scrollbarHeight = visibleHeight * (visibleHeight / contentHeight)
-                                val scrollbarVertical = (scrollState.value.toFloat() / scrollState.maxValue) * (visibleHeight - scrollbarHeight)
-                                val scrollbarWidth = 4.dp.toPx()
-                                val paddingEnd = 4.dp.toPx()
-
-                                drawRoundRect(
-                                    color = scrollbarColor,
-                                    topLeft = Offset(size.width - scrollbarWidth - paddingEnd, scrollbarVertical),
-                                    size = Size(scrollbarWidth, scrollbarHeight),
-                                    cornerRadius = CornerRadius(2.dp.toPx())
-                                )
-                            }
-                        }
-                } else {
-                    Modifier
-                }
-            ),
-    ) {
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = buildHighlightedAnnotatedString(body, MaterialTheme.colorScheme.jsonHighlight, isMinified = isCompact),
-            maxLines = Int.MAX_VALUE,
-            style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+private fun ExpandableResponseBody(
+    response: PartialMockzillaHttpResponse,
+    isCompact: Boolean = false,
+) = Box(
+    modifier = Modifier
+        .padding(horizontal = 12.dp)
+        .fillMaxWidth()
+        .background(
+            color = MaterialTheme.colorScheme.background,
+            shape = RoundedCornerShape(8.dp)
         )
+        .border(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant,
+            shape = RoundedCornerShape(8.dp)
+        )
+        .clip(shape = RoundedCornerShape(8.dp))
+) {
+    val mode = response.typeFormat
+    val body = when {
+        BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body?.take(1000) + "…"
+        mode == EditorMode.Json -> if (isCompact) {
+            response.body?.minifyJson()
+        } else {
+            response.body?.prettyPrintJson()
+        }
+        else -> response.body
     }
+    Text(
+        modifier = Modifier.padding(8.dp),
+        text = (BodyVisualTransformation
+            .buildEditorOutputTransformation(mode)
+            ?.highlight(body ?: "")
+            ?: AnnotatedString(body ?: "")),
+        maxLines = if (isCompact) 4 else 16,
+        overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
 }
 
 @Preview

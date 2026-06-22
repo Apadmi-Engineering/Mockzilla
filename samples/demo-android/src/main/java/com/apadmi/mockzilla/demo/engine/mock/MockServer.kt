@@ -18,7 +18,7 @@ private val getMyPig = EndpointConfiguration
     .configureDashboardOverrides {
         addPreset(
             name = "George",
-            response = MockzillaHttpResponse(
+            response = MockzillaHttpResponse.successJson(
                 body = Json.encodeToString(
                     AnimalDto(
                         animal = AnimalDto.AnimalTypeDto.Pig,
@@ -27,22 +27,24 @@ private val getMyPig = EndpointConfiguration
                         biography = "George Pig is a fictional character in the hugely popular British animated television series, Peppa Pig. He is the younger brother of the show's star, Peppa Pig.",
                         owner = "Daddy Pig"
                     )
-                )
+                ),
             )
         )
 
         addPreset(
             name = "Pig Failure",
+            description = "Simulates a 404 Not Found error from the pig endpoint",
             response = MockzillaHttpResponse(statusCode = HttpStatusCode.NotFound)
         )
 
         addPreset(
             name = "Pig Malformed Response",
+            description = "Simulates a malformed, unparseable response from the pig endpoint",
             response = MockzillaHttpResponse(body = "Pig Malformed Response")
         )
     }
     .setDefaultHandler {
-        MockzillaHttpResponse(
+        MockzillaHttpResponse.successJson(
             body = Json.encodeToString(
                 AnimalDto(
                     animal = AnimalDto.AnimalTypeDto.Pig,
@@ -62,8 +64,9 @@ private val getMySheep = EndpointConfiguration
     .setPatternMatcher { uri.endsWith("sheep") }
     .configureDashboardOverrides {
         addPreset(
-            name = "",
-            response = MockzillaHttpResponse(
+            name = "Dolly",
+            description = "The world's first cloned mammal, a Finn-Dorset sheep born in 1996",
+            response = MockzillaHttpResponse.successJson(
                 body = Json.encodeToString(
                     AnimalDto(
                         animal = AnimalDto.AnimalTypeDto.Sheep,
@@ -78,16 +81,18 @@ private val getMySheep = EndpointConfiguration
 
         addPreset(
             name = "Sheep Failure",
+            description = "Simulates a 400 Bad Request error from the sheep endpoint",
             response = MockzillaHttpResponse(statusCode = HttpStatusCode.BadRequest)
         )
 
         addPreset(
             name = "Sheep Malformed Response",
+            description = "Simulates a malformed, unparseable response from the sheep endpoint",
             response = MockzillaHttpResponse(body = "Sheep Malformed Response")
         )
     }
     .setDefaultHandler {
-        MockzillaHttpResponse(
+        MockzillaHttpResponse.successJson(
             body = Json.encodeToString(
                 AnimalDto(
                     animal = AnimalDto.AnimalTypeDto.Sheep,
@@ -108,7 +113,8 @@ private val getMyCow = EndpointConfiguration
     .configureDashboardOverrides {
         addPreset(
             name = "Angry Bessie",
-            response = MockzillaHttpResponse(
+            description = "A famously long-lived Irish cow who held two Guinness World Records",
+            response = MockzillaHttpResponse.successJson(
                 body = Json.encodeToString(
                     AnimalDto(
                         animal = AnimalDto.AnimalTypeDto.Cow,
@@ -123,16 +129,18 @@ private val getMyCow = EndpointConfiguration
 
         addPreset(
             name = "Cow Failure",
+            description = "Simulates a 404 Not Found error from the cow endpoint",
             response = MockzillaHttpResponse(statusCode = HttpStatusCode.NotFound)
         )
 
         addPreset(
             name = "Cow Malformed Response",
+            description = "Simulates a malformed, unparseable response from the cow endpoint",
             response = MockzillaHttpResponse(body = "Cow Malformed Response")
         )
     }
     .setDefaultHandler {
-        MockzillaHttpResponse(
+        MockzillaHttpResponse.successJson(
             body = Json.encodeToString(
                 AnimalDto(
                     animal = AnimalDto.AnimalTypeDto.Cow,

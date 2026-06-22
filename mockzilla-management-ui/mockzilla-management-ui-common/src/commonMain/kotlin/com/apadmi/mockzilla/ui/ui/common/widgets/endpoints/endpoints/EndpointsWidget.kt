@@ -21,9 +21,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Search
@@ -58,8 +60,10 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
@@ -147,15 +151,24 @@ private fun EndpointsList(
             modifier = Modifier.fillMaxSize()
         )
     } else {
-        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            state.endpoints.forEach { endpoint ->
-                EndpointRow(
-                    endpoint = endpoint,
-                    rowDensity = state.rowDensity,
-                    isSelected = endpoint.key == selectedKey,
-                    onEndpointClicked = onEndpointClicked,
-                )
+        val listState = rememberLazyListState()
+        Box {
+            LazyColumn(state = listState) {
+                items(state.endpoints) { endpoint ->
+                    EndpointRow(
+                        endpoint = endpoint,
+                        rowDensity = state.rowDensity,
+                        isSelected = endpoint.key == selectedKey,
+                        onEndpointClicked = onEndpointClicked,
+                    )
+                }
             }
+            PlatformVerticalScrollbar(
+                scrollState = listState,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+            )
         }
     }
 }
@@ -213,37 +226,11 @@ private fun EndpointsHeader(
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            listOf(RowDensity.Compact, RowDensity.Comfy).forEach { density ->
-                RowDensityButton(
-                    label = density.name.lowercase(),
-                    isSelected = selectedRowDensity == density,
-                    onClick = { onRowDensityChanged(density) },
-                )
-            }
-        }
+        RowDensityControls(
+            selected = selectedRowDensity,
+            onChanged = onRowDensityChanged
+        )
     }
-}
-
-@Composable
-private fun RowDensityButton(
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    val cs = MaterialTheme.colorScheme
-    val borderColor =
-        if (isSelected) cs.onSurface else cs.onSurface.copy(alpha = UNSELECTED_BORDER_ALPHA)
-    Text(
-        text = label,
-        modifier = Modifier
-            .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(4.dp))
-            .clickable(onClick = onClick)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        style = MaterialTheme.typography.labelSmall,
-        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-        color = if (isSelected) cs.onSurface else cs.onSurfaceVariant,
-    )
 }
 
 @Composable

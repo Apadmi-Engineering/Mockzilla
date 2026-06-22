@@ -60,6 +60,7 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformHorizontalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
@@ -177,58 +178,67 @@ fun DeviceTabsWidgetContent(
             )
         }
 
-        Box(
-            modifier =
-                Modifier
-                    .padding(
-                        start = if (isOsx()) horizontalOsxButtonPaddingDp.dp else 0.dp,
-                    )
-                    .height(IntrinsicSize.Min)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp)
-                    .horizontalScroll(scrollState),
-                verticalAlignment = Alignment.Bottom,
+        Column {
+            Box(
+                modifier =
+                    Modifier
+                        .padding(
+                            start = if (isOsx()) horizontalOsxButtonPaddingDp.dp else 0.dp,
+                        )
+                        .height(IntrinsicSize.Min)
             ) {
-                Box(Modifier.width(8.dp))  // Accounts for left curve of active tab background
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                        .horizontalScroll(scrollState),
+                    verticalAlignment = Alignment.Bottom,
+                ) {
+                    Box(Modifier.width(8.dp))  // Accounts for left curve of active tab background
 
-                state.devices.forEach { device ->
-                    DeviceTab(
-                        device = device,
-                        strings = strings,
-                        onSelect = { onSelect(device) },
-                        onClose = { onCloseTab(device) },
-                        shape = TabShapeConfig()
-                    )
-                }
-                if (state.devices.isNotEmpty()) {
-                    IconButton(onClick = onAddNewDevice) {
-                        Icon(
-                            modifier = Modifier.size(18.dp),
-                            imageVector = Icons.Filled.Add,
-                            tint = colorScheme.onSurfaceVariant,
-                            contentDescription = strings.widgets.deviceTabs.addDevice,
+                    state.devices.forEach { device ->
+                        DeviceTab(
+                            device = device,
+                            strings = strings,
+                            onSelect = { onSelect(device) },
+                            onClose = { onCloseTab(device) },
+                            shape = TabShapeConfig()
                         )
                     }
+                    if (state.devices.isNotEmpty()) {
+                        IconButton(onClick = onAddNewDevice) {
+                            Icon(
+                                modifier = Modifier.size(18.dp),
+                                imageVector = Icons.Filled.Add,
+                                tint = colorScheme.onSurfaceVariant,
+                                contentDescription = strings.widgets.deviceTabs.addDevice,
+                            )
+                        }
+                    }
                 }
+
+                FadeEdge(
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    width = 36.dp,
+                    color = colorScheme.background,
+                    direction = FadeDirection.Left,
+                    visible = scrollState.value > 0,
+                )
+                FadeEdge(
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    width = 52.dp,
+                    color = colorScheme.background,
+                    direction = FadeDirection.Right,
+                    visible = scrollState.value < scrollState.maxValue,
+                )
             }
 
-            FadeEdge(
-                modifier = Modifier.align(Alignment.CenterStart),
-                width = 36.dp,
-                color = colorScheme.background,
-                direction = FadeDirection.Left,
-                visible = scrollState.value > 0,
-            )
-            FadeEdge(
-                modifier = Modifier.align(Alignment.CenterEnd),
-                width = 52.dp,
-                color = colorScheme.background,
-                direction = FadeDirection.Right,
-                visible = scrollState.value < scrollState.maxValue,
-            )
+            if (scrollState.maxValue != 0) {
+                PlatformHorizontalScrollbar(
+                    scrollState = scrollState,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
@@ -291,7 +301,7 @@ private fun DeviceTab(
                 } else if (isHovered) {
                     Modifier.background(
                         color = colorScheme.onSurface.copy(alpha = 0.08f),
-                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                        shape = RoundedCornerShape(8.dp),
                     )
                 } else {
                     Modifier

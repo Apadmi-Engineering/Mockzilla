@@ -23,7 +23,8 @@ actual class FileIo {
 
     actual suspend fun saveToCache(filename: String, contents: String) {
         val filePath = filePath(filename)
-        NSFileManager.defaultManager.createDirectoryAtPath(directoryPath, true, null, null)
+        val parentDir = filePath.substringBeforeLast("/")
+        NSFileManager.defaultManager.createDirectoryAtPath(parentDir, true, null, null)
 
         (contents as NSString).writeToFile(filePath, true, NSUTF8StringEncoding, null)
     }
@@ -35,6 +36,15 @@ actual class FileIo {
     actual suspend fun deleteAllCaches() {
         NSFileManager.defaultManager.removeItemAtPath(directoryPath, null)
     }
+
+    actual suspend fun deleteDirectory(dirName: String) {
+        NSFileManager.defaultManager.removeItemAtPath("$directoryPath/$dirName", null)
+    }
+
+    actual suspend fun listFiles(dirName: String): List<String> =
+        NSFileManager.defaultManager
+            .contentsOfDirectoryAtPath("$directoryPath/$dirName", null)
+            ?.filterIsInstance<String>() ?: emptyList()
 
     private fun filePath(filename: String) = "$directoryPath/$filename"
 }

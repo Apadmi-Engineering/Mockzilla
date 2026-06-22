@@ -25,9 +25,11 @@ data class Strings(
 ) {
     /**
      * @property editor
+     * @property findReplace
      */
     data class Components(
-        val editor: Editor
+        val editor: Editor,
+        val findReplace: FindReplace,
     ) {
         /**
          * @property largeFileSyntaxHighlightError
@@ -36,6 +38,33 @@ data class Strings(
         data class Editor(
             val largeFileSyntaxHighlightError: String,
             val jsonErrorTitle: String,
+        )
+
+        /**
+         * @property findPlaceholder
+         * @property replacePlaceholder
+         * @property noResults
+         * @property matchCount
+         * @property collapseReplaceDescription
+         * @property expandReplaceDescription
+         * @property previousMatchDescription
+         * @property nextMatchDescription
+         * @property closeFindBarDescription
+         * @property replaceButton
+         * @property replaceAllButton
+         */
+        data class FindReplace(
+            val findPlaceholder: String,
+            val replacePlaceholder: String,
+            val noResults: String,
+            val matchCount: (current: Int, total: Int) -> String,
+            val collapseReplaceDescription: String,
+            val expandReplaceDescription: String,
+            val previousMatchDescription: String,
+            val nextMatchDescription: String,
+            val closeFindBarDescription: String,
+            val replaceButton: String,
+            val replaceAllButton: String,
         )
     }
     /**
@@ -126,6 +155,7 @@ data class Strings(
          * @property noHeaders
          * @property noBody
          * @property emptyBody
+         * @property bodyLoadError
          */
         data class LogDetails(
             val title: String,
@@ -141,6 +171,7 @@ data class Strings(
             val noHeaders: String,
             val noBody: String,
             val emptyBody: String,
+            val bodyLoadError: String,
         )
 
         /**
@@ -487,6 +518,7 @@ data class Strings(
          * @property bodyLabel
          * @property htmlBodyPlaceholder
          * @property plainBodyPlaceholder
+         * @property jsonErrorTitle
          */
         data class CreateEditPreset(
             val createTitle: String,
@@ -520,6 +552,7 @@ data class Strings(
             val bodyTypeLabel: String,
             val responseSectionLabel: String,
             val bodyLabel: String,
+            val jsonErrorTitle: String,
         )
 
         /**

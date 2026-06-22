@@ -25,6 +25,22 @@ actual class FileIo(private val filePrefix: String = "mockzilla_cache_") {
             .filterNotNull()
             .forEach { localStorage.removeItem(it) }
     }
+
+    actual suspend fun deleteDirectory(dirName: String) {
+        val prefix = "$filePrefix$dirName/"
+        (0 until localStorage.length)
+            .mapNotNull { localStorage.key(it) }
+            .filter { it.startsWith(prefix) }
+            .forEach { localStorage.removeItem(it) }
+    }
+
+    actual suspend fun listFiles(dirName: String): List<String> {
+        val prefix = "$filePrefix$dirName/"
+        return (0 until localStorage.length)
+            .mapNotNull { localStorage.key(it) }
+            .filter { it.startsWith(prefix) }
+            .map { it.removePrefix(prefix) }
+    }
 }
 @InternalMockzillaApi
 actual fun createFileIoforTesting() = FileIo(

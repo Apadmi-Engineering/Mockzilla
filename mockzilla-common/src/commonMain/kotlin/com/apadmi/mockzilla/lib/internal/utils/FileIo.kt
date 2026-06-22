@@ -8,6 +8,8 @@ expect class FileIo {
     suspend fun saveToCache(filename: String, contents: String)
     suspend fun deleteCacheFile(filename: String)
     suspend fun deleteAllCaches()
+    suspend fun deleteDirectory(dirName: String)
+    suspend fun listFiles(dirName: String): List<String>
 }
 
 @InternalMockzillaApi

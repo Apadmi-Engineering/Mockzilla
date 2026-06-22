@@ -34,7 +34,8 @@ internal class DependencyInjector(
     val platformConfig: PlatformConfig,
 ) {
     /* Service */
-    private val monitor = MockServerMonitorImpl()
+    private val localBodyCacheService = LocalBodyCacheService(fileIo)
+    private val monitor = MockServerMonitorImpl(localBodyCacheService)
 
     @OptIn(ExperimentalTime::class)
     internal val tokensService = TokensServiceImpl(config.releaseModeConfig.tokenLifeSpan)
