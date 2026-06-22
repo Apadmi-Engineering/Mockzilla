@@ -419,19 +419,11 @@ private fun NoDevicesFound(strings: Strings) {
                     radius = 30.dp.toPx() + (rippleProgress * 30.dp.toPx())
                 )
             }
-            Surface(
-                modifier = Modifier.size(40.dp),
-                shape = RoundedCornerShape(8.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-            ) {
-                Box(modifier = Modifier.padding(8.dp)) {
-                    Image(
-                        imageVector = Icons.MockzillaLogo,
-                        contentDescription = null,
-                    )
-                }
-            }
+            Image(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.MockzillaLogo,
+                contentDescription = null,
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
