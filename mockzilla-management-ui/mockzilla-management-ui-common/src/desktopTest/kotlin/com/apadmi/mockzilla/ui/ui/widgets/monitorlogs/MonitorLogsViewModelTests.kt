@@ -42,7 +42,7 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
     fun `init - pulls latest data from monitor and updates state`() = runBlockingTest {
         /* Setup */
         coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }
-            .returns(Result.success(sequenceOf(dummyLogEvent)))
+            .returns(Result.success(listOf(dummyLogEvent)))
         val sut = createSut()
 
         /* Run Test */
@@ -50,11 +50,11 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
             /* Verify */
             assertEquals(
                 listOf(),
-                awaitItem().entries.toList()
+                awaitItem().entries
             )
             assertEquals(
                 listOf(dummyLogEvent),
-                awaitItem().entries.toList()
+                awaitItem().entries
             )
         }
     }
@@ -64,7 +64,7 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
         /* Setup */
         var logs = arrayOf(dummyLogEvent)
         coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }
-            .answers { Result.success(sequenceOf(*logs)) }
+            .answers { Result.success(logs.toList()) }
         coEvery { monitorLogsUseCase.clearMonitorLogs(dummyActiveDevice) }.answers {
             logs = arrayOf()
             Result.success(Unit)
@@ -79,11 +79,11 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
             /* Verify */
             assertEquals(
                 listOf(dummyLogEvent),
-                awaitItem().entries.toList()
+                awaitItem().entries
             )
             assertEquals(
                 listOf(),
-                awaitItem().entries.toList()
+                awaitItem().entries
             )
         }
     }

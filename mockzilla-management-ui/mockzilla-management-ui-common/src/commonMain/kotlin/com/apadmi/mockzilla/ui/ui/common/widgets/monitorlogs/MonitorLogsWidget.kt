@@ -179,7 +179,7 @@ fun LogRow(
 fun MonitorLogsWidgetPreview() = PreviewSurface {
     MonitorLogsWidgetContent(
         state = MonitorLogsViewModel.State.DisplayLogs(
-            entries = sequenceOf(
+            entries = listOf(
                 LogEvent(
                     timestamp = 1_716_566_657_201,
                     url = "https://www.example.com/repairs/list",
@@ -249,7 +249,7 @@ internal fun MonitorLogsWidgetContent(
     val streamingColor = cs.success.primary
     val dimColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     val faintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-    val entryList = state.entries.toList()
+    val entryList = state.entries
     val titleStyle = MaterialTheme.typography.labelSmall.copy(
         fontFamily = monoFont,
         fontWeight = FontWeight.SemiBold,
@@ -369,7 +369,7 @@ private fun MonitorLogsList(
 
     LazyColumn(modifier = modifier, state = listState) {
         entryList.forEach { logEvent ->
-            item(key = logEvent.timestamp) {
+            item(key = logEvent.id) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),

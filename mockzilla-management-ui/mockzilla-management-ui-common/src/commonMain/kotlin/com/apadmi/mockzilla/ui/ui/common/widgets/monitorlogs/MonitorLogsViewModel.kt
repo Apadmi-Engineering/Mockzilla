@@ -17,7 +17,7 @@ internal class MonitorLogsViewModel(
     private val monitorLogsUseCase: MonitorLogsUseCase,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
-    val state = MutableStateFlow(State.DisplayLogs(emptySequence()))
+    val state = MutableStateFlow(State.DisplayLogs(emptyList()))
     private var pollingJob: Job? = null
 
     init {
@@ -47,6 +47,6 @@ internal class MonitorLogsViewModel(
         /**
          * @property entries
          */
-        data class DisplayLogs(val entries: Sequence<LogEvent>) : State()
+        data class DisplayLogs(val entries: List<LogEvent>) : State()
     }
 }

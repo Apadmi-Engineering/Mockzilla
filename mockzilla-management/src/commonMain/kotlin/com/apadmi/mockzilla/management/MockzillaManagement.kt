@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.management
 
+import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
@@ -198,6 +199,74 @@ interface MockzillaManagement {
             connection: MockzillaConnectionConfig,
             hideFromLogs: Boolean
         ): Result<MonitorLogsResponse>
+
+        /**
+         * Non-destructively polls log entries since the given timestamp. Safe to call repeatedly
+         * without losing entries.
+         *
+         * @param connection The device to target.
+         * @param since Only return entries with timestamp strictly after this value (epoch ms).
+         *   Pass `null` to retrieve all buffered entries.
+         * @param clientSessionStart A stable epoch-millisecond timestamp representing when the
+         *   current management-UI session started. Pass the same value on every poll for the
+         *   lifetime of the process. The server uses this to drive disk-cache cleanup: when it
+         *   detects a new session (changed value), it deletes full-body files older than
+         *   `min(oldest_in_memory_entry, clientSessionStart)`.
+         * @return [Result.success] wrapping the log response, or [Result.failure] if the
+         * request could not be completed.
+         */
+        suspend fun fetchMonitorLogsSince(
+            connection: MockzillaConnectionConfig,
+            since: Long?,
+            clientSessionStart: Long,
+        ): Result<MonitorLogsResponse>
+
+        /**
+         * Fetches the complete log entry for [logId] directly from the device's disk cache,
+         * including the full (un-truncated) request and response bodies.
+         *
+         * **When to call this:** Only call this for entries where [LogEvent.isRequestBodyTruncated]
+         * or [LogEvent.isResponseBodyTruncated] is `true`. The server writes a disk record only
+         * when at least one body exceeds the truncation threshold; for all other entries no disk
+         * file exists and this method returns [Result.failure].
+         *
+         * **Behaviour contract:**
+         * - Returns [Result.success] with the full [LogEvent] if a disk record exists.
+         * - Returns [Result.failure] (HTTP 404) if the entry was never truncated, has been
+         *   cleaned up by the session-start eviction policy, or has been explicitly deleted.
+         * - Does **not** consult the in-memory ring buffer — the result is independent of
+         *   whether the entry is still in memory, making it safe to call after an app restart.
+         *
+         * **Disk lifetime / cleanup:** The server retains disk records until one of two conditions
+         * is met:
+         * 1. The management UI reconnects (sends a new `clientSessionStart` timestamp via
+         *    [fetchMonitorLogsSince]). The server then deletes records older than
+         *    `min(oldest_in_memory_entry, clientSessionStart)`.
+         * 2. No management UI connects within 60 seconds of server start — the server falls back
+         *    to deleting records older than 2 days.
+         *
+         * This means entries from a previous app session remain accessible as long as the
+         * management UI reconnects within the 2-day window and the session-start eviction
+         * threshold hasn't passed them.
+         *
+         * @param connection The device to target.
+         * @param logId The [LogEvent.id] of the entry to retrieve.
+         * @return [Result.success] wrapping the full [LogEvent], or [Result.failure] if no disk
+         *   record exists for this entry or the request could not be completed.
+         */
+        suspend fun fetchFullBodyLogDetail(
+            connection: MockzillaConnectionConfig,
+            logId: String,
+        ): Result<LogEvent>
+
+        /**
+         * Deletes all buffered log entries on the device at [connection] and clears disk-cached
+         * body files.
+         *
+         * @param connection The device to target.
+         * @return [Result.success] on success, [Result.failure] if the request could not be completed.
+         */
+        suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>
     }
 
     /**

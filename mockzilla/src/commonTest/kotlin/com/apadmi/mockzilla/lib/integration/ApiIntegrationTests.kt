@@ -253,7 +253,7 @@ class ApiIntegrationTests {
                         MockzillaHttpResponse(
                             statusCode = HttpStatusCode.Created,
                             headers = mapOf("test-header" to "test-value"),
-                            body = "my response body"
+                            body = "resp"
                         )
                     }.build()
             )
@@ -278,15 +278,16 @@ class ApiIntegrationTests {
         assertTrue(responseBody.logs
             .map { it.timestamp }
             .all { abs(it - timestamp) <= 300 })
-        // Check entry is correct ignoring the timestamp and request headers
+        // Check entry is correct ignoring the timestamp, id, and request headers
         assertEquals(
             listOf(
                 LogEvent(
+                    id = "",
                     timestamp = 0,
                     url = "/local-mock/my-id",
                     requestBody = "",
                     requestHeaders = emptyMap(),
-                    responseBody = "my response body",
+                    responseBody = "resp",
                     responseHeaders = mapOf("test-header" to "test-value"),
                     status = HttpStatusCode.Created,
                     delay = 24,
@@ -294,7 +295,15 @@ class ApiIntegrationTests {
                     isIntendedFailure = false
                 )
             ),
-            responseBody.logs.map { it.copy(timestamp = 0, requestHeaders = emptyMap()) }
+            responseBody.logs.map {
+                it.copy(
+                    id = "",
+                    timestamp = 0,
+                    requestHeaders = emptyMap(),
+                    requestSizeBytes = null,
+                    responseSizeBytes = null,
+                )
+            }
         )
     }
 }

@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.management.internal
 
 import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
+import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
@@ -25,6 +26,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.logging.Logger as KtorLogger
 import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.header
+import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
@@ -50,6 +52,13 @@ interface MockzillaManagementRepository {
     ): Result<Unit>
 
     suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MonitorLogsResponse>
+    suspend fun fetchMonitorLogsSince(
+        connection: MockzillaConnectionConfig,
+        since: Long?,
+        clientSessionStart: Long
+    ): Result<MonitorLogsResponse>
+    suspend fun fetchFullBodyLogDetail(connection: MockzillaConnectionConfig, logId: String): Result<LogEvent>
+    suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>
     suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
     suspend fun clearCaches(connection: MockzillaConnectionConfig, keys: List<EndpointConfiguration.Key>): Result<Unit>
 }
@@ -125,6 +134,37 @@ MockzillaManagement.AppIconService {
         }
     }.onFailure {
         Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs" }
+    }
+
+    override suspend fun fetchMonitorLogsSince(
+        connection: MockzillaConnectionConfig,
+        since: Long?,
+        clientSessionStart: Long,
+    ) = runner<MonitorLogsResponse> {
+        get(connection, "/api/monitor-logs/poll") {
+            since?.let { parameter("since", it) }
+            parameter("clientSessionStart", clientSessionStart)
+            header(CustomHeaders.HideFromLogs, true)
+        }
+    }.onFailure {
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs/poll" }
+    }
+
+    override suspend fun fetchFullBodyLogDetail(
+        connection: MockzillaConnectionConfig,
+        logId: String,
+    ) = runner<LogEvent> {
+        get(connection, "/api/monitor-logs/$logId/full-body")
+    }.onFailure {
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs/$logId/full-body" }
+    }
+
+    override suspend fun deleteMonitorLogs(
+        connection: MockzillaConnectionConfig,
+    ) = runner<Unit> {
+        delete(connection, "/api/monitor-logs")
+    }.onFailure {
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: DELETE /api/monitor-logs" }
     }
 
     override suspend fun clearAllCaches(

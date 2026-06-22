@@ -40,7 +40,7 @@ fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeP
     startMockzilla(
         config = config,
         metaData = context.extractMetaData(),
-        fileIo = FileIo(context.cacheDir),
+        fileIo = FileIo(context.filesDir),
         zeroConfDiscoveryService = { logger -> ZeroConfDiscoveryServiceImpl(logger, context) },
         platformConfig = PlatformConfig(context.applicationContext),
     )

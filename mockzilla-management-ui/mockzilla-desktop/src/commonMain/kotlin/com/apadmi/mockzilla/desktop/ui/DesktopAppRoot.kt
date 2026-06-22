@@ -366,7 +366,11 @@ private fun rightPanelWidgets(
             Widget(
                 id = logDetailsWidgetId, title = strings.widgets.logDetails.title
             ) {
-                MonitorLogDetailsWidget(logDetail = logDetail, onClose = onCloseLogDetail)
+                MonitorLogDetailsWidget(
+                    device = connectedState.activeDevice.device,
+                    logDetail = logDetail,
+                    onClose = onCloseLogDetail,
+                )
             }
         )
     }

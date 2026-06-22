@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
@@ -66,13 +67,17 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogD
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsViewModel.State.ViewDetails.Tab
 
 import io.ktor.http.HttpStatusCode
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun MonitorLogDetailsWidget(
+    device: Device,
     logDetail: LogEvent?,
     onClose: () -> Unit = {},
 ) {
-    val viewModel = getViewModel<MonitorLogDetailsViewModel>()
+    val viewModel = getViewModel<MonitorLogDetailsViewModel>(
+        key = logDetail?.id ?: "empty"
+    ) { parametersOf(device, logDetail) }
     val state by viewModel.state.collectAsState()
 
     Crossfade(
@@ -81,7 +86,6 @@ fun MonitorLogDetailsWidget(
         animationSpec = tween(durationMillis = 200)
     ) { newState ->
         MonitorLogDetailsContent(
-            logDetail = newState,
             state = state,
             onTabSelected = viewModel::onTabSelected,
             onClose = onClose,
@@ -107,7 +111,6 @@ fun MonitorLogDetailsWidgetPreview() {
     val contentTypeHeader = "Content-Type" to "application/json"
     val previewRequestHeaders = mapOf(authHeader)
     val previewResponseHeaders = mapOf(contentTypeHeader)
-    val previewState = ViewDetails(selectedTab = Tab.Response)
     val previewEvent = LogEvent(
         timestamp = 1_716_474_257_201L,
         url = "https://api.example.com/repairs",
@@ -120,9 +123,9 @@ fun MonitorLogDetailsWidgetPreview() {
         method = "GET",
         isIntendedFailure = false,
     )
+    val previewState = ViewDetails(previewEvent, selectedTab = Tab.Response)
     PreviewSurface {
         LogDetailsContent(
-            logDetail = previewEvent,
             state = previewState,
             onTabSelected = {},
         )
@@ -131,27 +134,25 @@ fun MonitorLogDetailsWidgetPreview() {
 
 @Composable
 internal fun MonitorLogDetailsContent(
-    logDetail: LogEvent?,
-    state: ViewDetails,
+    state: MonitorLogDetailsViewModel.State,
     onTabSelected: (Tab) -> Unit,
     onClose: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        logDetail?.let {
-            LogDetailsContent(
-                logDetail = it,
+        when (state) {
+            MonitorLogDetailsViewModel.State.Empty -> MonitorLogDetailsEmptyContent()
+            is ViewDetails -> LogDetailsContent(
                 state = state,
                 onTabSelected = onTabSelected,
                 onClose = onClose
             )
-        } ?: MonitorLogDetailsEmptyContent()
+        }
     }
 }
 
 @Suppress("TOO_LONG_FUNCTION")
 @Composable
 internal fun LogDetailsContent(
-    logDetail: LogEvent,
     state: ViewDetails,
     onTabSelected: (Tab) -> Unit,
     onClose: () -> Unit = {},
@@ -165,7 +166,7 @@ internal fun LogDetailsContent(
             .verticalScroll(scrollState)
             .background(MaterialTheme.colorScheme.surface)
     ) {
-        LogHeaderBar(logDetail = logDetail, onClose = onClose)
+        LogHeaderBar(logDetail = state.logEvent, onClose = onClose)
         HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
         LogTabBar(selectedTab = state.selectedTab, onTabSelected = onTabSelected)
         HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
@@ -178,18 +179,18 @@ internal fun LogDetailsContent(
             when (state.selectedTab) {
                 Tab.Response -> {
                     SectionTitle(label = strings.widgets.logDetails.responseHeaders)
-                    HeadersContent(logDetail.responseHeaders.toList(), strings)
+                    HeadersContent(state.logEvent.responseHeaders.toList(), strings)
                     Spacer(Modifier.height(8.dp))
                     SectionTitle(label = strings.widgets.logDetails.responseBody)
-                    BodyContent(logDetail.responseBody, logDetail.responseTypeFormat)
+                    BodyContent(state.responseBodyState, state.logEvent.responseTypeFormat)
                 }
 
                 Tab.Request -> {
                     SectionTitle(label = strings.widgets.logDetails.requestHeaders)
-                    HeadersContent(logDetail.requestHeaders.toList(), strings)
+                    HeadersContent(state.logEvent.requestHeaders.toList(), strings)
                     Spacer(Modifier.height(8.dp))
                     SectionTitle(label = strings.widgets.logDetails.requestBody)
-                    BodyContent(logDetail.requestBody, logDetail.requestTypeFormat)
+                    BodyContent(state.requestBodyState, state.logEvent.requestTypeFormat)
                 }
             }
         }
@@ -256,8 +257,9 @@ private fun LogHeaderBar(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             MetaItem(icon = "⏱", label = "${logDetail.delay}ms")
-            MetaItem(icon = "↑", label = logDetail.requestBody.toKbLabel())
-            MetaItem(icon = "↓", label = logDetail.responseBody.toKbLabel())
+            logDetail.requestSizeBytes?.let { size -> MetaItem(icon = "↑", label = size.toKbLabel()) }
+            logDetail.responseSizeBytes?.let { size -> MetaItem(icon = "↓", label = size.toKbLabel()) }
+
             Text(
                 text = formatTimestamp(logDetail.timestamp),
                 style = MaterialTheme.typography.labelMedium.copy(fontFamily = monoFont),
@@ -386,7 +388,7 @@ private fun LogTabBar(
 @Suppress("MAGIC_NUMBER")
 @Composable
 private fun BodyContent(
-    body: String,
+    body: MonitorLogDetailsViewModel.State.BodyState,
     mode: EditorMode,
 ) = Column(
     modifier = Modifier
@@ -398,7 +400,7 @@ private fun BodyContent(
         .padding(12.dp),
 ) {
     when {
-        BodyVisualTransformation.isBodyTooLarge(body) -> {
+        BodyVisualTransformation.isBodyTooLarge(body.bodyOrPreview) -> {
             Text(
                 text = LocalStrings.current.components.editor.largeFileSyntaxHighlightError,
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
@@ -406,12 +408,12 @@ private fun BodyContent(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = body,
+                text = body.bodyOrPreview,
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
-        body.isEmpty() ->
+        body.bodyOrPreview.isEmpty() ->
             Text(
                 text = LocalStrings.current.widgets.logDetails.emptyBody,
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
@@ -419,9 +421,9 @@ private fun BodyContent(
             )
         else -> {
             val annotatedBody =
-                BodyVisualTransformation.buildEditorOutputTransformation(mode)?.highlight(body)
+                BodyVisualTransformation.buildEditorOutputTransformation(mode)?.highlight(body.bodyOrPreview)
             Text(
-                text = annotatedBody ?: AnnotatedString(body),
+                text = annotatedBody ?: AnnotatedString(body.bodyOrPreview),
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
             )
         }

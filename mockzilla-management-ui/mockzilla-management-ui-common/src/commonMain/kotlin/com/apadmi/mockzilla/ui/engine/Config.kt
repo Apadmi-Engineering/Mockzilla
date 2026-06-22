@@ -11,4 +11,5 @@ internal object Config {
         Platform.Js -> Version.parse("2.99.99")
         else -> throw IllegalStateException("Unsupported platform ${Platform.current}")
     }
+    val nonDestructiveLogsMinVersion = Version.parse("4.0.0")
 }

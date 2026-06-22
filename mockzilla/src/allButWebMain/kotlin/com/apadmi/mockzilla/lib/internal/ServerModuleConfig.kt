@@ -103,6 +103,37 @@ internal fun Application.configureEndpoints(
                 )
             }
         }
+        get("/api/monitor-logs/poll") {
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                val since = call.request.queryParameters["since"]?.toLongOrNull()
+                val clientSessionStart = call.request.queryParameters["clientSessionStart"]?.toLongOrNull()
+                clientSessionStart?.let { di.managementApiController.onClientSessionStart(it) }
+                call.respond(
+                    MonitorLogsResponse(di.metaData.appPackage, di.managementApiController.getLogsSince(since))
+                )
+            }
+        }
+        get("/api/monitor-logs/{logId}/full-body") {
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                val logId = call.parameters["logId"] ?: run {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@safeResponse
+                }
+                val detail = di.managementApiController.getFullBodyLogDetail(logId)
+                detail?.let {
+                    call.respond(detail)
+                } ?: call.respond(HttpStatusCode.NotFound)
+            }
+        }
+        delete("/api/monitor-logs") {
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                di.managementApiController.clearAllLogEntries()
+                call.respond(HttpStatusCode.NoContent)
+            }
+        }
         get("/api/app-icon") {
             safeResponse(di.logger) { call ->
                 call.allowCors()

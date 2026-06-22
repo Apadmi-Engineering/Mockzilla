@@ -98,7 +98,8 @@ val EnStrings = Strings(
             responseBody = "Response body",
             noHeaders = "None",
             noBody = "Empty",
-            emptyBody = "(none)"
+            emptyBody = "(none)",
+            bodyLoadError = "Could not load full body"
         ),
         endpoints = Strings.Widgets.Endpoints(
             filterPlaceholder = "Filter endpoints...",
