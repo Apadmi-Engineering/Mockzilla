@@ -236,4 +236,204 @@ class ManagementApiControllerTests {
             result
         )
     }
+
+    @Test
+    fun `getLogsSince - filters out older logs`() = runTest {
+        /* Setup */
+        val oldEvent = LogEvent(
+            timestamp = 1,
+            url = "url",
+            requestBody = "body",
+            requestHeaders = mapOf("a" to "b"),
+            responseBody = "response body",
+            responseHeaders = mapOf("c" to "d"),
+            status = HttpStatusCode.BadGateway,
+            delay = 4,
+            method = "method",
+            isIntendedFailure = false
+        )
+        val matchingEvent = LogEvent(
+            timestamp = 5,
+            url = "url",
+            requestBody = "body",
+            requestHeaders = mapOf("a" to "b"),
+            responseBody = "response body",
+            responseHeaders = mapOf("c" to "d"),
+            status = HttpStatusCode.BadGateway,
+            delay = 4,
+            method = "method",
+            isIntendedFailure = false
+        )
+        val newerEvent = LogEvent(
+            timestamp = 10,
+            url = "url",
+            requestBody = "body",
+            requestHeaders = mapOf("a" to "b"),
+            responseBody = "response body",
+            responseHeaders = mapOf("c" to "d"),
+            status = HttpStatusCode.BadGateway,
+            delay = 4,
+            method = "method",
+            isIntendedFailure = false
+        )
+        val sut = ManagementApiController(
+            dummyEndpoints,
+            FakeLocalCacheService(),
+            FakeMockServerMonitor(allLogEvents = listOf(oldEvent, matchingEvent, newerEvent))
+        )
+
+        /* Run Test */
+        val result = sut.getLogsSince(3L)
+
+        /* Verify */
+        assertEquals(listOf(matchingEvent, newerEvent), result)
+    }
+
+    @Test
+    fun `getLogsSince - null since - returns all logs`() = runTest {
+        /* Setup */
+        val oldEvent = LogEvent(
+            timestamp = 1,
+            url = "url",
+            requestBody = "body",
+            requestHeaders = mapOf("a" to "b"),
+            responseBody = "response body",
+            responseHeaders = mapOf("c" to "d"),
+            status = HttpStatusCode.BadGateway,
+            delay = 4,
+            method = "method",
+            isIntendedFailure = false
+        )
+        val newerEvent = LogEvent(
+            timestamp = 5,
+            url = "url",
+            requestBody = "body",
+            requestHeaders = mapOf("a" to "b"),
+            responseBody = "response body",
+            responseHeaders = mapOf("c" to "d"),
+            status = HttpStatusCode.BadGateway,
+            delay = 4,
+            method = "method",
+            isIntendedFailure = false
+        )
+        val sut = ManagementApiController(
+            dummyEndpoints,
+            FakeLocalCacheService(),
+            FakeMockServerMonitor(allLogEvents = listOf(oldEvent, newerEvent))
+        )
+
+        /* Run Test */
+        val result = sut.getLogsSince(null)
+
+        /* Verify */
+        assertEquals(listOf(oldEvent, newerEvent), result)
+    }
+
+    @Test
+    fun `getLogsSince - no logs newer than timestamp - returns empty list`() = runTest {
+        /* Setup */
+        val oldEvent = LogEvent(
+            timestamp = 1,
+            url = "url",
+            requestBody = "body",
+            requestHeaders = mapOf("a" to "b"),
+            responseBody = "response body",
+            responseHeaders = mapOf("c" to "d"),
+            status = HttpStatusCode.BadGateway,
+            delay = 4,
+            method = "method",
+            isIntendedFailure = false
+        )
+        val sut = ManagementApiController(
+            dummyEndpoints,
+            FakeLocalCacheService(),
+            FakeMockServerMonitor(allLogEvents = listOf(oldEvent))
+        )
+
+        /* Run Test */
+        val result = sut.getLogsSince(Long.MAX_VALUE)
+
+        /* Verify */
+        assertEquals(emptyList(), result)
+    }
+
+    @Test
+    fun `onClientSessionStart - calls through`() = runTest {
+        /* Setup */
+        val fakeMockServerMonitor = FakeMockServerMonitor()
+        val sut = ManagementApiController(
+            dummyEndpoints,
+            FakeLocalCacheService(),
+            fakeMockServerMonitor
+        )
+
+        /* Run Test */
+        sut.onClientSessionStart(42L)
+
+        /* Verify */
+        assertEquals(42L, fakeMockServerMonitor.onClientSessionStartArgument)
+    }
+
+    @Test
+    fun `getFullBodyLogDetail - truncated event - returns full body from disk`() = runTest {
+        /* Setup */
+        val logId = "test-log-id"
+        val truncatedInMemoryEvent = LogEvent(
+            id = logId,
+            timestamp = 3,
+            url = "url",
+            requestBody = "truncated...",
+            requestHeaders = mapOf("a" to "b"),
+            responseBody = "response body",
+            responseHeaders = mapOf("c" to "d"),
+            status = HttpStatusCode.BadGateway,
+            delay = 4,
+            method = "method",
+            isIntendedFailure = false,
+            isRequestBodyTruncated = true
+        )
+        val fullEventFromDisk = LogEvent(
+            id = logId,
+            timestamp = 3,
+            url = "url",
+            requestBody = "full request body content",
+            requestHeaders = mapOf("a" to "b"),
+            responseBody = "response body",
+            responseHeaders = mapOf("c" to "d"),
+            status = HttpStatusCode.BadGateway,
+            delay = 4,
+            method = "method",
+            isIntendedFailure = false
+        )
+        val sut = ManagementApiController(
+            dummyEndpoints,
+            FakeLocalCacheService(),
+            FakeMockServerMonitor(
+                allLogEvents = listOf(truncatedInMemoryEvent),
+                diskBodyCache = mapOf(logId to fullEventFromDisk)
+            )
+        )
+
+        /* Run Test */
+        val result = sut.getFullBodyLogDetail(logId)
+
+        /* Verify */
+        assertEquals(fullEventFromDisk, result)
+    }
+
+    @Test
+    fun `getFullBodyLogDetail - not found - returns null`() = runTest {
+        /* Setup */
+        val sut = ManagementApiController(
+            dummyEndpoints,
+            FakeLocalCacheService(),
+            FakeMockServerMonitor()
+        )
+
+        /* Run Test */
+        val result = sut.getFullBodyLogDetail("log-id")
+
+        /* Verify */
+        assertNull(result)
+    }
 }

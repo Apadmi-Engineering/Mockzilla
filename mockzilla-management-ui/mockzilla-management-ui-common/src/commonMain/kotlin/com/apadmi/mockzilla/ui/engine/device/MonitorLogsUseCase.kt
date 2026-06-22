@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.ui.engine.device
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
+import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.Config
 
@@ -12,7 +13,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 internal interface MonitorLogsUseCase {
-    suspend fun getMonitorLogs(device: Device): Result<List<LogEvent>>
+    suspend fun getMonitorLogs(device: Device): Result<MonitorLogsResponse>
     suspend fun clearMonitorLogs(device: Device): Result<Unit>
     suspend fun fetchLogDetail(device: Device, logId: String): Result<LogEvent>
 }
@@ -31,7 +32,7 @@ internal class MonitorLogsUseCaseImpl(
             .map { it.mockzillaVersion.toVersion() >= Config.nonDestructiveLogsMinVersion }
             .getOrDefault(false)
 
-    override suspend fun getMonitorLogs(device: Device): Result<List<LogEvent>> = mutex.withLock {
+    override suspend fun getMonitorLogs(device: Device): Result<MonitorLogsResponse> = mutex.withLock {
         if (doesSupportNonDestructiveLogs(device)) {
             getMonitorLogsNewPath(device)
         } else {
@@ -39,30 +40,36 @@ internal class MonitorLogsUseCaseImpl(
         }
     }
 
-    private suspend fun getMonitorLogsNewPath(device: Device): Result<List<LogEvent>> {
-        val cacheKey = cache.keys.firstOrNull { it.device == device }
-        val existing = cacheKey?.let { cache[it] } ?: emptyList()
+    private suspend fun getMonitorLogsNewPath(device: Device): Result<MonitorLogsResponse> {
+        val existingKey = cache.keys.firstOrNull { it.device == device }
+        val existing = existingKey?.let { cache[it] } ?: emptyList()
         val since = existing.lastOrNull()?.timestamp?.let { it - 1 }
 
-        return managementLogsService.fetchMonitorLogsSince(device, since, clientSessionStart).map { response ->
-            val key = cacheKey ?: CacheKey(device, response.appPackage)
-            val merged = (existing + response.logs)
-                .distinctBy { it.id }
-                .sortedBy { it.timestamp }
-                .takeLast(clientMemoryCapacity)
-            cache[key] = merged
-            merged
-        }
+        return managementLogsService.fetchMonitorLogsSince(device, since, clientSessionStart)
+            .map { response ->
+                val appPackageChanged =
+                    existingKey != null && existingKey.appPackage != response.appPackage
+                if (appPackageChanged) {
+                    cache.remove(existingKey)
+                    metaDataUseCase.invalidate(device)
+                }
+                val key = CacheKey(device, response.appPackage)
+                val base = if (appPackageChanged) emptyList() else existing
+                val merged = (base + response.logs)
+                    .distinctBy { it.id }
+                    .sortedBy { it.timestamp }
+                    .takeLast(clientMemoryCapacity)
+                cache[key] = merged
+                MonitorLogsResponse(appPackage = response.appPackage, logs = merged)
+            }
     }
 
-    private suspend fun getMonitorLogsLegacyPath(device: Device): Result<List<LogEvent>> =
+    private suspend fun getMonitorLogsLegacyPath(device: Device): Result<MonitorLogsResponse> =
         managementLogsService.fetchMonitorLogsAndClearBuffer(device, hideFromLogs = true).map { response ->
             val cacheKey = CacheKey(device, response.appPackage)
             val existingLogs = cache.getOrElse(cacheKey) { emptyList() }
-
-            (existingLogs + response.logs).also {
-                cache[cacheKey] = it
-            }
+            val merged = (existingLogs + response.logs).also { cache[cacheKey] = it }
+            MonitorLogsResponse(appPackage = response.appPackage, logs = merged)
         }
 
     override suspend fun clearMonitorLogs(device: Device): Result<Unit> = mutex.withLock {

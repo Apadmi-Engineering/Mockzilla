@@ -40,12 +40,12 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
     )
 
     private fun givenOldServer() {
-        coEvery { metaDataUseCase.getMetaData(Device.dummy(), any()) }
+        coEvery { metaDataUseCase.getMetaData(Device.dummy()) }
             .returns(Result.success(MetaData.dummy().copy(mockzillaVersion = "1.0.0")))
     }
 
     private fun givenNewServer() {
-        coEvery { metaDataUseCase.getMetaData(Device.dummy(), any()) }
+        coEvery { metaDataUseCase.getMetaData(Device.dummy()) }
             .returns(Result.success(MetaData.dummy().copy(mockzillaVersion = "4.0.0")))
     }
 
@@ -101,11 +101,11 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
 
         /* Verify */
         assertEquals(
-            listOf(dummyLogEvent), result1.getOrThrow().toList()
+            listOf(dummyLogEvent), result1.getOrThrow().logs
         )
         assertEquals(
             listOf(dummyLogEvent, dummyLogEvent.copy(url = "https://www.example.com")),
-            result2.getOrThrow().toList()
+            result2.getOrThrow().logs
         )
     }
 
@@ -140,13 +140,13 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify */
-        assertEquals(listOf<LogEvent>(), result.getOrThrow())
+        assertEquals(listOf<LogEvent>(), result.getOrThrow().logs)
     }
 
     @Test
     fun `clearMonitorLogs old path - metaData fails - returns failure`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCase.getMetaData(Device.dummy(), any()) }
+        coEvery { metaDataUseCase.getMetaData(Device.dummy()) }
             .returns(Result.failure(Exception()))
         val sut = createSut()
 
@@ -172,7 +172,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify */
-        assertEquals(listOf(dummyLogEvent), result.getOrThrow())
+        assertEquals(listOf(dummyLogEvent), result.getOrThrow().logs)
     }
 
     @Test
@@ -193,7 +193,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify */
-        assertEquals(listOf(dummyLogEvent, secondEvent), result.getOrThrow())
+        assertEquals(listOf(dummyLogEvent, secondEvent), result.getOrThrow().logs)
     }
 
     @Test
@@ -213,7 +213,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify — same event returned in both polls should only appear once */
-        assertEquals(listOf(dummyLogEvent), result.getOrThrow())
+        assertEquals(listOf(dummyLogEvent), result.getOrThrow().logs)
     }
 
     @Test
@@ -231,7 +231,7 @@ class MonitorLogsUseCaseImplTests : CoroutineTest() {
         val result = sut.getMonitorLogs(Device.dummy())
 
         /* Verify */
-        assertEquals(listOf(eventAtT1, eventAtT3), result.getOrThrow())
+        assertEquals(listOf(eventAtT1, eventAtT3), result.getOrThrow().logs)
     }
 
     @Test

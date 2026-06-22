@@ -28,7 +28,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
     @Test
     fun `updateActiveDevice - updates device and notifies listeners`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(any(), any()) }.returns(Result.success(MetaData.dummy()))
+        coEvery { metaDataUseCaseMock.getMetaData(any()) }.returns(Result.success(MetaData.dummy()))
 
         val sut = createSut()
 
@@ -42,7 +42,6 @@ class ActiveDeviceManagerTests : CoroutineTest() {
             /* Verify */
             assertEquals(Device.dummy(), awaitItem()?.device)
             ensureAllEventsConsumed()
-            sut.cancelPolling()
         }
     }
 
@@ -55,7 +54,7 @@ class ActiveDeviceManagerTests : CoroutineTest() {
             mockzillaVersion = "99.99.99",
             deviceModel = "model"
         )
-        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(
             Result.success(MetaData.dummy())
         )
         val sut = createSut()
@@ -83,14 +82,13 @@ class ActiveDeviceManagerTests : CoroutineTest() {
             assertEquals(Device.dummy(), awaitItem()?.device)
 
             ensureAllEventsConsumed()
-            sut.cancelPolling()
         }
     }
 
     @Test
     fun `setActiveDeviceWithMetaData - incompatible version`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(
             Result.success(MetaData.dummy())
         )
         val sut = createSut()
@@ -105,7 +103,6 @@ class ActiveDeviceManagerTests : CoroutineTest() {
             /* Verify */
             assertFalse(sut.allDevices.first().isCompatibleMockzillaVersion)
             cancelAndIgnoreRemainingEvents()
-            sut.cancelPolling()
         }
     }
 
@@ -121,14 +118,13 @@ class ActiveDeviceManagerTests : CoroutineTest() {
             /* Verify */
             assertNull(awaitItem())
             ensureAllEventsConsumed()
-            sut.cancelPolling()
         }
     }
 
     @Test
     fun `removeDevice - device not selected - emits state change`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(
             Result.success(MetaData.dummy())
         )
         val sut = createSut()
@@ -144,14 +140,13 @@ class ActiveDeviceManagerTests : CoroutineTest() {
             awaitItem()
             assertTrue { sut.allDevices.isEmpty() }
             ensureAllEventsConsumed()
-            sut.cancelPolling()
         }
     }
 
     @Test
     fun `removeDevice - device selected - emits state change, clears selected device`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(
             Result.success(MetaData.dummy())
         )
         val sut = createSut()
@@ -171,75 +166,108 @@ class ActiveDeviceManagerTests : CoroutineTest() {
 
             /* Tear down */
             ensureAllEventsConsumed()
-            sut.cancelPolling()
         }
     }
 
     @Test
-    fun `monitorDeviceConnections - app package changes - notifies device change listeners`() = runBlockingTest {
+    fun `onLogPollSuccess - app package changes - re-fetches metadata and notifies listeners`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(
             Result.success(MetaData.dummy().copy(appPackage = "new.package"))
         )
-
         val sut = createSut()
+        sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy().copy(appPackage = "old.package"))
 
         sut.selectedDevice.test {
-            skipItems(1)
+            awaitItem()  // consume initial setActiveDeviceWithMetaData emission
+
             /* Run Test */
-            sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy().copy(appPackage = "old.package"))
+            sut.onLogPollSuccess(Device.dummy(), "new.package")
 
             /* Verify */
-            awaitItem().apply {
-                assertEquals(Device.dummy(), this?.device)
-                assertEquals("old.package", this?.metaData?.appPackage)
-            }
             awaitItem().apply {
                 assertEquals(Device.dummy(), this?.device)
                 assertEquals("new.package", this?.metaData?.appPackage)
             }
             ensureAllEventsConsumed()
-            sut.cancelPolling()
         }
     }
 
     @Test
-    fun `monitorDeviceConnections - app package the same - does not notify device change listeners`() = runBlockingTest {
+    fun `onLogPollSuccess - app package the same and connected - does not notify listeners`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(
             Result.success(MetaData.dummy())
         )
         val sut = createSut()
+        sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
 
         sut.selectedDevice.test {
-            skipItems(1)
-            /* Run Test */
-            sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
+            awaitItem()  // consume initial emission
 
-            /* Verify */
-            skipItems(1)  // One event for setting active device
+            /* Run Test */
+            sut.onLogPollSuccess(Device.dummy(), MetaData.dummy().appPackage)
+
+            /* Verify — no further events */
             expectNoEvents()
-            sut.cancelPolling()
         }
     }
 
     @Test
-    fun `monitorDeviceConnections - fails to get metadata - updates connection status`() = runBlockingTest {
+    fun `onLogPollSuccess - device was disconnected - re-fetches metadata and reconnects`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy(), true) }.returns(
-            Result.failure(Exception())
+        coEvery { metaDataUseCaseMock.getMetaData(Device.dummy()) }.returns(
+            Result.success(MetaData.dummy())
         )
         val sut = createSut()
+        sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
+        sut.onLogPollFailure(Device.dummy())  // disconnect first
 
-        sut.onDeviceConnectionStateChange.test {
+        sut.selectedDevice.test {
+            awaitItem()  // consume disconnected state
+
             /* Run Test */
-            sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
+            sut.onLogPollSuccess(Device.dummy(), MetaData.dummy().appPackage)
 
             /* Verify */
-            assertEquals(Unit, awaitItem())
-            assertFalse(sut.allDevices.first().isConnected)
+            assertTrue(awaitItem()?.isConnected == true)
             ensureAllEventsConsumed()
-            sut.cancelPolling()
+        }
+    }
+
+    @Test
+    fun `onLogPollFailure - device connected - marks disconnected and notifies`() = runBlockingTest {
+        /* Setup */
+        val sut = createSut()
+        sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
+
+        sut.selectedDevice.test {
+            awaitItem()  // consume initial emission
+
+            /* Run Test */
+            sut.onLogPollFailure(Device.dummy())
+
+            /* Verify */
+            assertFalse(awaitItem()?.isConnected ?: true)
+            ensureAllEventsConsumed()
+        }
+    }
+
+    @Test
+    fun `onLogPollFailure - device already disconnected - no-op`() = runBlockingTest {
+        /* Setup */
+        val sut = createSut()
+        sut.setActiveDeviceWithMetaData(Device.dummy(), MetaData.dummy())
+        sut.onLogPollFailure(Device.dummy())  // disconnect once
+
+        sut.selectedDevice.test {
+            awaitItem()  // consume disconnected state
+
+            /* Run Test */
+            sut.onLogPollFailure(Device.dummy())
+
+            /* Verify — no further events */
+            expectNoEvents()
         }
     }
 }

@@ -43,8 +43,8 @@ internal class MetaDataWidgetViewModel(
 
     private suspend fun pollRequests() {
         while (true) {
-            monitorLogsUseCase.getMonitorLogs(device).onSuccess { logs ->
-                latestRequestCount = logs.count()
+            monitorLogsUseCase.getMonitorLogs(device).onSuccess { result ->
+                latestRequestCount = result.logs.size
                 updateSessionStats()
             }
             delay(1_000)
