@@ -124,7 +124,8 @@ data class Strings(
             val apiErrorDescription: String,
             val connectionErrorTitlesAndBodies: List<Pair<String, String>>,
             val statusLabel: String,
-            val messageLabel: String
+            val messageLabel: String,
+            val connectionErrorTitle: String
         )
 
         /**

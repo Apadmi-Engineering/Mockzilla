@@ -109,6 +109,7 @@ fun ErrorBanner(
 
         Row(
             modifier = Modifier
+                .fillMaxWidth()
                 .drawBehind {
                     val strokeWidth = 2.dp.value * density
                     val y = size.height - strokeWidth / 2
@@ -143,21 +144,25 @@ fun ErrorBanner(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            Text(
-                modifier = Modifier.weight(1f),
-                text = buildAnnotatedString {
-                    withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurfaceMuted)) {
-                        append(strings.widgets.errorBanner.apiErrorDescription)
-                    }
-
-                    (state as? Connected.ErrorBannerState.ApiError)?.status?.let {
-                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) {
-                            append(" · ${it.value}")
+            if (state is Connected.ErrorBannerState.ApiError) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = buildAnnotatedString {
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurfaceMuted)) {
+                            append(strings.widgets.errorBanner.apiErrorDescription)
                         }
-                    }
-                },
-                style = MaterialTheme.typography.bodySmall,
-            )
+
+                        state.status?.let {
+                            withStyle(SpanStyle(color = MaterialTheme.colorScheme.error)) {
+                                append(" · ${it.value}")
+                            }
+                        }
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            } else {
+                Box(Modifier.weight(1f))
+            }
 
             BaseButton(variant = ButtonVariant.Soft, onClick = {
                 detailsExpanded = !detailsExpanded
@@ -241,9 +246,14 @@ private fun ApiErrorDetails(state: Connected.ErrorBannerState.ApiError) = Text(
 )
 
 @Composable
-private fun DisconnectedDetails() = Text(
+private fun DisconnectedDetails(
+    strings: Strings.Widgets.ErrorBanner = LocalStrings.current.widgets.errorBanner
+) = Text(
     text = buildAnnotatedString {
-        LocalStrings.current.widgets.errorBanner.connectionErrorTitlesAndBodies.forEachIndexed { index, (title, body) ->
+        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+            appendLine(strings.connectionErrorTitle)
+        }
+        strings.connectionErrorTitlesAndBodies.forEachIndexed { index, (title, body) ->
             withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
                 append(title)
             }
@@ -255,13 +265,13 @@ private fun DisconnectedDetails() = Text(
             ) {
                 append(body)
             }
-            if (index != LocalStrings.current.widgets.errorBanner.connectionErrorTitlesAndBodies.lastIndex) {
+            if (index != strings.connectionErrorTitlesAndBodies.lastIndex) {
                 appendLine()
             }
         }
     },
     style = MaterialTheme.typography.labelLarge,
-    lineHeight = 16.sp,
+    lineHeight = 20.sp,
     color = MaterialTheme.colorScheme.onSurface
 )
 

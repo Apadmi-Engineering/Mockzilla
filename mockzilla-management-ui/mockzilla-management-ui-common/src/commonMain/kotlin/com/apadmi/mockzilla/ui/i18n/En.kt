@@ -224,12 +224,13 @@ val EnStrings = Strings(
             },
             apiErrorDescription = "This is an unexpected error, it's likely irrecoverable. Re-syncing everything is advised. (You will lose unsaved changes)",
             connectionErrorTitlesAndBodies = listOf(
-                " · App in foreground." to " Background apps may have networking suspended by the OS.",
-                " · Same network." to " Mockzilla discovers over LAN. Check Wi-Fi vs. tethering. ",
+                " · Is in the foreground." to " Background apps may have networking suspended by the OS.",
+                " · Is on the ame network." to " Mockzilla discovers over LAN. Check Wi-Fi vs. Data. ",
                 " · Port reachable." to " Confirm the Mockzilla port isn't blocked by a firewall or VPN."
             ),
             statusLabel = "Status: ",
-            messageLabel = "Message: "
+            messageLabel = "Message: ",
+            connectionErrorTitle = "Please ensure the App:",
         ),
         createEditPreset = Strings.Widgets.CreateEditPreset(
             createTitle = "Create Preset",
