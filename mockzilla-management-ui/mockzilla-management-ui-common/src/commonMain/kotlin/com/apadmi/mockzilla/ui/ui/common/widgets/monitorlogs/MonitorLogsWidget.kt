@@ -60,17 +60,10 @@ import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.formatTimestamp
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
-import kotlinx.datetime.Instant
-
-/** Extracts `HH:mm:ss.mmm` from epoch millis (UTC). */
-private fun Long.formatTimestamp(): String =
-    Instant.fromEpochMilliseconds(this)
-        .toString()
-        .substringAfter("T")
-        .substringBeforeLast("Z")
 
 @Suppress("MAGIC_NUMBER")
 @Composable
@@ -128,7 +121,7 @@ fun LogRow(
     ) {
         Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = event.timestamp.formatTimestamp(),
+                text = formatTimestamp(event.timestamp),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontFamily = monoFont,
                     fontWeight = FontWeight.Normal,

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -45,10 +44,9 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 private const val animationDuration = 200
 private const val rotationCollapsed = 0f
 private const val rotationExpanded = 90f
-private const val sectionCornerRadius = 8
 
 @Composable
-fun EdSection(
+fun EndpointDetailsSection(
     label: String,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
@@ -141,10 +139,10 @@ fun EdSection(
 @Composable
 private fun EdSectionPreview() = PreviewSurface {
     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        EdSection(label = "Identity", initiallyExpanded = true) {
+        EndpointDetailsSection(label = "Identity", initiallyExpanded = true) {
             Text("Content here")
         }
-        EdSection(label = "Response", initiallyExpanded = false) {
+        EndpointDetailsSection(label = "Response", initiallyExpanded = false) {
             Text("Hidden content")
         }
     }

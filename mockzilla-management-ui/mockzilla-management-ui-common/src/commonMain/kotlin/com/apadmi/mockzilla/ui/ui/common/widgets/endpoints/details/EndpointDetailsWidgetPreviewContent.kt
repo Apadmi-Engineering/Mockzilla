@@ -7,8 +7,8 @@ import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.LayoutMode
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.Presets
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 
 import io.ktor.http.HttpStatusCode
 
@@ -43,7 +43,7 @@ internal fun EndpointDetailsWidgetPreviewContent(
     onResetAll = {},
     onFailChange = {},
     onFilterPresetChanged = {},
-    onLayoutModeChanged = {},
+    onRowDensityChanged = {},
     onPresetMoreInfoClicked = {},
     onCreatePreset = {},
 )
@@ -60,7 +60,7 @@ internal fun endpointDetailsWidgetSuccessState(
     fail = fail,
     delayMillis = null,
     isLoading = false,
-    layoutMode = LayoutMode.Compact,
+    layoutMode = RowDensity.Compact,
     presets = Presets(
         appliedPreset = null,
         visiblePresets = mockPresets,

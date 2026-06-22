@@ -1,6 +1,6 @@
 @file:Suppress("MAGIC_NUMBER")
 
-package com.apadmi.mockzilla.ui.ui.common.components.editor
+package com.apadmi.mockzilla.ui.ui.common.utils.formatting
 
 /**
  * @property startIndex First index of token in html

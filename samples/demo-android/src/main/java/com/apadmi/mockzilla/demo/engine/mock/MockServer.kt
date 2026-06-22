@@ -18,8 +18,7 @@ private val getMyPig = EndpointConfiguration
     .configureDashboardOverrides {
         addPreset(
             name = "George",
-            description = "A pig called George",
-            response = MockzillaHttpResponse(
+            response = MockzillaHttpResponse.successJson(
                 body = Json.encodeToString(
                     AnimalDto(
                         animal = AnimalDto.AnimalTypeDto.Pig,
@@ -28,7 +27,7 @@ private val getMyPig = EndpointConfiguration
                         biography = "George Pig is a fictional character in the hugely popular British animated television series, Peppa Pig. He is the younger brother of the show's star, Peppa Pig.",
                         owner = "Daddy Pig"
                     )
-                )
+                ),
             )
         )
 
@@ -45,7 +44,7 @@ private val getMyPig = EndpointConfiguration
         )
     }
     .setDefaultHandler {
-        MockzillaHttpResponse(
+        MockzillaHttpResponse.successJson(
             body = Json.encodeToString(
                 AnimalDto(
                     animal = AnimalDto.AnimalTypeDto.Pig,
@@ -67,7 +66,7 @@ private val getMySheep = EndpointConfiguration
         addPreset(
             name = "Dolly",
             description = "The world's first cloned mammal, a Finn-Dorset sheep born in 1996",
-            response = MockzillaHttpResponse(
+            response = MockzillaHttpResponse.successJson(
                 body = Json.encodeToString(
                     AnimalDto(
                         animal = AnimalDto.AnimalTypeDto.Sheep,
@@ -93,7 +92,7 @@ private val getMySheep = EndpointConfiguration
         )
     }
     .setDefaultHandler {
-        MockzillaHttpResponse(
+        MockzillaHttpResponse.successJson(
             body = Json.encodeToString(
                 AnimalDto(
                     animal = AnimalDto.AnimalTypeDto.Sheep,
@@ -115,7 +114,7 @@ private val getMyCow = EndpointConfiguration
         addPreset(
             name = "Angry Bessie",
             description = "A famously long-lived Irish cow who held two Guinness World Records",
-            response = MockzillaHttpResponse(
+            response = MockzillaHttpResponse.successJson(
                 body = Json.encodeToString(
                     AnimalDto(
                         animal = AnimalDto.AnimalTypeDto.Cow,
@@ -141,7 +140,7 @@ private val getMyCow = EndpointConfiguration
         )
     }
     .setDefaultHandler {
-        MockzillaHttpResponse(
+        MockzillaHttpResponse.successJson(
             body = Json.encodeToString(
                 AnimalDto(
                     animal = AnimalDto.AnimalTypeDto.Cow,
