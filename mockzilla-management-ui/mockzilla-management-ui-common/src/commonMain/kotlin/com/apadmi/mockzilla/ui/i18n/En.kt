@@ -60,6 +60,7 @@ val EnStrings = Strings(
         ),
         metaData = Strings.Widgets.MetaData(
             title = "Meta Data",
+            viewAppMetaData = "View app metadata",
             noDeviceConnected = "No device connected",
             appName = "App Name",
             appPackage = "App Package",

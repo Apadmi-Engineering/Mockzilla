@@ -45,21 +45,23 @@ internal class MonitorLogsUseCaseImpl(
         val existing = existingKey?.let { cache[it] } ?: emptyList()
         val since = existing.lastOrNull()?.timestamp?.let { it - 1 }
 
-        return managementLogsService.fetchMonitorLogsSince(device, since, clientSessionStart).map { response ->
-            val appPackageChanged = existingKey != null && existingKey.appPackage != response.appPackage
-            if (appPackageChanged) {
-                cache.remove(existingKey)
-                metaDataUseCase.invalidate(device)
+        return managementLogsService.fetchMonitorLogsSince(device, since, clientSessionStart)
+            .map { response ->
+                val appPackageChanged =
+                    existingKey != null && existingKey.appPackage != response.appPackage
+                if (appPackageChanged) {
+                    cache.remove(existingKey)
+                    metaDataUseCase.invalidate(device)
+                }
+                val key = CacheKey(device, response.appPackage)
+                val base = if (appPackageChanged) emptyList() else existing
+                val merged = (base + response.logs)
+                    .distinctBy { it.id }
+                    .sortedBy { it.timestamp }
+                    .takeLast(clientMemoryCapacity)
+                cache[key] = merged
+                MonitorLogsResponse(appPackage = response.appPackage, logs = merged)
             }
-            val key = CacheKey(device, response.appPackage)
-            val base = if (appPackageChanged) emptyList() else existing
-            val merged = (base + response.logs)
-                .distinctBy { it.id }
-                .sortedBy { it.timestamp }
-                .takeLast(clientMemoryCapacity)
-            cache[key] = merged
-            MonitorLogsResponse(appPackage = response.appPackage, logs = merged)
-        }
     }
 
     private suspend fun getMonitorLogsLegacyPath(device: Device): Result<MonitorLogsResponse> =
