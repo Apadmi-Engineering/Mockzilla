@@ -1,5 +1,11 @@
 package com.apadmi.mockzilla.desktop.ui.deviceconnection
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -43,8 +49,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,6 +77,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 
 private const val compactLayoutBreakpointDp = 1100
+private const val rippleAnimationDuration = 2500
 
 private fun DetectedDevice.State.toolTipText(strings: Strings) = when (this) {
     DetectedDevice.State.NotYourSimulator -> strings.widgets.deviceConnection.tooltips.notYourSimulator
@@ -82,7 +91,6 @@ private fun DetectedDevice.State.color() = when (this) {
     DetectedDevice.State.ReadyToConnect -> MaterialTheme.colorScheme.success.primary
     DetectedDevice.State.Removed,
     DetectedDevice.State.NotYourSimulator -> MaterialTheme.colorScheme.error
-
     DetectedDevice.State.Resolving -> MaterialTheme.colorScheme.onSurfaceMuted
 }
 
@@ -346,17 +354,103 @@ private fun DiscoveredDevicesSection(
                 fontFamily = LocalMonoFontFamily.current,
             )
         }
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            itemsIndexed(devices, key = { _, device -> device.connectionId }) { _, device ->
-                DiscoveredDeviceRow(
-                    device = device,
-                    onTapDevice = onTapDevice,
-                    strings = strings,
-                )
+        if (devices.isEmpty()) {
+            NoDevicesFound(strings)
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                itemsIndexed(devices, key = { _, device -> device.connectionId }) { _, device ->
+                    DiscoveredDeviceRow(
+                        device = device,
+                        onTapDevice = onTapDevice,
+                        strings = strings,
+                    )
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun NoDevicesFound(strings: Strings) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val rippleProgress by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(rippleAnimationDuration, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier.size(120.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            val color = MaterialTheme.colorScheme.outlineVariant
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                // Static circles
+                drawCircle(
+                    color = color,
+                    style = Stroke(width = 1.dp.toPx()),
+                    radius = 60.dp.toPx()
+                )
+                drawCircle(
+                    color = color,
+                    style = Stroke(width = 1.dp.toPx()),
+                    radius = 45.dp.toPx()
+                )
+                drawCircle(
+                    color = color,
+                    style = Stroke(width = 1.dp.toPx()),
+                    radius = 30.dp.toPx()
+                )
+
+                // Expanding ripple
+                @Suppress("FLOAT_IN_ACCURATE_CALCULATIONS")
+                drawCircle(
+                    color = color.copy(alpha = (1f - rippleProgress).coerceIn(0f, 1f)),
+                    style = Stroke(width = 2.dp.toPx()),
+                    radius = 30.dp.toPx() + (rippleProgress * 30.dp.toPx())
+                )
+            }
+            Surface(
+                modifier = Modifier.size(40.dp),
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Box(modifier = Modifier.padding(8.dp)) {
+                    Image(
+                        imageVector = Icons.MockzillaLogo,
+                        contentDescription = null,
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = strings.widgets.deviceConnection.noDevicesFound,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = strings.widgets.deviceConnection.noDevicesDescription,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
+            modifier = Modifier.padding(horizontal = 32.dp)
+        )
     }
 }
 
@@ -488,6 +582,24 @@ private fun BulletItem(
         text = text,
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceMuted
+    )
+}
+
+@Preview(
+    name = "Medium Tablet - Empty",
+    widthDp = 1280,
+    heightDp = 800,
+)
+@Composable
+private fun DeviceConnectionWidgetEmptyPreview() = PreviewSurface {
+    DeviceConnectionContent(
+        state = State(
+            ipAndPort = "",
+            connectionState = State.ConnectionState.Disconnected,
+            devices = emptyList(),
+        ),
+        onIpAndPortChanged = {},
+        onTapDevice = {},
     )
 }
 
