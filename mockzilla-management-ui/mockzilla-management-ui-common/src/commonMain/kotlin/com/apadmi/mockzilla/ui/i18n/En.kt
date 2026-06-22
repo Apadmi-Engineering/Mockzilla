@@ -150,6 +150,7 @@ val EnStrings = Strings(
             secondLabel = { "${it}s" },
             notSet = "Not Set",
             clear = "Clear",
+            invalidRange = "Enter a value between 0 and 60 seconds",
         ),
         endpointDetails = Strings.Widgets.EndpointDetails(
             title = "Editor",

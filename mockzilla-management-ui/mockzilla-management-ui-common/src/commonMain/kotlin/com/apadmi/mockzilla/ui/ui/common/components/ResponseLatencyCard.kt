@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -20,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,7 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,11 +48,14 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
 private const val buttonCornerRadiusDark = 4
 private const val buttonCornerRadiusLight = 6
+private const val msPerSecond = 1000
+private const val maxLatencySeconds = 60.0
 
 private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
 
@@ -56,7 +64,32 @@ private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
 
 private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
-@Suppress("MAGIC_NUMBER", "LONG_PARAMETER_LIST")
+private fun Int.msToSecondsText(): String {
+    val seconds = this / msPerSecond.toDouble()
+    return if (seconds == seconds.toLong().toDouble()) {
+        seconds.toLong().toString()
+    } else {
+        seconds.toString().trimEnd('0').trimEnd('.')
+    }
+}
+
+private fun String.secondsTextToMs(): Int? = toDoubleOrNull()?.let { (it * msPerSecond).roundToInt() }
+
+private fun String.filterAsDecimal(): String {
+    val digitsAndDot = filter { it.isDigit() || it == '.' }
+    val firstDotIndex = digitsAndDot.indexOf('.')
+    return if (firstDotIndex == -1) {
+        digitsAndDot
+    } else {
+        digitsAndDot.take(firstDotIndex + 1) + digitsAndDot.substring(firstDotIndex + 1).filter { it.isDigit() }
+    }
+}
+
+@Suppress(
+    "MAGIC_NUMBER",
+    "LONG_PARAMETER_LIST",
+    "FLOAT_IN_ACCURATE_CALCULATIONS"
+)
 @Composable
 internal fun ResponseLatencyCard(
     modifier: Modifier = Modifier,
@@ -68,14 +101,35 @@ internal fun ResponseLatencyCard(
     showBorder: Boolean = true,
     strings: Strings = LocalStrings.current,
 ) {
-    var value by remember(initialValue) {
+    var value by remember {
+        mutableStateOf(initialValue)
+    }
+    var textValue by remember {
+        mutableStateOf(initialValue?.msToSecondsText() ?: "")
+    }
+    var isError by remember {
+        mutableStateOf(false)
+    }
+    var lastEmittedValue by remember {
         mutableStateOf(initialValue)
     }
 
-    val updateValue = remember(initialValue) {
+    LaunchedEffect(initialValue) {
+        if (initialValue != lastEmittedValue) {
+            value = initialValue
+            textValue = initialValue?.msToSecondsText() ?: ""
+            isError = false
+            lastEmittedValue = initialValue
+        }
+    }
+
+    val updateValue = remember {
         { it: Int ->
             val clamped = it.clamped()
             value = clamped
+            textValue = clamped.msToSecondsText()
+            isError = false
+            lastEmittedValue = clamped
             onChange(clamped)
         }
     }
@@ -151,57 +205,110 @@ internal fun ResponseLatencyCard(
             }
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        Column(
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(44.dp)
-                    .background(
-                        color = colorScheme.background,
-                        shape = componentShape,
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = colorScheme.outline,
-                        shape = componentShape,
-                    )
-                    .padding(horizontal = 12.dp),
-                contentAlignment = Alignment.CenterStart
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(44.dp)
+                        .background(
+                            color = colorScheme.background,
+                            shape = componentShape,
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = if (isError) colorScheme.error else colorScheme.outline,
+                            shape = componentShape,
+                        )
+                        .padding(horizontal = 12.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    BasicTextField(
+                        value = textValue,
+                        onValueChange = { newText ->
+                            val filtered = newText.filterAsDecimal()
+                            val seconds = filtered.toDoubleOrNull()
+                            if (seconds != null && (seconds < 0.0 || seconds > maxLatencySeconds)) {
+                                textValue = ""
+                                value = null
+                                isError = true
+                            } else {
+                                textValue = filtered
+                                isError = false
+                                val parsed = filtered.secondsTextToMs()
+                                value = parsed
+                                parsed?.let {
+                                    val clamped = parsed.clamped()
+                                    lastEmittedValue = clamped
+                                    onChange(clamped)
+                                }
+                            }
+                        },
+                        singleLine = true,
+                        textStyle = MaterialTheme.typography.bodySmall.copy(
+                            fontFamily = mockzillaMonoFontFamily(),
+                            color = value?.let {
+                                colorScheme.warning.primary
+                            } ?: colorScheme.onSurfaceMuted,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.Start,
+                        ),
+                        cursorBrush = SolidColor(colorScheme.primary),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        modifier = Modifier.fillMaxWidth(),
+                        decorationBox = { innerTextField ->
+                            Box(contentAlignment = Alignment.CenterStart) {
+                                if (textValue.isEmpty()) {
+                                    Text(
+                                        text = strings.widgets.latency.notSet,
+                                        style = MaterialTheme.typography.bodySmall.copy(
+                                            fontFamily = mockzillaMonoFontFamily(),
+                                            color = colorScheme.onSurfaceMuted,
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Normal,
+                                        ),
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        },
+                    )
+                }
+
+                SmallSquareButton(onClick = { updateValue((value ?: 0) - 100) }) {
+                    Icon(
+                        imageVector = Icons.Default.Remove,
+                        contentDescription = null,
+                        tint = colorScheme.onSurface,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+
+                SmallSquareButton(onClick = { updateValue((value ?: 0) + 100) }) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = colorScheme.onSurface,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+            }
+
+            if (isError) {
                 Text(
-                    text = value?.let { strings.widgets.latency.millisecondLabel(it) } ?: strings.widgets.latency.notSet,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontFamily = mockzillaMonoFontFamily(),
-                        color = value?.let {
-                            colorScheme.warning.primary
-                        } ?: colorScheme.onSurfaceMuted,
-                        fontSize = 12.sp,
+                    text = strings.widgets.latency.invalidRange,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = colorScheme.error,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Normal,
                     ),
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            SmallSquareButton(onClick = { updateValue((value ?: 0) - 100) }) {
-                Icon(
-                    imageVector = Icons.Default.Remove,
-                    contentDescription = null,
-                    tint = colorScheme.onSurface,
-                    modifier = Modifier.size(20.dp),
-                )
-            }
-
-            SmallSquareButton(onClick = { updateValue((value ?: 0) + 100) }) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = colorScheme.onSurface,
-                    modifier = Modifier.size(20.dp),
                 )
             }
         }
