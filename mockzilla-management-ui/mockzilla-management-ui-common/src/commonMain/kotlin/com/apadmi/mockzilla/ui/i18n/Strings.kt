@@ -256,6 +256,8 @@ data class Strings(
          * @property scanning
          * @property connect
          * @property dot
+         * @property noDevicesFound
+         * @property noDevicesDescription
          */
         data class DeviceConnection(
             val title: String,
@@ -281,6 +283,8 @@ data class Strings(
             val connectAutomatically: String,
             val discoveredNetwork: String,
             val scanning: String,
+            val noDevicesFound: String,
+            val noDevicesDescription: String,
             val connect: String,
             val dot: String,
         ) {
