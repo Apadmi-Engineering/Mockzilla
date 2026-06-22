@@ -59,7 +59,7 @@ class MockzillaManagementSdkActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         startMockzillaMobileUiKoin(module {
-            single { FileIo(applicationContext.cacheDir) }
+            single { FileIo(applicationContext.filesDir) }
         })
 
         setContent {
