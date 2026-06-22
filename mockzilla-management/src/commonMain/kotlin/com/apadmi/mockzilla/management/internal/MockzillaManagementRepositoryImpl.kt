@@ -154,6 +154,37 @@ MockzillaManagement.AppIconService {
         delete(connection, "/api/monitor-logs")
     }.alsoLogFailure("DELETE /api/monitor-logs")
 
+    override suspend fun fetchMonitorLogsSince(
+        connection: MockzillaConnectionConfig,
+        since: Long?,
+        clientSessionStart: Long,
+    ) = runner<MonitorLogsResponse> {
+        get(connection, "/api/monitor-logs/poll") {
+            since?.let { parameter("since", it) }
+            parameter("clientSessionStart", clientSessionStart)
+            header(CustomHeaders.HideFromLogs, true)
+        }
+    }.onFailure {
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs/poll" }
+    }
+
+    override suspend fun fetchFullBodyLogDetail(
+        connection: MockzillaConnectionConfig,
+        logId: String,
+    ) = runner<LogEvent> {
+        get(connection, "/api/monitor-logs/$logId/full-body")
+    }.onFailure {
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs/$logId/full-body" }
+    }
+
+    override suspend fun deleteMonitorLogs(
+        connection: MockzillaConnectionConfig,
+    ) = runner<Unit> {
+        delete(connection, "/api/monitor-logs")
+    }.onFailure {
+        Logger.v(tag = "Management", throwable = it) { "Request Failed: DELETE /api/monitor-logs" }
+    }
+
     override suspend fun clearAllCaches(
         connection: MockzillaConnectionConfig
     ) = runner<Unit> {

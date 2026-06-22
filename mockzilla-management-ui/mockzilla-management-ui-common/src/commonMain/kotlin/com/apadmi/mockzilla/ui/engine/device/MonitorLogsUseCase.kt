@@ -60,7 +60,6 @@ internal class MonitorLogsUseCaseImpl(
             cache[key] = merged
             MonitorLogsResponse(appPackage = response.appPackage, logs = merged)
         }
-    }
 
     private suspend fun getMonitorLogsLegacyPath(device: Device): Result<MonitorLogsResponse> =
         managementLogsService.fetchMonitorLogsAndClearBuffer(device, hideFromLogs = true).map { response ->
