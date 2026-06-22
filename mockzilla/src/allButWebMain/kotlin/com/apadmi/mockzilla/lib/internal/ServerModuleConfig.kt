@@ -44,7 +44,7 @@ internal fun Application.configureEndpoints(
             call.respond("")
         }
         get("/api/meta") {
-            // di.logger.v { "Handling GET meta: ${call.request.uri}" }
+            di.logger.v { "Handling GET meta: ${call.request.uri}" }
             safeResponse(di.logger) { call ->
                 call.allowCors()
                 call.respond(di.metaData)
@@ -112,19 +112,6 @@ internal fun Application.configureEndpoints(
                 call.respond(
                     MonitorLogsResponse(di.metaData.appPackage, di.managementApiController.getLogsSince(since))
                 )
-            }
-        }
-        get("/api/monitor-logs/{logId}") {
-            safeResponse(di.logger) { call ->
-                call.allowCors()
-                val logId = call.parameters["logId"] ?: run {
-                    call.respond(HttpStatusCode.BadRequest)
-                    return@safeResponse
-                }
-                val detail = di.managementApiController.getLogDetail(logId)
-                detail?.let {
-                    call.respond(detail)
-                } ?: call.respond(HttpStatusCode.NotFound)
             }
         }
         get("/api/monitor-logs/{logId}/full-body") {

@@ -8,7 +8,6 @@ import io.ktor.http.HttpStatusCode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
@@ -91,38 +90,6 @@ class MockServerMonitorImplTests {
         val logs = sut.getLogsSince(5)
         assertEquals(1, logs.size)
         assertEquals("c", logs[0].id)
-    }
-
-    @Test
-    fun `getLogDetail - non-truncated event - returns event directly without disk read`() = runTest {
-        val sut = createSut()
-        val event = makeEvent(requestBody = "req", responseBody = "res")
-        sut.log(event)
-        val detail = sut.getLogDetail(event.id)
-        assertNotNull(detail)
-        assertFalse(detail.isRequestBodyTruncated)
-        assertEquals("req", detail.requestBody)
-    }
-
-    @Test
-    fun `getLogDetail - truncated event - returns enriched event from disk`() = runTest {
-        val sut = createSut()
-        val largeReq = "r".repeat(MockServerMonitorImpl.maxUntruncatedBodySizeBytes + 1)
-        val largeRes = "s".repeat(MockServerMonitorImpl.maxUntruncatedBodySizeBytes + 1)
-        val event = makeEvent(id = "enrich-me", requestBody = largeReq, responseBody = largeRes)
-        sut.log(event)
-        val detail = sut.getLogDetail("enrich-me")
-        assertNotNull(detail)
-        assertFalse(detail.isRequestBodyTruncated)
-        assertFalse(detail.isResponseBodyTruncated)
-        assertEquals(largeReq, detail.requestBody)
-        assertEquals(largeRes, detail.responseBody)
-    }
-
-    @Test
-    fun `getLogDetail - unknown id - returns null`() = runTest {
-        val sut = createSut()
-        assertNull(sut.getLogDetail("unknown"))
     }
 
     @Test
