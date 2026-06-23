@@ -19,13 +19,11 @@ import io.ktor.http.HttpStatusCode
 
 import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlin.time.Duration.Companion.seconds
 
 internal class CreateEditPresetViewModel(
     private val key: EndpointConfiguration.Key,
@@ -53,6 +51,10 @@ internal class CreateEditPresetViewModel(
                 loadIncumbentValues(key)
             }
             .launchIn(viewModelScope)
+    }
+
+    fun retry() = viewModelScope.launch {
+        loadIncumbentValues(key)
     }
 
     private suspend fun loadIncumbentValues(key: EndpointConfiguration.Key) {

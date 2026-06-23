@@ -29,13 +29,18 @@ data class Strings(
     /**
      * @property editor
      * @property findReplace
+     * @property genericError
      */
     data class Components(
         val editor: Editor,
         val findReplace: FindReplace,
         val genericError: GenericError,
     ) {
-
+        /**
+         * @property title
+         * @property body
+         * @property retryButton
+         */
         data class GenericError(
             val title: String,
             val body: String,

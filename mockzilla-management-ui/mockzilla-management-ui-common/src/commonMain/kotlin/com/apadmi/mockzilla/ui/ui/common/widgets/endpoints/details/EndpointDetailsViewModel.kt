@@ -56,7 +56,7 @@ internal class EndpointDetailsViewModel(
             endpoint.firstOrNull { it.key == key }
         }
 
-       state.value = endpoint.fold(
+        state.value = endpoint.fold(
             onSuccess = { config ->
                 config?.let {
                     endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
