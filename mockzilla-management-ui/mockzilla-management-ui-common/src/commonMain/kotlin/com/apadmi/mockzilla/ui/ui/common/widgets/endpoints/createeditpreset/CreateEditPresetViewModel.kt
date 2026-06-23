@@ -37,7 +37,6 @@ internal class CreateEditPresetViewModel(
     // see https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
     // for reasons
     val state = mutableStateOf<State>(State.Loading)
-
     private var syncCounter = 0L
 
     init {
@@ -67,7 +66,6 @@ internal class CreateEditPresetViewModel(
             val headers = current?.response?.headers
                 ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
                 .takeIf { isEditing } ?: emptyList()
-            val responseType = inferResponseTypeFromBody(body)
             State.Editing(
                 isSaving = false,
                 syncToken = token,
@@ -75,7 +73,7 @@ internal class CreateEditPresetViewModel(
                 body = body,
                 bodyParseError = null,
                 headers = headers,
-                responseType = responseType,
+                responseType = inferResponseTypeFromBody(body),
                 variant = variant,
                 endpointName = config?.name ?: key.raw,
                 committedBody = body,
@@ -219,7 +217,7 @@ internal class CreateEditPresetViewModel(
          * @property committedBody Last body value synced from the server
          * @property committedStatusCode Last status code synced from the server
          * @property committedHeaders Last headers synced from the server
-         * @property committedResponseType Last response type synced from the server
+         * @property navigateUp
          */
         data class Editing(
             val isSaving: Boolean,

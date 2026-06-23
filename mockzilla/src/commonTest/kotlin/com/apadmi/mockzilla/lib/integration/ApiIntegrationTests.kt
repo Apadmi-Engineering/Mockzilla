@@ -306,4 +306,71 @@ class ApiIntegrationTests {
             }
         )
     }
+
+    @Test
+    fun `GET monitor-logs poll - returns logs since timestamp`() = runIntegrationTest(
+        MockzillaConfig.Builder()
+            .setPort(0)  // Port determined at runtime
+            .setDelayMillis(24)
+            .addEndpoint(
+                EndpointConfiguration.Builder("my-id")
+                    .setDefaultHandler {
+                        MockzillaHttpResponse(
+                            statusCode = HttpStatusCode.Created,
+                            headers = mapOf("test-header" to "test-value"),
+                            body = "resp"
+                        )
+                    }.build()
+            )
+            .build()
+    ) { params, _ ->
+        // Record a timestamp then make a call to generate a log entry after it
+        val since = epochMillis()
+        HttpClient().get("${params.mockBaseUrl}/my-id")
+
+        /* Run Test */
+        val response = HttpClient().get("${params.apiBaseUrl}/monitor-logs/poll?since=$since")
+        val responseBody: MonitorLogsResponse =
+            JsonProvider.json.decodeFromString(response.bodyAsText())
+
+        /* Verify */
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(1, responseBody.logs.size)
+        assertTrue(responseBody.logs.first().timestamp > since)
+    }
+
+    @Test
+    fun `GET monitor-logs full-body - returns log detail`() = runIntegrationTest(
+        MockzillaConfig.Builder()
+            .setPort(0)  // Port determined at runtime
+            .setDelayMillis(24)
+            .addEndpoint(
+                EndpointConfiguration.Builder("my-id")
+                    .setDefaultHandler {
+                        MockzillaHttpResponse(
+                            statusCode = HttpStatusCode.Created,
+                            headers = mapOf("test-header" to "test-value"),
+                            body = "resp"
+                        )
+                    }.build()
+            )
+            .build()
+    ) { params, _ ->
+        // Make a call to the mock server to create a log entry
+        HttpClient().get("${params.mockBaseUrl}/my-id")
+
+        // Use poll (non-destructive) to retrieve the log id
+        val pollResponse: MonitorLogsResponse = JsonProvider.json.decodeFromString(
+            HttpClient().get("${params.apiBaseUrl}/monitor-logs/poll").bodyAsText()
+        )
+        val logId = pollResponse.logs.first().id
+
+        /* Run Test */
+        val response = HttpClient().get("${params.apiBaseUrl}/monitor-logs/$logId/full-body")
+        val responseBody: LogEvent = JsonProvider.json.decodeFromString(response.bodyAsText())
+
+        /* Verify */
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(logId, responseBody.id)
+    }
 }
