@@ -276,7 +276,9 @@ internal fun MonitorLogsWidgetContent(
     )
 
     Column(modifier = modifier.background(cs.background)) {
-        if (isExpanded) topHandle()
+        if (isExpanded) {
+            topHandle()
+        }
         HorizontalDivider(color = MaterialTheme.colorScheme.outline)
         Row(
             modifier = Modifier

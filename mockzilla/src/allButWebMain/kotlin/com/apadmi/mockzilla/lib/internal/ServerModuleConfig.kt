@@ -114,19 +114,6 @@ internal fun Application.configureEndpoints(
                 )
             }
         }
-        get("/api/monitor-logs/{logId}") {
-            safeResponse(di.logger) { call ->
-                call.allowCors()
-                val logId = call.parameters["logId"] ?: run {
-                    call.respond(HttpStatusCode.BadRequest)
-                    return@safeResponse
-                }
-                val detail = di.managementApiController.getLogDetail(logId)
-                detail?.let {
-                    call.respond(detail)
-                } ?: call.respond(HttpStatusCode.NotFound)
-            }
-        }
         get("/api/monitor-logs/{logId}/full-body") {
             safeResponse(di.logger) { call ->
                 call.allowCors()

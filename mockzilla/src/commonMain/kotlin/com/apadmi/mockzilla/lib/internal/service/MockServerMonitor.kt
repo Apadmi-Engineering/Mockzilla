@@ -18,7 +18,6 @@ internal interface MockServerMonitor {
     suspend fun log(event: LogEvent)
     suspend fun consumeCurrentLogs(): List<LogEvent>
     suspend fun getLogsSince(since: Long?): List<LogEvent>
-    suspend fun getLogDetail(logId: String): LogEvent?
     suspend fun getFullBodyLogDetail(logId: String): LogEvent?
     suspend fun onClientSessionStart(sessionStart: Long)
     suspend fun clearAllLogs()
@@ -40,8 +39,8 @@ internal class MockServerMonitorImpl(
         scope.launch {
             delay(1.minutes)
             lastKnownClientSessionStart ?: run {
-                val threeDaysAgo = Clock.System.now().toEpochMilliseconds() - 2.days.inWholeMilliseconds
-                localBodyCacheService.deleteOldFullEntries(threeDaysAgo)
+                val twoDaysAgo = Clock.System.now().toEpochMilliseconds() - 2.days.inWholeMilliseconds
+                localBodyCacheService.deleteOldFullEntries(twoDaysAgo)
             }
         }
     }
@@ -86,10 +85,7 @@ internal class MockServerMonitorImpl(
         } ?: events.toList()
     }
 
-    override suspend fun getLogDetail(logId: String): LogEvent? = localBodyCacheService.fetchFullEntry(logId) ?: events.firstOrNull { it.id == logId }
-
-    override suspend fun getFullBodyLogDetail(logId: String): LogEvent? =
-        localBodyCacheService.fetchFullEntry(logId)
+    override suspend fun getFullBodyLogDetail(logId: String): LogEvent? = localBodyCacheService.fetchFullEntry(logId) ?: events.firstOrNull { it.id == logId }
 
     override suspend fun onClientSessionStart(sessionStart: Long) {
         if (sessionStart == lastKnownClientSessionStart) {
@@ -113,7 +109,7 @@ internal class MockServerMonitorImpl(
         // With these values the max footprint is ~15mb
         // These values are to stop the memory usage of the app from being unbounded as logs accumulate
 
-        private const val maxUntruncatedBodySizeBytes = 15_000
+        const val maxUntruncatedBodySizeBytes = 15_000
         private const val memoryCapacity = 500
     }
 }

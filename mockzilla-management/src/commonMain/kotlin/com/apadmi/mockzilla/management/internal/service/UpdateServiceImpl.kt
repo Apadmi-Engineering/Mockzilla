@@ -7,7 +7,6 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.management.internal.MockzillaManagementRepository
-import kotlinx.coroutines.delay
 
 internal class UpdateServiceImpl(
     private val repo: MockzillaManagementRepository

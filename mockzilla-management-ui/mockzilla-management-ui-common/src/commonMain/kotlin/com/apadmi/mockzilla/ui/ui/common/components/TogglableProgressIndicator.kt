@@ -88,6 +88,7 @@ private fun DrawScope.drawLinearIndicator(
  * @param color Pulse color
  * @param trackColor Color of the background
  * @param strokeCap
+ * @param delayMs Milliseconds before animation starts
  * @param gapSize
  */
 @Composable

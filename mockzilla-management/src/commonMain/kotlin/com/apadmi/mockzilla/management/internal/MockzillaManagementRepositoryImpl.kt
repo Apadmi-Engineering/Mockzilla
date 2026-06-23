@@ -58,7 +58,6 @@ interface MockzillaManagementRepository {
         since: Long?,
         clientSessionStart: Long
     ): Result<MonitorLogsResponse>
-    suspend fun fetchLogDetail(connection: MockzillaConnectionConfig, logId: String): Result<LogEvent>
     suspend fun fetchFullBodyLogDetail(connection: MockzillaConnectionConfig, logId: String): Result<LogEvent>
     suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>
     suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
@@ -141,15 +140,6 @@ MockzillaManagement.AppIconService {
             header(CustomHeaders.HideFromLogs, true)
         }
     }.alsoLogFailure("/api/monitor-logs/poll")
-
-    override suspend fun fetchLogDetail(
-        connection: MockzillaConnectionConfig,
-        logId: String,
-    ) = runner<LogEvent> {
-        get(connection, "/api/monitor-logs/$logId")
-    }.onFailure {
-        Logger.v(tag = "Management", throwable = it) { "Request Failed: /api/monitor-logs/$logId" }
-    }
 
     override suspend fun fetchFullBodyLogDetail(
         connection: MockzillaConnectionConfig,

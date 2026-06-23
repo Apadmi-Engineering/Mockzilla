@@ -47,6 +47,8 @@ val EnStrings = Strings(
             connectAutomatically = "or connect automatically",
             discoveredNetwork = "DISCOVERED ON NETWORK",
             scanning = "scanning...",
+            noDevicesFound = "No devices found yet",
+            noDevicesDescription = "Scanning the local network for devices running the Mockzilla SDK. Or enter an address above to connect manually.",
             connect = "Connect",
             dot = "..."
         ),
@@ -60,6 +62,7 @@ val EnStrings = Strings(
         ),
         metaData = Strings.Widgets.MetaData(
             title = "Meta Data",
+            viewAppMetaData = "View app metadata",
             noDeviceConnected = "No device connected",
             appName = "App Name",
             appPackage = "App Package",
