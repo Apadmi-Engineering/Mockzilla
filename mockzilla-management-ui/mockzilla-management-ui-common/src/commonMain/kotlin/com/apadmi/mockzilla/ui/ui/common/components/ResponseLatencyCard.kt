@@ -31,8 +31,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,6 +68,22 @@ private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
 @Suppress("MAGIC_NUMBER")
 private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
 
+private object SecondsSuffixTransformation : VisualTransformation {
+    private const val suffix = " s"
+
+    override fun filter(text: AnnotatedString): TransformedText {
+        if (text.isEmpty()) {
+            return TransformedText(text, OffsetMapping.Identity)
+        }
+
+        val offsetMapping = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int) = offset.coerceIn(0, text.length)
+            override fun transformedToOriginal(offset: Int) = offset.coerceIn(0, text.length)
+        }
+        return TransformedText(text + AnnotatedString(suffix), offsetMapping)
+    }
+}
+
 private fun Int.clamped() = min(max(0, this), maxLatencyMs)
 
 private fun Int.msToSecondsText(): String {
@@ -85,6 +107,8 @@ private fun String.filterAsDecimal(): String {
     }
 }
 
+private fun String.withCursorAtEnd() = TextFieldValue(text = this, selection = TextRange(length))
+
 @Suppress(
     "MAGIC_NUMBER",
     "LONG_PARAMETER_LIST",
@@ -105,7 +129,7 @@ internal fun ResponseLatencyCard(
         mutableStateOf(initialValue)
     }
     var textValue by remember {
-        mutableStateOf(initialValue?.msToSecondsText() ?: "")
+        mutableStateOf((initialValue?.msToSecondsText() ?: "").withCursorAtEnd())
     }
     var isError by remember {
         mutableStateOf(false)
@@ -117,7 +141,7 @@ internal fun ResponseLatencyCard(
     LaunchedEffect(initialValue) {
         if (initialValue != lastEmittedValue) {
             value = initialValue
-            textValue = initialValue?.msToSecondsText() ?: ""
+            textValue = (initialValue?.msToSecondsText() ?: "").withCursorAtEnd()
             isError = false
             lastEmittedValue = initialValue
         }
@@ -127,7 +151,7 @@ internal fun ResponseLatencyCard(
         { it: Int ->
             val clamped = it.clamped()
             value = clamped
-            textValue = clamped.msToSecondsText()
+            textValue = clamped.msToSecondsText().withCursorAtEnd()
             isError = false
             lastEmittedValue = clamped
             onChange(clamped)
@@ -231,15 +255,19 @@ internal fun ResponseLatencyCard(
                 ) {
                     BasicTextField(
                         value = textValue,
-                        onValueChange = { newText ->
-                            val filtered = newText.filterAsDecimal()
+                        onValueChange = { newValue ->
+                            val filtered = newValue.text.filterAsDecimal()
                             val seconds = filtered.toDoubleOrNull()
                             if (seconds != null && (seconds < 0.0 || seconds > maxLatencySeconds)) {
-                                textValue = ""
+                                textValue = "".withCursorAtEnd()
                                 value = null
                                 isError = true
                             } else {
-                                textValue = filtered
+                                textValue = if (filtered == newValue.text) {
+                                    newValue
+                                } else {
+                                    filtered.withCursorAtEnd()
+                                }
                                 isError = false
                                 val parsed = filtered.secondsTextToMs()
                                 value = parsed
@@ -262,10 +290,11 @@ internal fun ResponseLatencyCard(
                         ),
                         cursorBrush = SolidColor(colorScheme.primary),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        visualTransformation = SecondsSuffixTransformation,
                         modifier = Modifier.fillMaxWidth(),
                         decorationBox = { innerTextField ->
                             Box(contentAlignment = Alignment.CenterStart) {
-                                if (textValue.isEmpty()) {
+                                if (textValue.text.isEmpty()) {
                                     Text(
                                         text = strings.widgets.latency.notSet,
                                         style = MaterialTheme.typography.bodySmall.copy(
