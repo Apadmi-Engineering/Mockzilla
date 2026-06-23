@@ -39,7 +39,7 @@ actual inline fun <reified T : ViewModel> getViewModel(
 
 // Called when a device is fully removed from allDevices. Cancels the coroutine scope directly
 // because the base ViewModel class has no clear() method.
-fun evictDesktopViewModelsForKey(key: String) {
+actual fun evictDesktopViewModelsForKey(key: String) {
     desktopViewModelCache.keys
         .filter { it.endsWith("|$key") }
         .forEach { cacheKey ->
