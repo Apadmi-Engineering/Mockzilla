@@ -60,27 +60,7 @@ internal class CreateEditPresetViewModel(
 
         val token = ++syncCounter
         state.value = endpoint.mapCatching { config ->
-            val current = config?.appliedPresetOverride ?: config?.deriveLegacyPreset()
-            val isEditing = variant == State.Editing.Variant.Edit
-            val body = current?.response?.body.takeIf { isEditing }
-            val statusCode = current?.response?.statusCode.takeIf { isEditing }
-            val headers = current?.response?.headers
-                ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
-                .takeIf { isEditing } ?: emptyList()
-            State.Editing(
-                isSaving = false,
-                syncToken = token,
-                statusCode = statusCode,
-                body = body,
-                bodyParseError = null,
-                headers = headers,
-                responseType = inferResponseTypeFromBody(body),
-                variant = variant,
-                endpointName = config?.name ?: key.raw,
-                committedBody = body,
-                committedStatusCode = statusCode,
-                committedHeaders = headers,
-            )
+            config.toState(token, key)
         }.fold(
             onSuccess = { it },
             onFailure = {
@@ -89,6 +69,33 @@ internal class CreateEditPresetViewModel(
                 )
                 State.Loading
             }
+        )
+    }
+
+    private fun SerializableEndpointConfig?.toState(
+        token: Long,
+        key: EndpointConfiguration.Key
+    ): State.Editing {
+        val current = this?.appliedPresetOverride ?: this?.deriveLegacyPreset()
+        val isEditing = variant == State.Editing.Variant.Edit
+        val body = current?.response?.body.takeIf { isEditing }
+        val statusCode = current?.response?.statusCode.takeIf { isEditing }
+        val headers = current?.response?.headers
+            ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
+            .takeIf { isEditing } ?: emptyList()
+        return State.Editing(
+            isSaving = false,
+            syncToken = token,
+            statusCode = statusCode,
+            body = body,
+            bodyParseError = null,
+            headers = headers,
+            responseType = inferResponseTypeFromBody(body),
+            variant = variant,
+            endpointName = this?.name ?: key.raw,
+            committedBody = body,
+            committedStatusCode = statusCode,
+            committedHeaders = headers,
         )
     }
 
@@ -137,12 +144,7 @@ internal class CreateEditPresetViewModel(
                 navigateUp = true
             )
         }.onFailure {
-            eventBus.send(
-                Event.GenericError(
-                    GenericErrorableOperation.ApplyPreset,
-                    it
-                )
-            )
+            eventBus.send(Event.GenericError(GenericErrorableOperation.ApplyPreset, it))
         }
     }
 

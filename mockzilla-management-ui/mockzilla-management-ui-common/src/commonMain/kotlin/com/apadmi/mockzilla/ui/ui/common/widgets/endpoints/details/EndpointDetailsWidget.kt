@@ -43,13 +43,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -183,7 +180,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label =strings.endpointDetails.behavior,
+        label = strings.endpointDetails.behavior,
         icon = Icons.LightningBolt,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
@@ -202,7 +199,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label =strings.endpointDetails.latency,
+        label = strings.endpointDetails.latency,
         icon = Icons.Clock,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
@@ -269,47 +266,6 @@ private fun ColumnScope.PopulatedState(
     Spacer(modifier = Modifier.height(8.dp))
 }
 
-@Composable
-private fun ForceFailurePresetBanner(
-    strings: Strings = LocalStrings.current
-) = Row(
-    modifier = Modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.errorContainer)
-        .padding(horizontal = 12.dp, vertical = 8.dp),
-    verticalAlignment = Alignment.CenterVertically
-) {
-    Icon(
-        modifier = Modifier.size(12.dp),
-        imageVector = Icons.Outlined.Lock,
-        contentDescription = null,
-        tint = MaterialTheme.colorScheme.error
-    )
-    Spacer(Modifier.width(4.dp))
-    Text(
-        text = buildAnnotatedString {
-            withStyle(
-                style = MaterialTheme.typography.labelMedium.toSpanStyle().copy(
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.error
-                )
-            ) {
-                append(strings.widgets.endpointDetails.presets.forceFailureBannerTitle)
-            }
-            append(" ")
-            withStyle(
-                style = MaterialTheme.typography.bodySmall.toSpanStyle().copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            ) {
-                append(strings.widgets.endpointDetails.presets.forceFailureBannerBody)
-            }
-        },
-
-        textAlign = TextAlign.Start
-    )
-}
-
 private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull(
     EndpointProperties.Delay.takeIf { delayMs != null },
     EndpointProperties.Body.takeIf { defaultBody != null || appliedPresetOverride?.response?.body != null },
@@ -371,7 +327,7 @@ internal fun EndpointDetailsWidgetContent(
         when (state) {
             is State.Empty -> EmptyState(
                 title = strings.widgets.endpointDetails.emptyTitle,
-                description =strings.widgets.endpointDetails.emptyDescription,
+                description = strings.widgets.endpointDetails.emptyDescription,
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Settings,
@@ -416,6 +372,47 @@ internal fun EndpointDetailsWidgetContent(
 }
 
 @Composable
+private fun ForceFailurePresetBanner(
+    strings: Strings = LocalStrings.current
+) = Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.errorContainer)
+        .padding(horizontal = 12.dp, vertical = 8.dp),
+    verticalAlignment = Alignment.CenterVertically
+) {
+    Icon(
+        modifier = Modifier.size(12.dp),
+        imageVector = Icons.Outlined.Lock,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.error
+    )
+    Spacer(Modifier.width(4.dp))
+    Text(
+        text = buildAnnotatedString {
+            withStyle(
+                style = MaterialTheme.typography.labelMedium.toSpanStyle().copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
+                )
+            ) {
+                append(strings.widgets.endpointDetails.presets.forceFailureBannerTitle)
+            }
+            append(" ")
+            withStyle(
+                style = MaterialTheme.typography.bodySmall.toSpanStyle().copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            ) {
+                append(strings.widgets.endpointDetails.presets.forceFailureBannerBody)
+            }
+        },
+
+        textAlign = TextAlign.Start
+    )
+}
+
+@Composable
 private fun ActivePresetBanner(
     isForceFailureEnabled: Boolean,
     preset: DashboardOverridePreset,
@@ -449,16 +446,17 @@ private fun ActivePresetBanner(
             textDecoration = if (isForceFailureEnabled) TextDecoration.LineThrough else null,
             fontWeight = FontWeight.Bold,
         )
-        preset.response.statusCode?.takeUnless { isForceFailureEnabled }?.let {
-            Tag(
-                label = it.value.toString(),
-                textColor = statusColors.primary,
-                borderColor = statusColors.primary,
-                backgroundColor = Color.Transparent,
-                shape = CircleShape,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-            )
-        }
+        preset.response.statusCode?.takeUnless { isForceFailureEnabled }
+            ?.let {
+                Tag(
+                    label = it.value.toString(),
+                    textColor = statusColors.primary,
+                    borderColor = statusColors.primary,
+                    backgroundColor = Color.Transparent,
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
 
         if (isForceFailureEnabled) {
             Text(
