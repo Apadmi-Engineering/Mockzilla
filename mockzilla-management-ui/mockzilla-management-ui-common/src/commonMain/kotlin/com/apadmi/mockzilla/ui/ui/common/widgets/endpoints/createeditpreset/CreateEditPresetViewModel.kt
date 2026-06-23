@@ -40,7 +40,6 @@ internal class CreateEditPresetViewModel(
     // see https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
     // for reasons
     val state = mutableStateOf<State>(State.Loading)
-
     private var syncCounter = 0L
 
     init {
@@ -63,44 +62,44 @@ internal class CreateEditPresetViewModel(
 
         val token = ++syncCounter
         state.value = endpoint.mapCatching { config ->
-            val current = config?.appliedPresetOverride ?: config?.deriveLegacyPreset()
-            val isEditing = variant == State.Editing.Variant.Edit
-
-            val body = current?.response?.body.takeIf { isEditing }
-            val statusCode = current?.response?.statusCode.takeIf { isEditing }
-            val headers = current?.response?.headers
-                ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
-                .takeIf { isEditing } ?: emptyList()
-            val responseType = inferResponseTypeFromBody(body)
-            State.Editing(
-                isSaving = false,
-                syncToken = token,
-                statusCode = statusCode,
-                body = body,
-                bodyParseError = null,
-                headers = headers,
-                responseType = responseType,
-                variant = variant,
-                endpointName = config?.name ?: key.raw,
-                committedBody = body,
-                committedStatusCode = statusCode,
-                committedHeaders = headers,
-            )
+            config.toState(token, key)
         }.fold(
             onSuccess = { it },
             onFailure = {
                 eventBus.send(
-                    Event.GenericError(
-                        GenericErrorableOperation.FetchEndpointConfigs,
-                        it
-                    )
+                    Event.GenericError(GenericErrorableOperation.FetchEndpointConfigs, it)
                 )
                 State.FailedToLoad
             }
         )
     }
 
-    internal fun retry() = viewModelScope.launch { loadIncumbentValues(key) }
+    private fun SerializableEndpointConfig?.toState(
+        token: Long,
+        key: EndpointConfiguration.Key
+    ): State.Editing {
+        val current = this?.appliedPresetOverride ?: this?.deriveLegacyPreset()
+        val isEditing = variant == State.Editing.Variant.Edit
+        val body = current?.response?.body.takeIf { isEditing }
+        val statusCode = current?.response?.statusCode.takeIf { isEditing }
+        val headers = current?.response?.headers
+            ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
+            .takeIf { isEditing } ?: emptyList()
+        return State.Editing(
+            isSaving = false,
+            syncToken = token,
+            statusCode = statusCode,
+            body = body,
+            bodyParseError = null,
+            headers = headers,
+            responseType = inferResponseTypeFromBody(body),
+            variant = variant,
+            endpointName = this?.name ?: key.raw,
+            committedBody = body,
+            committedStatusCode = statusCode,
+            committedHeaders = headers,
+        )
+    }
 
     private fun inferResponseTypeFromBody(
         body: String?
@@ -147,12 +146,7 @@ internal class CreateEditPresetViewModel(
                 navigateUp = true
             )
         }.onFailure {
-            eventBus.send(
-                Event.GenericError(
-                    GenericErrorableOperation.ApplyPreset,
-                    it
-                )
-            )
+            eventBus.send(Event.GenericError(GenericErrorableOperation.ApplyPreset, it))
         }
     }
 
@@ -236,6 +230,7 @@ internal class CreateEditPresetViewModel(
          * @property committedBody Last body value synced from the server
          * @property committedStatusCode Last status code synced from the server
          * @property committedHeaders Last headers synced from the server
+         * @property navigateUp
          */
         data class Editing(
             val isSaving: Boolean,

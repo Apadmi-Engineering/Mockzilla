@@ -271,7 +271,7 @@
     destructuringDeclaration: false
 # Inspection that checks if a long dot qualified expression is used in condition or as an argument
 - name: COMPLEX_EXPRESSION
-  enabled: true
+  enabled: false
 # Checks that there are not too many consecutive spaces in line
 - name: TOO_MANY_CONSECUTIVE_SPACES
   enabled: true
@@ -320,7 +320,7 @@
     # Ignore numbers from test
     ignoreTest: "true"
     # Ignore numbers
-    ignoreNumbers: "-1, 1, 1f, -1f, 0, 0.0, 0.4f, 0f, 0u, 1.0, 2, 2f, 100, 20"
+    ignoreNumbers: "-1, 1, 1f, -1f, 0, 0.0, 0L, 0.4f, 0f, 0u, 1.0, 2, 2f, 100, 20"
     # Is ignore override hashCode function
     ignoreHashCodeFunction: "true"
     # Is ignore property

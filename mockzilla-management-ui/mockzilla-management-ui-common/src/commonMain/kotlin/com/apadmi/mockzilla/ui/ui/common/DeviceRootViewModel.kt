@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.core.logger.MESSAGE
 
 class DeviceRootViewModel(
     private val device: Device,
@@ -62,7 +61,8 @@ class DeviceRootViewModel(
         .filterIsInstance<Event.GenericError>()
         .filter {
             (state.value as? State.Connected)?.activeDevice?.isConnected == true
-        }.onEach {
+        }
+        .onEach {
             val apiError = it.error as? FailedHttpResponseException
             state.value = (state.value as? State.Connected)?.copy(
                 error = State.Connected.ErrorBannerState.ApiError(
@@ -71,7 +71,8 @@ class DeviceRootViewModel(
                     operation = it.operation
                 )
             ) ?: state.value
-        }.launchIn(viewModelScope)
+        }
+        .launchIn(viewModelScope)
 
     fun setSelectedEndpoint(key: EndpointConfiguration.Key?) {
         val currentState = state.value as? State.Connected ?: return
@@ -101,13 +102,17 @@ class DeviceRootViewModel(
             val error: ErrorBannerState? = null
         ) : State() {
             sealed class ErrorBannerState {
+                data object ConnectionLost : ErrorBannerState()
+                /**
+                 * @property status
+                 * @property rawError
+                 * @property operation
+                 */
                 data class ApiError(
                     val status: HttpStatusCode?,
                     val rawError: String?,
                     val operation: GenericErrorableOperation?
                 ) : ErrorBannerState()
-
-                data object ConnectionLost : ErrorBannerState()
             }
         }
     }

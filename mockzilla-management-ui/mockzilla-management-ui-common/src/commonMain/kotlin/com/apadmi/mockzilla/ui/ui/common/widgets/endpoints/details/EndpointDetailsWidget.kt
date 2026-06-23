@@ -43,13 +43,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -97,7 +94,6 @@ import org.koin.core.parameter.parametersOf
 @Composable
 private fun ColumnScope.PopulatedState(
     state: State.Endpoint,
-    strings: Strings,
     onResetAll: () -> Unit,
     onFailChange: (Boolean?) -> Unit,
     onDelayChange: (Int?) -> Unit,
@@ -107,6 +103,7 @@ private fun ColumnScope.PopulatedState(
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
     onEditPreset: () -> Unit = {},
+    strings: Strings.Widgets = LocalStrings.current.widgets,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
@@ -115,10 +112,10 @@ private fun ColumnScope.PopulatedState(
     Box {
         SurfaceHeader(
             title = state.config.name,
-            subtitle = strings.widgets.endpointDetails.subtitle,
+            subtitle = strings.endpointDetails.subtitle,
             actions = {
                 BaseButton(
-                    label = strings.widgets.endpointDetails.reset,
+                    label = strings.endpointDetails.reset,
                     leadingIcon = Icons.Default.Refresh,
                     variant = ButtonVariant.Ghost,
                     size = ButtonSize.Sm,
@@ -131,7 +128,7 @@ private fun ColumnScope.PopulatedState(
                 val isForced = state.config.shouldFail == true
                 if (overrides.isEmpty() && !isForced) {
                     Text(
-                        text = strings.widgets.endpoints.noOverrides,
+                        text = strings.endpoints.noOverrides,
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontFamily = mockzillaMonoFontFamily(),
                             color = colorScheme.onSurfaceMuted,
@@ -142,7 +139,7 @@ private fun ColumnScope.PopulatedState(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         if (isForced) {
                             Tag(
-                                label = strings.widgets.endpoints.forced,
+                                label = strings.endpoints.forced,
                                 textColor = colorScheme.error,
                                 borderColor = colorScheme.error.copy(alpha = 0.5f),
                                 backgroundColor = colorScheme.error.copy(alpha = 0.1f),
@@ -184,7 +181,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label = strings.widgets.endpointDetails.behavior,
+        label = strings.endpointDetails.behavior,
         icon = Icons.LightningBolt,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
@@ -203,7 +200,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label = strings.widgets.endpointDetails.latency,
+        label = strings.endpointDetails.latency,
         icon = Icons.Clock,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
@@ -221,7 +218,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label = "${strings.widgets.endpointDetails.presets.title} (${state.presets.allPresets.size})",
+        label = "${strings.endpointDetails.presets.title} (${state.presets.allPresets.size})",
         icon = Icons.Default.DragIndicator,
         contentPadding = PaddingValues(0.dp),
         headerActions = {
@@ -232,7 +229,7 @@ private fun ColumnScope.PopulatedState(
                 )
             }
             Spacer(Modifier.width(8.dp))
-            val customLabel = strings.widgets.endpointDetails.presets.typeDescriptions.other
+            val customLabel = strings.endpointDetails.presets.typeDescriptions.other
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
@@ -270,47 +267,6 @@ private fun ColumnScope.PopulatedState(
     }
 
     Spacer(modifier = Modifier.height(8.dp))
-}
-
-@Composable
-private fun ForceFailurePresetBanner(
-    strings: Strings = LocalStrings.current
-) = Row(
-    modifier = Modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.errorContainer)
-        .padding(horizontal = 12.dp, vertical = 8.dp),
-    verticalAlignment = Alignment.CenterVertically
-) {
-    Icon(
-        modifier = Modifier.size(12.dp),
-        imageVector = Icons.Outlined.Lock,
-        contentDescription = null,
-        tint = MaterialTheme.colorScheme.error
-    )
-    Spacer(Modifier.width(4.dp))
-    Text(
-        text = buildAnnotatedString {
-            withStyle(
-                style = MaterialTheme.typography.labelMedium.toSpanStyle().copy(
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.error
-                )
-            ) {
-                append(strings.widgets.endpointDetails.presets.forceFailureBannerTitle)
-            }
-            append(" ")
-            withStyle(
-                style = MaterialTheme.typography.bodySmall.toSpanStyle().copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            ) {
-                append(strings.widgets.endpointDetails.presets.forceFailureBannerBody)
-            }
-        },
-
-        textAlign = TextAlign.Start
-    )
 }
 
 private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull(
@@ -401,7 +357,6 @@ internal fun EndpointDetailsWidgetContent(
                     ) {
                         PopulatedState(
                             state = state,
-                            strings = strings,
                             onResetAll = onResetAll,
                             onFailChange = onFailChange,
                             onDelayChange = onDelayChange,
@@ -423,6 +378,47 @@ internal fun EndpointDetailsWidgetContent(
             }
         }
     }
+}
+
+@Composable
+private fun ForceFailurePresetBanner(
+    strings: Strings = LocalStrings.current
+) = Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.errorContainer)
+        .padding(horizontal = 12.dp, vertical = 8.dp),
+    verticalAlignment = Alignment.CenterVertically
+) {
+    Icon(
+        modifier = Modifier.size(12.dp),
+        imageVector = Icons.Outlined.Lock,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.error
+    )
+    Spacer(Modifier.width(4.dp))
+    Text(
+        text = buildAnnotatedString {
+            withStyle(
+                style = MaterialTheme.typography.labelMedium.toSpanStyle().copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
+                )
+            ) {
+                append(strings.widgets.endpointDetails.presets.forceFailureBannerTitle)
+            }
+            append(" ")
+            withStyle(
+                style = MaterialTheme.typography.bodySmall.toSpanStyle().copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            ) {
+                append(strings.widgets.endpointDetails.presets.forceFailureBannerBody)
+            }
+        },
+
+        textAlign = TextAlign.Start
+    )
 }
 
 @Composable
@@ -459,16 +455,17 @@ private fun ActivePresetBanner(
             textDecoration = if (isForceFailureEnabled) TextDecoration.LineThrough else null,
             fontWeight = FontWeight.Bold,
         )
-        preset.response.statusCode?.takeUnless { isForceFailureEnabled }?.let {
-            Tag(
-                label = it.value.toString(),
-                textColor = statusColors.primary,
-                borderColor = statusColors.primary,
-                backgroundColor = Color.Transparent,
-                shape = CircleShape,
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-            )
-        }
+        preset.response.statusCode?.takeUnless { isForceFailureEnabled }
+            ?.let {
+                Tag(
+                    label = it.value.toString(),
+                    textColor = statusColors.primary,
+                    borderColor = statusColors.primary,
+                    backgroundColor = Color.Transparent,
+                    shape = CircleShape,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
 
         if (isForceFailureEnabled) {
             Text(

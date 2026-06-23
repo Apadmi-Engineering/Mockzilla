@@ -2,9 +2,11 @@ package com.apadmi.mockzilla.ui.i18n
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
+
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
+
 import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
-import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import io.ktor.http.HttpStatusCode
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
@@ -122,8 +124,13 @@ data class Strings(
     ) {
         /**
          * @property connectionLost
-         * @property unknownError
          * @property refreshButton
+         * @property operationError
+         * @property apiErrorDescription
+         * @property connectionErrorTitlesAndBodies
+         * @property statusLabel
+         * @property messageLabel
+         * @property connectionErrorTitle
          */
         data class ErrorBanner(
             val connectionLost: String,
@@ -223,9 +230,11 @@ data class Strings(
          * @property js
          * @property deviceSection
          * @property error
+         * @property viewAppMetaData
          */
         data class MetaData(
             val title: String,
+            val viewAppMetaData: String,
             val noDeviceConnected: String,
             val appName: String,
             val appPackage: String,
@@ -268,6 +277,8 @@ data class Strings(
          * @property scanning
          * @property connect
          * @property dot
+         * @property noDevicesFound
+         * @property noDevicesDescription
          */
         data class DeviceConnection(
             val title: String,
@@ -293,6 +304,8 @@ data class Strings(
             val connectAutomatically: String,
             val discoveredNetwork: String,
             val scanning: String,
+            val noDevicesFound: String,
+            val noDevicesDescription: String,
             val connect: String,
             val dot: String,
         ) {

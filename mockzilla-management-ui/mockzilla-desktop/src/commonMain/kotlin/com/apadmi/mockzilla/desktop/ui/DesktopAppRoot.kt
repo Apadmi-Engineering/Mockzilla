@@ -75,10 +75,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogD
 
 import org.koin.core.parameter.parametersOf
 
-private enum class RightPanelTab {
-    EndpointDetails,
-    LogDetails
-}
 private const val animationDuration = 300
 private const val rightPanelEnterDurationMs = 160
 private const val rightPanelEnterFadeDurationMs = 120
@@ -92,26 +88,22 @@ private const val globalControlsPanelMinWidthDp = 300
 private const val centerMinWidthDp = 300
 private const val logsMinHeightDp = 100
 
-private data class LayoutState(
-    val leftWidthDp: Float = 260f,
-    val rightWidthDp: Float = 500f,
-    val logsExpandedHeightDp: Float = 220f,
-    val presetWidthDp: Float = 500f,
-    val globalControlsWidthDp: Float = 400f,
-    val rightPanelTab: RightPanelTab? = null,
-    val presetOpen: Boolean = false,
-    val creatingNewPreset: Boolean = true,
-    val globalControlsOpen: Boolean = false,
-    val logsExpanded: Boolean = false,
-)
-
 // Dp cannot be stored directly by rememberSaveable, so we round-trip through a list of primitives.
 // If LayoutState fields change, update both branches of this saver accordingly.
+@Suppress("MAGIC_NUMBER")
 private val layoutStateSaver = Saver<LayoutState, List<Any?>>(
-    save = { s ->
+    save = { saverScope ->
         listOf(
-            s.leftWidthDp, s.rightWidthDp, s.logsExpandedHeightDp, s.presetWidthDp, s.globalControlsWidthDp,
-            s.rightPanelTab, s.presetOpen, s.creatingNewPreset, s.globalControlsOpen, s.logsExpanded,
+            saverScope.leftWidthDp,
+            saverScope.rightWidthDp,
+            saverScope.logsExpandedHeightDp,
+            saverScope.presetWidthDp,
+            saverScope.globalControlsWidthDp,
+            saverScope.rightPanelTab,
+            saverScope.presetOpen,
+            saverScope.creatingNewPreset,
+            saverScope.globalControlsOpen,
+            saverScope.logsExpanded,
         )
     },
     restore = { list ->
@@ -128,6 +120,37 @@ private val layoutStateSaver = Saver<LayoutState, List<Any?>>(
             logsExpanded = list[9] as Boolean,
         )
     }
+)
+
+private enum class RightPanelTab {
+    EndpointDetails,
+    LogDetails,
+    ;
+}
+
+/**
+ * @property leftWidthDp
+ * @property rightWidthDp
+ * @property logsExpandedHeightDp
+ * @property presetWidthDp
+ * @property globalControlsWidthDp
+ * @property rightPanelTab
+ * @property presetOpen
+ * @property creatingNewPreset
+ * @property globalControlsOpen
+ * @property logsExpanded
+ */
+private data class LayoutState(
+    val leftWidthDp: Float = 260f,
+    val rightWidthDp: Float = 500f,
+    val logsExpandedHeightDp: Float = 220f,
+    val presetWidthDp: Float = 500f,
+    val globalControlsWidthDp: Float = 400f,
+    val rightPanelTab: RightPanelTab? = null,
+    val presetOpen: Boolean = false,
+    val creatingNewPreset: Boolean = true,
+    val globalControlsOpen: Boolean = false,
+    val logsExpanded: Boolean = false,
 )
 
 @Composable
@@ -177,10 +200,17 @@ private fun DeviceContent(
     when (val local = state) {
         DeviceRootViewModel.State.UnsupportedDeviceMockzillaVersion -> UnsupportedDeviceMockzillaVersionWidget()
         is DeviceRootViewModel.State.Connected -> ConnectedDeviceLayout(local, strings, viewModel)
+        else -> {
+            // this is a generated else block
+        }
     }
 }
 
-@Suppress("TOO_LONG_FUNCTION", "LOCAL_VARIABLE_EARLY_DECLARATION", "MAGIC_NUMBER")
+@Suppress(
+    "TOO_LONG_FUNCTION",
+    "LOCAL_VARIABLE_EARLY_DECLARATION",
+    "MAGIC_NUMBER"
+)
 @Composable
 private fun ConnectedDeviceLayout(
     connectedState: DeviceRootViewModel.State.Connected,
@@ -201,20 +231,20 @@ private fun ConnectedDeviceLayout(
     var presetDragWidth by remember { mutableStateOf(state.presetWidthDp.dp) }
     var globalControlsDragWidth by remember { mutableStateOf(state.globalControlsWidthDp.dp) }
 
-    val clampLeft = { w: Dp ->
+    val clampLeft = { width: Dp ->
         if (totalWidth > 0.dp) {
             val remaining = max(leftPanelMinWidthDp.dp, totalWidth - centerMinWidthDp.dp - max(state.rightWidthDp.dp, rightPanelMinWidthDp.dp))
-            min(max(leftPanelMinWidthDp.dp, w), remaining)
+            min(max(leftPanelMinWidthDp.dp, width), remaining)
         } else {
-            max(leftPanelMinWidthDp.dp, w)
+            max(leftPanelMinWidthDp.dp, width)
         }
     }
-    val clampRight = { w: Dp ->
+    val clampRight = { width: Dp ->
         if (totalWidth > 0.dp) {
             val remaining = max(rightPanelMinWidthDp.dp, totalWidth - centerMinWidthDp.dp - max(state.leftWidthDp.dp, leftPanelMinWidthDp.dp))
-            min(max(rightPanelMinWidthDp.dp, w), remaining)
+            min(max(rightPanelMinWidthDp.dp, width), remaining)
         } else {
-            max(rightPanelMinWidthDp.dp, w)
+            max(rightPanelMinWidthDp.dp, width)
         }
     }
 
