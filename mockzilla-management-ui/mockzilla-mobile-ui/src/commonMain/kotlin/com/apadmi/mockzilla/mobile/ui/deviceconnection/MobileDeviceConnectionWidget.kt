@@ -60,6 +60,13 @@ private fun MobileDeviceConnectionWidgetContent(
                 style = MaterialTheme.typography.bodyLarge
             )
 
+            Text(
+                text = state.message,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
+            )
+
             Button(onClick = onRetryClick) {
                 Text(
                     text = strings.widgets.errorBanner.refreshButton,

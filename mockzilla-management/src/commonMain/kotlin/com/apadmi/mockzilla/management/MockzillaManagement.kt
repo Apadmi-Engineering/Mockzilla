@@ -223,20 +223,6 @@ interface MockzillaManagement {
         ): Result<MonitorLogsResponse>
 
         /**
-         * Fetches the full detail for a single log entry, including any body content that was
-         * truncated in the list response.
-         *
-         * @param connection The device to target.
-         * @param logId The [LogEvent.id] of the entry to retrieve.
-         * @return [Result.success] wrapping the full [LogEvent], or [Result.failure] if the entry
-         * no longer exists or the request could not be completed.
-         */
-        suspend fun fetchLogDetail(
-            connection: MockzillaConnectionConfig,
-            logId: String,
-        ): Result<LogEvent>
-
-        /**
          * Fetches the complete log entry for [logId] directly from the device's disk cache,
          * including the full (un-truncated) request and response bodies.
          *
@@ -258,10 +244,10 @@ interface MockzillaManagement {
          *    [fetchMonitorLogsSince]). The server then deletes records older than
          *    `min(oldest_in_memory_entry, clientSessionStart)`.
          * 2. No management UI connects within 60 seconds of server start — the server falls back
-         *    to deleting records older than 3 days.
+         *    to deleting records older than 2 days.
          *
          * This means entries from a previous app session remain accessible as long as the
-         * management UI reconnects within the 3-day window and the session-start eviction
+         * management UI reconnects within the 2-day window and the session-start eviction
          * threshold hasn't passed them.
          *
          * @param connection The device to target.

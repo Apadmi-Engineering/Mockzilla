@@ -69,9 +69,21 @@ internal class MonitorLogDetailsViewModel(
     internal sealed class State {
         internal data object Empty : State()
 
+        /**
+         * @property bodyOrPreview
+         */
         internal sealed class BodyState(val bodyOrPreview: String) {
+            /**
+             * @property text
+             */
             internal data class Available(val text: String) : BodyState(text)
+            /**
+             * @property preview
+             */
             internal data class Loading(val preview: String) : BodyState(preview)
+            /**
+             * @property preview
+             */
             internal data class Error(val preview: String) : BodyState(preview)
 
             internal companion object {
@@ -96,5 +108,7 @@ internal class MonitorLogDetailsViewModel(
                 Request, Response
             }
         }
+
+        interface Data
     }
 }

@@ -215,9 +215,11 @@ data class Strings(
          * @property js
          * @property deviceSection
          * @property error
+         * @property viewAppMetaData
          */
         data class MetaData(
             val title: String,
+            val viewAppMetaData: String,
             val noDeviceConnected: String,
             val appName: String,
             val appPackage: String,
@@ -260,6 +262,8 @@ data class Strings(
          * @property scanning
          * @property connect
          * @property dot
+         * @property noDevicesFound
+         * @property noDevicesDescription
          */
         data class DeviceConnection(
             val title: String,
@@ -285,6 +289,8 @@ data class Strings(
             val connectAutomatically: String,
             val discoveredNetwork: String,
             val scanning: String,
+            val noDevicesFound: String,
+            val noDevicesDescription: String,
             val connect: String,
             val dot: String,
         ) {

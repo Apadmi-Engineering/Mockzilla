@@ -1,8 +1,6 @@
 @file:Suppress("PACKAGE_NAME_MISSING")
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -22,8 +20,9 @@ import java.awt.GraphicsEnvironment
 
 private const val minWindowSizeDp = 400
 
-@Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-val LocalAppWindow = staticCompositionLocalOf<java.awt.Window> { error("No window provided") }
+// Calculating the exact toolbar height would need to be done deeper in the layout and bubbled up
+// which is messy when it doesn't really matter, this is only used to handle double clicks on the toolbar
+private const val roughToolbarHeightDp = 52
 
 fun main() = application {
     val state = rememberWindowState(
@@ -52,14 +51,14 @@ fun main() = application {
                     putClientProperty("apple.awt.windowTitleVisible", false)
                 }
 
-                window.handleOsxZoomBehaviour(state)
+                window.handleOsxZoomBehaviour(
+                    state,
+                    with(LocalDensity.current) { roughToolbarHeightDp.dp.toPx() })
             }
 
             window.minimumSize = getMinWindowSize()
 
-            CompositionLocalProvider(LocalAppWindow provides window) {
-                DesktopApp()
-            }
+            DesktopApp()
         }
     )
 }
