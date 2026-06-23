@@ -20,3 +20,5 @@ actual inline fun <reified T : ViewModel> getViewModel(
 ): T = remember(qualifier, key) {
     MockzillaUiKoinContext.koin.get<T>(qualifier = qualifier, parameters = parameters)
 }
+
+actual fun evictDesktopViewModelsForKey(key: String) = Unit
