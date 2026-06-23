@@ -9,7 +9,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -51,7 +49,6 @@ import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel.State.*
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
@@ -216,11 +213,14 @@ fun ErrorBanner(
 }
 
 @Composable
-private fun ApiErrorDetails(state: Connected.ErrorBannerState.ApiError) = Text(
+private fun ApiErrorDetails(
+    state: Connected.ErrorBannerState.ApiError,
+    strings: Strings.Widgets.ErrorBanner = LocalStrings.current.widgets.errorBanner
+) = Text(
     text = buildAnnotatedString {
-        if (state.status != null) {
+        state.status?.let {
             withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                append(LocalStrings.current.widgets.errorBanner.statusLabel)
+                append(strings.statusLabel)
             }
             withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
                 append(state.status.value.toString())
@@ -229,7 +229,7 @@ private fun ApiErrorDetails(state: Connected.ErrorBannerState.ApiError) = Text(
         }
 
         withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-            append(LocalStrings.current.widgets.errorBanner.messageLabel)
+            append(strings.messageLabel)
         }
         withStyle(
             SpanStyle(

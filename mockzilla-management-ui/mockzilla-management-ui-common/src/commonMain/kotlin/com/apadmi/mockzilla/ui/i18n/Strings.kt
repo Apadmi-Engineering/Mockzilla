@@ -2,9 +2,11 @@ package com.apadmi.mockzilla.ui.i18n
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
+
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
+
 import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
-import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import io.ktor.http.HttpStatusCode
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
@@ -114,8 +116,13 @@ data class Strings(
     ) {
         /**
          * @property connectionLost
-         * @property unknownError
          * @property refreshButton
+         * @property operationError
+         * @property apiErrorDescription
+         * @property connectionErrorTitlesAndBodies
+         * @property statusLabel
+         * @property messageLabel
+         * @property connectionErrorTitle
          */
         data class ErrorBanner(
             val connectionLost: String,

@@ -85,10 +85,7 @@ internal class CreateEditPresetViewModel(
             onSuccess = { it },
             onFailure = {
                 eventBus.send(
-                    Event.GenericError(
-                        GenericErrorableOperation.FetchEndpointConfigs,
-                        it
-                    )
+                    Event.GenericError(GenericErrorableOperation.FetchEndpointConfigs, it)
                 )
                 State.Loading
             }

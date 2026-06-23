@@ -105,7 +105,7 @@ private fun ColumnScope.PopulatedState(
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
     onEditPreset: () -> Unit = {},
-    strings: Strings.Widgets.EndpointDetails = LocalStrings.current.widgets.endpointDetails,
+    strings: Strings.Widgets = LocalStrings.current.widgets,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
@@ -114,10 +114,10 @@ private fun ColumnScope.PopulatedState(
     Box {
         SurfaceHeader(
             title = state.config.name,
-            subtitle =strings.subtitle,
+            subtitle = strings.endpointDetails.subtitle,
             actions = {
                 BaseButton(
-                    label =strings.reset,
+                    label = strings.endpointDetails.reset,
                     leadingIcon = Icons.Default.Refresh,
                     variant = ButtonVariant.Ghost,
                     size = ButtonSize.Sm,
@@ -130,7 +130,7 @@ private fun ColumnScope.PopulatedState(
                 val isForced = state.config.shouldFail == true
                 if (overrides.isEmpty() && !isForced) {
                     Text(
-                        text = strings.widgets.endpoints.noOverrides,
+                        text = strings.endpoints.noOverrides,
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontFamily = mockzillaMonoFontFamily(),
                             color = colorScheme.onSurfaceMuted,
@@ -141,7 +141,7 @@ private fun ColumnScope.PopulatedState(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         if (isForced) {
                             Tag(
-                                label = strings.widgets.endpoints.forced,
+                                label = strings.endpoints.forced,
                                 textColor = colorScheme.error,
                                 borderColor = colorScheme.error.copy(alpha = 0.5f),
                                 backgroundColor = colorScheme.error.copy(alpha = 0.1f),
@@ -183,7 +183,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label =strings.behavior,
+        label =strings.endpointDetails.behavior,
         icon = Icons.LightningBolt,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
@@ -202,7 +202,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label =strings.latency,
+        label =strings.endpointDetails.latency,
         icon = Icons.Clock,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
@@ -220,7 +220,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label = "${strings.widgets.endpointDetails.presets.title} (${state.presets.allPresets.size})",
+        label = "${strings.endpointDetails.presets.title} (${state.presets.allPresets.size})",
         icon = Icons.Default.DragIndicator,
         contentPadding = PaddingValues(0.dp),
         headerActions = {
@@ -229,7 +229,7 @@ private fun ColumnScope.PopulatedState(
                 onChanged = onRowDensityChanged
             )
             Spacer(Modifier.width(8.dp))
-            val customLabel = strings.presets.typeDescriptions.other
+            val customLabel = strings.endpointDetails.presets.typeDescriptions.other
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
@@ -370,8 +370,8 @@ internal fun EndpointDetailsWidgetContent(
     ) {
         when (state) {
             is State.Empty -> EmptyState(
-                title =strings.emptyTitle,
-                description =strings.emptyDescription,
+                title = strings.widgets.endpointDetails.emptyTitle,
+                description =strings.widgets.endpointDetails.emptyDescription,
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Settings,
@@ -462,7 +462,7 @@ private fun ActivePresetBanner(
 
         if (isForceFailureEnabled) {
             Text(
-                text =strings.presets.forceFailureAppliedPresetMessage,
+                text = strings.widgets.endpointDetails.presets.forceFailureAppliedPresetMessage,
                 style = MaterialTheme.typography.titleSmall,
                 color = colorScheme.error,
                 fontWeight = FontWeight.Bold,
