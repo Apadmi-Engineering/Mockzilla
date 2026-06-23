@@ -19,11 +19,13 @@ import io.ktor.http.HttpStatusCode
 
 import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration.Companion.seconds
 
 internal class CreateEditPresetViewModel(
     private val key: EndpointConfiguration.Key,
@@ -92,10 +94,12 @@ internal class CreateEditPresetViewModel(
                         it
                     )
                 )
-                State.Loading
+                State.FailedToLoad
             }
         )
     }
+
+    internal fun retry() = viewModelScope.launch { loadIncumbentValues(key) }
 
     private fun inferResponseTypeFromBody(
         body: String?
@@ -212,6 +216,7 @@ internal class CreateEditPresetViewModel(
     }
 
     sealed class State {
+        data object FailedToLoad : State()
         data object Loading : State()
 
         /**
@@ -230,7 +235,6 @@ internal class CreateEditPresetViewModel(
          * @property committedBody Last body value synced from the server
          * @property committedStatusCode Last status code synced from the server
          * @property committedHeaders Last headers synced from the server
-         * @property committedResponseType Last response type synced from the server
          */
         data class Editing(
             val isSaving: Boolean,

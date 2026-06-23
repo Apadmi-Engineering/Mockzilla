@@ -31,7 +31,15 @@ data class Strings(
     data class Components(
         val editor: Editor,
         val findReplace: FindReplace,
+        val genericError: GenericError,
     ) {
+
+        data class GenericError(
+            val title: String,
+            val body: String,
+            val retryButton: String
+        )
+
         /**
          * @property largeFileSyntaxHighlightError
          * @property jsonErrorTitle

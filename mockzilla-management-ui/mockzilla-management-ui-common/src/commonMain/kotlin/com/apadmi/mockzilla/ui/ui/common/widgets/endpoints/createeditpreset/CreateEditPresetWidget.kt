@@ -74,6 +74,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.ErrorRetry
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
@@ -397,6 +398,7 @@ fun CreateEditPresetWidget(
         onFormatResponseBody = viewModel::onFormatResponseBody,
         onAddHeader = viewModel::onAddHeader,
         onRemoveHeader = viewModel::onRemoveHeader,
+        onRetry = viewModel::retry
     )
 }
 
@@ -412,6 +414,7 @@ internal fun CreateEditPresetWidgetContent(
     onFormatResponseBody: () -> Unit = {},
     onAddHeader: (key: String, value: String) -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
+    onRetry: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
     @Suppress("SAY_NO_TO_VAR")
@@ -429,13 +432,21 @@ internal fun CreateEditPresetWidgetContent(
             .then(if (!isBodyExpanded) Modifier.verticalScroll(rememberScrollState()) else Modifier)
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
             .navigationBarsPadding(),
+        verticalArrangement = if (state is State.FailedToLoad) Arrangement.Center else Arrangement.Top
     ) {
         when (state) {
-            is State.Loading -> EmptyState(
-                title = strings.widgets.endpointDetails.emptyTitle,
-                description = strings.widgets.endpointDetails.emptyDescription,
+            State.FailedToLoad -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                ErrorRetry(onRetry = onRetry)
+                BaseButton(
+                    variant = ButtonVariant.Ghost,
+                    label = strings.widgets.createEditPreset.cancel,
+                    onClick = onCancel
+                )
+            }
+            is State.Loading -> TogglableProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                isLoading = true
             )
-
             is State.Editing -> PopulatedState(
                 state = state,
                 endpointName = endpointName,
@@ -450,6 +461,7 @@ internal fun CreateEditPresetWidgetContent(
                 isBodyExpanded = isBodyExpanded,
                 onToggleBodyExpanded = { isBodyExpanded = !isBodyExpanded }
             )
+
         }
     }
 }
@@ -805,5 +817,6 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
         onNewResponseBody = {},
         onAddHeader = { _, _ -> },
         onRemoveHeader = {},
+        onRetry = {}
     )
 }

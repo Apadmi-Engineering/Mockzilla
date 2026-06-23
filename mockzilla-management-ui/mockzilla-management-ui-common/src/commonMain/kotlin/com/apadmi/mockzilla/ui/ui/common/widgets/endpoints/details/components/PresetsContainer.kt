@@ -73,7 +73,7 @@ internal fun PresetsContainer(
             )
         } else {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
@@ -177,7 +177,9 @@ private fun PopulatedPresets(
         if (presets.visiblePresets.isEmpty()) {
             Text(
                 text = strings.filterPlaceholderEmpty,
-                modifier = Modifier.padding(vertical = 12.dp),
+                modifier = Modifier.padding(12.dp),
+                color = MaterialTheme.colorScheme.onSurfaceMuted,
+                style = MaterialTheme.typography.labelMedium
             )
         }
 

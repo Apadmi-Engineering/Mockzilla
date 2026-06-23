@@ -48,13 +48,15 @@ internal class EndpointDetailsViewModel(
         viewModelScope.launch { reloadData() }
     }
 
+    internal fun retry() = viewModelScope.launch { reloadData() }
+
     @Suppress("TOO_LONG_FUNCTION")
     private suspend fun reloadData() {
         val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
             endpoint.firstOrNull { it.key == key }
         }
 
-        state.value = endpoint.fold(
+       state.value = endpoint.fold(
             onSuccess = { config ->
                 config?.let {
                     endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
@@ -82,10 +84,14 @@ internal class EndpointDetailsViewModel(
                             )
                         },
                         onFailure = {
-                            State.Empty
+                            Event.GenericError(
+                                GenericErrorableOperation.FetchDashboardOptionsConfig,
+                                it
+                            )
+                            State.FailedToLoad
                         }
                     )
-                } ?: State.Empty
+                } ?: State.FailedToLoad
             },
             onFailure = {
                 eventBus.send(
@@ -94,7 +100,7 @@ internal class EndpointDetailsViewModel(
                         it
                     )
                 )
-                State.Empty
+                State.FailedToLoad
             }
         )
     }
@@ -114,6 +120,7 @@ internal class EndpointDetailsViewModel(
     ) {
         setStateLoading()
         state.value = when (val state = state.value) {
+            is State.FailedToLoad,
             is State.Empty -> state
             is State.Endpoint -> {
                 updateServer(state.config, device)
@@ -201,6 +208,7 @@ internal class EndpointDetailsViewModel(
 
     sealed class State {
         data object Empty : State()
+        data object FailedToLoad : State()
 
         /**
          * @property config

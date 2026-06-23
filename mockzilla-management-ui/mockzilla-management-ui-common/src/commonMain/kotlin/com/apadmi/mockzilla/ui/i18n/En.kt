@@ -184,7 +184,7 @@ val EnStrings = Strings(
                 activePresetTitle = "Configure Overrides",
                 createCustomButton = "Create Custom",
                 filterPlaceholder = "Filter Presets",
-                filterPlaceholderEmpty = "Nothing here :(",
+                filterPlaceholderEmpty = "No matches",
                 statusCodeFallback = "XXX",
                 applyLabel = "Apply",
                 appliedLabel = "Set",
@@ -293,5 +293,10 @@ val EnStrings = Strings(
             replaceButton = "Replace",
             replaceAllButton = "All",
         ),
+        genericError = Strings.Components.GenericError(
+            title = "Something went wrong",
+            body = "Please check your device is connected and try again",
+            retryButton = "Retry"
+        )
     )
 )

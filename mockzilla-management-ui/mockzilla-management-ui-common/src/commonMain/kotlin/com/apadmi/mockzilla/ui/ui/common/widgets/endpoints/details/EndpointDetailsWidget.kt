@@ -70,6 +70,7 @@ import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.EndpointDetailsSection
+import com.apadmi.mockzilla.ui.ui.common.components.ErrorRetry
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
@@ -224,10 +225,12 @@ private fun ColumnScope.PopulatedState(
         icon = Icons.Default.DragIndicator,
         contentPadding = PaddingValues(0.dp),
         headerActions = {
-            RowDensityControls(
-                selected = state.layoutMode,
-                onChanged = onRowDensityChanged
-            )
+            if (state.presets.allPresets.isNotEmpty()) {
+                RowDensityControls(
+                    selected = state.layoutMode,
+                    onChanged = onRowDensityChanged
+                )
+            }
             Spacer(Modifier.width(8.dp))
             val customLabel = strings.widgets.endpointDetails.presets.typeDescriptions.other
             Row(
@@ -340,6 +343,7 @@ fun EndpointDetailsWidget(
         onRowDensityChanged = viewModel::onRowDensityChanged,
         onCreatePreset = { activeEndpoint?.let { onCreatePreset(activeEndpoint) } },
         onEditPreset = { activeEndpoint?.let { onEditPreset(activeEndpoint) } },
+        onRetry = viewModel::retry,
         onPresetMoreInfoClicked = {
             uriHandler.openUri("https://mockzilla.apadmi.dev/presets/")
         }
@@ -358,6 +362,7 @@ internal fun EndpointDetailsWidgetContent(
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
     onEditPreset: () -> Unit = {},
+    onRetry: () -> Unit = {},
     strings: Strings = LocalStrings.current,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -369,6 +374,10 @@ internal fun EndpointDetailsWidgetContent(
             .background(color = colorScheme.surface)
     ) {
         when (state) {
+            is State.FailedToLoad -> ErrorRetry(
+                modifier = Modifier.align(Alignment.Center),
+                onRetry = onRetry
+            )
             is State.Empty -> EmptyState(
                 title = strings.widgets.endpointDetails.emptyTitle,
                 description = strings.widgets.endpointDetails.emptyDescription,
