@@ -114,9 +114,9 @@ fun DeviceConnectionContent(
     strings: Strings = LocalStrings.current,
 ) = Box(
     modifier = Modifier
+        .background(MaterialTheme.colorScheme.background)
         .fillMaxSize()
-        .padding(vertical = 40.dp)
-        .background(MaterialTheme.colorScheme.background),
+        .padding(vertical = 40.dp),
     contentAlignment = Alignment.Center,
 ) {
     BoxWithConstraints(

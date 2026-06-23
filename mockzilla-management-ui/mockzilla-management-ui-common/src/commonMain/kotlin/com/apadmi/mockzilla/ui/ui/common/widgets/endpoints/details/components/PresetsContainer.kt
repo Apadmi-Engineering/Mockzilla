@@ -69,7 +69,7 @@ internal fun PresetsContainer(
             )
         } else {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
@@ -83,6 +83,7 @@ internal fun PresetsContainer(
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodySmall
                 )
+                Spacer(modifier = Modifier.size(4.dp))
                 CustomOutlineButton(
                     label = strings.moreInfoButton,
                     onClick = onPresetMoreInfoClicked,

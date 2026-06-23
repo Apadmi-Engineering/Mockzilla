@@ -19,3 +19,5 @@ expect inline fun <reified T : ViewModel> getViewModel(
     key: String? = null,
     noinline parameters: ParametersDefinition? = null
 ): T
+
+expect fun evictDesktopViewModelsForKey(key: String)

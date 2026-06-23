@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.ui.ui.common
 
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
+import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.StatefulDevice
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.*
@@ -12,24 +13,32 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class AppRootViewModel(
+class DeviceRootViewModel(
+    private val device: Device,
     private val eventBus: EventBus,
-    activeDeviceMonitor: ActiveDeviceMonitor
+    private val activeDeviceMonitor: ActiveDeviceMonitor,
 ) : ViewModel() {
-    val state = MutableStateFlow<State>(State.NewDeviceConnection)
+    val state = MutableStateFlow<State>(
+        activeDeviceMonitor.allDevices.find { it.device == device }.let { initial ->
+            when {
+                initial == null || !initial.isCompatibleMockzillaVersion -> State.UnsupportedDeviceMockzillaVersion
+                else -> State.Connected(activeDevice = initial, error = null, selectedEndpoint = null)
+            }
+        }
+    )
 
     init {
-        activeDeviceMonitor.selectedDevice.onEach { device ->
+        activeDeviceMonitor.onDeviceConnectionStateChange.onEach {
+            val myDevice = activeDeviceMonitor.allDevices.find { it.device == device }
             val error = State.Connected.ErrorBannerState.ConnectionLost.takeUnless {
-                device?.isConnected == true
+                myDevice?.isConnected == true
             }
             state.value = when {
-                device == null -> State.NewDeviceConnection
-                !device.isCompatibleMockzillaVersion -> State.UnsupportedDeviceMockzillaVersion
+                myDevice == null || !myDevice.isCompatibleMockzillaVersion -> State.UnsupportedDeviceMockzillaVersion
                 else -> State.Connected(
-                    activeDevice = device,
+                    activeDevice = myDevice,
                     error = error,
-                    selectedEndpoint = null
+                    selectedEndpoint = (state.value as? State.Connected)?.selectedEndpoint
                 )
             }
         }.launchIn(viewModelScope)
@@ -65,7 +74,6 @@ class AppRootViewModel(
     }
 
     sealed class State {
-        data object NewDeviceConnection : State()
         data object UnsupportedDeviceMockzillaVersion : State()
 
         /**

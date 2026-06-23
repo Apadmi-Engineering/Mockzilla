@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 actual fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier) = Unit
 
 @Composable
-internal actual fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier: Modifier) = Unit
+actual fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier: Modifier) = Unit
 
 @Composable
 internal actual fun PlatformVerticalScrollbar(scrollState: LazyListState, modifier: Modifier) = Unit

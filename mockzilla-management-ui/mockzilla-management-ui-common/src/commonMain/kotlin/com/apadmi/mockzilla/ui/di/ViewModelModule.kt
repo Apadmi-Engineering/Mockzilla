@@ -1,7 +1,8 @@
 package com.apadmi.mockzilla.ui.di
 
 import com.apadmi.mockzilla.ui.di.utils.viewModel
-import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
+import com.apadmi.mockzilla.ui.engine.device.Device
+import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
@@ -22,5 +23,5 @@ internal fun viewModelModule(): Module = module {
     viewModel { params -> CreateEditPresetViewModel(params.get(), params.get(), params.get(), get(), get(), get()) }
     viewModel { params -> MiscControlsViewModel(params.getOrNull(), get(), get()) }
     viewModel { params -> GlobalControlsViewModel(params.get(), get(), get(), get(), get()) }
-    viewModel { AppRootViewModel(get(), get()) }
+    viewModel { params -> DeviceRootViewModel(params.get<Device>(), get(), get()) }
 }

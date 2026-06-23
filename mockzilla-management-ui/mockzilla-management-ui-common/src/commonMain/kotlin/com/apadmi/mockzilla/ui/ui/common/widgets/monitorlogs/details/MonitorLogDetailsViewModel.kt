@@ -90,13 +90,15 @@ internal class MonitorLogDetailsViewModel(
                 internal fun from(body: String, truncated: Boolean): BodyState =
                     if (truncated) Loading(body) else Available(body)
             }
-        } /**
+        }
+
+        /**
          * @property logEvent
          * @property selectedTab
          * @property requestBodyState
          * @property responseBodyState
          */
-        data class ViewDetails(
+        internal data class ViewDetails(
             val logEvent: LogEvent,
             val selectedTab: Tab = Tab.Response,
             val requestBodyState: BodyState = BodyState.Available(""),
