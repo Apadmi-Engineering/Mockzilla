@@ -44,7 +44,7 @@ internal fun Application.configureEndpoints(
             call.respond("")
         }
         get("/api/meta") {
-            // di.logger.v { "Handling GET meta: ${call.request.uri}" }
+            di.logger.v { "Handling GET meta: ${call.request.uri}" }
             safeResponse(di.logger) { call ->
                 call.allowCors()
                 call.respond(di.metaData)
