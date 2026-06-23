@@ -22,6 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
+ * @property statusCode
+ * @property body
+ */
+@InternalMockzillaApi
+class FailedHttpResponseException(
+    val statusCode: HttpStatusCode,
+    val body: String
+) : Exception()
+
+/**
  * @property client
  */
 internal class KtorRequestRunner(internal val client: HttpClient) {
@@ -78,12 +88,6 @@ internal suspend inline fun HttpClient.delete(
     url(connection.url(path))
     block()
 }
-
-@InternalMockzillaApi
-class FailedHttpResponseException(
-    val statusCode: HttpStatusCode,
-    val body: String
-): Exception()
 
 private fun MockzillaConnectionConfig.url(path: String) =
     "http://$ip:$port/${path.removePrefix("/")}"
