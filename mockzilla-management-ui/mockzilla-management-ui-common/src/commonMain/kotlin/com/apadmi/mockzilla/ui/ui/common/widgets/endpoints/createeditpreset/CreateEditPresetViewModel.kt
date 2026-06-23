@@ -65,6 +65,7 @@ internal class CreateEditPresetViewModel(
         state.value = endpoint.mapCatching { config ->
             val current = config?.appliedPresetOverride ?: config?.deriveLegacyPreset()
             val isEditing = variant == State.Editing.Variant.Edit
+
             val body = current?.response?.body.takeIf { isEditing }
             val statusCode = current?.response?.statusCode.takeIf { isEditing }
             val headers = current?.response?.headers

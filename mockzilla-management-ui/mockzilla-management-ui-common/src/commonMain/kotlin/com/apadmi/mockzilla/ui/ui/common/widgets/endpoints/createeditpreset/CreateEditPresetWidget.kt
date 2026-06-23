@@ -48,6 +48,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -93,6 +94,8 @@ import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
+import com.apadmi.mockzilla.ui.di.utils.evictDesktopViewModelsForKey
+
 
 @Composable
 private fun ColumnScope.HeadersSection(
@@ -366,8 +369,10 @@ fun CreateEditPresetWidget(
     onCancel: () -> Unit = {},
     onSave: () -> Unit = {},
 ) {
+    val vmKey = "CreateEditPresetViewModel-${activeEndpoint.raw}-$device"
+    val cleanupVm = { evictDesktopViewModelsForKey(key = vmKey) }
     val viewModel = getViewModel<CreateEditPresetViewModel>(
-        key = "${activeEndpoint.raw}-$device"
+        key = vmKey
     ) {
         parametersOf(
             activeEndpoint,
@@ -378,10 +383,13 @@ fun CreateEditPresetWidget(
             }
         )
     }
+
+
     val state by viewModel.state
 
     LaunchedEffect((state as? State.Editing)?.navigateUp) {
         if ((state as? State.Editing)?.navigateUp == true) {
+            cleanupVm()
             onSave()
             viewModel.consumeNavigateUp()
         }
@@ -390,7 +398,10 @@ fun CreateEditPresetWidget(
     CreateEditPresetWidgetContent(
         state = state,
         endpointName = activeEndpoint.raw,
-        onCancel = onCancel,
+        onCancel = {
+            cleanupVm()
+            onCancel()
+        },
         onSave = viewModel::save,
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,

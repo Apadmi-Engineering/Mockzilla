@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.ui.engine.events
 
+import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.utils.launchUnit
 
@@ -41,6 +42,7 @@ internal class EventBusImpl(
     override val events = MutableSharedFlow<EventBus.Event>()
 
     override fun send(event: EventBus.Event) = coroutineScope.launchUnit {
+        Logger.v(tag = "EventBus") { "Sending Event: $event" }
         events.emit(event)
     }
 }

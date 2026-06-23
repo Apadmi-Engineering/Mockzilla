@@ -400,17 +400,17 @@ internal fun EndpointDetailsWidgetContent(
                             .verticalScroll(scrollState)
                     ) {
                         PopulatedState(
-                            state,
-                            strings,
-                            onResetAll,
-                            onFailChange,
-                            onDelayChange,
-                            onFilterPresetChanged,
-                            onRowDensityChanged,
-                            onDefaultPresetSelected,
-                            onPresetMoreInfoClicked,
-                            onCreatePreset,
-                            onEditPreset,
+                            state = state,
+                            strings = strings,
+                            onResetAll = onResetAll,
+                            onFailChange = onFailChange,
+                            onDelayChange = onDelayChange,
+                            onFilterPresetChanged = onFilterPresetChanged,
+                            onRowDensityChanged = onRowDensityChanged,
+                            onDefaultPresetSelected = onDefaultPresetSelected,
+                            onPresetMoreInfoClicked = onPresetMoreInfoClicked,
+                            onCreatePreset = onCreatePreset,
+                            onEditPreset = onEditPreset,
                         )
                     }
                     PlatformVerticalScrollbar(
