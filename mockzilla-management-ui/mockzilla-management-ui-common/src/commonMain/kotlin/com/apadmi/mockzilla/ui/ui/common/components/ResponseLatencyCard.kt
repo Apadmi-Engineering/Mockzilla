@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Remove
@@ -61,7 +62,6 @@ import kotlin.time.Duration.Companion.seconds
 private const val buttonCornerRadiusDark = 4
 private const val buttonCornerRadiusLight = 6
 private const val msPerSecond = 1000
-private const val maxLatencySeconds = 60.0
 
 private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
 
@@ -131,9 +131,6 @@ internal fun ResponseLatencyCard(
     var textValue by remember {
         mutableStateOf((initialValue?.msToSecondsText() ?: "").withCursorAtEnd())
     }
-    var isError by remember {
-        mutableStateOf(false)
-    }
     var lastEmittedValue by remember {
         mutableStateOf(initialValue)
     }
@@ -142,7 +139,6 @@ internal fun ResponseLatencyCard(
         if (initialValue != lastEmittedValue) {
             value = initialValue
             textValue = (initialValue?.msToSecondsText() ?: "").withCursorAtEnd()
-            isError = false
             lastEmittedValue = initialValue
         }
     }
@@ -152,7 +148,6 @@ internal fun ResponseLatencyCard(
             val clamped = it.clamped()
             value = clamped
             textValue = clamped.msToSecondsText().withCursorAtEnd()
-            isError = false
             lastEmittedValue = clamped
             onChange(clamped)
         }
@@ -247,7 +242,7 @@ internal fun ResponseLatencyCard(
                         )
                         .border(
                             width = 1.dp,
-                            color = if (isError) colorScheme.error else colorScheme.outline,
+                            color = colorScheme.outline,
                             shape = componentShape,
                         )
                         .padding(horizontal = 12.dp),
@@ -257,25 +252,17 @@ internal fun ResponseLatencyCard(
                         value = textValue,
                         onValueChange = { newValue ->
                             val filtered = newValue.text.filterAsDecimal()
-                            val seconds = filtered.toDoubleOrNull()
-                            if (seconds != null && (seconds < 0.0 || seconds > maxLatencySeconds)) {
-                                textValue = "".withCursorAtEnd()
-                                value = null
-                                isError = true
+                            textValue = if (filtered == newValue.text) {
+                                newValue
                             } else {
-                                textValue = if (filtered == newValue.text) {
-                                    newValue
-                                } else {
-                                    filtered.withCursorAtEnd()
-                                }
-                                isError = false
-                                val parsed = filtered.secondsTextToMs()
-                                value = parsed
-                                parsed?.let {
-                                    val clamped = parsed.clamped()
-                                    lastEmittedValue = clamped
-                                    onChange(clamped)
-                                }
+                                filtered.withCursorAtEnd()
+                            }
+                            val parsed = filtered.secondsTextToMs()
+                            value = parsed
+                            parsed?.let {
+                                val clamped = parsed.clamped()
+                                lastEmittedValue = clamped
+                                onChange(clamped)
                             }
                         },
                         singleLine = true,
@@ -329,52 +316,71 @@ internal fun ResponseLatencyCard(
                     )
                 }
             }
-
-            if (isError) {
-                Text(
-                    text = strings.widgets.latency.invalidRange,
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        color = colorScheme.error,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Normal,
-                    ),
-                )
-            }
         }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            CustomSlider(
-                value = value?.toFloat() ?: 0f,
-                valueRange = 0f..sliderMax,
-                modifier = Modifier.fillMaxWidth(),
-                activeTrackColor = colorScheme.primary,
-                onValueChange = {
-                    updateValue(it.toInt())
-                },
-            )
+            val isOverflowing = (value ?: 0) > sliderMax.roundToInt()
+
+            Box {
+                CustomSlider(
+                    value = value?.toFloat() ?: 0f,
+                    valueRange = 0f..sliderMax,
+                    modifier = Modifier.fillMaxWidth(),
+                    activeTrackColor = colorScheme.primary,
+                    onValueChange = {
+                        updateValue(it.toInt())
+                    },
+                )
+
+                if (isOverflowing) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 1.dp)
+                            .size(width = 3.dp, height = 10.dp)
+                            .background(colorScheme.primary, RoundedCornerShape(2.dp)),
+                    )
+                }
+            }
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = strings.widgets.latency.sliderMin,
                     style = MaterialTheme.typography.labelSmall.copy(
                         color = colorScheme.onSurfaceVariant,
                         fontSize = 11.sp,
+                        lineHeight = 11.sp,
                         fontWeight = FontWeight.Normal,
                     )
                 )
-                Text(
-                    text = strings.widgets.latency.sliderMax,
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        color = colorScheme.onSurfaceVariant,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Normal,
+                if (isOverflowing) {
+                    Icon(
+                        imageVector = Icons.Default.AccessTime,
+                        contentDescription = strings.widgets.latency.sliderMax,
+                        tint = colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .size(16.dp),
                     )
-                )
+                } else {
+                    Text(
+                        text = strings.widgets.latency.sliderMax,
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = colorScheme.onSurfaceVariant,
+                            fontSize = 11.sp,
+                            lineHeight = 11.sp,
+                            fontWeight = FontWeight.Normal,
+                        )
+                    )
+                }
             }
         }
         
