@@ -96,7 +96,6 @@ import org.koin.core.parameter.parametersOf
 @Composable
 private fun ColumnScope.PopulatedState(
     state: State.Endpoint,
-    strings: Strings,
     onResetAll: () -> Unit,
     onFailChange: (Boolean?) -> Unit,
     onDelayChange: (Int?) -> Unit,
@@ -106,6 +105,7 @@ private fun ColumnScope.PopulatedState(
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
     onEditPreset: () -> Unit = {},
+    strings: Strings.Widgets.EndpointDetails = LocalStrings.current.widgets.endpointDetails,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
@@ -114,10 +114,10 @@ private fun ColumnScope.PopulatedState(
     Box {
         SurfaceHeader(
             title = state.config.name,
-            subtitle = strings.widgets.endpointDetails.subtitle,
+            subtitle =strings.subtitle,
             actions = {
                 BaseButton(
-                    label = strings.widgets.endpointDetails.reset,
+                    label =strings.reset,
                     leadingIcon = Icons.Default.Refresh,
                     variant = ButtonVariant.Ghost,
                     size = ButtonSize.Sm,
@@ -183,7 +183,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label = strings.widgets.endpointDetails.behavior,
+        label =strings.behavior,
         icon = Icons.LightningBolt,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
@@ -202,7 +202,7 @@ private fun ColumnScope.PopulatedState(
     }
 
     EndpointDetailsSection(
-        label = strings.widgets.endpointDetails.latency,
+        label =strings.latency,
         icon = Icons.Clock,
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
@@ -229,7 +229,7 @@ private fun ColumnScope.PopulatedState(
                 onChanged = onRowDensityChanged
             )
             Spacer(Modifier.width(8.dp))
-            val customLabel = strings.widgets.endpointDetails.presets.typeDescriptions.other
+            val customLabel = strings.presets.typeDescriptions.other
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
@@ -370,8 +370,8 @@ internal fun EndpointDetailsWidgetContent(
     ) {
         when (state) {
             is State.Empty -> EmptyState(
-                title = strings.widgets.endpointDetails.emptyTitle,
-                description = strings.widgets.endpointDetails.emptyDescription,
+                title =strings.emptyTitle,
+                description =strings.emptyDescription,
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Settings,
@@ -391,17 +391,16 @@ internal fun EndpointDetailsWidgetContent(
                             .verticalScroll(scrollState)
                     ) {
                         PopulatedState(
-                            state,
-                            strings,
-                            onResetAll,
-                            onFailChange,
-                            onDelayChange,
-                            onFilterPresetChanged,
-                            onRowDensityChanged,
-                            onDefaultPresetSelected,
-                            onPresetMoreInfoClicked,
-                            onCreatePreset,
-                            onEditPreset,
+                            state = state,
+                            onResetAll = onResetAll,
+                            onFailChange = onFailChange,
+                            onDelayChange = onDelayChange,
+                            onFilterPresetChanged = onFilterPresetChanged,
+                            onRowDensityChanged = onRowDensityChanged,
+                            onDefaultPresetSelected = onDefaultPresetSelected,
+                            onPresetMoreInfoClicked = onPresetMoreInfoClicked,
+                            onCreatePreset = onCreatePreset,
+                            onEditPreset = onEditPreset,
                         )
                     }
                     PlatformVerticalScrollbar(
@@ -463,7 +462,7 @@ private fun ActivePresetBanner(
 
         if (isForceFailureEnabled) {
             Text(
-                text = strings.widgets.endpointDetails.presets.forceFailureAppliedPresetMessage,
+                text =strings.presets.forceFailureAppliedPresetMessage,
                 style = MaterialTheme.typography.titleSmall,
                 color = colorScheme.error,
                 fontWeight = FontWeight.Bold,
