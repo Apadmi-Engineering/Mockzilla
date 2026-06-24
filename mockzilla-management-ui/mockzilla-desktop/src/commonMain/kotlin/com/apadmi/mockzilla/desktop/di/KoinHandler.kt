@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.desktop.di
 
+import com.apadmi.mockzilla.desktop.MockzillaDesktopBuildConfig
 import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorService
 import com.apadmi.mockzilla.desktop.engine.connection.AdbConnectorServiceImpl
 import com.apadmi.mockzilla.desktop.engine.connection.AdbEmulatorDiscoveryService
@@ -13,6 +14,7 @@ import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.di.utils.viewModel
+import com.apadmi.mockzilla.ui.utils.MockzillaUiVersion
 
 import org.koin.dsl.module
 
@@ -41,6 +43,7 @@ fun startDesktopMockzillaKoin() {
             }
         }
         single { ZeroConfSdkWrapper(ZeroConfConfig.serviceType + ".local.", GlobalScope) }
+        single<MockzillaUiVersion> { MockzillaUiVersion(MockzillaDesktopBuildConfig.version) }
         viewModel { DeviceConnectionViewModel(get(), get(), get()) }
         viewModel { DeviceTabsViewModel(get(), get()) }
     }))

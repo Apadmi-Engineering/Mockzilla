@@ -22,6 +22,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -50,6 +52,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.ScaleFactor
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 import org.koin.core.parameter.parametersOf
 
@@ -74,7 +77,10 @@ fun MiscControlsWidget(
     device: Device?
 ) {
     val viewModel = getViewModel<MiscControlsViewModel>(key = device?.toString()) { parametersOf(device) }
+    val state by viewModel.state.collectAsState()
+
     MiscControlsWidgetContent(
+        state = state,
         onRefreshAll = viewModel::refreshAllData,
         onClearAllOverrides = viewModel::clearAllOverrides,
     )
@@ -84,6 +90,7 @@ fun MiscControlsWidget(
 @Composable
 fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
     MiscControlsWidgetContent(
+        state = MiscControlsViewModel.State("2.0.0"),
         onRefreshAll = {},
         onClearAllOverrides = {}
     )
@@ -91,71 +98,80 @@ fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
 
 @Composable
 internal fun MiscControlsWidgetContent(
+    state: MiscControlsViewModel.State,
     onRefreshAll: () -> Unit,
     onClearAllOverrides: () -> Unit,
     strings: Strings = LocalStrings.current
+) = Column(
+    modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 8.dp)
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        SectionHeader(title = strings.widgets.miscControls.actionsSection)
+    SectionHeader(title = strings.widgets.miscControls.actionsSection)
 
-        Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(4.dp))
 
-        BaseButton(
-            modifier = Modifier.fillMaxWidth(),
-            label = strings.widgets.miscControls.refreshAll,
-            leadingIcon = Icons.Filled.Refresh,
-            variant = ButtonVariant.Soft,
-            size = ButtonSize.Lg,
-            contentAlignment = ButtonContentAlignment.Start,
-            onClick = onRefreshAll
-        )
+    BaseButton(
+        modifier = Modifier.fillMaxWidth(),
+        label = strings.widgets.miscControls.refreshAll,
+        leadingIcon = Icons.Filled.Refresh,
+        variant = ButtonVariant.Soft,
+        size = ButtonSize.Lg,
+        contentAlignment = ButtonContentAlignment.Start,
+        onClick = onRefreshAll
+    )
 
-        Spacer(modifier = Modifier.height(2.dp))
+    Spacer(modifier = Modifier.height(2.dp))
 
-        BaseButton(
-            modifier = Modifier.fillMaxWidth(),
-            label = strings.widgets.miscControls.clearOverrides,
-            leadingIcon = Icons.Filled.Restore,
-            variant = ButtonVariant.Soft,
-            size = ButtonSize.Lg,
-            contentAlignment = ButtonContentAlignment.Start,
-            onClick = onClearAllOverrides
-        )
+    BaseButton(
+        modifier = Modifier.fillMaxWidth(),
+        label = strings.widgets.miscControls.clearOverrides,
+        leadingIcon = Icons.Filled.Restore,
+        variant = ButtonVariant.Soft,
+        size = ButtonSize.Lg,
+        contentAlignment = ButtonContentAlignment.Start,
+        onClick = onClearAllOverrides
+    )
 
-        Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(16.dp))
 
-        var presentationMode by rememberSaveable { mutableStateOf(PresentationModeScaleFactor.enabled) }
-        var presentationModeScaleFactor by rememberSaveable {
-            mutableFloatStateOf(PresentationModeScaleFactor.scaleFactor)
-        }
-        val setScaleFactor = LocalSetScaleFactor.current
-        PresentationModeSettings(
-            presentationMode = presentationMode,
-            onPresentationModeChange = { presentationModeEnabled ->
-                presentationMode = presentationModeEnabled
-                PresentationModeScaleFactor.enabled = presentationModeEnabled
-                if (presentationModeEnabled) {
-                    setScaleFactor(presentationModeScaleFactor)
-                } else {
-                    setScaleFactor(ScaleFactor.default)
-                }
-            },
-            presentationModeScaleFactor = presentationModeScaleFactor,
-            onPresentationModeScaleFactorChange = { scaleFactor ->
-                setScaleFactor(scaleFactor)
-                presentationModeScaleFactor = scaleFactor
-                PresentationModeScaleFactor.scaleFactor = scaleFactor
-            },
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        DarkModeSettings()
+    var presentationMode by rememberSaveable { mutableStateOf(PresentationModeScaleFactor.enabled) }
+    var presentationModeScaleFactor by rememberSaveable {
+        mutableFloatStateOf(PresentationModeScaleFactor.scaleFactor)
     }
+    val setScaleFactor = LocalSetScaleFactor.current
+    PresentationModeSettings(
+        presentationMode = presentationMode,
+        onPresentationModeChange = { presentationModeEnabled ->
+            presentationMode = presentationModeEnabled
+            PresentationModeScaleFactor.enabled = presentationModeEnabled
+            if (presentationModeEnabled) {
+                setScaleFactor(presentationModeScaleFactor)
+            } else {
+                setScaleFactor(ScaleFactor.default)
+            }
+        },
+        presentationModeScaleFactor = presentationModeScaleFactor,
+        onPresentationModeScaleFactorChange = { scaleFactor ->
+            setScaleFactor(scaleFactor)
+            presentationModeScaleFactor = scaleFactor
+            PresentationModeScaleFactor.scaleFactor = scaleFactor
+        },
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    DarkModeSettings()
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = state.uiVersion,
+        color = MaterialTheme.colorScheme.onSurfaceFaint,
+        style = MaterialTheme.typography.bodySmall,
+        textAlign = TextAlign.Center
+    )
 }
 
 @Composable

@@ -343,6 +343,7 @@ data class Strings(
             val disconnected: String,
             val empty: String,
             val closeButtonDescription: String,
+            val betaBanner: String
         )
 
         /**
