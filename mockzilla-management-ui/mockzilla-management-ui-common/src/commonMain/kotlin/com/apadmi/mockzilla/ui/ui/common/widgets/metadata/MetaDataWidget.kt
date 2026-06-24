@@ -264,6 +264,7 @@ private fun AppHeader(
             text = appName,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1
         )
         Text(

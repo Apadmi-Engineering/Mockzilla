@@ -10,6 +10,11 @@ env:
   MAC_CERTIFICATE_PATH: "./osx_build_certificate.p12"
   MAC_SIGNING_KEY_PATH: "./osx_signing_key.p12"
   APPLE_NOTARIZATION_KEY_PATH: "./apple_notarization_key.p8"
+  IS_SNAPSHOT: ${{ github.ref_type == 'branch' }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_type }}
+  cancel-in-progress: ${{ github.ref_type == 'branch' }}
 
 jobs:
   deploy_desktop:
@@ -40,6 +45,8 @@ jobs:
           APPLE_NOTARIZATION_ISSUER_ID: ${{ secrets.APPLE_NOTARIZATION_ISSUER_ID }}
           CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
           CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          SITE_COPY_TO: ${{ env.IS_SNAPSHOT == 'true' && 's3:mockzilla-updates-snapshots/' || 's3:mockzilla-updates/' }}
+          SITE_BASE_URL: ${{ env.IS_SNAPSHOT == 'true' && 'https://snapshots.mockzilla.apadmi.dev/' || 'https://updates.mockzilla.apadmi.dev/' }}
         with:
           command: make copied-site
           extra_flags: -f ci.conveyor.conf
