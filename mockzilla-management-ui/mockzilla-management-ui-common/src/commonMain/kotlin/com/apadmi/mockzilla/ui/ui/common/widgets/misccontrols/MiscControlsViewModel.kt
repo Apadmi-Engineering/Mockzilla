@@ -17,7 +17,6 @@ internal class MiscControlsViewModel(
     uiVersion: MockzillaUiVersion,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
-
     val state = MutableStateFlow(State(uiVersion.version))
 
     fun refreshAllData() {
@@ -31,5 +30,8 @@ internal class MiscControlsViewModel(
         }
     }
 
+    /**
+     * @property uiVersion
+     */
     data class State(val uiVersion: String)
 }

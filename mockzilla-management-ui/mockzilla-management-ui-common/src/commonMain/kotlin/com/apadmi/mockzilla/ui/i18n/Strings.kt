@@ -335,6 +335,7 @@ data class Strings(
          * @property disconnected
          * @property empty
          * @property closeButtonDescription
+         * @property betaBanner
          */
         data class DeviceTabs(
             val tabTitle: (index: Int) -> String,
