@@ -93,6 +93,7 @@ fun MonitorLogDetailsWidget(
     }
 }
 
+@Preview
 @Composable
 fun MonitorLogDetailsWidgetEmptyPreview() = PreviewSurface {
     Box(modifier = Modifier.size(300.dp)) {
