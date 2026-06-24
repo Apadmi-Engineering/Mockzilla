@@ -99,7 +99,7 @@ private val layoutStateSaver = Saver<LayoutState, List<Any?>>(
             saverScope.logsExpandedHeightDp,
             saverScope.presetWidthDp,
             saverScope.globalControlsWidthDp,
-            saverScope.rightPanelTab,
+            saverScope.rightPanelTab?.raw,
             saverScope.presetOpen,
             saverScope.creatingNewPreset,
             saverScope.globalControlsOpen,
@@ -113,7 +113,7 @@ private val layoutStateSaver = Saver<LayoutState, List<Any?>>(
             logsExpandedHeightDp = list[2] as Float,
             presetWidthDp = list[3] as Float,
             globalControlsWidthDp = list[4] as Float,
-            rightPanelTab = RightPanelTab.entries.firstOrNull { it.name == list[5] },
+            rightPanelTab = RightPanelTab.from(list[5] as? String),
             presetOpen = list[6] as Boolean,
             creatingNewPreset = list[7] as Boolean,
             globalControlsOpen = list[8] as Boolean,
@@ -122,10 +122,17 @@ private val layoutStateSaver = Saver<LayoutState, List<Any?>>(
     }
 )
 
-private enum class RightPanelTab {
-    EndpointDetails,
-    LogDetails,
+/**
+ * @property raw
+ */
+private enum class RightPanelTab(val raw: String) {
+    EndpointDetails("EndpointDetails"),
+    LogDetails("LogDetails"),
     ;
+
+    companion object {
+        fun from(raw: String?) = entries.firstOrNull { raw == it.raw }
+    }
 }
 
 /**

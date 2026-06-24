@@ -56,6 +56,11 @@ internal class EndpointDetailsViewModel(
             endpoint.firstOrNull { it.key == key }
         }
 
+        key ?: run {
+            state.value = State.Empty
+            return
+        }
+
         state.value = endpoint.fold(
             onSuccess = { config ->
                 config?.let {
