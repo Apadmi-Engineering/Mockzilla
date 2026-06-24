@@ -11,6 +11,7 @@ import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.State
 
 import io.ktor.http.HttpStatusCode
@@ -27,6 +28,7 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.yield
+import java.lang.Exception
 
 class CreateEditPresetViewModelTests : CoroutineTest() {
     private val dummyKey = EndpointConfiguration.Key("my-endpoint")
@@ -316,12 +318,13 @@ class CreateEditPresetViewModelTests : CoroutineTest() {
 
     @Test
     fun `save - failure - sends GenericError and navigateUp stays false`() = runBlockingTest {
+        val dummyException = RuntimeException("network error")
         /* Setup */
         every { eventBusMock.events }.returns(emptyFlow())
         coEvery { endpointsServiceMock.fetchAllEndpointConfigs(Device.dummy()) }
             .returns(Result.success(listOf(dummyConfig())))
         coEvery { updateServiceMock.applyPreset(Device.dummy(), dummyKey, any()) }
-            .returns(Result.failure(RuntimeException("network error")))
+            .returns(Result.failure(dummyException))
         val sut = createSut()
         yield()
 
@@ -330,7 +333,14 @@ class CreateEditPresetViewModelTests : CoroutineTest() {
         yield()
 
         /* Verify */
-        coVerify { eventBusMock.send(EventBus.Event.GenericError) }
+        coVerify {
+            eventBusMock.send(
+                EventBus.Event.GenericError(
+                    GenericErrorableOperation.ApplyPreset,
+                    dummyException
+                )
+            )
+        }
         assertFalse((sut.state.value as State.Editing).navigateUp)
     }
 

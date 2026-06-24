@@ -10,6 +10,7 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
@@ -52,6 +53,10 @@ internal class CreateEditPresetViewModel(
             .launchIn(viewModelScope)
     }
 
+    fun retry() = viewModelScope.launch {
+        loadIncumbentValues(key)
+    }
+
     private suspend fun loadIncumbentValues(key: EndpointConfiguration.Key) {
         val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
             endpoint.firstOrNull { it.key == key }
@@ -59,33 +64,42 @@ internal class CreateEditPresetViewModel(
 
         val token = ++syncCounter
         state.value = endpoint.mapCatching { config ->
-            val current = config?.appliedPresetOverride ?: config?.deriveLegacyPreset()
-            val isEditing = variant == State.Editing.Variant.Edit
-            val body = current?.response?.body.takeIf { isEditing }
-            val statusCode = current?.response?.statusCode.takeIf { isEditing }
-            val headers = current?.response?.headers
-                ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
-                .takeIf { isEditing } ?: emptyList()
-            State.Editing(
-                isSaving = false,
-                syncToken = token,
-                statusCode = statusCode,
-                body = body,
-                bodyParseError = null,
-                headers = headers,
-                responseType = inferResponseTypeFromBody(body),
-                variant = variant,
-                endpointName = config?.name ?: key.raw,
-                committedBody = body,
-                committedStatusCode = statusCode,
-                committedHeaders = headers,
-            )
+            config.toState(token, key)
         }.fold(
             onSuccess = { it },
             onFailure = {
-                eventBus.send(Event.GenericError)
-                State.Loading
+                eventBus.send(
+                    Event.GenericError(GenericErrorableOperation.FetchEndpointConfigs, it)
+                )
+                State.FailedToLoad
             }
+        )
+    }
+
+    private fun SerializableEndpointConfig?.toState(
+        token: Long,
+        key: EndpointConfiguration.Key
+    ): State.Editing {
+        val current = this?.appliedPresetOverride ?: this?.deriveLegacyPreset()
+        val isEditing = variant == State.Editing.Variant.Edit
+        val body = current?.response?.body.takeIf { isEditing }
+        val statusCode = current?.response?.statusCode.takeIf { isEditing }
+        val headers = current?.response?.headers
+            ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
+            .takeIf { isEditing } ?: emptyList()
+        return State.Editing(
+            isSaving = false,
+            syncToken = token,
+            statusCode = statusCode,
+            body = body,
+            bodyParseError = null,
+            headers = headers,
+            responseType = inferResponseTypeFromBody(body),
+            variant = variant,
+            endpointName = this?.name ?: key.raw,
+            committedBody = body,
+            committedStatusCode = statusCode,
+            committedHeaders = headers,
         )
     }
 
@@ -134,7 +148,7 @@ internal class CreateEditPresetViewModel(
                 navigateUp = true
             )
         }.onFailure {
-            eventBus.send(Event.GenericError)
+            eventBus.send(Event.GenericError(GenericErrorableOperation.ApplyPreset, it))
         }
     }
 
@@ -199,6 +213,7 @@ internal class CreateEditPresetViewModel(
     }
 
     sealed class State {
+        data object FailedToLoad : State()
         data object Loading : State()
 
         /**

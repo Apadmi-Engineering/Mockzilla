@@ -2,6 +2,9 @@ package com.apadmi.mockzilla.ui.i18n
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
+
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
+
 import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
 import io.ktor.http.HttpStatusCode
@@ -26,11 +29,24 @@ data class Strings(
     /**
      * @property editor
      * @property findReplace
+     * @property genericError
      */
     data class Components(
         val editor: Editor,
         val findReplace: FindReplace,
+        val genericError: GenericError,
     ) {
+        /**
+         * @property title
+         * @property body
+         * @property retryButton
+         */
+        data class GenericError(
+            val title: String,
+            val body: String,
+            val retryButton: String
+        )
+
         /**
          * @property largeFileSyntaxHighlightError
          * @property jsonErrorTitle
@@ -113,13 +129,23 @@ data class Strings(
     ) {
         /**
          * @property connectionLost
-         * @property unknownError
          * @property refreshButton
+         * @property operationError
+         * @property apiErrorDescription
+         * @property connectionErrorTitlesAndBodies
+         * @property statusLabel
+         * @property messageLabel
+         * @property connectionErrorTitle
          */
         data class ErrorBanner(
             val connectionLost: String,
-            val unknownError: String,
-            val refreshButton: String
+            val refreshButton: String,
+            val operationError: (GenericErrorableOperation?) -> String,
+            val apiErrorDescription: String,
+            val connectionErrorTitlesAndBodies: List<Pair<String, String>>,
+            val statusLabel: String,
+            val messageLabel: String,
+            val connectionErrorTitle: String
         )
 
         /**
@@ -451,6 +477,9 @@ data class Strings(
              * @property applyLabel
              * @property appliedLabel
              * @property editLabel
+             * @property forceFailureBannerTitle
+             * @property forceFailureBannerBody
+             * @property forceFailureAppliedPresetMessage
              */
             data class Presets(
                 val noPresetTitle: String,
@@ -467,7 +496,10 @@ data class Strings(
                 val statusCodeFallback: String,
                 val applyLabel: String,
                 val appliedLabel: String,
-                val editLabel: String
+                val editLabel: String,
+                val forceFailureBannerTitle: String,
+                val forceFailureBannerBody: String,
+                val forceFailureAppliedPresetMessage: String,
             ) {
                 /**
                  * @property error

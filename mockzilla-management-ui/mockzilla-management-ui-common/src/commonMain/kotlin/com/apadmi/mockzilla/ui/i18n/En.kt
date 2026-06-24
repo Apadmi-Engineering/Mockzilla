@@ -2,8 +2,11 @@
 
 package com.apadmi.mockzilla.ui.i18n
 
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
+
 import cafe.adriel.lyricist.LyricistStrings
 import io.ktor.http.HttpStatusCode
+
 import kotlin.math.roundToInt
 
 @LyricistStrings(languageTag = "En", default = true)
@@ -135,7 +138,7 @@ val EnStrings = Strings(
             ),
             forcedFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
                 title = "Forced Failure",
-                subtitle = "All requests return 500. Presets ignored.",
+                subtitle = "All requests call error handler. Presets ignored.",
             ),
             activeOverrides = { " · $it active" },
             perEndpointStatus = "PER-ENDPOINT STATUS",
@@ -186,11 +189,14 @@ val EnStrings = Strings(
                 activePresetTitle = "Configure Overrides",
                 createCustomButton = "Create Custom",
                 filterPlaceholder = "Filter Presets",
-                filterPlaceholderEmpty = "Nothing here :(",
+                filterPlaceholderEmpty = "No matches",
                 statusCodeFallback = "XXX",
                 applyLabel = "Apply",
                 appliedLabel = "Set",
-                editLabel = "Edit"
+                editLabel = "Edit",
+                forceFailureBannerTitle = "Forced Failure is on.",
+                forceFailureBannerBody = "Presets are ignored and locked",
+                forceFailureAppliedPresetMessage = "Ignored - Forced Failure is on"
             )
         ),
         miscControls = Strings.Widgets.MiscControls(
@@ -208,9 +214,28 @@ val EnStrings = Strings(
             footer = "Please update to the latest version of Mockzilla",
         ),
         errorBanner = Strings.Widgets.ErrorBanner(
-            connectionLost = "Connection Lost: Please check your app is in the foreground",
-            unknownError = "Something went wrong, try refreshing everything \uD83D\uDC49",
-            refreshButton = "Refresh"
+            connectionLost = "Attempting to reconnect...",
+            refreshButton = "Re-sync everything",
+            operationError = { operation ->
+                when (operation) {
+                    GenericErrorableOperation.FetchDashboardOptionsConfig -> "Couldn't fetch the dashboard config for that endpoint"
+                    GenericErrorableOperation.FetchEndpointConfigs -> "Couldn't fetch the endpoint configs"
+                    GenericErrorableOperation.UpdateMockData -> "Couldn’t push new config"
+                    GenericErrorableOperation.ApplyPreset -> "Couldn't apply the preset"
+                    GenericErrorableOperation.ClearCaches -> "Couldn't clear caches"
+                    GenericErrorableOperation.UpdateGlobalOverrides -> "Couldn't override those properties"
+                    null -> "Something went wrong"
+                }
+            },
+            apiErrorDescription = "This is an unexpected error, it's likely irrecoverable. Re-syncing everything is advised. (You will lose unsaved changes)",
+            connectionErrorTitlesAndBodies = listOf(
+                " · Is in the foreground." to " Background apps may have networking suspended by the OS.",
+                " · Is on the ame network." to " Mockzilla discovers over LAN. Check Wi-Fi vs. Data. ",
+                " · Port reachable." to " Confirm the Mockzilla port isn't blocked by a firewall or VPN."
+            ),
+            statusLabel = "Status: ",
+            messageLabel = "Message: ",
+            connectionErrorTitle = "Please ensure the App:",
         ),
         createEditPreset = Strings.Widgets.CreateEditPreset(
             createTitle = "Create Preset",
@@ -273,5 +298,10 @@ val EnStrings = Strings(
             replaceButton = "Replace",
             replaceAllButton = "All",
         ),
+        genericError = Strings.Components.GenericError(
+            title = "Something went wrong",
+            body = "Please check your device is connected and try again",
+            retryButton = "Retry"
+        )
     )
 )

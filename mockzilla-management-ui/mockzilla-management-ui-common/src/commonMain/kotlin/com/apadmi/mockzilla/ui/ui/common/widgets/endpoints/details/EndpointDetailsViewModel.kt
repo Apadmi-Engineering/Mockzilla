@@ -6,6 +6,8 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.deriveLegacyPreset
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
@@ -46,6 +48,8 @@ internal class EndpointDetailsViewModel(
         viewModelScope.launch { reloadData() }
     }
 
+    internal fun retry() = viewModelScope.launch { reloadData() }
+
     @Suppress("TOO_LONG_FUNCTION")
     private suspend fun reloadData() {
         val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
@@ -72,26 +76,42 @@ internal class EndpointDetailsViewModel(
                                         it.response == config.deriveLegacyPreset()?.response
                                     } ?: config.deriveLegacyPreset(),
                                     visiblePresets = presets.presets.filter(filter),
-                                    allPresets = presets.presets,
+                                    allPresets = listOfNotNull(
+                                        config.appliedPresetOverride?.takeIf { it.isManagementUiDefinedCustomPreset }
+                                    ) + presets.presets,
                                     filter = filter ?: ""
                                 ),
                             )
                         },
-                        onFailure = { State.Empty }
+                        onFailure = {
+                            Event.GenericError(
+                                GenericErrorableOperation.FetchDashboardOptionsConfig,
+                                it
+                            )
+                            State.FailedToLoad
+                        }
                     )
-                } ?: State.Empty
+                } ?: State.FailedToLoad
             },
             onFailure = {
-                eventBus.send(EventBus.Event.GenericError)
-                State.Empty
+                eventBus.send(
+                    Event.GenericError(
+                        GenericErrorableOperation.FetchEndpointConfigs,
+                        it
+                    )
+                )
+                State.FailedToLoad
             }
         )
     }
 
-    private fun <T> handleResult(result: Result<T>) = result.onSuccess {
+    private fun <T> handleResult(
+        result: Result<T>,
+        operation: GenericErrorableOperation = GenericErrorableOperation.UpdateMockData
+    ) = result.onSuccess {
         key?.let { eventBus.send(EventBus.Event.EndpointDataChanged(listOf(it))) }
     }.onFailure {
-        eventBus.send(EventBus.Event.GenericError)
+        eventBus.send(EventBus.Event.GenericError(operation, it))
     }
 
     private fun onPropertyChanged(
@@ -100,6 +120,7 @@ internal class EndpointDetailsViewModel(
     ) {
         setStateLoading()
         state.value = when (val state = state.value) {
+            is State.FailedToLoad,
             is State.Empty -> state
             is State.Endpoint -> {
                 updateServer(state.config, device)
@@ -161,7 +182,8 @@ internal class EndpointDetailsViewModel(
                     dashboardOverridePreset
                 ).onSuccess {
                     eventBus.send(EventBus.Event.PresetApplied)
-                }
+                },
+                operation = GenericErrorableOperation.ApplyPreset
             )
         }
     })
@@ -186,6 +208,7 @@ internal class EndpointDetailsViewModel(
 
     sealed class State {
         data object Empty : State()
+        data object FailedToLoad : State()
 
         /**
          * @property config
