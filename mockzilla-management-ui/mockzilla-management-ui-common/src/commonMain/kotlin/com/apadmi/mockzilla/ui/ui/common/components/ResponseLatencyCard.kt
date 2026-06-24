@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import com.apadmi.mockzilla.ui.engine.maxLatencySliderMs
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
@@ -57,7 +58,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.seconds
 
 private const val buttonCornerRadiusDark = 4
 private const val buttonCornerRadiusLight = 6
@@ -65,8 +65,7 @@ private const val msPerSecond = 1000
 
 private val maxLatencyMs = 1.days.inWholeMilliseconds.toInt()
 
-@Suppress("MAGIC_NUMBER")
-private val sliderMax = 60.seconds.inWholeMilliseconds.toFloat()
+private val sliderMax = maxLatencySliderMs.toFloat()
 
 private object SecondsSuffixTransformation : VisualTransformation {
     private const val suffix = " s"
@@ -118,6 +117,7 @@ private fun String.withCursorAtEnd() = TextFieldValue(text = this, selection = T
 internal fun ResponseLatencyCard(
     modifier: Modifier = Modifier,
     initialValue: Int?,
+    isOverflowing: Boolean,
     onChange: (Int) -> Unit,
     onReset: () -> Unit,
     showHeader: Boolean = true,
@@ -321,8 +321,6 @@ internal fun ResponseLatencyCard(
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            val isOverflowing = (value ?: 0) > sliderMax.roundToInt()
-
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterEnd,
@@ -469,6 +467,7 @@ private fun ResponseLatencyCardPreview() = PreviewSurface {
     ResponseLatencyCard(
         modifier = Modifier.padding(16.dp),
         initialValue = null,
+        isOverflowing = false,
         onChange = {},
         onReset = {},
     )
