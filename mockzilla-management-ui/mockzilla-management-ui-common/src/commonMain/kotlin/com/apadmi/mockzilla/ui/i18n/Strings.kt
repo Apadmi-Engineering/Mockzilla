@@ -384,7 +384,6 @@ data class Strings(
          * @property sliderMax
          * @property notSet
          * @property clear
-         * @property invalidRange
          */
         data class Latency(
             val title: String,
@@ -394,7 +393,6 @@ data class Strings(
             val sliderMax: String,
             val notSet: String,
             val clear: String,
-            val invalidRange: String,
         )
 
         /**
