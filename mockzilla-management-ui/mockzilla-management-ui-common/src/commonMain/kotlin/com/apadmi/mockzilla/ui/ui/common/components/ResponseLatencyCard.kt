@@ -323,12 +323,18 @@ internal fun ResponseLatencyCard(
         ) {
             val isOverflowing = (value ?: 0) > sliderMax.roundToInt()
 
-            Box {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
                 CustomSlider(
                     value = value?.toFloat() ?: 0f,
                     valueRange = 0f..sliderMax,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = if (isOverflowing) 4.dp else 0.dp),
                     activeTrackColor = colorScheme.primary,
+                    showThumb = !isOverflowing,
                     onValueChange = {
                         updateValue(it.toInt())
                     },
@@ -337,10 +343,8 @@ internal fun ResponseLatencyCard(
                 if (isOverflowing) {
                     Box(
                         modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .padding(end = 1.dp)
-                            .size(width = 3.dp, height = 10.dp)
-                            .background(colorScheme.primary, RoundedCornerShape(2.dp)),
+                            .size(width = 2.dp, height = 14.dp)
+                            .background(colorScheme.onSurfaceVariant, RoundedCornerShape(1.dp)),
                     )
                 }
             }
@@ -348,7 +352,7 @@ internal fun ResponseLatencyCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(16.dp),
+                    .height(14.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -366,9 +370,7 @@ internal fun ResponseLatencyCard(
                         imageVector = Icons.Default.AccessTime,
                         contentDescription = strings.widgets.latency.sliderMax,
                         tint = colorScheme.onSurfaceVariant,
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .size(16.dp),
+                        modifier = Modifier.size(14.dp),
                     )
                 } else {
                     Text(
