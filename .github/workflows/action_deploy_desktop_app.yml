@@ -37,22 +37,20 @@ jobs:
           echo -n "$MAC_SIGNING_CERT" | base64 --decode > $MAC_CERTIFICATE_PATH
           echo -n "$MAC_SIGNING_KEY" | base64 --decode > $MAC_SIGNING_KEY_PATH
           echo -n "$APPLE_NOTARIZATION_KEY" | base64 --decode > $APPLE_NOTARIZATION_KEY_PATH
-          echo "$SITE_COPY_TO"
-          echo "$SITE_BASE_URL"
-#      - name: Build Jar
-#        run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:desktopJar
-#      - name: Run Conveyor
-#        uses: hydraulic-software/conveyor/actions/build@v21.1
-#        env:
-#          MAC_SIGNING_KEY_PASSWORD: ${{ secrets.MAC_SIGNING_KEY_PASSWORD }}
-#          APPLE_NOTARIZATION_KEY_ID: ${{ secrets.APPLE_NOTARIZATION_KEY_ID }}
-#          APPLE_NOTARIZATION_ISSUER_ID: ${{ secrets.APPLE_NOTARIZATION_ISSUER_ID }}
-#          CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
-#          CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
-#          SITE_COPY_TO: ${{ env.IS_SNAPSHOT == 'true' && 's3:mockzilla-updates-snapshots/' || 's3:mockzilla-updates/' }}
-#          SITE_BASE_URL: ${{ env.IS_SNAPSHOT == 'true' && 'https://snapshots.mockzilla.apadmi.dev/' || 'https://updates.mockzilla.apadmi.dev/' }}
-#        with:
-#          command: make copied-site
-#          extra_flags: -f ci.conveyor.conf
-#          signing_key: ${{ secrets.CONVEYOR_ROOT_KEY }}
-#          agree_to_license: 1
+      - name: Build Jar
+        run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:desktopJar
+      - name: Run Conveyor
+        uses: hydraulic-software/conveyor/actions/build@v21.1
+        env:
+          MAC_SIGNING_KEY_PASSWORD: ${{ secrets.MAC_SIGNING_KEY_PASSWORD }}
+          APPLE_NOTARIZATION_KEY_ID: ${{ secrets.APPLE_NOTARIZATION_KEY_ID }}
+          APPLE_NOTARIZATION_ISSUER_ID: ${{ secrets.APPLE_NOTARIZATION_ISSUER_ID }}
+          CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+          CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          SITE_COPY_TO: ${{ env.IS_SNAPSHOT == 'true' && 's3:mockzilla-updates-snapshots/' || 's3:mockzilla-updates/' }}
+          SITE_BASE_URL: ${{ env.IS_SNAPSHOT == 'true' && 'https://snapshots.mockzilla.apadmi.dev/' || 'https://updates.mockzilla.apadmi.dev/' }}
+        with:
+          command: make copied-site
+          extra_flags: -f ci.conveyor.conf
+          signing_key: ${{ secrets.CONVEYOR_ROOT_KEY }}
+          agree_to_license: 1
