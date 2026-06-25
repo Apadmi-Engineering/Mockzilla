@@ -90,7 +90,7 @@ private fun Int.msToSecondsText(): String {
     return if (seconds == seconds.toLong().toDouble()) {
         seconds.toLong().toString()
     } else {
-        seconds.toString().trimEnd('0').trimEnd('.')
+        seconds.toString()
     }
 }
 
