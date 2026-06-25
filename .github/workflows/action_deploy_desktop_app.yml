@@ -31,6 +31,8 @@ jobs:
           MAC_SIGNING_CERT: ${{ secrets.MAC_SIGNING_CERT }}
           MAC_SIGNING_KEY: ${{ secrets.MAC_SIGNING_KEY }}
           APPLE_NOTARIZATION_KEY: ${{ secrets.APPLE_NOTARIZATION_KEY }}
+          SITE_COPY_TO: ${{ env.IS_SNAPSHOT == 'true' && 's3:mockzilla-updates-snapshots/' || 's3:mockzilla-updates/' }}
+          SITE_BASE_URL: ${{ env.IS_SNAPSHOT == 'true' && 'https://snapshots.mockzilla.apadmi.dev/' || 'https://updates.mockzilla.apadmi.dev/' }}
         run: |
           echo -n "$MAC_SIGNING_CERT" | base64 --decode > $MAC_CERTIFICATE_PATH
           echo -n "$MAC_SIGNING_KEY" | base64 --decode > $MAC_SIGNING_KEY_PATH
