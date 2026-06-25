@@ -61,7 +61,7 @@ internal fun endpointDetailsWidgetSuccessState(
     delayMillis = null,
     isLoading = false,
     layoutMode = RowDensity.Compact,
-    presets = Presets(
+    presets = Presets.Populated(
         appliedPreset = null,
         visiblePresets = mockPresets,
         allPresets = mockPresets,

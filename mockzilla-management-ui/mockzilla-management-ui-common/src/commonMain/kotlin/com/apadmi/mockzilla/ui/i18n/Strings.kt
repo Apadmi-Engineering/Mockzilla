@@ -462,6 +462,8 @@ data class Strings(
             val presets: Presets
         ) {
             /**
+             * @property forceFailureAppliedPresetMessage
+             * @property failedToLoad
              * @property noPresetTitle
              * @property noPresetBody
              * @property typeDescriptions
@@ -479,7 +481,6 @@ data class Strings(
              * @property editLabel
              * @property forceFailureBannerTitle
              * @property forceFailureBannerBody
-             * @property forceFailureAppliedPresetMessage
              */
             data class Presets(
                 val noPresetTitle: String,
@@ -500,6 +501,7 @@ data class Strings(
                 val forceFailureBannerTitle: String,
                 val forceFailureBannerBody: String,
                 val forceFailureAppliedPresetMessage: String,
+                val failedToLoad: String,
             ) {
                 /**
                  * @property error
