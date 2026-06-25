@@ -69,8 +69,6 @@ fun MetaDataWidget(device: Device) {
     MetaDataWidgetContent(state, device)
 }
 
-// ── Preview ───────────────────────────────────────────────────────────────────
-
 @Suppress("COMPLEX_EXPRESSION")
 @Preview
 @Composable
@@ -276,8 +274,6 @@ private fun AppHeader(
         )
     }
 }
-
-// ── Primitives ────────────────────────────────────────────────────────────────
 
 @Suppress("MAGIC_NUMBER")
 @Composable
