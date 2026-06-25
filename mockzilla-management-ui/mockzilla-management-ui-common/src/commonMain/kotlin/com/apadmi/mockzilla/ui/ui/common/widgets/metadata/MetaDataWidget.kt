@@ -69,8 +69,6 @@ fun MetaDataWidget(device: Device) {
     MetaDataWidgetContent(state, device)
 }
 
-// ── Preview ───────────────────────────────────────────────────────────────────
-
 @Suppress("COMPLEX_EXPRESSION")
 @Preview
 @Composable
@@ -264,6 +262,7 @@ private fun AppHeader(
             text = appName,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1
         )
         Text(
@@ -275,8 +274,6 @@ private fun AppHeader(
         )
     }
 }
-
-// ── Primitives ────────────────────────────────────────────────────────────────
 
 @Suppress("MAGIC_NUMBER")
 @Composable

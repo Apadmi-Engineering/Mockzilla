@@ -44,7 +44,7 @@ internal class MetaDataViewModelTests : CoroutineTest() {
     @Test
     fun `getMetaData - state=DisplayMetaData`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device, false) }
+        coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device) }
             .returns(Result.success(MetaData.dummy()))
         coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
         coEvery { appIconUseCaseMock.getAppIcon(Device.dummy()) } returns Result.success(null)
@@ -76,7 +76,7 @@ internal class MetaDataViewModelTests : CoroutineTest() {
     fun `getAppIcon - success with bytes - appIconBytes set in DisplayMetaData state`() = runBlockingTest {
         /* Setup */
         val bytes = byteArrayOf(1, 2, 3)
-        coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device, false) }
+        coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device) }
             .returns(Result.success(MetaData.dummy()))
         coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
         coEvery { appIconUseCaseMock.getAppIcon(Device.dummy()) } returns Result.success(bytes)
@@ -93,7 +93,7 @@ internal class MetaDataViewModelTests : CoroutineTest() {
     @Test
     fun `getAppIcon - failure - appIconBytes null, state still DisplayMetaData`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device, false) }
+        coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device) }
             .returns(Result.success(MetaData.dummy()))
         coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
         coEvery { appIconUseCaseMock.getAppIcon(Device.dummy()) } returns Result.failure(Exception())
@@ -110,7 +110,7 @@ internal class MetaDataViewModelTests : CoroutineTest() {
     @Test
     fun `getAppIcon - returns null (no icon) - appIconBytes null in state`() = runBlockingTest {
         /* Setup */
-        coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device, false) }
+        coEvery { metaDataUseCaseMock.getMetaData(StatefulDevice.dummy().device) }
             .returns(Result.success(MetaData.dummy()))
         coEvery { monitorLogsUseCaseMock.getMonitorLogs(Device.dummy()) } returns Result.failure(Exception())
         coEvery { appIconUseCaseMock.getAppIcon(Device.dummy()) } returns Result.success(null)

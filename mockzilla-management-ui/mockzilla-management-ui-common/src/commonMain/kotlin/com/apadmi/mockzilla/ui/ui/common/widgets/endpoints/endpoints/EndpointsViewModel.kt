@@ -5,6 +5,8 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.engine.filter.FuzzyFilter
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel.State
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
@@ -57,7 +59,12 @@ internal class EndpointsViewModel(
                 )
             },
             onFailure = {
-                eventBus.send(EventBus.Event.GenericError)
+                eventBus.send(
+                    Event.GenericError(
+                        GenericErrorableOperation.FetchEndpointConfigs,
+                        it
+                    )
+                )
                 State.Loading
             }
         )

@@ -57,6 +57,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
@@ -65,15 +67,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import com.apadmi.mockzilla.ui.di.utils.evictDesktopViewModelsForKey
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
-import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.ErrorRetry
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
@@ -93,11 +97,19 @@ import org.koin.core.parameter.parametersOf
 @Composable
 private fun ColumnScope.HeadersSection(
     state: State.Editing,
-    onUpdateNewHeader: (String?, String?) -> Unit,
-    onAddHeader: () -> Unit,
+    onAddHeader: (key: String, value: String) -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
     strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
 ) {
+    var localKey by remember { mutableStateOf("") }
+    var localValue by remember { mutableStateOf("") }
+
+    // Reset draft inputs whenever the server data reloads
+    LaunchedEffect(state.syncToken) {
+        localKey = ""
+        localValue = ""
+    }
+
     state.headers.forEach { header ->
         Row(
             modifier = Modifier
@@ -152,7 +164,7 @@ private fun ColumnScope.HeadersSection(
         )
         CustomTextField(
             modifier = Modifier.weight(1f).height(30.dp),
-            value = state.newHeader.key,
+            value = localKey,
             singleLine = true,
             containerColor = inputBg,
             placeholder = {
@@ -162,11 +174,11 @@ private fun ColumnScope.HeadersSection(
                     color = mutedColor,
                 )
             },
-            onValueChange = { onUpdateNewHeader(it, null) },
+            onValueChange = { localKey = it },
         )
         CustomTextField(
             modifier = Modifier.weight(1f).height(30.dp),
-            value = state.newHeader.value,
+            value = localValue,
             singleLine = true,
             containerColor = inputBg,
             placeholder = {
@@ -176,9 +188,9 @@ private fun ColumnScope.HeadersSection(
                     color = mutedColor,
                 )
             },
-            onValueChange = { onUpdateNewHeader(null, it) },
+            onValueChange = { localValue = it },
         )
-        val canAdd = state.newHeader.key.isNotEmpty() && state.newHeader.value.isNotEmpty()
+        val canAdd = localKey.isNotEmpty() && localValue.isNotEmpty()
         Box(
             modifier = Modifier
                 .size(28.dp)
@@ -192,7 +204,14 @@ private fun ColumnScope.HeadersSection(
                     },
                     shape = RoundedCornerShape(6.dp),
                 )
-                .clickable(enabled = canAdd, onClick = onAddHeader)
+                .clickable(
+                    enabled = canAdd,
+                    onClick = {
+                        onAddHeader(localKey, localValue)
+                        localKey = ""
+                        localValue = ""
+                    }
+                )
                 .pointerHoverIcon(if (canAdd) PointerIcon.Hand else blockedPointerIcon),
             contentAlignment = Alignment.Center,
         ) {
@@ -222,21 +241,18 @@ private fun ColumnScope.PopulatedState(
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
     onFormatResponseBody: () -> Unit,
-    onUpdateNewHeader: (String?, String?) -> Unit,
-    onAddHeader: () -> Unit,
+    onAddHeader: (key: String, value: String) -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
     isBodyExpanded: Boolean,
     onToggleBodyExpanded: () -> Unit,
-    strings: Strings = LocalStrings.current,
+    strings: Strings.Widgets.CreateEditPreset = LocalStrings.current.widgets.createEditPreset,
 ) {
-    val str = strings.widgets.createEditPreset
-
     AnimatedVisibility(
         visible = !isBodyExpanded,
         enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
         exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
-        PanelHeader(state, onCancel, onSave, strings)
+        PanelHeader(state, onCancel, onSave)
     }
 
     AnimatedVisibility(
@@ -246,7 +262,7 @@ private fun ColumnScope.PopulatedState(
     ) {
         Column {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            SectionLabel(str.responseSectionLabel)
+            SectionLabel(strings.responseSectionLabel)
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
             Row(
@@ -257,7 +273,7 @@ private fun ColumnScope.PopulatedState(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = str.statusCodeRowLabel,
+                    text = strings.statusCodeRowLabel,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
@@ -269,7 +285,7 @@ private fun ColumnScope.PopulatedState(
                     StatusCodeDropdown(
                         statusCode = state.statusCode,
                         onSelected = onStatusCodeSelected,
-                        strings = str,
+                        strings = strings,
                     )
                 }
             }
@@ -283,7 +299,7 @@ private fun ColumnScope.PopulatedState(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = str.bodyTypeLabel,
+                    text = strings.bodyTypeLabel,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f),
@@ -295,7 +311,7 @@ private fun ColumnScope.PopulatedState(
                     BodyTypeToggle(
                         selected = state.responseType,
                         onSelect = onNewResponseType,
-                        strings = str,
+                        strings = strings,
                     )
                 }
             }
@@ -313,7 +329,7 @@ private fun ColumnScope.PopulatedState(
             isExpanded = isBodyExpanded,
             onToggleExpand = onToggleBodyExpanded,
             modifier = if (isBodyExpanded) Modifier.weight(1f) else Modifier,
-            strings = str,
+            strings = strings,
         )
     }
 
@@ -324,9 +340,9 @@ private fun ColumnScope.PopulatedState(
     ) {
         val headerCount = state.headers.size
         val headersLabel = if (headerCount > 0) {
-            "${strings.widgets.createEditPreset.headersTitle} ($headerCount)"
+            "${strings.headersTitle} ($headerCount)"
         } else {
-            strings.widgets.createEditPreset.headersTitle
+            strings.headersTitle
         }
         Column {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -334,10 +350,9 @@ private fun ColumnScope.PopulatedState(
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             HeadersSection(
                 state = state,
-                onUpdateNewHeader = onUpdateNewHeader,
                 onAddHeader = onAddHeader,
                 onRemoveHeader = onRemoveHeader,
-                strings = str,
+                strings = strings,
             )
         }
     }
@@ -351,8 +366,10 @@ fun CreateEditPresetWidget(
     onCancel: () -> Unit = {},
     onSave: () -> Unit = {},
 ) {
+    val vmKey = "CreateEditPresetViewModel-${activeEndpoint.raw}-$device"
+    val cleanupVm = { evictDesktopViewModelsForKey(key = vmKey) }
     val viewModel = getViewModel<CreateEditPresetViewModel>(
-        key = "${activeEndpoint.raw}-$device"
+        key = vmKey
     ) {
         parametersOf(
             activeEndpoint,
@@ -363,23 +380,32 @@ fun CreateEditPresetWidget(
             }
         )
     }
+
     val state by viewModel.state
+
+    LaunchedEffect((state as? State.Editing)?.navigateUp) {
+        if ((state as? State.Editing)?.navigateUp == true) {
+            cleanupVm()
+            onSave()
+            viewModel.consumeNavigateUp()
+        }
+    }
 
     CreateEditPresetWidgetContent(
         state = state,
         endpointName = activeEndpoint.raw,
-        onCancel = onCancel,
-        onSave = {
-            viewModel.save()
-            onSave()
+        onCancel = {
+            cleanupVm()
+            onCancel()
         },
+        onSave = viewModel::save,
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
         onFormatResponseBody = viewModel::onFormatResponseBody,
-        onUpdateNewHeader = viewModel::onUpdateNewHeader,
         onAddHeader = viewModel::onAddHeader,
         onRemoveHeader = viewModel::onRemoveHeader,
+        onRetry = viewModel::retry
     )
 }
 
@@ -393,9 +419,9 @@ internal fun CreateEditPresetWidgetContent(
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
     onFormatResponseBody: () -> Unit = {},
-    onUpdateNewHeader: (String?, String?) -> Unit,
-    onAddHeader: () -> Unit,
+    onAddHeader: (key: String, value: String) -> Unit,
     onRemoveHeader: (State.Editing.RequestHeader) -> Unit,
+    onRetry: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) {
     @Suppress("SAY_NO_TO_VAR")
@@ -413,13 +439,21 @@ internal fun CreateEditPresetWidgetContent(
             .then(if (!isBodyExpanded) Modifier.verticalScroll(rememberScrollState()) else Modifier)
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
             .navigationBarsPadding(),
+        verticalArrangement = if (state is State.FailedToLoad) Arrangement.Center else Arrangement.Top
     ) {
         when (state) {
-            is State.Loading -> EmptyState(
-                title = strings.widgets.endpointDetails.emptyTitle,
-                description = strings.widgets.endpointDetails.emptyDescription,
+            State.FailedToLoad -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+                ErrorRetry(onRetry = onRetry)
+                BaseButton(
+                    variant = ButtonVariant.Ghost,
+                    label = strings.widgets.createEditPreset.cancel,
+                    onClick = onCancel
+                )
+            }
+            is State.Loading -> TogglableProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                isLoading = true
             )
-
             is State.Editing -> PopulatedState(
                 state = state,
                 endpointName = endpointName,
@@ -429,13 +463,12 @@ internal fun CreateEditPresetWidgetContent(
                 onNewResponseType = onNewResponseType,
                 onNewResponseBody = onNewResponseBody,
                 onFormatResponseBody = onFormatResponseBody,
-                onUpdateNewHeader = onUpdateNewHeader,
                 onAddHeader = onAddHeader,
                 onRemoveHeader = onRemoveHeader,
                 isBodyExpanded = isBodyExpanded,
-                onToggleBodyExpanded = { isBodyExpanded = !isBodyExpanded },
-                strings = strings,
+                onToggleBodyExpanded = { isBodyExpanded = !isBodyExpanded }
             )
+
         }
     }
 }
@@ -454,8 +487,13 @@ private fun BodySection(
         .fillMaxWidth()
         .background(MaterialTheme.colorScheme.surfaceContainer),
 ) {
+    // Local state drives the text field to avoid cursor-jump glitches from the VM round-trip.
+    // Syncs from VM only when syncToken changes (server reload or format applied).
+    var localBody by remember { mutableStateOf(state.body ?: "") }
+    LaunchedEffect(state.syncToken) { localBody = state.body ?: "" }
+
     val isJsonError = state.responseType == State.Editing.ResponseType.Json &&
-            state.body?.isNotEmpty() == true && state.bodyParseError != null
+            localBody.isNotEmpty() && state.bodyParseError != null
     val isFormattable = state.responseType == State.Editing.ResponseType.Json
 
     Row(
@@ -473,14 +511,14 @@ private fun BodySection(
 
         if (isJsonError) {
             Text(
-                text = strings.responseCharacters(state.body.length),
+                text = strings.responseCharacters(localBody.length),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f)
             )
         } else {
             Text(
-                text = strings.responseCharacters(state.body?.length ?: 0),
+                text = strings.responseCharacters(localBody.length),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.onSurfaceFaint,
                 modifier = Modifier.weight(1f)
@@ -510,8 +548,11 @@ private fun BodySection(
     }
 
     FindableEditorTextField(
-        body = state.body ?: "",
-        onBodyChange = onNewResponseBody,
+        body = localBody,
+        onBodyChange = {
+            localBody = it
+            onNewResponseBody(it)
+        },
         mode = when (state.responseType) {
             State.Editing.ResponseType.Json -> EditorMode.Json
             State.Editing.ResponseType.Html -> EditorMode.Html
@@ -541,42 +582,54 @@ private fun PanelHeader(
     onCancel: () -> Unit,
     onSave: () -> Unit,
     strings: Strings = LocalStrings.current,
-) = Row(
+) = Column(
     modifier = Modifier
         .fillMaxWidth()
         .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-        .padding(horizontal = 12.dp, vertical = 6.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(8.dp),
 ) {
-    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(
-            text = when (state.variant) {
-                State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
-                State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
-            },
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            fontWeight = FontWeight.Bold,
-        )
-        Text(
-            text = strings.widgets.createEditPreset.endpointSubtitle(state.endpointName),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceMuted,
+    Box(Modifier.height(6.dp).fillMaxWidth().clipToBounds()) {
+        TogglableProgressIndicator(
+            modifier = Modifier.fillMaxWidth(),
+            isLoading = state.isSaving,
+            trackColor = Color.Transparent,
+            delayMs = 100  // Usually saves are so fast the loading animation is a flicker so delay for these cases
         )
     }
-    CustomOutlineButton(
-        label = strings.widgets.createEditPreset.cancel,
-        variant = OutlineButtonVariant.Secondary,
-        onClick = onCancel,
-    )
-    BaseButton(
-        label = strings.widgets.createEditPreset.save,
-        variant = ButtonVariant.Solid,
-        size = ButtonSize.Md,
-        leadingIcon = Icons.Default.Done,
-        onClick = onSave,
-    )
+
+    Row(
+        modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = when (state.variant) {
+                    State.Editing.Variant.Create -> strings.widgets.createEditPreset.createTitle
+                    State.Editing.Variant.Edit -> strings.widgets.createEditPreset.editTitle
+                } + if (state.isDirty) "*" else "",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = if (state.isDirty) FontWeight.ExtraBold else FontWeight.Bold,
+            )
+            Text(
+                text = strings.widgets.createEditPreset.endpointSubtitle(state.endpointName),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceMuted,
+            )
+        }
+        CustomOutlineButton(
+            label = strings.widgets.createEditPreset.cancel,
+            variant = OutlineButtonVariant.Secondary,
+            onClick = onCancel,
+        )
+        BaseButton(
+            label = strings.widgets.createEditPreset.save,
+            variant = ButtonVariant.Solid,
+            size = ButtonSize.Md,
+            leadingIcon = Icons.Default.Done,
+            onClick = onSave,
+        )
+    }
 }
 
 private fun chipToneForStatusCode(code: Int) = when (code) {
@@ -752,6 +805,7 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
     CreateEditPresetWidgetContent(
         state = State.Editing(
             isSaving = false,
+            syncToken = 0L,
             statusCode = HttpStatusCode.OK,
             body = "{\"key\": \"value\"}",
             headers = listOf(
@@ -759,14 +813,17 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
             ),
             responseType = State.Editing.ResponseType.Json,
             variant = State.Editing.Variant.Create,
+            committedBody = null,
+            committedStatusCode = null,
+            committedHeaders = emptyList(),
         ),
         endpointName = "Repairs",
         onSave = {},
         onStatusCodeSelected = {},
         onNewResponseType = {},
         onNewResponseBody = {},
-        onUpdateNewHeader = { _, _ -> },
-        onAddHeader = {},
+        onAddHeader = { _, _ -> },
         onRemoveHeader = {},
+        onRetry = {}
     )
 }

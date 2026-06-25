@@ -2,21 +2,15 @@ package com.apadmi.mockzilla.ui.engine.device
 
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.ui.engine.Config
-import com.apadmi.mockzilla.ui.utils.Platform
 
 import io.github.z4kn4fein.semver.toVersion
 
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
 
 interface ActiveDeviceMonitor {
     val selectedDevice: StateFlow<StatefulDevice?>
@@ -31,6 +25,8 @@ interface ActiveDeviceSelector {
     fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData)
     fun updateSelectedDevice(device: Device)
     fun removeDevice(device: Device)
+    fun onLogPollSuccess(device: Device, appPackage: String)
+    fun onLogPollFailure(device: Device)
 }
 
 internal class ActiveDeviceManagerImpl(
@@ -42,50 +38,48 @@ internal class ActiveDeviceManagerImpl(
     private val allDevicesInternal = mutableMapOf<Device, StatefulDevice>()
     override val allDevices get() = allDevicesInternal.values
 
-    private var pollingJob: Job? = null
-
     init {
-        pollingJob = scope.launch {
-            monitorDeviceConnections()
-        }
+        scope.launch { onDeviceConnectionStateChange.emit(Unit) }
     }
 
-    // TODO: Hopefully this will eventually become a websocket
-    private suspend fun monitorDeviceConnections() = coroutineScope {
-        while (true) {
-            allDevicesInternal.forEach { (device, statefulDevice) ->
-                val newStatefulDevice =
-                    metaDataUseCase.getMetaData(device, isPolling = true).fold(onSuccess = { metaData ->
-                        statefulDevice.copy(
-                            isConnected = true,
-                            metaData = metaData
-                        )
-                    }, onFailure = {
-                        statefulDevice.copy(isConnected = false)
-                    })
+    override fun onLogPollSuccess(device: Device, appPackage: String) {
+        val current = allDevicesInternal[device] ?: return
+        val appPackageChanged = current.metaData.appPackage != appPackage
+        val wasDisconnected = !current.isConnected
+        if (!appPackageChanged && !wasDisconnected) {
+            return
+        }
 
-                if (statefulDevice != newStatefulDevice) {
-                    onDeviceConnectionStateChange.emit(Unit)
-                    if (device == selectedDevice.value?.device) {
-                        selectedDevice.value = newStatefulDevice
-                    }
+        scope.launch {
+            metaDataUseCase.getMetaData(device).onSuccess { metaData ->
+                val updated = current.copy(
+                    metaData = metaData,
+                    isConnected = true,
+                    isCompatibleMockzillaVersion = metaData.mockzillaVersion.toVersion() >= Config.minSupportedMockzillaVersion
+                )
+                allDevicesInternal[device] = updated
+                if (device == selectedDevice.value?.device) {
+                    selectedDevice.value = updated
                 }
-                allDevicesInternal[device] = newStatefulDevice
-            }
-
-            if (onDeviceConnectionStateChange.replayCache.isEmpty()) {
                 onDeviceConnectionStateChange.emit(Unit)
             }
-
-            // Desktop is the only platform that is likely to survive past the mockzilla connection
-            // since it's not running on device, so the other platforms don't need as much polling
-            when (Platform.current) {
-                Platform.Desktop -> delay(3.seconds)
-                else -> delay(20.seconds)
-            }
-            yield()
         }
     }
+
+    override fun onLogPollFailure(device: Device) {
+        val current = allDevicesInternal[device] ?: return
+        if (!current.isConnected) {
+            return
+        }
+
+        val updated = current.copy(isConnected = false)
+        allDevicesInternal[device] = updated
+        if (device == selectedDevice.value?.device) {
+            selectedDevice.value = updated
+        }
+        scope.launch { onDeviceConnectionStateChange.emit(Unit) }
+    }
+
     override fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData) {
         allDevicesInternal[device] = StatefulDevice(
             device = device,
@@ -113,11 +107,5 @@ internal class ActiveDeviceManagerImpl(
             allDevicesInternal.remove(device)
             onDeviceConnectionStateChange.emit(Unit)
         }
-    }
-
-    // Only used by tests, otherwise should survive for the lifetime of the application i.e. the lifetime
-    // of the injected scope
-    internal fun cancelPolling() {
-        pollingJob?.cancel()
     }
 }

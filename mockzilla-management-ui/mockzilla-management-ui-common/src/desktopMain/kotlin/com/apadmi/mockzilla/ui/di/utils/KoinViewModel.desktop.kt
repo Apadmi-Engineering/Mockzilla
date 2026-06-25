@@ -8,6 +8,13 @@ import org.koin.core.module.Module
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
+import kotlinx.coroutines.cancel
+
+// Composition-local `remember` is discarded when a composable leaves the tree (e.g. tab switch).
+// Per-device VMs (identified by a non-null `key`) must survive tab switches, so they are stored
+// here instead. Widget VMs (no key) are fine to recreate and use the plain `remember` path below.
+val desktopViewModelCache = mutableMapOf<String, Any>()
+
 actual inline fun <reified T : ViewModel> Module.viewModel(
     qualifier: Qualifier?,
     noinline definition: Definition<T>
@@ -19,5 +26,23 @@ actual inline fun <reified T : ViewModel> getViewModel(
     key: String?,
     noinline parameters: ParametersDefinition?
 ): T = remember(qualifier, key) {
-    MockzillaUiKoinContext.koin.get<T>(qualifier = qualifier, parameters = parameters)
+    key?.let {
+        // Keyed VMs: check the persistent cache so the same instance is returned after the
+        // composable re-enters composition (e.g. switching back to a device tab).
+        val cacheKey = "${T::class.qualifiedName}|$qualifier|$key"
+        @Suppress("UNCHECKED_CAST")
+        desktopViewModelCache.getOrPut(cacheKey) {
+            MockzillaUiKoinContext.koin.get<T>(qualifier = qualifier, parameters = parameters)
+        } as T
+    } ?: MockzillaUiKoinContext.koin.get<T>(qualifier = qualifier, parameters = parameters)
+}
+
+// Called when a device is fully removed from allDevices. Cancels the coroutine scope directly
+// because the base ViewModel class has no clear() method.
+actual fun evictDesktopViewModelsForKey(key: String) {
+    desktopViewModelCache.keys
+        .filter { it.endsWith("|$key") }
+        .forEach { cacheKey ->
+            (desktopViewModelCache.remove(cacheKey) as? ViewModel)?.viewModelScope?.cancel()
+        }
 }

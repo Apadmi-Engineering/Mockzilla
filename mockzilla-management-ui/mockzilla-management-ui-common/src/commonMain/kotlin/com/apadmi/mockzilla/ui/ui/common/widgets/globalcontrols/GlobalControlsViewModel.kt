@@ -5,6 +5,7 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
@@ -65,7 +66,7 @@ internal class GlobalControlsViewModel(
                 )
             },
             onFailure = {
-                eventBus.send(EventBus.Event.GenericError)
+                eventBus.send(EventBus.Event.GenericError(GenericErrorableOperation.UpdateGlobalOverrides, it))
                 State.Loading
             }
         )
@@ -95,10 +96,13 @@ internal class GlobalControlsViewModel(
     private suspend fun getAllKeys() = endpointsService.fetchAllEndpointConfigs(device)
         .map { endpoints -> endpoints.map { it.key } }
 
-    private fun Result<Unit>.handleResult(keys: List<EndpointConfiguration.Key>) = onSuccess {
+    private fun Result<Unit>.handleResult(
+        keys: List<EndpointConfiguration.Key>,
+        operation: GenericErrorableOperation = GenericErrorableOperation.UpdateGlobalOverrides
+    ) = onSuccess {
         eventBus.send(EventBus.Event.EndpointDataChanged(keys))
     }.onFailure {
-        eventBus.send(EventBus.Event.GenericError)
+        eventBus.send(EventBus.Event.GenericError(operation, it))
     }
 
     private fun setStateLoading() {

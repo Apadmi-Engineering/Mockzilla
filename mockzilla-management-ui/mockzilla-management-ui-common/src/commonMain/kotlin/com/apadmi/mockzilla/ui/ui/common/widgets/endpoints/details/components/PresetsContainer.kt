@@ -5,8 +5,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,6 +58,7 @@ internal fun PresetsContainer(
 ) = Box(
     modifier = modifier
         .fillMaxWidth()
+        .height(IntrinsicSize.Min)
 ) {
     Column(
         verticalArrangement = Arrangement.Top
@@ -69,7 +73,7 @@ internal fun PresetsContainer(
             )
         } else {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
@@ -91,6 +95,21 @@ internal fun PresetsContainer(
                 )
             }
         }
+    }
+
+    if (state.config.shouldFail == true) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
+                .pointerInput(Unit) {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            event.changes.forEach { it.consume() }
+                        }
+                    }
+                }
+        )
     }
 }
 
@@ -158,7 +177,9 @@ private fun PopulatedPresets(
         if (presets.visiblePresets.isEmpty()) {
             Text(
                 text = strings.filterPlaceholderEmpty,
-                modifier = Modifier.padding(vertical = 12.dp),
+                modifier = Modifier.padding(12.dp),
+                color = MaterialTheme.colorScheme.onSurfaceMuted,
+                style = MaterialTheme.typography.labelMedium
             )
         }
 

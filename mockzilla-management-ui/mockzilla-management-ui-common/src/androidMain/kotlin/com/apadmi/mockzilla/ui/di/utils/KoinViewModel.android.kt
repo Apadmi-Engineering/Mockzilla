@@ -29,3 +29,5 @@ actual inline fun <reified T : InternalViewModel> getViewModel(
     parameters = parameters,
     scope = MockzillaUiKoinContext.koin.scopeRegistry.rootScope
 )
+
+actual fun evictDesktopViewModelsForKey(key: String) = Unit
