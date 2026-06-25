@@ -2,6 +2,10 @@ import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
+import com.apadmi.mockzilla.isDevelopmentBuild
+import com.apadmi.mockzilla.isSnapshot
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import kotlin.math.sign
@@ -15,6 +19,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.conveyor)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.buildKonfig)
     alias(libs.plugins.dokka) apply true
 }
 
@@ -161,6 +166,20 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = artifactName
         }
+    }
+}
+
+buildkonfig {
+    packageName = "$group.mockzilla.desktop"
+    exposeObjectWithName = "MockzillaDesktopBuildConfig"
+
+    defaultConfigs {
+        buildConfigField(
+            STRING,
+            "version",
+            version.toString() + ("-SNAPSHOT".takeIf { isSnapshot() } ?: "")
+        )
+        buildConfigField(BOOLEAN, "isSnapshot", isSnapshot().toString())
     }
 }
 

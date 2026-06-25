@@ -21,7 +21,7 @@ internal fun viewModelModule(): Module = module {
     viewModel { params -> EndpointsViewModel(params.get(), get(), get()) }
     viewModel { params -> EndpointDetailsViewModel(params.getOrNull(), params.get(), get(), get(), get(), get()) }
     viewModel { params -> CreateEditPresetViewModel(params.get(), params.get(), params.get(), get(), get(), get()) }
-    viewModel { params -> MiscControlsViewModel(params.getOrNull(), get(), get()) }
+    viewModel { params -> MiscControlsViewModel(params.getOrNull(), get(), get(), get()) }
     viewModel { params -> GlobalControlsViewModel(params.get(), get(), get(), get(), get()) }
     viewModel { params -> DeviceRootViewModel(params.get<Device>(), get(), get()) }
 }

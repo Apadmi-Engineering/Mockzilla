@@ -52,6 +52,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.apadmi.mockzilla.desktop.MockzillaDesktopBuildConfig
 
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.State
 import com.apadmi.mockzilla.desktop.ui.utils.desktopTertiaryPointerClick
@@ -231,6 +232,14 @@ fun DeviceTabsWidgetContent(
                     direction = FadeDirection.Right,
                     visible = scrollState.value < scrollState.maxValue,
                 )
+                if (MockzillaDesktopBuildConfig.isSnapshot) {
+                    Text(
+                        text = LocalStrings.current.widgets.deviceTabs.betaBanner,
+                        modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceFaint
+                    )
+                }
             }
 
             if (scrollState.maxValue != 0) {

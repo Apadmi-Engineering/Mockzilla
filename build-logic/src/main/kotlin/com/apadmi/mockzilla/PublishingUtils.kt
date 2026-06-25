@@ -6,6 +6,8 @@ import org.gradle.api.publish.maven.MavenPom
 fun Project.injectedVersion() = if (project.hasProperty("version")) properties["version"].toString()
     .takeUnless { it.isBlank() || it == "unspecified" } else null
 
+fun Project.isSnapshot () = project.hasProperty("is_snapshot") && properties["is_snapshot"].toString().toBoolean()
+
 fun isSigningEnabled() = System.getenv("ORG_GRADLE_PROJECT_signingInMemoryKeyId") != null
 fun isDevelopmentBuild() = !isSigningEnabled()
 

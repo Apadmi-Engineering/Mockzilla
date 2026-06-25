@@ -61,7 +61,8 @@ val EnStrings = Strings(
             connected = "Connected",
             disconnected = "Disconnected",
             empty = "0 devices",
-            closeButtonDescription = "Close"
+            closeButtonDescription = "Close",
+            betaBanner = "BETA"
         ),
         metaData = Strings.Widgets.MetaData(
             title = "Meta Data",

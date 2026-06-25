@@ -6,6 +6,9 @@ import com.apadmi.mockzilla.configureCommonProperties
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.isMobileUiDeployBuild
 import com.apadmi.mockzilla.isSigningEnabled
+import com.apadmi.mockzilla.isSnapshot
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
@@ -17,6 +20,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.vanniktechPublish)
+    alias(libs.plugins.buildKonfig)
     alias(libs.plugins.dokka) apply true
     kotlin("native.cocoapods") apply true
 }
@@ -134,6 +138,20 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
         freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
+    }
+}
+
+buildkonfig {
+    packageName = "$group.mockzilla.mobile.ui"
+    exposeObjectWithName = "MockzillaMobileUiBuildConfig"
+
+    defaultConfigs {
+        buildConfigField(
+            STRING,
+            "version",
+            version.toString()
+        )
+        buildConfigField(BOOLEAN, "isSnapshot", isSnapshot().toString())
     }
 }
 
