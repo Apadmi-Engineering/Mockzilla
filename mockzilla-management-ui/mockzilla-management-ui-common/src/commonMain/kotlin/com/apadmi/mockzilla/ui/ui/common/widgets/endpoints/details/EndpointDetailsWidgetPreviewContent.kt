@@ -45,6 +45,7 @@ internal fun EndpointDetailsWidgetPreviewContent(
     onFilterPresetChanged = {},
     onRowDensityChanged = {},
     onPresetMoreInfoClicked = {},
+    onRetry = {},
     onCreatePreset = {},
 )
 

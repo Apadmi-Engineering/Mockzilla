@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.ErrorRetry
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
@@ -53,6 +54,7 @@ internal fun PresetsContainer(
     onPresetFilterChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
+    onRetry: () -> Unit,
     onEditPreset: () -> Unit = {},
     modifier: Modifier = Modifier,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
@@ -71,23 +73,11 @@ internal fun PresetsContainer(
             ) {
                 TogglableProgressIndicator(isLoading = true)
             }
-            is State.Endpoint.Presets.Error -> Column(
+            is State.Endpoint.Presets.Error -> Box(
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = strings.noAvailablePresetsTitle,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                Text(
-                    text = strings.failedToLoad,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error
-                )
+                ErrorRetry(onRetry = onRetry)
             }
             is State.Endpoint.Presets.Populated -> if (presets.allPresets.isNotEmpty()) {
                 PopulatedPresets(
@@ -301,6 +291,7 @@ private fun PresetsContainerPreviewContainer(
         state = endpointDetailsWidgetSuccessState(fail = fail).copy(presets = presets),
         onPresetFilterChanged = {},
         onDefaultPresetSelected = {},
-        onPresetMoreInfoClicked = {}
+        onPresetMoreInfoClicked = {},
+        onRetry = {}
     )
 }

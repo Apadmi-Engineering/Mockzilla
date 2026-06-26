@@ -102,6 +102,7 @@ private fun ColumnScope.PopulatedState(
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
+    onRetry: () -> Unit,
     onEditPreset: () -> Unit = {},
     strings: Strings.Widgets = LocalStrings.current.widgets,
 ) {
@@ -262,6 +263,7 @@ private fun ColumnScope.PopulatedState(
                 onPresetFilterChanged = onFilterPresetChanged,
                 onDefaultPresetSelected = onDefaultPresetSelected,
                 onPresetMoreInfoClicked = onPresetMoreInfoClicked,
+                onRetry = onRetry,
                 onEditPreset = onEditPreset
             )
         }
@@ -318,8 +320,8 @@ internal fun EndpointDetailsWidgetContent(
     onRowDensityChanged: (RowDensity) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
+    onRetry: () -> Unit,
     onEditPreset: () -> Unit = {},
-    onRetry: () -> Unit = {},
     strings: Strings = LocalStrings.current,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -366,6 +368,7 @@ internal fun EndpointDetailsWidgetContent(
                             onDefaultPresetSelected = onDefaultPresetSelected,
                             onPresetMoreInfoClicked = onPresetMoreInfoClicked,
                             onCreatePreset = onCreatePreset,
+                            onRetry = onRetry,
                             onEditPreset = onEditPreset,
                         )
                     }
