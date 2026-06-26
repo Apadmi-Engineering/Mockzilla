@@ -60,6 +60,7 @@ import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
+import com.apadmi.mockzilla.ui.engine.isOverflowingLatencySlider
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.Clock
@@ -209,6 +210,7 @@ private fun ColumnScope.PopulatedState(
     ) {
         ResponseLatencyCard(
             initialValue = state.config.delayMs,
+            isOverflowing = state.config.delayMs.isOverflowingLatencySlider(),
             onChange = onDelayChange,
             onReset = { onDelayChange(null) },
             showHeader = false,

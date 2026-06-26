@@ -31,6 +31,7 @@ fun CustomSlider(
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     enabled: Boolean = true,
     activeTrackColor: Color? = null,
+    showThumb: Boolean = true,
     onValueChangeFinished: (() -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -45,29 +46,31 @@ fun CustomSlider(
         onValueChangeFinished = onValueChangeFinished,
 
         thumb = {
-            Box(
-                modifier = Modifier
-                    .size(22.dp)
-                    .shadow(
-                        elevation = 2.dp,
-                        shape = CircleShape,
-                        clip = false
-                    )
-                    .background(Color.Transparent, CircleShape),
-                contentAlignment = Alignment.Center,
-            ) {
+            if (showThumb) {
                 Box(
                     modifier = Modifier
-                        .size(12.dp)
-                        .background(
-                            if (enabled) {
-                                activeColor
-                            } else {
-                                colorScheme.onSurfaceFaint
-                            },
-                            CircleShape
+                        .size(22.dp)
+                        .shadow(
+                            elevation = 2.dp,
+                            shape = CircleShape,
+                            clip = false
                         )
-                )
+                        .background(Color.Transparent, CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .background(
+                                if (enabled) {
+                                    activeColor
+                                } else {
+                                    colorScheme.onSurfaceFaint
+                                },
+                                CircleShape
+                            )
+                    )
+                }
             }
         },
 
