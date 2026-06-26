@@ -4,6 +4,7 @@ import com.apadmi.mockzilla.JavaConfig
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.isDevelopmentBuild
 import com.apadmi.mockzilla.isSnapshot
+import com.apadmi.mockzilla.runNumber
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
@@ -25,9 +26,20 @@ plugins {
 
 val artifactName = "mockzilla-management-ui"
 
+// Managed automatically by release-please PRs
+val baseVersion = "2.0.0" // x-release-please-version
+
 kotlin {
-    // Managed automatically by release-please PRs
-    version = "2.0.0" // x-release-please-version
+    // In the desktop world there's no concept of a build number so we have to bump the actual version
+    // for each snapshot, so we replace the patch with the github run number just for snapshots
+    version = runNumber()?.takeIf { isSnapshot() }?.let {
+        // Max patch number is 65535, since we're unlikely to have this many builds per version
+        // we just let it loop
+        baseVersion
+            .split(".")
+            .dropLast(1)
+            .joinToString(".") + ".${it % 65535}"
+    } ?: baseVersion
 
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)

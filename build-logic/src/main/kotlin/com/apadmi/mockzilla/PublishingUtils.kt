@@ -7,6 +7,8 @@ fun Project.injectedVersion() = if (project.hasProperty("version")) properties["
     .takeUnless { it.isBlank() || it == "unspecified" } else null
 
 fun Project.isSnapshot () = project.hasProperty("is_snapshot") && properties["is_snapshot"].toString().toBoolean()
+fun Project.runNumber() = if (project.hasProperty("run_number")) properties["run_number"].toString()
+    .takeUnless { it.isBlank() }?.toInt() else null
 
 fun isSigningEnabled() = System.getenv("ORG_GRADLE_PROJECT_signingInMemoryKeyId") != null
 fun isDevelopmentBuild() = !isSigningEnabled()
