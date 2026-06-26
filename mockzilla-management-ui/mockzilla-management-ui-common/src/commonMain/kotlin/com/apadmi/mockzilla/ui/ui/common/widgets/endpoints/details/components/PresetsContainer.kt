@@ -81,7 +81,7 @@ internal fun PresetsContainer(
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium
                 )
-                // Use a generic error message for now as I don't want to change i18n
+
                 Text(
                     text = strings.failedToLoad,
                     textAlign = TextAlign.Center,
