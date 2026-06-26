@@ -29,7 +29,16 @@ internal object KtorClientProvider {
         }
 
         install(Logging) {
-            this.logger = logger
+            this.logger = object : Logger {
+                override fun log(message: String) {
+                    // Combines the multiline log into one line to stop cluttering the output
+                    val tidied = message.lineSequence()
+                        .map { it.trim() }
+                        .filter { it.isNotEmpty() }
+                        .joinToString(" ⏐ ")
+                    co.touchlab.kermit.Logger.v(tag = "HTTP Client") { tidied }
+                }
+            }
             this.level = LogLevel.INFO
             filter { request ->
                 request.headers[CustomHeaders.HideFromLogs]?.toBoolean() != true
