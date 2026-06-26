@@ -26,6 +26,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,6 +58,11 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 import org.koin.core.parameter.parametersOf
 
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+private const val scaleFactorCommitDebounceMs = 100L
 private data object PresentationModeScaleFactor {
     const val MIN = 0.8F
     const val MAX = 1.4F
@@ -140,6 +147,16 @@ internal fun MiscControlsWidgetContent(
         mutableFloatStateOf(PresentationModeScaleFactor.scaleFactor)
     }
     val setScaleFactor = LocalSetScaleFactor.current
+    val coroutineScope = rememberCoroutineScope()
+    var pendingScaleFactorCommit: Job? by remember { mutableStateOf(null) }
+
+    val commitScaleFactor = remember {
+        { scaleFactor: Float ->
+            setScaleFactor(scaleFactor)
+            PresentationModeScaleFactor.scaleFactor = scaleFactor
+        }
+    }
+
     PresentationModeSettings(
         presentationMode = presentationMode,
         onPresentationModeChange = { presentationModeEnabled ->
@@ -153,9 +170,12 @@ internal fun MiscControlsWidgetContent(
         },
         presentationModeScaleFactor = presentationModeScaleFactor,
         onPresentationModeScaleFactorChange = { scaleFactor ->
-            setScaleFactor(scaleFactor)
             presentationModeScaleFactor = scaleFactor
-            PresentationModeScaleFactor.scaleFactor = scaleFactor
+            pendingScaleFactorCommit?.cancel()
+            pendingScaleFactorCommit = coroutineScope.launch {
+                delay(scaleFactorCommitDebounceMs)
+                commitScaleFactor(scaleFactor)
+            }
         },
     )
 
@@ -248,7 +268,6 @@ private fun PresentationModeSettings(
                 modifier = Modifier.weight(1f),
                 value = presentationModeScaleFactor,
                 onValueChange = { onPresentationModeScaleFactorChange(it) },
-                steps = 5,
                 valueRange = PresentationModeScaleFactor.MIN..PresentationModeScaleFactor.MAX,
                 thumb = {
                     Box(
