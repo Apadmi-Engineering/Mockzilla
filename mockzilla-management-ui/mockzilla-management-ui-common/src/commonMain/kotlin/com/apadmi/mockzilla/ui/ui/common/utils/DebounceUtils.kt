@@ -9,7 +9,7 @@ import kotlinx.coroutines.yield
 private const val debounceTime = 600L
 internal fun ViewModel.withDebounce(job: Job?, op: suspend () -> Result<Unit>): Job {
     job?.cancel()
-    return viewModelScope.launch {
+    return viewModelScope.launch(Dispatchers.multiPlatformIo) {
         delay(debounceTime)
         yield()
         op()
