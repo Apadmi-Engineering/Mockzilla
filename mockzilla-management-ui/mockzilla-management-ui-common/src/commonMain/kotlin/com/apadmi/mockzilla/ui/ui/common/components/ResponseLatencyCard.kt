@@ -147,7 +147,7 @@ internal fun ResponseLatencyCard(
         }
     }
 
-    val updateValue = remember {
+    val updateValue = remember(onChange) {
         { it: Int ->
             val clamped = it.clamped()
             value = clamped
@@ -320,8 +320,6 @@ internal fun ResponseLatencyCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = if (isOverflowing) 4.dp else 0.dp),
-                    activeTrackColor = colorScheme.primary,
-                    showThumb = !isOverflowing,
                     onValueChange = {
                         updateValue(it.toInt())
                     },

@@ -41,6 +41,7 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.CustomSlider
 import com.apadmi.mockzilla.ui.ui.common.components.CustomToggle
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionHeader
@@ -250,32 +251,12 @@ private fun PresentationModeSettings(
             modifier = Modifier.fillMaxWidth().padding(end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Slider(
+            CustomSlider(
                 modifier = Modifier.weight(1f),
                 value = presentationModeScaleFactor,
-                onValueChange = { onPresentationModeScaleFactorChange(it) },
                 steps = 5,
+                onValueChange = { onPresentationModeScaleFactorChange(it) },
                 valueRange = PresentationModeScaleFactor.MIN..PresentationModeScaleFactor.MAX,
-                thumb = {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clip(CircleShape)
-                            .background(colorScheme.primary)
-                    )
-                },
-                track = { state ->
-                    SliderDefaults.Track(
-                        sliderState = state,
-                        modifier = Modifier.height(2.dp),
-                        colors = SliderDefaults.colors(
-                            activeTrackColor = colorScheme.primary,
-                            inactiveTrackColor = colorScheme.outline,
-                            activeTickColor = Color.Transparent,
-                            inactiveTickColor = Color.Transparent,
-                        ),
-                    )
-                }
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(

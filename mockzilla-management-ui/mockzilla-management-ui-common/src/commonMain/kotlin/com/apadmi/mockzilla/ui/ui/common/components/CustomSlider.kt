@@ -15,86 +15,50 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
+    steps: Int = 0,
     modifier: Modifier = Modifier,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
-    enabled: Boolean = true,
-    activeTrackColor: Color? = null,
-    showThumb: Boolean = true,
-    onValueChangeFinished: (() -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val activeColor = activeTrackColor ?: colorScheme.primary
 
     Slider(
+        modifier = modifier,
         value = value,
-        onValueChange = onValueChange,
-        modifier = modifier.height(24.dp),
-        enabled = enabled,
+        onValueChange = { onValueChange(it) },
+        steps = steps,
         valueRange = valueRange,
-        onValueChangeFinished = onValueChangeFinished,
-
         thumb = {
-            if (showThumb) {
-                Box(
-                    modifier = Modifier
-                        .size(22.dp)
-                        .shadow(
-                            elevation = 2.dp,
-                            shape = CircleShape,
-                            clip = false
-                        )
-                        .background(Color.Transparent, CircleShape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(12.dp)
-                            .background(
-                                if (enabled) {
-                                    activeColor
-                                } else {
-                                    colorScheme.onSurfaceFaint
-                                },
-                                CircleShape
-                            )
-                    )
-                }
-            }
-        },
-
-        track = { sliderState ->
-            SliderDefaults.Track(
-                sliderState = sliderState,
-                modifier = Modifier.height(4.dp),
-                colors = SliderDefaults.colors(
-                    activeTrackColor = activeColor,
-                    inactiveTrackColor = colorScheme.outline.copy(alpha = 0.25f),
-                    disabledActiveTrackColor = colorScheme.onSurfaceFaint.copy(alpha = 0.3f),
-                    disabledInactiveTrackColor = colorScheme.outline.copy(alpha = 0.1f),
-                    thumbColor = Color.Transparent,
-                ),
-                drawStopIndicator = null,
-                thumbTrackGapSize = 0.dp,
+            Box(
+                modifier = Modifier
+                    .size(16.dp)
+                    .clip(CircleShape)
+                    .background(colorScheme.primary)
             )
         },
-
-        colors = SliderDefaults.colors(
-            thumbColor = Color.Transparent,
-            activeTrackColor = activeColor,
-            inactiveTrackColor = colorScheme.outline.copy(alpha = 0.25f),
-        ),
+        track = { state ->
+            SliderDefaults.Track(
+                sliderState = state,
+                modifier = Modifier.height(2.dp),
+                colors = SliderDefaults.colors(
+                    activeTrackColor = colorScheme.primary,
+                    inactiveTrackColor = colorScheme.outline,
+                    activeTickColor = Color.Transparent,
+                    inactiveTickColor = Color.Transparent,
+                ),
+            )
+        }
     )
 }
 
@@ -108,12 +72,6 @@ private fun MockzillaSliderPreview() = PreviewSurface {
         CustomSlider(
             value = 0.4f,
             onValueChange = {},
-        )
-
-        CustomSlider(
-            value = 0.7f,
-            onValueChange = {},
-            enabled = false,
         )
     }
 }
