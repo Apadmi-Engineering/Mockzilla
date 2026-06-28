@@ -90,6 +90,8 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
+import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
@@ -191,39 +193,21 @@ private fun ColumnScope.HeadersSection(
             onValueChange = { localValue = it },
         )
         val canAdd = localKey.isNotEmpty() && localValue.isNotEmpty()
-        Box(
+        IconButton(
+            onClick = {
+                onAddHeader(localKey, localValue)
+                localKey = ""
+                localValue = ""
+            },
+            enabled = canAdd,
             modifier = Modifier
-                .size(28.dp)
-                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(6.dp))
-                .border(
-                    width = 1.dp,
-                    color = if (canAdd) {
-                        MaterialTheme.colorScheme.outline
-                    } else {
-                        MaterialTheme.colorScheme.outline.copy(alpha = 0.8f)
-                    },
-                    shape = RoundedCornerShape(6.dp),
-                )
-                .clickable(
-                    enabled = canAdd,
-                    onClick = {
-                        onAddHeader(localKey, localValue)
-                        localKey = ""
-                        localValue = ""
-                    }
-                )
+                .iconButtonSize(28.dp)
                 .pointerHoverIcon(if (canAdd) PointerIcon.Hand else blockedPointerIcon),
-            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = strings.addHeaderButton,
-                tint = if (canAdd) {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-                },
-                modifier = Modifier.size(14.dp)
+                modifier = Modifier.size(14.dp),
             )
         }
     }
@@ -536,7 +520,7 @@ private fun BodySection(
 
         IconButton(
             onClick = onToggleExpand,
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.iconButtonSize(40.dp),
         ) {
             Icon(
                 imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
@@ -758,6 +742,7 @@ private fun BodyTypeToggle(
             val isHovered by interactionSource.collectIsHoveredAsState()
             Box(
                 modifier = Modifier
+                    .minimumTouchTarget()
                     .clip(chipShape)
                     .background(
                         color = when {

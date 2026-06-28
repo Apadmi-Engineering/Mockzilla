@@ -59,6 +59,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 @Composable
 internal fun FindableEditorTextField(
@@ -246,7 +247,7 @@ private fun FindReplaceBar(
             ) {
                 IconButton(
                     onClick = onToggleReplaceMode,
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.iconButtonSize(24.dp),
                 ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowRight,
@@ -299,7 +300,7 @@ private fun FindReplaceBar(
                         },
                 )
 
-                IconButton(onClick = onPrev, modifier = Modifier.size(28.dp)) {
+                IconButton(onClick = onPrev, modifier = Modifier.iconButtonSize(28.dp)) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
                         contentDescription = strings.previousMatchDescription,
@@ -307,7 +308,7 @@ private fun FindReplaceBar(
                         tint = colorScheme.onSurfaceVariant,
                     )
                 }
-                IconButton(onClick = onNext, modifier = Modifier.size(28.dp)) {
+                IconButton(onClick = onNext, modifier = Modifier.iconButtonSize(28.dp)) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = strings.nextMatchDescription,
@@ -321,7 +322,7 @@ private fun FindReplaceBar(
                         .width(1.dp)
                         .background(colorScheme.outlineVariant),
                 )
-                IconButton(onClick = onClose, modifier = Modifier.size(28.dp)) {
+                IconButton(onClick = onClose, modifier = Modifier.iconButtonSize(28.dp)) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = strings.closeFindBarDescription,

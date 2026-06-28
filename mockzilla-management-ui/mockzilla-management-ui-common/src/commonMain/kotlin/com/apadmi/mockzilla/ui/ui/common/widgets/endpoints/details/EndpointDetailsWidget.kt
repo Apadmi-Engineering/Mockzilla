@@ -89,6 +89,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetai
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
 
@@ -231,27 +232,14 @@ private fun ColumnScope.PopulatedState(
                 )
             }
             Spacer(Modifier.width(8.dp))
-            val customLabel = strings.endpointDetails.presets.typeDescriptions.other
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
-                    .clickable(enabled = state.config.shouldFail != true, onClick = onCreatePreset)
-                    .padding(horizontal = 8.dp, vertical = 2.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(12.dp),
-                )
-                Text(
-                    text = customLabel,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
+            BaseButton(
+                variant = ButtonVariant.Ghost,
+                size = ButtonSize.Sm,
+                leadingIcon = Icons.Default.Add,
+                label = strings.endpointDetails.presets.typeDescriptions.other,
+                enabled = state.config.shouldFail != true,
+                onClick = onCreatePreset,
+            )
         }
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -498,7 +486,7 @@ private fun ActivePresetBanner(
                 color = colorScheme.onSurfaceVariant,
             )
         }
-        IconButton(onClick = onClear, modifier = Modifier.size(24.dp)) {
+        IconButton(onClick = onClear, modifier = Modifier.iconButtonSize(24.dp)) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,

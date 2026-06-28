@@ -66,6 +66,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.success
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import kotlin.Float
 
@@ -362,12 +363,9 @@ private fun DeviceTab(
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .size(12.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .clickable(onClick = onClose),
-                contentAlignment = Alignment.Center,
+            IconButton(
+                onClick = onClose,
+                modifier = Modifier.iconButtonSize(),
             ) {
                 Icon(
                     imageVector = Icons.Filled.Close,

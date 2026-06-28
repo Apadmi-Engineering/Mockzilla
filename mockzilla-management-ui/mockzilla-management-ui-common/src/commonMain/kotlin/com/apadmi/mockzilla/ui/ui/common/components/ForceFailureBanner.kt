@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.CircleCheck
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
@@ -144,29 +145,14 @@ internal fun ForceFailureBanner(
 
                 if (state != ForceFailureBannerState.Normal) {
                     val successColor = colorScheme.success.primary
-                    val resumeShape = RoundedCornerShape(resumeButtonCornerRadius.dp)
-                    Row(
-                        modifier = Modifier
-                            .clip(resumeShape)
-                            .border(1.dp, successColor, resumeShape)
-                            .clickable { onRestoreApiClicked() }
-                            .padding(horizontal = 12.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = null,
-                            tint = successColor,
-                            modifier = Modifier.size(14.dp),
-                        )
-                        Text(
-                            text = strings.widgets.globalControls.restoreButtonLabel,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = successColor,
-                            fontWeight = FontWeight.Medium,
-                        )
-                    }
+                    BaseButton(
+                        label = strings.widgets.globalControls.restoreButtonLabel,
+                        leadingIcon = Icons.CircleCheck,
+                        contentColor = successColor,
+                        size = ButtonSize.Sm,
+                        variant = ButtonVariant.Outline,
+                        onClick = onRestoreApiClicked,
+                    )
                 }
             }
         }

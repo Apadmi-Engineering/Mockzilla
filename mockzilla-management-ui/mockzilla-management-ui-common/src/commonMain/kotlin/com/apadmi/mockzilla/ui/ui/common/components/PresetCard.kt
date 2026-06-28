@@ -74,6 +74,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.minifyJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.typeFormat
+import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
 
@@ -230,6 +231,7 @@ internal fun PresetCard(
                 ) {
                     Box(
                         modifier = Modifier
+                            .minimumTouchTarget()
                             .fillMaxHeight()
                             .clip(RoundedCornerShape(6.dp))
                             .clickable { onEdit() }
@@ -274,6 +276,7 @@ internal fun PresetCard(
 
                 PresetCardVariant.Selectable -> Box(
                     modifier = Modifier
+                        .minimumTouchTarget()
                         .clip(RoundedCornerShape(6.dp))
                         .clickable { onClicked(preset) }
                 ) {
