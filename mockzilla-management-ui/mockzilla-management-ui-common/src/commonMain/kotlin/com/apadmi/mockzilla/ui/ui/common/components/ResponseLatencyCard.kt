@@ -337,9 +337,7 @@ internal fun ResponseLatencyCard(
             }
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(14.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
