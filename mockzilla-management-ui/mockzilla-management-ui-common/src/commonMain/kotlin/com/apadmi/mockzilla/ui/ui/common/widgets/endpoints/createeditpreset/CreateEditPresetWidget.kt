@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -86,6 +87,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.components.editor.FindableEditorTextField
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
@@ -116,23 +118,25 @@ private fun ColumnScope.HeadersSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .heightIn(min = 48.dp)
                 .padding(start = 16.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 text = header.key,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.jsonKey,
+                modifier = Modifier.weight(1f).padding(vertical = 4.dp),
             )
+
             Row(
                 modifier = Modifier.weight(3f),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = ":  ${header.value}",
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = header.value,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = LocalMonoFontFamily.current),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
                 )
