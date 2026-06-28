@@ -185,6 +185,11 @@ private fun DarkModeSettings(
 
     Row(
         modifier = Modifier.fillMaxWidth()
+            .toggleable(
+                value = LocalForceDarkMode.current,
+                onValueChange = { checked -> setForceDarkMode(checked) },
+                role = Role.Switch,
+            )
             .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
