@@ -302,7 +302,7 @@ private fun ConnectedDeviceLayout(
                             device = connectedState.activeDevice.device,
                             onEndpointClicked = { key ->
                                 viewModel.setSelectedEndpoint(key)
-                                state = state.copy(rightPanelTab = RightPanelTab.EndpointDetails)
+                                state = state.copy(rightPanelTab = RightPanelTab.EndpointDetails.takeUnless { key == null })
                             },
                             onGlobalControlsClicked = { state = state.copy(globalControlsOpen = true) },
                         )

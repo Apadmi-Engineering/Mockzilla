@@ -91,7 +91,7 @@ private fun RowDensity.verticalPadding(): Dp = when (this) {
 @Composable
 fun EndpointsWidget(
     device: Device,
-    onEndpointClicked: (Key) -> Unit,
+    onEndpointClicked: (Key?) -> Unit,
     onGlobalControlsClicked: () -> Unit
 ) {
     val viewModel = getViewModel<EndpointsViewModel>(device = device) {
@@ -106,8 +106,13 @@ fun EndpointsWidget(
         onFilterUpdate = viewModel::onFilterChanged,
         onRowDensityChanged = viewModel::onRowDensityChanged,
         onEndpointClicked = { key ->
-            selectedKey = key
-            onEndpointClicked(key)
+            if (selectedKey == key) {
+                selectedKey = null
+                onEndpointClicked(null)
+            } else {
+                selectedKey = key
+                onEndpointClicked(key)
+            }
         },
         onGlobalControlsClicked = onGlobalControlsClicked
     )
