@@ -275,21 +275,18 @@ internal fun PresetCard(
                     )
                 }
 
-                PresetCardVariant.Selectable -> Box(
+                PresetCardVariant.Selectable -> Tag(
                     modifier = Modifier
                         .minimumTouchTarget()
                         .clip(RoundedCornerShape(6.dp))
-                        .clickable { onClicked(preset) }
-                ) {
-                    Tag(
-                        label = strings.applyLabel,
-                        textColor = colorScheme.onSurface,
-                        borderColor = colorScheme.outline,
-                        backgroundColor = colorScheme.surfaceContainer,
-                        shape = RoundedCornerShape(6.dp),
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                    )
-                }
+                        .clickable { onClicked(preset) },
+                    label = strings.applyLabel,
+                    textColor = colorScheme.onSurface,
+                    borderColor = colorScheme.outline,
+                    backgroundColor = colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(6.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                )
             }
         }
 
