@@ -87,7 +87,7 @@ fun MonitorLogsWidget(
     onExpandToggled: () -> Unit = {},
     onViewDetail: (LogEvent) -> Unit,
 ) {
-    val viewModel = getViewModel<MonitorLogsViewModel>(key = device.toString()) { parametersOf(device) }
+    val viewModel = getViewModel<MonitorLogsViewModel>(device = device) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     MonitorLogsWidgetContent(

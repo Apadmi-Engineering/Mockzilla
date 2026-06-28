@@ -77,7 +77,7 @@ private data object PresentationModeScaleFactor {
 fun MiscControlsWidget(
     device: Device?
 ) {
-    val viewModel = getViewModel<MiscControlsViewModel>(key = device?.toString()) { parametersOf(device) }
+    val viewModel = getViewModel<MiscControlsViewModel>(device = device) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     MiscControlsWidgetContent(

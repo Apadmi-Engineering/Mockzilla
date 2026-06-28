@@ -64,7 +64,7 @@ private fun RunTarget.label(strings: Strings) = when (this) {
 @Composable
 fun MetaDataWidget(device: Device) {
     val viewModel =
-        getViewModel<MetaDataWidgetViewModel>(key = device.toString()) { parametersOf(device) }
+        getViewModel<MetaDataWidgetViewModel>(device = device) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     MetaDataWidgetContent(state, device)

@@ -61,7 +61,7 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun GlobalControlsWidget(device: Device, onClose: () -> Unit = {}) {
-    val viewModel = getViewModel<GlobalControlsViewModel>(key = device.toString()) {
+    val viewModel = getViewModel<GlobalControlsViewModel>(device = device) {
         parametersOf(device)
     }
     val focusManager = LocalFocusManager.current

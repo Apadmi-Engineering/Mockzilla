@@ -276,7 +276,8 @@ fun EndpointDetailsWidget(
 ) {
     val uriHandler = LocalUriHandler.current
     val viewModel = getViewModel<EndpointDetailsViewModel>(
-        key = "${activeEndpoint?.raw}-$device"
+        device = device,
+        keyPrefix = activeEndpoint?.raw
     ) { parametersOf(activeEndpoint, device) }
     val state by viewModel.state.collectAsState()
 

@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.ui.di.utils
 
 import androidx.compose.runtime.Composable
+import com.apadmi.mockzilla.ui.engine.device.Device
 
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel as InternalViewModel
 
@@ -21,13 +22,14 @@ actual inline fun <reified T : InternalViewModel> Module.viewModel(
 @Composable
 actual inline fun <reified T : InternalViewModel> getViewModel(
     qualifier: Qualifier?,
-    key: String?,
+    device: Device?,
+    keyPrefix: String?,
     noinline parameters: ParametersDefinition?
 ): T = koinViewModel<T>(
     qualifier = qualifier,
-    key = key,
+    key = keyPrefix + device.toString(),
     parameters = parameters,
     scope = MockzillaUiKoinContext.koin.scopeRegistry.rootScope
 )
 
-actual fun evictDesktopViewModelsForKey(key: String) = Unit
+actual fun evictDesktopViewModelsForKey(device: Device) = Unit

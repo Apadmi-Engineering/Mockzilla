@@ -175,11 +175,8 @@ fun DesktopApp(
         // temporarily disconnected — the VM handles disconnection gracefully while preserving
         // selectedEndpoint). allDevices is a live collection, updated before the flow fires.
         LaunchedEffect(Unit) {
-            var knownKeys = activeDeviceMonitor.allDevices.map { it.device.toString() }.toSet()
-            activeDeviceMonitor.onDeviceConnectionStateChange.collect {
-                val currentKeys = activeDeviceMonitor.allDevices.map { it.device.toString() }.toSet()
-                (knownKeys - currentKeys).forEach { evictDesktopViewModelsForKey(it) }
-                knownKeys = currentKeys
+            activeDeviceMonitor.onDeviceRemoved.collect {
+                evictDesktopViewModelsForKey(it)
             }
         }
 
@@ -223,7 +220,7 @@ private fun DeviceContent(
     strings: Strings
 ) {
     val viewModel = getViewModel<DeviceRootViewModel>(
-        key = device.toString()
+        device = device
     ) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 

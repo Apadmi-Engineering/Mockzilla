@@ -143,7 +143,7 @@ internal fun MobileAppRoot(
 
 @Composable
 private fun DeviceContent(device: Device, navController: NavHostController) {
-    val viewModel = getViewModel<DeviceRootViewModel>(key = device.toString()) { parametersOf(device) }
+    val viewModel = getViewModel<DeviceRootViewModel>(device = device) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     when (val currentState = state) {

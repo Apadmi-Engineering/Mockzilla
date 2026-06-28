@@ -76,7 +76,8 @@ fun MonitorLogDetailsWidget(
     onClose: () -> Unit = {},
 ) {
     val viewModel = getViewModel<MonitorLogDetailsViewModel>(
-        key = logDetail?.id ?: "empty"
+        device = device,
+        keyPrefix = logDetail?.id
     ) { parametersOf(device, logDetail) }
     val state by viewModel.state.collectAsState()
 
