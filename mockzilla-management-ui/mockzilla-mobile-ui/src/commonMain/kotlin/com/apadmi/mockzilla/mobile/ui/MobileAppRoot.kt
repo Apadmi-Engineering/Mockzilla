@@ -249,6 +249,7 @@ private fun ConnectedState(
                         ),
                         creatingNewPreset = backStackEntry.toRoute<Destination.CreateEditPreset>().creatingNewPreset,
                         onSave = navController::navigateUp,
+                        onCancel = navController::navigateUp,
                     )
                 }
             }

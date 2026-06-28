@@ -54,6 +54,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.State
+import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
@@ -167,16 +168,18 @@ internal fun GlobalControlsWidgetIdleContent(
                 onClick = onResetClicked
             )
 
-            IconButton(
-                modifier = Modifier.iconButtonSize(24.dp),
-                onClick = onClose
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = strings.common.closeDescription,
-                    tint = colorScheme.onSurfaceFaint,
-                    modifier = Modifier.size(16.dp)
-                )
+            if (Platform.current == Platform.Desktop) {
+                IconButton(
+                    modifier = Modifier.iconButtonSize(24.dp),
+                    onClick = onClose
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = strings.common.closeDescription,
+                        tint = colorScheme.onSurfaceFaint,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
         }
 
