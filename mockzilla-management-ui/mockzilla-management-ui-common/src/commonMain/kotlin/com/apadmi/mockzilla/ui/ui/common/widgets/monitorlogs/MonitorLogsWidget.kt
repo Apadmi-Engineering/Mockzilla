@@ -56,6 +56,8 @@ import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.formatTimestamp
@@ -71,7 +73,7 @@ private fun HttpStatusCode.statusColor(isIntendedFailure: Boolean): Color {
         value in 200..299 -> cs.success.primary
         isIntendedFailure -> cs.warning.primary
         value >= 400 -> cs.error
-        else -> cs.onSurface.copy(alpha = 0.5f)
+        else -> cs.onSurfaceMuted
     }
 }
 
@@ -112,7 +114,7 @@ fun LogRow(
     val isRealError = event.status.value >= 400 && !event.isIntendedFailure
     val errorColor = cs.error
     val errorBgColor = cs.errorContainer
-    val faintColor = cs.onSurface.copy(alpha = 0.3f)
+    val faintColor = cs.onSurfaceMuted
     val slowColor = cs.warning.primary
 
     Row(
@@ -261,8 +263,7 @@ internal fun MonitorLogsWidgetContent(
     val monoFont = LocalMonoFontFamily.current
     val cs = MaterialTheme.colorScheme
     val streamingColor = cs.success.primary
-    val dimColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-    val faintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+    val dimColor = cs.onSurfaceMuted
     val entryList = state.entries
     val titleStyle = MaterialTheme.typography.labelSmall.copy(
         fontFamily = monoFont,
@@ -291,7 +292,7 @@ internal fun MonitorLogsWidgetContent(
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = null,
-                tint = faintColor,
+                tint = cs.onSurfaceFaint,
                 modifier = Modifier.size(14.dp).rotate(chevronRotation),
             )
             Text(
@@ -308,7 +309,7 @@ internal fun MonitorLogsWidgetContent(
             Text(
                 text = strings.widgets.logs.clickToInspect,
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
-                color = faintColor,
+                color = cs.onSurfaceMuted,
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
@@ -342,7 +343,7 @@ private fun MonitorLogsList(
     strings: Strings = LocalStrings.current,
 ) {
     if (entryList.isEmpty()) {
-        val iconTint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+        val iconTint = MaterialTheme.colorScheme.onSurfaceFaint
         EmptyState(
             title = strings.widgets.logs.emptyTitle,
             description = strings.widgets.logs.emptyDescription,

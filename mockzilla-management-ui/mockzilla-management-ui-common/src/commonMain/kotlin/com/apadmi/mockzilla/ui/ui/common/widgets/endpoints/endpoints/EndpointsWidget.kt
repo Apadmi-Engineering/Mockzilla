@@ -63,6 +63,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
@@ -277,7 +278,7 @@ private fun EndpointRow(
         Icon(
             imageVector = Icons.Default.ChevronRight,
             contentDescription = null,
-            tint = cs.onSurface.copy(alpha = 0.4f),
+            tint = cs.onSurfaceFaint,
         )
     }
     HorizontalDivider(color = cs.onSurface.copy(alpha = 0.12f))
@@ -301,7 +302,7 @@ private fun EndpointRowChips(
         Text(
             text = strings.widgets.endpoints.noOverrides,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
         )
         return
     }

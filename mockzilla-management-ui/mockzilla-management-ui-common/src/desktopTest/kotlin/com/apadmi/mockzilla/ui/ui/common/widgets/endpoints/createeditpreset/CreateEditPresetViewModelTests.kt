@@ -28,7 +28,6 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.yield
-import java.lang.Exception
 
 class CreateEditPresetViewModelTests : CoroutineTest() {
     private val dummyKey = EndpointConfiguration.Key("my-endpoint")

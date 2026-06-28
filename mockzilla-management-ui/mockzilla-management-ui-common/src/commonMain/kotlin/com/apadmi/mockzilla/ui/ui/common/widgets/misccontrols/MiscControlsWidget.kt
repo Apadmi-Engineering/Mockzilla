@@ -53,6 +53,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.ScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 import org.koin.core.parameter.parametersOf
 
@@ -275,7 +276,7 @@ private fun PresentationModeSettings(
             Text(
                 text = strings.widgets.miscControls.fontScaleLabel(presentationModeScaleFactor),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                color = MaterialTheme.colorScheme.onSurfaceMuted
             )
         }
     }

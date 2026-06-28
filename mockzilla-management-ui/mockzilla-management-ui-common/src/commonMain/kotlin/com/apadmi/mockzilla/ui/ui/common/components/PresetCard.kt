@@ -66,6 +66,7 @@ import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
@@ -169,7 +170,7 @@ internal fun PresetCard(
         animationSpec = tween(200),
         label = "chevron",
     )
-    val chevronTint = if (hasExpandableContent) iconTint else colorScheme.onSurface.copy(alpha = 0.3f)
+    val chevronTint = if (hasExpandableContent) iconTint else colorScheme.onSurfaceFaint
 
     Column(
         Modifier.fillMaxWidth()

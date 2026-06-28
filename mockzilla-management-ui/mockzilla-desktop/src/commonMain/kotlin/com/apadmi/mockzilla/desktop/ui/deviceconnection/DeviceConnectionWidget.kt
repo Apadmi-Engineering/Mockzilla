@@ -313,7 +313,7 @@ private fun ConnectionCard(
                 HorizontalDivider(Modifier.weight(1f), color = colorScheme.outline)
                 Text(
                     text = strings.widgets.deviceConnection.connectAutomatically,
-                    color = colorScheme.onSurfaceFaint,
+                    color = colorScheme.onSurfaceMuted,
                     style = MaterialTheme.typography.labelMedium,
                 )
                 HorizontalDivider(Modifier.weight(1f), color = colorScheme.outline)

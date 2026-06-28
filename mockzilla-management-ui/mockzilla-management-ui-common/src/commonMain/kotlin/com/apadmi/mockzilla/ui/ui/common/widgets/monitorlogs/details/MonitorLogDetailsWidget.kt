@@ -218,7 +218,7 @@ internal fun MonitorLogDetailsEmptyContent(
                 imageVector = Icons.Default.Menu,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                tint = MaterialTheme.colorScheme.onSurfaceFaint
             )
         }
     )
@@ -347,7 +347,7 @@ private fun LogTabBar(
             val selectedColor = if (isSelected) {
                 MaterialTheme.colorScheme.primary
             } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                MaterialTheme.colorScheme.onSurfaceMuted
             }
 
             Column(
@@ -439,7 +439,7 @@ private fun HeadersContent(headers: List<Pair<String, String>>, strings: Strings
         Text(
             text = strings.widgets.logDetails.noHeaders,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
             modifier = Modifier.padding(vertical = 4.dp),
         )
         return

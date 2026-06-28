@@ -84,6 +84,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
 import com.apadmi.mockzilla.ui.ui.common.components.statusColors
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
@@ -332,7 +333,7 @@ internal fun EndpointDetailsWidgetContent(
                         imageVector = Icons.Default.Settings,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        tint = MaterialTheme.colorScheme.onSurfaceFaint
                     )
                 }
             )
