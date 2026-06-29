@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Article
@@ -71,6 +73,9 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.Crea
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidget
+import com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols.MiscControlsWidget
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
 import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import org.koin.core.parameter.parametersOf
@@ -101,29 +106,38 @@ internal fun MobileAppRoot(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AnimatedVisibility(showBackButton) {
-                Box(
+                IconButton(
                     modifier = Modifier
-                        .size(44.dp)
+                        .minimumTouchTarget()
                         .clip(RoundedCornerShape(8.dp))
                         .background(colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center,
+                    onClick = navController::navigateUp
                 ) {
-                    IconButton(onClick = navController::navigateUp) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            tint = colorScheme.onSurface,
-                            contentDescription = strings.common.backDescription,
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        tint = colorScheme.onSurface,
+                        contentDescription = strings.common.backDescription,
+                    )
                 }
             }
 
             AnimatedVisibility(!showBackButton) {
-                Image(
-                    modifier = Modifier.size(40.dp),
-                    imageVector = Icons.MockzillaLogo,
-                    contentDescription = null
-                )
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(colorScheme.surface)
+                        .clickable {
+                            navController.navigate(Destination.MetaData)
+                        }
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .iconButtonSize()
+                            .padding(vertical = 1.dp, horizontal = 4.dp),
+                        imageVector = Icons.MockzillaLogo,
+                        contentDescription = null
+                    )
+                }
             }
 
             Spacer(Modifier.weight(1f))
@@ -247,6 +261,16 @@ private fun ConnectedState(
                 ) + fadeOut(animationSpec = tween(300))
             },
         ) {
+            composable<Destination.MetaData> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .background(colorScheme.background)
+                ) {
+                    MetaDataWidget(device = currentState.activeDevice.device)
+                }
+            }
             composable<Destination.EndpointDetails> { backStackEntry ->
                 Box(
                     modifier = Modifier

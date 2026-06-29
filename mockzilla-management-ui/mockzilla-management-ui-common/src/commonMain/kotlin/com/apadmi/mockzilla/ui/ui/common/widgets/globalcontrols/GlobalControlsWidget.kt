@@ -133,11 +133,11 @@ internal fun GlobalControlsWidgetIdleContent(
             .navigationBarsPadding(),
     ) {
         // Header
-        Row(
+        FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            itemVerticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Column(modifier = Modifier.weight(1f)) {
