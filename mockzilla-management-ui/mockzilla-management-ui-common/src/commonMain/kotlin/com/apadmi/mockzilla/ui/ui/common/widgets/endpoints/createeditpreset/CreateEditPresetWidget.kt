@@ -354,10 +354,11 @@ fun CreateEditPresetWidget(
     onCancel: () -> Unit = {},
     onSave: () -> Unit = {},
 ) {
-    val cleanupVm = { evictDesktopViewModelsForKey(device = device) }
+    val keyPrefix = "CreateEditPresetViewModel-${activeEndpoint.raw}"
+    val cleanupVm = { evictDesktopViewModelsForKey(device = device, keyPrefix = keyPrefix) }
     val viewModel = getViewModel<CreateEditPresetViewModel>(
         device = device,
-        keyPrefix = activeEndpoint.raw
+        keyPrefix = keyPrefix
     ) {
         parametersOf(
             activeEndpoint,

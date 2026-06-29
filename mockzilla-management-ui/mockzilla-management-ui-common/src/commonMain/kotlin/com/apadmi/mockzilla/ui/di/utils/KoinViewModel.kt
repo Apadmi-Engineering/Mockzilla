@@ -22,4 +22,4 @@ expect inline fun <reified T : ViewModel> getViewModel(
     noinline parameters: ParametersDefinition? = null
 ): T
 
-expect fun evictDesktopViewModelsForKey(device: Device)
+expect fun evictDesktopViewModelsForKey(device: Device, keyPrefix: String? = null)

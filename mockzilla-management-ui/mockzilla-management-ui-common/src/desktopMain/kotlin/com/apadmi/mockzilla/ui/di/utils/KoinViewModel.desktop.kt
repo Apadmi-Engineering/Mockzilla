@@ -31,7 +31,7 @@ actual inline fun <reified T : ViewModel> getViewModel(
     device?.let {
         // Keyed VMs: check the persistent cache so the same instance is returned after the
         // composable re-enters composition (e.g. switching back to a device tab).
-        val cacheKey = "${T::class.qualifiedName}|$keyPrefix|$qualifier|$device"
+        val cacheKey = "${T::class.qualifiedName}|$qualifier|$keyPrefix|$device"
         @Suppress("UNCHECKED_CAST")
         desktopViewModelCache.getOrPut(cacheKey) {
             MockzillaUiKoinContext.koin.get<T>(qualifier = qualifier, parameters = parameters)
@@ -41,9 +41,9 @@ actual inline fun <reified T : ViewModel> getViewModel(
 
 // Called when a device is fully removed from allDevices. Cancels the coroutine scope directly
 // because the base ViewModel class has no clear() method.
-actual fun evictDesktopViewModelsForKey(device: Device) {
+actual fun evictDesktopViewModelsForKey(device: Device, keyPrefix: String?) {
     desktopViewModelCache.keys
-        .filter { it.endsWith("|$device") }
+        .filter { it.endsWith("${"|$keyPrefix".takeIf { keyPrefix != null} ?: ""}|$device") }
         .forEach { cacheKey ->
             (desktopViewModelCache.remove(cacheKey) as? ViewModel)?.viewModelScope?.cancel()
         }
