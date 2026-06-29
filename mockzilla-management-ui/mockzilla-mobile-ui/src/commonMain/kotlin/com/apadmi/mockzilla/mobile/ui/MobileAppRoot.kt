@@ -207,9 +207,9 @@ private fun ConnectedState(
                 ) {
                     EndpointDetailsWidget(
                         device = currentState.activeDevice.device,
-                        activeEndpoint = EndpointConfiguration.Key(
-                            backStackEntry.toRoute<Destination.EndpointDetails>().key,
-                        ),
+                        activeEndpoint = backStackEntry.toRoute<Destination.EndpointDetails>().key?.let {
+                            EndpointConfiguration.Key(it)
+                        },
                         onCreatePreset = {
                             navController.navigate(Destination.CreateEditPreset(it.raw, true))
                         },
@@ -225,7 +225,7 @@ private fun ConnectedState(
                     EndpointsWidget(
                         device = currentState.activeDevice.device,
                         onEndpointClicked = {
-                            navController.navigate(Destination.EndpointDetails(it.raw))
+                            navController.navigate(Destination.EndpointDetails(it?.raw))
                         },
                         onGlobalControlsClicked = {
                             navController.navigate(Destination.GlobalControls)

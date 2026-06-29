@@ -43,7 +43,7 @@ actual inline fun <reified T : ViewModel> getViewModel(
 // because the base ViewModel class has no clear() method.
 actual fun evictDesktopViewModelsForKey(device: Device, keyPrefix: String?) {
     desktopViewModelCache.keys
-        .filter { it.endsWith("${"|$keyPrefix".takeIf { keyPrefix != null} ?: ""}|$device") }
+        .filter { it.endsWith("${"|$keyPrefix".takeIf { keyPrefix != null } ?: ""}|$device") }
         .forEach { cacheKey ->
             (desktopViewModelCache.remove(cacheKey) as? ViewModel)?.viewModelScope?.cancel()
         }

@@ -248,7 +248,7 @@ private fun FindReplaceBar(
             ) {
                 IconButton(
                     onClick = onToggleReplaceMode,
-                    modifier = Modifier.iconButtonSize(24.dp),
+                    modifier = Modifier.iconButtonSize(),
                 ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowRight,
@@ -301,7 +301,7 @@ private fun FindReplaceBar(
                         },
                 )
 
-                IconButton(onClick = onPrev, modifier = Modifier.iconButtonSize(28.dp)) {
+                IconButton(onClick = onPrev, modifier = Modifier.iconButtonSize()) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
                         contentDescription = strings.previousMatchDescription,
@@ -309,7 +309,7 @@ private fun FindReplaceBar(
                         tint = colorScheme.onSurfaceVariant,
                     )
                 }
-                IconButton(onClick = onNext, modifier = Modifier.iconButtonSize(28.dp)) {
+                IconButton(onClick = onNext, modifier = Modifier.iconButtonSize()) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = strings.nextMatchDescription,
@@ -323,7 +323,7 @@ private fun FindReplaceBar(
                         .width(1.dp)
                         .background(colorScheme.outlineVariant),
                 )
-                IconButton(onClick = onClose, modifier = Modifier.iconButtonSize(28.dp)) {
+                IconButton(onClick = onClose, modifier = Modifier.iconButtonSize()) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = strings.closeFindBarDescription,

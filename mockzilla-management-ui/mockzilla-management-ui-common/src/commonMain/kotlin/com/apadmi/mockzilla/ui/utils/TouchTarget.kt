@@ -6,25 +6,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+@Suppress("MAGIC_NUMBER")
 private val touchTargetSize: Dp
     get() = when (Platform.current) {
         Platform.Android, Platform.Ios -> 44.dp
         else -> 24.dp
     }
 
-/** Enforces WCAG AA minimum touch target (44dp mobile, 24dp desktop). */
+/** Enforces WCAG AA minimum touch target (44dp mobile, 24dp desktop).
+ *
+ * @return*/
 fun Modifier.minimumTouchTarget(): Modifier = defaultMinSize(
     minWidth = touchTargetSize,
     minHeight = touchTargetSize,
 )
 
 /**
- * Sets an exact size for a compact IconButton: [desktopSize] on desktop/JS,
- * 44dp on Android/iOS so the tap target meets WCAG AA.
+ * Sets an exact size for a compact IconButton based on the platform
+ *
+ * @return
  */
-fun Modifier.iconButtonSize(desktopSize: Dp = 24.dp): Modifier = size(
-    when (Platform.current) {
-        Platform.Android, Platform.Ios -> 44.dp
-        else -> desktopSize
-    }
-)
+fun Modifier.iconButtonSize(): Modifier = size(touchTargetSize)

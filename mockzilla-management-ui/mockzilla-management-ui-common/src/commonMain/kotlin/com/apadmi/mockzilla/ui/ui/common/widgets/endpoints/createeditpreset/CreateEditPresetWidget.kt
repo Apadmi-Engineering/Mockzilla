@@ -205,7 +205,7 @@ private fun ColumnScope.HeadersSection(
             },
             enabled = canAdd,
             modifier = Modifier
-                .iconButtonSize(28.dp)
+                .iconButtonSize()
                 .pointerHoverIcon(if (canAdd) PointerIcon.Hand else blockedPointerIcon),
         ) {
             Icon(
@@ -525,7 +525,7 @@ private fun BodySection(
 
         IconButton(
             onClick = onToggleExpand,
-            modifier = Modifier.iconButtonSize(40.dp),
+            modifier = Modifier.iconButtonSize(),
         ) {
             Icon(
                 imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,

@@ -488,7 +488,7 @@ private fun ActivePresetBanner(
                 color = colorScheme.onSurfaceVariant,
             )
         }
-        IconButton(onClick = onClear, modifier = Modifier.iconButtonSize(24.dp)) {
+        IconButton(onClick = onClear, modifier = Modifier.iconButtonSize()) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,

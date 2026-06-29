@@ -170,7 +170,7 @@ internal fun GlobalControlsWidgetIdleContent(
 
             if (Platform.current == Platform.Desktop) {
                 IconButton(
-                    modifier = Modifier.iconButtonSize(24.dp),
+                    modifier = Modifier.iconButtonSize(),
                     onClick = onClose
                 ) {
                     Icon(

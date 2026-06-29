@@ -32,4 +32,4 @@ actual inline fun <reified T : InternalViewModel> getViewModel(
     scope = MockzillaUiKoinContext.koin.scopeRegistry.rootScope
 )
 
-actual fun evictDesktopViewModelsForKey(device: Device) = Unit
+actual fun evictDesktopViewModelsForKey(device: Device, keyPrefix: String?) = Unit
