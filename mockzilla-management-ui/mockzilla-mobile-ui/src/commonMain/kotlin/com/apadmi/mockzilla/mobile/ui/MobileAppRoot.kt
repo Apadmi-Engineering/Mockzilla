@@ -41,10 +41,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 
@@ -84,6 +86,8 @@ internal fun MobileAppRoot(
     val selectedStatefulDevice by activeDeviceMonitor.selectedDevice.collectAsState()
     val selectedDevice = selectedStatefulDevice?.device
     val navController = rememberNavController()
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val isOnGlobalControls = currentBackStackEntry?.destination?.hasRoute<Destination.GlobalControls>() == true
     val showBackButton = navController.currentBackStack.collectAsState()
         .value
         .size > 2
@@ -93,7 +97,7 @@ internal fun MobileAppRoot(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(colorScheme.surfaceContainer)
-                .padding(horizontal = 10.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AnimatedVisibility(showBackButton) {
@@ -122,6 +126,8 @@ internal fun MobileAppRoot(
                 )
             }
 
+            Spacer(Modifier.weight(1f))
+
             if (MockzillaBuildConfig.isDevelopmentBuild) {
                 IconButton(
                     onClick = { navController.navigate(Destination.Debug) },
@@ -134,9 +140,8 @@ internal fun MobileAppRoot(
                 }
             }
 
-            Spacer(Modifier.weight(1f))
-
             IconButton(
+                enabled = !isOnGlobalControls,
                 onClick = {
                     navController.navigate(Destination.GlobalControls)
                 }, modifier = Modifier
@@ -146,7 +151,13 @@ internal fun MobileAppRoot(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Globe,
-                    tint = colorScheme.onSurfaceVariant,
+                    tint = colorScheme.onSurfaceVariant.copy(
+                        alpha = if (isOnGlobalControls) {
+                            0.5f
+                        } else {
+                            1f
+                        }
+                    ),
                     contentDescription = strings.common.closeDescription,
                 )
             }

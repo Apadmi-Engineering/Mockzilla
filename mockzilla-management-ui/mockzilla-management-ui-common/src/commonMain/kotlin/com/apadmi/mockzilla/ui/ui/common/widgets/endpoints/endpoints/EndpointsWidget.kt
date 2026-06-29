@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -56,6 +57,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.FilterTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
@@ -135,7 +137,21 @@ private fun EndpointsList(
     modifier: Modifier = Modifier,
 ) = Column(modifier = modifier) {
     Column(modifier = Modifier.padding(12.dp)) {
-        FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FilterTextField(
+                modifier = Modifier.weight(1f),
+                value = state.filter,
+                onFilterUpdate = onFilterUpdate,
+                placeholder = LocalStrings.current.widgets.endpoints.filterPlaceholder
+            )
+            if (Platform.current != Platform.Desktop) {
+                Spacer(Modifier.width(2.dp))
+                RowDensityControls(
+                    selected = state.rowDensity,
+                    onChanged = onRowDensityChanged
+                )
+            }
+        }
         EndpointsHeader(
             displayedCount = state.endpoints.size,
             totalCount = state.allEndpoints.size,
@@ -214,10 +230,13 @@ private fun EndpointsHeader(
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        RowDensityControls(
-            selected = selectedRowDensity,
-            onChanged = onRowDensityChanged
-        )
+
+        if (Platform.current == Platform.Desktop) {
+            RowDensityControls(
+                selected = selectedRowDensity,
+                onChanged = onRowDensityChanged
+            )
+        }
     }
 }
 
@@ -273,7 +292,7 @@ private fun EndpointRow(
                 EndpointRowChips(endpoint = endpoint)
             }
         }
-        if (endpoint.fail) {
+        if (endpoint.fail && Platform.current == Platform.Desktop) {
             StatusChip(label = strings.widgets.endpoints.forced, tone = ChipTone.Err)
         }
         endpoint.delayMs?.let { delay ->
@@ -374,26 +393,6 @@ private fun EndpointsWidgetContent(
         }
     }
 }
-
-@Composable
-private fun FilterTextField(
-    value: String,
-    onFilterUpdate: (String) -> Unit,
-    strings: Strings = LocalStrings.current
-) = CustomTextField(
-    modifier = Modifier.fillMaxWidth(),
-    value = value,
-    onValueChange = onFilterUpdate,
-    placeholderText = strings.widgets.endpoints.filterPlaceholder,
-    leadingIcon = {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceMuted,
-        )
-    },
-    singleLine = true,
-)
 
 @Preview
 @Composable

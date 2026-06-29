@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -20,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -144,7 +147,7 @@ internal fun GlobalControlsWidgetIdleContent(
                     color = colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                FlowRow(itemVerticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = strings.widgets.globalControls.subtitle,
                         style = MaterialTheme.typography.bodySmall,
@@ -160,7 +163,6 @@ internal fun GlobalControlsWidgetIdleContent(
             }
 
             BaseButton(
-                modifier = Modifier.heightIn(min = 32.dp),
                 label = strings.widgets.globalControls.resetAllLabel,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Sm,
@@ -291,48 +293,45 @@ private fun ForceFailureCard(
 @Composable
 private fun EndpointStatusRow(
     endpoint: EndpointsViewModel.State.EndpointConfig,
-    strings: Strings
+    strings: Strings,
+    colorScheme: ColorScheme = MaterialTheme.colorScheme
+) = FlowRow(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
+        .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+        .padding(horizontal = 12.dp, vertical = 10.dp),
+    horizontalArrangement = Arrangement.spacedBy(4.dp),
+    verticalArrangement = Arrangement.spacedBy(4.dp)
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = endpoint.name,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            color = colorScheme.onSurface,
-            modifier = Modifier.weight(1f)
-        )
+    Text(
+        text = endpoint.name,
+        style = MaterialTheme.typography.bodyMedium,
+        fontWeight = FontWeight.Bold,
+        color = colorScheme.onSurface
+    )
 
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            if (endpoint.fail) {
-                StatusChip(label = strings.widgets.globalControls.forcedStatus, color = colorScheme.error)
+    Spacer(Modifier.weight(1f))
+
+    if (endpoint.fail) {
+        StatusChip(
+            label = strings.widgets.globalControls.forcedStatus,
+            color = colorScheme.error
+        )
+    }
+    endpoint.overriddenProperties.forEach { property ->
+        StatusChip(
+            label = when (property) {
+                EndpointProperties.Delay -> strings.widgets.globalControls.latencyStatus
+                EndpointProperties.Body -> strings.widgets.globalControls.bodyStatus
+                EndpointProperties.Headers -> strings.widgets.globalControls.headersStatus
+                EndpointProperties.Status -> strings.widgets.globalControls.statusStatus
+            },
+            color = when (property) {
+                EndpointProperties.Delay -> colorScheme.warning.primary
+                else -> colorScheme.primary
             }
-            endpoint.overriddenProperties.forEach { property ->
-                StatusChip(
-                    label = when (property) {
-                        EndpointProperties.Delay -> strings.widgets.globalControls.latencyStatus
-                        EndpointProperties.Body -> strings.widgets.globalControls.bodyStatus
-                        EndpointProperties.Headers -> strings.widgets.globalControls.headersStatus
-                        EndpointProperties.Status -> strings.widgets.globalControls.statusStatus
-                    },
-                    color = when (property) {
-                        EndpointProperties.Delay -> colorScheme.warning.primary
-                        else -> colorScheme.primary
-                    }
-                )
-            }
-        }
+        )
     }
 }
 
