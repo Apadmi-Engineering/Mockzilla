@@ -48,12 +48,12 @@ private fun RowDensityButton(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .minimumTouchTarget()
+            .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(4.dp))
             .clickable(onClick = onClick),
     ) {
         Text(
             text = label,
             modifier = Modifier
-                .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(4.dp))
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             style = MaterialTheme.typography.labelSmall,
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,

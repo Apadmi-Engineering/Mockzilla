@@ -65,6 +65,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.utils.Platform
 
 import org.koin.core.parameter.parametersOf
 
@@ -141,10 +142,13 @@ private fun EndpointsList(
             selectedRowDensity = state.rowDensity,
             onRowDensityChanged = onRowDensityChanged,
         )
-        GlobalControlsButton(
-            isOpen = false,
-            onClick = onGlobalControlsClicked
-        )
+
+        if (Platform.current == Platform.Desktop) {
+            GlobalControlsButton(
+                isOpen = false,
+                onClick = onGlobalControlsClicked
+            )
+        }
     }
     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
     if (state.endpoints.isEmpty()) {
@@ -202,7 +206,7 @@ private fun EndpointsHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
     ) {
         Text(
             text = "$displayedCount/$totalCount",
