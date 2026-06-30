@@ -61,7 +61,7 @@ private fun RowDensityButton(
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .minimumTouchTarget()
+            .minimumTouchTarget(isIcon = true)
             .border(width = 1.dp, color = borderColor, shape = RoundedCornerShape(4.dp))
             .clickable(onClick = onClick),
     ) {

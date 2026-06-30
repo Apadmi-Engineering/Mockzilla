@@ -11,6 +11,7 @@ import org.jetbrains.compose.web.renderComposable
 import org.jetbrains.skiko.wasm.onWasmReady
 import org.koin.dsl.module
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLStyleElement
 
 import kotlinx.browser.document
 
@@ -35,6 +36,21 @@ fun launchManagementUi(rootId: String = "mockzilla-ui-root") {
 }
 
 private fun createMockzillaUi(rootId: String): HTMLElement {
+    // Inject responsive width rule via media query
+    val styleEl = (document.createElement("style") as HTMLStyleElement).apply {
+        textContent = """
+            #$rootId {
+                width: 600px;
+            }
+            @media (max-width: 1024px) {
+                #$rootId {
+                    width: 100% !important;
+                }
+            }
+        """.trimIndent()
+    }
+    document.head?.appendChild(styleEl)
+
     val div = (document.createElement("div") as HTMLElement).apply {
         id = rootId
     }
@@ -44,9 +60,13 @@ private fun createMockzillaUi(rootId: String): HTMLElement {
         position = "fixed"
         bottom = "0"
         left = "0"
-        width = "90%"
         height = "90%"
         zIndex = "9999"  // ensures it's on top
+        borderTopLeftRadius = "16px"
+        borderTopRightRadius = "16px"
+        boxShadow = "4px -4px 16px rgba(0, 0, 0, 0.4)"
+        overflowX = "hidden"
+        overflowY = "hidden"
     }
 
     // Append to the document body

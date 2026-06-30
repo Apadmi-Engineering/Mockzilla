@@ -211,6 +211,7 @@ private fun ColumnScope.HeadersSection(
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = strings.addHeaderButton,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(14.dp),
             )
         }
