@@ -50,10 +50,9 @@ internal class EndpointDetailsViewModel(
 
     internal fun retry() = viewModelScope.launch { reloadData() }
 
-    @Suppress("TOO_LONG_FUNCTION")
     private suspend fun reloadData() {
-        val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
-            endpoint.firstOrNull { it.key == key }
+        val endpointResult = endpointsService.fetchAllEndpointConfigs(device).map { endpoints ->
+            endpoints.firstOrNull { it.key == key }
         }
 
         key ?: run {
@@ -61,51 +60,60 @@ internal class EndpointDetailsViewModel(
             return
         }
 
-        state.value = endpoint.fold(
-            onSuccess = { config ->
-                config?.let {
-                    endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
-                        onSuccess = { presets ->
-                            val currentState = state.value
-                            val filter = (currentState as? State.Endpoint)?.presets?.filter
-                            State.Endpoint(
-                                config = config,
-                                fail = config.shouldFail,
-                                delayMillis = config.delayMs,
-                                isLoading = false,
-                                layoutMode = (currentState as? State.Endpoint)?.layoutMode
-                                    ?: RowDensity.Compact,
-                                presets = State.Endpoint.Presets(
-                                    appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
-                                        // Remove all this once deprecated properties are removed
-                                        it.response == config.deriveLegacyPreset()?.response
-                                    } ?: config.deriveLegacyPreset(),
-                                    visiblePresets = presets.presets.filter(filter),
-                                    allPresets = listOfNotNull(
-                                        config.appliedPresetOverride?.takeIf { it.isManagementUiDefinedCustomPreset }
-                                    ) + presets.presets,
-                                    filter = filter ?: ""
-                                ),
-                            )
-                        },
-                        onFailure = {
-                            Event.GenericError(
-                                GenericErrorableOperation.FetchDashboardOptionsConfig,
-                                it
-                            )
-                            State.FailedToLoad
-                        }
+        val config = endpointResult.getOrElse {
+            eventBus.send(
+                Event.GenericError(
+                    GenericErrorableOperation.FetchEndpointConfigs,
+                    it
+                )
+            )
+            state.value = State.FailedToLoad
+            return
+        } ?: run {
+            state.value = State.FailedToLoad
+            return
+        }
+
+        val currentState = state.value as? State.Endpoint
+        state.value = State.Endpoint(
+            config = config,
+            fail = config.shouldFail,
+            delayMillis = config.delayMs,
+            isLoading = false,
+            layoutMode = currentState?.layoutMode ?: RowDensity.Compact,
+            presets = currentState?.presets ?: State.Endpoint.Presets.Loading
+        )
+
+        loadPresets(config)
+    }
+
+    private suspend fun loadPresets(config: SerializableEndpointConfig) {
+        endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
+            onSuccess = { presets ->
+                val currentState = state.value as? State.Endpoint ?: return
+                val filter = (currentState.presets as? State.Endpoint.Presets.Populated)?.filter
+                state.value = currentState.copy(
+                    presets = State.Endpoint.Presets.Populated(
+                        appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
+                            it.response == config.deriveLegacyPreset()?.response
+                        } ?: config.deriveLegacyPreset(),
+                        visiblePresets = presets.presets.filter(filter),
+                        allPresets = listOfNotNull(
+                            config.appliedPresetOverride?.takeIf { it.isManagementUiDefinedCustomPreset }
+                        ) + presets.presets,
+                        filter = filter ?: ""
                     )
-                } ?: State.FailedToLoad
+                )
             },
             onFailure = {
+                val currentState = state.value as? State.Endpoint ?: return
                 eventBus.send(
                     Event.GenericError(
-                        GenericErrorableOperation.FetchEndpointConfigs,
+                        GenericErrorableOperation.FetchDashboardOptionsConfig,
                         it
                     )
                 )
-                State.FailedToLoad
+                state.value = currentState.copy(presets = State.Endpoint.Presets.Error)
             }
         )
     }
@@ -175,9 +183,10 @@ internal class EndpointDetailsViewModel(
     fun onPresetSelected(
         dashboardOverridePreset: DashboardOverridePreset
     ) = onPropertyChanged({
-        copy(
-            presets = presets.copy(dashboardOverridePreset),
-        )
+        val newPresets = (presets as? State.Endpoint.Presets.Populated)?.let {
+            it.copy(appliedPreset = dashboardOverridePreset)
+        } ?: presets
+        copy(presets = newPresets)
     }, { config, device ->
         viewModelScope.launch {
             handleResult(
@@ -194,12 +203,13 @@ internal class EndpointDetailsViewModel(
     })
 
     fun onFilterPresetChanged(filter: String): Unit = onPropertyChanged({
-        copy(
-            presets = presets.copy(
+        val newPresets = (presets as? State.Endpoint.Presets.Populated)?.let {
+            it.copy(
                 filter = filter,
-                visiblePresets = presets.allPresets.filter(filter)
+                visiblePresets = it.allPresets.filter(filter)
             )
-        )
+        } ?: presets
+        copy(presets = newPresets)
     }, { _, _ -> })
 
     fun onRowDensityChanged(layoutMode: RowDensity) = onPropertyChanged({
@@ -231,18 +241,22 @@ internal class EndpointDetailsViewModel(
             val layoutMode: RowDensity,
             val presets: Presets,
         ) : State() {
-            /**
-             * @property appliedPreset
-             * @property visiblePresets
-             * @property allPresets
-             * @property filter
-             */
-            data class Presets(
-                val appliedPreset: DashboardOverridePreset?,
-                val visiblePresets: List<DashboardOverridePreset>,
-                val allPresets: List<DashboardOverridePreset>,
-                val filter: String
-            )
+            sealed class Presets {
+                data object Loading : Presets()
+                data object Error : Presets()
+                /**
+                 * @property appliedPreset
+                 * @property visiblePresets
+                 * @property allPresets
+                 * @property filter
+                 */
+                data class Populated(
+                    val appliedPreset: DashboardOverridePreset?,
+                    val visiblePresets: List<DashboardOverridePreset>,
+                    val allPresets: List<DashboardOverridePreset>,
+                    val filter: String
+                ) : Presets()
+            }
         }
     }
 }
