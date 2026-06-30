@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -54,12 +54,14 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.State
+import com.apadmi.mockzilla.ui.utils.Platform
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
 
 @Composable
 fun GlobalControlsWidget(device: Device, onClose: () -> Unit = {}) {
-    val viewModel = getViewModel<GlobalControlsViewModel>(key = device.toString()) {
+    val viewModel = getViewModel<GlobalControlsViewModel>(device = device) {
         parametersOf(device)
     }
     val focusManager = LocalFocusManager.current
@@ -158,7 +160,7 @@ internal fun GlobalControlsWidgetIdleContent(
             }
 
             BaseButton(
-                modifier = Modifier.height(32.dp),
+                modifier = Modifier.heightIn(min = 32.dp),
                 label = strings.widgets.globalControls.resetAllLabel,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Sm,
@@ -166,16 +168,18 @@ internal fun GlobalControlsWidgetIdleContent(
                 onClick = onResetClicked
             )
 
-            IconButton(
-                modifier = Modifier.size(24.dp),
-                onClick = onClose
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = strings.common.closeDescription,
-                    tint = colorScheme.onSurfaceFaint,
-                    modifier = Modifier.size(16.dp)
-                )
+            if (Platform.current == Platform.Desktop) {
+                IconButton(
+                    modifier = Modifier.iconButtonSize(),
+                    onClick = onClose
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = strings.common.closeDescription,
+                        tint = colorScheme.onSurfaceFaint,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
         }
 

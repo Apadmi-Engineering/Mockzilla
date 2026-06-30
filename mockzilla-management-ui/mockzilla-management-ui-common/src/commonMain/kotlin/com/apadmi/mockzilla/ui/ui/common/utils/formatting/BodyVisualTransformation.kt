@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.text.SpanStyle
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonHighlight
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 internal object BodyVisualTransformation {
     internal fun isBodyTooLarge(body: String?) = body != null && body.length >= 25_000
@@ -15,10 +16,11 @@ internal object BodyVisualTransformation {
         val colorScheme = MaterialTheme.colorScheme
 
         val highlight = colorScheme.jsonHighlight
+        val onSurfaceMuted = colorScheme.onSurfaceMuted
         return remember(mode, highlight, colorScheme.onSurface, colorScheme.onSurfaceVariant) {
             when (mode) {
                 EditorMode.Json -> JsonBodyVisualTransformation(
-                    comment = SpanStyle(color = colorScheme.onSurface.copy(alpha = 0.5f)),
+                    comment = SpanStyle(color = onSurfaceMuted),
                     brace = SpanStyle(color = colorScheme.onSurfaceVariant),
                     comma = SpanStyle(color = colorScheme.onSurfaceVariant),
                     colon = SpanStyle(color = colorScheme.onSurfaceVariant),
@@ -34,7 +36,7 @@ internal object BodyVisualTransformation {
                     tagName = SpanStyle(color = highlight.keyColor),
                     attributeName = SpanStyle(color = highlight.stringColor),
                     attributeValue = SpanStyle(color = highlight.numberColor),
-                    comment = SpanStyle(color = colorScheme.onSurface.copy(alpha = 0.5f)),
+                    comment = SpanStyle(color = onSurfaceMuted),
                     default = SpanStyle(color = colorScheme.onSurface),
                 )
 

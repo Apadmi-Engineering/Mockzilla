@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -86,10 +87,13 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.components.editor.FindableEditorTextField
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
+import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
@@ -114,23 +118,25 @@ private fun ColumnScope.HeadersSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .heightIn(min = 48.dp)
                 .padding(start = 16.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 text = header.key,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.jsonKey,
+                modifier = Modifier.weight(1f).padding(vertical = 4.dp),
             )
+
             Row(
                 modifier = Modifier.weight(3f),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = ":  ${header.value}",
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = header.value,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = LocalMonoFontFamily.current),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
                 )
@@ -191,39 +197,21 @@ private fun ColumnScope.HeadersSection(
             onValueChange = { localValue = it },
         )
         val canAdd = localKey.isNotEmpty() && localValue.isNotEmpty()
-        Box(
+        IconButton(
+            onClick = {
+                onAddHeader(localKey, localValue)
+                localKey = ""
+                localValue = ""
+            },
+            enabled = canAdd,
             modifier = Modifier
-                .size(28.dp)
-                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(6.dp))
-                .border(
-                    width = 1.dp,
-                    color = if (canAdd) {
-                        MaterialTheme.colorScheme.outline
-                    } else {
-                        MaterialTheme.colorScheme.outline.copy(alpha = 0.8f)
-                    },
-                    shape = RoundedCornerShape(6.dp),
-                )
-                .clickable(
-                    enabled = canAdd,
-                    onClick = {
-                        onAddHeader(localKey, localValue)
-                        localKey = ""
-                        localValue = ""
-                    }
-                )
+                .iconButtonSize()
                 .pointerHoverIcon(if (canAdd) PointerIcon.Hand else blockedPointerIcon),
-            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = strings.addHeaderButton,
-                tint = if (canAdd) {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-                },
-                modifier = Modifier.size(14.dp)
+                modifier = Modifier.size(14.dp),
             )
         }
     }
@@ -366,10 +354,11 @@ fun CreateEditPresetWidget(
     onCancel: () -> Unit = {},
     onSave: () -> Unit = {},
 ) {
-    val vmKey = "CreateEditPresetViewModel-${activeEndpoint.raw}-$device"
-    val cleanupVm = { evictDesktopViewModelsForKey(key = vmKey) }
+    val keyPrefix = "CreateEditPresetViewModel-${activeEndpoint.raw}"
+    val cleanupVm = { evictDesktopViewModelsForKey(device = device, keyPrefix = keyPrefix) }
     val viewModel = getViewModel<CreateEditPresetViewModel>(
-        key = vmKey
+        device = device,
+        keyPrefix = keyPrefix
     ) {
         parametersOf(
             activeEndpoint,
@@ -536,7 +525,7 @@ private fun BodySection(
 
         IconButton(
             onClick = onToggleExpand,
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.iconButtonSize(),
         ) {
             Icon(
                 imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
@@ -758,6 +747,7 @@ private fun BodyTypeToggle(
             val isHovered by interactionSource.collectIsHoveredAsState()
             Box(
                 modifier = Modifier
+                    .minimumTouchTarget()
                     .clip(chipShape)
                     .background(
                         color = when {

@@ -72,7 +72,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 
@@ -313,7 +312,7 @@ private fun ConnectionCard(
                 HorizontalDivider(Modifier.weight(1f), color = colorScheme.outline)
                 Text(
                     text = strings.widgets.deviceConnection.connectAutomatically,
-                    color = colorScheme.onSurfaceFaint,
+                    color = colorScheme.onSurfaceMuted,
                     style = MaterialTheme.typography.labelMedium,
                 )
                 HorizontalDivider(Modifier.weight(1f), color = colorScheme.outline)

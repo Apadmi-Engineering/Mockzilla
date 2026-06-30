@@ -66,6 +66,7 @@ import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
@@ -74,6 +75,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.minifyJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.typeFormat
+import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
 
@@ -168,7 +170,7 @@ internal fun PresetCard(
         animationSpec = tween(200),
         label = "chevron",
     )
-    val chevronTint = if (hasExpandableContent) iconTint else colorScheme.onSurface.copy(alpha = 0.3f)
+    val chevronTint = if (hasExpandableContent) iconTint else colorScheme.onSurfaceFaint
 
     Column(
         Modifier.fillMaxWidth()
@@ -230,6 +232,7 @@ internal fun PresetCard(
                 ) {
                     Box(
                         modifier = Modifier
+                            .minimumTouchTarget()
                             .fillMaxHeight()
                             .clip(RoundedCornerShape(6.dp))
                             .clickable { onEdit() }
@@ -272,20 +275,18 @@ internal fun PresetCard(
                     )
                 }
 
-                PresetCardVariant.Selectable -> Box(
+                PresetCardVariant.Selectable -> Tag(
                     modifier = Modifier
+                        .minimumTouchTarget()
                         .clip(RoundedCornerShape(6.dp))
-                        .clickable { onClicked(preset) }
-                ) {
-                    Tag(
-                        label = strings.applyLabel,
-                        textColor = colorScheme.onSurface,
-                        borderColor = colorScheme.outline,
-                        backgroundColor = colorScheme.surfaceContainer,
-                        shape = RoundedCornerShape(6.dp),
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                    )
-                }
+                        .clickable { onClicked(preset) },
+                    label = strings.applyLabel,
+                    textColor = colorScheme.onSurface,
+                    borderColor = colorScheme.outline,
+                    backgroundColor = colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(6.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                )
             }
         }
 

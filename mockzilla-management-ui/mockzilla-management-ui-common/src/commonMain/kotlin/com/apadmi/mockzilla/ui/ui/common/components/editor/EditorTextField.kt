@@ -329,7 +329,7 @@ private fun EditorContent(
             Icon(
                 imageVector = Icons.DragCorner,
                 contentDescription = null,
-                tint = colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                tint = colorScheme.onSurfaceMuted,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .size(16.dp)

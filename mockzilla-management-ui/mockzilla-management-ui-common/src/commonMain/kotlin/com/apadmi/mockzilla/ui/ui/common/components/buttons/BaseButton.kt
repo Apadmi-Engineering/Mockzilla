@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 enum class ButtonVariant {
     Danger, Ghost, Outline, Soft, Solid
@@ -81,7 +81,7 @@ fun BaseButton(
 
     val borderTarget = when (variant) {
         ButtonVariant.Ghost -> Color.Transparent
-        ButtonVariant.Outline -> if (isHovered && enabled) colorScheme.outlineVariant else colorScheme.outline
+        ButtonVariant.Outline -> contentColor ?: if (isHovered && enabled) colorScheme.outlineVariant else colorScheme.outline
         ButtonVariant.Solid -> Color.Transparent
         ButtonVariant.Soft -> colorScheme.outline
         ButtonVariant.Danger -> colorScheme.error.copy(alpha = 0.3f)
@@ -97,7 +97,7 @@ fun BaseButton(
     val iconSize = if (size == ButtonSize.Lg) 18.dp else 14.dp
 
     Button(
-        modifier = modifier.defaultMinSize(minHeight = 1.dp).alpha(if (enabled) 1f else 0.5f),
+        modifier = modifier.minimumTouchTarget().alpha(if (enabled) 1f else 0.5f),
         onClick = onClick,
         enabled = enabled,
         shape = RoundedCornerShape(6.dp),

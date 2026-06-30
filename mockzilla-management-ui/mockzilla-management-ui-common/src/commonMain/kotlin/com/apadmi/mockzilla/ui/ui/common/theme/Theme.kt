@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 
 import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
-import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.ALPHA_MUTED
 import com.apadmi.mockzilla.ui.utils.Platform
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
@@ -158,7 +157,7 @@ internal val ColorScheme.jsonHighlight: JsonHighlightColors
         stringColor = success.primary,
         numberColor = tertiary,
         boolColor = warning.primary,
-        nullColor = onSurface.copy(alpha = ALPHA_MUTED)
+        nullColor = onSurfaceMuted
     )
 
 @get:Composable

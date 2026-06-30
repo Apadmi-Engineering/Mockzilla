@@ -4,7 +4,6 @@ package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,14 +12,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +32,7 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.assets.CircleCheck
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
@@ -89,7 +88,7 @@ internal fun ForceFailureBanner(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(64.dp)
+            .heightIn(min = 64.dp)
             .clip(shape)
             .background(color = colorScheme.background)
             .border(
@@ -144,29 +143,14 @@ internal fun ForceFailureBanner(
 
                 if (state != ForceFailureBannerState.Normal) {
                     val successColor = colorScheme.success.primary
-                    val resumeShape = RoundedCornerShape(resumeButtonCornerRadius.dp)
-                    Row(
-                        modifier = Modifier
-                            .clip(resumeShape)
-                            .border(1.dp, successColor, resumeShape)
-                            .clickable { onRestoreApiClicked() }
-                            .padding(horizontal = 12.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = null,
-                            tint = successColor,
-                            modifier = Modifier.size(14.dp),
-                        )
-                        Text(
-                            text = strings.widgets.globalControls.restoreButtonLabel,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = successColor,
-                            fontWeight = FontWeight.Medium,
-                        )
-                    }
+                    BaseButton(
+                        label = strings.widgets.globalControls.restoreButtonLabel,
+                        leadingIcon = Icons.CircleCheck,
+                        contentColor = successColor,
+                        size = ButtonSize.Sm,
+                        variant = ButtonVariant.Outline,
+                        onClick = onRestoreApiClicked,
+                    )
                 }
             }
         }

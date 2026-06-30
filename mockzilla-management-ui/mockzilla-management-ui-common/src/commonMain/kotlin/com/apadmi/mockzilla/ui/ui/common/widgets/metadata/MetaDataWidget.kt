@@ -44,6 +44,7 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionHeader
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import org.jetbrains.compose.resources.decodeToImageBitmap
 import org.koin.core.parameter.parametersOf
 
@@ -63,7 +64,7 @@ private fun RunTarget.label(strings: Strings) = when (this) {
 @Composable
 fun MetaDataWidget(device: Device) {
     val viewModel =
-        getViewModel<MetaDataWidgetViewModel>(key = device.toString()) { parametersOf(device) }
+        getViewModel<MetaDataWidgetViewModel>(device = device) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     MetaDataWidgetContent(state, device)
@@ -157,7 +158,7 @@ internal fun MetaDataRow(
             textAlign = TextAlign.Start,
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            color = MaterialTheme.colorScheme.onSurfaceMuted
         )
         Text(
             modifier = Modifier.weight(1f),
@@ -215,7 +216,7 @@ private fun SessionRow(label: String, value: String) = Row(
         text = label,
         style = MaterialTheme.typography.bodySmall,
         fontFamily = FontFamily.Monospace,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        color = MaterialTheme.colorScheme.onSurfaceMuted
     )
     Text(
         text = value,
@@ -269,7 +270,7 @@ private fun AppHeader(
             text = appPackage,
             style = MaterialTheme.typography.bodySmall,
             fontFamily = FontFamily.Monospace,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
             maxLines = 2
         )
     }

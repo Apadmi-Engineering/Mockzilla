@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.hoverable
@@ -19,13 +18,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Search
@@ -43,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -63,7 +59,10 @@ import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
@@ -92,10 +91,10 @@ private fun RowDensity.verticalPadding(): Dp = when (this) {
 @Composable
 fun EndpointsWidget(
     device: Device,
-    onEndpointClicked: (Key) -> Unit,
+    onEndpointClicked: (Key?) -> Unit,
     onGlobalControlsClicked: () -> Unit
 ) {
-    val viewModel = getViewModel<EndpointsViewModel>(key = device.toString()) {
+    val viewModel = getViewModel<EndpointsViewModel>(device = device) {
         parametersOf(device)
     }
     val state by viewModel.state.collectAsState()
@@ -107,8 +106,13 @@ fun EndpointsWidget(
         onFilterUpdate = viewModel::onFilterChanged,
         onRowDensityChanged = viewModel::onRowDensityChanged,
         onEndpointClicked = { key ->
-            selectedKey = key
-            onEndpointClicked(key)
+            if (selectedKey == key) {
+                selectedKey = null
+                onEndpointClicked(null)
+            } else {
+                selectedKey = key
+                onEndpointClicked(key)
+            }
         },
         onGlobalControlsClicked = onGlobalControlsClicked
     )
@@ -173,38 +177,18 @@ private fun EndpointsList(
     }
 }
 
-@Suppress("MAGIC_NUMBER")
 @Composable
 private fun GlobalControlsButton(
     isOpen: Boolean,
     strings: Strings = LocalStrings.current,
     onClick: () -> Unit
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    val shape = RoundedCornerShape(8.dp)
-
-    Row(
-        modifier = Modifier
-            .clip(shape)
-            .background(if (isOpen) colorScheme.primary else colorScheme.surface)
-            .border(1.dp, if (isOpen) colorScheme.primary else colorScheme.outline, shape)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Tune,
-            contentDescription = null,
-            tint = if (isOpen) colorScheme.onPrimary else colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(16.dp),
-        )
-        Text(
-            text = strings.widgets.globalControls.title,
-            style = MaterialTheme.typography.labelMedium,
-            color = if (isOpen) colorScheme.onPrimary else colorScheme.onSurface,
-        )
-    }
+    BaseButton(
+        variant = if (isOpen) ButtonVariant.Solid else ButtonVariant.Outline,
+        leadingIcon = Icons.Filled.Tune,
+        label = strings.widgets.globalControls.title,
+        onClick = onClick,
+    )
 }
 
 @Composable
@@ -298,7 +282,7 @@ private fun EndpointRow(
         Icon(
             imageVector = Icons.Default.ChevronRight,
             contentDescription = null,
-            tint = cs.onSurface.copy(alpha = 0.4f),
+            tint = cs.onSurfaceFaint,
         )
     }
     HorizontalDivider(color = cs.onSurface.copy(alpha = 0.12f))
@@ -322,7 +306,7 @@ private fun EndpointRowChips(
         Text(
             text = strings.widgets.endpoints.noOverrides,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
         )
         return
     }

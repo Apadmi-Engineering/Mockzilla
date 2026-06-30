@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -59,6 +60,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 @Composable
 internal fun FindableEditorTextField(
@@ -246,7 +248,7 @@ private fun FindReplaceBar(
             ) {
                 IconButton(
                     onClick = onToggleReplaceMode,
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.iconButtonSize(),
                 ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowRight,
@@ -299,7 +301,7 @@ private fun FindReplaceBar(
                         },
                 )
 
-                IconButton(onClick = onPrev, modifier = Modifier.size(28.dp)) {
+                IconButton(onClick = onPrev, modifier = Modifier.iconButtonSize()) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowUp,
                         contentDescription = strings.previousMatchDescription,
@@ -307,7 +309,7 @@ private fun FindReplaceBar(
                         tint = colorScheme.onSurfaceVariant,
                     )
                 }
-                IconButton(onClick = onNext, modifier = Modifier.size(28.dp)) {
+                IconButton(onClick = onNext, modifier = Modifier.iconButtonSize()) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = strings.nextMatchDescription,
@@ -321,7 +323,7 @@ private fun FindReplaceBar(
                         .width(1.dp)
                         .background(colorScheme.outlineVariant),
                 )
-                IconButton(onClick = onClose, modifier = Modifier.size(28.dp)) {
+                IconButton(onClick = onClose, modifier = Modifier.iconButtonSize()) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = strings.closeFindBarDescription,
@@ -356,7 +358,7 @@ private fun FindReplaceBar(
                         leadingIcon = Icons.Default.FindReplace,
                         variant = ButtonVariant.Soft,
                         size = ButtonSize.Sm,
-                        modifier = Modifier.height(30.dp),
+                        modifier = Modifier.heightIn(min = 30.dp),
                         onClick = onReplace,
                     )
                     BaseButton(
@@ -364,7 +366,7 @@ private fun FindReplaceBar(
                         leadingIcon = Icons.Default.DoneAll,
                         variant = ButtonVariant.Soft,
                         size = ButtonSize.Sm,
-                        modifier = Modifier.height(30.dp),
+                        modifier = Modifier.heightIn(min = 30.dp),
                         onClick = onReplaceAll,
                     )
                 }

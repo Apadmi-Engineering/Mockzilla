@@ -143,7 +143,7 @@ internal fun MobileAppRoot(
 
 @Composable
 private fun DeviceContent(device: Device, navController: NavHostController) {
-    val viewModel = getViewModel<DeviceRootViewModel>(key = device.toString()) { parametersOf(device) }
+    val viewModel = getViewModel<DeviceRootViewModel>(device = device) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     when (val currentState = state) {
@@ -207,9 +207,9 @@ private fun ConnectedState(
                 ) {
                     EndpointDetailsWidget(
                         device = currentState.activeDevice.device,
-                        activeEndpoint = EndpointConfiguration.Key(
-                            backStackEntry.toRoute<Destination.EndpointDetails>().key,
-                        ),
+                        activeEndpoint = backStackEntry.toRoute<Destination.EndpointDetails>().key?.let {
+                            EndpointConfiguration.Key(it)
+                        },
                         onCreatePreset = {
                             navController.navigate(Destination.CreateEditPreset(it.raw, true))
                         },
@@ -225,7 +225,7 @@ private fun ConnectedState(
                     EndpointsWidget(
                         device = currentState.activeDevice.device,
                         onEndpointClicked = {
-                            navController.navigate(Destination.EndpointDetails(it.raw))
+                            navController.navigate(Destination.EndpointDetails(it?.raw))
                         },
                         onGlobalControlsClicked = {
                             navController.navigate(Destination.GlobalControls)
@@ -249,6 +249,7 @@ private fun ConnectedState(
                         ),
                         creatingNewPreset = backStackEntry.toRoute<Destination.CreateEditPreset>().creatingNewPreset,
                         onSave = navController::navigateUp,
+                        onCancel = navController::navigateUp,
                     )
                 }
             }

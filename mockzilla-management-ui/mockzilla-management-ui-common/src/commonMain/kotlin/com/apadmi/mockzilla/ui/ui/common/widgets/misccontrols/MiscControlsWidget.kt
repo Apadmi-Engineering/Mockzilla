@@ -1,8 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,14 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,8 +25,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +34,7 @@ import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.ui.common.components.CustomSlider
 import com.apadmi.mockzilla.ui.ui.common.components.CustomToggle
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionHeader
@@ -53,6 +47,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.ScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 import org.koin.core.parameter.parametersOf
 
@@ -76,7 +71,7 @@ private data object PresentationModeScaleFactor {
 fun MiscControlsWidget(
     device: Device?
 ) {
-    val viewModel = getViewModel<MiscControlsViewModel>(key = device?.toString()) { parametersOf(device) }
+    val viewModel = getViewModel<MiscControlsViewModel>(device = device) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     MiscControlsWidgetContent(
@@ -184,6 +179,11 @@ private fun DarkModeSettings(
 
     Row(
         modifier = Modifier.fillMaxWidth()
+            .toggleable(
+                value = LocalForceDarkMode.current,
+                onValueChange = { checked -> setForceDarkMode(checked) },
+                role = Role.Switch,
+            )
             .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -244,38 +244,18 @@ private fun PresentationModeSettings(
             modifier = Modifier.fillMaxWidth().padding(end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Slider(
+            CustomSlider(
                 modifier = Modifier.weight(1f),
                 value = presentationModeScaleFactor,
-                onValueChange = { onPresentationModeScaleFactorChange(it) },
                 steps = 5,
+                onValueChange = { onPresentationModeScaleFactorChange(it) },
                 valueRange = PresentationModeScaleFactor.MIN..PresentationModeScaleFactor.MAX,
-                thumb = {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clip(CircleShape)
-                            .background(colorScheme.primary)
-                    )
-                },
-                track = { state ->
-                    SliderDefaults.Track(
-                        sliderState = state,
-                        modifier = Modifier.height(2.dp),
-                        colors = SliderDefaults.colors(
-                            activeTrackColor = colorScheme.primary,
-                            inactiveTrackColor = colorScheme.outline,
-                            activeTickColor = Color.Transparent,
-                            inactiveTickColor = Color.Transparent,
-                        ),
-                    )
-                }
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = strings.widgets.miscControls.fontScaleLabel(presentationModeScaleFactor),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                color = MaterialTheme.colorScheme.onSurfaceMuted
             )
         }
     }
