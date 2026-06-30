@@ -79,11 +79,9 @@ import com.apadmi.mockzilla.ui.ui.common.components.ErrorRetry
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.components.editor.FindableEditorTextField
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
@@ -434,7 +432,7 @@ internal fun CreateEditPresetWidgetContent(
         when (state) {
             State.FailedToLoad -> Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
                 ErrorRetry(onRetry = onRetry)
-                BaseButton(
+                CustomButton(
                     variant = ButtonVariant.Ghost,
                     label = strings.widgets.createEditPreset.cancel,
                     onClick = onCancel
@@ -515,11 +513,11 @@ private fun BodySection(
             )
         }
 
-        CustomOutlineButton(
+        CustomButton(
             leadingIcon = Icons.Default.AlignVerticalTop,
             label = strings.responseBodyFormat,
             enabled = !isJsonError && isFormattable,
-            variant = OutlineButtonVariant.Secondary,
+            variant = ButtonVariant.Outline,
             onClick = onFormatResponseBody,
             modifier = Modifier.alpha(if (isFormattable) 1f else 0f)
         )
@@ -607,12 +605,12 @@ private fun PanelHeader(
                 color = MaterialTheme.colorScheme.onSurfaceMuted,
             )
         }
-        CustomOutlineButton(
+        CustomButton(
             label = strings.widgets.createEditPreset.cancel,
-            variant = OutlineButtonVariant.Secondary,
+            variant = ButtonVariant.Outline,
             onClick = onCancel,
         )
-        BaseButton(
+        CustomButton(
             label = strings.widgets.createEditPreset.save,
             variant = ButtonVariant.Solid,
             size = ButtonSize.Md,

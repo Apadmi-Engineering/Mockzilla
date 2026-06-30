@@ -28,8 +28,8 @@ import com.apadmi.mockzilla.ui.ui.common.components.NoPresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.endpointDetailsWidgetSuccessState
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.mockPresets
@@ -73,11 +73,11 @@ internal fun ActivePresetCard(
                 text = strings.presets.activePresetTitle,
                 style = MaterialTheme.typography.titleMedium
             )
-            CustomOutlineButton(
+            CustomButton(
                 label = strings.presets.createCustomButton,
                 leadingIcon = Icons.Outlined.AddCircle,
                 onClick = onCreateNewPreset,
-                variant = OutlineButtonVariant.Primary
+                variant = ButtonVariant.Soft
             )
         }
 

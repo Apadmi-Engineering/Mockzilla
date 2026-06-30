@@ -46,7 +46,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
@@ -159,7 +159,7 @@ internal fun GlobalControlsWidgetIdleContent(
                 }
             }
 
-            BaseButton(
+            CustomButton(
                 label = strings.widgets.globalControls.resetAllLabel,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Sm,

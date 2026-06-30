@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel.State.*
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
@@ -161,12 +161,12 @@ fun ErrorBanner(
                 Box(Modifier.weight(1f))
             }
 
-            BaseButton(variant = ButtonVariant.Soft, onClick = {
+            CustomButton(variant = ButtonVariant.Soft, onClick = {
                 detailsExpanded = !detailsExpanded
             }, label = "Details")
 
             if (state is Connected.ErrorBannerState.ApiError) {
-                BaseButton(
+                CustomButton(
                     onClick = onRefreshAll,
                     label = strings.widgets.errorBanner.refreshButton,
                     variant = ButtonVariant.Solid

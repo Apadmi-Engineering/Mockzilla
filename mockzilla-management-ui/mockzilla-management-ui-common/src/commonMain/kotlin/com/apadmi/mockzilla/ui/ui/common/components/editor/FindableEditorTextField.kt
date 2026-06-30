@@ -57,7 +57,7 @@ import com.apadmi.mockzilla.ui.engine.find.FindReplaceState
 import com.apadmi.mockzilla.ui.engine.find.findMatches
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.utils.iconButtonSize
@@ -353,7 +353,7 @@ private fun FindReplaceBar(
                             .weight(1f),
                     )
 
-                    BaseButton(
+                    CustomButton(
                         label = strings.replaceButton,
                         leadingIcon = Icons.Default.FindReplace,
                         variant = ButtonVariant.Soft,
@@ -361,7 +361,7 @@ private fun FindReplaceBar(
                         modifier = Modifier.heightIn(min = 30.dp),
                         onClick = onReplace,
                     )
-                    BaseButton(
+                    CustomButton(
                         label = strings.replaceAllButton,
                         leadingIcon = Icons.Default.DoneAll,
                         variant = ButtonVariant.Soft,

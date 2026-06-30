@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.icons.Icons
@@ -38,7 +37,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.CustomSlider
 import com.apadmi.mockzilla.ui.ui.common.components.CustomToggle
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionHeader
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonContentAlignment
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
@@ -106,7 +105,7 @@ internal fun MiscControlsWidgetContent(
 
     Spacer(modifier = Modifier.height(4.dp))
 
-    BaseButton(
+    CustomButton(
         modifier = Modifier.fillMaxWidth(),
         label = strings.widgets.miscControls.refreshAll,
         leadingIcon = Icons.Filled.Refresh,
@@ -118,7 +117,7 @@ internal fun MiscControlsWidgetContent(
 
     Spacer(modifier = Modifier.height(2.dp))
 
-    BaseButton(
+    CustomButton(
         modifier = Modifier.fillMaxWidth(),
         label = strings.widgets.miscControls.clearOverrides,
         leadingIcon = Icons.Filled.Restore,
