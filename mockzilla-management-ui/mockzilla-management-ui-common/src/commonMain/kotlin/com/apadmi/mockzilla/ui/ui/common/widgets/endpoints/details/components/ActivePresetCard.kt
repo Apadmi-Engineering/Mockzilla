@@ -81,10 +81,10 @@ internal fun ActivePresetCard(
             )
         }
 
-        state.presets.appliedPreset?.let {
+        (state.presets as? State.Endpoint.Presets.Populated)?.appliedPreset?.let { preset ->
             PresetCard(
                 variant = PresetCardVariant.Selected,
-                preset = state.presets.appliedPreset,
+                preset = preset,
                 onClicked = onEditPreset,
             )
         } ?: NoPresetCard(isCentered = false)
@@ -123,9 +123,11 @@ private fun ActivePresetCardForcedFailureDarkPreview() = PreviewSurface(darkThem
 private fun ActivePresetCardPreviewContainer(
     fail: Boolean = false
 ) = PreviewSurface {
+    val successState = endpointDetailsWidgetSuccessState(fail = fail)
+    val populatedPresets = (successState.presets as State.Endpoint.Presets.Populated)
     ActivePresetCard(
-        state = endpointDetailsWidgetSuccessState(fail = fail).copy(
-            presets = endpointDetailsWidgetSuccessState().presets.copy(
+        state = successState.copy(
+            presets = populatedPresets.copy(
                 appliedPreset = mockPresets.first()
             )
         ),

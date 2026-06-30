@@ -36,9 +36,11 @@ import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.FilterTextField
+import com.apadmi.mockzilla.ui.ui.common.components.ErrorRetry
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
@@ -53,6 +55,7 @@ internal fun PresetsContainer(
     onPresetFilterChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
+    onRetry: () -> Unit,
     onEditPreset: () -> Unit = {},
     modifier: Modifier = Modifier,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
@@ -64,36 +67,50 @@ internal fun PresetsContainer(
     Column(
         verticalArrangement = Arrangement.Top
     ) {
-        if (state.presets.allPresets.isNotEmpty()) {
-            PopulatedPresets(
-                presets = state.presets,
-                onPresetFilterChanged = onPresetFilterChanged,
-                onDefaultPresetSelected = onDefaultPresetSelected,
-                onEditPreset = onEditPreset,
-                layoutMode = state.layoutMode
-            )
-        } else {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+        when (val presets = state.presets) {
+            is State.Endpoint.Presets.Loading -> Box(
+                modifier = Modifier.fillMaxWidth().padding(32.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = strings.noAvailablePresetsTitle,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleMedium
+                TogglableProgressIndicator(isLoading = true)
+            }
+            is State.Endpoint.Presets.Error -> Box(
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                ErrorRetry(onRetry = onRetry)
+            }
+            is State.Endpoint.Presets.Populated -> if (presets.allPresets.isNotEmpty()) {
+                PopulatedPresets(
+                    presets = presets,
+                    onPresetFilterChanged = onPresetFilterChanged,
+                    onDefaultPresetSelected = onDefaultPresetSelected,
+                    onEditPreset = onEditPreset,
+                    layoutMode = state.layoutMode
                 )
-                Text(
-                    text = strings.noAvailablePresetsBody,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodySmall
-                )
-                Spacer(modifier = Modifier.size(4.dp))
-                CustomOutlineButton(
-                    label = strings.moreInfoButton,
-                    onClick = onPresetMoreInfoClicked,
-                    variant = OutlineButtonVariant.Secondary,
-                )
+            } else {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = strings.noAvailablePresetsTitle,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = strings.noAvailablePresetsBody,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(modifier = Modifier.size(4.dp))
+                    CustomOutlineButton(
+                        label = strings.moreInfoButton,
+                        onClick = onPresetMoreInfoClicked,
+                        variant = OutlineButtonVariant.Secondary,
+                    )
+                }
             }
         }
     }
@@ -117,7 +134,7 @@ internal fun PresetsContainer(
 @Suppress("MAGIC_NUMBER")
 @Composable
 private fun PopulatedPresets(
-    presets: State.Endpoint.Presets,
+    presets: State.Endpoint.Presets.Populated,
     onPresetFilterChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onEditPreset: () -> Unit = {},
@@ -196,7 +213,7 @@ private fun PresetsContainerDarkPreview() = PreviewSurface(darkTheme = true) {
 @Composable
 private fun PresetsContainerEmptySearchPreview() = PreviewSurface {
     PresetsContainerPreviewContainer(
-        presets = State.Endpoint.Presets(
+        presets = State.Endpoint.Presets.Populated(
             appliedPreset = null,
             visiblePresets = emptyList(),
             allPresets = mockPresets,
@@ -209,12 +226,20 @@ private fun PresetsContainerEmptySearchPreview() = PreviewSurface {
 @Composable
 private fun PresetsContainerEmptyPreview() = PreviewSurface {
     PresetsContainerPreviewContainer(
-        presets = State.Endpoint.Presets(
+        presets = State.Endpoint.Presets.Populated(
             appliedPreset = null,
             visiblePresets = emptyList(),
             allPresets = emptyList(),
             filter = ""
         )
+    )
+}
+
+@Preview
+@Composable
+private fun PresetsContainerLoadingPreview() = PreviewSurface {
+    PresetsContainerPreviewContainer(
+        presets = State.Endpoint.Presets.Loading
     )
 }
 
@@ -232,13 +257,14 @@ private fun PresetsContainerForceFailureDarkPreview() = PreviewSurface(darkTheme
 
 @Composable
 private fun PresetsContainerPreviewContainer(
-    presets: State.Endpoint.Presets = endpointDetailsWidgetSuccessState().presets,
+    presets: State.Endpoint.Presets = (endpointDetailsWidgetSuccessState().presets as State.Endpoint.Presets.Populated),
     fail: Boolean = false
 ) = PreviewSurface {
     PresetsContainer(
         state = endpointDetailsWidgetSuccessState(fail = fail).copy(presets = presets),
         onPresetFilterChanged = {},
         onDefaultPresetSelected = {},
-        onPresetMoreInfoClicked = {}
+        onPresetMoreInfoClicked = {},
+        onRetry = {}
     )
 }

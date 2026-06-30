@@ -105,6 +105,7 @@ private fun ColumnScope.PopulatedState(
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
+    onRetry: () -> Unit,
     onEditPreset: () -> Unit = {},
     strings: Strings.Widgets = LocalStrings.current.widgets,
 ) {
@@ -174,7 +175,7 @@ private fun ColumnScope.PopulatedState(
         }
     }
 
-    state.presets.appliedPreset?.let { preset ->
+    (state.presets as? State.Endpoint.Presets.Populated)?.appliedPreset?.let { preset ->
         ActivePresetBanner(
             isForceFailureEnabled = state.config.shouldFail == true,
             preset = preset,
@@ -221,12 +222,13 @@ private fun ColumnScope.PopulatedState(
         )
     }
 
+    val presetsCount = (state.presets as? State.Endpoint.Presets.Populated)?.allPresets?.size ?: 0
     EndpointDetailsSection(
-        label = "${strings.endpointDetails.presets.title} (${state.presets.allPresets.size})",
+        label = "${strings.endpointDetails.presets.title} ($presetsCount)",
         icon = Icons.Default.DragIndicator,
         contentPadding = PaddingValues(0.dp),
         headerActions = {
-            if (state.presets.allPresets.isNotEmpty()) {
+            if ((state.presets as? State.Endpoint.Presets.Populated)?.allPresets?.isNotEmpty() == true) {
                 RowDensityControls(
                     selected = state.layoutMode,
                     onChanged = onRowDensityChanged
@@ -252,6 +254,7 @@ private fun ColumnScope.PopulatedState(
                 onPresetFilterChanged = onFilterPresetChanged,
                 onDefaultPresetSelected = onDefaultPresetSelected,
                 onPresetMoreInfoClicked = onPresetMoreInfoClicked,
+                onRetry = onRetry,
                 onEditPreset = onEditPreset
             )
         }
@@ -309,8 +312,8 @@ internal fun EndpointDetailsWidgetContent(
     onRowDensityChanged: (RowDensity) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
+    onRetry: () -> Unit,
     onEditPreset: () -> Unit = {},
-    onRetry: () -> Unit = {},
     strings: Strings = LocalStrings.current,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -357,6 +360,7 @@ internal fun EndpointDetailsWidgetContent(
                             onDefaultPresetSelected = onDefaultPresetSelected,
                             onPresetMoreInfoClicked = onPresetMoreInfoClicked,
                             onCreatePreset = onCreatePreset,
+                            onRetry = onRetry,
                             onEditPreset = onEditPreset,
                         )
                     }
