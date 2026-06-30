@@ -15,13 +15,11 @@ import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 private typealias UpdateServerBlock = (config: SerializableEndpointConfig, device: Device) -> Unit
 private typealias UpdateStateBlock = EndpointDetailsViewModel.State.Endpoint.() -> EndpointDetailsViewModel.State.Endpoint

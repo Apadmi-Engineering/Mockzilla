@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Compress
 import androidx.compose.material.icons.filled.Expand
 import androidx.compose.material3.Icon
@@ -28,6 +27,11 @@ import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 private const val UNSELECTED_BORDER_ALPHA = 0.2f
 
+private val RowDensity.icon get() = when (this) {
+    RowDensity.Comfy -> Icons.Default.Expand
+    RowDensity.Compact -> Icons.Default.Compress
+}
+
 @Composable
 internal fun RowDensityControls(
     modifier: Modifier = Modifier,
@@ -42,11 +46,6 @@ internal fun RowDensityControls(
             onClick = { onChanged(density) },
         )
     }
-}
-
-private val RowDensity.icon get() = when (this) {
-    RowDensity.Comfy -> Icons.Default.Expand
-    RowDensity.Compact -> Icons.Default.Compress
 }
 
 @Composable

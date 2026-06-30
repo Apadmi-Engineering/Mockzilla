@@ -1,3 +1,5 @@
+@file:Suppress("diktat") // Suppressed since this is Generated code
+
 package com.apadmi.mockzilla.ui.ui.common.assets
 
 import androidx.compose.material.icons.Icons
