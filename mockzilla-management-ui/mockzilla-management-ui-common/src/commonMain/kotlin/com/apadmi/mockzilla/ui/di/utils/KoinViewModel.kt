@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.ui.di.utils
 
 import androidx.compose.runtime.Composable
+import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
@@ -16,8 +17,9 @@ expect inline fun <reified T : ViewModel> Module.viewModel(
 @Composable
 expect inline fun <reified T : ViewModel> getViewModel(
     qualifier: Qualifier? = null,
-    key: String? = null,
+    device: Device? = null,
+    keyPrefix: String? = null,
     noinline parameters: ParametersDefinition? = null
 ): T
 
-expect fun evictDesktopViewModelsForKey(key: String)
+expect fun evictDesktopViewModelsForKey(device: Device, keyPrefix: String? = null)

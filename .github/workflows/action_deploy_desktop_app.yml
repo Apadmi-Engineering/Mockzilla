@@ -37,8 +37,18 @@ jobs:
           echo -n "$MAC_SIGNING_CERT" | base64 --decode > $MAC_CERTIFICATE_PATH
           echo -n "$MAC_SIGNING_KEY" | base64 --decode > $MAC_SIGNING_KEY_PATH
           echo -n "$APPLE_NOTARIZATION_KEY" | base64 --decode > $APPLE_NOTARIZATION_KEY_PATH
+      - name: Handle snapshot properties
+        if: ${{ env.IS_SNAPSHOT == 'true' }}
+        run: |
+          set -x
+          
+          echo "" >> gradle.properties
+          echo "is_snapshot=true" >> gradle.properties
+          echo "run_number=${{ github.run_number }}" >> gradle.properties
       - name: Build Jar
-        run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:desktopJar -Pis_snapshot=${{ env.IS_SNAPSHOT }}
+        run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:desktopJar
+        env:
+          RUN_NUMBER: ${{ env.IS_SNAPSHOT == 'true' && github.run_number || '' }}
       - name: Run Conveyor
         uses: hydraulic-software/conveyor/actions/build@fee92baf2a05a4539c3ef410eb04a82dca501797 # v21.1
         env:

@@ -69,10 +69,8 @@ import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StandardTextTooltip
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.SolidButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
-import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 
@@ -299,7 +297,7 @@ private fun ConnectionCard(
                         )
                     }
                 )
-                BaseButton(
+                CustomButton(
                     modifier = Modifier.height(IntrinsicSize.Min),
                     label = strings.widgets.deviceConnection.connect,
                     onClick = onConnect,
@@ -313,7 +311,7 @@ private fun ConnectionCard(
                 HorizontalDivider(Modifier.weight(1f), color = colorScheme.outline)
                 Text(
                     text = strings.widgets.deviceConnection.connectAutomatically,
-                    color = colorScheme.onSurfaceFaint,
+                    color = colorScheme.onSurfaceMuted,
                     style = MaterialTheme.typography.labelMedium,
                 )
                 HorizontalDivider(Modifier.weight(1f), color = colorScheme.outline)
@@ -530,7 +528,7 @@ private fun DiscoveredDeviceRow(
                 if (device.state == DetectedDevice.State.Resolving) {
                     CircularProgressIndicator(Modifier.size(32.dp))
                 } else {
-                    SolidButton(
+                    CustomButton(
                         modifier = Modifier.width(132.dp).height(32.dp),
                         onClick = { onTapDevice(device) },
                         leadingIcon = Icons.Outlined.Power,

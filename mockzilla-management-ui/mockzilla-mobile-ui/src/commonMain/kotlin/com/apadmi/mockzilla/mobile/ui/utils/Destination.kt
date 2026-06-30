@@ -27,5 +27,5 @@ internal sealed class Destination {
      * @property key
      */
     @Serializable
-    internal data class EndpointDetails(val key: String) : Destination()
+    internal data class EndpointDetails(val key: String?) : Destination()
 }

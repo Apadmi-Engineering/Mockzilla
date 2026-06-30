@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,9 +33,10 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 enum class ButtonVariant {
-    Danger, Ghost, Outline, Soft, Solid
+    Ghost, Outline, Soft, Solid
 }
 enum class ButtonSize {
     Lg, Md, Sm
@@ -47,7 +47,7 @@ enum class ButtonContentAlignment {
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun BaseButton(
+fun CustomButton(
     modifier: Modifier = Modifier,
     label: String,
     leadingIcon: ImageVector? = null,
@@ -67,7 +67,6 @@ fun BaseButton(
         ButtonVariant.Outline -> Color.Transparent
         ButtonVariant.Solid -> if (isHovered && enabled) colorScheme.inversePrimary else colorScheme.primary
         ButtonVariant.Soft -> colorScheme.surfaceVariant
-        ButtonVariant.Danger -> Color.Transparent
     }
     val bgColor by animateColorAsState(targetValue = bgTarget, animationSpec = tween(140))
 
@@ -76,15 +75,13 @@ fun BaseButton(
         ButtonVariant.Outline -> colorScheme.onSurfaceVariant
         ButtonVariant.Solid -> colorScheme.onPrimary
         ButtonVariant.Soft -> colorScheme.onSurface
-        ButtonVariant.Danger -> colorScheme.error
     }
 
     val borderTarget = when (variant) {
         ButtonVariant.Ghost -> Color.Transparent
-        ButtonVariant.Outline -> if (isHovered && enabled) colorScheme.outlineVariant else colorScheme.outline
+        ButtonVariant.Outline -> contentColor ?: if (isHovered && enabled) colorScheme.outlineVariant else colorScheme.outline
         ButtonVariant.Solid -> Color.Transparent
         ButtonVariant.Soft -> colorScheme.outline
-        ButtonVariant.Danger -> colorScheme.error.copy(alpha = 0.3f)
     }
     val borderColor by animateColorAsState(targetValue = borderTarget, animationSpec = tween(140))
 
@@ -97,7 +94,7 @@ fun BaseButton(
     val iconSize = if (size == ButtonSize.Lg) 18.dp else 14.dp
 
     Button(
-        modifier = modifier.defaultMinSize(minHeight = 1.dp).alpha(if (enabled) 1f else 0.5f),
+        modifier = modifier.minimumTouchTarget().alpha(if (enabled) 1f else 0.5f),
         onClick = onClick,
         enabled = enabled,
         shape = RoundedCornerShape(6.dp),
@@ -122,7 +119,6 @@ fun BaseButton(
         }
         Text(text = label, style = MaterialTheme.typography.labelMedium.copy(
             fontWeight = when (variant) {
-                ButtonVariant.Danger,
                 ButtonVariant.Outline,
                 ButtonVariant.Ghost -> FontWeight.Medium
                 ButtonVariant.Solid,
@@ -143,15 +139,15 @@ private fun BaseButtonPreview() = PreviewSurface {
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         ButtonVariant.entries.forEach { variant ->
-            BaseButton(label = variant.name, variant = variant, onClick = {})
+            CustomButton(label = variant.name, variant = variant, onClick = {})
         }
-        BaseButton(
+        CustomButton(
             label = "With Icon",
             leadingIcon = Icons.LightningBolt,
             variant = ButtonVariant.Solid,
             onClick = {},
         )
-        BaseButton(label = "Disabled", variant = ButtonVariant.Solid, enabled = false, onClick = {})
+        CustomButton(label = "Disabled", variant = ButtonVariant.Solid, enabled = false, onClick = {})
     }
 }
 
@@ -163,7 +159,7 @@ private fun BaseButtonDarkPreview() = PreviewSurface(darkTheme = true) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         ButtonVariant.entries.forEach { variant ->
-            BaseButton(label = variant.name, variant = variant, onClick = {})
+            CustomButton(label = variant.name, variant = variant, onClick = {})
         }
     }
 }

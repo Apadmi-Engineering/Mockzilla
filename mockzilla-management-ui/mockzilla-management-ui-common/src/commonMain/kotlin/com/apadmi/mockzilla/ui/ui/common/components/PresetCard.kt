@@ -43,8 +43,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.Shape
@@ -66,6 +64,7 @@ import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
@@ -74,6 +73,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.minifyJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.typeFormat
+import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
 
@@ -148,13 +148,12 @@ internal fun PresetCard(
     preset: DashboardOverridePreset,
     onClicked: (DashboardOverridePreset) -> Unit,
     onEdit: () -> Unit = {},
-    layoutMode: RowDensity = RowDensity.Compact,
+    rowDensity: RowDensity = RowDensity.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     val isDark = LocalForceDarkMode.current
-    val isCompact = layoutMode == RowDensity.Compact
+    val isCompact = rowDensity == RowDensity.Compact
     val isSelected = variant == PresetCardVariant.Selected
-    val shape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
     val statusColors = preset.statusColors()
     val colorScheme = MaterialTheme.colorScheme
     val indicatorColor = if (isSelected) colorScheme.primary else statusColors.primary
@@ -168,23 +167,13 @@ internal fun PresetCard(
         animationSpec = tween(200),
         label = "chevron",
     )
-    val chevronTint = if (hasExpandableContent) iconTint else colorScheme.onSurface.copy(alpha = 0.3f)
+    val chevronTint = if (hasExpandableContent) iconTint else colorScheme.onSurfaceFaint
 
     Column(
         Modifier.fillMaxWidth()
-            .clip(shape = shape)
             .focusProperties { canFocus = false }
             .background(if (isSelected) colorScheme.primary.copy(alpha = 0.08f) else Color.Transparent)
-            .drawBehind {
-                val indicatorWidth = 2.dp.toPx()
-                val padding = 4.dp.toPx()
-                drawRoundRect(
-                    cornerRadius = CornerRadius(indicatorWidth, indicatorWidth),
-                    color = indicatorColor,
-                    topLeft = Offset(padding / 2, padding.dp.toPx()),
-                    size = Size(indicatorWidth, size.height - padding * 2)
-                )
-            },
+            .drawIndicator(indicatorColor),
     ) {
         Row(
             modifier = Modifier
@@ -230,6 +219,7 @@ internal fun PresetCard(
                 ) {
                     Box(
                         modifier = Modifier
+                            .minimumTouchTarget()
                             .fillMaxHeight()
                             .clip(RoundedCornerShape(6.dp))
                             .clickable { onEdit() }
@@ -272,20 +262,18 @@ internal fun PresetCard(
                     )
                 }
 
-                PresetCardVariant.Selectable -> Box(
+                PresetCardVariant.Selectable -> Tag(
                     modifier = Modifier
+                        .minimumTouchTarget()
                         .clip(RoundedCornerShape(6.dp))
-                        .clickable { onClicked(preset) }
-                ) {
-                    Tag(
-                        label = strings.applyLabel,
-                        textColor = colorScheme.onSurface,
-                        borderColor = colorScheme.outline,
-                        backgroundColor = colorScheme.surfaceContainer,
-                        shape = RoundedCornerShape(6.dp),
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                    )
-                }
+                        .clickable { onClicked(preset) },
+                    label = strings.applyLabel,
+                    textColor = colorScheme.onSurface,
+                    borderColor = colorScheme.outline,
+                    backgroundColor = colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(6.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                )
             }
         }
 

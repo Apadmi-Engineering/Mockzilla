@@ -10,6 +10,8 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -174,11 +175,8 @@ fun DesktopApp(
         // temporarily disconnected — the VM handles disconnection gracefully while preserving
         // selectedEndpoint). allDevices is a live collection, updated before the flow fires.
         LaunchedEffect(Unit) {
-            var knownKeys = activeDeviceMonitor.allDevices.map { it.device.toString() }.toSet()
-            activeDeviceMonitor.onDeviceConnectionStateChange.collect {
-                val currentKeys = activeDeviceMonitor.allDevices.map { it.device.toString() }.toSet()
-                (knownKeys - currentKeys).forEach { evictDesktopViewModelsForKey(it) }
-                knownKeys = currentKeys
+            activeDeviceMonitor.onDeviceRemoved.collect {
+                evictDesktopViewModelsForKey(it)
             }
         }
 
@@ -195,12 +193,34 @@ fun DesktopApp(
 }
 
 @Composable
+private fun ScrimOverlay(visible: Boolean, onDismiss: () -> Unit) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(animationSpec = tween(animationDuration)),
+            exit = fadeOut(animationSpec = tween(animationDuration)),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = scrimAlpha))
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = onDismiss,
+                    )
+            )
+        }
+    }
+}
+
+@Composable
 private fun DeviceContent(
     device: Device,
     strings: Strings
 ) {
     val viewModel = getViewModel<DeviceRootViewModel>(
-        key = device.toString()
+        device = device
     ) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
@@ -282,7 +302,7 @@ private fun ConnectedDeviceLayout(
                             device = connectedState.activeDevice.device,
                             onEndpointClicked = { key ->
                                 viewModel.setSelectedEndpoint(key)
-                                state = state.copy(rightPanelTab = RightPanelTab.EndpointDetails)
+                                state = state.copy(rightPanelTab = RightPanelTab.EndpointDetails.takeUnless { key == null })
                             },
                             onGlobalControlsClicked = { state = state.copy(globalControlsOpen = true) },
                         )
@@ -353,16 +373,8 @@ private fun ConnectedDeviceLayout(
                     )
                 }
 
-                // Scrim behind preset overlay — Column provides ColumnScope for AnimatedVisibility
-                Column(modifier = Modifier.fillMaxSize()) {
-                    AnimatedVisibility(
-                        visible = presetVisible,
-                        enter = fadeIn(animationSpec = tween(animationDuration)),
-                        exit = fadeOut(animationSpec = tween(animationDuration)),
-                    ) {
-                        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = scrimAlpha)))
-                    }
-                }
+                // Scrim behind preset overlay
+                ScrimOverlay(visible = presetVisible, onDismiss = { state = state.copy(presetOpen = false) })
 
                 // Create/Edit Preset overlay — Box provides alignment; Column provides ColumnScope
                 Box(modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd)) {
@@ -403,6 +415,9 @@ private fun ConnectedDeviceLayout(
                     }
                 }
 
+                // Scrim behind global controls overlay
+                ScrimOverlay(visible = state.globalControlsOpen, onDismiss = { state = state.copy(globalControlsOpen = false) })
+
                 // Global Controls overlay — Box provides alignment; Column provides ColumnScope
                 Box(modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd)) {
                     Column(modifier = Modifier.fillMaxHeight()) {
@@ -422,15 +437,8 @@ private fun ConnectedDeviceLayout(
                                 Surface(
                                     modifier = Modifier
                                         .fillMaxHeight()
-                                        .width(state.globalControlsWidthDp.dp)
-                                        .shadow(8.dp)
-                                        .border(
-                                            1.dp,
-                                            MaterialTheme.colorScheme.outline,
-                                            RoundedCornerShape(topStart = 8.dp),
-                                        ),
+                                        .width(state.globalControlsWidthDp.dp),
                                     color = MaterialTheme.colorScheme.surface,
-                                    shape = RoundedCornerShape(topStart = 8.dp),
                                 ) {
                                     GlobalControlsWidget(
                                         device = connectedState.activeDevice.device,

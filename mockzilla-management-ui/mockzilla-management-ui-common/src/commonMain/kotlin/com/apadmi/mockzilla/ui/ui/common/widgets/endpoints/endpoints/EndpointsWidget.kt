@@ -1,7 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.hoverable
@@ -19,16 +18,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -43,9 +39,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,14 +51,19 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
-import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.FilterTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
+import com.apadmi.mockzilla.ui.ui.common.components.drawIndicator
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.utils.Platform
 
 import org.koin.core.parameter.parametersOf
 
@@ -92,10 +90,10 @@ private fun RowDensity.verticalPadding(): Dp = when (this) {
 @Composable
 fun EndpointsWidget(
     device: Device,
-    onEndpointClicked: (Key) -> Unit,
+    onEndpointClicked: (Key?) -> Unit,
     onGlobalControlsClicked: () -> Unit
 ) {
-    val viewModel = getViewModel<EndpointsViewModel>(key = device.toString()) {
+    val viewModel = getViewModel<EndpointsViewModel>(device = device) {
         parametersOf(device)
     }
     val state by viewModel.state.collectAsState()
@@ -107,8 +105,13 @@ fun EndpointsWidget(
         onFilterUpdate = viewModel::onFilterChanged,
         onRowDensityChanged = viewModel::onRowDensityChanged,
         onEndpointClicked = { key ->
-            selectedKey = key
-            onEndpointClicked(key)
+            if (selectedKey == key) {
+                selectedKey = null
+                onEndpointClicked(null)
+            } else {
+                selectedKey = key
+                onEndpointClicked(key)
+            }
         },
         onGlobalControlsClicked = onGlobalControlsClicked
     )
@@ -130,17 +133,34 @@ private fun EndpointsList(
     modifier: Modifier = Modifier,
 ) = Column(modifier = modifier) {
     Column(modifier = Modifier.padding(12.dp)) {
-        FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FilterTextField(
+                modifier = Modifier.weight(1f),
+                value = state.filter,
+                onFilterUpdate = onFilterUpdate,
+                placeholder = LocalStrings.current.widgets.endpoints.filterPlaceholder
+            )
+            if (Platform.current != Platform.Desktop) {
+                Spacer(Modifier.width(4.dp))
+                RowDensityControls(
+                    selected = state.rowDensity,
+                    onChanged = onRowDensityChanged
+                )
+            }
+        }
         EndpointsHeader(
             displayedCount = state.endpoints.size,
             totalCount = state.allEndpoints.size,
             selectedRowDensity = state.rowDensity,
             onRowDensityChanged = onRowDensityChanged,
         )
-        GlobalControlsButton(
-            isOpen = false,
-            onClick = onGlobalControlsClicked
-        )
+
+        if (Platform.current == Platform.Desktop) {
+            GlobalControlsButton(
+                isOpen = false,
+                onClick = onGlobalControlsClicked
+            )
+        }
     }
     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
     if (state.endpoints.isEmpty()) {
@@ -173,38 +193,18 @@ private fun EndpointsList(
     }
 }
 
-@Suppress("MAGIC_NUMBER")
 @Composable
 private fun GlobalControlsButton(
     isOpen: Boolean,
     strings: Strings = LocalStrings.current,
     onClick: () -> Unit
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    val shape = RoundedCornerShape(8.dp)
-
-    Row(
-        modifier = Modifier
-            .clip(shape)
-            .background(if (isOpen) colorScheme.primary else colorScheme.surface)
-            .border(1.dp, if (isOpen) colorScheme.primary else colorScheme.outline, shape)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Tune,
-            contentDescription = null,
-            tint = if (isOpen) colorScheme.onPrimary else colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(16.dp),
-        )
-        Text(
-            text = strings.widgets.globalControls.title,
-            style = MaterialTheme.typography.labelMedium,
-            color = if (isOpen) colorScheme.onPrimary else colorScheme.onSurface,
-        )
-    }
+    CustomButton(
+        variant = if (isOpen) ButtonVariant.Solid else ButtonVariant.Outline,
+        leadingIcon = Icons.Filled.Tune,
+        label = strings.widgets.globalControls.title,
+        onClick = onClick,
+    )
 }
 
 @Composable
@@ -218,7 +218,7 @@ private fun EndpointsHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
     ) {
         Text(
             text = "$displayedCount/$totalCount",
@@ -226,10 +226,13 @@ private fun EndpointsHeader(
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        RowDensityControls(
-            selected = selectedRowDensity,
-            onChanged = onRowDensityChanged
-        )
+
+        if (Platform.current == Platform.Desktop) {
+            RowDensityControls(
+                selected = selectedRowDensity,
+                onChanged = onRowDensityChanged
+            )
+        }
     }
 }
 
@@ -245,10 +248,10 @@ private fun EndpointRow(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
     val leftBorderColor = when {
+        isSelected && Platform.current == Platform.Desktop -> cs.primary
         endpoint.fail -> cs.error
         endpoint.overriddenProperties.any { it != EndpointProperties.Delay } -> cs.primary
         endpoint.overriddenProperties.isNotEmpty() -> cs.warning.primary
-        isSelected -> cs.primary
         else -> Color.Transparent
     }
     Row(
@@ -262,12 +265,7 @@ private fun EndpointRow(
                     Color.Transparent
                 }
             )
-            .drawBehind {
-                drawRect(
-                    leftBorderColor,
-                    size = Size(LEFT_BORDER_WIDTH_DP.dp.toPx(), size.height)
-                )
-            }
+            .drawIndicator(leftBorderColor)
             .clickable { onEndpointClicked(endpoint.key) }
             .padding(
                 start = CONTENT_START_PADDING_DP.dp,
@@ -285,7 +283,7 @@ private fun EndpointRow(
                 EndpointRowChips(endpoint = endpoint)
             }
         }
-        if (endpoint.fail) {
+        if (endpoint.fail && Platform.current == Platform.Desktop) {
             StatusChip(label = strings.widgets.endpoints.forced, tone = ChipTone.Err)
         }
         endpoint.delayMs?.let { delay ->
@@ -298,7 +296,7 @@ private fun EndpointRow(
         Icon(
             imageVector = Icons.Default.ChevronRight,
             contentDescription = null,
-            tint = cs.onSurface.copy(alpha = 0.4f),
+            tint = cs.onSurfaceFaint,
         )
     }
     HorizontalDivider(color = cs.onSurface.copy(alpha = 0.12f))
@@ -322,7 +320,7 @@ private fun EndpointRowChips(
         Text(
             text = strings.widgets.endpoints.noOverrides,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
         )
         return
     }
@@ -386,26 +384,6 @@ private fun EndpointsWidgetContent(
         }
     }
 }
-
-@Composable
-private fun FilterTextField(
-    value: String,
-    onFilterUpdate: (String) -> Unit,
-    strings: Strings = LocalStrings.current
-) = CustomTextField(
-    modifier = Modifier.fillMaxWidth(),
-    value = value,
-    onValueChange = onFilterUpdate,
-    placeholderText = strings.widgets.endpoints.filterPlaceholder,
-    leadingIcon = {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceMuted,
-        )
-    },
-    singleLine = true,
-)
 
 @Preview
 @Composable

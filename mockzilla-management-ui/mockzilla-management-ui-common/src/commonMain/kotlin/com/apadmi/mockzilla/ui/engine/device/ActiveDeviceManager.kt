@@ -17,6 +17,7 @@ interface ActiveDeviceMonitor {
 
     // Fires when a device connects / disconnects
     val onDeviceConnectionStateChange: Flow<Unit>
+    val onDeviceRemoved: Flow<Device>
     val allDevices: Collection<StatefulDevice>
 }
 
@@ -35,6 +36,7 @@ internal class ActiveDeviceManagerImpl(
 ) : ActiveDeviceMonitor, ActiveDeviceSelector {
     override val selectedDevice = MutableStateFlow<StatefulDevice?>(null)
     override val onDeviceConnectionStateChange = MutableSharedFlow<Unit>(replay = 1)
+    override val onDeviceRemoved = MutableSharedFlow<Device>(replay = 0)
     private val allDevicesInternal = mutableMapOf<Device, StatefulDevice>()
     override val allDevices get() = allDevicesInternal.values
 
@@ -106,6 +108,7 @@ internal class ActiveDeviceManagerImpl(
             }
             allDevicesInternal.remove(device)
             onDeviceConnectionStateChange.emit(Unit)
+            onDeviceRemoved.emit(device)
         }
     }
 }

@@ -193,11 +193,12 @@ val EnStrings = Strings(
                 filterPlaceholderEmpty = "No matches",
                 statusCodeFallback = "XXX",
                 applyLabel = "Apply",
-                appliedLabel = "Set",
+                appliedLabel = "Applied",
                 editLabel = "Edit",
                 forceFailureBannerTitle = "Forced Failure is on.",
                 forceFailureBannerBody = "Presets are ignored and locked",
-                forceFailureAppliedPresetMessage = "Ignored - Forced Failure is on"
+                forceFailureAppliedPresetMessage = "Ignored - Forced Failure is on",
+                failedToLoad = "Failed to load presets"
             )
         ),
         miscControls = Strings.Widgets.MiscControls(

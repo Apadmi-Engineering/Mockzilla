@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -77,18 +78,21 @@ import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
 import com.apadmi.mockzilla.ui.ui.common.components.SurfaceHeader
 import com.apadmi.mockzilla.ui.ui.common.components.Tag
 import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
 import com.apadmi.mockzilla.ui.ui.common.components.statusColors
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
+import com.apadmi.mockzilla.ui.utils.Platform
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
 
@@ -103,6 +107,7 @@ private fun ColumnScope.PopulatedState(
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
+    onRetry: () -> Unit,
     onEditPreset: () -> Unit = {},
     strings: Strings.Widgets = LocalStrings.current.widgets,
 ) {
@@ -115,7 +120,7 @@ private fun ColumnScope.PopulatedState(
             title = state.config.name,
             subtitle = strings.endpointDetails.subtitle,
             actions = {
-                BaseButton(
+                CustomButton(
                     label = strings.endpointDetails.reset,
                     leadingIcon = Icons.Default.Refresh,
                     variant = ButtonVariant.Ghost,
@@ -172,7 +177,7 @@ private fun ColumnScope.PopulatedState(
         }
     }
 
-    state.presets.appliedPreset?.let { preset ->
+    (state.presets as? State.Endpoint.Presets.Populated)?.appliedPreset?.let { preset ->
         ActivePresetBanner(
             isForceFailureEnabled = state.config.shouldFail == true,
             preset = preset,
@@ -187,7 +192,8 @@ private fun ColumnScope.PopulatedState(
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
             RowDensityControls(modifier = Modifier.alpha(0f).clearAndSetSemantics { /* No-Op*/ })
-        }
+        },
+        contentPadding = PaddingValues(8.dp)
     ) {
         ForceFailureBanner(
             state = if (state.config.shouldFail == true) {
@@ -214,44 +220,31 @@ private fun ColumnScope.PopulatedState(
             onChange = onDelayChange,
             onReset = { onDelayChange(null) },
             showHeader = false,
-            showBackground = false,
-            showBorder = false,
         )
     }
 
+    val presetsCount = (state.presets as? State.Endpoint.Presets.Populated)?.allPresets?.size ?: 0
     EndpointDetailsSection(
-        label = "${strings.endpointDetails.presets.title} (${state.presets.allPresets.size})",
+        label = "${strings.endpointDetails.presets.title} ($presetsCount)",
         icon = Icons.Default.DragIndicator,
         contentPadding = PaddingValues(0.dp),
         headerActions = {
-            if (state.presets.allPresets.isNotEmpty()) {
+            if (Platform.current == Platform.Desktop && (state.presets as? State.Endpoint.Presets.Populated)?.allPresets?.isNotEmpty() == true
+            ) {
                 RowDensityControls(
                     selected = state.layoutMode,
                     onChanged = onRowDensityChanged
                 )
             }
             Spacer(Modifier.width(8.dp))
-            val customLabel = strings.endpointDetails.presets.typeDescriptions.other
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
-                    .clickable(enabled = state.config.shouldFail != true, onClick = onCreatePreset)
-                    .padding(horizontal = 8.dp, vertical = 2.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(12.dp),
-                )
-                Text(
-                    text = customLabel,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
+            CustomButton(
+                variant = ButtonVariant.Ghost,
+                size = ButtonSize.Sm,
+                leadingIcon = Icons.Default.Add,
+                label = strings.endpointDetails.presets.typeDescriptions.other,
+                enabled = state.config.shouldFail != true,
+                onClick = onCreatePreset,
+            )
         }
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -263,7 +256,9 @@ private fun ColumnScope.PopulatedState(
                 onPresetFilterChanged = onFilterPresetChanged,
                 onDefaultPresetSelected = onDefaultPresetSelected,
                 onPresetMoreInfoClicked = onPresetMoreInfoClicked,
-                onEditPreset = onEditPreset
+                onRetry = onRetry,
+                onEditPreset = onEditPreset,
+                onRowDensityChanged = onRowDensityChanged,
             )
         }
     }
@@ -287,7 +282,8 @@ fun EndpointDetailsWidget(
 ) {
     val uriHandler = LocalUriHandler.current
     val viewModel = getViewModel<EndpointDetailsViewModel>(
-        key = "${activeEndpoint?.raw}-$device"
+        device = device,
+        keyPrefix = activeEndpoint?.raw
     ) { parametersOf(activeEndpoint, device) }
     val state by viewModel.state.collectAsState()
 
@@ -319,8 +315,8 @@ internal fun EndpointDetailsWidgetContent(
     onRowDensityChanged: (RowDensity) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onCreatePreset: () -> Unit,
+    onRetry: () -> Unit,
     onEditPreset: () -> Unit = {},
-    onRetry: () -> Unit = {},
     strings: Strings = LocalStrings.current,
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -332,6 +328,10 @@ internal fun EndpointDetailsWidgetContent(
             .background(color = colorScheme.surface)
     ) {
         when (state) {
+            is State.Loading -> CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.align(Alignment.Center)
+            )
             is State.FailedToLoad -> ErrorRetry(
                 modifier = Modifier.align(Alignment.Center),
                 onRetry = onRetry
@@ -344,7 +344,7 @@ internal fun EndpointDetailsWidgetContent(
                         imageVector = Icons.Default.Settings,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        tint = MaterialTheme.colorScheme.onSurfaceFaint
                     )
                 }
             )
@@ -367,6 +367,7 @@ internal fun EndpointDetailsWidgetContent(
                             onDefaultPresetSelected = onDefaultPresetSelected,
                             onPresetMoreInfoClicked = onPresetMoreInfoClicked,
                             onCreatePreset = onCreatePreset,
+                            onRetry = onRetry,
                             onEditPreset = onEditPreset,
                         )
                     }
@@ -498,7 +499,7 @@ private fun ActivePresetBanner(
                 color = colorScheme.onSurfaceVariant,
             )
         }
-        IconButton(onClick = onClear, modifier = Modifier.size(24.dp)) {
+        IconButton(onClick = onClear, modifier = Modifier.iconButtonSize()) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
