@@ -39,8 +39,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,6 +59,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
+import com.apadmi.mockzilla.ui.ui.common.components.drawIndicator
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
@@ -249,14 +248,10 @@ private fun EndpointRow(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
     val leftBorderColor = when {
+        isSelected && Platform.current == Platform.Desktop -> cs.primary
         endpoint.fail -> cs.error
         endpoint.overriddenProperties.any { it != EndpointProperties.Delay } -> cs.primary
         endpoint.overriddenProperties.isNotEmpty() -> cs.warning.primary
-        isSelected -> cs.primary.takeIf {
-            // On mobile the selected row doesn't need highlighting since the list
-            // isn't on screen with details view (it looks flickery)
-            Platform.current == Platform.Desktop
-        } ?: Color.Transparent
         else -> Color.Transparent
     }
     Row(
@@ -270,12 +265,7 @@ private fun EndpointRow(
                     Color.Transparent
                 }
             )
-            .drawBehind {
-                drawRect(
-                    leftBorderColor,
-                    size = Size(LEFT_BORDER_WIDTH_DP.dp.toPx(), size.height)
-                )
-            }
+            .drawIndicator(leftBorderColor)
             .clickable { onEndpointClicked(endpoint.key) }
             .padding(
                 start = CONTENT_START_PADDING_DP.dp,

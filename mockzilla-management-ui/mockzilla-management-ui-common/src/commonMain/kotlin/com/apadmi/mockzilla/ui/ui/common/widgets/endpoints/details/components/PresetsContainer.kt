@@ -165,9 +165,7 @@ private fun PopulatedPresets(
         }
 
         presets.visiblePresets.forEachIndexed { index, preset ->
-            if (index == 0) {
-                Spacer(Modifier.height(4.dp))
-            } else {
+            if (index != 0) {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
             }
             PresetCard(
