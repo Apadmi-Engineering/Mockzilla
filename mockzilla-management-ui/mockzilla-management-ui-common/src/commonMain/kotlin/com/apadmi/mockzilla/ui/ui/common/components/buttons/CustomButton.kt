@@ -47,7 +47,7 @@ enum class ButtonContentAlignment {
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun BaseButton(
+fun CustomButton(
     modifier: Modifier = Modifier,
     label: String,
     leadingIcon: ImageVector? = null,
@@ -139,15 +139,15 @@ private fun BaseButtonPreview() = PreviewSurface {
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         ButtonVariant.entries.forEach { variant ->
-            BaseButton(label = variant.name, variant = variant, onClick = {})
+            CustomButton(label = variant.name, variant = variant, onClick = {})
         }
-        BaseButton(
+        CustomButton(
             label = "With Icon",
             leadingIcon = Icons.LightningBolt,
             variant = ButtonVariant.Solid,
             onClick = {},
         )
-        BaseButton(label = "Disabled", variant = ButtonVariant.Solid, enabled = false, onClick = {})
+        CustomButton(label = "Disabled", variant = ButtonVariant.Solid, enabled = false, onClick = {})
     }
 }
 
@@ -159,7 +159,7 @@ private fun BaseButtonDarkPreview() = PreviewSurface(darkTheme = true) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         ButtonVariant.entries.forEach { variant ->
-            BaseButton(label = variant.name, variant = variant, onClick = {})
+            CustomButton(label = variant.name, variant = variant, onClick = {})
         }
     }
 }

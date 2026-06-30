@@ -33,8 +33,8 @@ import com.apadmi.mockzilla.ui.ui.common.components.FilterTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
@@ -101,10 +101,10 @@ internal fun PresetsContainer(
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.size(4.dp))
-                    CustomOutlineButton(
+                    CustomButton(
                         label = strings.moreInfoButton,
                         onClick = onPresetMoreInfoClicked,
-                        variant = OutlineButtonVariant.Secondary,
+                        variant = ButtonVariant.Outline,
                     )
                 }
             }

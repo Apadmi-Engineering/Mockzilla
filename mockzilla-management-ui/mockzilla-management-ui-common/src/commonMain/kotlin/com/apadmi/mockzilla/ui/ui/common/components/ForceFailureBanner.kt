@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -26,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
@@ -89,7 +88,7 @@ internal fun ForceFailureBanner(
         }
 
         if (state == ForceFailureBannerState.Normal) {
-            BaseButton(
+            CustomButton(
                 label = strings.widgets.globalControls.failButtonLabel,
                 variant = ButtonVariant.Outline,
                 contentColor = MaterialTheme.colorScheme.error,
@@ -98,7 +97,7 @@ internal fun ForceFailureBanner(
                 onClick = onForceFailureClicked
             )
         } else {
-            BaseButton(
+            CustomButton(
                 label = strings.widgets.globalControls.restoreButtonLabel,
                 variant = ButtonVariant.Outline,
                 size = ButtonSize.Sm,
