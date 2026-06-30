@@ -362,7 +362,7 @@ private fun ExpandableResponseBody(
 ) {
     val mode = response.typeFormat
     val body = when {
-        BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body?.take(1000)
+        BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body?.take(1000) + "…"
         mode == EditorMode.Json -> if (isCompact) {
             response.body?.minifyJson()
         } else {
