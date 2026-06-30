@@ -255,7 +255,11 @@ private fun EndpointRow(
         endpoint.fail -> cs.error
         endpoint.overriddenProperties.any { it != EndpointProperties.Delay } -> cs.primary
         endpoint.overriddenProperties.isNotEmpty() -> cs.warning.primary
-        isSelected -> cs.primary
+        isSelected -> cs.primary.takeIf {
+            // On mobile the selected row doesn't need highlighting since the list
+            // isn't on screen with details view (it looks flickery)
+            Platform.current == Platform.Desktop
+        } ?: Color.Transparent
         else -> Color.Transparent
     }
     Row(

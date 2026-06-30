@@ -218,16 +218,20 @@ internal fun GlobalControlsWidgetIdleContent(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = strings.widgets.globalControls.perEndpointStatus,
-                    style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.5.sp),
-                    color = colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
+                val filteredEndpoints = state.endpoints.filter { it.overriddenProperties.isNotEmpty() || it.fail }
 
-                state.endpoints.filter { it.overriddenProperties.isNotEmpty() || it.fail }.forEach { endpoint ->
-                    EndpointStatusRow(endpoint, strings)
+                if (filteredEndpoints.isNotEmpty()) {
+                    Text(
+                        text = strings.widgets.globalControls.perEndpointStatus,
+                        style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.5.sp),
+                        color = colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    filteredEndpoints.forEach { endpoint ->
+                        EndpointStatusRow(endpoint, strings)
+                    }
                 }
             }
         }
