@@ -25,7 +25,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -40,8 +39,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,17 +51,19 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
-import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.FilterTextField
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
+import com.apadmi.mockzilla.ui.ui.common.components.drawIndicator
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.utils.Platform
 
 import org.koin.core.parameter.parametersOf
 
@@ -134,17 +133,34 @@ private fun EndpointsList(
     modifier: Modifier = Modifier,
 ) = Column(modifier = modifier) {
     Column(modifier = Modifier.padding(12.dp)) {
-        FilterTextField(value = state.filter, onFilterUpdate = onFilterUpdate)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FilterTextField(
+                modifier = Modifier.weight(1f),
+                value = state.filter,
+                onFilterUpdate = onFilterUpdate,
+                placeholder = LocalStrings.current.widgets.endpoints.filterPlaceholder
+            )
+            if (Platform.current != Platform.Desktop) {
+                Spacer(Modifier.width(4.dp))
+                RowDensityControls(
+                    selected = state.rowDensity,
+                    onChanged = onRowDensityChanged
+                )
+            }
+        }
         EndpointsHeader(
             displayedCount = state.endpoints.size,
             totalCount = state.allEndpoints.size,
             selectedRowDensity = state.rowDensity,
             onRowDensityChanged = onRowDensityChanged,
         )
-        GlobalControlsButton(
-            isOpen = false,
-            onClick = onGlobalControlsClicked
-        )
+
+        if (Platform.current == Platform.Desktop) {
+            GlobalControlsButton(
+                isOpen = false,
+                onClick = onGlobalControlsClicked
+            )
+        }
     }
     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
     if (state.endpoints.isEmpty()) {
@@ -202,7 +218,7 @@ private fun EndpointsHeader(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
     ) {
         Text(
             text = "$displayedCount/$totalCount",
@@ -210,10 +226,13 @@ private fun EndpointsHeader(
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        RowDensityControls(
-            selected = selectedRowDensity,
-            onChanged = onRowDensityChanged
-        )
+
+        if (Platform.current == Platform.Desktop) {
+            RowDensityControls(
+                selected = selectedRowDensity,
+                onChanged = onRowDensityChanged
+            )
+        }
     }
 }
 
@@ -229,10 +248,10 @@ private fun EndpointRow(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
     val leftBorderColor = when {
+        isSelected && Platform.current == Platform.Desktop -> cs.primary
         endpoint.fail -> cs.error
         endpoint.overriddenProperties.any { it != EndpointProperties.Delay } -> cs.primary
         endpoint.overriddenProperties.isNotEmpty() -> cs.warning.primary
-        isSelected -> cs.primary
         else -> Color.Transparent
     }
     Row(
@@ -246,12 +265,7 @@ private fun EndpointRow(
                     Color.Transparent
                 }
             )
-            .drawBehind {
-                drawRect(
-                    leftBorderColor,
-                    size = Size(LEFT_BORDER_WIDTH_DP.dp.toPx(), size.height)
-                )
-            }
+            .drawIndicator(leftBorderColor)
             .clickable { onEndpointClicked(endpoint.key) }
             .padding(
                 start = CONTENT_START_PADDING_DP.dp,
@@ -269,7 +283,7 @@ private fun EndpointRow(
                 EndpointRowChips(endpoint = endpoint)
             }
         }
-        if (endpoint.fail) {
+        if (endpoint.fail && Platform.current == Platform.Desktop) {
             StatusChip(label = strings.widgets.endpoints.forced, tone = ChipTone.Err)
         }
         endpoint.delayMs?.let { delay ->
@@ -370,26 +384,6 @@ private fun EndpointsWidgetContent(
         }
     }
 }
-
-@Composable
-private fun FilterTextField(
-    value: String,
-    onFilterUpdate: (String) -> Unit,
-    strings: Strings = LocalStrings.current
-) = CustomTextField(
-    modifier = Modifier.fillMaxWidth(),
-    value = value,
-    onValueChange = onFilterUpdate,
-    placeholderText = strings.widgets.endpoints.filterPlaceholder,
-    leadingIcon = {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceMuted,
-        )
-    },
-    singleLine = true,
-)
 
 @Preview
 @Composable

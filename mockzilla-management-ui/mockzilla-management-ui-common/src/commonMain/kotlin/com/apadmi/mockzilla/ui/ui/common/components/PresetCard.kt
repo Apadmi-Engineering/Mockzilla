@@ -43,8 +43,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.Shape
@@ -150,13 +148,12 @@ internal fun PresetCard(
     preset: DashboardOverridePreset,
     onClicked: (DashboardOverridePreset) -> Unit,
     onEdit: () -> Unit = {},
-    layoutMode: RowDensity = RowDensity.Compact,
+    rowDensity: RowDensity = RowDensity.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     val isDark = LocalForceDarkMode.current
-    val isCompact = layoutMode == RowDensity.Compact
+    val isCompact = rowDensity == RowDensity.Compact
     val isSelected = variant == PresetCardVariant.Selected
-    val shape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
     val statusColors = preset.statusColors()
     val colorScheme = MaterialTheme.colorScheme
     val indicatorColor = if (isSelected) colorScheme.primary else statusColors.primary
@@ -174,19 +171,9 @@ internal fun PresetCard(
 
     Column(
         Modifier.fillMaxWidth()
-            .clip(shape = shape)
             .focusProperties { canFocus = false }
             .background(if (isSelected) colorScheme.primary.copy(alpha = 0.08f) else Color.Transparent)
-            .drawBehind {
-                val indicatorWidth = 2.dp.toPx()
-                val padding = 4.dp.toPx()
-                drawRoundRect(
-                    cornerRadius = CornerRadius(indicatorWidth, indicatorWidth),
-                    color = indicatorColor,
-                    topLeft = Offset(padding / 2, padding.dp.toPx()),
-                    size = Size(indicatorWidth, size.height - padding * 2)
-                )
-            },
+            .drawIndicator(indicatorColor),
     ) {
         Row(
             modifier = Modifier

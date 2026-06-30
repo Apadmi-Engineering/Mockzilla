@@ -6,10 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,7 +42,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.isOverflowingLatencySlider
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
+import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
@@ -130,11 +130,11 @@ internal fun GlobalControlsWidgetIdleContent(
             .navigationBarsPadding(),
     ) {
         // Header
-        Row(
+        FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            itemVerticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -144,7 +144,7 @@ internal fun GlobalControlsWidgetIdleContent(
                     color = colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                FlowRow(itemVerticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = strings.widgets.globalControls.subtitle,
                         style = MaterialTheme.typography.bodySmall,
@@ -160,7 +160,6 @@ internal fun GlobalControlsWidgetIdleContent(
             }
 
             BaseButton(
-                modifier = Modifier.heightIn(min = 32.dp),
                 label = strings.widgets.globalControls.resetAllLabel,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Sm,
@@ -194,38 +193,53 @@ internal fun GlobalControlsWidgetIdleContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Force Failure Card
-            ForceFailureCard(
+            ForceFailureBanner(
                 state = state.apiFailureState,
                 onRestoreApiClicked = onRestoreApiClicked,
                 onForceFailureClicked = onForceFailureClicked,
                 strings = strings
             )
 
-            // Response Latency Card
-            ResponseLatencyCard(
-                initialValue = state.initialLatencyMs,
-                isOverflowing = state.initialLatencyMs.isOverflowingLatencySlider(),
-                onChange = onLatencyChanged,
-                onReset = onResetLatency,
-                strings = strings
-            )
+            Box(
+                Modifier.border(
+                    1.dp,
+                    MaterialTheme.colorScheme.outline,
+                    RoundedCornerShape(8.dp)
+                )
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainer,
+                        RoundedCornerShape(8.dp)
+                    )
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            ) {
+                ResponseLatencyCard(
+                    initialValue = state.initialLatencyMs,
+                    isOverflowing = state.initialLatencyMs.isOverflowingLatencySlider(),
+                    onChange = onLatencyChanged,
+                    onReset = onResetLatency,
+                    strings = strings
+                )
+            }
 
             // Per-Endpoint Status Section
             Column(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = strings.widgets.globalControls.perEndpointStatus,
-                    style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.5.sp),
-                    color = colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
+                val filteredEndpoints = state.endpoints.filter { it.overriddenProperties.isNotEmpty() || it.fail }
 
-                state.endpoints.filter { it.overriddenProperties.isNotEmpty() || it.fail }.forEach { endpoint ->
-                    EndpointStatusRow(endpoint, strings)
+                if (filteredEndpoints.isNotEmpty()) {
+                    Text(
+                        text = strings.widgets.globalControls.perEndpointStatus,
+                        style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.5.sp),
+                        color = colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    filteredEndpoints.forEach { endpoint ->
+                        EndpointStatusRow(endpoint, strings)
+                    }
                 }
             }
         }
@@ -233,106 +247,47 @@ internal fun GlobalControlsWidgetIdleContent(
 }
 
 @Composable
-private fun ForceFailureCard(
-    state: ForceFailureBannerState,
-    onRestoreApiClicked: () -> Unit,
-    onForceFailureClicked: () -> Unit,
-    strings: Strings
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    val titleAndSubtitle = when (state) {
-        ForceFailureBannerState.FullFailure -> strings.widgets.globalControls.forcedFailureBannerConfig
-        ForceFailureBannerState.PartialFailure -> strings.widgets.globalControls.partialFailureBannerConfig
-        ForceFailureBannerState.Normal -> strings.widgets.globalControls.normalBehaviourBannerConfig
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = titleAndSubtitle.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = colorScheme.onSurface
-            )
-            Text(
-                text = titleAndSubtitle.subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = colorScheme.onSurfaceVariant
-            )
-        }
-
-        if (state == ForceFailureBannerState.Normal) {
-            BaseButton(
-                label = strings.widgets.globalControls.failButtonLabel,
-                variant = ButtonVariant.Danger,
-                size = ButtonSize.Sm,
-                leadingIcon = Icons.LightningBolt,
-                onClick = onForceFailureClicked
-            )
-        } else {
-            BaseButton(
-                label = strings.widgets.globalControls.restoreButtonLabel,
-                variant = ButtonVariant.Solid,
-                size = ButtonSize.Sm,
-                onClick = onRestoreApiClicked
-            )
-        }
-    }
-}
-
-@Composable
 private fun EndpointStatusRow(
     endpoint: EndpointsViewModel.State.EndpointConfig,
-    strings: Strings
+    strings: Strings,
+    colorScheme: ColorScheme = MaterialTheme.colorScheme
+) = FlowRow(
+    modifier = Modifier
+        .fillMaxWidth()
+        .background(color = colorScheme.surfaceContainer, shape = RoundedCornerShape(8.dp))
+        .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
+        .padding(horizontal = 12.dp, vertical = 10.dp),
+    horizontalArrangement = Arrangement.spacedBy(4.dp),
+    verticalArrangement = Arrangement.spacedBy(4.dp)
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = endpoint.name,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            color = colorScheme.onSurface,
-            modifier = Modifier.weight(1f)
-        )
+    Text(
+        text = endpoint.name,
+        style = MaterialTheme.typography.bodyMedium,
+        fontWeight = FontWeight.Bold,
+        color = colorScheme.onSurface
+    )
 
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            if (endpoint.fail) {
-                StatusChip(label = strings.widgets.globalControls.forcedStatus, color = colorScheme.error)
+    Spacer(Modifier.weight(1f))
+
+    if (endpoint.fail) {
+        StatusChip(
+            label = strings.widgets.globalControls.forcedStatus,
+            color = colorScheme.error
+        )
+    }
+    endpoint.overriddenProperties.forEach { property ->
+        StatusChip(
+            label = when (property) {
+                EndpointProperties.Delay -> strings.widgets.globalControls.latencyStatus
+                EndpointProperties.Body -> strings.widgets.globalControls.bodyStatus
+                EndpointProperties.Headers -> strings.widgets.globalControls.headersStatus
+                EndpointProperties.Status -> strings.widgets.globalControls.statusStatus
+            },
+            color = when (property) {
+                EndpointProperties.Delay -> colorScheme.warning.primary
+                else -> colorScheme.primary
             }
-            endpoint.overriddenProperties.forEach { property ->
-                StatusChip(
-                    label = when (property) {
-                        EndpointProperties.Delay -> strings.widgets.globalControls.latencyStatus
-                        EndpointProperties.Body -> strings.widgets.globalControls.bodyStatus
-                        EndpointProperties.Headers -> strings.widgets.globalControls.headersStatus
-                        EndpointProperties.Status -> strings.widgets.globalControls.statusStatus
-                    },
-                    color = when (property) {
-                        EndpointProperties.Delay -> colorScheme.warning.primary
-                        else -> colorScheme.primary
-                    }
-                )
-            }
-        }
+        )
     }
 }
 

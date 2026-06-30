@@ -88,7 +88,7 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
         yield()
 
         /* Verify */
-        assertEquals(State.Empty, initialState)
+        assertEquals(State.Loading, initialState)
         assertEquals(
             State.Endpoint(
                 config = config,

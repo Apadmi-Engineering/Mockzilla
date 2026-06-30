@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -90,6 +91,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetai
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
+import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
@@ -190,7 +192,8 @@ private fun ColumnScope.PopulatedState(
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
             RowDensityControls(modifier = Modifier.alpha(0f).clearAndSetSemantics { /* No-Op*/ })
-        }
+        },
+        contentPadding = PaddingValues(8.dp)
     ) {
         ForceFailureBanner(
             state = if (state.config.shouldFail == true) {
@@ -217,8 +220,6 @@ private fun ColumnScope.PopulatedState(
             onChange = onDelayChange,
             onReset = { onDelayChange(null) },
             showHeader = false,
-            showBackground = false,
-            showBorder = false,
         )
     }
 
@@ -228,7 +229,8 @@ private fun ColumnScope.PopulatedState(
         icon = Icons.Default.DragIndicator,
         contentPadding = PaddingValues(0.dp),
         headerActions = {
-            if ((state.presets as? State.Endpoint.Presets.Populated)?.allPresets?.isNotEmpty() == true) {
+            if (Platform.current == Platform.Desktop && (state.presets as? State.Endpoint.Presets.Populated)?.allPresets?.isNotEmpty() == true
+            ) {
                 RowDensityControls(
                     selected = state.layoutMode,
                     onChanged = onRowDensityChanged
@@ -255,7 +257,8 @@ private fun ColumnScope.PopulatedState(
                 onDefaultPresetSelected = onDefaultPresetSelected,
                 onPresetMoreInfoClicked = onPresetMoreInfoClicked,
                 onRetry = onRetry,
-                onEditPreset = onEditPreset
+                onEditPreset = onEditPreset,
+                onRowDensityChanged = onRowDensityChanged,
             )
         }
     }
@@ -325,6 +328,10 @@ internal fun EndpointDetailsWidgetContent(
             .background(color = colorScheme.surface)
     ) {
         when (state) {
+            is State.Loading -> CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.align(Alignment.Center)
+            )
             is State.FailedToLoad -> ErrorRetry(
                 modifier = Modifier.align(Alignment.Center),
                 onRetry = onRetry

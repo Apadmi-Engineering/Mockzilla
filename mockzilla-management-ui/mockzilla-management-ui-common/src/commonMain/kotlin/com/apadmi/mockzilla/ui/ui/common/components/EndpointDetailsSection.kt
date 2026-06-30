@@ -112,7 +112,7 @@ fun EndpointDetailsSection(
             Text(
                 modifier = Modifier.weight(1f),
                 text = label.uppercase(),
-                style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.06.em),
+                style = MaterialTheme.typography.titleSmall.copy(letterSpacing = 0.06.em),
                 color = if (isDark) colorScheme.onSurface else colorScheme.onSurfaceVariant,
             )
             headerActions()

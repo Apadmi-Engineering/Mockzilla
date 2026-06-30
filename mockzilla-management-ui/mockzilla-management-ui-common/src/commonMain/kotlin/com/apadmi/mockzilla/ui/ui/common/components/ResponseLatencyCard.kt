@@ -6,9 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,8 +55,8 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
-import com.apadmi.mockzilla.ui.ui.common.theme.mockzillaMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
@@ -98,7 +101,7 @@ private fun Int.msToSecondsText(): String {
     }
 }
 
-private fun String.secondsTextToMs(): Int? = toDoubleOrNull()?.let { (it * msPerSecond).roundToInt() }
+private fun String.secondsTextToMs(): Int? = toDoubleOrNull()?.let { (it * msPerSecond).roundToInt().clamped() }
 
 private fun String.filterAsDecimal(): String {
     val digitsAndDot = filter { it.isDigit() || it == '.' }
@@ -125,8 +128,6 @@ internal fun ResponseLatencyCard(
     onChange: (Int) -> Unit,
     onReset: () -> Unit,
     showHeader: Boolean = true,
-    showBackground: Boolean = true,
-    showBorder: Boolean = true,
     strings: Strings = LocalStrings.current,
 ) {
     var value by remember {
@@ -159,35 +160,11 @@ internal fun ResponseLatencyCard(
 
     val colorScheme = MaterialTheme.colorScheme
     val isDark = LocalForceDarkMode.current
-    val cardShape = if (isDark) RoundedCornerShape(0.dp) else RoundedCornerShape(8.dp)
     val componentShape = if (isDark) RoundedCornerShape(4.dp) else RoundedCornerShape(6.dp)
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .then(
-                if (showBackground) {
-                    Modifier.background(
-                        color = colorScheme.surfaceVariant,
-                        shape = cardShape
-                    )
-                } else {
-                    Modifier
-                }
-            )
-            .then(
-                if (showBorder) {
-                    Modifier.border(
-                        width = 1.dp,
-                        color = colorScheme.outline,
-                        shape = cardShape
-                    )
-                } else {
-                    Modifier
-                }
-            )
-            .padding(if (showBackground || showBorder) 16.dp else 0.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .fillMaxWidth(),
     ) {
         if (showHeader) {
             Row(
@@ -213,18 +190,16 @@ internal fun ResponseLatencyCard(
             }
         }
 
-        Column(
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
+        Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(44.dp)
+                        .heightIn(min = 44.dp)
                         .background(
                             color = colorScheme.background,
                             shape = componentShape,
@@ -256,7 +231,7 @@ internal fun ResponseLatencyCard(
                         },
                         singleLine = true,
                         textStyle = MaterialTheme.typography.bodySmall.copy(
-                            fontFamily = mockzillaMonoFontFamily(),
+                            fontFamily = LocalMonoFontFamily.current,
                             color = value?.let {
                                 colorScheme.warning.primary
                             } ?: colorScheme.onSurfaceMuted,
@@ -274,7 +249,7 @@ internal fun ResponseLatencyCard(
                                     Text(
                                         text = strings.widgets.latency.notSet,
                                         style = MaterialTheme.typography.bodySmall.copy(
-                                            fontFamily = mockzillaMonoFontFamily(),
+                                            fontFamily = LocalMonoFontFamily.current,
                                             color = colorScheme.onSurfaceMuted,
                                             fontSize = 12.sp,
                                             fontWeight = FontWeight.Normal,
@@ -368,12 +343,15 @@ internal fun ResponseLatencyCard(
                 }
             }
         }
-        
-        Row(
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            listOf(0, 300, 1000, 3000, 10000).forEach { ms ->
+            listOf(0, 300, 1000, 3000, 10000, 99000).forEach { ms ->
                 val isSelected = value == ms
                 val label = when {
                     ms == 0 -> "0"
@@ -406,7 +384,7 @@ internal fun ResponseLatencyCard(
                     Text(
                         text = label,
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontFamily = mockzillaMonoFontFamily(),
+                            fontFamily = LocalMonoFontFamily.current,
                             color = if (isSelected) colorScheme.primary else colorScheme.onSurfaceMuted,
                             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                         )

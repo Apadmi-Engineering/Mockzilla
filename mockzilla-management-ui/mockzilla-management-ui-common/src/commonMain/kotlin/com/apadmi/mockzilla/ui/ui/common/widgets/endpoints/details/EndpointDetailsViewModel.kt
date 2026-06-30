@@ -33,7 +33,7 @@ internal class EndpointDetailsViewModel(
     private val eventBus: EventBus,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
-    val state = MutableStateFlow<State>(State.Empty)
+    val state = MutableStateFlow<State>(State.Loading)
     private var delayDebounceJob: Job? = null
 
     init {
@@ -134,6 +134,7 @@ internal class EndpointDetailsViewModel(
         setStateLoading()
         state.value = when (val state = state.value) {
             is State.FailedToLoad,
+            is State.Loading,
             is State.Empty -> state
             is State.Endpoint -> {
                 updateServer(state.config, device)
@@ -222,6 +223,7 @@ internal class EndpointDetailsViewModel(
     }
 
     sealed class State {
+        data object Loading : State()
         data object Empty : State()
         data object FailedToLoad : State()
 

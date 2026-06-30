@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -48,8 +47,8 @@ import org.koin.dsl.module
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
-private const val sheetHeightFraction = 0.95f
-private const val scrimAlpha = 0.4f
+private const val sheetHeightFraction = 0.93f
+private const val scrimAlpha = 0.5f
 private const val dismissDragFraction = 0.25f
 private const val dismissVelocityThreshold = 1500f
 
@@ -111,11 +110,15 @@ private fun BottomSheetWrapper(onDismiss: () -> Unit) {
     @Suppress("FLOAT_IN_ACCURATE_CALCULATIONS")
     val visibilityFraction = 1 - (offset.value / sheetHeightPx).coerceIn(0f, 1f)
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = scrimAlpha * visibilityFraction))
+    ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = scrimAlpha * visibilityFraction))
+                .fillMaxWidth()
+                .weight(1f)
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
@@ -126,12 +129,10 @@ private fun BottomSheetWrapper(onDismiss: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding()
                 .height(screenHeightDp * sheetHeightFraction)
-                .align(Alignment.BottomCenter)
                 .offset { IntOffset(x = 0, y = offset.value.roundToInt()) }
                 .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
                 .navigationBarsPadding()
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -139,7 +140,6 @@ private fun BottomSheetWrapper(onDismiss: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(32.dp)
-                        .background(MaterialTheme.colorScheme.surface)
                         .draggable(
                             orientation = Orientation.Vertical,
                             state = rememberDraggableState { delta ->
@@ -154,7 +154,10 @@ private fun BottomSheetWrapper(onDismiss: () -> Unit) {
                                     scope.launch {
                                         offset.animateTo(
                                             targetValue = 0f,
-                                            animationSpec = spring(dampingRatio = 0.85f, stiffness = 400f),
+                                            animationSpec = spring(
+                                                dampingRatio = 0.85f,
+                                                stiffness = 400f
+                                            ),
                                         )
                                     }
                                 }
