@@ -148,11 +148,11 @@ internal fun PresetCard(
     preset: DashboardOverridePreset,
     onClicked: (DashboardOverridePreset) -> Unit,
     onEdit: () -> Unit = {},
-    layoutMode: RowDensity = RowDensity.Compact,
+    rowDensity: RowDensity = RowDensity.Compact,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     val isDark = LocalForceDarkMode.current
-    val isCompact = layoutMode == RowDensity.Compact
+    val isCompact = rowDensity == RowDensity.Compact
     val isSelected = variant == PresetCardVariant.Selected
     val statusColors = preset.statusColors()
     val colorScheme = MaterialTheme.colorScheme

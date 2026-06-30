@@ -91,6 +91,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetai
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.PresetsContainer
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
+import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
@@ -228,7 +229,8 @@ private fun ColumnScope.PopulatedState(
         icon = Icons.Default.DragIndicator,
         contentPadding = PaddingValues(0.dp),
         headerActions = {
-            if ((state.presets as? State.Endpoint.Presets.Populated)?.allPresets?.isNotEmpty() == true) {
+            if (Platform.current == Platform.Desktop && (state.presets as? State.Endpoint.Presets.Populated)?.allPresets?.isNotEmpty() == true
+            ) {
                 RowDensityControls(
                     selected = state.layoutMode,
                     onChanged = onRowDensityChanged
@@ -255,7 +257,8 @@ private fun ColumnScope.PopulatedState(
                 onDefaultPresetSelected = onDefaultPresetSelected,
                 onPresetMoreInfoClicked = onPresetMoreInfoClicked,
                 onRetry = onRetry,
-                onEditPreset = onEditPreset
+                onEditPreset = onEditPreset,
+                onRowDensityChanged = onRowDensityChanged,
             )
         }
     }

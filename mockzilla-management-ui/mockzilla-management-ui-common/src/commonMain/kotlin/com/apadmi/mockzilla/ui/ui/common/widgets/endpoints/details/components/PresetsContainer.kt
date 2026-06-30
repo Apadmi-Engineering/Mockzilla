@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -34,11 +35,13 @@ import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.endpointDetailsWidgetSuccessState
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.mockPresets
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
+import com.apadmi.mockzilla.ui.utils.Platform
 
 @Composable
 internal fun PresetsContainer(
@@ -47,6 +50,7 @@ internal fun PresetsContainer(
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onPresetMoreInfoClicked: () -> Unit,
     onRetry: () -> Unit,
+    onRowDensityChanged: (RowDensity) -> Unit,
     onEditPreset: () -> Unit = {},
     modifier: Modifier = Modifier,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
@@ -77,7 +81,8 @@ internal fun PresetsContainer(
                     onPresetFilterChanged = onPresetFilterChanged,
                     onDefaultPresetSelected = onDefaultPresetSelected,
                     onEditPreset = onEditPreset,
-                    layoutMode = state.layoutMode
+                    rowDensity = state.layoutMode,
+                    onRowDensityChanged = onRowDensityChanged
                 )
             } else {
                 Column(
@@ -129,14 +134,16 @@ private fun PopulatedPresets(
     onPresetFilterChanged: (String) -> Unit,
     onDefaultPresetSelected: (DashboardOverridePreset) -> Unit,
     onEditPreset: () -> Unit = {},
-    layoutMode: RowDensity = RowDensity.Compact,
+    rowDensity: RowDensity = RowDensity.Compact,
+    onRowDensityChanged: (RowDensity) -> Unit,
     strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         if (presets.allPresets.size > 1) {
             FilterTextField(
@@ -145,6 +152,15 @@ private fun PopulatedPresets(
                 onFilterUpdate = onPresetFilterChanged,
                 placeholder = strings.filterPlaceholder
             )
+
+            if (Platform.current != Platform.Desktop) {
+                Spacer(Modifier.width(4.dp))
+
+                RowDensityControls(
+                    selected = rowDensity,
+                    onChanged = onRowDensityChanged
+                )
+            }
         }
     }
 
@@ -177,7 +193,7 @@ private fun PopulatedPresets(
                 preset = preset,
                 onClicked = onDefaultPresetSelected,
                 onEdit = onEditPreset,
-                layoutMode = layoutMode
+                rowDensity = rowDensity
             )
             if (index == presets.visiblePresets.lastIndex) {
                 Spacer(Modifier.height(4.dp))
@@ -254,6 +270,7 @@ private fun PresetsContainerPreviewContainer(
         onPresetFilterChanged = {},
         onDefaultPresetSelected = {},
         onPresetMoreInfoClicked = {},
-        onRetry = {}
+        onRetry = {},
+        onRowDensityChanged = {}
     )
 }

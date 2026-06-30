@@ -141,7 +141,7 @@ private fun EndpointsList(
                 placeholder = LocalStrings.current.widgets.endpoints.filterPlaceholder
             )
             if (Platform.current != Platform.Desktop) {
-                Spacer(Modifier.width(2.dp))
+                Spacer(Modifier.width(4.dp))
                 RowDensityControls(
                     selected = state.rowDensity,
                     onChanged = onRowDensityChanged
