@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -72,7 +73,7 @@ internal fun PresetsContainer(
                 modifier = Modifier.fillMaxWidth().padding(32.dp),
                 contentAlignment = Alignment.Center
             ) {
-                TogglableProgressIndicator(isLoading = true)
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
             is State.Endpoint.Presets.Error -> Box(
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
