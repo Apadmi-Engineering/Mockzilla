@@ -57,9 +57,9 @@ import com.apadmi.mockzilla.ui.engine.find.FindReplaceState
 import com.apadmi.mockzilla.ui.engine.find.findMatches
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 @Composable
