@@ -17,7 +17,6 @@ import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 
 internal enum class OutlineButtonVariant {
-    Error,
     Primary,
     Secondary,
     ;
@@ -37,7 +36,6 @@ internal fun CustomOutlineButton(
     label = label,
     leadingIcon = leadingIcon,
     variant = when (variant) {
-        OutlineButtonVariant.Error -> ButtonVariant.Danger
         OutlineButtonVariant.Primary -> ButtonVariant.Outline
         OutlineButtonVariant.Secondary -> ButtonVariant.Soft
     },
@@ -53,7 +51,6 @@ private fun CustomOutlineButtonPreview() = PreviewSurface {
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        CustomOutlineButton(label = "Error", variant = OutlineButtonVariant.Error, onClick = {})
         CustomOutlineButton(label = "Primary", variant = OutlineButtonVariant.Primary, onClick = {})
         CustomOutlineButton(
             label = "With Icon",

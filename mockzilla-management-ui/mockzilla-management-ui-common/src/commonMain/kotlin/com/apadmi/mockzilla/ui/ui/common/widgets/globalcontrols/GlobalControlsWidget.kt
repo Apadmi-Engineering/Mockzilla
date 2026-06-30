@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,7 +32,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +49,7 @@ import com.apadmi.mockzilla.ui.engine.isOverflowingLatencySlider
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
+import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
@@ -51,6 +57,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.BaseButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
@@ -194,22 +201,33 @@ internal fun GlobalControlsWidgetIdleContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Force Failure Card
-            ForceFailureCard(
+            ForceFailureBanner(
                 state = state.apiFailureState,
                 onRestoreApiClicked = onRestoreApiClicked,
                 onForceFailureClicked = onForceFailureClicked,
                 strings = strings
             )
 
-            // Response Latency Card
-            ResponseLatencyCard(
-                initialValue = state.initialLatencyMs,
-                isOverflowing = state.initialLatencyMs.isOverflowingLatencySlider(),
-                onChange = onLatencyChanged,
-                onReset = onResetLatency,
-                strings = strings
-            )
+            Box(
+                Modifier.border(
+                    1.dp,
+                    MaterialTheme.colorScheme.outline,
+                    RoundedCornerShape(8.dp)
+                )
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainer,
+                        RoundedCornerShape(8.dp)
+                    )
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            ) {
+                ResponseLatencyCard(
+                    initialValue = state.initialLatencyMs,
+                    isOverflowing = state.initialLatencyMs.isOverflowingLatencySlider(),
+                    onChange = onLatencyChanged,
+                    onReset = onResetLatency,
+                    strings = strings
+                )
+            }
 
             // Per-Endpoint Status Section
             Column(
@@ -237,62 +255,6 @@ internal fun GlobalControlsWidgetIdleContent(
 }
 
 @Composable
-private fun ForceFailureCard(
-    state: ForceFailureBannerState,
-    onRestoreApiClicked: () -> Unit,
-    onForceFailureClicked: () -> Unit,
-    strings: Strings
-) {
-    val colorScheme = MaterialTheme.colorScheme
-    val titleAndSubtitle = when (state) {
-        ForceFailureBannerState.FullFailure -> strings.widgets.globalControls.forcedFailureBannerConfig
-        ForceFailureBannerState.PartialFailure -> strings.widgets.globalControls.partialFailureBannerConfig
-        ForceFailureBannerState.Normal -> strings.widgets.globalControls.normalBehaviourBannerConfig
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = titleAndSubtitle.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = colorScheme.onSurface
-            )
-            Text(
-                text = titleAndSubtitle.subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = colorScheme.onSurfaceVariant
-            )
-        }
-
-        if (state == ForceFailureBannerState.Normal) {
-            BaseButton(
-                label = strings.widgets.globalControls.failButtonLabel,
-                variant = ButtonVariant.Danger,
-                size = ButtonSize.Sm,
-                leadingIcon = Icons.LightningBolt,
-                onClick = onForceFailureClicked
-            )
-        } else {
-            BaseButton(
-                label = strings.widgets.globalControls.restoreButtonLabel,
-                variant = ButtonVariant.Solid,
-                size = ButtonSize.Sm,
-                onClick = onRestoreApiClicked
-            )
-        }
-    }
-}
-
-@Composable
 private fun EndpointStatusRow(
     endpoint: EndpointsViewModel.State.EndpointConfig,
     strings: Strings,
@@ -300,7 +262,7 @@ private fun EndpointStatusRow(
 ) = FlowRow(
     modifier = Modifier
         .fillMaxWidth()
-        .background(color = colorScheme.surfaceVariant, shape = RoundedCornerShape(8.dp))
+        .background(color = colorScheme.surfaceContainer, shape = RoundedCornerShape(8.dp))
         .border(1.dp, colorScheme.outline, RoundedCornerShape(8.dp))
         .padding(horizontal = 12.dp, vertical = 10.dp),
     horizontalArrangement = Arrangement.spacedBy(4.dp),

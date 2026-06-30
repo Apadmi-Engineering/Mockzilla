@@ -191,7 +191,8 @@ private fun ColumnScope.PopulatedState(
         headerActions = {
             // Invisible control just to ensure the rows are a consistent height
             RowDensityControls(modifier = Modifier.alpha(0f).clearAndSetSemantics { /* No-Op*/ })
-        }
+        },
+        contentPadding = PaddingValues(8.dp)
     ) {
         ForceFailureBanner(
             state = if (state.config.shouldFail == true) {
@@ -218,8 +219,6 @@ private fun ColumnScope.PopulatedState(
             onChange = onDelayChange,
             onReset = { onDelayChange(null) },
             showHeader = false,
-            showBackground = false,
-            showBorder = false,
         )
     }
 
