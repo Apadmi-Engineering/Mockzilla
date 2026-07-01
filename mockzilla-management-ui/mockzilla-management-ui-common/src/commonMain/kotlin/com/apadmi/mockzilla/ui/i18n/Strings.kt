@@ -20,12 +20,43 @@ private val strings = mapOf(
  * @property widgets
  * @property common
  * @property components
+ * @property menu
+ * @property links
  */
 data class Strings(
     val common: Common,
     val widgets: Widgets,
-    val components: Components
+    val components: Components,
+    val menu: Menu,
+    val links: Links
 ) {
+    /**
+     * @property docsHome
+     * @property docsPresets
+     * @property github
+     * @property apadmi
+     */
+    data class Links(
+        val docsHome: String,
+        val docsPresets: String,
+        val github: String,
+        val apadmi: String
+    )
+    /**
+     * @property openSourceLicenses
+     * @property about
+     * @property github
+     * @property documentation
+     * @property apadmi
+     */
+    data class Menu(
+        val openSourceLicenses: String,
+        val about: String,
+        val github: String,
+        val documentation: String,
+        val apadmi: String
+    )
+
     /**
      * @property editor
      * @property findReplace
@@ -95,7 +126,7 @@ data class Strings(
         val backDescription: String,
         val debugDescription: String,
         val resetDescription: String,
-        val deleteDescription: String
+        val deleteDescription: String,
     )
     /**
      * @property deviceConnection
@@ -111,6 +142,7 @@ data class Strings(
      * @property globalControls
      * @property latency
      * @property createEditPreset
+     * @property openSourceLicenses
      */
     data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -125,8 +157,19 @@ data class Strings(
         val miscControls: MiscControls,
         val unsupportedMockzilla: UnsupportedMockzillaVersion,
         val errorBanner: ErrorBanner,
-        val latency: Latency
+        val latency: Latency,
+        val openSourceLicenses: OpenSourceLicenses
     ) {
+        /**
+         * @property error
+         * @property title
+         * @property devBuildsMessage
+         */
+        data class OpenSourceLicenses(
+            val error: String,
+            val title: String,
+            val devBuildsMessage: String
+        )
         /**
          * @property connectionLost
          * @property refreshButton

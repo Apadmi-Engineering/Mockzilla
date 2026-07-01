@@ -1,6 +1,7 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.githubToken
 import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.isDevelopmentBuild
 import com.apadmi.mockzilla.isSnapshot
@@ -21,6 +22,7 @@ plugins {
     alias(libs.plugins.conveyor)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.dokka) apply true
 }
 
@@ -204,6 +206,31 @@ dependencies {
 
     /* Compose previews */
     debugImplementation(libs.ui.tooling.preview)
+}
+
+aboutLibraries {
+    export {
+        outputFile = file("src/commonMain/composeResources/files/aboutlibraries.json")
+    }
+
+    collect {
+        configPath = file("licenses-config")
+
+        // GitHub token to raise API request limit to allow fetching more licenses.
+        // Needed for fetching licenses at build time
+        gitHubApiToken = githubToken()
+
+        // Enable fetching of "remote" licenses.  Uses the API of supported source hosts
+        // See https://github.com/mikepenz/AboutLibraries#special-repository-support
+        fetchRemoteLicense = true
+
+        // Enables fetching of "remote" funding information. Uses the API of supported source hosts
+        // See https://github.com/mikepenz/AboutLibraries#special-repository-support
+        fetchRemoteFunding = true
+
+        // Enable inclusion of `platform` dependencies in the library report
+        includePlatform = true
+    }
 }
 
 configurations.all {
