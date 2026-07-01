@@ -24,8 +24,13 @@ private val strings = mapOf(
 data class Strings(
     val common: Common,
     val widgets: Widgets,
-    val components: Components
+    val components: Components,
+    val menu: Menu
 ) {
+    data class Menu(
+        val openSourceLicenses: String,
+        val about: String
+    )
     /**
      * @property editor
      * @property findReplace
@@ -89,7 +94,6 @@ data class Strings(
      * @property debugDescription
      * @property resetDescription
      * @property deleteDescription
-     * @property openSourceLicenses
      */
     data class Common(
         val closeDescription: String,
@@ -97,7 +101,6 @@ data class Strings(
         val debugDescription: String,
         val resetDescription: String,
         val deleteDescription: String,
-        val openSourceLicenses: String
     )
     /**
      * @property deviceConnection
@@ -127,7 +130,7 @@ data class Strings(
         val miscControls: MiscControls,
         val unsupportedMockzilla: UnsupportedMockzillaVersion,
         val errorBanner: ErrorBanner,
-        val latency: Latency
+        val latency: Latency,
     ) {
         /**
          * @property connectionLost

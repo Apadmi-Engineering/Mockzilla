@@ -16,8 +16,11 @@ val EnStrings = Strings(
         backDescription = "Back",
         debugDescription = "Debug",
         resetDescription = "Reset",
-        deleteDescription = "Delete",
-        openSourceLicenses = "Open source licenses"
+        deleteDescription = "Delete"
+    ),
+    menu = Strings.Menu(
+        openSourceLicenses = "Open source licenses",
+        about = "About"
     ),
     widgets = Strings.Widgets(
         deviceConnection = Strings.Widgets.DeviceConnection(

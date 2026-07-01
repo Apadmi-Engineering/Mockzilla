@@ -21,6 +21,7 @@ import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.i18n.EnStrings
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import org.jetbrains.skiko.OS
 import org.jetbrains.skiko.hostOs
@@ -39,8 +40,8 @@ private fun FrameWindowScope.MockzillaWindowContent(state: WindowState) {
     var showLicenses by remember { mutableStateOf(false) }
 
     MenuBar {
-        Menu(EnStrings.common.openSourceLicenses) {
-            Item(EnStrings.common.openSourceLicenses) { showLicenses = true }
+        Menu(LocalStrings.current.menu.about) {
+            Item(LocalStrings.current.menu.openSourceLicenses) { showLicenses = true }
         }
     }
 

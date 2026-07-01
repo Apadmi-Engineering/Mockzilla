@@ -37,7 +37,7 @@ import androidx.compose.ui.window.Dialog
 import com.apadmi.mockzilla.desktop.engine.licenses.LicenseDisplayModel
 import com.apadmi.mockzilla.desktop.engine.licenses.LibraryForAttribution
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
-import com.apadmi.mockzilla.ui.i18n.EnStrings
+import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
@@ -98,13 +98,13 @@ private fun LicensesDialogHeader(onDismiss: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = EnStrings.common.openSourceLicenses,
+            text = LocalStrings.current.menu.openSourceLicenses,
             style = MaterialTheme.typography.titleMedium,
         )
         IconButton(onClick = onDismiss) {
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = EnStrings.common.closeDescription,
+                contentDescription = LocalStrings.current.common.closeDescription,
                 modifier = Modifier.size(18.dp),
             )
         }
