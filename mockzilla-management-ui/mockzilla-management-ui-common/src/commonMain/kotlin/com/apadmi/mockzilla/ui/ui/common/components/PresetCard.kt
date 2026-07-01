@@ -361,16 +361,20 @@ private fun ExpandableResponseBody(
         .clip(shape = RoundedCornerShape(8.dp))
 ) {
     val mode = response.typeFormat
-    val body = when {
-        BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body?.take(1000) + "…"
-        mode == EditorMode.Json -> if (isCompact) {
-            response.body?.minifyJson()
-        } else {
-            response.body?.prettyPrintJson()
+    val body = remember(mode, response.body, isCompact) {
+        when {
+            BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body?.take(1000) + "…"
+            mode == EditorMode.Json -> if (isCompact) {
+                response.body?.minifyJson()
+            } else {
+                response.body?.prettyPrintJson()
+            }
+
+            else -> response.body
         }
-        else -> response.body
     }
-    var hasOverflow by remember(body, isCompact) { mutableStateOf(false) }
+    var hasOverflow by remember { mutableStateOf(false) }
+
     Text(
         modifier = Modifier.padding(8.dp),
         text = (BodyVisualTransformation
@@ -386,6 +390,9 @@ private fun ExpandableResponseBody(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 
+    // For non Android platform ellipsis doesn't work quite right for text truncated on a line break
+    // Similar bug here: https://youtrack.jetbrains.com/issue/CMP-4451
+    // For these platforms using a gradient to indicate overflow has occurred
     if (hasOverflow && Platform.current != Platform.Android) {
         Box(
             modifier = Modifier
