@@ -19,7 +19,7 @@ val EnStrings = Strings(
         deleteDescription = "Delete"
     ),
     menu = Strings.Menu(
-        openSourceLicenses = "Open source licenses",
+        openSourceLicenses = "Open source licences",
         about = "About",
         github = "GitHub",
         documentation = "Documentation",
@@ -38,18 +38,18 @@ val EnStrings = Strings(
             autoConnectHeading = "Or…",
             autoConnectSubHeading = "Choose a device to connect automatically",
             autoConnectButton = "Connect",
-            ipInputLabel = "e.g 127.0.0.1:8080",
+            ipInputLabel = "e.g. 127.0.0.1:8080",
             androidDevConnectButton = "Connect to development Mockzilla",
             errorTitle = "Failed to connect",
             errorMessage = "Please check the following:" +
                     "\n1. You have called startMockzilla() during your application's launch." +
-                    "\n2. The Mockzilla library you are using is above the minimum versions (KMP: 2.4.1, Flutter: 1.3.0).",
+                    "\n2. The Mockzilla library you are using is at or above the minimum version (KMP: 2.4.1, Flutter: 1.3.0).",
             connected = "Connected",
             tooltips = Strings.Widgets.DeviceConnection.ToolTips(
                 notYourSimulator = "We don't think this is your simulator, but you can try to connect! (Probably won't work)",
                 readyToConnect = "",
                 removed = "This device seems to have disconnected",
-                resolving = "We're still for this device to come online",
+                resolving = "We're still waiting for this device to come online",
             ),
             ipAndPort = "127.0.0.1:8080",
             networkConnection = "MANUAL CONNECTION",
@@ -104,7 +104,7 @@ val EnStrings = Strings(
             emptyDescription = null,
             responseDelayUnits = "ms delay",
             intendedFailure = "Used error response",
-            intendedSuccess = "Used non error response",
+            intendedSuccess = "Used non-error response",
             requestHeaders = "Request headers",
             requestBody = "Request body",
             responseHeaders = "Response headers",
@@ -112,7 +112,7 @@ val EnStrings = Strings(
             noHeaders = "None",
             noBody = "Empty",
             emptyBody = "(none)",
-            bodyLoadError = "Could not load full body"
+            bodyLoadError = "Failed to load full body"
         ),
         endpoints = Strings.Widgets.Endpoints(
             filterPlaceholder = "Filter endpoints...",
@@ -137,11 +137,11 @@ val EnStrings = Strings(
             failButtonLabel = "Force Fail",
             restoreButtonLabel = "Resume",
             normalBehaviourBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
-                title = "Normal Behavior",
+                title = "Normal Behaviour",
                 subtitle = "API responds normally. Error presets still apply",
             ),
             partialFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
-                title = "Partial Failure Enabled",
+                title = "Partial Failure",
                 subtitle = "Some API calls are forced to fail, others are not.",
             ),
             forcedFailureBannerConfig = Strings.Widgets.GlobalControls.GlobalConfigBanner(
@@ -176,9 +176,9 @@ val EnStrings = Strings(
             headersUnset = "Headers unset",
             emptyTitle = "Choose an Endpoint to start editing",
             emptyDescription = null,
-            forcedApiFailureBannerTitle = "Forced API Failure Enabled",
+            forcedApiFailureBannerTitle = "Forced Failure",
             forcedApiFailureBannerSubtitle = "This setting is currently being overridden",
-            behavior = "Behavior",
+            behavior = "Behaviour",
             latency = "Latency",
             presets = Strings.Widgets.EndpointDetails.Presets(
                 title = "Presets",
@@ -202,7 +202,7 @@ val EnStrings = Strings(
                 applyLabel = "Apply",
                 appliedLabel = "Applied",
                 editLabel = "Edit",
-                forceFailureBannerTitle = "Forced Failure is on.",
+                forceFailureBannerTitle = "Forced Failure",
                 forceFailureBannerBody = "Presets are ignored and locked",
                 forceFailureAppliedPresetMessage = "Ignored - Forced Failure is on",
                 failedToLoad = "Failed to load presets"
@@ -229,22 +229,22 @@ val EnStrings = Strings(
                 when (operation) {
                     GenericErrorableOperation.FetchDashboardOptionsConfig -> "Couldn't fetch the dashboard config for that endpoint"
                     GenericErrorableOperation.FetchEndpointConfigs -> "Couldn't fetch the endpoint configs"
-                    GenericErrorableOperation.UpdateMockData -> "Couldn’t push new config"
+                    GenericErrorableOperation.UpdateMockData -> "Couldn't push new config"
                     GenericErrorableOperation.ApplyPreset -> "Couldn't apply the preset"
                     GenericErrorableOperation.ClearCaches -> "Couldn't clear caches"
                     GenericErrorableOperation.UpdateGlobalOverrides -> "Couldn't override those properties"
                     null -> "Something went wrong"
                 }
             },
-            apiErrorDescription = "This is an unexpected error, it's likely irrecoverable. Re-syncing everything is advised. (You will lose unsaved changes)",
+            apiErrorDescription = "This is an unexpected error and is likely irrecoverable. Re-syncing everything is advised. (You will lose unsaved changes.)",
             connectionErrorTitlesAndBodies = listOf(
                 " · Is in the foreground." to " Background apps may have networking suspended by the OS.",
-                " · Is on the ame network." to " Mockzilla discovers over LAN. Check Wi-Fi vs. Data. ",
+                " · Is on the same network." to " Mockzilla discovers over LAN. Check Wi-Fi vs. Data. ",
                 " · Port reachable." to " Confirm the Mockzilla port isn't blocked by a firewall or VPN."
             ),
             statusLabel = "Status: ",
             messageLabel = "Message: ",
-            connectionErrorTitle = "Please ensure the App:",
+            connectionErrorTitle = "Please ensure the app:",
         ),
         createEditPreset = Strings.Widgets.CreateEditPreset(
             createTitle = "Create Preset",
@@ -290,7 +290,7 @@ val EnStrings = Strings(
         ),
         openSourceLicenses = Strings.Widgets.OpenSourceLicenses(
             error = "Failed to load licences",
-            title = "Open source licenses",
+            title = "Open source licences",
             devBuildsMessage = "Licenses not generated for debug builds"
         )
     ),
