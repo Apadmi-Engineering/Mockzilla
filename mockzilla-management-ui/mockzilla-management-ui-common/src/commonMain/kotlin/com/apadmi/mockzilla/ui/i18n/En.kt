@@ -20,7 +20,10 @@ val EnStrings = Strings(
     ),
     menu = Strings.Menu(
         openSourceLicenses = "Open source licenses",
-        about = "About"
+        about = "About",
+        github = "GitHub",
+        documentation = "Documentation",
+        apadmi = "About Us"
     ),
     widgets = Strings.Widgets(
         deviceConnection = Strings.Widgets.DeviceConnection(
@@ -284,6 +287,11 @@ val EnStrings = Strings(
             responseSectionLabel = "Response",
             bodyLabel = "Body",
             jsonErrorTitle = "Invalid JSON:",
+        ),
+        openSourceLicenses = Strings.Widgets.OpenSourceLicenses(
+            error = "Failed to load licences",
+            title = "Open source licenses",
+            devBuildsMessage = "Licenses not generated for debug builds"
         )
     ),
     components = Strings.Components(
@@ -309,5 +317,11 @@ val EnStrings = Strings(
             body = "Please check your device is connected and try again",
             retryButton = "Retry"
         )
+    ),
+    links = Strings.Links(
+        docsHome = "https://mockzilla.apadmi.dev/",
+        docsPresets = "https://mockzilla.apadmi.dev/presets/",
+        github = "https://github.com/Apadmi-Engineering/Mockzilla",
+        apadmi = "https://www.apadmi.com/"
     )
 )

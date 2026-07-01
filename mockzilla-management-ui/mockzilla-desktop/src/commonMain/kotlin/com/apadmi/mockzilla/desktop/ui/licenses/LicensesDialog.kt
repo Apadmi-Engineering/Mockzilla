@@ -36,9 +36,9 @@ import androidx.compose.ui.window.Dialog
 
 import com.apadmi.mockzilla.desktop.engine.licenses.LicenseDisplayModel
 import com.apadmi.mockzilla.desktop.engine.licenses.LibraryForAttribution
+import com.apadmi.mockzilla.desktop.ui.licenses.LicensesViewModel.*
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
-import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
@@ -48,45 +48,48 @@ internal fun LicensesDialog(onDismiss: () -> Unit) {
     val state by viewModel.state.collectAsState()
 
     Dialog(onDismissRequest = onDismiss) {
-            Surface(
-                modifier = Modifier.widthIn(max = 560.dp).heightIn(max = 600.dp),
-                shape = MaterialTheme.shapes.small,
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                tonalElevation = 6.dp,
-            ) {
-                Column {
-                    LicensesDialogHeader(onDismiss = onDismiss)
-                    HorizontalDivider()
-                    when (val s = state) {
-                        is LicensesViewModel.State.Loading -> {
-                            CircularProgressIndicator()
-                        }
-                        is LicensesViewModel.State.ErrorLoading -> {
-                            Text(
-                                text = "Failed to load licenses.",
-                                modifier = Modifier.padding(24.dp),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                        is LicensesViewModel.State.Populated -> {
-                            LazyColumn(modifier = Modifier.weight(1f, fill = false)) {
-                                items(s.libraries) { library ->
-                                    LibraryRow(library)
-                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                                }
-                            }
-                        }
-                        LicensesViewModel.State.DevBuild -> Text(
-                            text = "Licenses not generated for debug builds",
+        Surface(
+            modifier = Modifier.widthIn(max = 560.dp).heightIn(max = 600.dp),
+            shape = MaterialTheme.shapes.small,
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            tonalElevation = 6.dp,
+        ) {
+            Column {
+                LicensesDialogHeader(onDismiss = onDismiss)
+                HorizontalDivider()
+                when (val s = state) {
+                    is State.Loading -> {
+                        CircularProgressIndicator()
+                    }
+
+                    is State.ErrorLoading -> {
+                        Text(
+                            text = LocalStrings.current.widgets.openSourceLicenses.error,
                             modifier = Modifier.padding(24.dp),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.error,
                         )
                     }
+
+                    is State.Populated -> {
+                        LazyColumn(modifier = Modifier.weight(1f, fill = false)) {
+                            items(s.libraries) { library ->
+                                LibraryRow(library)
+                                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                            }
+                        }
+                    }
+
+                    State.DevBuild -> Text(
+                        text = LocalStrings.current.widgets.openSourceLicenses.devBuildsMessage,
+                        modifier = Modifier.padding(24.dp),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                    )
                 }
             }
         }
+    }
 
 }
 
@@ -98,7 +101,7 @@ private fun LicensesDialogHeader(onDismiss: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = LocalStrings.current.menu.openSourceLicenses,
+            text = LocalStrings.current.widgets.openSourceLicenses.title,
             style = MaterialTheme.typography.titleMedium,
         )
         IconButton(onClick = onDismiss) {
@@ -126,35 +129,30 @@ private fun LibraryRow(library: LibraryForAttribution) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = library.name,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    library.version?.let { version ->
-                        Text(
-                            text = version,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceMuted,
-                        )
-                    }
-                }
+                Text(
+                    text = library.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+
                 library.licenses.forEach { license ->
                     LicenseChip(license)
                 }
             }
-            if (hasContent) {
-                Icon(
-                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    contentDescription = null,
-                    modifier = Modifier.padding(start = 8.dp).size(16.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceMuted,
+
+            library.version?.let { version ->
+                Text(
+                    text = version,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceMuted,
                 )
             }
+
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                modifier = Modifier.padding(start = 8.dp).size(16.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceMuted.copy(if (hasContent) 1f else 0f),
+            )
         }
 
         AnimatedVisibility(visible = expanded) {
@@ -174,15 +172,12 @@ private fun LibraryRow(library: LibraryForAttribution) {
 }
 
 @Composable
-private fun LicenseChip(license: LicenseDisplayModel) {
-    val label = buildString {
+private fun LicenseChip(license: LicenseDisplayModel) = Text(
+    text = buildString {
         append(license.name)
         license.spdxId?.let { append(" ($it)") }
         license.url?.let { append(" · $it") }
-    }
-    Text(
-        text = label,
-        style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onSurfaceMuted,
-    )
-}
+    },
+    style = MaterialTheme.typography.labelSmall,
+    color = MaterialTheme.colorScheme.onSurfaceMuted,
+)

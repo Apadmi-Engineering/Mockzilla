@@ -278,6 +278,7 @@ fun EndpointDetailsWidget(
     device: Device,
     activeEndpoint: EndpointConfiguration.Key?,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,
+    strings: Strings = LocalStrings.current,
     onEditPreset: (EndpointConfiguration.Key) -> Unit = {},
 ) {
     val uriHandler = LocalUriHandler.current
@@ -298,9 +299,7 @@ fun EndpointDetailsWidget(
         onCreatePreset = { activeEndpoint?.let { onCreatePreset(activeEndpoint) } },
         onEditPreset = { activeEndpoint?.let { onEditPreset(activeEndpoint) } },
         onRetry = viewModel::retry,
-        onPresetMoreInfoClicked = {
-            uriHandler.openUri("https://mockzilla.apadmi.dev/presets/")
-        }
+        onPresetMoreInfoClicked = { uriHandler.openUri(strings.links.docsPresets) }
     )
 }
 

@@ -25,12 +25,23 @@ data class Strings(
     val common: Common,
     val widgets: Widgets,
     val components: Components,
-    val menu: Menu
+    val menu: Menu,
+    val links: Links
 ) {
+    data class Links(
+        val docsHome: String,
+        val docsPresets: String,
+        val github: String,
+        val apadmi: String
+    )
     data class Menu(
         val openSourceLicenses: String,
-        val about: String
+        val about: String,
+        val github: String,
+        val documentation: String,
+        val apadmi: String
     )
+
     /**
      * @property editor
      * @property findReplace
@@ -131,7 +142,13 @@ data class Strings(
         val unsupportedMockzilla: UnsupportedMockzillaVersion,
         val errorBanner: ErrorBanner,
         val latency: Latency,
+        val openSourceLicenses: OpenSourceLicenses
     ) {
+        data class OpenSourceLicenses(
+            val error: String,
+            val title: String,
+            val devBuildsMessage: String
+        )
         /**
          * @property connectionLost
          * @property refreshButton

@@ -45,6 +45,8 @@ jobs:
           echo "" >> gradle.properties
           echo "is_snapshot=true" >> gradle.properties
           echo "run_number=${{ github.run_number }}" >> gradle.properties
+      - name: Generate licenses
+        run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:exportLibraryDefinitions
       - name: Build Jar
         run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:desktopJar
         env:

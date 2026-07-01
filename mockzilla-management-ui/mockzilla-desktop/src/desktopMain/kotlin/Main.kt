@@ -7,6 +7,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 
@@ -22,12 +24,15 @@ import com.apadmi.mockzilla.ui.i18n.EnStrings
 
 import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
+import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import org.jetbrains.skiko.OS
 import org.jetbrains.skiko.hostOs
 
+import java.awt.Desktop
 import java.awt.Dimension
 import java.awt.GraphicsEnvironment
+import java.net.URI
 
 private const val minWindowSizeDp = 400
 
@@ -36,12 +41,21 @@ private const val minWindowSizeDp = 400
 private const val roughToolbarHeightDp = 52
 
 @Composable
-private fun FrameWindowScope.MockzillaWindowContent(state: WindowState) {
+private fun FrameWindowScope.MockzillaWindowContent(
+    state: WindowState,
+    strings: Strings = LocalStrings.current,
+    uriHandler: UriHandler = LocalUriHandler.current
+) {
     var showLicenses by remember { mutableStateOf(false) }
 
     MenuBar {
-        Menu(LocalStrings.current.menu.about) {
-            Item(LocalStrings.current.menu.openSourceLicenses) { showLicenses = true }
+        Menu(strings.menu.about) {
+            Item(strings.menu.github) { uriHandler.openUri(strings.links.github) }
+            Item(strings.menu.documentation) { uriHandler.openUri(strings.links.docsHome) }
+            Separator()
+            Item(strings.menu.apadmi) { uriHandler.openUri(strings.links.apadmi) }
+            Separator()
+            Item(strings.menu.openSourceLicenses) { showLicenses = true }
         }
     }
 

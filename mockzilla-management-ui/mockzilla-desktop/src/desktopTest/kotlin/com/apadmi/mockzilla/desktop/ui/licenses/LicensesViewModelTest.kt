@@ -16,7 +16,8 @@ class LicensesViewModelTest : CoroutineTest() {
     @RelaxedMockK
     private lateinit var licensesUseCaseMock: LicensesUseCase
 
-    private fun sut() = LicensesViewModel(licensesUseCaseMock, testScope)
+    private fun sut() =
+        LicensesViewModel(licensesUseCaseMock, isDevelopmentBuild = false, testScope)
 
     @Test
     fun `init - starts in Loading state`() = runBlockingTest {
@@ -67,5 +68,17 @@ class LicensesViewModelTest : CoroutineTest() {
 
         /* Verify */
         assertIs<LicensesViewModel.State.ErrorLoading>(viewModel.state.value)
+    }
+
+    @Test
+    fun `getLicenses - dev build - state transitions to DevBuild`() = runBlockingTest {
+        /* Setup */
+        val viewModel = LicensesViewModel(licensesUseCaseMock, isDevelopmentBuild = true, testScope)
+
+        /* Run */
+        testScope.testScheduler.advanceUntilIdle()
+
+        /* Verify */
+        assertIs<LicensesViewModel.State.DevBuild>(viewModel.state.value)
     }
 }
