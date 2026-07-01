@@ -27,6 +27,7 @@ fun CustomSlider(
     steps: Int = 0,
     modifier: Modifier = Modifier,
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    onValueChangeFinished: () -> Unit = {},
 ) {
     val colorScheme = MaterialTheme.colorScheme
 
@@ -34,6 +35,7 @@ fun CustomSlider(
         modifier = modifier,
         value = value,
         onValueChange = { onValueChange(it) },
+        onValueChangeFinished = onValueChangeFinished,
         steps = steps,
         valueRange = valueRange,
         thumb = {
@@ -69,6 +71,7 @@ private fun MockzillaSliderPreview() = PreviewSurface {
         CustomSlider(
             value = 0.4f,
             onValueChange = {},
+            onValueChangeFinished = {}
         )
     }
 }

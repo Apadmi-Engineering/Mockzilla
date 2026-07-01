@@ -20,11 +20,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +45,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.ScaleFactor
@@ -52,7 +56,7 @@ import org.koin.core.parameter.parametersOf
 
 private data object PresentationModeScaleFactor {
     const val MIN = 0.8F
-    const val MAX = 1.4F
+    const val MAX = 1.6F
     const val DEFAULT = 1.2F
 
     // These variables are in-memory caches for the state that we
@@ -134,6 +138,15 @@ internal fun MiscControlsWidgetContent(
         mutableFloatStateOf(PresentationModeScaleFactor.scaleFactor)
     }
     val setScaleFactor = LocalSetScaleFactor.current
+
+    val commitScaleFactor = remember {
+        { scaleFactor: Float ->
+            setScaleFactor(scaleFactor)
+            PresentationModeScaleFactor.scaleFactor = scaleFactor
+            presentationModeScaleFactor = scaleFactor
+        }
+    }
+
     PresentationModeSettings(
         presentationMode = presentationMode,
         onPresentationModeChange = { presentationModeEnabled ->
@@ -146,11 +159,7 @@ internal fun MiscControlsWidgetContent(
             }
         },
         presentationModeScaleFactor = presentationModeScaleFactor,
-        onPresentationModeScaleFactorChange = { scaleFactor ->
-            setScaleFactor(scaleFactor)
-            presentationModeScaleFactor = scaleFactor
-            PresentationModeScaleFactor.scaleFactor = scaleFactor
-        },
+        onPresentationModeScaleFactorChange = commitScaleFactor,
     )
 
     Spacer(modifier = Modifier.height(8.dp))
@@ -211,8 +220,6 @@ private fun PresentationModeSettings(
     onPresentationModeScaleFactorChange: (Float) -> Unit,
     strings: Strings = LocalStrings.current
 ) = Column {
-    val colorScheme = MaterialTheme.colorScheme
-
     SectionHeader(title = strings.widgets.miscControls.presentationMode)
 
     Row(
@@ -243,19 +250,45 @@ private fun PresentationModeSettings(
             modifier = Modifier.fillMaxWidth().padding(end = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // Local cache to show the value changing, this is only locked in once the "finished"
+            // callback is received
+            var localScaleFactor by remember(presentationModeScaleFactor) {
+                mutableStateOf(presentationModeScaleFactor)
+            }
             CustomSlider(
                 modifier = Modifier.weight(1f),
-                value = presentationModeScaleFactor,
-                steps = 5,
-                onValueChange = { onPresentationModeScaleFactorChange(it) },
+                value = localScaleFactor,
+                onValueChange = { localScaleFactor = it },
+                onValueChangeFinished = { onPresentationModeScaleFactorChange(localScaleFactor) },
                 valueRange = PresentationModeScaleFactor.MIN..PresentationModeScaleFactor.MAX,
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = strings.widgets.miscControls.fontScaleLabel(presentationModeScaleFactor),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceMuted
-            )
+            FixedWidthPercentageLabel(localScaleFactor)
         }
     }
+}
+
+@Composable
+private fun FixedWidthPercentageLabel(
+    value: Float,
+    strings: Strings = LocalStrings.current
+) {
+    val density = LocalDensity.current
+    val textMeasurer = rememberTextMeasurer()
+    val textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current)
+
+    val fixedWidth = remember(textStyle, density) {
+        val widthPx = textMeasurer.measure(
+            text = strings.widgets.miscControls.fontScaleLabel(1f),
+            style = textStyle
+        ).size.width
+        with(density) { widthPx.toDp() }
+    }
+
+    Text(
+        text = strings.widgets.miscControls.fontScaleLabel(value),
+        style = textStyle,
+        color = MaterialTheme.colorScheme.onSurfaceMuted,
+        modifier = Modifier.width(fixedWidth)
+    )
 }
