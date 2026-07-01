@@ -21,6 +21,7 @@ plugins {
     alias(libs.plugins.conveyor)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.dokka) apply true
 }
 
@@ -204,6 +205,12 @@ dependencies {
 
     /* Compose previews */
     debugImplementation(libs.ui.tooling.preview)
+}
+
+aboutLibraries {
+    export {
+        outputFile = file("src/commonMain/composeResources/files/aboutlibraries.json")
+    }
 }
 
 configurations.all {

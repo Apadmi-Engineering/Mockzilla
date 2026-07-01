@@ -16,7 +16,8 @@ val EnStrings = Strings(
         backDescription = "Back",
         debugDescription = "Debug",
         resetDescription = "Reset",
-        deleteDescription = "Delete"
+        deleteDescription = "Delete",
+        openSourceLicenses = "Open source licenses"
     ),
     widgets = Strings.Widgets(
         deviceConnection = Strings.Widgets.DeviceConnection(

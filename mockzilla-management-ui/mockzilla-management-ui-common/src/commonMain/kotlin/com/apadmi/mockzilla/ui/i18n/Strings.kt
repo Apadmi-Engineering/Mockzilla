@@ -89,13 +89,15 @@ data class Strings(
      * @property debugDescription
      * @property resetDescription
      * @property deleteDescription
+     * @property openSourceLicenses
      */
     data class Common(
         val closeDescription: String,
         val backDescription: String,
         val debugDescription: String,
         val resetDescription: String,
-        val deleteDescription: String
+        val deleteDescription: String,
+        val openSourceLicenses: String
     )
     /**
      * @property deviceConnection
