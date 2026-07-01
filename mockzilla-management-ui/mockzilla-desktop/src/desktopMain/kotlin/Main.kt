@@ -21,6 +21,7 @@ import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.i18n.EnStrings
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import org.jetbrains.skiko.OS
 import org.jetbrains.skiko.hostOs
 
@@ -44,7 +45,9 @@ private fun FrameWindowScope.MockzillaWindowContent(state: WindowState) {
     }
 
     if (showLicenses) {
-        LicensesDialog(onDismiss = { showLicenses = false })
+        AppTheme {
+            LicensesDialog(onDismiss = { showLicenses = false })
+        }
     }
 
     // Makes the UI edge to edge on OSX so that the tabs appear more naturally
