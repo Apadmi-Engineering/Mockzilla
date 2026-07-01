@@ -39,6 +39,9 @@ jobs:
           echo -n "$MAC_SIGNING_CERT" | base64 --decode > $MAC_CERTIFICATE_PATH
           echo -n "$MAC_SIGNING_KEY" | base64 --decode > $MAC_SIGNING_KEY_PATH
           echo -n "$APPLE_NOTARIZATION_KEY" | base64 --decode > $APPLE_NOTARIZATION_KEY_PATH
+          
+          echo "" >> gradle.properties
+          echo "is_deploying_desktop=true" >> gradle.properties
       - name: Handle snapshot properties
         if: ${{ env.IS_SNAPSHOT == 'true' }}
         run: |

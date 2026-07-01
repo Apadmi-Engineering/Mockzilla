@@ -10,6 +10,10 @@ fun Project.isSnapshot () = project.hasProperty("is_snapshot") && properties["is
 fun Project.runNumber() = if (project.hasProperty("run_number")) properties["run_number"].toString()
     .takeUnless { it.isBlank() }?.toInt() else null
 
+fun Project.isDeployingDesktop() = if (project.hasProperty("is_deploying_desktop")) {
+    properties["is_deploying_desktop"].toString().toBoolean()
+} else false
+
 fun Project.githubToken() = if (hasProperty("github_token")) {
     property("github_token").toString()
 } else {
@@ -17,7 +21,7 @@ fun Project.githubToken() = if (hasProperty("github_token")) {
 }
 
 fun isSigningEnabled() = System.getenv("ORG_GRADLE_PROJECT_signingInMemoryKeyId") != null
-fun isDevelopmentBuild() = !isSigningEnabled()
+fun Project.isDevelopmentBuild() = !isSigningEnabled() && !isDeployingDesktop()
 
 fun MavenPom.configureCommonProperties() {
     url.set("https://github.com/Apadmi-Engineering/Mockzilla")
