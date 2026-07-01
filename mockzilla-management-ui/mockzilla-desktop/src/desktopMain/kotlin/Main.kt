@@ -20,19 +20,16 @@ import com.apadmi.mockzilla.desktop.utils.DesktopLogWriter
 import com.apadmi.mockzilla.desktop.utils.handleOsxZoomBehaviour
 import com.apadmi.mockzilla.desktop.utils.rememberAppIcon
 import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
-import com.apadmi.mockzilla.ui.i18n.EnStrings
-
-import co.touchlab.kermit.Logger
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
+
+import co.touchlab.kermit.Logger
 import org.jetbrains.skiko.OS
 import org.jetbrains.skiko.hostOs
 
-import java.awt.Desktop
 import java.awt.Dimension
 import java.awt.GraphicsEnvironment
-import java.net.URI
 
 private const val minWindowSizeDp = 400
 

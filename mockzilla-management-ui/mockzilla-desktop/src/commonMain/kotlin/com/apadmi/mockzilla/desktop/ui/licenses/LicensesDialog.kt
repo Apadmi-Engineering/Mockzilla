@@ -34,8 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
-import com.apadmi.mockzilla.desktop.engine.licenses.LicenseDisplayModel
 import com.apadmi.mockzilla.desktop.engine.licenses.LibraryForAttribution
+import com.apadmi.mockzilla.desktop.engine.licenses.LicenseDisplayModel
 import com.apadmi.mockzilla.desktop.ui.licenses.LicensesViewModel.*
 import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -48,49 +48,46 @@ internal fun LicensesDialog(onDismiss: () -> Unit) {
     val state by viewModel.state.collectAsState()
 
     Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            modifier = Modifier.widthIn(max = 560.dp).heightIn(max = 600.dp),
-            shape = MaterialTheme.shapes.small,
-            color = MaterialTheme.colorScheme.surfaceContainer,
-            tonalElevation = 6.dp,
-        ) {
-            Column {
-                LicensesDialogHeader(onDismiss = onDismiss)
-                HorizontalDivider()
-                when (val s = state) {
-                    is State.Loading -> {
-                        CircularProgressIndicator()
-                    }
+        LicenceDialogContent(onDismiss, state)
+    }
+}
 
-                    is State.ErrorLoading -> {
-                        Text(
-                            text = LocalStrings.current.widgets.openSourceLicenses.error,
-                            modifier = Modifier.padding(24.dp),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
+@Composable
+private fun LicenceDialogContent(
+    onDismiss: () -> Unit,
+    state: State
+) = Surface(
+    modifier = Modifier.widthIn(max = 560.dp).heightIn(max = 600.dp),
+    shape = MaterialTheme.shapes.small,
+    color = MaterialTheme.colorScheme.surfaceContainer,
+    tonalElevation = 6.dp,
+) {
+    Column {
+        LicensesDialogHeader(onDismiss = onDismiss)
+        HorizontalDivider()
+        when (state) {
+            is State.Loading -> CircularProgressIndicator()
+            is State.ErrorLoading -> Text(
+                text = LocalStrings.current.widgets.openSourceLicenses.error,
+                modifier = Modifier.padding(24.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
 
-                    is State.Populated -> {
-                        LazyColumn(modifier = Modifier.weight(1f, fill = false)) {
-                            items(s.libraries) { library ->
-                                LibraryRow(library)
-                                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            }
-                        }
-                    }
-
-                    State.DevBuild -> Text(
-                        text = LocalStrings.current.widgets.openSourceLicenses.devBuildsMessage,
-                        modifier = Modifier.padding(24.dp),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.error,
-                    )
+            is State.Populated -> LazyColumn(modifier = Modifier.weight(1f, fill = false)) {
+                items(state.libraries) { library ->
+                    LibraryRow(library)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 }
             }
+            State.DevBuild -> Text(
+                text = LocalStrings.current.widgets.openSourceLicenses.devBuildsMessage,
+                modifier = Modifier.padding(24.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+            )
         }
     }
-
 }
 
 @Composable

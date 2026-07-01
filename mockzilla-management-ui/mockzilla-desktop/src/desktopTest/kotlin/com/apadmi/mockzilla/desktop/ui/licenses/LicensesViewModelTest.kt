@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.desktop.ui.licenses
 
-import com.apadmi.mockzilla.desktop.engine.licenses.LicenseDisplayModel
 import com.apadmi.mockzilla.desktop.engine.licenses.LibraryForAttribution
+import com.apadmi.mockzilla.desktop.engine.licenses.LicenseDisplayModel
 import com.apadmi.mockzilla.desktop.engine.licenses.LicensesUseCase
 import com.apadmi.mockzilla.testutils.CoroutineTest
 
