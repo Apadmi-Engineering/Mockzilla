@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,6 +44,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.Shape
@@ -73,6 +75,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.minifyJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.typeFormat
+import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
@@ -358,26 +361,51 @@ private fun ExpandableResponseBody(
         .clip(shape = RoundedCornerShape(8.dp))
 ) {
     val mode = response.typeFormat
-    val body = when {
-        BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body?.take(1000) + "…"
-        mode == EditorMode.Json -> if (isCompact) {
-            response.body?.minifyJson()
-        } else {
-            response.body?.prettyPrintJson()
+    val body = remember(mode, response.body, isCompact) {
+        when {
+            BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body?.take(1000) + "…"
+            mode == EditorMode.Json -> if (isCompact) {
+                response.body?.minifyJson()
+            } else {
+                response.body?.prettyPrintJson()
+            }
+
+            else -> response.body
         }
-        else -> response.body
     }
+    var hasOverflow by remember { mutableStateOf(false) }
+
     Text(
         modifier = Modifier.padding(8.dp),
         text = (BodyVisualTransformation
             .buildEditorOutputTransformation(mode)
             ?.highlight(body ?: "")
             ?: AnnotatedString(body ?: "")),
+        onTextLayout = { result ->
+            hasOverflow = result.didOverflowHeight
+        },
         maxLines = if (isCompact) 4 else 16,
         overflow = TextOverflow.Ellipsis,
         style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
+
+    // For non Android platform ellipsis doesn't work quite right for text truncated on a line break
+    // Similar bug here: https://youtrack.jetbrains.com/issue/CMP-4451
+    // For these platforms using a gradient to indicate overflow has occurred
+    if (hasOverflow && Platform.current != Platform.Android) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .height(12.dp)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.outlineVariant)
+                    )
+                )
+        )
+    }
 }
 
 @Preview
