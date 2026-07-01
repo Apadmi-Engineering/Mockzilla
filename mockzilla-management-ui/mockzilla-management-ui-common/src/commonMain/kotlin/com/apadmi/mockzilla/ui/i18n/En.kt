@@ -322,6 +322,6 @@ val EnStrings = Strings(
         docsHome = "https://mockzilla.apadmi.dev/",
         docsPresets = "https://mockzilla.apadmi.dev/presets/",
         github = "https://github.com/Apadmi-Engineering/Mockzilla",
-        apadmi = "https://www.apadmi.com/"
+        apadmi = "https://apadmi.dev/"
     )
 )

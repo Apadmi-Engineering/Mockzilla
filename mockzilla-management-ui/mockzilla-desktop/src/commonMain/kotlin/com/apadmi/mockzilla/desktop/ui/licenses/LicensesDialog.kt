@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -48,16 +47,17 @@ internal fun LicensesDialog(onDismiss: () -> Unit) {
     val state by viewModel.state.collectAsState()
 
     Dialog(onDismissRequest = onDismiss) {
-        LicenceDialogContent(onDismiss, state)
+        LicenceDialogContent(modifier = Modifier.padding(16.dp), onDismiss = onDismiss, state = state)
     }
 }
 
 @Composable
 private fun LicenceDialogContent(
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
     state: State
 ) = Surface(
-    modifier = Modifier.widthIn(max = 560.dp).heightIn(max = 600.dp),
+    modifier = modifier.widthIn(max = 620.dp),
     shape = MaterialTheme.shapes.small,
     color = MaterialTheme.colorScheme.surfaceContainer,
     tonalElevation = 6.dp,
