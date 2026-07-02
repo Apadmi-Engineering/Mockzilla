@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel.State
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.ui.engine.connection.IpAddress
 import com.apadmi.mockzilla.ui.i18n.LocalStrings

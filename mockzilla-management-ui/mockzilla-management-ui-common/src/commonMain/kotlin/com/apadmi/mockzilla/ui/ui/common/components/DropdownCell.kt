@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun <T> DropdownMenu(
+public fun <T> DropdownMenu(
     selectedLabel: String,
     stringForItem: (T) -> String,
     onSelected: (T) -> Unit,

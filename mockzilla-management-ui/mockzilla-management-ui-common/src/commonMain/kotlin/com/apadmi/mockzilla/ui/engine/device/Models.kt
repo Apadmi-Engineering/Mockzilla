@@ -5,8 +5,8 @@ package com.apadmi.mockzilla.ui.engine.device
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 
-data class Device(override val ip: String, override val port: String) : MockzillaConnectionConfig {
-    companion object
+public data class Device(override val ip: String, override val port: String) : MockzillaConnectionConfig {
+    public companion object
 }
 
 /**
@@ -15,11 +15,11 @@ data class Device(override val ip: String, override val port: String) : Mockzill
  * @property isConnected
  * @property isCompatibleMockzillaVersion
  */
-data class StatefulDevice(
+public data class StatefulDevice(
     val device: Device,
     val metaData: MetaData,
     val isConnected: Boolean,
     val isCompatibleMockzillaVersion: Boolean
 ) {
-    companion object
+    public companion object
 }

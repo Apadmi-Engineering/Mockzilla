@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomSlider(
+public fun CustomSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
     steps: Int = 0,

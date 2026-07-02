@@ -52,7 +52,7 @@ private const val scrimAlpha = 0.5f
 private const val dismissDragFraction = 0.25f
 private const val dismissVelocityThreshold = 1500f
 
-class MockzillaManagementSdkActivity : ComponentActivity() {
+public class MockzillaManagementSdkActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

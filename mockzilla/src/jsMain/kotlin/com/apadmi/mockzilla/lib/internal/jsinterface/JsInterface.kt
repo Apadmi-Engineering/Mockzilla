@@ -25,24 +25,24 @@ import kotlinx.coroutines.promise
 
 @JsExport
 @Suppress("unused")
-object JsLogLevels {
-    const val Assert = "Assert"
-    const val Debug = "Debug"
-    const val Error = "Error"
-    const val Info = "Info"
-    const val Verbose = "Verbose"
-    const val Warn = "Warn"
+public object JsLogLevels {
+    public const val Assert: String = "Assert"
+    public const val Debug: String = "Debug"
+    public const val Error: String = "Error"
+    public const val Info: String = "Info"
+    public const val Verbose: String = "Verbose"
+    public const val Warn: String = "Warn"
 }
 
 @JsExport
 @Suppress("unused")
-object JsPresetType {
-    const val ClientError = "ClientError"
-    const val Informational = "Informational"
-    const val Other = "Other"
-    const val Redirect = "Redirect"
-    const val ServerError = "ServerError"
-    const val Success = "Success"
+public object JsPresetType {
+    public const val ClientError: String = "ClientError"
+    public const val Informational: String = "Informational"
+    public const val Other: String = "Other"
+    public const val Redirect: String = "Redirect"
+    public const val ServerError: String = "ServerError"
+    public const val Success: String = "Success"
 }
 
 /**
@@ -52,7 +52,7 @@ object JsPresetType {
  * @property bodyAsString
  */
 @JsExport
-data class JsMockzillaHttpRequest(
+public data class JsMockzillaHttpRequest(
     val uri: String,
     val headers: String,
     // JSON Encoded
@@ -72,7 +72,7 @@ data class JsMockzillaHttpRequest(
  * @property errorHandler
  */
 @JsExport
-data class JsEndpointConfiguration(
+public data class JsEndpointConfiguration(
     val name: String,
     val key: String,
     val shouldFail: Boolean,
@@ -102,7 +102,7 @@ data class JsEndpointConfiguration(
  * @property presets
  */
 @JsExport
-data class JsDashboardOptionsConfig(
+public data class JsDashboardOptionsConfig(
     val presets: JsArray<JsDashboardOverridePreset>,
 ) {
     internal fun fromJs() = DashboardOptionsConfig(
@@ -137,7 +137,7 @@ data class JsDashboardOptionsConfig(
  * @property type
  */
 @JsExport
-data class JsDashboardOverridePreset(
+public data class JsDashboardOverridePreset(
     val name: String,
     val description: String?,
     val response: JsPartialMockzillaHttpResponse,
@@ -157,7 +157,7 @@ data class JsDashboardOverridePreset(
  * @property body
  */
 @JsExport
-data class JsMockzillaHttpResponse(
+public data class JsMockzillaHttpResponse(
     val statusCode: Int,
     val headers: dynamic,
     val body: String = "",
@@ -175,7 +175,7 @@ data class JsMockzillaHttpResponse(
  * @property body
  */
 @JsExport
-data class JsPartialMockzillaHttpResponse(
+public data class JsPartialMockzillaHttpResponse(
     val statusCode: Int?,
     val headers: dynamic?,
     val body: String?,
@@ -197,7 +197,7 @@ data class JsPartialMockzillaHttpResponse(
  */
 @OptIn(ExperimentalWasmJsInterop::class)
 @JsExport
-data class JsMockzillaConfig(
+public data class JsMockzillaConfig(
     val endpoints: JsArray<JsEndpointConfiguration>,
     val logLevel: String,
 ) {
@@ -241,7 +241,7 @@ data class JsMockzillaConfig(
         return true
     }
 
-    override fun hashCode() = 31 * endpoints.contentHashCode() + logLevel.hashCode()
+    override fun hashCode(): Int = 31 * endpoints.contentHashCode() + logLevel.hashCode()
 }
 
 /**
@@ -253,7 +253,7 @@ data class JsMockzillaConfig(
  * @property mockzillaVersion
  */
 @JsExport
-data class JsMockzillaRuntimeParams(
+public data class JsMockzillaRuntimeParams(
     val config: JsMockzillaConfig,
     val ip: String,
     val mockBaseUrl: String,
@@ -262,7 +262,7 @@ data class JsMockzillaRuntimeParams(
     val mockzillaVersion: String
 )
 
-fun MockzillaHttpRequest.toJs() = JsMockzillaHttpRequest(
+internal fun MockzillaHttpRequest.toJs() = JsMockzillaHttpRequest(
     uri = uri,
     headers = JsonProvider.json.encodeToString(headers),
     method = method.value,
@@ -270,7 +270,7 @@ fun MockzillaHttpRequest.toJs() = JsMockzillaHttpRequest(
     bodyAsString = GlobalScope.promise { bodyAsString() },
 )
 
-fun MockzillaRuntimeParams.toJs(config: JsMockzillaConfig) = JsMockzillaRuntimeParams(
+internal fun MockzillaRuntimeParams.toJs(config: JsMockzillaConfig) = JsMockzillaRuntimeParams(
     config = config,
     ip = ip,
     mockBaseUrl = mockBaseUrl,
@@ -279,17 +279,17 @@ fun MockzillaRuntimeParams.toJs(config: JsMockzillaConfig) = JsMockzillaRuntimeP
     mockzillaVersion = mockzillaVersion
 )
 
-fun entriesOf(jsObject: dynamic): List<Pair<String, String>> =
+internal fun entriesOf(jsObject: dynamic): List<Pair<String, String>> =
     (js("Object.entries") as (dynamic) -> Array<Array<Any?>>)
         .invoke(jsObject)
         .map { entry -> entry[0].toString() to entry[1].toString() }
 
-fun mapFrom(jsObject: dynamic): Map<String, String> =
+internal fun mapFrom(jsObject: dynamic): Map<String, String> =
     entriesOf(jsObject).toMap()
 
 @OptIn(DelicateCoroutinesApi::class)
 @JsExport
-fun startMockzillaJs(
+public fun startMockzillaJs(
     appName: String,
     appVersion: String,
     config: JsMockzillaConfig,
@@ -298,6 +298,6 @@ fun startMockzillaJs(
 }
 
 @JsExport
-fun stopMockzilla() = GlobalScope.promise {
+public fun stopMockzilla(): Promise<Unit> = GlobalScope.promise {
     stopServer()
 }

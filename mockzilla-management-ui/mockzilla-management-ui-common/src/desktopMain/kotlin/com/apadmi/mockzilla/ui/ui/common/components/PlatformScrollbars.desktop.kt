@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-actual fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier) =
+public actual fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier): Unit =
     HorizontalScrollbar(
         adapter = rememberScrollbarAdapter(scrollState),
         modifier = modifier,
@@ -19,7 +19,7 @@ actual fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modif
     )
 
 @Composable
-actual fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier: Modifier) =
+public actual fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier: Modifier): Unit =
     VerticalScrollbar(
         adapter = rememberScrollbarAdapter(scrollState),
         modifier = modifier,

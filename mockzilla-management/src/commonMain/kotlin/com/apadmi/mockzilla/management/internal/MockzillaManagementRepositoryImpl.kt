@@ -39,29 +39,29 @@ import kotlinx.coroutines.withContext
 import kotlinx.io.IOException
 
 @InternalMockzillaApi
-interface MockzillaManagementRepository {
-    suspend fun fetchMetaData(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MetaData>
-    suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
-    suspend fun updateMockDataEntry(
+public interface MockzillaManagementRepository {
+    public suspend fun fetchMetaData(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MetaData>
+    public suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
+    public suspend fun updateMockDataEntry(
         entry: SerializableEndpointPatchItemDto,
         connection: MockzillaConnectionConfig
     ): Result<Unit>
 
-    suspend fun updateMockDataEntries(
+    public suspend fun updateMockDataEntries(
         entries: List<SerializableEndpointPatchItemDto>,
         connection: MockzillaConnectionConfig
     ): Result<Unit>
 
-    suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MonitorLogsResponse>
-    suspend fun fetchMonitorLogsSince(
+    public suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MonitorLogsResponse>
+    public suspend fun fetchMonitorLogsSince(
         connection: MockzillaConnectionConfig,
         since: Long?,
         clientSessionStart: Long
     ): Result<MonitorLogsResponse>
-    suspend fun fetchFullBodyLogDetail(connection: MockzillaConnectionConfig, logId: String): Result<LogEvent>
-    suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>
-    suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
-    suspend fun clearCaches(connection: MockzillaConnectionConfig, keys: List<EndpointConfiguration.Key>): Result<Unit>
+    public suspend fun fetchFullBodyLogDetail(connection: MockzillaConnectionConfig, logId: String): Result<LogEvent>
+    public suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>
+    public suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
+    public suspend fun clearCaches(connection: MockzillaConnectionConfig, keys: List<EndpointConfiguration.Key>): Result<Unit>
 }
 
 /**

@@ -5,7 +5,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 
-class JsonBodyVisualTransformation(
+internal class JsonBodyVisualTransformation(
     private val comment: SpanStyle,
     private val brace: SpanStyle,
     private val comma: SpanStyle,

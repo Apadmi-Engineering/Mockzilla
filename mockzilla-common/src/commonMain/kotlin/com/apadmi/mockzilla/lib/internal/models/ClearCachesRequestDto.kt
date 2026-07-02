@@ -9,6 +9,6 @@ import kotlinx.serialization.Serializable
  */
 @InternalMockzillaApi
 @Serializable
-data class ClearCachesRequestDto(
+public data class ClearCachesRequestDto(
     val keys: List<EndpointConfiguration.Key>
 )

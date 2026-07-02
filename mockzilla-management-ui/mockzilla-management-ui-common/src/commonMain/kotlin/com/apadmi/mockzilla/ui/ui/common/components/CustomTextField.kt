@@ -25,7 +25,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTextField(
+public fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,

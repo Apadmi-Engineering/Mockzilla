@@ -3,7 +3,7 @@ package com.apadmi.mockzilla.desktop.ui.devicetabs
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.ui.engine.device.Device
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow

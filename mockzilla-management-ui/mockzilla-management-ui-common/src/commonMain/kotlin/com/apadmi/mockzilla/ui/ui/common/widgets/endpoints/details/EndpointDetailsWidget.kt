@@ -59,7 +59,7 @@ import androidx.compose.ui.unit.dp
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.isOverflowingLatencySlider
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
@@ -274,7 +274,7 @@ private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull
 )
 
 @Composable
-fun EndpointDetailsWidget(
+public fun EndpointDetailsWidget(
     device: Device,
     activeEndpoint: EndpointConfiguration.Key?,
     onCreatePreset: (EndpointConfiguration.Key) -> Unit,

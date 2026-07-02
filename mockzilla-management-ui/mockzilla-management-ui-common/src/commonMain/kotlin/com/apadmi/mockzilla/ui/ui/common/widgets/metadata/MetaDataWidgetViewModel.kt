@@ -7,7 +7,7 @@ import com.apadmi.mockzilla.ui.engine.device.AppIconUseCase
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MetaDataUseCase
 import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay

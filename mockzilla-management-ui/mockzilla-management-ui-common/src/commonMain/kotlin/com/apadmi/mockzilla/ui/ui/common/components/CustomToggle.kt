@@ -28,7 +28,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun CustomToggle(
+public fun CustomToggle(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,

@@ -19,7 +19,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun SectionTitle(
+public fun SectionTitle(
     modifier: Modifier = Modifier,
     label: String,
 ) {

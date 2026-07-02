@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icons.CircleCheck: ImageVector
+public val Icons.CircleCheck: ImageVector
     get() {
         if (_circleCheck != null) {
             return _circleCheck!!

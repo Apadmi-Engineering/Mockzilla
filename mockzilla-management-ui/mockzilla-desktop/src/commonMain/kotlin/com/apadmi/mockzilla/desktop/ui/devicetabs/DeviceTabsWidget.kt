@@ -57,7 +57,7 @@ import com.apadmi.mockzilla.desktop.MockzillaDesktopBuildConfig
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.State
 import com.apadmi.mockzilla.desktop.ui.utils.desktopTertiaryPointerClick
 import com.apadmi.mockzilla.desktop.ui.utils.isOsx
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings

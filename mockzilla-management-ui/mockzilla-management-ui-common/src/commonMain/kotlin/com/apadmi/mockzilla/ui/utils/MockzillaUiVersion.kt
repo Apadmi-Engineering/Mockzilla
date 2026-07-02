@@ -6,4 +6,4 @@ import kotlin.jvm.JvmInline
  * @property version
  */
 @JvmInline
-value class MockzillaUiVersion(val version: String)
+public value class MockzillaUiVersion(public val version: String)

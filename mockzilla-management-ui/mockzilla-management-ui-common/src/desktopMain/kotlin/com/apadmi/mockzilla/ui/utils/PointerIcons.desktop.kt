@@ -10,7 +10,7 @@ import java.awt.RenderingHints
 import java.awt.Toolkit
 import java.awt.image.BufferedImage
 
-actual val blockedPointerIcon: PointerIcon by lazy {
+internal actual val blockedPointerIcon: PointerIcon by lazy {
     try {
         val size = 24
         val img = BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB)

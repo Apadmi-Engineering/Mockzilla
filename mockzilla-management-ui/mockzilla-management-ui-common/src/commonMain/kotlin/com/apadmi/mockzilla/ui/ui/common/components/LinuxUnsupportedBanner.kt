@@ -26,7 +26,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.info
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 @Composable
-fun LinuxUnsupportedBanner(
+public fun LinuxUnsupportedBanner(
     strings: Strings.Widgets.LinuxUnsupportedBanner = LocalStrings.current.widgets.linuxUnsupportedBanner,
 ) {
     val accentColor = MaterialTheme.colorScheme.info.primary

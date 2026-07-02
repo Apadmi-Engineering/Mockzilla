@@ -20,7 +20,7 @@ import com.apadmi.mockzilla.desktop.ui.licenses.LicensesDialog
 import com.apadmi.mockzilla.desktop.utils.DesktopLogWriter
 import com.apadmi.mockzilla.desktop.utils.handleOsxZoomBehaviour
 import com.apadmi.mockzilla.desktop.utils.rememberAppIcon
-import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
+import com.apadmi.mockzilla.ui.internal.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme

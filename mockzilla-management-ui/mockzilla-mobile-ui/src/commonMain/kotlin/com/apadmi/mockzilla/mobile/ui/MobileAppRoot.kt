@@ -52,8 +52,8 @@ import com.apadmi.mockzilla.lib.MockzillaBuildConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.mobile.ui.deviceconnection.MobileDeviceConnectionWidget
 import com.apadmi.mockzilla.mobile.ui.utils.Destination
-import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.MockzillaUiKoinContext
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings

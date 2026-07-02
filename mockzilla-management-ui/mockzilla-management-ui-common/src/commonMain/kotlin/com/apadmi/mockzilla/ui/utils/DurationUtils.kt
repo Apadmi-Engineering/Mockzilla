@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.ui.utils
 
 @Suppress("MAGIC_NUMBER")
-fun formatUptime(totalSeconds: Int): String {
+internal fun formatUptime(totalSeconds: Int): String {
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60

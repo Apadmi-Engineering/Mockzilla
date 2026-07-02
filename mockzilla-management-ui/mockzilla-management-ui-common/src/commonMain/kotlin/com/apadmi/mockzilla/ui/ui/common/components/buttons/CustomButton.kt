@@ -35,19 +35,19 @@ import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
-enum class ButtonVariant {
+public enum class ButtonVariant {
     Ghost, Outline, Soft, Solid
 }
-enum class ButtonSize {
+public enum class ButtonSize {
     Lg, Md, Sm
 }
-enum class ButtonContentAlignment {
+public enum class ButtonContentAlignment {
     Center, Start
 }
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun CustomButton(
+public fun CustomButton(
     modifier: Modifier = Modifier,
     label: String,
     leadingIcon: ImageVector? = null,

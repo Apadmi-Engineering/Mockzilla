@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icons.SuccessCircle: ImageVector
+public val Icons.SuccessCircle: ImageVector
     get() {
         if (_icSuccessCircle != null) {
             return _icSuccessCircle!!

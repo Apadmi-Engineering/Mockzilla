@@ -8,10 +8,10 @@ import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 
 @Composable
-fun PreviewSurface(
+public fun PreviewSurface(
     darkTheme: Boolean = LocalForceDarkMode.current,
     content: @Composable () -> Unit
-) = CompositionLocalProvider(LocalForceDarkMode provides darkTheme) {
+): Unit = CompositionLocalProvider(LocalForceDarkMode provides darkTheme) {
     AppTheme {
         Surface(color = MaterialTheme.colorScheme.surface, content = content)
     }

@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
  * @param config The config with which to initialise mockzilla.
  * @return runtimeParams Configuration of the mockzilla runtime environment
  */
-fun startMockzilla(
+public fun startMockzilla(
     appName: String,
     appVersion: String,
     config: MockzillaConfig,
@@ -61,6 +61,6 @@ fun startMockzilla(
  * Stops the running Mockzilla server.
  *
  */
-actual fun stopMockzilla() = runBlocking {
+public actual fun stopMockzilla(): Unit = runBlocking {
     stopServer()
 }

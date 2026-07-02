@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.ui.ui.common.utils
 
 import com.apadmi.mockzilla.lib.internal.utils.multiPlatformIo
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

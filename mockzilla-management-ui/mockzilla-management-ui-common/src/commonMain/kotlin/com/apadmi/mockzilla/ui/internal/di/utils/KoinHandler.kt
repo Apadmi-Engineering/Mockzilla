@@ -1,5 +1,6 @@
-package com.apadmi.mockzilla.ui.di.utils
+package com.apadmi.mockzilla.ui.internal.di.utils
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.di.useCaseModule
 import com.apadmi.mockzilla.ui.di.viewModelModule
@@ -10,6 +11,7 @@ import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBusImpl
 import com.apadmi.mockzilla.ui.utils.Platform
 
+import org.koin.core.Koin
 import org.koin.core.module.Module
 import org.koin.dsl.binds
 import org.koin.dsl.koinApplication
@@ -18,7 +20,8 @@ import org.koin.dsl.module
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 
-object MockzillaUiKoinContext {
+@InternalMockzillaApi
+public object MockzillaUiKoinContext {
     private var isInitialised = false
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -48,9 +51,9 @@ object MockzillaUiKoinContext {
         )
     }
 
-    val koin get() = koinApp.koin
+    public val koin: Koin get() = koinApp.koin
 
-    fun startMockzillaUiKoinIfNeeded(modules: List<Module>) {
+    public fun startMockzillaUiKoinIfNeeded(modules: List<Module>) {
         if (!isInitialised) {
             isInitialised = true
             koinApp.koin.loadModules(modules)

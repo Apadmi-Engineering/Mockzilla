@@ -1,6 +1,6 @@
 package com.apadmi.mockzilla.ui.utils
 
-expect enum class Platform {
+internal expect enum class Platform {
     Android,
     Desktop,
     Ios,

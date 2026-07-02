@@ -13,7 +13,7 @@ import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.utils.Platform
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import io.ktor.http.HttpStatusCode
 

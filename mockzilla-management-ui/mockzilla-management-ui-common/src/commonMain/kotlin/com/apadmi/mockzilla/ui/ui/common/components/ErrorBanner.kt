@@ -59,11 +59,11 @@ private fun Connected.ErrorBannerState.backgroundColor() = when (this) {
 }
 
 @Composable
-fun AnimatedErrorBanner(
+public fun AnimatedErrorBanner(
     state: Connected.ErrorBannerState?,
     onRefreshAll: () -> Unit,
     onDismissError: () -> Unit,
-) = AnimatedContent(
+): Unit = AnimatedContent(
     targetState = state,
     transitionSpec = {
         when {
@@ -89,7 +89,7 @@ fun AnimatedErrorBanner(
 }
 
 @Composable
-fun ErrorBanner(
+public fun ErrorBanner(
     state: Connected.ErrorBannerState,
     strings: Strings = LocalStrings.current,
     onRefreshAll: () -> Unit,

@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) {
+public actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) {
     if (text.isBlank()) {
         content()
         return

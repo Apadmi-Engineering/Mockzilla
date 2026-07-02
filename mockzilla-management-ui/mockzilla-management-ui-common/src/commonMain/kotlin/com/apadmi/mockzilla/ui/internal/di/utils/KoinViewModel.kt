@@ -1,25 +1,29 @@
-package com.apadmi.mockzilla.ui.di.utils
+package com.apadmi.mockzilla.ui.internal.di.utils
 
 import androidx.compose.runtime.Composable
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.engine.device.Device
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 import org.koin.core.definition.Definition
 import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.Module
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
-expect inline fun <reified T : ViewModel> Module.viewModel(
+@InternalMockzillaApi
+public expect inline fun <reified T : ViewModel> Module.viewModel(
     qualifier: Qualifier? = null,
     noinline definition: Definition<T>
 ): KoinDefinition<T>
 
+@InternalMockzillaApi
 @Composable
-expect inline fun <reified T : ViewModel> getViewModel(
+public expect inline fun <reified T : ViewModel> getViewModel(
     qualifier: Qualifier? = null,
     device: Device? = null,
     keyPrefix: String? = null,
     noinline parameters: ParametersDefinition? = null
 ): T
 
-expect fun evictDesktopViewModelsForKey(device: Device, keyPrefix: String? = null)
+@InternalMockzillaApi
+public expect fun evictDesktopViewModelsForKey(device: Device, keyPrefix: String? = null)

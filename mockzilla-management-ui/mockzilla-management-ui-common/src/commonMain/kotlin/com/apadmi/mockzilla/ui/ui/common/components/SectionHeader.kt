@@ -15,10 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SectionHeader(
+public fun SectionHeader(
     title: String,
     modifier: Modifier = Modifier
-) = Row(
+): Unit = Row(
     modifier = modifier
         .fillMaxWidth()
         .padding(horizontal = 2.dp, vertical = 8.dp),

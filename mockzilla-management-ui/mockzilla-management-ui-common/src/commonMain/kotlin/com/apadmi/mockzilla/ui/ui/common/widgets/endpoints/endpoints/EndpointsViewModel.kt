@@ -9,7 +9,7 @@ import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.engine.filter.FuzzyFilter
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel.State
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import kotlin.collections.filter
 import kotlinx.coroutines.CoroutineScope

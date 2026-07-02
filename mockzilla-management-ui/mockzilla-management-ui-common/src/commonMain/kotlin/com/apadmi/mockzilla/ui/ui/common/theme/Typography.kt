@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.ui.ui.common.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -22,10 +23,10 @@ import com.apadmi.mockzilla_management_ui_common.generated.resources.jetbrainsmo
 import org.jetbrains.compose.resources.Font
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-val LocalMonoFontFamily = compositionLocalOf<FontFamily> { FontFamily.Monospace }
+public val LocalMonoFontFamily: ProvidableCompositionLocal<FontFamily> = compositionLocalOf<FontFamily> { FontFamily.Monospace }
 
 @Composable
-fun mockzillaFontFamily(): FontFamily = FontFamily(
+public fun mockzillaFontFamily(): FontFamily = FontFamily(
     Font(Res.font.geist_regular, weight = FontWeight.Normal),
     Font(Res.font.geist_medium, weight = FontWeight.Medium),
     Font(Res.font.geist_semibold, weight = FontWeight.SemiBold),
@@ -33,14 +34,14 @@ fun mockzillaFontFamily(): FontFamily = FontFamily(
 )
 
 @Composable
-fun mockzillaMonoFontFamily(): FontFamily = FontFamily(
+public fun mockzillaMonoFontFamily(): FontFamily = FontFamily(
     Font(Res.font.jetbrainsmono_regular, weight = FontWeight.Normal),
     Font(Res.font.jetbrainsmono_medium, weight = FontWeight.Medium),
     Font(Res.font.jetbrainsmono_semibold, weight = FontWeight.SemiBold),
 )
 
 @Suppress("MAGIC_NUMBER", "TOO_LONG_FUNCTION")
-fun mockzillaTypography(uiFont: FontFamily): Typography = Typography(
+public fun mockzillaTypography(uiFont: FontFamily): Typography = Typography(
     // Small utility labels — section headers, chips, monospace tags
     labelSmall = TextStyle(
         fontFamily = uiFont,

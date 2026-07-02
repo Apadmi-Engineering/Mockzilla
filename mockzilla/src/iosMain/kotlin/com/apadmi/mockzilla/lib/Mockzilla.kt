@@ -21,7 +21,7 @@ import kotlinx.coroutines.runBlocking
  * @throws PortConflictException if the port specified in [config] is already in use.
  */
 @Throws(PortConflictException::class)
-fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlocking {
+public fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlocking {
     config.validateInfoPlist()
 
     startMockzilla(
@@ -42,6 +42,6 @@ fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlockin
  * Stops the running Mockzilla server.
  *
  */
-actual fun stopMockzilla() = runBlocking {
+public actual fun stopMockzilla(): Unit = runBlocking {
     stopServer()
 }

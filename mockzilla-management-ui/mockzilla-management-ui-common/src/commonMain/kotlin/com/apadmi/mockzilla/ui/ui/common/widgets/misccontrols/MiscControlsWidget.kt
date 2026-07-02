@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
@@ -71,7 +71,7 @@ private data object PresentationModeScaleFactor {
 }
 
 @Composable
-fun MiscControlsWidget(
+public fun MiscControlsWidget(
     device: Device?
 ) {
     val viewModel = getViewModel<MiscControlsViewModel>(device = device) { parametersOf(device) }
@@ -86,7 +86,7 @@ fun MiscControlsWidget(
 
 @Preview
 @Composable
-fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
+internal fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
     MiscControlsWidgetContent(
         state = MiscControlsViewModel.State("2.0.0"),
         onRefreshAll = {},

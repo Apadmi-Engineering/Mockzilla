@@ -23,12 +23,12 @@ import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 
 @Composable
-fun UnsupportedDeviceMockzillaVersionWidget() {
+public fun UnsupportedDeviceMockzillaVersionWidget() {
     UnsupportedDeviceMockzillaVersionContent()
 }
 
 @Composable
-fun UnsupportedDeviceMockzillaVersionContent(
+internal fun UnsupportedDeviceMockzillaVersionContent(
     strings: Strings = LocalStrings.current
 ) = Column(
     Modifier.fillMaxSize(),

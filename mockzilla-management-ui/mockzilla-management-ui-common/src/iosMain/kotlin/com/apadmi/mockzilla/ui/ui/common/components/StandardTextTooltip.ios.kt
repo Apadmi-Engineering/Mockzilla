@@ -3,7 +3,7 @@ package com.apadmi.mockzilla.ui.ui.common.components
 import androidx.compose.runtime.Composable
 
 @Composable
-actual fun StandardTextTooltip(
+public actual fun StandardTextTooltip(
     text: String,
     content: @Composable (() -> Unit)
 ) {

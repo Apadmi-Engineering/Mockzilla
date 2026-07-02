@@ -14,7 +14,7 @@ import kotlinx.cinterop.usePinned
 
 // Source: https://slack-chats.kotlinlang.org/t/9555639/hi-how-can-i-convert-a-swift-nsdata-to-kotlin-bytearray-back
 @OptIn(ExperimentalForeignApi::class)
-fun NSData.toByteArray(): ByteArray = ByteArray(length.toInt()).apply {
+internal fun NSData.toByteArray(): ByteArray = ByteArray(length.toInt()).apply {
     usePinned {
         memcpy(it.addressOf(0), bytes, length)
     }

@@ -10,7 +10,7 @@ import io.ktor.http.HttpStatusCode
 import kotlin.math.roundToInt
 
 @LyricistStrings(languageTag = "En", default = true)
-val EnStrings = Strings(
+public val EnStrings: Strings = Strings(
     common = Strings.Common(
         closeDescription = "Close",
         backDescription = "Back",

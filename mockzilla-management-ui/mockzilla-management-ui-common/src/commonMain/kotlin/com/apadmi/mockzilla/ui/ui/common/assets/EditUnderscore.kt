@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icons.EditUnderscore: ImageVector
+public val Icons.EditUnderscore: ImageVector
     get() {
         if (_icEditUnderscore != null) {
             return _icEditUnderscore!!

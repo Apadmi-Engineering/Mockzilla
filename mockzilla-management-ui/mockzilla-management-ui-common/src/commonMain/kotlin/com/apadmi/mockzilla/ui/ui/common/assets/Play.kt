@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icons.Play: ImageVector
+public val Icons.Play: ImageVector
     get() {
         if (_play != null) {
             return _play!!

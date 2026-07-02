@@ -8,7 +8,7 @@ import com.apadmi.mockzilla.ui.engine.device.StatefulDevice
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.*
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 import io.ktor.http.HttpStatusCode
 
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,12 +17,12 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class DeviceRootViewModel(
+public class DeviceRootViewModel(
     private val device: Device,
     private val eventBus: EventBus,
     private val activeDeviceMonitor: ActiveDeviceMonitor,
 ) : ViewModel() {
-    val state = MutableStateFlow<State>(
+    public val state: MutableStateFlow<State> = MutableStateFlow(
         activeDeviceMonitor.allDevices.find { it.device == device }.let { initial ->
             when {
                 initial == null || !initial.isCompatibleMockzillaVersion -> State.UnsupportedDeviceMockzillaVersion
@@ -74,41 +74,41 @@ class DeviceRootViewModel(
         }
         .launchIn(viewModelScope)
 
-    fun setSelectedEndpoint(key: EndpointConfiguration.Key?) {
+    public fun setSelectedEndpoint(key: EndpointConfiguration.Key?) {
         val currentState = state.value as? State.Connected ?: return
         state.value = currentState.copy(selectedEndpoint = key)
     }
 
-    fun refreshAll() {
+    public fun refreshAll() {
         eventBus.send(Event.FullRefresh)
     }
 
-    fun dismissError() {
+    public fun dismissError() {
         val currentState = state.value as? State.Connected ?: return
         state.value = currentState.copy(error = null)
     }
 
-    sealed class State {
-        data object UnsupportedDeviceMockzillaVersion : State()
+    public sealed class State {
+        public data object UnsupportedDeviceMockzillaVersion : State()
 
         /**
          * @property activeDevice
          * @property selectedEndpoint
          * @property error
          */
-        data class Connected(
+        public data class Connected(
             val activeDevice: StatefulDevice,
             val selectedEndpoint: EndpointConfiguration.Key?,
             val error: ErrorBannerState? = null
         ) : State() {
-            sealed class ErrorBannerState {
-                data object ConnectionLost : ErrorBannerState()
+            public sealed class ErrorBannerState {
+                public data object ConnectionLost : ErrorBannerState()
                 /**
                  * @property status
                  * @property rawError
                  * @property operation
                  */
-                data class ApiError(
+                public data class ApiError(
                     val status: HttpStatusCode?,
                     val rawError: String?,
                     val operation: GenericErrorableOperation?

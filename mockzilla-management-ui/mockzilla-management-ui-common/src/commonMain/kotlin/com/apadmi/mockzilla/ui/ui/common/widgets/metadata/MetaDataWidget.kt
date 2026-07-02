@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
@@ -62,7 +62,7 @@ private fun RunTarget.label(strings: Strings) = when (this) {
 }
 
 @Composable
-fun MetaDataWidget(device: Device) {
+public fun MetaDataWidget(device: Device) {
     val viewModel =
         getViewModel<MetaDataWidgetViewModel>(device = device) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
@@ -73,7 +73,7 @@ fun MetaDataWidget(device: Device) {
 @Suppress("COMPLEX_EXPRESSION")
 @Preview
 @Composable
-fun MetaDataListViewPreview() = PreviewSurface() {
+internal fun MetaDataListViewPreview() = PreviewSurface() {
     MetaDataListView(
         state = MetaDataWidgetViewModel.State.DisplayMetaData(
             metaData = MetaData(

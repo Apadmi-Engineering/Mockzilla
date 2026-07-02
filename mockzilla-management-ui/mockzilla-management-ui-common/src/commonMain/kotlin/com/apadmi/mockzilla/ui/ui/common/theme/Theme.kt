@@ -10,6 +10,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -24,13 +25,13 @@ import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
 import com.apadmi.mockzilla.ui.utils.Platform
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-val LocalForceDarkMode = compositionLocalOf { false }
+public val LocalForceDarkMode: ProvidableCompositionLocal<Boolean> = compositionLocalOf { false }
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-val LocalSetForceDarkMode = compositionLocalOf<(Boolean) -> Unit> { { /* noop */ } }
+public val LocalSetForceDarkMode: ProvidableCompositionLocal<(Boolean) -> Unit> = compositionLocalOf { { /* noop */ } }
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-val LocalSetScaleFactor = compositionLocalOf<(Float) -> Unit> { { /* noop */ } }
+public val LocalSetScaleFactor: ProvidableCompositionLocal<(Float) -> Unit> = compositionLocalOf { { /* noop */ } }
 
 private val darkColors = darkColorScheme(
     primary = darkPrimary,
@@ -107,23 +108,23 @@ private val lightColors = lightColorScheme(
 // ── Extensions for colours that don't map onto a Material slot ────────────────
 
 @get:Composable
-val ColorScheme.inputBackground: Color
+public val ColorScheme.inputBackground: Color
     get() = if (LocalForceDarkMode.current) surface else surfaceVariant
 
 @get:Composable
-val ColorScheme.onSurfaceMuted: Color
+public val ColorScheme.onSurfaceMuted: Color
     get() = if (LocalForceDarkMode.current) darkOnSurfaceMuted else lightOnSurfaceMuted
 
 @get:Composable
-val ColorScheme.onSurfaceFaint: Color
+public val ColorScheme.onSurfaceFaint: Color
     get() = if (LocalForceDarkMode.current) darkOnSurfaceFaint else lightOnSurfaceFaint
 
 @get:Composable
-val ColorScheme.chipSelectedBackground: Color
+public val ColorScheme.chipSelectedBackground: Color
     get() = if (LocalForceDarkMode.current) surfaceContainerHigh else Color.White
 
 @get:Composable
-val ColorScheme.success: StateColors
+public val ColorScheme.success: StateColors
     get() = if (LocalForceDarkMode.current) {
         StateColors(primary = darkSuccess, container = darkSuccessContainer)
     } else {
@@ -131,7 +132,7 @@ val ColorScheme.success: StateColors
     }
 
 @get:Composable
-val ColorScheme.warning: StateColors
+public val ColorScheme.warning: StateColors
     get() = if (LocalForceDarkMode.current) {
         StateColors(primary = darkWarning, container = darkWarningContainer)
     } else {
@@ -139,7 +140,7 @@ val ColorScheme.warning: StateColors
     }
 
 @get:Composable
-val ColorScheme.info: StateColors
+public val ColorScheme.info: StateColors
     get() = if (LocalForceDarkMode.current) {
         StateColors(primary = darkInfo, container = darkInfoContainer)
     } else {
@@ -147,7 +148,7 @@ val ColorScheme.info: StateColors
     }
 
 @get:Composable
-val ColorScheme.jsonKey: Color
+public val ColorScheme.jsonKey: Color
     get() = if (LocalForceDarkMode.current) darkJsonKey else lightJsonKey
 
 @get:Composable
@@ -161,42 +162,42 @@ internal val ColorScheme.jsonHighlight: JsonHighlightColors
     )
 
 @get:Composable
-val ColorScheme.methodGet: Color
+public val ColorScheme.methodGet: Color
     get() = if (LocalForceDarkMode.current) darkMethodGet else lightMethodGet
 
 @get:Composable
-val ColorScheme.methodPost: Color
+public val ColorScheme.methodPost: Color
     get() = if (LocalForceDarkMode.current) darkMethodPost else lightMethodPost
 
 @get:Composable
-val ColorScheme.methodPut: Color
+public val ColorScheme.methodPut: Color
     get() = if (LocalForceDarkMode.current) darkMethodPut else lightMethodPut
 
 @get:Composable
-val ColorScheme.methodPatch: Color
+public val ColorScheme.methodPatch: Color
     get() = if (LocalForceDarkMode.current) darkMethodPatch else lightMethodPatch
 
 @get:Composable
-val ColorScheme.methodDelete: Color
+public val ColorScheme.methodDelete: Color
     get() = if (LocalForceDarkMode.current) darkMethodDelete else lightMethodDelete
 
 @get:Composable
-val ColorScheme.methodOther: Color
+public val ColorScheme.methodOther: Color
     get() = if (LocalForceDarkMode.current) darkMethodOther else lightMethodOther
 
 /**
  * @property primary
  * @property container
  */
-data class StateColors(
+public data class StateColors(
     val primary: Color,
     val container: Color
 )
 
-data object ScaleFactor {
-    const val DEFAULT_DESKTOP = 1.0F
-    const val DEFAULT_MOBILE = 1.0F
-    val default = when (Platform.current) {
+public data object ScaleFactor {
+    public const val DEFAULT_DESKTOP: Float = 1.0F
+    public const val DEFAULT_MOBILE: Float = 1.0F
+    public val default: Float = when (Platform.current) {
         Platform.Android, Platform.Ios -> DEFAULT_MOBILE
         Platform.Desktop -> DEFAULT_DESKTOP
         else -> DEFAULT_MOBILE
@@ -219,7 +220,7 @@ internal data class JsonHighlightColors(
 )
 
 @Composable
-fun AppTheme(
+public fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
@@ -246,7 +247,7 @@ fun AppTheme(
 }
 
 @Composable
-fun ScaledDensity(scaleFactor: Float, content: @Composable () -> Unit) {
+public fun ScaledDensity(scaleFactor: Float, content: @Composable () -> Unit) {
     val currentDensity = LocalDensity.current
     val scaledDensity = Density(
         density = currentDensity.density * scaleFactor,

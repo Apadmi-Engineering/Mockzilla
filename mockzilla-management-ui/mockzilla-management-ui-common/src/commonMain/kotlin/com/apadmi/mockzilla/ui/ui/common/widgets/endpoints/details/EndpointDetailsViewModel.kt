@@ -11,7 +11,7 @@ import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.deriveLegacyPreset
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

@@ -1,6 +1,6 @@
 package com.apadmi.mockzilla.ui.di
 
-import com.apadmi.mockzilla.ui.di.utils.viewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.viewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel

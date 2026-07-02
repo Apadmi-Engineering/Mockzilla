@@ -9,12 +9,12 @@ import androidx.compose.ui.Modifier
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 @Composable
-fun FilterTextField(
+public fun FilterTextField(
     value: String,
     onFilterUpdate: (String) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
-) = CustomTextField(
+): Unit = CustomTextField(
     modifier = modifier,
     value = value,
     onValueChange = onFilterUpdate,

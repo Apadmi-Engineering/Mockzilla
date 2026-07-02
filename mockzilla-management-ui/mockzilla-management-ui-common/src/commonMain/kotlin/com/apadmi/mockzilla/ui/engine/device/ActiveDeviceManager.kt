@@ -12,22 +12,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-interface ActiveDeviceMonitor {
-    val selectedDevice: StateFlow<StatefulDevice?>
+public interface ActiveDeviceMonitor {
+    public val selectedDevice: StateFlow<StatefulDevice?>
 
     // Fires when a device connects / disconnects
-    val onDeviceConnectionStateChange: Flow<Unit>
-    val onDeviceRemoved: Flow<Device>
-    val allDevices: Collection<StatefulDevice>
+    public val onDeviceConnectionStateChange: Flow<Unit>
+    public val onDeviceRemoved: Flow<Device>
+    public val allDevices: Collection<StatefulDevice>
 }
 
-interface ActiveDeviceSelector {
-    fun clearSelectedDevice()
-    fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData)
-    fun updateSelectedDevice(device: Device)
-    fun removeDevice(device: Device)
-    fun onLogPollSuccess(device: Device, appPackage: String)
-    fun onLogPollFailure(device: Device)
+public interface ActiveDeviceSelector {
+    public fun clearSelectedDevice()
+    public fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData)
+    public fun updateSelectedDevice(device: Device)
+    public fun removeDevice(device: Device)
+    public fun onLogPollSuccess(device: Device, appPackage: String)
+    public fun onLogPollFailure(device: Device)
 }
 
 internal class ActiveDeviceManagerImpl(

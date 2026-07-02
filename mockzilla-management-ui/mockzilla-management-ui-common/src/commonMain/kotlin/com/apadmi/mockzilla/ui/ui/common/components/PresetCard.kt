@@ -110,7 +110,7 @@ internal fun DashboardOverridePreset.statusColors(): StateColors {
 }
 
 @Composable
-fun Tag(
+public fun Tag(
     modifier: Modifier = Modifier,
     prefix: @Composable () -> Unit = {},
     label: String,
@@ -119,7 +119,7 @@ fun Tag(
     backgroundColor: Color = Color.Transparent,
     shape: Shape = RoundedCornerShape(8.dp),
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-) = Row(
+): Unit = Row(
     modifier = modifier
         .border(
             width = 1.dp,

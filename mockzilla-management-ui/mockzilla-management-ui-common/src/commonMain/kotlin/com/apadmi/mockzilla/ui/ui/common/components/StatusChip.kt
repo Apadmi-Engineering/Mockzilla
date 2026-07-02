@@ -21,7 +21,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
-enum class ChipTone {
+public enum class ChipTone {
     Accent, Err, Info, Neutral, Ok, Teal, Warn
 }
 
@@ -38,7 +38,7 @@ private data class ChipColors(
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun StatusChip(
+public fun StatusChip(
     label: String,
     tone: ChipTone = ChipTone.Neutral,
     modifier: Modifier = Modifier,

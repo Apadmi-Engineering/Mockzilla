@@ -27,7 +27,7 @@ private enum class Tabs {
 }
 
 @Composable
-fun DebugWidget() {
+public fun DebugWidget() {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { Tabs.entries.size })
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }

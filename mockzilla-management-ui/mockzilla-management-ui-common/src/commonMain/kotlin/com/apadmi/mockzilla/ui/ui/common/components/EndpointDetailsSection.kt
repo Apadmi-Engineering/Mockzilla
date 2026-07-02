@@ -46,7 +46,7 @@ private const val rotationCollapsed = 0f
 private const val rotationExpanded = 90f
 
 @Composable
-fun EndpointDetailsSection(
+public fun EndpointDetailsSection(
     label: String,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,

@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icons.EditCircle: ImageVector
+public val Icons.EditCircle: ImageVector
     get() {
         if (_icEditCircle != null) {
             return _icEditCircle!!

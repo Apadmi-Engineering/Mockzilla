@@ -22,7 +22,7 @@ import io.ktor.http.HttpStatusCode
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun HttpStatusCode.color(): Color = when (this.value) {
+public fun HttpStatusCode.color(): Color = when (this.value) {
     in 100..199 -> MaterialTheme.colorScheme.tertiary
     in 200..299 -> MaterialTheme.colorScheme.success.primary
     in 300..399 -> MaterialTheme.colorScheme.tertiary
@@ -35,7 +35,7 @@ fun HttpStatusCode.color(): Color = when (this.value) {
  *
  * @return*/
 @Suppress("MAGIC_NUMBER")
-fun HttpStatusCode.colorStatic(): Color = when (this.value) {
+public fun HttpStatusCode.colorStatic(): Color = when (this.value) {
     in 100..199 -> darkMethodPatch
     in 200..299 -> darkSuccess
     in 300..399 -> darkMethodPatch
@@ -46,7 +46,7 @@ fun HttpStatusCode.colorStatic(): Color = when (this.value) {
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun String.methodColor(): Color = when (this.uppercase()) {
+public fun String.methodColor(): Color = when (this.uppercase()) {
     "GET" -> MaterialTheme.colorScheme.methodGet
     "POST" -> MaterialTheme.colorScheme.methodPost
     "PUT" -> MaterialTheme.colorScheme.methodPut

@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icons.DragCorner: ImageVector
+public val Icons.DragCorner: ImageVector
     get() {
         if (_dragCorner != null) {
             return _dragCorner!!

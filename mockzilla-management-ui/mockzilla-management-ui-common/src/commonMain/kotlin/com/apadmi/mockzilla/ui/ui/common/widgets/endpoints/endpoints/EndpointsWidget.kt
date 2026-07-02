@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration.*
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
@@ -88,7 +88,7 @@ private fun RowDensity.verticalPadding(): Dp = when (this) {
 }
 
 @Composable
-fun EndpointsWidget(
+public fun EndpointsWidget(
     device: Device,
     onEndpointClicked: (Key?) -> Unit,
     onGlobalControlsClicked: () -> Unit

@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.ui.i18n
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
@@ -10,7 +11,7 @@ import cafe.adriel.lyricist.rememberStrings
 import io.ktor.http.HttpStatusCode
 
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-val LocalStrings = staticCompositionLocalOf { EnStrings }
+public val LocalStrings: ProvidableCompositionLocal<Strings> = staticCompositionLocalOf { EnStrings }
 
 private val strings = mapOf(
     "en" to EnStrings
@@ -23,7 +24,7 @@ private val strings = mapOf(
  * @property menu
  * @property links
  */
-data class Strings(
+public data class Strings(
     val common: Common,
     val widgets: Widgets,
     val components: Components,
@@ -36,7 +37,7 @@ data class Strings(
      * @property github
      * @property apadmi
      */
-    data class Links(
+    public data class Links(
         val docsHome: String,
         val docsPresets: String,
         val github: String,
@@ -49,7 +50,7 @@ data class Strings(
      * @property documentation
      * @property apadmi
      */
-    data class Menu(
+    public data class Menu(
         val openSourceLicenses: String,
         val about: String,
         val github: String,
@@ -62,7 +63,7 @@ data class Strings(
      * @property findReplace
      * @property genericError
      */
-    data class Components(
+    public data class Components(
         val editor: Editor,
         val findReplace: FindReplace,
         val genericError: GenericError,
@@ -72,7 +73,7 @@ data class Strings(
          * @property body
          * @property retryButton
          */
-        data class GenericError(
+        public data class GenericError(
             val title: String,
             val body: String,
             val retryButton: String
@@ -82,7 +83,7 @@ data class Strings(
          * @property largeFileSyntaxHighlightError
          * @property jsonErrorTitle
          */
-        data class Editor(
+        public data class Editor(
             val largeFileSyntaxHighlightError: String,
             val jsonErrorTitle: String,
         )
@@ -100,7 +101,7 @@ data class Strings(
          * @property replaceButton
          * @property replaceAllButton
          */
-        data class FindReplace(
+        public data class FindReplace(
             val findPlaceholder: String,
             val replacePlaceholder: String,
             val noResults: String,
@@ -121,7 +122,7 @@ data class Strings(
      * @property resetDescription
      * @property deleteDescription
      */
-    data class Common(
+    public data class Common(
         val closeDescription: String,
         val backDescription: String,
         val debugDescription: String,
@@ -145,7 +146,7 @@ data class Strings(
      * @property createEditPreset
      * @property openSourceLicenses
      */
-    data class Widgets(
+    public data class Widgets(
         val deviceConnection: DeviceConnection,
         val deviceTabs: DeviceTabs,
         val metaData: MetaData,
@@ -167,7 +168,7 @@ data class Strings(
          * @property title
          * @property devBuildsMessage
          */
-        data class OpenSourceLicenses(
+        public data class OpenSourceLicenses(
             val error: String,
             val title: String,
             val devBuildsMessage: String
@@ -182,7 +183,7 @@ data class Strings(
          * @property messageLabel
          * @property connectionErrorTitle
          */
-        data class ErrorBanner(
+        public data class ErrorBanner(
             val connectionLost: String,
             val refreshButton: String,
             val operationError: (GenericErrorableOperation?) -> String,
@@ -197,7 +198,7 @@ data class Strings(
          * @property title
          * @property message
          */
-        data class LinuxUnsupportedBanner(
+        public data class LinuxUnsupportedBanner(
             val title: String,
             val message: String
         )
@@ -211,7 +212,7 @@ data class Strings(
          * @property emptyTitle
          * @property emptyDescription
          */
-        data class Logs(
+        public data class Logs(
             val title: String,
             val clearAll: String,
             val openInPanel: String,
@@ -237,7 +238,7 @@ data class Strings(
          * @property emptyBody
          * @property bodyLoadError
          */
-        data class LogDetails(
+        public data class LogDetails(
             val title: String,
             val emptyTitle: String,
             val emptyDescription: String?,
@@ -263,7 +264,7 @@ data class Strings(
          * @property actionsSection
          * @property darkMode
          */
-        data class MiscControls(
+        public data class MiscControls(
             val refreshAll: String,
             val clearOverrides: String,
             val title: String,
@@ -291,7 +292,7 @@ data class Strings(
          * @property error
          * @property viewAppMetaData
          */
-        data class MetaData(
+        public data class MetaData(
             val title: String,
             val viewAppMetaData: String,
             val noDeviceConnected: String,
@@ -339,7 +340,7 @@ data class Strings(
          * @property noDevicesFound
          * @property noDevicesDescription
          */
-        data class DeviceConnection(
+        public data class DeviceConnection(
             val title: String,
             val subTile: String,
             val bullet1: String,
@@ -374,7 +375,7 @@ data class Strings(
              * @property removed
              * @property resolving
              */
-            data class ToolTips(
+            public data class ToolTips(
                 val notYourSimulator: String,
                 val readyToConnect: String,
                 val removed: String,
@@ -391,7 +392,7 @@ data class Strings(
          * @property closeButtonDescription
          * @property betaBanner
          */
-        data class DeviceTabs(
+        public data class DeviceTabs(
             val tabTitle: (index: Int) -> String,
             val addDevice: String,
             val connected: String,
@@ -410,7 +411,7 @@ data class Strings(
          * @property emptyTitle
          * @property emptyDescription
          */
-        data class Endpoints(
+        public data class Endpoints(
             val filterPlaceholder: String,
             val numberOfEndpointsShown: (shown: Int, max: Int) -> String,
             val overrides: (number: Int) -> String,
@@ -437,7 +438,7 @@ data class Strings(
          * @property headersStatus
          * @property statusStatus
          */
-        data class GlobalControls(
+        public data class GlobalControls(
             val title: String,
             val subtitle: String,
             val resetAllLabel: String,
@@ -458,7 +459,7 @@ data class Strings(
              * @property title
              * @property subtitle
              */
-            data class GlobalConfigBanner(
+            public data class GlobalConfigBanner(
                 val title: String,
                 val subtitle: String,
             )
@@ -473,7 +474,7 @@ data class Strings(
          * @property notSet
          * @property clear
          */
-        data class Latency(
+        public data class Latency(
             val title: String,
             val millisecondLabel: (Int) -> String,
             val secondLabel: (Int) -> String,
@@ -500,7 +501,7 @@ data class Strings(
          * @property behavior
          * @property latency
          */
-        data class EndpointDetails(
+        public data class EndpointDetails(
             val title: String,
             val subtitle: String,
             val none: String,
@@ -538,7 +539,7 @@ data class Strings(
              * @property forceFailureBannerTitle
              * @property forceFailureBannerBody
              */
-            data class Presets(
+            public data class Presets(
                 val noPresetTitle: String,
                 val noPresetBody: String,
                 val typeDescriptions: TypeDescriptions,
@@ -566,7 +567,7 @@ data class Strings(
                  * @property redirect
                  * @property success
                  */
-                data class TypeDescriptions(
+                public data class TypeDescriptions(
                     val error: String,
                     val informational: String,
                     val other: String,
@@ -610,7 +611,7 @@ data class Strings(
          * @property plainBodyPlaceholder
          * @property jsonErrorTitle
          */
-        data class CreateEditPreset(
+        public data class CreateEditPreset(
             val createTitle: String,
             val editTitle: String,
             val statusCodeTitle: String,
@@ -650,7 +651,7 @@ data class Strings(
          * @property subtitle
          * @property footer
          */
-        data class UnsupportedMockzillaVersion(
+        public data class UnsupportedMockzillaVersion(
             val heading: String,
             val subtitle: String,
             val footer: String
@@ -659,7 +660,7 @@ data class Strings(
 }
 
 @Composable
-fun ProvideLocalisableStrings(content: @Composable () -> Unit) {
+public fun ProvideLocalisableStrings(content: @Composable () -> Unit) {
     // Hardcoding the locale to english for now since we're only supporting english.
     // If we want to support multiple languages we'll have to check if the following bug is fixed,
     // if not we'll have to work around it:

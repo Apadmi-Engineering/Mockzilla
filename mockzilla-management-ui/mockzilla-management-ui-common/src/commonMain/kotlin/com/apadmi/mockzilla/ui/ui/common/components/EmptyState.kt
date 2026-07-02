@@ -23,7 +23,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 @Composable
-fun EmptyState(
+public fun EmptyState(
     title: String,
     modifier: Modifier = Modifier,
     description: String? = null,

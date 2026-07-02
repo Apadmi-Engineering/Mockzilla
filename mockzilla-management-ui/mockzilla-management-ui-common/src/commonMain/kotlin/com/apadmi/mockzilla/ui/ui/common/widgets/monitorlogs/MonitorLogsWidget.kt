@@ -47,7 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
@@ -78,7 +78,7 @@ private fun HttpStatusCode.statusColor(isIntendedFailure: Boolean): Color {
 }
 
 @Composable
-fun MonitorLogsWidget(
+public fun MonitorLogsWidget(
     device: Device,
     modifier: Modifier = Modifier,
     topHandle: @Composable () -> Unit = {},
@@ -104,7 +104,7 @@ fun MonitorLogsWidget(
 
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun LogRow(
+internal fun LogRow(
     modifier: Modifier,
     event: LogEvent,
 ) {
@@ -186,7 +186,7 @@ fun LogRow(
 
 @Preview
 @Composable
-fun MonitorLogsWidgetPreview() = PreviewSurface {
+internal fun MonitorLogsWidgetPreview() = PreviewSurface {
     MonitorLogsWidgetContent(
         isExpanded = true,
         state = MonitorLogsViewModel.State.DisplayLogs(

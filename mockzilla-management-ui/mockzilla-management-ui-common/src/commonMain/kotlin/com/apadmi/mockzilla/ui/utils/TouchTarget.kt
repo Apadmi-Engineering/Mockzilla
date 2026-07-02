@@ -17,7 +17,7 @@ private val Platform.touchTargetSize: Dp
  *
  * @param isIcon Whether to apply icon rules (i.e use the big version on JS)
  * @return*/
-fun Modifier.minimumTouchTarget(
+public fun Modifier.minimumTouchTarget(
     isIcon: Boolean = false
 ): Modifier = if (isIcon) {
     iconButtonSize()
@@ -33,7 +33,7 @@ fun Modifier.minimumTouchTarget(
  *
  * @return
  */
-fun Modifier.iconButtonSize(): Modifier = size(
+public fun Modifier.iconButtonSize(): Modifier = size(
     when (Platform.current) {
         // Icons specifically use the mobile size since otherwise
         // they look shrunken

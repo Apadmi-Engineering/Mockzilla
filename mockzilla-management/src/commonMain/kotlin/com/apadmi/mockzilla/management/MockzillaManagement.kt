@@ -18,7 +18,7 @@ import com.apadmi.mockzilla.management.internal.service.UpdateServiceImpl
  *
  * Create an instance via [constructInstance].
  */
-interface MockzillaManagement {
+public interface MockzillaManagement {
     /**
      * Provides direct access to the underlying HTTP repository for cases where the higher-level
      * services do not cover a required operation. Prefer using the typed service properties where
@@ -27,46 +27,46 @@ interface MockzillaManagement {
      * Note: requires `@OptIn(InternalMockzillaApi::class)` since [MockzillaManagementRepository]
      * is an internal type.
      */
-    val underlyingRepository: MockzillaManagementRepository
+    public val underlyingRepository: MockzillaManagementRepository
 
     /**
      * Service for modifying endpoint behaviour on a connected device at runtime.
      */
-    val updateService: UpdateService
+    public val updateService: UpdateService
 
     /**
      * Service for fetching device and application metadata from a connected device.
      */
-    val metaDataService: MetaDataService
+    public val metaDataService: MetaDataService
 
     /**
      * Service for fetching monitor logs from a connected device.
      */
-    val logsService: LogsService
+    public val logsService: LogsService
 
     /**
      * Service for clearing endpoint response caches on a connected device.
      */
-    val cacheClearingService: CacheClearingService
+    public val cacheClearingService: CacheClearingService
 
     /**
      * Service for querying endpoint configurations from a connected device.
      */
-    val endpointsService: EndpointsService
-    val appIconService: AppIconService
+    public val endpointsService: EndpointsService
+    public val appIconService: AppIconService
 
     /**
      * Clears endpoint response caches on a connected device. Clearing a cache causes the next
      * request to that endpoint to return a fresh response rather than a cached one.
      */
-    interface CacheClearingService {
+    public interface CacheClearingService {
         /**
          * Clears the response cache for every endpoint on the device at [connection].
          *
          * @param connection The device to target.
          * @return [Result.success] on success, [Result.failure] if the request could not be completed.
          */
-        suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
+        public suspend fun clearAllCaches(connection: MockzillaConnectionConfig): Result<Unit>
 
         /**
          * Clears the response cache for the specified endpoints on the device at [connection].
@@ -75,7 +75,7 @@ interface MockzillaManagement {
          * @param keys The keys of the endpoints whose caches should be cleared.
          * @return [Result.success] on success, [Result.failure] if the request could not be completed.
          */
-        suspend fun clearCaches(
+        public suspend fun clearCaches(
             connection: MockzillaConnectionConfig,
             keys: List<EndpointConfiguration.Key>
         ): Result<Unit>
@@ -84,7 +84,7 @@ interface MockzillaManagement {
     /**
      * Queries endpoint configurations from a connected device.
      */
-    interface EndpointsService {
+    public interface EndpointsService {
         /**
          * Fetches the current configuration for all endpoints registered on the device at [connection].
          *
@@ -92,7 +92,7 @@ interface MockzillaManagement {
          * @return [Result.success] wrapping the list of endpoint configs, or [Result.failure] if the
          * request could not be completed.
          */
-        suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
+        public suspend fun fetchAllEndpointConfigs(connection: MockzillaConnectionConfig): Result<List<SerializableEndpointConfig>>
 
         /**
          * Fetches the dashboard options configuration for the endpoint identified by [key] on the
@@ -103,7 +103,7 @@ interface MockzillaManagement {
          * @return [Result.success] wrapping the dashboard options config, or [Result.failure] if the
          * request could not be completed.
          */
-        suspend fun fetchDashboardOptionsConfig(
+        public suspend fun fetchDashboardOptionsConfig(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key
         ): Result<DashboardOptionsConfig>
@@ -114,7 +114,7 @@ interface MockzillaManagement {
      * and are applied on top of the endpoint's static configuration — passing `null` for any value
      * resets it to the endpoint's configured default.
      */
-    interface UpdateService {
+    public interface UpdateService {
         /**
          * Overrides whether the specified endpoints return error responses on the device at
          * [connection].
@@ -125,7 +125,7 @@ interface MockzillaManagement {
          * `null` to reset to each endpoint's configured default.
          * @return [Result.success] on success, [Result.failure] if the request could not be completed.
          */
-        suspend fun setShouldFail(
+        public suspend fun setShouldFail(
             connection: MockzillaConnectionConfig,
             keys: Collection<EndpointConfiguration.Key>,
             shouldFail: Boolean?
@@ -140,7 +140,7 @@ interface MockzillaManagement {
          * configured default.
          * @return [Result.success] on success, [Result.failure] if the request could not be completed.
          */
-        suspend fun setDelay(
+        public suspend fun setDelay(
             connection: MockzillaConnectionConfig,
             keys: Collection<EndpointConfiguration.Key>,
             delayMs: Int?
@@ -155,7 +155,7 @@ interface MockzillaManagement {
          * @param dashboardOverridePreset The preset to apply.
          * @return [Result.success] on success, [Result.failure] if the request could not be completed.
          */
-        suspend fun applyPreset(
+        public suspend fun applyPreset(
             connection: MockzillaConnectionConfig,
             key: EndpointConfiguration.Key,
             dashboardOverridePreset: DashboardOverridePreset
@@ -165,7 +165,7 @@ interface MockzillaManagement {
     /**
      * Fetches device and application metadata from a connected device.
      */
-    interface MetaDataService {
+    public interface MetaDataService {
         /**
          * Fetches the device and application metadata from the device at [connection].
          *
@@ -175,7 +175,7 @@ interface MockzillaManagement {
          * @return [Result.success] wrapping the device metadata, or [Result.failure] if the
          * request could not be completed.
          */
-        suspend fun fetchMetaData(
+        public suspend fun fetchMetaData(
             connection: MockzillaConnectionConfig,
             hideFromLogs: Boolean
         ): Result<MetaData>
@@ -184,7 +184,7 @@ interface MockzillaManagement {
     /**
      * Fetches monitor logs from a connected device.
      */
-    interface LogsService {
+    public interface LogsService {
         /**
          * Fetches all buffered monitor logs from the device at [connection] and clears the buffer.
          * Subsequent calls will not return the same log entries.
@@ -196,7 +196,7 @@ interface MockzillaManagement {
          * request could not be completed.
          */
         @Deprecated("Please use `fetchMonitorLogsSince`")
-        suspend fun fetchMonitorLogsAndClearBuffer(
+        public suspend fun fetchMonitorLogsAndClearBuffer(
             connection: MockzillaConnectionConfig,
             hideFromLogs: Boolean
         ): Result<MonitorLogsResponse>
@@ -216,7 +216,7 @@ interface MockzillaManagement {
          * @return [Result.success] wrapping the log response, or [Result.failure] if the
          * request could not be completed.
          */
-        suspend fun fetchMonitorLogsSince(
+        public suspend fun fetchMonitorLogsSince(
             connection: MockzillaConnectionConfig,
             since: Long?,
             clientSessionStart: Long,
@@ -255,7 +255,7 @@ interface MockzillaManagement {
          * @return [Result.success] wrapping the full [LogEvent], or [Result.failure] if no disk
          *   record exists for this entry or the request could not be completed.
          */
-        suspend fun fetchFullBodyLogDetail(
+        public suspend fun fetchFullBodyLogDetail(
             connection: MockzillaConnectionConfig,
             logId: String,
         ): Result<LogEvent>
@@ -267,7 +267,7 @@ interface MockzillaManagement {
          * @param connection The device to target.
          * @return [Result.success] on success, [Result.failure] if the request could not be completed.
          */
-        suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>
+        public suspend fun deleteMonitorLogs(connection: MockzillaConnectionConfig): Result<Unit>
     }
 
     /**
@@ -276,14 +276,14 @@ interface MockzillaManagement {
      * @property disableProxy When `true`, management API calls bypass any system-level HTTP proxy
      * configured on the machine.
      */
-    data class Config(
+    public data class Config(
         val disableProxy: Boolean = false
     )
 
     /**
      * Fetches the app icon from a connected device.
      */
-    interface AppIconService {
+    public interface AppIconService {
         /**
          * Fetches the app icon from the app at [connection] as a byte array
          *
@@ -291,7 +291,7 @@ interface MockzillaManagement {
          * @return [Result.success] wrapping the raw byts of the icon, or [Result.failure] if the
          * request could not be completed.
          */
-        suspend fun fetchAppIcon(connection: MockzillaConnectionConfig): Result<ByteArray?>
+        public suspend fun fetchAppIcon(connection: MockzillaConnectionConfig): Result<ByteArray?>
     }
 
     private data class Instance(
@@ -304,9 +304,9 @@ interface MockzillaManagement {
         override val appIconService: AppIconService
     ) : MockzillaManagement
 
-    companion object {
+    public companion object {
         @Deprecated("This property is deprecated")
-        val instance: MockzillaManagement by lazy { constructInstance() }
+        public val instance: MockzillaManagement by lazy { constructInstance() }
 
         /**
          * Creates a new [MockzillaManagement] instance.
@@ -314,7 +314,7 @@ interface MockzillaManagement {
          * @param config Configuration for this instance.
          * @return A fully initialised [MockzillaManagement] ready to connect to devices.
          */
-        fun constructInstance(config: Config = Config()): MockzillaManagement {
+        public fun constructInstance(config: Config = Config()): MockzillaManagement {
             val repo = MockzillaManagementRepositoryImpl.create(config)
             return Instance(repo, UpdateServiceImpl(repo), repo, repo, repo, repo, repo)
         }

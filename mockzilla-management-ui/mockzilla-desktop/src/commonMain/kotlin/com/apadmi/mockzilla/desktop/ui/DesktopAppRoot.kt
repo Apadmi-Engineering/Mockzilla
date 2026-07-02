@@ -52,9 +52,9 @@ import com.apadmi.mockzilla.desktop.ui.scaffold.VerticalDraggableDivider
 import com.apadmi.mockzilla.desktop.ui.utils.isLinux
 import com.apadmi.mockzilla.desktop.ui.utils.mobileStatusBarPadding
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
-import com.apadmi.mockzilla.ui.di.utils.evictDesktopViewModelsForKey
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.MockzillaUiKoinContext
+import com.apadmi.mockzilla.ui.internal.di.utils.evictDesktopViewModelsForKey
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings

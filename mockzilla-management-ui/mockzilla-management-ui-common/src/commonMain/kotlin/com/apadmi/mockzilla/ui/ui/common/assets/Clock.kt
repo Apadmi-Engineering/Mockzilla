@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
 
-val Icons.Clock: ImageVector
+public val Icons.Clock: ImageVector
     get() {
         if (_clock != null) {
             return _clock!!

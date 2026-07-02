@@ -19,7 +19,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 @Composable
-fun SurfaceHeader(
+public fun SurfaceHeader(
     title: String,
     subtitle: String?,
     modifier: Modifier = Modifier,

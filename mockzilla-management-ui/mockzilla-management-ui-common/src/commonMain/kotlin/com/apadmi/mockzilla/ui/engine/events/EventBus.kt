@@ -9,30 +9,30 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-interface EventBus {
-    val events: Flow<Event>
+public interface EventBus {
+    public val events: Flow<Event>
 
-    fun send(event: Event)
+    public fun send(event: Event)
 
-    sealed interface Event {
-        data object PresetApplied : Event
-        data object FullRefresh : Event
+    public sealed interface Event {
+        public data object PresetApplied : Event
+        public data object FullRefresh : Event
         /**
          * @property operation
          * @property error
          */
-        data class GenericError(
+        public data class GenericError(
             val operation: GenericErrorableOperation,
             val error: Throwable
         ) : Event
         /**
          * @property keys
          */
-        data class EndpointDataChanged(val keys: Collection<EndpointConfiguration.Key>) : Event
+        public data class EndpointDataChanged(val keys: Collection<EndpointConfiguration.Key>) : Event
     }
 }
 
-enum class GenericErrorableOperation {
+public enum class GenericErrorableOperation {
     ApplyPreset,
     ClearCaches,
     FetchDashboardOptionsConfig,

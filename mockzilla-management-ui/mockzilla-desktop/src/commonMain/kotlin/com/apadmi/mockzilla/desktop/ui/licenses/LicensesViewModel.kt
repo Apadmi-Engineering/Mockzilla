@@ -3,7 +3,7 @@ package com.apadmi.mockzilla.desktop.ui.licenses
 import com.apadmi.mockzilla.desktop.engine.licenses.LibraryForAttribution
 import com.apadmi.mockzilla.desktop.engine.licenses.LicensesUseCase
 import com.apadmi.mockzilla.lib.MockzillaBuildConfig
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow

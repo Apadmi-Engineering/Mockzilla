@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icons.RedirectCircle: ImageVector
+public val Icons.RedirectCircle: ImageVector
     get() {
         if (_icRedirectCircle != null) {
             return _icRedirectCircle!!
