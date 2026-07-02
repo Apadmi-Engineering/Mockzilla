@@ -1,6 +1,7 @@
 @file:Suppress("PACKAGE_NAME_MISSING")
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,8 +29,17 @@ import co.touchlab.kermit.Logger
 import org.jetbrains.skiko.OS
 import org.jetbrains.skiko.hostOs
 
+import java.awt.Desktop
 import java.awt.Dimension
 import java.awt.GraphicsEnvironment
+
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.withTimeout
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 
 private const val minWindowSizeDp = 400
 
@@ -90,17 +100,40 @@ fun main() = application {
     Logger.setLogWriters(logWriters = listOf(DesktopLogWriter()))
     startDesktopMockzillaKoin()
 
+    var isWindowVisible by remember { mutableStateOf(true) }
+
+    // Handle Cmd+Q
+    LaunchedEffect(Unit) {
+        if (hostOs == OS.MacOS) {
+            Desktop.getDesktop().setQuitHandler { _, response ->
+                performGracefulShutdown({ isWindowVisible = false }, response::performQuit)
+            }
+        }
+    }
+
     Window(
         title = "Mockzilla",
         resizable = true,
         state = state,
         icon = rememberAppIcon(),
+        visible = isWindowVisible,
         onCloseRequest = {
-            MockzillaUiKoinContext.koin.get<ZeroConfSdkWrapper>().stop()
-            exitApplication()
+            performGracefulShutdown({ isWindowVisible = false }, { exitApplication() })
         },
         content = { MockzillaWindowContent(state) }
     )
+}
+
+private fun performGracefulShutdown(onHidden: () -> Unit, onDone: () -> Unit) {
+    onHidden()
+    CoroutineScope(Dispatchers.IO).launch {
+        // Usually only takes ~2 seconds but just ensuring Mockzilla doesn't become un-quittable
+        // if `stop` somehow gets stuck
+        withTimeout(30.seconds) {
+            MockzillaUiKoinContext.koin.get<ZeroConfSdkWrapper>().stop()
+        }
+        withContext(Dispatchers.Main) { onDone() }
+    }
 }
 
 @Composable

@@ -16,6 +16,8 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 private const val tag = "ZeroConfSdkWrapper"
 private const val bufferCapacity = 16
@@ -52,11 +55,17 @@ actual class ZeroConfSdkWrapper actual constructor(
         }
     }
 
-    actual fun stop() {
+    actual suspend fun stop() {
         pollingJob?.cancel()
         pollingJob = null
-        jmDnsInstances.values.forEach { runCatching { it.close() } }
+        val closingJobs = jmDnsInstances.values.map {
+            scope.async {
+                runCatching { it.close() }
+                yield()
+            }
+        }
         jmDnsInstances.clear()
+        closingJobs.awaitAll()
     }
 
     private fun syncInterfaces() {

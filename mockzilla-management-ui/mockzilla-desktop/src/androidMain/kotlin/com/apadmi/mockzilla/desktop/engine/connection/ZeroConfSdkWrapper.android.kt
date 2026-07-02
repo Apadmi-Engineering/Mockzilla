@@ -8,5 +8,5 @@ actual class ZeroConfSdkWrapper actual constructor(serviceType: String, scope: C
         Logger.i { "Skipping ZeroConf setup: Not available on Android target" }
     }
 
-    actual fun stop() = Unit
+    actual suspend fun stop() = Unit
 }
