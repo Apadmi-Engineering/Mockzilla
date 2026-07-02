@@ -49,6 +49,7 @@ import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionWidget
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsWidget
 import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalDraggableDivider
 import com.apadmi.mockzilla.desktop.ui.scaffold.VerticalDraggableDivider
+import com.apadmi.mockzilla.desktop.ui.utils.isLinux
 import com.apadmi.mockzilla.desktop.ui.utils.mobileStatusBarPadding
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
@@ -60,6 +61,7 @@ import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
+import com.apadmi.mockzilla.ui.ui.common.components.LinuxUnsupportedBanner
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTab
 import com.apadmi.mockzilla.ui.ui.common.scaffold.VerticalTabList
@@ -183,11 +185,17 @@ fun DesktopApp(
         Column(modifier = Modifier.mobileStatusBarPadding().fillMaxSize()) {
             DeviceTabsWidget(modifier = Modifier.fillMaxWidth())
 
-            selectedDevice?.let {
-                stateHolder.SaveableStateProvider(key = selectedDevice.toString()) {
-                    DeviceContent(device = selectedDevice, strings = strings)
-                }
-            } ?: DeviceConnectionWidget()
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                selectedDevice?.let {
+                    stateHolder.SaveableStateProvider(key = selectedDevice.toString()) {
+                        DeviceContent(device = selectedDevice, strings = strings)
+                    }
+                } ?: DeviceConnectionWidget()
+            }
+
+            if (isLinux() && selectedDevice == null) {
+                LinuxUnsupportedBanner()
+            }
         }
     }
 }

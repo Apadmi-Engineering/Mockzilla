@@ -246,6 +246,11 @@ val EnStrings = Strings(
             messageLabel = "Message: ",
             connectionErrorTitle = "Please ensure the app:",
         ),
+        linuxUnsupportedBanner = Strings.Widgets.LinuxUnsupportedBanner(
+            title = "Linux is not officially supported",
+            message = "Mockzilla for desktop Linux is provided as-is. Rendering issues may occur and this " +
+                    "platform does not receive the same testing as macOS and Windows.",
+        ),
         createEditPreset = Strings.Widgets.CreateEditPreset(
             createTitle = "Create Preset",
             editTitle = "Edit Preset",

@@ -139,6 +139,7 @@ data class Strings(
      * @property miscControls
      * @property unsupportedMockzilla
      * @property errorBanner
+     * @property linuxUnsupportedBanner
      * @property globalControls
      * @property latency
      * @property createEditPreset
@@ -157,6 +158,7 @@ data class Strings(
         val miscControls: MiscControls,
         val unsupportedMockzilla: UnsupportedMockzillaVersion,
         val errorBanner: ErrorBanner,
+        val linuxUnsupportedBanner: LinuxUnsupportedBanner,
         val latency: Latency,
         val openSourceLicenses: OpenSourceLicenses
     ) {
@@ -189,6 +191,15 @@ data class Strings(
             val statusLabel: String,
             val messageLabel: String,
             val connectionErrorTitle: String
+        )
+
+        /**
+         * @property title
+         * @property message
+         */
+        data class LinuxUnsupportedBanner(
+            val title: String,
+            val message: String
         )
 
         /**
