@@ -2,6 +2,7 @@
 
 package com.apadmi.mockzilla.ui.i18n
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 
 import cafe.adriel.lyricist.LyricistStrings
@@ -9,6 +10,7 @@ import io.ktor.http.HttpStatusCode
 
 import kotlin.math.roundToInt
 
+@InternalMockzillaApi
 @LyricistStrings(languageTag = "En", default = true)
 public val EnStrings: Strings = Strings(
     common = Strings.Common(

@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration.*
 import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
@@ -87,6 +88,7 @@ private fun RowDensity.verticalPadding(): Dp = when (this) {
     RowDensity.Comfy -> COMFY_VERTICAL_PADDING_DP.dp
 }
 
+@InternalMockzillaApi
 @Composable
 public fun EndpointsWidget(
     device: Device,

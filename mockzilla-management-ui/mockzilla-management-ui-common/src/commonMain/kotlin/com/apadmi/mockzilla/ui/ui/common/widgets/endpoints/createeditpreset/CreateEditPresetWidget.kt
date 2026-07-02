@@ -67,6 +67,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.ui.internal.di.utils.evictDesktopViewModelsForKey
 import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
@@ -345,6 +346,7 @@ private fun ColumnScope.PopulatedState(
     }
 }
 
+@InternalMockzillaApi
 @Composable
 public fun CreateEditPresetWidget(
     device: Device,

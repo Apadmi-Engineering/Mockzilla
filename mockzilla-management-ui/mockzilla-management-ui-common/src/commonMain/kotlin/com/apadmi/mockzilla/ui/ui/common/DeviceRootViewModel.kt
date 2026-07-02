@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.ui.ui.common
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.internal.ktor.FailedHttpResponseException
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
+@InternalMockzillaApi
 public class DeviceRootViewModel(
     private val device: Device,
     private val eventBus: EventBus,
@@ -88,7 +90,9 @@ public class DeviceRootViewModel(
         state.value = currentState.copy(error = null)
     }
 
+    @InternalMockzillaApi
     public sealed class State {
+        @InternalMockzillaApi
         public data object UnsupportedDeviceMockzillaVersion : State()
 
         /**
@@ -96,18 +100,22 @@ public class DeviceRootViewModel(
          * @property selectedEndpoint
          * @property error
          */
+        @InternalMockzillaApi
         public data class Connected(
             val activeDevice: StatefulDevice,
             val selectedEndpoint: EndpointConfiguration.Key?,
             val error: ErrorBannerState? = null
         ) : State() {
+            @InternalMockzillaApi
             public sealed class ErrorBannerState {
+                @InternalMockzillaApi
                 public data object ConnectionLost : ErrorBannerState()
                 /**
                  * @property status
                  * @property rawError
                  * @property operation
                  */
+                @InternalMockzillaApi
                 public data class ApiError(
                     val status: HttpStatusCode?,
                     val rawError: String?,

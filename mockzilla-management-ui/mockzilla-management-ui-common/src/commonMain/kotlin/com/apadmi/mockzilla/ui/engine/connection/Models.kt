@@ -1,8 +1,10 @@
 package com.apadmi.mockzilla.ui.engine.connection
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.MetaData
 import kotlin.jvm.JvmInline
 
+@InternalMockzillaApi
 public typealias AdbConnectionDeviceSerial = String
 
 /**
@@ -15,6 +17,7 @@ public typealias AdbConnectionDeviceSerial = String
  * @property adbConnection
  * @property state
  */
+@InternalMockzillaApi
 public data class DetectedDevice(
     val connectionId: String,
     val prettyName: String,
@@ -25,6 +28,7 @@ public data class DetectedDevice(
     val adbConnection: AdbConnection?,
     val state: State
 ) {
+    @InternalMockzillaApi
     public enum class State {
         NotYourSimulator,
         ReadyToConnect,
@@ -39,6 +43,7 @@ public data class DetectedDevice(
  * @property isActive
  * @property ipAddresses
  */
+@InternalMockzillaApi
 public data class AdbConnection(
     val deviceSerial: AdbConnectionDeviceSerial,
     val isActive: Boolean,
@@ -50,5 +55,6 @@ public data class AdbConnection(
 /**
  * @property raw
  */
+@InternalMockzillaApi
 @JvmInline
 public value class IpAddress(public val raw: String)

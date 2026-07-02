@@ -19,6 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 public fun CustomSlider(

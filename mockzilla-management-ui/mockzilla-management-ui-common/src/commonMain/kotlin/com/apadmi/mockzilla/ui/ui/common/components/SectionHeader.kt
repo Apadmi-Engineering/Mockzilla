@@ -14,6 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 @Composable
 public fun SectionHeader(
     title: String,

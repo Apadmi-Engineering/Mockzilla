@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel.State.*
@@ -58,6 +59,7 @@ private fun Connected.ErrorBannerState.backgroundColor() = when (this) {
     is Connected.ErrorBannerState.ApiError -> MaterialTheme.colorScheme.errorContainer
 }
 
+@InternalMockzillaApi
 @Composable
 public fun AnimatedErrorBanner(
     state: Connected.ErrorBannerState?,
@@ -88,6 +90,7 @@ public fun AnimatedErrorBanner(
     }
 }
 
+@InternalMockzillaApi
 @Composable
 public fun ErrorBanner(
     state: Connected.ErrorBannerState,

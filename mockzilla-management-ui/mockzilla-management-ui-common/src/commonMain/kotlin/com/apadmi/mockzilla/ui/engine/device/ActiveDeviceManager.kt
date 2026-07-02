@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.ui.engine.device
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.ui.engine.Config
 
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+@InternalMockzillaApi
 public interface ActiveDeviceMonitor {
     public val selectedDevice: StateFlow<StatefulDevice?>
 
@@ -21,6 +23,7 @@ public interface ActiveDeviceMonitor {
     public val allDevices: Collection<StatefulDevice>
 }
 
+@InternalMockzillaApi
 public interface ActiveDeviceSelector {
     public fun clearSelectedDevice()
     public fun setActiveDeviceWithMetaData(device: Device, metadata: MetaData)

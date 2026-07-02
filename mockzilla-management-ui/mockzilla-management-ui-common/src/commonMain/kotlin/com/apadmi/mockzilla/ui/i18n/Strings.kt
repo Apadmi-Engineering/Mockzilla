@@ -4,12 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 
 import cafe.adriel.lyricist.ProvideStrings
 import cafe.adriel.lyricist.rememberStrings
 import io.ktor.http.HttpStatusCode
 
+@InternalMockzillaApi
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 public val LocalStrings: ProvidableCompositionLocal<Strings> = staticCompositionLocalOf { EnStrings }
 
@@ -24,6 +26,7 @@ private val strings = mapOf(
  * @property menu
  * @property links
  */
+@InternalMockzillaApi
 public data class Strings(
     val common: Common,
     val widgets: Widgets,
@@ -37,6 +40,7 @@ public data class Strings(
      * @property github
      * @property apadmi
      */
+    @InternalMockzillaApi
     public data class Links(
         val docsHome: String,
         val docsPresets: String,
@@ -50,6 +54,7 @@ public data class Strings(
      * @property documentation
      * @property apadmi
      */
+    @InternalMockzillaApi
     public data class Menu(
         val openSourceLicenses: String,
         val about: String,
@@ -63,6 +68,7 @@ public data class Strings(
      * @property findReplace
      * @property genericError
      */
+    @InternalMockzillaApi
     public data class Components(
         val editor: Editor,
         val findReplace: FindReplace,
@@ -73,6 +79,7 @@ public data class Strings(
          * @property body
          * @property retryButton
          */
+        @InternalMockzillaApi
         public data class GenericError(
             val title: String,
             val body: String,
@@ -83,6 +90,7 @@ public data class Strings(
          * @property largeFileSyntaxHighlightError
          * @property jsonErrorTitle
          */
+        @InternalMockzillaApi
         public data class Editor(
             val largeFileSyntaxHighlightError: String,
             val jsonErrorTitle: String,
@@ -101,6 +109,7 @@ public data class Strings(
          * @property replaceButton
          * @property replaceAllButton
          */
+        @InternalMockzillaApi
         public data class FindReplace(
             val findPlaceholder: String,
             val replacePlaceholder: String,
@@ -122,6 +131,7 @@ public data class Strings(
      * @property resetDescription
      * @property deleteDescription
      */
+    @InternalMockzillaApi
     public data class Common(
         val closeDescription: String,
         val backDescription: String,
@@ -146,6 +156,7 @@ public data class Strings(
      * @property createEditPreset
      * @property openSourceLicenses
      */
+    @InternalMockzillaApi
     public data class Widgets(
         val deviceConnection: DeviceConnection,
         val deviceTabs: DeviceTabs,
@@ -168,6 +179,7 @@ public data class Strings(
          * @property title
          * @property devBuildsMessage
          */
+        @InternalMockzillaApi
         public data class OpenSourceLicenses(
             val error: String,
             val title: String,
@@ -183,6 +195,7 @@ public data class Strings(
          * @property messageLabel
          * @property connectionErrorTitle
          */
+        @InternalMockzillaApi
         public data class ErrorBanner(
             val connectionLost: String,
             val refreshButton: String,
@@ -198,6 +211,7 @@ public data class Strings(
          * @property title
          * @property message
          */
+        @InternalMockzillaApi
         public data class LinuxUnsupportedBanner(
             val title: String,
             val message: String
@@ -212,6 +226,7 @@ public data class Strings(
          * @property emptyTitle
          * @property emptyDescription
          */
+        @InternalMockzillaApi
         public data class Logs(
             val title: String,
             val clearAll: String,
@@ -238,6 +253,7 @@ public data class Strings(
          * @property emptyBody
          * @property bodyLoadError
          */
+        @InternalMockzillaApi
         public data class LogDetails(
             val title: String,
             val emptyTitle: String,
@@ -264,6 +280,7 @@ public data class Strings(
          * @property actionsSection
          * @property darkMode
          */
+        @InternalMockzillaApi
         public data class MiscControls(
             val refreshAll: String,
             val clearOverrides: String,
@@ -292,6 +309,7 @@ public data class Strings(
          * @property error
          * @property viewAppMetaData
          */
+        @InternalMockzillaApi
         public data class MetaData(
             val title: String,
             val viewAppMetaData: String,
@@ -340,6 +358,7 @@ public data class Strings(
          * @property noDevicesFound
          * @property noDevicesDescription
          */
+        @InternalMockzillaApi
         public data class DeviceConnection(
             val title: String,
             val subTile: String,
@@ -375,6 +394,7 @@ public data class Strings(
              * @property removed
              * @property resolving
              */
+            @InternalMockzillaApi
             public data class ToolTips(
                 val notYourSimulator: String,
                 val readyToConnect: String,
@@ -392,6 +412,7 @@ public data class Strings(
          * @property closeButtonDescription
          * @property betaBanner
          */
+        @InternalMockzillaApi
         public data class DeviceTabs(
             val tabTitle: (index: Int) -> String,
             val addDevice: String,
@@ -411,6 +432,7 @@ public data class Strings(
          * @property emptyTitle
          * @property emptyDescription
          */
+        @InternalMockzillaApi
         public data class Endpoints(
             val filterPlaceholder: String,
             val numberOfEndpointsShown: (shown: Int, max: Int) -> String,
@@ -438,6 +460,7 @@ public data class Strings(
          * @property headersStatus
          * @property statusStatus
          */
+        @InternalMockzillaApi
         public data class GlobalControls(
             val title: String,
             val subtitle: String,
@@ -459,6 +482,7 @@ public data class Strings(
              * @property title
              * @property subtitle
              */
+            @InternalMockzillaApi
             public data class GlobalConfigBanner(
                 val title: String,
                 val subtitle: String,
@@ -474,6 +498,7 @@ public data class Strings(
          * @property notSet
          * @property clear
          */
+        @InternalMockzillaApi
         public data class Latency(
             val title: String,
             val millisecondLabel: (Int) -> String,
@@ -501,6 +526,7 @@ public data class Strings(
          * @property behavior
          * @property latency
          */
+        @InternalMockzillaApi
         public data class EndpointDetails(
             val title: String,
             val subtitle: String,
@@ -539,6 +565,7 @@ public data class Strings(
              * @property forceFailureBannerTitle
              * @property forceFailureBannerBody
              */
+            @InternalMockzillaApi
             public data class Presets(
                 val noPresetTitle: String,
                 val noPresetBody: String,
@@ -567,6 +594,7 @@ public data class Strings(
                  * @property redirect
                  * @property success
                  */
+                @InternalMockzillaApi
                 public data class TypeDescriptions(
                     val error: String,
                     val informational: String,
@@ -611,6 +639,7 @@ public data class Strings(
          * @property plainBodyPlaceholder
          * @property jsonErrorTitle
          */
+        @InternalMockzillaApi
         public data class CreateEditPreset(
             val createTitle: String,
             val editTitle: String,
@@ -651,6 +680,7 @@ public data class Strings(
          * @property subtitle
          * @property footer
          */
+        @InternalMockzillaApi
         public data class UnsupportedMockzillaVersion(
             val heading: String,
             val subtitle: String,
@@ -659,6 +689,7 @@ public data class Strings(
     }
 }
 
+@InternalMockzillaApi
 @Composable
 public fun ProvideLocalisableStrings(content: @Composable () -> Unit) {
     // Hardcoding the locale to english for now since we're only supporting english.

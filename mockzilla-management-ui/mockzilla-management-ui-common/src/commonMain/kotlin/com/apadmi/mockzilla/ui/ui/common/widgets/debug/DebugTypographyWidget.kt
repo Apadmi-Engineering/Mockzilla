@@ -14,8 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 
+@InternalMockzillaApi
 @Composable
 public fun DebugTypographyWidget(): Unit = Column(
     modifier = Modifier

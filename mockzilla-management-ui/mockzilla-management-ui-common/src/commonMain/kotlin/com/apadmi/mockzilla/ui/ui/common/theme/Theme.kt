@@ -21,15 +21,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.i18n.ProvideLocalisableStrings
 import com.apadmi.mockzilla.ui.utils.Platform
 
+@InternalMockzillaApi
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 public val LocalForceDarkMode: ProvidableCompositionLocal<Boolean> = compositionLocalOf { false }
 
+@InternalMockzillaApi
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 public val LocalSetForceDarkMode: ProvidableCompositionLocal<(Boolean) -> Unit> = compositionLocalOf { { /* noop */ } }
 
+@InternalMockzillaApi
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
 public val LocalSetScaleFactor: ProvidableCompositionLocal<(Float) -> Unit> = compositionLocalOf { { /* noop */ } }
 
@@ -107,22 +111,27 @@ private val lightColors = lightColorScheme(
 
 // ── Extensions for colours that don't map onto a Material slot ────────────────
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.inputBackground: Color
     get() = if (LocalForceDarkMode.current) surface else surfaceVariant
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.onSurfaceMuted: Color
     get() = if (LocalForceDarkMode.current) darkOnSurfaceMuted else lightOnSurfaceMuted
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.onSurfaceFaint: Color
     get() = if (LocalForceDarkMode.current) darkOnSurfaceFaint else lightOnSurfaceFaint
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.chipSelectedBackground: Color
     get() = if (LocalForceDarkMode.current) surfaceContainerHigh else Color.White
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.success: StateColors
     get() = if (LocalForceDarkMode.current) {
@@ -131,6 +140,7 @@ public val ColorScheme.success: StateColors
         StateColors(primary = lightSuccess, container = lightSuccessContainer)
     }
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.warning: StateColors
     get() = if (LocalForceDarkMode.current) {
@@ -139,6 +149,7 @@ public val ColorScheme.warning: StateColors
         StateColors(primary = lightWarning, container = lightWarningContainer)
     }
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.info: StateColors
     get() = if (LocalForceDarkMode.current) {
@@ -147,6 +158,7 @@ public val ColorScheme.info: StateColors
         StateColors(primary = lightInfo, container = lightInfoContainer)
     }
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.jsonKey: Color
     get() = if (LocalForceDarkMode.current) darkJsonKey else lightJsonKey
@@ -161,26 +173,32 @@ internal val ColorScheme.jsonHighlight: JsonHighlightColors
         nullColor = onSurfaceMuted
     )
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.methodGet: Color
     get() = if (LocalForceDarkMode.current) darkMethodGet else lightMethodGet
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.methodPost: Color
     get() = if (LocalForceDarkMode.current) darkMethodPost else lightMethodPost
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.methodPut: Color
     get() = if (LocalForceDarkMode.current) darkMethodPut else lightMethodPut
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.methodPatch: Color
     get() = if (LocalForceDarkMode.current) darkMethodPatch else lightMethodPatch
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.methodDelete: Color
     get() = if (LocalForceDarkMode.current) darkMethodDelete else lightMethodDelete
 
+@InternalMockzillaApi
 @get:Composable
 public val ColorScheme.methodOther: Color
     get() = if (LocalForceDarkMode.current) darkMethodOther else lightMethodOther
@@ -189,11 +207,13 @@ public val ColorScheme.methodOther: Color
  * @property primary
  * @property container
  */
+@InternalMockzillaApi
 public data class StateColors(
     val primary: Color,
     val container: Color
 )
 
+@InternalMockzillaApi
 public data object ScaleFactor {
     public const val DEFAULT_DESKTOP: Float = 1.0F
     public const val DEFAULT_MOBILE: Float = 1.0F
@@ -219,6 +239,7 @@ internal data class JsonHighlightColors(
     val nullColor: Color,
 )
 
+@InternalMockzillaApi
 @Composable
 public fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
@@ -246,6 +267,7 @@ public fun AppTheme(
     }
 }
 
+@InternalMockzillaApi
 @Composable
 public fun ScaledDensity(scaleFactor: Float, content: @Composable () -> Unit) {
     val currentDensity = LocalDensity.current

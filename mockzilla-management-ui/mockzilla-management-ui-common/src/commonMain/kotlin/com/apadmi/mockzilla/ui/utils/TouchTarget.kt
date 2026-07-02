@@ -6,6 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
 @Suppress("MAGIC_NUMBER")
 private val Platform.touchTargetSize: Dp
     get() = when (this) {
@@ -17,6 +19,7 @@ private val Platform.touchTargetSize: Dp
  *
  * @param isIcon Whether to apply icon rules (i.e use the big version on JS)
  * @return*/
+@InternalMockzillaApi
 public fun Modifier.minimumTouchTarget(
     isIcon: Boolean = false
 ): Modifier = if (isIcon) {
@@ -33,6 +36,7 @@ public fun Modifier.minimumTouchTarget(
  *
  * @return
  */
+@InternalMockzillaApi
 public fun Modifier.iconButtonSize(): Modifier = size(
     when (Platform.current) {
         // Icons specifically use the mobile size since otherwise

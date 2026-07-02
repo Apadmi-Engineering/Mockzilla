@@ -31,20 +31,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
+@InternalMockzillaApi
 public enum class ButtonVariant {
     Ghost, Outline, Soft, Solid
 }
+@InternalMockzillaApi
 public enum class ButtonSize {
     Lg, Md, Sm
 }
+@InternalMockzillaApi
 public enum class ButtonContentAlignment {
     Center, Start
 }
 
+@InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
 @Composable
 public fun CustomButton(

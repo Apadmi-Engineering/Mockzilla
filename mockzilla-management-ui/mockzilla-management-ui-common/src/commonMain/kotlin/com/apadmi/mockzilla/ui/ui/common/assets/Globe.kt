@@ -8,6 +8,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.materialPath
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 public val Icons.Filled.Globe: ImageVector
     get() {
         if (_globe != null) {

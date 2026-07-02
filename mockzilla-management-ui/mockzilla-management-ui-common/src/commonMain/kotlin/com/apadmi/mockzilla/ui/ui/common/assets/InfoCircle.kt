@@ -13,6 +13,9 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 public val Icons.InfoCircle: ImageVector
     get() {
         if (_icInfoCircle != null) {

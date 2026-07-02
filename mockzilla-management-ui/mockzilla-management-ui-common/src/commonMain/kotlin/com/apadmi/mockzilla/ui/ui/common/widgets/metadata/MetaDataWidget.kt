@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
@@ -61,6 +62,7 @@ private fun RunTarget.label(strings: Strings) = when (this) {
     RunTarget.Js -> strings.widgets.metaData.js
 }
 
+@InternalMockzillaApi
 @Composable
 public fun MetaDataWidget(device: Device) {
     val viewModel =

@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.ui.ui.common.utils
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.theme.darkError
 import com.apadmi.mockzilla.ui.ui.common.theme.darkMethodPatch
 import com.apadmi.mockzilla.ui.ui.common.theme.darkOnSurfaceMuted
@@ -20,6 +21,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import io.ktor.http.HttpStatusCode
 
+@InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
 @Composable
 public fun HttpStatusCode.color(): Color = when (this.value) {
@@ -34,6 +36,7 @@ public fun HttpStatusCode.color(): Color = when (this.value) {
 /** Non-composable variant for use in Canvas draw scopes. Uses dark-theme defaults.
  *
  * @return*/
+@InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
 public fun HttpStatusCode.colorStatic(): Color = when (this.value) {
     in 100..199 -> darkMethodPatch
@@ -44,6 +47,7 @@ public fun HttpStatusCode.colorStatic(): Color = when (this.value) {
     else -> darkOnSurfaceMuted
 }
 
+@InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
 @Composable
 public fun String.methodColor(): Color = when (this.uppercase()) {

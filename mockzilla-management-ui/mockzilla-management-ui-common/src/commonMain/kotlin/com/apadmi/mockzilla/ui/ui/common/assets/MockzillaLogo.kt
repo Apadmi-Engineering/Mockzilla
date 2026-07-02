@@ -12,6 +12,9 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 public val Icons.MockzillaLogo: ImageVector
     get() {
         if (_mockzillaLogo != null) {

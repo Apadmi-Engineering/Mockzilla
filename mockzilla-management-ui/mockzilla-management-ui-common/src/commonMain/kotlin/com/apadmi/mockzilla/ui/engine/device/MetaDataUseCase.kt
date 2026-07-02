@@ -1,11 +1,13 @@
 package com.apadmi.mockzilla.ui.engine.device
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaManagement
 
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
+@InternalMockzillaApi
 public interface MetaDataUseCase {
     public suspend fun getMetaData(device: Device): Result<MetaData>
     public suspend fun invalidate(device: Device)

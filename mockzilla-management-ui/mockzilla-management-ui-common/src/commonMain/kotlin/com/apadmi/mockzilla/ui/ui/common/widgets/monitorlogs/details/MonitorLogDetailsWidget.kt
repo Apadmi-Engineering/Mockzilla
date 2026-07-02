@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
@@ -69,6 +70,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogD
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
 
+@InternalMockzillaApi
 @Composable
 public fun MonitorLogDetailsWidget(
     device: Device,

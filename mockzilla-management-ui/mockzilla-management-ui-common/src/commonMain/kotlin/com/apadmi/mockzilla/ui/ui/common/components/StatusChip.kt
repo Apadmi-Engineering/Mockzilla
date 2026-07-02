@@ -17,10 +17,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
+@InternalMockzillaApi
 public enum class ChipTone {
     Accent, Err, Info, Neutral, Ok, Teal, Warn
 }
@@ -36,6 +38,7 @@ private data class ChipColors(
     val background: Color
 )
 
+@InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
 @Composable
 public fun StatusChip(

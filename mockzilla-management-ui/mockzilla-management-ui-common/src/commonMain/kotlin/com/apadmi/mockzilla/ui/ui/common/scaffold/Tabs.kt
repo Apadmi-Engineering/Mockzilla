@@ -30,11 +30,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.desktop.utils.rotateVertically
 
+@InternalMockzillaApi
 @Immutable
 public data class VerticalTab(
     val title: String?,
@@ -42,6 +44,7 @@ public data class VerticalTab(
     val leadingContent: (@Composable () -> Unit)? = null,
 )
 
+@InternalMockzillaApi
 @Immutable
 public data class HorizontalTab(
     val title: String?,
@@ -52,6 +55,7 @@ public data class HorizontalTab(
     val modifier: Modifier = Modifier,
 )
 
+@InternalMockzillaApi
 @Composable
 public fun VerticalTabList(
     tabs: List<VerticalTab>,
@@ -83,6 +87,7 @@ public fun VerticalTabList(
     }
 }
 
+@InternalMockzillaApi
 @Composable
 public fun HorizontalTabList(
     modifier: Modifier = Modifier,

@@ -18,6 +18,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
 import kotlinx.coroutines.launch
 
 private enum class Tabs {
@@ -26,6 +28,7 @@ private enum class Tabs {
     ;
 }
 
+@InternalMockzillaApi
 @Composable
 public fun DebugWidget() {
     val scope = rememberCoroutineScope()

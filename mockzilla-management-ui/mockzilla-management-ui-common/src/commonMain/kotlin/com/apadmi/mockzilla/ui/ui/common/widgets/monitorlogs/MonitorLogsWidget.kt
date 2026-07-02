@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
@@ -77,6 +78,7 @@ private fun HttpStatusCode.statusColor(isIntendedFailure: Boolean): Color {
     }
 }
 
+@InternalMockzillaApi
 @Composable
 public fun MonitorLogsWidget(
     device: Device,

@@ -15,6 +15,9 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 public val Icons.RedirectCircle: ImageVector
     get() {
         if (_icRedirectCircle != null) {
