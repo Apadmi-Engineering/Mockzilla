@@ -36,5 +36,5 @@ data class DeviceDiscoveryEvent(
 
 expect class ZeroConfSdkWrapper(serviceType: String, scope: CoroutineScope) {
     fun setListener(listener: suspend (DeviceDiscoveryEvent) -> Unit)
-    fun stop()
+    suspend fun stop()
 }
