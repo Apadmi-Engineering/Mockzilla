@@ -1,9 +1,12 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
+import com.apadmi.mockzilla.ui.internal.NoKDoc
 import com.apadmi.mockzilla.ui.utils.launchUnit
 import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 

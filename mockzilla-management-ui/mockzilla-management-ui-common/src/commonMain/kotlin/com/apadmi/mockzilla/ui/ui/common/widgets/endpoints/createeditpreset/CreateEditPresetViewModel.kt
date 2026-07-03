@@ -1,3 +1,5 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset
 
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +13,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
+import com.apadmi.mockzilla.ui.internal.NoKDoc
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
@@ -217,22 +220,14 @@ internal class CreateEditPresetViewModel(
         data object Loading : State()
 
         /**
-         * @property isSaving
          * @property syncToken Incremented on server reload or format-apply; drives LaunchedEffect in the UI.
          * Committed values alone would suffice for server reload, but format changes [body] without
          * touching [committedBody], so syncToken is the only signal available to push the reformatted
          * content into the text field.
-         * @property statusCode
-         * @property body
-         * @property headers
-         * @property responseType
-         * @property variant
          * @property endpointName The display name of the endpoint shown in the list
-         * @property bodyParseError
          * @property committedBody Last body value synced from the server
          * @property committedStatusCode Last status code synced from the server
          * @property committedHeaders Last headers synced from the server
-         * @property navigateUp
          */
         data class Editing(
             val isSaving: Boolean,

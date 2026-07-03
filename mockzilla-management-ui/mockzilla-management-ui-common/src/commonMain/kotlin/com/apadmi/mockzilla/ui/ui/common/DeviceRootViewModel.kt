@@ -1,3 +1,5 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.ui.common
 
 import com.apadmi.mockzilla.lib.InternalMockzillaApi
@@ -9,6 +11,7 @@ import com.apadmi.mockzilla.ui.engine.device.StatefulDevice
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.*
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
+import com.apadmi.mockzilla.ui.internal.NoKDoc
 import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 import io.ktor.http.HttpStatusCode
 

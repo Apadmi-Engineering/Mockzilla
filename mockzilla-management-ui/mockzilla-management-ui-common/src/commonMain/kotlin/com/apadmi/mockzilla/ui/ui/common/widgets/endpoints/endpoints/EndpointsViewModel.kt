@@ -1,3 +1,5 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
@@ -8,6 +10,7 @@ import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.engine.filter.FuzzyFilter
+import com.apadmi.mockzilla.ui.internal.NoKDoc
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel.State
 import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
@@ -84,10 +87,6 @@ internal class EndpointsViewModel(
         data object Loading : State()
 
         /**
-         * @property key
-         * @property name
-         * @property fail
-         * @property overriddenProperties
          * @property delayMs Overridden delay in milliseconds, or null if not overridden.
          */
         data class EndpointConfig(
