@@ -30,7 +30,7 @@ nav = [
     { Documentation = "documentation.md" },
     { Flutter = "flutter_contributing.md" },
   ]},
-  { "Api Reference" = "./dokka/index.html" },
+  { "API Reference" = "./dokka/index.html" },
 ]
 
 [project.theme]

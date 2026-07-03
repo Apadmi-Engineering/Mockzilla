@@ -54,7 +54,7 @@ API. This lets us call out to Python code from within Markdown.
 
 See the `main.py` file which includes some useful macros.
 
-This is all quite self explanatory when you look at the code.
+This is all quite self-explanatory when you look at the code.
 
 ## Building the whole site
 

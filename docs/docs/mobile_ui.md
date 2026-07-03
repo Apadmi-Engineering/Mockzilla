@@ -1,7 +1,7 @@
 # Mockzilla Mobile UI (alpha)
 
 !!! warning
-    Warning: This plugin is still experimental and may contain bugs! The API is also subject to change
+    This plugin is still experimental and may contain bugs! The API is also subject to change
 
 Mockzilla provides an embedded UI for your App to control the server at runtime.
 
@@ -20,7 +20,7 @@ Mockzilla provides an embedded UI for your App to control the server at runtime.
     2. Add `https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi`
 
     !!! note 
-        Note: This is not for KMP projects (for those, the gradle dependecy should be added to `shared` source set). 
+        This is not for KMP projects (for those, the gradle dependency should be added to `shared` source set). 
         This SPM dependency is for purely native iOS apps only.
 
 === "Flutter"
@@ -40,7 +40,7 @@ Mockzilla provides an embedded UI for your App to control the server at runtime.
 
 If you've not configured the Mockzilla server yet, then do that first [here](../quick-start/)!
 
-### Launch The Embedded UI
+### Launch the Embedded UI
 
 You can do this from a button click or any trigger in your app code.
 
@@ -95,7 +95,7 @@ You can do this from a button click or any trigger in your app code.
     bottom-anchored panel. If you'd rather control placement and sizing yourself, add an element with a
     matching `id` to your page first - it'll be reused as-is.
 
-This will launch the UI overlay allowing a user to configure the mocked endpoints.
+This will launch the UI overlay, allowing a user to configure the mocked endpoints.
 
 <video autoplay loop muted playsinline controls>
   <source src="img/mobile-ui.mp4" type="video/mp4">

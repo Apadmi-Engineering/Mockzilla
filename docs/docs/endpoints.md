@@ -65,11 +65,11 @@ Hello world
 * Closing connection 0
 ```
 
-(This assumes your app is running on a simulator and accessible on localhost, replace the `localhost` with your device IP if running on device.)
+(This assumes your app is running on a simulator and accessible on localhost; replace `localhost` with your device IP if running on device.)
 
 ## Compile-time Safety
 
-This relies on a simple concept: **Use the same set of model classes for deserialization and for your mocks!**
+This relies on a simple concept: **Use the same set of model classes for deserialisation and for your mocks!**
 
 Example:
 
@@ -83,7 +83,7 @@ Example:
     })
     ```
 === "Flutter"
-    It is recommended to use a JSON serialization library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` methods for you.
+    It is recommended to use a JSON serialisation library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` methods for you.
     ```dart
     MockzillaHttpResponse(
       body: jsonEncode(
@@ -148,7 +148,7 @@ data class MockzillaHttpRequest(
 The following can be configured globally across all endpoints [here](/dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/#1935914297%2FFunctions%2F1121797123).
 
 Network requests generally don't complete instantly. Mockzilla can mimic the latency of a network and can be configured 
-either across all endpoints on the top level config, or on individual endpoints as follows:
+either across all endpoints on the top-level config, or on individual endpoints as follows:
 
 === "Kotlin"
     ```kotlin

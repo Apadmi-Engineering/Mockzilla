@@ -12,7 +12,7 @@ Mockzilla Desktop is a companion app that connects to Mockzilla on your device o
 </div>
 
 !!! important
-    You **must** be using the same Wifi network on your device running Mockzilla and the device running
+    You **must** be using the same Wi-Fi network on your device running Mockzilla and the device running
     the desktop app.
 
 ## Preparation
@@ -83,7 +83,7 @@ To adjust latency on all endpoints or force all endpoints to fail, use the globa
 
 The bottom panel is a live log of every request your device makes through Mockzilla, whether "Force failure" was enabled or not.
 
-Each entry shows the request URL, status code, and response time - colour-coded so slow responses and errors stand out - along with a badge showing whether the response was the result of forced failure ("FORCED"). Selecting a log entry opens its full detail: request and response headers, and body content.
+Each entry shows the request URL, status code, and response time - colour-coded so slow responses and errors stand out - along with a badge showing whether the response was the result of forced failure ("FORCED"). Selecting a log entry opens its full details: request and response headers, and body content.
 
 ![alt text](img/monitor_logs.png "Monitor Logs")
 

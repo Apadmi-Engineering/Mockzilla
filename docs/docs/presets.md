@@ -10,7 +10,7 @@ Presets are pre-defined responses configured in code that can be applied at runt
 ## Defining presets
 
 Presets are applied to individual endpoints, they can be successful responses, errors, or anything else!
-They're defined in code show up in the UI as one-tap options - select one and it's applied immediately.
+They're defined in code and show up in the UI as one-tap options - select one and it's applied immediately.
 
 You can also create a **custom preset** on the fly, without editing code, using the built-in editor:
 
@@ -114,7 +114,7 @@ The presets can be applied through the desktop app or the embedded UI.
 
 ### Overriding 
 
-This can be helpful if you're simulating an API that doesn't utilise status codes e.g using 200 even for errors.
+This can be helpful if you're simulating an API that doesn't utilise status codes, e.g. using 200 even for errors.
 
 === "Kotlin"
     ```kotlin

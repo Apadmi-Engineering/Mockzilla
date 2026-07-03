@@ -26,7 +26,7 @@ melos bootstrap
 
 ## Model generation
 
-Immutable model classes are generated using the freezed package, included in the generated classes are utility methods such as `copyWith()` and `==`. When editing model class definitions, make sure to run the following command to update the generated code.
+Immutable model classes are generated using the freezed package. The generated classes include utility methods such as `copyWith()` and `==`. When editing model class definitions, make sure to run the following command to update the generated code.
 
 ```shell
 dart run build_runner build

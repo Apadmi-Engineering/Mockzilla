@@ -20,4 +20,4 @@
     - [SwiftMockzillaMobileUi](https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi/commits/deployment/snapshot)
 
 === "Flutter"
-Snapshots are published on [pub.dev](https://pub.dev/packages/mockzilla) as [pre-releases](https://dart.dev/tools/pub/publishing#publishing-prereleases).
+    Snapshots are published on [pub.dev](https://pub.dev/packages/mockzilla) as [pre-releases](https://dart.dev/tools/pub/publishing#publishing-prereleases).

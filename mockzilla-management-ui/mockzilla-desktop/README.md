@@ -22,4 +22,4 @@ so you don't need to run Mockzilla on a device alongside the desktop app.
 
 Run the `mockzilla-management-ui:mockzilla-desktop:android` through Android Studio (ensuring you choose a tablet device/emulator). 
 
-Note: This is just to make development of the desktop app easier, this is different to the embedded mobile UI which is in the `mockzilla-mobile-ui` module.
+Note: This is just to make development of the desktop app easier. It's different to the embedded mobile UI, which is in the `mockzilla-mobile-ui` module.

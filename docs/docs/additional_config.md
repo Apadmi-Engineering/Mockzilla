@@ -41,7 +41,7 @@ By default, the Mockzilla server can be called by anyone on the network via the 
 If you need to release your mock app to non-developers, we recommend enabling "release mode" which does the following.
 
 1. Introduces rate limiting to the server
-2. Enforces rudamentary token authentication on each request (explained below).
+2. Enforces rudimentary token authentication on each request (explained below).
 3. Only allows connections from `127.0.0.1` (i.e from apps running on the device).
 
 

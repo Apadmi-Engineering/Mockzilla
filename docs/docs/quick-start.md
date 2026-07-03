@@ -6,7 +6,7 @@ description: Get started with Mockzilla in minutes. Add the dependency, configur
 
 !!! warning
     Mockzilla is **not** a production tool. It is for development and testing only. It should **never** be deployed to 
-    production. Running a server on device may introduce un-foreseen security issues.
+    production. Running a server on device may introduce unforeseen security issues.
 
 ## Installation
 
@@ -23,7 +23,7 @@ description: Get started with Mockzilla in minutes. Add the dependency, configur
     2. Add `https://github.com/Apadmi-Engineering/SwiftMockzilla.git`
 
     !!! note 
-        Note: This is not for KMP projects (for those, the gradle dependecy should be added to `shared` source set). 
+        This is not for KMP projects (for those, the gradle dependency should be added to `shared` source set). 
         This SPM dependency is for purely native iOS apps only.
 
 === "Flutter"
@@ -72,7 +72,7 @@ description: Get started with Mockzilla in minutes. Add the dependency, configur
     </dict>
     ```
 
-## Starting The Server
+## Starting the Server
 
 Mockzilla is entirely driven by a config object which is used to start the server.
 
@@ -207,7 +207,7 @@ for the mock and only including this dependency for this variant.
 
 ## Tips
 
-Ensure your development machine and test device are on the same wifi network. You can replace `localhost` with your 
-device's IP addresss and try calling these endpoints from Postman (or a similar REST client.)
+Ensure your development machine and test device are on the same Wi-Fi network. You can replace `localhost` with your 
+device's IP address and try calling these endpoints from Postman (or a similar REST client.)
 
 ![alt text](img/postman-example.png "Postman example")

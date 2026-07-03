@@ -50,7 +50,7 @@ A few things that work on Android/iOS don't apply (or don't yet exist) on web - 
 for expected behaviour:
 
 - No network device auto-discovery in the [desktop app](desktop/overview.md) - a browser tab can't be
-  discovered the way a phone on the same Wifi network can. The embedded mobile UI (which runs in the same
+  discovered the way a phone on the same Wi-Fi network can. The embedded mobile UI (which runs in the same
   page as your app) is the way to control mocks on web.
 - The connected-device metadata shown in the dashboard won't include an app icon.
 - [Release mode](additional_config.md#release-mode)'s auth-header generation is a no-op stub on web.
