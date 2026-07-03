@@ -27,7 +27,7 @@ import kotlinx.coroutines.promise
  * @param config The config with which to initialise mockzilla.
  * @return runtimeParams Configuration of the mockzilla runtime environment
  */
-suspend fun startMockzilla(
+public suspend fun startMockzilla(
     appName: String,
     appVersion: String,
     config: MockzillaConfig,
@@ -63,6 +63,6 @@ suspend fun startMockzilla(
  * Stops the running Mockzilla server.
  */
 @OptIn(DelicateCoroutinesApi::class)
-actual fun stopMockzilla() = GlobalScope.promise {
+public actual fun stopMockzilla(): Unit = GlobalScope.promise {
     stopServer()
 }.let { /* no-op */ }

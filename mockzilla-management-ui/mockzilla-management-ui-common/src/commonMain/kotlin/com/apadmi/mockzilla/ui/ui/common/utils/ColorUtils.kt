@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.ui.ui.common.utils
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.theme.darkError
 import com.apadmi.mockzilla.ui.ui.common.theme.darkMethodPatch
 import com.apadmi.mockzilla.ui.ui.common.theme.darkOnSurfaceMuted
@@ -20,9 +21,10 @@ import com.apadmi.mockzilla.ui.ui.common.theme.warning
 
 import io.ktor.http.HttpStatusCode
 
+@InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun HttpStatusCode.color(): Color = when (this.value) {
+public fun HttpStatusCode.color(): Color = when (this.value) {
     in 100..199 -> MaterialTheme.colorScheme.tertiary
     in 200..299 -> MaterialTheme.colorScheme.success.primary
     in 300..399 -> MaterialTheme.colorScheme.tertiary
@@ -31,11 +33,14 @@ fun HttpStatusCode.color(): Color = when (this.value) {
     else -> MaterialTheme.colorScheme.onSurfaceMuted
 }
 
-/** Non-composable variant for use in Canvas draw scopes. Uses dark-theme defaults.
+/**
+ * Non-composable variant for use in Canvas draw scopes. Uses dark-theme defaults.
  *
- * @return*/
+ * @return
+ */
+@InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
-fun HttpStatusCode.colorStatic(): Color = when (this.value) {
+public fun HttpStatusCode.colorStatic(): Color = when (this.value) {
     in 100..199 -> darkMethodPatch
     in 200..299 -> darkSuccess
     in 300..399 -> darkMethodPatch
@@ -44,9 +49,10 @@ fun HttpStatusCode.colorStatic(): Color = when (this.value) {
     else -> darkOnSurfaceMuted
 }
 
+@InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
 @Composable
-fun String.methodColor(): Color = when (this.uppercase()) {
+public fun String.methodColor(): Color = when (this.uppercase()) {
     "GET" -> MaterialTheme.colorScheme.methodGet
     "POST" -> MaterialTheme.colorScheme.methodPost
     "PUT" -> MaterialTheme.colorScheme.methodPut

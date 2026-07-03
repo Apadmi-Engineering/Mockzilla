@@ -20,13 +20,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.theme.info
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
+@InternalMockzillaApi
 @Composable
-fun LinuxUnsupportedBanner(
+public fun LinuxUnsupportedBanner(
     strings: Strings.Widgets.LinuxUnsupportedBanner = LocalStrings.current.widgets.linuxUnsupportedBanner,
 ) {
     val accentColor = MaterialTheme.colorScheme.info.primary

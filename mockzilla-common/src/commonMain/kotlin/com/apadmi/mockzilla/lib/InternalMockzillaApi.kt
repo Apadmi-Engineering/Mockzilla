@@ -23,4 +23,4 @@ package com.apadmi.mockzilla.lib
 )
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
-annotation class InternalMockzillaApi
+public annotation class InternalMockzillaApi

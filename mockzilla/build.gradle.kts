@@ -24,6 +24,8 @@ plugins {
 val artifactName = "mockzilla"
 
 kotlin {
+    explicitApi()
+
     androidTarget {
         publishLibraryVariants()
     }

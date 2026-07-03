@@ -20,7 +20,7 @@ interface DeviceDetectionUseCase {
     suspend fun prepareForConnection(device: DetectedDevice): Result<IpAddress>
 }
 
-class DeviceDetectionUseCaseImpl(
+internal class DeviceDetectionUseCaseImpl(
     private val isLocalIpAddress: (String) -> Boolean,
     private val adbConnectorService: AdbConnectorService
 ) : DeviceDetectionUseCase {

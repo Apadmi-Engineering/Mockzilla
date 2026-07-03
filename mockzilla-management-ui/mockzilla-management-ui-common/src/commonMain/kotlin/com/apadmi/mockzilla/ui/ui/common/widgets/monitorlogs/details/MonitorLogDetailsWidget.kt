@@ -46,11 +46,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
@@ -69,8 +70,9 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogD
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
 
+@InternalMockzillaApi
 @Composable
-fun MonitorLogDetailsWidget(
+public fun MonitorLogDetailsWidget(
     device: Device,
     logDetail: LogEvent?,
     onClose: () -> Unit = {},
@@ -96,7 +98,7 @@ fun MonitorLogDetailsWidget(
 
 @Preview
 @Composable
-fun MonitorLogDetailsWidgetEmptyPreview() = PreviewSurface {
+internal fun MonitorLogDetailsWidgetEmptyPreview() = PreviewSurface {
     Box(modifier = Modifier.size(300.dp)) {
         MonitorLogDetailsEmptyContent()
     }
@@ -105,7 +107,7 @@ fun MonitorLogDetailsWidgetEmptyPreview() = PreviewSurface {
 @Suppress("COMPLEX_EXPRESSION", "MAGIC_NUMBER")
 @Preview
 @Composable
-fun MonitorLogDetailsWidgetPreview() {
+internal fun MonitorLogDetailsWidgetPreview() {
     val previewBody =
         """{"repairs":[{"id":"HSR-9455","repairStatus":"Upcoming","faultDescription":"Boiler pilot light"}]}"""
     val previewStatus = HttpStatusCode.OK

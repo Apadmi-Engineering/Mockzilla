@@ -6,15 +6,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
+@InternalMockzillaApi
 @Composable
-fun FilterTextField(
+public fun FilterTextField(
     value: String,
     onFilterUpdate: (String) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier,
-) = CustomTextField(
+): Unit = CustomTextField(
     modifier = modifier,
     value = value,
     onValueChange = onFilterUpdate,

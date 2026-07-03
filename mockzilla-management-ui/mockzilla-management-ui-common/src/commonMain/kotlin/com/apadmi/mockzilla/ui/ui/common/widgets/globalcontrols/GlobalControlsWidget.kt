@@ -37,11 +37,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.isOverflowingLatencySlider
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBanner
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
@@ -59,8 +60,9 @@ import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
 
+@InternalMockzillaApi
 @Composable
-fun GlobalControlsWidget(device: Device, onClose: () -> Unit = {}) {
+public fun GlobalControlsWidget(device: Device, onClose: () -> Unit = {}) {
     val viewModel = getViewModel<GlobalControlsViewModel>(device = device) {
         parametersOf(device)
     }

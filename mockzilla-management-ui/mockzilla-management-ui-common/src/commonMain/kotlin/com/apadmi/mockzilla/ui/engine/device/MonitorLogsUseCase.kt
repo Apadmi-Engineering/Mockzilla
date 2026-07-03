@@ -1,5 +1,8 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.engine.device
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.management.MockzillaManagement
@@ -98,8 +101,4 @@ internal class MonitorLogsUseCaseImpl(
     }
 }
 
-/**
- * @property device
- * @property appPackage
- */
 private data class CacheKey(val device: Device, val appPackage: String)

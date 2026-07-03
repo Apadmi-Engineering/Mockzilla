@@ -88,9 +88,11 @@
 # Checks that accessible method parameters are documented in KDoc
 - name: KDOC_WITHOUT_PARAM_TAG
   enabled: true
+  ignoreAnnotated: [ NoKDoc ]
 # Checks that accessible method explicit return type is documented in KDoc
 - name: KDOC_WITHOUT_RETURN_TAG
   enabled: true
+  ignoreAnnotated: [ NoKDoc ]
 # Checks that accessible method throw keyword is documented in KDoc
 - name: KDOC_WITHOUT_THROWS_TAG
   enabled: false # Seems to be a bug with this since it reports false positives
@@ -454,15 +456,15 @@
 # Checks that property in constructor doesn't contain comment
 - name: KDOC_NO_CONSTRUCTOR_PROPERTY
   enabled: true
-  ignoreAnnotated: [ Immutable ]
+  ignoreAnnotated: [ Immutable, InternalMockzillaApi, NoKDoc ]
 # Checks that property in KDoc present in class
 - name: KDOC_EXTRA_PROPERTY
   enabled: true
-  ignoreAnnotated: [ Immutable ]
+  ignoreAnnotated: [ Immutable, InternalMockzillaApi, NoKDoc ]
 # Checks that KDoc in constructor has property tag but with comment inside constructor
 - name: KDOC_NO_CONSTRUCTOR_PROPERTY_WITH_COMMENT
   enabled: true
-  ignoreAnnotated: [ Immutable ]
+  ignoreAnnotated: [ Immutable, InternalMockzillaApi, NoKDoc ]
 # if a class has single constructor, it should be converted to a primary constructor
 - name: SINGLE_CONSTRUCTOR_SHOULD_BE_PRIMARY
   enabled: true

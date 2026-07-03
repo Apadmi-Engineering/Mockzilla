@@ -8,14 +8,6 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.StatefulDevice
 
 fun Device.Companion.dummy() = Device("ip", "port")
-fun DeviceTabsViewModel.State.DeviceTabEntry.Companion.dummy() =
-    DeviceTabsViewModel.State.DeviceTabEntry(
-        appName = "",
-        deviceName = "",
-        isActive = true,
-        isConnected = true,
-        underlyingDevice = Device.dummy()
-    )
 
 fun StatefulDevice.Companion.dummy() = StatefulDevice(
     device = Device.dummy(),
@@ -29,3 +21,11 @@ fun AdbConnection.Companion.dummy(ipAddresses: List<String> = emptyList()) = Adb
     isActive = true,
     ipAddresses = ipAddresses.map { IpAddress(it) }
 )
+internal fun DeviceTabsViewModel.State.DeviceTabEntry.Companion.dummy() =
+    DeviceTabsViewModel.State.DeviceTabEntry(
+        appName = "",
+        deviceName = "",
+        isActive = true,
+        isConnected = true,
+        underlyingDevice = Device.dummy()
+    )

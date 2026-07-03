@@ -26,9 +26,9 @@ import kotlinx.coroutines.withContext
  * @property body
  */
 @InternalMockzillaApi
-class FailedHttpResponseException(
-    val statusCode: HttpStatusCode,
-    val body: String
+public class FailedHttpResponseException(
+    public val statusCode: HttpStatusCode,
+    public val body: String
 ) : Exception()
 
 /**

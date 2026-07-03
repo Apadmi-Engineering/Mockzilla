@@ -13,7 +13,10 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icons.ErrorCircle: ImageVector
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
+public val Icons.ErrorCircle: ImageVector
     get() {
         if (_icErrorCircle != null) {
             return _icErrorCircle!!

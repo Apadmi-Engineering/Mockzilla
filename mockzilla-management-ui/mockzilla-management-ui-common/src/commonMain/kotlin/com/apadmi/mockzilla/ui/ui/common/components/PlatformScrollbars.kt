@@ -5,11 +5,15 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
-@Composable
-expect fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier = Modifier)
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 
+@InternalMockzillaApi
 @Composable
-expect fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier: Modifier = Modifier)
+public expect fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier = Modifier)
+
+@InternalMockzillaApi
+@Composable
+public expect fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier: Modifier = Modifier)
 
 @Composable
 internal expect fun PlatformVerticalScrollbar(scrollState: LazyListState, modifier: Modifier = Modifier)

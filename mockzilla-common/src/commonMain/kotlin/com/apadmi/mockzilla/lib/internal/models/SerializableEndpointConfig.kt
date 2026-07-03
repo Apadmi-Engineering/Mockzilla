@@ -30,8 +30,9 @@ import kotlinx.serialization.encoding.Encoder
  * @property errorBody
  * @property errorStatus
  */
+@InternalMockzillaApi
 @Serializable
-data class SerializableEndpointConfig(
+public data class SerializableEndpointConfig(
     val key: EndpointConfiguration.Key,
     val name: String,
     val versionCode: Int,
@@ -51,12 +52,12 @@ data class SerializableEndpointConfig(
     val errorStatus: @Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?,
     val appliedPresetOverride: DashboardOverridePreset?
 ) {
-    companion object {
-        fun allNulls(
+    public companion object {
+        public fun allNulls(
             key: EndpointConfiguration.Key,
             name: String,
             versionCode: Int
-        ) = SerializableEndpointConfig(
+        ): SerializableEndpointConfig = SerializableEndpointConfig(
             key = key,
             name = name,
             versionCode = versionCode,
@@ -70,11 +71,11 @@ data class SerializableEndpointConfig(
             errorStatus = null,
             appliedPresetOverride = null
         )
-        fun allNulls(
+        public fun allNulls(
             key: String,
             name: String,
             versionCode: Int
-        ) = allNulls(EndpointConfiguration.Key(key), name, versionCode)
+        ): SerializableEndpointConfig = allNulls(EndpointConfiguration.Key(key), name, versionCode)
     }
 }
 
@@ -95,7 +96,7 @@ data class SerializableEndpointConfig(
 @InternalMockzillaApi
 @Suppress("TYPE_ALIAS")
 @Serializable
-data class SerializableEndpointPatchItemDto(
+public data class SerializableEndpointPatchItemDto(
     val key: EndpointConfiguration.Key,
     val shouldFail: SetOrDont<Boolean?> = SetOrDont.DoNotSet,
     val delayMs: SetOrDont<Int?> = SetOrDont.DoNotSet,
@@ -113,17 +114,17 @@ data class SerializableEndpointPatchItemDto(
     val errorStatus: SetOrDont<@Serializable(with = HttpStatusCodeSerializer::class) HttpStatusCode?> = SetOrDont.DoNotSet,
     val appliedPresetOverride: SetOrDont<DashboardOverridePreset> = SetOrDont.DoNotSet
 ) {
-    companion object {
-        fun allUnset(key: String) = allUnset(EndpointConfiguration.Key(key))
+    public companion object {
+        public fun allUnset(key: String): SerializableEndpointPatchItemDto = allUnset(EndpointConfiguration.Key(key))
 
-        fun allUnset(key: EndpointConfiguration.Key) = SerializableEndpointPatchItemDto(
+        public fun allUnset(key: EndpointConfiguration.Key): SerializableEndpointPatchItemDto = SerializableEndpointPatchItemDto(
             key = key,
             shouldFail = SetOrDont.DoNotSet,
             delayMs = SetOrDont.DoNotSet,
             appliedPresetOverride = SetOrDont.DoNotSet,
         )
 
-        fun allSet(config: SerializableEndpointConfig) = SerializableEndpointPatchItemDto(
+        public fun allSet(config: SerializableEndpointConfig): SerializableEndpointPatchItemDto = SerializableEndpointPatchItemDto(
             key = config.key,
             shouldFail = SetOrDont.Set(config.shouldFail),
             delayMs = SetOrDont.Set(config.delayMs),
@@ -141,7 +142,7 @@ data class SerializableEndpointPatchItemDto(
  */
 @InternalMockzillaApi
 @Serializable
-data class MockDataResponseDto(
+public data class MockDataResponseDto(
     val entries: List<SerializableEndpointConfig>
 )
 
@@ -150,29 +151,29 @@ data class MockDataResponseDto(
  */
 @InternalMockzillaApi
 @Serializable
-data class SerializableEndpointConfigPatchRequestDto(
+public data class SerializableEndpointConfigPatchRequestDto(
     val entries: List<SerializableEndpointPatchItemDto>
 ) {
-    constructor(entry: SerializableEndpointPatchItemDto) : this(listOf(entry))
+    public constructor(entry: SerializableEndpointPatchItemDto) : this(listOf(entry))
 }
 
 @InternalMockzillaApi
 @Serializable(with = ServiceResultSerializer::class)
-sealed class SetOrDont<out T> {
+public sealed class SetOrDont<out T> {
     @Serializable
     @SerialName("DoNotSet")
-    data object DoNotSet : SetOrDont<Nothing>()
+    public data object DoNotSet : SetOrDont<Nothing>()
 
     /**
      * @property value
      */
     @Serializable
     @SerialName("Set")
-    data class Set<T>(val value: T) : SetOrDont<T>()
+    public data class Set<T>(val value: T) : SetOrDont<T>()
 }
 
 @InternalMockzillaApi
-class ServiceResultSerializer<T : Any>(
+public class ServiceResultSerializer<T : Any>(
     serializer: KSerializer<T?>
 ) : KSerializer<SetOrDont<T?>> {
     private val surrogateSerializer = ServiceResultSurrogate.serializer(serializer)
@@ -200,14 +201,14 @@ class ServiceResultSerializer<T : Any>(
     @Suppress("KDOC_NO_CONSTRUCTOR_PROPERTY_WITH_COMMENT")
     @Serializable
     @SerialName("ServiceResult")
-    data class ServiceResultSurrogate<out T : Any>(
+    public data class ServiceResultSurrogate<out T : Any>(
         val type: Type,
         // The annotation is not necessary, but it avoids serializing "data = null"
         // */ for "UnSet" results.
         @EncodeDefault(EncodeDefault.Mode.NEVER)
         val value: T? = null,
     ) {
-        enum class Type {
+        public enum class Type {
             Set, UnSet
         }
     }
