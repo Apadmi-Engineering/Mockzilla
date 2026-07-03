@@ -100,11 +100,20 @@ data class EndpointConfiguration(
 
         /**
          * Used to simulate latency: The artificial mean delay Mockzilla with add to a network request.
-         * Used alongside [setMeanDelayMillis] to calculate the actual artificial delay on each invocation.
          *
          * @param delay delay in milliseconds
          */
+        @Deprecated("Delay is now constant with no variance", replaceWith = ReplaceWith("setDelayMillis"))
         fun setMeanDelayMillis(delay: Int) = apply {
+            config = config.copy(delay = delay)
+        }
+
+        /**
+         * Used to simulate latency: The artificial delay Mockzilla with add to the network request.
+         *
+         * @param delay delay in milliseconds
+         */
+        fun setDelayMillis(delay: Int) = apply {
             config = config.copy(delay = delay)
         }
 

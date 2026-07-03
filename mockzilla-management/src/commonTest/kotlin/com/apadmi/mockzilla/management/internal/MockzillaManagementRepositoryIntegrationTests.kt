@@ -105,7 +105,7 @@ class MockzillaManagementRepositoryIntegrationTests {
                 EndpointConfiguration.Builder("Id")
                     .setDefaultHandler { MockzillaHttpResponse(body = "this is a body") }
                     .setShouldFail(false)
-                    .setMeanDelayMillis(10)
+                    .setDelayMillis(10)
                     .build(),
 
             )

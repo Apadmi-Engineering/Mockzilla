@@ -33,10 +33,8 @@ By default, Mockzilla outputs minimal logging. If more is needed to help with de
 
 ## Release Mode
 
-!!! warning
-    We still don't recommend releasing to non-developers, even with this mode if at all avoidable.
-    Mockzilla is NOT a production server substitute and should **NOT** be used in production.
-
+!!! note
+    Release mode is only supported for Kotlin & Swift running on Android & iOS targets.
 
 By default, the Mockzilla server can be called by anyone on the network via the device's IP address. This is often useful for debugging.
 
@@ -92,22 +90,6 @@ An additional header now needs to be added to each request. The header **changes
     let header = params.authHeaderProvider.generateHeader()
     ```
 
-## Advanced Usage
-
-When calling the Mockzilla server from your app's code the following happens:
-
-```mermaid
-sequenceDiagram    
-    participant A as Client App
-    participant S as Mockzilla Server
-    A->>S: Network request
-    S->>S: Lookup Endpoint based on pattern matchers (1)
-    S->>S: Delay as long as appropriate (2)
-    S->>S: Decide whether to simulate a failure (3)
-    alt Call should succeed
-    S->>A:Return response by calling block defined by `setDefaultHandler`
-    end
-    alt Call should fail
-    S->>A:Return response by calling block defined by `setErrorHandler`
-    end
-```
+!!! warning
+    We still don't recommend releasing to non-developers, even with this mode if at all avoidable.
+    Mockzilla is NOT a production server substitute and should **NOT** be used in production.

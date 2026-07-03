@@ -81,4 +81,22 @@ You can do this from a button click or any trigger in your app code.
     MockzillaUiMobile.launchManagementUi();
     ```
 
+    !!! note
+        On web, you can optionally call `MockzillaUiMobile.preloadAssets()` early (e.g. at app start) to
+        speed up the first time the overlay is launched.
+=== "Web"
+    ```kotlin
+    import com.apadmi.mockzilla.launchManagementUi
+
+    launchManagementUi(rootId = "mockzilla-ui-root")
+    ```
+
+    If no element with the given `rootId` exists on the page, one is created automatically as a fixed,
+    bottom-anchored panel. If you'd rather control placement and sizing yourself, add an element with a
+    matching `id` to your page first - it'll be reused as-is.
+
 This will launch the UI overlay allowing a user to configure the mocked endpoints.
+
+<video autoplay loop muted playsinline controls>
+  <source src="img/mobile-ui.mp4" type="video/mp4">
+</video>

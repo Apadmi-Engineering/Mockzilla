@@ -12,6 +12,7 @@ nav = [
   { Docs = [
     "quick-start.md",
     "endpoints.md",
+    "web.md",
     { Advanced = [
       "additional_config.md",
       "browser_stack.md",

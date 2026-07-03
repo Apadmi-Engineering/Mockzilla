@@ -1,6 +1,14 @@
 # Flutter Mockzilla
 
-The Mockzilla Flutter plugin package is implemented as a [federated plugin package](https://docs.flutter.dev/packages-and-plugins/developing-packages#federated-plugins). It calls through to the KMM library utilising [Pigeon](https://pub.dev/packages/pigeon) platform channels; this decision was made to ensure that the Flutter package remains aligned with the underlying KMM package but also removes the complexity developers face with method channels.
+The Mockzilla Flutter plugin package is implemented as a [federated plugin package](https://docs.flutter.dev/packages-and-plugins/developing-packages#federated-plugins). It calls through to the KMP library utilising [Pigeon](https://pub.dev/packages/pigeon) platform channels; this decision was made to ensure that the Flutter package remains aligned with the underlying KMM package but also removes the complexity developers face with method channels.
+
+The federated packages are:
+
+- `mockzilla` — the public Dart API
+- `mockzilla_platform_interface` — the abstract platform contract
+- `mockzilla_android` — Android implementation
+- `mockzilla_ios` — iOS implementation
+- `mockzilla_web` — Web implementation, backed by [Mock Service Worker](https://mswjs.io/)
 
 ## Handling package inter-dependencies
 
