@@ -23,7 +23,7 @@ import kotlinx.serialization.json.JsonNames
  */
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
-data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
+public data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
     @JsonNames("appName")
     @SerialName("appName")
     val appName: String,
@@ -55,25 +55,25 @@ data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
     /**
      * `true` if the server is running on an Android device or emulator.
      */
-    val isAndroid = runTarget in listOf(RunTarget.AndroidEmulator, RunTarget.AndroidDevice)
+    public val isAndroid: Boolean = runTarget in listOf(RunTarget.AndroidEmulator, RunTarget.AndroidDevice)
 
     /**
      * Serialises this metadata to a [Map] for embedding in ZeroConf TXT records.
      *
      * @return A map of field names to string values.
      */
-    fun toMap(): Map<String, String> {
+    public fun toMap(): Map<String, String> {
         val encoded = json.encodeToString(this)
         return json.decodeFromString<Map<String, String>>(encoded)
     }
 
-    companion object {
+    public companion object {
         /**
          * Maximum length in characters for each metadata field. Fields collected from the platform
          * (device model, OS version, etc.) are truncated to this limit to comply with ZeroConf
          * DNS-SD payload constraints (RFC 1035).
          */
-        const val maxFieldLength = 254
+        public const val maxFieldLength: Int = 254
         private val json = Json {
             isLenient = true
             ignoreUnknownKeys = true
@@ -87,7 +87,7 @@ data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
          *
          * @return The deserialised [MetaData].
          */
-        fun Map<String, String>.parseMetaData(): MetaData {
+        public fun Map<String, String>.parseMetaData(): MetaData {
             val encoded = json.encodeToString(this)
             return json.decodeFromString<MetaData>(encoded)
         }
@@ -98,7 +98,7 @@ data class MetaData @OptIn(ExperimentalSerializationApi::class) constructor(
  * Identifies the platform on which the Mockzilla server is running. Reported in [MetaData] and
  * visible in the management dashboard.
  */
-enum class RunTarget {
+public enum class RunTarget {
     AndroidDevice,
     AndroidEmulator,
     IosDevice,

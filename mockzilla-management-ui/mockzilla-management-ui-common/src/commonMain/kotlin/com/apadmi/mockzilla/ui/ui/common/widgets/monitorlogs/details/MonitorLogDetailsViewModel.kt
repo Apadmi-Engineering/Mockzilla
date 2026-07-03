@@ -1,9 +1,12 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -69,21 +72,9 @@ internal class MonitorLogDetailsViewModel(
     internal sealed class State {
         internal data object Empty : State()
 
-        /**
-         * @property bodyOrPreview
-         */
         internal sealed class BodyState(val bodyOrPreview: String) {
-            /**
-             * @property text
-             */
             internal data class Available(val text: String) : BodyState(text)
-            /**
-             * @property preview
-             */
             internal data class Loading(val preview: String) : BodyState(preview)
-            /**
-             * @property preview
-             */
             internal data class Error(val preview: String) : BodyState(preview)
 
             internal companion object {
@@ -92,12 +83,6 @@ internal class MonitorLogDetailsViewModel(
             }
         }
 
-        /**
-         * @property logEvent
-         * @property selectedTab
-         * @property requestBodyState
-         * @property responseBodyState
-         */
         internal data class ViewDetails(
             val logEvent: LogEvent,
             val selectedTab: Tab = Tab.Response,

@@ -6,7 +6,7 @@ import androidx.core.app.ActivityOptionsCompat
 
 import com.apadmi.mockzilla.MockzillaManagementSdkActivity
 
-fun launchManagementUi(context: Context) = context.startActivity(
+public fun launchManagementUi(context: Context): Unit = context.startActivity(
     Intent(
         context,
         MockzillaManagementSdkActivity::class.java,

@@ -30,7 +30,7 @@ import kotlinx.coroutines.yield
 private const val tag = "ZeroConfSdkWrapper"
 private const val bufferCapacity = 16
 
-actual class ZeroConfSdkWrapper actual constructor(
+internal actual class ZeroConfSdkWrapper actual constructor(
     private val serviceType: String,
     private val scope: CoroutineScope
 ) : ServiceListener {

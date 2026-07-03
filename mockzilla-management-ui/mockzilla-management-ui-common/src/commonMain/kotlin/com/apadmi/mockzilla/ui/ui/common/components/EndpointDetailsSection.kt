@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 
@@ -45,8 +46,9 @@ private const val animationDuration = 200
 private const val rotationCollapsed = 0f
 private const val rotationExpanded = 90f
 
+@InternalMockzillaApi
 @Composable
-fun EndpointDetailsSection(
+public fun EndpointDetailsSection(
     label: String,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,

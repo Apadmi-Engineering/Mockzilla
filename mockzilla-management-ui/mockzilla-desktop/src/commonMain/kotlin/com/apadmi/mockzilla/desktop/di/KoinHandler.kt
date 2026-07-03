@@ -15,8 +15,8 @@ import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewMode
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel
 import com.apadmi.mockzilla.desktop.ui.licenses.LicensesViewModel
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
-import com.apadmi.mockzilla.ui.di.utils.MockzillaUiKoinContext
-import com.apadmi.mockzilla.ui.di.utils.viewModel
+import com.apadmi.mockzilla.ui.internal.di.utils.MockzillaUiKoinContext
+import com.apadmi.mockzilla.ui.internal.di.utils.viewModel
 import com.apadmi.mockzilla.ui.utils.MockzillaUiVersion
 import com.apadmi.mockzilla_desktop.generated.resources.Res
 

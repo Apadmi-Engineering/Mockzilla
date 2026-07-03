@@ -10,7 +10,7 @@ package com.apadmi.mockzilla.lib.models
  * @property port The number of the port that was used to start the Mockzilla server.
  * @property cause
  */
-class PortConflictException(val port: Int, override val cause: Throwable?) : RuntimeException() {
+public class PortConflictException(public val port: Int, override val cause: Throwable?) : RuntimeException() {
     override val message: String
         get() = "Attempted to start Mockzilla server on a port that is already occupied by another process ($port)."
 }

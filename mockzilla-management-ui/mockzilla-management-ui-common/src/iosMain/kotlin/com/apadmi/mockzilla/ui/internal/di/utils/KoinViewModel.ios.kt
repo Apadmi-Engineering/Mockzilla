@@ -1,21 +1,25 @@
-package com.apadmi.mockzilla.ui.di.utils
+package com.apadmi.mockzilla.ui.internal.di.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.engine.device.Device
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 import org.koin.core.definition.Definition
+import org.koin.core.definition.KoinDefinition
 import org.koin.core.module.Module
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 
-actual inline fun <reified T : ViewModel> Module.viewModel(
+@InternalMockzillaApi
+public actual inline fun <reified T : ViewModel> Module.viewModel(
     qualifier: Qualifier?,
     noinline definition: Definition<T>
-) = factory(qualifier = qualifier, definition = definition)
+): KoinDefinition<T> = factory(qualifier = qualifier, definition = definition)
 
+@InternalMockzillaApi
 @Composable
-actual inline fun <reified T : ViewModel> getViewModel(
+public actual inline fun <reified T : ViewModel> getViewModel(
     qualifier: Qualifier?,
     device: Device?,
     keyPrefix: String?,
@@ -24,4 +28,5 @@ actual inline fun <reified T : ViewModel> getViewModel(
     MockzillaUiKoinContext.koin.get<T>(qualifier = qualifier, parameters = parameters)
 }
 
-actual fun evictDesktopViewModelsForKey(device: Device, keyPrefix: String?) = Unit
+@InternalMockzillaApi
+public actual fun evictDesktopViewModelsForKey(device: Device, keyPrefix: String?): Unit = Unit

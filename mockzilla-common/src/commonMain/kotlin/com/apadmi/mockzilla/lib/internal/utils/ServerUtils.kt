@@ -5,4 +5,4 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @InternalMockzillaApi
-expect val Dispatchers.multiPlatformIo: CoroutineDispatcher
+public expect val Dispatchers.multiPlatformIo: CoroutineDispatcher

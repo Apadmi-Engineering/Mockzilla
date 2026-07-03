@@ -27,7 +27,7 @@ private const val minAllowedPort = 1024
  * mDNS (JmDNS) is unreliable for emulator discovery especially when connected to a VPN
  * We detect the mockzilla port directly from ADB and derive the connection from that.
  */
-interface AdbEmulatorDiscoveryService {
+internal interface AdbEmulatorDiscoveryService {
     fun start(
         scope: CoroutineScope,
         onEvent: suspend (DeviceDiscoveryEvent) -> Unit
@@ -35,7 +35,7 @@ interface AdbEmulatorDiscoveryService {
     fun stop()
 }
 
-class AdbEmulatorDiscoveryServiceImpl(
+internal class AdbEmulatorDiscoveryServiceImpl(
     private val adbConnectorService: AdbConnectorService,
     private val metaDataService: MockzillaManagement.MetaDataService
 ) : AdbEmulatorDiscoveryService {

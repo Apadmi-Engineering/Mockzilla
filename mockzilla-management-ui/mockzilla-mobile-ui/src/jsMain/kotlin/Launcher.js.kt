@@ -17,7 +17,7 @@ import kotlinx.browser.document
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalJsExport::class)
 @JsExport
-fun launchManagementUi(rootId: String = "mockzilla-ui-root") {
+public fun launchManagementUi(rootId: String = "mockzilla-ui-root") {
     val div = document.getElementById(rootId) ?: createMockzillaUi(rootId)
 
     startMockzillaMobileUiKoin(module {

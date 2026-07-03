@@ -4,14 +4,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
 
+@InternalMockzillaApi
 @Composable
-fun PreviewSurface(
+public fun PreviewSurface(
     darkTheme: Boolean = LocalForceDarkMode.current,
     content: @Composable () -> Unit
-) = CompositionLocalProvider(LocalForceDarkMode provides darkTheme) {
+): Unit = CompositionLocalProvider(LocalForceDarkMode provides darkTheme) {
     AppTheme {
         Surface(color = MaterialTheme.colorScheme.surface, content = content)
     }

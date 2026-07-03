@@ -15,11 +15,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
+@InternalMockzillaApi
 @Composable
-fun SurfaceHeader(
+public fun SurfaceHeader(
     title: String,
     subtitle: String?,
     modifier: Modifier = Modifier,

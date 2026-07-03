@@ -67,12 +67,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
-import com.apadmi.mockzilla.ui.di.utils.evictDesktopViewModelsForKey
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.internal.di.utils.evictDesktopViewModelsForKey
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.ErrorRetry
@@ -345,8 +346,9 @@ private fun ColumnScope.PopulatedState(
     }
 }
 
+@InternalMockzillaApi
 @Composable
-fun CreateEditPresetWidget(
+public fun CreateEditPresetWidget(
     device: Device,
     activeEndpoint: EndpointConfiguration.Key,
     creatingNewPreset: Boolean,

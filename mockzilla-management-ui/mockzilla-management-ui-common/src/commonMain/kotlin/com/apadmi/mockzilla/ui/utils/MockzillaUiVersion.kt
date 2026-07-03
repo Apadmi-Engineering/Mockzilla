@@ -1,9 +1,9 @@
 package com.apadmi.mockzilla.ui.utils
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
 import kotlin.jvm.JvmInline
 
-/**
- * @property version
- */
+@InternalMockzillaApi
 @JvmInline
-value class MockzillaUiVersion(val version: String)
+public value class MockzillaUiVersion(public val version: String)

@@ -1,16 +1,19 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.ui.devicetabs
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.ui.engine.device.Device
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 
-class DeviceTabsViewModel(
+internal class DeviceTabsViewModel(
     private val activeDeviceMonitor: ActiveDeviceMonitor,
     private val activeDeviceSelector: ActiveDeviceSelector,
     scope: CoroutineScope? = null
@@ -52,17 +55,7 @@ class DeviceTabsViewModel(
         })
     }
 
-    /**
-     * @property devices
-     */
     data class State(val devices: List<DeviceTabEntry>) {
-        /**
-         * @property isActive
-         * @property isConnected
-         * @property underlyingDevice
-         * @property appName
-         * @property deviceName
-         */
         data class DeviceTabEntry(
             val appName: String,
             val deviceName: String,

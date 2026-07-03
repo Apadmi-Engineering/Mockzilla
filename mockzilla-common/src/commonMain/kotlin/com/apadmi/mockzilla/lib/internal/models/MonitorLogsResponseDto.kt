@@ -2,6 +2,7 @@
 
 package com.apadmi.mockzilla.lib.internal.models
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 
 import io.ktor.http.*
@@ -27,8 +28,9 @@ import kotlinx.serialization.Serializable
  * @property requestSizeBytes
  * @property responseSizeBytes
  */
+@InternalMockzillaApi
 @Serializable
-data class LogEvent(
+public data class LogEvent(
     val id: String = Uuid.random().toString(),
     val timestamp: Long,
     val url: String,
@@ -50,5 +52,6 @@ data class LogEvent(
  * @property appPackage
  * @property logs
  */
+@InternalMockzillaApi
 @Serializable
-data class MonitorLogsResponse(val appPackage: String, val logs: List<LogEvent>)
+public data class MonitorLogsResponse(val appPackage: String, val logs: List<LogEvent>)

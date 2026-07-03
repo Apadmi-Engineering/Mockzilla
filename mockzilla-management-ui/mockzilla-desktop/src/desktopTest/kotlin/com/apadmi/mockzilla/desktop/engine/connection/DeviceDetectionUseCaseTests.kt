@@ -1,5 +1,8 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.engine.connection
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.testutils.CoroutineTest
@@ -14,7 +17,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @Suppress("MAGIC_NUMBER", "TOO_LONG_FUNCTION")
-class DeviceDetectionUseCaseTests : CoroutineTest() {
+internal class DeviceDetectionUseCaseTests : CoroutineTest() {
     @RelaxedMockK
     lateinit var adbConnectorServiceMock: AdbConnectorService
 
@@ -553,14 +556,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         )
     }
 
-    /**
-     * @property caseDescription
-     * @property info
-     * @property mockAdbConnection
-     * @property isLocalIpAddress
-     * @property expectedResult
-     */
-    data class ChangedServiceEventTestCase(
+    internal data class ChangedServiceEventTestCase(
         val caseDescription: String,
         val info: DeviceDiscoveryEvent,
         val mockAdbConnection: AdbConnection? = null,

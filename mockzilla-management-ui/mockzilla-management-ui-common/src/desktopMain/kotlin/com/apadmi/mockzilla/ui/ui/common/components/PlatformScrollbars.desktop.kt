@@ -10,16 +10,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 @Composable
-actual fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier) =
+public actual fun PlatformHorizontalScrollbar(scrollState: ScrollState, modifier: Modifier): Unit =
     HorizontalScrollbar(
         adapter = rememberScrollbarAdapter(scrollState),
         modifier = modifier,
         style = scrollbarStyle(),
     )
 
+@InternalMockzillaApi
 @Composable
-actual fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier: Modifier) =
+public actual fun PlatformVerticalScrollbar(scrollState: ScrollState, modifier: Modifier): Unit =
     VerticalScrollbar(
         adapter = rememberScrollbarAdapter(scrollState),
         modifier = modifier,

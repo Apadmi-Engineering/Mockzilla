@@ -10,4 +10,4 @@ import com.apadmi.mockzilla.lib.models.MockzillaConfig
  * @param noop [MockzillaConfig.Builder] Just a reference to the builder to force the header generation.
  * @return
  */
-fun noOpConfigBuilder(noop: MockzillaConfig.Builder) = Unit
+public fun noOpConfigBuilder(noop: MockzillaConfig.Builder): Unit = Unit
