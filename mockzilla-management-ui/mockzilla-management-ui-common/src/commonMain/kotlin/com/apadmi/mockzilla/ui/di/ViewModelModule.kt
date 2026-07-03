@@ -1,7 +1,7 @@
 package com.apadmi.mockzilla.ui.di
 
-import com.apadmi.mockzilla.ui.internal.di.utils.viewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
+import com.apadmi.mockzilla.ui.internal.di.utils.viewModel
 import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel
@@ -11,6 +11,7 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidgetViewMode
 import com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols.MiscControlsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsViewModel
+
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

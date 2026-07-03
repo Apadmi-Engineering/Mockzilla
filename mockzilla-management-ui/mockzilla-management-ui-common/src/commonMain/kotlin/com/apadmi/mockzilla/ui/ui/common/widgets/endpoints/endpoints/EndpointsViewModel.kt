@@ -2,6 +2,7 @@
 
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
@@ -10,9 +11,8 @@ import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.engine.filter.FuzzyFilter
-import com.apadmi.mockzilla.ui.internal.NoKDoc
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel.State
 import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel.State
 
 import kotlin.collections.filter
 import kotlinx.coroutines.CoroutineScope

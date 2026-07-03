@@ -1,9 +1,9 @@
 package com.apadmi.mockzilla.ui.internal.viewmodel
 
-import com.apadmi.mockzilla.lib.InternalMockzillaApi
-
 import androidx.lifecycle.ViewModel as AndroidXViewModel
 import androidx.lifecycle.viewModelScope as androidXViewModelScope
+
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 
 import kotlinx.coroutines.CoroutineScope
 

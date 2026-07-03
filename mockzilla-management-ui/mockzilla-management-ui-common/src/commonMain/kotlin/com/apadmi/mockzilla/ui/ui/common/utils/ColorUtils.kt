@@ -35,6 +35,8 @@ public fun HttpStatusCode.color(): Color = when (this.value) {
 
 /**
  * Non-composable variant for use in Canvas draw scopes. Uses dark-theme defaults.
+ *
+ * @return
  */
 @InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")

@@ -1,4 +1,4 @@
-package com.apadmi.mockzilla.ui.internal
+package com.apadmi.mockzilla.lib
 
 /**
  * Applied as `@file:NoKDoc` to opt a whole file out of diktat's KDoc-completeness rules.
@@ -9,4 +9,6 @@ package com.apadmi.mockzilla.ui.internal
  */
 @Target(AnnotationTarget.FILE)
 @Retention(AnnotationRetention.SOURCE)
-internal annotation class NoKDoc
+@InternalMockzillaApi
+@Suppress("CLASS_NAME_INCORRECT")
+public annotation class NoKDoc

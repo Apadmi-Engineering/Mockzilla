@@ -279,14 +279,6 @@ internal fun MockzillaRuntimeParams.toJs(config: JsMockzillaConfig) = JsMockzill
     mockzillaVersion = mockzillaVersion
 )
 
-internal fun entriesOf(jsObject: dynamic): List<Pair<String, String>> =
-    (js("Object.entries") as (dynamic) -> Array<Array<Any?>>)
-        .invoke(jsObject)
-        .map { entry -> entry[0].toString() to entry[1].toString() }
-
-internal fun mapFrom(jsObject: dynamic): Map<String, String> =
-    entriesOf(jsObject).toMap()
-
 @OptIn(DelicateCoroutinesApi::class)
 @JsExport
 public fun startMockzillaJs(
@@ -301,3 +293,11 @@ public fun startMockzillaJs(
 public fun stopMockzilla(): Promise<Unit> = GlobalScope.promise {
     stopServer()
 }
+
+internal fun entriesOf(jsObject: dynamic): List<Pair<String, String>> =
+    (js("Object.entries") as (dynamic) -> Array<Array<Any?>>)
+        .invoke(jsObject)
+        .map { entry -> entry[0].toString() to entry[1].toString() }
+
+internal fun mapFrom(jsObject: dynamic): Map<String, String> =
+    entriesOf(jsObject).toMap()

@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.apadmi.mockzilla.ui.internal.NoKDoc
+import com.apadmi.mockzilla.lib.NoKDoc
 import kotlin.math.abs
 
 private const val linearAnimationDuration = 800

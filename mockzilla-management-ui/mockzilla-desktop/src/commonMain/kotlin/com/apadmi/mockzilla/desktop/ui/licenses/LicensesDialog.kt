@@ -36,8 +36,8 @@ import androidx.compose.ui.window.Dialog
 import com.apadmi.mockzilla.desktop.engine.licenses.LibraryForAttribution
 import com.apadmi.mockzilla.desktop.engine.licenses.LicenseDisplayModel
 import com.apadmi.mockzilla.desktop.ui.licenses.LicensesViewModel.*
-import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 

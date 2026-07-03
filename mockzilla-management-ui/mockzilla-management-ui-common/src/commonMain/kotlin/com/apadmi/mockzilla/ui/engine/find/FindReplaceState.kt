@@ -1,4 +1,8 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.engine.find
+
+import com.apadmi.mockzilla.lib.NoKDoc
 
 internal data class FindReplaceState(
     val searchTerm: String = "",

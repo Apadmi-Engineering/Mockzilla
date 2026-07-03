@@ -1,3 +1,5 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.ui.common.components
 
 import androidx.compose.foundation.background
@@ -18,6 +20,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 import com.apadmi.mockzilla.lib.InternalMockzillaApi
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.success
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
