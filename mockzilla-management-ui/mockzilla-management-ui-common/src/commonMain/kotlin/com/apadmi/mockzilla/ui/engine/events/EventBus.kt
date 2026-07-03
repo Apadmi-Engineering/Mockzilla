@@ -22,18 +22,11 @@ public interface EventBus {
         public data object PresetApplied : Event
         @InternalMockzillaApi
         public data object FullRefresh : Event
-        /**
-         * @property operation
-         * @property error
-         */
         @InternalMockzillaApi
         public data class GenericError(
             val operation: GenericErrorableOperation,
             val error: Throwable
         ) : Event
-        /**
-         * @property keys
-         */
         @InternalMockzillaApi
         public data class EndpointDataChanged(val keys: Collection<EndpointConfiguration.Key>) : Event
     }

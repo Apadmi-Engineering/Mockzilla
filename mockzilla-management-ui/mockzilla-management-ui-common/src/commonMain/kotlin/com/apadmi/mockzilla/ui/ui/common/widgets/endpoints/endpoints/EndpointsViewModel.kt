@@ -116,9 +116,6 @@ internal class EndpointsViewModel(
     }
 }
 
-/**
- * @property displayName
- */
 internal enum class EndpointProperties(val displayName: String) {
     Body("Body"),
     Delay("Latency"),

@@ -454,15 +454,15 @@
 # Checks that property in constructor doesn't contain comment
 - name: KDOC_NO_CONSTRUCTOR_PROPERTY
   enabled: true
-  ignoreAnnotated: [ Immutable ]
+  ignoreAnnotated: [ Immutable, InternalMockzillaApi ]
 # Checks that property in KDoc present in class
 - name: KDOC_EXTRA_PROPERTY
   enabled: true
-  ignoreAnnotated: [ Immutable ]
+  ignoreAnnotated: [ Immutable, InternalMockzillaApi ]
 # Checks that KDoc in constructor has property tag but with comment inside constructor
 - name: KDOC_NO_CONSTRUCTOR_PROPERTY_WITH_COMMENT
   enabled: true
-  ignoreAnnotated: [ Immutable ]
+  ignoreAnnotated: [ Immutable, InternalMockzillaApi ]
 # if a class has single constructor, it should be converted to a primary constructor
 - name: SINGLE_CONSTRUCTOR_SHOULD_BE_PRIMARY
   enabled: true

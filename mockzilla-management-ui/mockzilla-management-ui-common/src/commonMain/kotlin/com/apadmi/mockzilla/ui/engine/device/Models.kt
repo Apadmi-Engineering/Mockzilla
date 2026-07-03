@@ -11,12 +11,6 @@ public data class Device(override val ip: String, override val port: String) : M
     public companion object
 }
 
-/**
- * @property device
- * @property metaData
- * @property isConnected
- * @property isCompatibleMockzillaVersion
- */
 @InternalMockzillaApi
 public data class StatefulDevice(
     val device: Device,

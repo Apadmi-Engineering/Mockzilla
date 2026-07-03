@@ -33,9 +33,9 @@ public fun HttpStatusCode.color(): Color = when (this.value) {
     else -> MaterialTheme.colorScheme.onSurfaceMuted
 }
 
-/** Non-composable variant for use in Canvas draw scopes. Uses dark-theme defaults.
- *
- * @return*/
+/**
+ * Non-composable variant for use in Canvas draw scopes. Uses dark-theme defaults.
+ */
 @InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
 public fun HttpStatusCode.colorStatic(): Color = when (this.value) {

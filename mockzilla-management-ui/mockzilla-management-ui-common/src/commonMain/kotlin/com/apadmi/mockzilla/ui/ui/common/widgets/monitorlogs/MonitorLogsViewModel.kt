@@ -62,9 +62,6 @@ internal class MonitorLogsViewModel(
     }
 
     sealed class State {
-        /**
-         * @property entries
-         */
         data class DisplayLogs(val entries: List<LogEvent>) : State()
     }
 }

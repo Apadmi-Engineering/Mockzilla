@@ -19,13 +19,6 @@ private val strings = mapOf(
     "en" to EnStrings
 )
 
-/**
- * @property widgets
- * @property common
- * @property components
- * @property menu
- * @property links
- */
 @InternalMockzillaApi
 public data class Strings(
     val common: Common,
@@ -34,12 +27,6 @@ public data class Strings(
     val menu: Menu,
     val links: Links
 ) {
-    /**
-     * @property docsHome
-     * @property docsPresets
-     * @property github
-     * @property apadmi
-     */
     @InternalMockzillaApi
     public data class Links(
         val docsHome: String,
@@ -47,13 +34,6 @@ public data class Strings(
         val github: String,
         val apadmi: String
     )
-    /**
-     * @property openSourceLicenses
-     * @property about
-     * @property github
-     * @property documentation
-     * @property apadmi
-     */
     @InternalMockzillaApi
     public data class Menu(
         val openSourceLicenses: String,
@@ -63,22 +43,12 @@ public data class Strings(
         val apadmi: String
     )
 
-    /**
-     * @property editor
-     * @property findReplace
-     * @property genericError
-     */
     @InternalMockzillaApi
     public data class Components(
         val editor: Editor,
         val findReplace: FindReplace,
         val genericError: GenericError,
     ) {
-        /**
-         * @property title
-         * @property body
-         * @property retryButton
-         */
         @InternalMockzillaApi
         public data class GenericError(
             val title: String,
@@ -86,29 +56,12 @@ public data class Strings(
             val retryButton: String
         )
 
-        /**
-         * @property largeFileSyntaxHighlightError
-         * @property jsonErrorTitle
-         */
         @InternalMockzillaApi
         public data class Editor(
             val largeFileSyntaxHighlightError: String,
             val jsonErrorTitle: String,
         )
 
-        /**
-         * @property findPlaceholder
-         * @property replacePlaceholder
-         * @property noResults
-         * @property matchCount
-         * @property collapseReplaceDescription
-         * @property expandReplaceDescription
-         * @property previousMatchDescription
-         * @property nextMatchDescription
-         * @property closeFindBarDescription
-         * @property replaceButton
-         * @property replaceAllButton
-         */
         @InternalMockzillaApi
         public data class FindReplace(
             val findPlaceholder: String,
@@ -124,13 +77,6 @@ public data class Strings(
             val replaceAllButton: String,
         )
     }
-    /**
-     * @property closeDescription
-     * @property backDescription
-     * @property debugDescription
-     * @property resetDescription
-     * @property deleteDescription
-     */
     @InternalMockzillaApi
     public data class Common(
         val closeDescription: String,
@@ -139,23 +85,6 @@ public data class Strings(
         val resetDescription: String,
         val deleteDescription: String,
     )
-    /**
-     * @property deviceConnection
-     * @property deviceTabs
-     * @property metaData
-     * @property logs
-     * @property logDetails
-     * @property endpointDetails
-     * @property endpoints
-     * @property miscControls
-     * @property unsupportedMockzilla
-     * @property errorBanner
-     * @property linuxUnsupportedBanner
-     * @property globalControls
-     * @property latency
-     * @property createEditPreset
-     * @property openSourceLicenses
-     */
     @InternalMockzillaApi
     public data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -174,27 +103,12 @@ public data class Strings(
         val latency: Latency,
         val openSourceLicenses: OpenSourceLicenses
     ) {
-        /**
-         * @property error
-         * @property title
-         * @property devBuildsMessage
-         */
         @InternalMockzillaApi
         public data class OpenSourceLicenses(
             val error: String,
             val title: String,
             val devBuildsMessage: String
         )
-        /**
-         * @property connectionLost
-         * @property refreshButton
-         * @property operationError
-         * @property apiErrorDescription
-         * @property connectionErrorTitlesAndBodies
-         * @property statusLabel
-         * @property messageLabel
-         * @property connectionErrorTitle
-         */
         @InternalMockzillaApi
         public data class ErrorBanner(
             val connectionLost: String,
@@ -207,25 +121,12 @@ public data class Strings(
             val connectionErrorTitle: String
         )
 
-        /**
-         * @property title
-         * @property message
-         */
         @InternalMockzillaApi
         public data class LinuxUnsupportedBanner(
             val title: String,
             val message: String
         )
 
-        /**
-         * @property title
-         * @property clearAll
-         * @property openInPanel
-         * @property streaming
-         * @property clickToInspect
-         * @property emptyTitle
-         * @property emptyDescription
-         */
         @InternalMockzillaApi
         public data class Logs(
             val title: String,
@@ -237,22 +138,6 @@ public data class Strings(
             val emptyDescription: String,
         )
 
-        /**
-         * @property title
-         * @property emptyTitle
-         * @property emptyDescription
-         * @property responseDelayUnits
-         * @property intendedFailure
-         * @property intendedSuccess
-         * @property requestHeaders
-         * @property requestBody
-         * @property responseHeaders
-         * @property responseBody
-         * @property noHeaders
-         * @property noBody
-         * @property emptyBody
-         * @property bodyLoadError
-         */
         @InternalMockzillaApi
         public data class LogDetails(
             val title: String,
@@ -271,15 +156,6 @@ public data class Strings(
             val bodyLoadError: String,
         )
 
-        /**
-         * @property refreshAll
-         * @property clearOverrides
-         * @property title
-         * @property presentationMode
-         * @property fontScaleLabel
-         * @property actionsSection
-         * @property darkMode
-         */
         @InternalMockzillaApi
         public data class MiscControls(
             val refreshAll: String,
@@ -291,24 +167,6 @@ public data class Strings(
             val fontScaleLabel: (Float) -> String,
         )
 
-        /**
-         * @property title
-         * @property noDeviceConnected
-         * @property appName
-         * @property appPackage
-         * @property operatingSystemVersion
-         * @property deviceModel
-         * @property appVersion
-         * @property operatingSystem
-         * @property mockzillaVersion
-         * @property android
-         * @property ios
-         * @property jvm
-         * @property js
-         * @property deviceSection
-         * @property error
-         * @property viewAppMetaData
-         */
         @InternalMockzillaApi
         public data class MetaData(
             val title: String,
@@ -329,35 +187,6 @@ public data class Strings(
             val error: String,
         )
 
-        /**
-         * @property tabTitle
-         * @property ipInputLabel
-         * @property tooltips
-         * @property heading
-         * @property autoConnectHeading
-         * @property autoConnectSubHeading
-         * @property autoConnectButton
-         * @property androidDevConnectButton
-         * @property errorTitle
-         * @property errorMessage
-         * @property connected
-         * @property title
-         * @property subTile
-         * @property bullet1
-         * @property bullet2
-         * @property bullet3
-         * @property bullet4
-         * @property ipAndPort
-         * @property networkConnection
-         * @property promptToEnterIp
-         * @property connectAutomatically
-         * @property discoveredNetwork
-         * @property scanning
-         * @property connect
-         * @property dot
-         * @property noDevicesFound
-         * @property noDevicesDescription
-         */
         @InternalMockzillaApi
         public data class DeviceConnection(
             val title: String,
@@ -388,12 +217,6 @@ public data class Strings(
             val connect: String,
             val dot: String,
         ) {
-            /**
-             * @property notYourSimulator
-             * @property readyToConnect
-             * @property removed
-             * @property resolving
-             */
             @InternalMockzillaApi
             public data class ToolTips(
                 val notYourSimulator: String,
@@ -403,15 +226,6 @@ public data class Strings(
             )
         }
 
-        /**
-         * @property tabTitle
-         * @property addDevice
-         * @property connected
-         * @property disconnected
-         * @property empty
-         * @property closeButtonDescription
-         * @property betaBanner
-         */
         @InternalMockzillaApi
         public data class DeviceTabs(
             val tabTitle: (index: Int) -> String,
@@ -423,15 +237,6 @@ public data class Strings(
             val betaBanner: String
         )
 
-        /**
-         * @property filterPlaceholder
-         * @property numberOfEndpointsShown
-         * @property overrides
-         * @property noOverrides
-         * @property forced
-         * @property emptyTitle
-         * @property emptyDescription
-         */
         @InternalMockzillaApi
         public data class Endpoints(
             val filterPlaceholder: String,
@@ -443,23 +248,6 @@ public data class Strings(
             val emptyDescription: String,
         )
 
-        /**
-         * @property title
-         * @property subtitle
-         * @property resetAllLabel
-         * @property normalBehaviourBannerConfig
-         * @property forcedFailureBannerConfig
-         * @property partialFailureBannerConfig
-         * @property failButtonLabel
-         * @property restoreButtonLabel
-         * @property activeOverrides
-         * @property perEndpointStatus
-         * @property forcedStatus
-         * @property latencyStatus
-         * @property bodyStatus
-         * @property headersStatus
-         * @property statusStatus
-         */
         @InternalMockzillaApi
         public data class GlobalControls(
             val title: String,
@@ -478,10 +266,6 @@ public data class Strings(
             val headersStatus: String,
             val statusStatus: String,
         ) {
-            /**
-             * @property title
-             * @property subtitle
-             */
             @InternalMockzillaApi
             public data class GlobalConfigBanner(
                 val title: String,
@@ -489,15 +273,6 @@ public data class Strings(
             )
         }
 
-        /**
-         * @property title
-         * @property millisecondLabel
-         * @property secondLabel
-         * @property sliderMin
-         * @property sliderMax
-         * @property notSet
-         * @property clear
-         */
         @InternalMockzillaApi
         public data class Latency(
             val title: String,
@@ -509,23 +284,6 @@ public data class Strings(
             val clear: String,
         )
 
-        /**
-         * @property none
-         * @property statusCode
-         * @property edit
-         * @property reset
-         * @property resetUseErrorResponse
-         * @property headersUnset
-         * @property subtitle
-         * @property emptyTitle
-         * @property emptyDescription
-         * @property title
-         * @property forcedApiFailureBannerTitle
-         * @property forcedApiFailureBannerSubtitle
-         * @property presets
-         * @property behavior
-         * @property latency
-         */
         @InternalMockzillaApi
         public data class EndpointDetails(
             val title: String,
@@ -544,27 +302,6 @@ public data class Strings(
             val latency: String,
             val presets: Presets
         ) {
-            /**
-             * @property forceFailureAppliedPresetMessage
-             * @property failedToLoad
-             * @property noPresetTitle
-             * @property noPresetBody
-             * @property typeDescriptions
-             * @property title
-             * @property noAvailablePresetsTitle
-             * @property noAvailablePresetsBody
-             * @property moreInfoButton
-             * @property activePresetTitle
-             * @property createCustomButton
-             * @property filterPlaceholder
-             * @property filterPlaceholderEmpty
-             * @property statusCodeFallback
-             * @property applyLabel
-             * @property appliedLabel
-             * @property editLabel
-             * @property forceFailureBannerTitle
-             * @property forceFailureBannerBody
-             */
             @InternalMockzillaApi
             public data class Presets(
                 val noPresetTitle: String,
@@ -587,13 +324,6 @@ public data class Strings(
                 val forceFailureAppliedPresetMessage: String,
                 val failedToLoad: String,
             ) {
-                /**
-                 * @property error
-                 * @property informational
-                 * @property other
-                 * @property redirect
-                 * @property success
-                 */
                 @InternalMockzillaApi
                 public data class TypeDescriptions(
                     val error: String,
@@ -605,40 +335,6 @@ public data class Strings(
             }
         }
 
-        /**
-         * @property createTitle
-         * @property editTitle
-         * @property statusCodeTitle
-         * @property noOverrideStatusCode
-         * @property statusCodeLabel
-         * @property bodyTitle
-         * @property bodyTypeJson
-         * @property bodyTypePlain
-         * @property bodyTypeHtml
-         * @property bodyTypeNone
-         * @property responseBodyFormat
-         * @property responseBodyCopy
-         * @property responseCharacters
-         * @property validLabel
-         * @property invalidLabel
-         * @property headersTitle
-         * @property addHeaderTitle
-         * @property addHeaderButton
-         * @property responseBodyPlaceholder
-         * @property addHeaderKeyPlaceholder
-         * @property addHeaderValuePlaceholder
-         * @property save
-         * @property unset
-         * @property cancel
-         * @property endpointSubtitle
-         * @property statusCodeRowLabel
-         * @property bodyTypeLabel
-         * @property responseSectionLabel
-         * @property bodyLabel
-         * @property htmlBodyPlaceholder
-         * @property plainBodyPlaceholder
-         * @property jsonErrorTitle
-         */
         @InternalMockzillaApi
         public data class CreateEditPreset(
             val createTitle: String,
@@ -675,11 +371,6 @@ public data class Strings(
             val jsonErrorTitle: String,
         )
 
-        /**
-         * @property heading
-         * @property subtitle
-         * @property footer
-         */
         @InternalMockzillaApi
         public data class UnsupportedMockzillaVersion(
             val heading: String,

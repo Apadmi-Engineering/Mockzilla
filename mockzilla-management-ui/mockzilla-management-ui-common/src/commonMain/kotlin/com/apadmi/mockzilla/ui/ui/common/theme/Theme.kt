@@ -203,10 +203,6 @@ public val ColorScheme.methodDelete: Color
 public val ColorScheme.methodOther: Color
     get() = if (LocalForceDarkMode.current) darkMethodOther else lightMethodOther
 
-/**
- * @property primary
- * @property container
- */
 @InternalMockzillaApi
 public data class StateColors(
     val primary: Color,

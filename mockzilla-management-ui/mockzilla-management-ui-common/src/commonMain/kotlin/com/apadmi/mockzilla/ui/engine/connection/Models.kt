@@ -7,16 +7,6 @@ import kotlin.jvm.JvmInline
 @InternalMockzillaApi
 public typealias AdbConnectionDeviceSerial = String
 
-/**
- * @property connectionId
- * @property prettyName
- * @property metaData
- * @property hostAddress
- * @property hostAddresses
- * @property port
- * @property adbConnection
- * @property state
- */
 @InternalMockzillaApi
 public data class DetectedDevice(
     val connectionId: String,
@@ -38,11 +28,6 @@ public data class DetectedDevice(
     }
 }
 
-/**
- * @property deviceSerial
- * @property isActive
- * @property ipAddresses
- */
 @InternalMockzillaApi
 public data class AdbConnection(
     val deviceSerial: AdbConnectionDeviceSerial,
@@ -52,9 +37,6 @@ public data class AdbConnection(
     public companion object
 }
 
-/**
- * @property raw
- */
 @InternalMockzillaApi
 @JvmInline
 public value class IpAddress(public val raw: String)

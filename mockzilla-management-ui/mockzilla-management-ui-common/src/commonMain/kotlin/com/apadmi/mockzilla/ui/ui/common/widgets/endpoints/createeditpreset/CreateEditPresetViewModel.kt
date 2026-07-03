@@ -269,10 +269,6 @@ internal class CreateEditPresetViewModel(
                 ;
             }
 
-            /**
-             * @property key
-             * @property value
-             */
             data class RequestHeader(
                 val key: String = "",
                 val value: String = ""

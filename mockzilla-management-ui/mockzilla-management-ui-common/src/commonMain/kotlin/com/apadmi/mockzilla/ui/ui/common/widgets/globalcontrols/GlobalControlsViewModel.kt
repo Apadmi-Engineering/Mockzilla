@@ -138,13 +138,6 @@ internal class GlobalControlsViewModel(
     sealed class State {
         data object Loading : State()
 
-        /**
-         * @property initialLatencyMs
-         * @property apiFailureState
-         * @property endpoints
-         * @property activeOverridesCount
-         * @property isLoading
-         */
         data class Idle(
             val initialLatencyMs: Int?,
             val apiFailureState: ForceFailureBannerState,

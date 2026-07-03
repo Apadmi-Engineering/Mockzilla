@@ -15,10 +15,11 @@ private val Platform.touchTargetSize: Dp
         else -> 24.dp
     }
 
-/** Enforces WCAG AA minimum touch target (44dp mobile, 24dp desktop).
+/**
+ * Enforces WCAG AA minimum touch target (44dp mobile, 24dp desktop).
  *
  * @param isIcon Whether to apply icon rules (i.e use the big version on JS)
- * @return*/
+ */
 @InternalMockzillaApi
 public fun Modifier.minimumTouchTarget(
     isIcon: Boolean = false
@@ -33,8 +34,6 @@ public fun Modifier.minimumTouchTarget(
 
 /**
  * Sets an exact size for a compact IconButton based on the platform
- *
- * @return
  */
 @InternalMockzillaApi
 public fun Modifier.iconButtonSize(): Modifier = size(

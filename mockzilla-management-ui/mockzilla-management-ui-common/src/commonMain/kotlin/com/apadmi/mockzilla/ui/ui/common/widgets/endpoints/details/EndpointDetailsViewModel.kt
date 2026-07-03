@@ -227,14 +227,6 @@ internal class EndpointDetailsViewModel(
         data object Empty : State()
         data object FailedToLoad : State()
 
-        /**
-         * @property config
-         * @property fail
-         * @property delayMillis
-         * @property presets
-         * @property isLoading
-         * @property layoutMode
-         */
         data class Endpoint(
             val config: SerializableEndpointConfig,
             val fail: Boolean?,
@@ -246,12 +238,6 @@ internal class EndpointDetailsViewModel(
             sealed class Presets {
                 data object Loading : Presets()
                 data object Error : Presets()
-                /**
-                 * @property appliedPreset
-                 * @property visiblePresets
-                 * @property allPresets
-                 * @property filter
-                 */
                 data class Populated(
                     val appliedPreset: DashboardOverridePreset?,
                     val visiblePresets: List<DashboardOverridePreset>,

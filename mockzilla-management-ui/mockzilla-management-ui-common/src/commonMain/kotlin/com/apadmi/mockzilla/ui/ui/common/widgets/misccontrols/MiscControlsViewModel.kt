@@ -30,8 +30,5 @@ internal class MiscControlsViewModel(
         }
     }
 
-    /**
-     * @property uiVersion
-     */
     data class State(val uiVersion: String)
 }

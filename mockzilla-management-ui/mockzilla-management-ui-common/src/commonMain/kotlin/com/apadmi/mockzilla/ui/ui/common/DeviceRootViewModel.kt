@@ -95,11 +95,6 @@ public class DeviceRootViewModel(
         @InternalMockzillaApi
         public data object UnsupportedDeviceMockzillaVersion : State()
 
-        /**
-         * @property activeDevice
-         * @property selectedEndpoint
-         * @property error
-         */
         @InternalMockzillaApi
         public data class Connected(
             val activeDevice: StatefulDevice,
@@ -110,11 +105,6 @@ public class DeviceRootViewModel(
             public sealed class ErrorBannerState {
                 @InternalMockzillaApi
                 public data object ConnectionLost : ErrorBannerState()
-                /**
-                 * @property status
-                 * @property rawError
-                 * @property operation
-                 */
                 @InternalMockzillaApi
                 public data class ApiError(
                     val status: HttpStatusCode?,

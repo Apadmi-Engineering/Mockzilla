@@ -27,11 +27,6 @@ public enum class ChipTone {
     Accent, Err, Info, Neutral, Ok, Teal, Warn
 }
 
-/**
- * @property border
- * @property text
- * @property background
- */
 private data class ChipColors(
     val border: Color,
     val text: Color,

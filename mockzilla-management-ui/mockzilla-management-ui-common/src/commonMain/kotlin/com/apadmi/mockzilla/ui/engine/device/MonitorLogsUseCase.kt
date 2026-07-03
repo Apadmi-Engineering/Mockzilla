@@ -98,8 +98,4 @@ internal class MonitorLogsUseCaseImpl(
     }
 }
 
-/**
- * @property device
- * @property appPackage
- */
 private data class CacheKey(val device: Device, val appPackage: String)

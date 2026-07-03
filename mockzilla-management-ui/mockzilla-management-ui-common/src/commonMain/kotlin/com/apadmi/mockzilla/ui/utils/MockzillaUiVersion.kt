@@ -4,9 +4,6 @@ import com.apadmi.mockzilla.lib.InternalMockzillaApi
 
 import kotlin.jvm.JvmInline
 
-/**
- * @property version
- */
 @InternalMockzillaApi
 @JvmInline
 public value class MockzillaUiVersion(public val version: String)

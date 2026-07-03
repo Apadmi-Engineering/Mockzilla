@@ -5,10 +5,6 @@ import kotlin.time.Duration
 
 internal typealias TimeStampAccessor = () -> Long
 
-/**
- * @property data
- * @property timeStamp
- */
 internal data class DataWithTimestamp<T>(val data: T, val timeStamp: Long = Clock.System.now().toEpochMilliseconds()) {
     fun isExpired(
         cacheLife: Duration,
