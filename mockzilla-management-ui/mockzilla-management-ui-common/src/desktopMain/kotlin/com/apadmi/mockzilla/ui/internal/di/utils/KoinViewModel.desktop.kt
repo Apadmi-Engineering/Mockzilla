@@ -16,8 +16,8 @@ import kotlinx.coroutines.cancel
 // Composition-local `remember` is discarded when a composable leaves the tree (e.g. tab switch).
 // Per-device VMs (identified by a non-null `key`) must survive tab switches, so they are stored
 // here instead. Widget VMs (no key) are fine to recreate and use the plain `remember` path below.
-@PublishedApi
-internal val desktopViewModelCache: MutableMap<String, Any> = mutableMapOf()
+@InternalMockzillaApi
+public val desktopViewModelCache: MutableMap<String, Any> = mutableMapOf()
 
 @InternalMockzillaApi
 public actual inline fun <reified T : ViewModel> Module.viewModel(
