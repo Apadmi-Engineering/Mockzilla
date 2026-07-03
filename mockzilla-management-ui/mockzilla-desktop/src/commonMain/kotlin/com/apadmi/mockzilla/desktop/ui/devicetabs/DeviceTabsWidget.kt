@@ -1,3 +1,5 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.ui.devicetabs
 
 import androidx.compose.animation.AnimatedVisibility
@@ -57,6 +59,7 @@ import com.apadmi.mockzilla.desktop.MockzillaDesktopBuildConfig
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.State
 import com.apadmi.mockzilla.desktop.ui.utils.desktopTertiaryPointerClick
 import com.apadmi.mockzilla.desktop.ui.utils.isOsx
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
@@ -73,12 +76,6 @@ import kotlin.Float
 
 private const val horizontalOsxButtonPaddingDp = 70
 
-/**
- * @property shoulderWidth
- * @property shoulderDepth
- * @property tail
- * @property curl
- */
 private data class TabShapeConfig(
     val shoulderWidth: Dp = 12.dp,
     val shoulderDepth: Dp = 19.dp,
@@ -158,7 +155,7 @@ fun DeviceTabsWidget(
 }
 
 @Composable
-fun DeviceTabsWidgetContent(
+internal fun DeviceTabsWidgetContent(
     state: State,
     modifier: Modifier = Modifier,
     strings: Strings = LocalStrings.current,

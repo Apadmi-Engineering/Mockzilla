@@ -1,3 +1,5 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.ui
 
 import androidx.compose.animation.AnimatedVisibility
@@ -51,6 +53,7 @@ import com.apadmi.mockzilla.desktop.ui.scaffold.HorizontalDraggableDivider
 import com.apadmi.mockzilla.desktop.ui.scaffold.VerticalDraggableDivider
 import com.apadmi.mockzilla.desktop.ui.utils.isLinux
 import com.apadmi.mockzilla.desktop.ui.utils.mobileStatusBarPadding
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.ui.engine.device.Device
@@ -125,9 +128,6 @@ private val layoutStateSaver = Saver<LayoutState, List<Any?>>(
     }
 )
 
-/**
- * @property raw
- */
 private enum class RightPanelTab(val raw: String) {
     EndpointDetails("EndpointDetails"),
     LogDetails("LogDetails"),
@@ -138,18 +138,6 @@ private enum class RightPanelTab(val raw: String) {
     }
 }
 
-/**
- * @property leftWidthDp
- * @property rightWidthDp
- * @property logsExpandedHeightDp
- * @property presetWidthDp
- * @property globalControlsWidthDp
- * @property rightPanelTab
- * @property presetOpen
- * @property creatingNewPreset
- * @property globalControlsOpen
- * @property logsExpanded
- */
 private data class LayoutState(
     val leftWidthDp: Float = 260f,
     val rightWidthDp: Float = 500f,

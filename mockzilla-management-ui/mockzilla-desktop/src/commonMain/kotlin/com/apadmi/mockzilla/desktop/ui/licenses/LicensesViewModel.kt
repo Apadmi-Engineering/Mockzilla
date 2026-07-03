@@ -1,8 +1,11 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.ui.licenses
 
 import com.apadmi.mockzilla.desktop.engine.licenses.LibraryForAttribution
 import com.apadmi.mockzilla.desktop.engine.licenses.LicensesUseCase
 import com.apadmi.mockzilla.lib.MockzillaBuildConfig
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
@@ -32,9 +35,6 @@ internal class LicensesViewModel(
         data object Loading : State()
         data object DevBuild : State()
         data object ErrorLoading : State()
-        /**
-         * @property libraries
-         */
         data class Populated(val libraries: List<LibraryForAttribution>) : State()
     }
 }

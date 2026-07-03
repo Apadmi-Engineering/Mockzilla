@@ -1,5 +1,8 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.engine.connection
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
 import com.apadmi.mockzilla.ui.engine.connection.IpAddress
 
@@ -24,12 +27,8 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 
-/**
- * @property connection
- * @property localPort
- */
-data class AdbPortForwardingResult(val connection: AdbConnection, val localPort: Int)
-interface AdbConnectorService {
+internal data class AdbPortForwardingResult(val connection: AdbConnection, val localPort: Int)
+internal interface AdbConnectorService {
     suspend fun listConnectedDevices(): Result<List<AdbConnection>>
     suspend fun setupPortForwardingIfNeeded(
         emulator: AdbConnection,
@@ -39,7 +38,7 @@ interface AdbConnectorService {
     suspend fun getListeningTcpPorts(serial: String): Result<List<Int>>
 }
 
-object AdbConnectorServiceImpl : AdbConnectorService {
+internal object AdbConnectorServiceImpl : AdbConnectorService {
     private val ipParsingRegex = "addr:\\s*([^\\/\\s]*)".toRegex()
     var isStarted = false
     val startedMutex = Mutex()
