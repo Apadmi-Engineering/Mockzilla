@@ -214,7 +214,7 @@ Mockzilla supports artificially causing network requests to fail.
 **The default is for requests to succeed**.
 
 !!! note
-    Controlling artificial latency in code is time consuming and inflexible. We recommend using the [Mockzilla Desktop](/desktop/overview) app or [Embedded Mobile Ui](/mobile_ui) to do this on the fly.
+    Controlling artificial latency/errors in code is time consuming and inflexible. We recommend using the [Mockzilla Desktop](/desktop/overview) app or [Embedded Mobile Ui](/mobile_ui) to do this on the fly.
 
 ## Mock Request Lifecycle
 

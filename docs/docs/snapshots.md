@@ -1,7 +1,7 @@
 # Snapshot builds
 
 !!! warning
-    Snapshot builds are deployed directly from the `develop` branch of this repo. They are *not* stable and 
+    Snapshot builds are deployed directly from the `develop` branch of [the main repo](https://github.com/Apadmi-Engineering/Mockzilla). They are *not* stable and 
     should *not* be used for anything other than testing and trying out new features.
 
 === "Kotlin"
