@@ -32,6 +32,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -54,6 +56,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -96,6 +99,9 @@ import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
+
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 
 @Composable
 private fun ColumnScope.HeadersSection(
@@ -479,11 +485,17 @@ private fun BodySection(
 ) {
     // Local state drives the text field to avoid cursor-jump glitches from the VM round-trip.
     // Syncs from VM only when syncToken changes (server reload or format applied).
-    var localBody by remember { mutableStateOf(state.body ?: "") }
-    LaunchedEffect(state.syncToken) { localBody = state.body ?: "" }
+    val localBody = rememberTextFieldState(state.body ?: "")
+    LaunchedEffect(state.syncToken) { localBody.setTextAndPlaceCursorAtEnd(state.body ?: "") }
+    LaunchedEffect(localBody) {
+        snapshotFlow { localBody.text }
+            .drop(1)
+            .distinctUntilChanged()
+            .collect { onNewResponseBody(it.toString()) }
+    }
 
     val isJsonError = state.responseType == State.Editing.ResponseType.Json &&
-            localBody.isNotEmpty() && state.bodyParseError != null
+            localBody.text.isNotEmpty() && state.bodyParseError != null
     val isFormattable = state.responseType == State.Editing.ResponseType.Json
 
     Row(
@@ -501,14 +513,14 @@ private fun BodySection(
 
         if (isJsonError) {
             Text(
-                text = strings.responseCharacters(localBody.length),
+                text = strings.responseCharacters(localBody.text.length),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.weight(1f)
             )
         } else {
             Text(
-                text = strings.responseCharacters(localBody.length),
+                text = strings.responseCharacters(localBody.text.length),
                 style = MaterialTheme.typography.labelSmall.copy(fontFamily = LocalMonoFontFamily.current),
                 color = MaterialTheme.colorScheme.onSurfaceFaint,
                 modifier = Modifier.weight(1f)
@@ -538,11 +550,7 @@ private fun BodySection(
     }
 
     FindableEditorTextField(
-        body = localBody,
-        onBodyChange = {
-            localBody = it
-            onNewResponseBody(it)
-        },
+        textFieldState = localBody,
         mode = when (state.responseType) {
             State.Editing.ResponseType.Json -> EditorMode.Json
             State.Editing.ResponseType.Html -> EditorMode.Html

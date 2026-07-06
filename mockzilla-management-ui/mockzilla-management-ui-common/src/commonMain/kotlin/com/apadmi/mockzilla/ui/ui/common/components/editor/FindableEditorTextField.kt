@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DoneAll
@@ -64,19 +64,17 @@ import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 @Composable
 internal fun FindableEditorTextField(
-    body: String,
-    onBodyChange: (String) -> Unit,
+    textFieldState: TextFieldState,
     mode: EditorMode,
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
     placeholder: String,
     parseError: String? = null,
 ) {
-    val textFieldState = rememberTextFieldState(body)
     var state by remember { mutableStateOf(FindReplaceState()) }
 
-    LaunchedEffect(body, state.searchTerm) {
-        val newMatches = findMatches(body, state.searchTerm)
+    LaunchedEffect(textFieldState.text, state.searchTerm) {
+        val newMatches = findMatches(textFieldState.text.toString(), state.searchTerm)
         state = state.copy(
             matches = newMatches,
             currentMatchIndex = state.currentMatchIndex.coerceIn(
@@ -155,8 +153,7 @@ internal fun FindableEditorTextField(
         }
     ) {
         EditorTextField(
-            body = body,
-            onBodyChange = onBodyChange,
+            textFieldState = textFieldState,
             mode = mode,
             isExpanded = isExpanded,
             modifier = Modifier.fillMaxWidth(),
@@ -164,7 +161,6 @@ internal fun FindableEditorTextField(
             parseError = parseError,
             additionalOutputTransformation = highlightTransformation,
             currentMatch = if (state.isPanelOpen) state.matches.getOrNull(state.currentMatchIndex) else null,
-            textFieldState = textFieldState,
         )
 
         AnimatedVisibility(
@@ -182,15 +178,20 @@ internal fun FindableEditorTextField(
                 onReplace = {
                     if (state.matches.isNotEmpty()) {
                         val match = state.matches[state.currentMatchIndex]
-                        val newBody = body.substring(0, match.first) +
+                        val oldBody = textFieldState.text
+                        val newBody = oldBody.substring(0, match.first) +
                                 state.replaceTerm +
-                                body.substring(match.last + 1)
-                        onBodyChange(newBody)
+                                oldBody.substring(match.last + 1)
+                        textFieldState.edit { replace(0, length, newBody) }
                     }
                 },
                 onReplaceAll = {
                     if (state.searchTerm.isNotEmpty()) {
-                        onBodyChange(body.replace(state.searchTerm, state.replaceTerm, ignoreCase = true))
+                        val oldBody = textFieldState.text.toString()
+                        val newBody = oldBody.replace(
+                            state.searchTerm, state.replaceTerm, ignoreCase = true
+                        )
+                        textFieldState.edit { replace(0, length, newBody) }
                     }
                 },
             )
