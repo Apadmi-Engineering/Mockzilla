@@ -25,7 +25,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Icon
@@ -37,7 +36,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -68,9 +66,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.utils.formatting.BodyVisualTransformation
 
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
-
 private const val editorDefaultHeightDp = 200
 private const val textMeasureCacheSize = 64
 
@@ -80,8 +75,7 @@ internal enum class EditorMode {
 
 @Composable
 internal fun EditorTextField(
-    body: String,
-    onBodyChange: (String) -> Unit,
+    textFieldState: TextFieldState,
     mode: EditorMode,
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
@@ -89,7 +83,6 @@ internal fun EditorTextField(
     parseError: String? = null,
     additionalOutputTransformation: OutputTransformation? = null,
     currentMatch: IntRange? = null,
-    textFieldState: TextFieldState = rememberTextFieldState(body),
 ) {
     val strings = LocalStrings.current.components.editor
     val colorScheme = MaterialTheme.colorScheme
@@ -98,24 +91,7 @@ internal fun EditorTextField(
 
     var fieldHeight by remember { mutableStateOf(editorDefaultHeightDp.dp) }
     var lineCount by remember { mutableStateOf(1) }
-    val isLargeFile = BodyVisualTransformation.isBodyTooLarge(body)
-    val textFieldState = rememberTextFieldState(body)
-
-    LaunchedEffect(body) {
-        if (textFieldState.text.toString() != body) {
-            textFieldState.edit {
-                replace(0, length, body)
-                selection = TextRange(length)
-            }
-        }
-    }
-
-    LaunchedEffect(textFieldState) {
-        snapshotFlow { textFieldState.text.toString() }
-            .drop(1)
-            .distinctUntilChanged()
-            .collect { onBodyChange(it) }
-    }
+    val isLargeFile = BodyVisualTransformation.isBodyTooLarge(textFieldState.text.toString())
 
     val textStyle = MaterialTheme.typography.bodyMedium.copy(
         color = colorScheme.onSurface,
