@@ -24,7 +24,10 @@ class MainViewModel(
         state.value = State.Fetching(values = state.value.values)
 
         val cowResult = repository.getAnimal(urlSuffix = "cow", someRequestValue = someValue)
-        val sheepResult = repository.getAnimal(urlSuffix = "sheep", someRequestValue = someValue)
+        val sheepResult = repository.getAnimal(
+            urlSuffix = "sheep",
+            someRequestValue = someValue
+        )
         val pigResult = repository.getAnimal(urlSuffix = "pig", someRequestValue = someValue)
 
         state.value = if (

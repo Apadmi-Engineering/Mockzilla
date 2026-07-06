@@ -12,7 +12,10 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Icons.LightningBolt: ImageVector
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
+public val Icons.LightningBolt: ImageVector
     get() {
         if (_lightningBolt != null) {
             return _lightningBolt!!

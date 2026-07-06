@@ -10,7 +10,7 @@ import java.io.IOException
 import java.nio.file.Files
 
 @InternalMockzillaApi
-actual class FileIo(private val cacheDir: File) {
+public actual class FileIo(private val cacheDir: File) {
     private val cacheDirectory
         get() = File(
             cacheDir,
@@ -18,19 +18,20 @@ actual class FileIo(private val cacheDir: File) {
         ).also { it.mkdirs() }
 
     private fun String.fileInCache() = File(cacheDirectory, this)
-    actual suspend fun readFromCache(
+    public actual suspend fun readFromCache(
         filename: String,
     ): String? = filename.fileInCache()
         .takeIf { it.exists() }
         ?.readLines()
         ?.joinToString("\n")
 
-    actual suspend fun saveToCache(filename: String, contents: String) =
+    public actual suspend fun saveToCache(filename: String, contents: String): Unit =
         filename.fileInCache().also {
+            it.parentFile?.mkdirs()
             it.createNewFile()
         }.writeText(contents)
 
-    actual suspend fun deleteCacheFile(filename: String) = filename.fileInCache()
+    public actual suspend fun deleteCacheFile(filename: String): Unit = filename.fileInCache()
         .takeIf {
             it.exists()
         }
@@ -41,13 +42,20 @@ actual class FileIo(private val cacheDir: File) {
             }
         }
 
-    actual suspend fun deleteAllCaches() = cacheDir.deleteRecursively().let {
+    public actual suspend fun deleteAllCaches(): Unit = cacheDir.deleteRecursively().let {
         if (!it) {
             throw IOException("Failed to delete caches")
         }
     }
+
+    public actual suspend fun deleteDirectory(dirName: String) {
+        File(cacheDirectory, dirName).deleteRecursively()
+    }
+
+    public actual suspend fun listFiles(dirName: String): List<String> =
+        File(cacheDirectory, dirName).listFiles()?.map { it.name } ?: emptyList()
 }
 
 @InternalMockzillaApi
 @TargetApi(Build.VERSION_CODES.O)
-actual fun createFileIoforTesting() = FileIo(Files.createTempDirectory("").toFile())
+public actual fun createFileIoforTesting(): FileIo = FileIo(Files.createTempDirectory("").toFile())

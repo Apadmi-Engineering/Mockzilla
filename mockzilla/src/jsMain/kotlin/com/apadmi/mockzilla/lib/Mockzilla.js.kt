@@ -3,6 +3,7 @@
 package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.BuildKonfig
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
@@ -26,7 +27,7 @@ import kotlinx.coroutines.promise
  * @param config The config with which to initialise mockzilla.
  * @return runtimeParams Configuration of the mockzilla runtime environment
  */
-suspend fun startMockzilla(
+public suspend fun startMockzilla(
     appName: String,
     appVersion: String,
     config: MockzillaConfig,
@@ -43,7 +44,8 @@ suspend fun startMockzilla(
             runTarget = RunTarget.Js,
             mockzillaVersion = BuildKonfig.VERSION_NAME
         ),
-        FileIo()
+        FileIo(),
+        platformConfig = PlatformConfig(),
     ) {
         object : ZeroConfDiscoveryService {
             override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
@@ -61,6 +63,6 @@ suspend fun startMockzilla(
  * Stops the running Mockzilla server.
  */
 @OptIn(DelicateCoroutinesApi::class)
-actual fun stopMockzilla() = GlobalScope.promise {
+public actual fun stopMockzilla(): Unit = GlobalScope.promise {
     stopServer()
 }.let { /* no-op */ }

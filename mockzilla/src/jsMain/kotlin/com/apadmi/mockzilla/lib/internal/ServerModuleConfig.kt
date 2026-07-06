@@ -17,6 +17,8 @@ import co.touchlab.kermit.Logger
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.decodeURLPart
+import io.ktor.server.routing.get
+import org.w3c.dom.url.URLSearchParams
 import org.w3c.fetch.Headers
 import org.w3c.fetch.Request as JsRequest
 import org.w3c.fetch.Response as JsResponse
@@ -117,11 +119,12 @@ internal fun configureEndpoints(
     },
     Msw.http.get("$baseUrl/api/mock-data/*/dashboard-config") { info ->
         di.logger.v { "Handling GET mock-data presets: ${info.request.url}" }
-        val keyRegex = ".*/mock-data/(.*)/dashboard-config".toRegex()
-        val key = keyRegex.matchEntire(info.request.url)?.groupValues?.last()
-            ?.decodeURLPart()
-            ?: throw IllegalStateException("Missing key in url ${info.request.url}")
         info.request.safeResponse(di.logger, scope) { request ->
+            val keyRegex = ".*/mock-data/(.*)/dashboard-config".toRegex()
+            val key = keyRegex.matchEntire(info.request.url)?.groupValues?.last()
+                ?.decodeURLPart()
+                ?: throw IllegalStateException("Missing key in url ${info.request.url}")
+
             MockzillaHttpResponse(
                 body = JsonProvider.json.encodeToString(
                     di.managementApiController.getDashboardConfig(EndpointConfiguration.Key(key))
@@ -179,5 +182,43 @@ internal fun configureEndpoints(
                 )
             )
         }
+    },
+    Msw.http.get("$baseUrl/api/monitor-logs/poll") { info ->
+        info.request.safeResponse(di.logger, scope) { request ->
+            val searchParams = URLSearchParams(request.url)
+            val since = searchParams.get("since")?.toLongOrNull()
+            val clientSessionStart = searchParams.get("clientSessionStart")?.toLongOrNull()
+            clientSessionStart?.let { di.managementApiController.onClientSessionStart(it) }
+            MockzillaHttpResponse(
+                headers = CorsUtils.allowAllHeaders + jsonHeader,
+                body = JsonProvider.json.encodeToString(
+                    MonitorLogsResponse(di.metaData.appPackage, di.managementApiController.getLogsSince(since))
+                ))
+        }
+    },
+    Msw.http.get("$baseUrl/api/monitor-logs/*/full-body") { info ->
+        info.request.safeResponse(di.logger, scope) { request ->
+            val keyRegex = ".*/monitor-logs/(.*)/full-body".toRegex()
+            val logId = keyRegex.matchEntire(info.request.url)?.groupValues?.last()
+                ?.decodeURLPart()
+                ?: return@safeResponse MockzillaHttpResponse(HttpStatusCode.BadRequest)
+
+            val detail = di.managementApiController.getFullBodyLogDetail(logId)
+            detail?.let {
+                MockzillaHttpResponse(
+                    headers = CorsUtils.allowAllHeaders + jsonHeader,
+                    body = JsonProvider.json.encodeToString(detail)
+                )
+            } ?: MockzillaHttpResponse(HttpStatusCode.NotFound)
+        }
+    },
+    Msw.http.get("$baseUrl/api/app-icon") { info ->
+        di.logger.v { "Handling GET app-icon (not supported on web): ${info.request.url}" }
+        Promise.resolve(
+            MockzillaHttpResponse(
+                statusCode = HttpStatusCode.NotFound,
+                headers = CorsUtils.allowAllHeaders
+            ).toJsResponse()
+        )
     }
 )

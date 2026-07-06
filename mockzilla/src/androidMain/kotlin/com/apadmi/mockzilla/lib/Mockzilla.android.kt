@@ -3,7 +3,7 @@
 package com.apadmi.mockzilla.lib
 
 import android.content.Context
-
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryServiceImpl
 import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
@@ -24,7 +24,7 @@ import kotlinx.coroutines.runBlocking
  * @param context The android context
  * @return runtimeParams Configuration of the mockzilla runtime environment
  */
-fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeParams = runBlocking {
+public fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeParams = runBlocking {
     // On Android we must check if the port is available before launching Mockzilla since the
     // Ktor exception cannot be correctly caught and crashes the app regardless off error handling
     // https://github.com/Apadmi-Engineering/Mockzilla/issues/557
@@ -40,10 +40,9 @@ fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeP
     startMockzilla(
         config = config,
         metaData = context.extractMetaData(),
-        fileIo = FileIo(
-            context.cacheDir
-        ),
-        zeroConfDiscoveryService = { logger -> ZeroConfDiscoveryServiceImpl(logger, context) }
+        fileIo = FileIo(context.filesDir),
+        zeroConfDiscoveryService = { logger -> ZeroConfDiscoveryServiceImpl(logger, context) },
+        platformConfig = PlatformConfig(context.applicationContext),
     )
 }
 
@@ -51,6 +50,6 @@ fun startMockzilla(config: MockzillaConfig, context: Context): MockzillaRuntimeP
  * Stops the running Mockzilla server.
  *
  */
-actual fun stopMockzilla() = runBlocking {
+public actual fun stopMockzilla(): Unit = runBlocking {
     stopServer()
 }

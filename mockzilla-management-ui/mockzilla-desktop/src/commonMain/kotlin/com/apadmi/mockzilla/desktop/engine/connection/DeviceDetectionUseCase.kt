@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
 import com.apadmi.mockzilla.ui.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.ui.engine.connection.IpAddress
+import com.apadmi.mockzilla.ui.utils.prettyName
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 
@@ -19,7 +20,7 @@ interface DeviceDetectionUseCase {
     suspend fun prepareForConnection(device: DetectedDevice): Result<IpAddress>
 }
 
-class DeviceDetectionUseCaseImpl(
+internal class DeviceDetectionUseCaseImpl(
     private val isLocalIpAddress: (String) -> Boolean,
     private val adbConnectorService: AdbConnectorService
 ) : DeviceDetectionUseCase {
@@ -79,12 +80,13 @@ class DeviceDetectionUseCaseImpl(
             .firstOrNull {
                 it.adbConnection?.deviceSerial == event.adbConnection?.deviceSerial &&
                         it.port == event.port &&
-                        it.connectionName != cacheKey
+                        it.connectionId != cacheKey
             }
-            ?.let { deviceCache.remove(it.connectionName) }
+            ?.let { deviceCache.remove(it.connectionId) }
 
         val device = DetectedDevice(
-            connectionName = cacheKey,
+            connectionId = cacheKey,
+            prettyName = metaData?.prettyName() ?: cacheKey,
             metaData = metaData,
             hostAddress = "127.0.0.1",
             hostAddresses = listOf(IpAddress("127.0.0.1")),
@@ -110,13 +112,14 @@ class DeviceDetectionUseCaseImpl(
         val state = determineNewDeviceState(event, metaData, adbConnection)
 
         val device = existingDevice?.updateDevice(state, event) ?: DetectedDevice(
-            event.connectionName,
-            metaData,
-            event.hostAddress,
-            event.hostAddresses.map { IpAddress(it) },
-            event.port,
-            adbConnection,
-            state
+            connectionId = event.connectionName,
+            prettyName = metaData?.prettyName() ?: event.connectionName,
+            metaData = metaData,
+            hostAddress = event.hostAddress,
+            hostAddresses = event.hostAddresses.map { IpAddress(it) },
+            port = event.port,
+            adbConnection = adbConnection,
+            state = state
         )
 
         // ADB takes priority — if ADB already verified this port via /api/meta, keep the ADB

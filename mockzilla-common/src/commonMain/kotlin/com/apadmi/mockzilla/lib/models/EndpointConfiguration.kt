@@ -32,7 +32,7 @@ import kotlinx.serialization.json.JsonNames
  * @property errorHandler Called when a request matches this endpoint and [shouldFail] is `true`.
  * Returns the simulated error response to send back to the caller.
  */
-data class EndpointConfiguration(
+public data class EndpointConfiguration(
     val name: String,
     val key: Key,
     val shouldFail: Boolean,
@@ -51,12 +51,12 @@ data class EndpointConfiguration(
      */
     @Serializable
     @JvmInline
-    value class Key(val raw: String)
+    public value class Key(public val raw: String)
 
     /**
      * @param key An identifier for this endpoint. Endpoints cannot share an id.
      */
-    class Builder(key: String) {
+    public class Builder(key: String) {
         private var config = EndpointConfiguration(
             name = key,
             key = Key(key),
@@ -76,7 +76,7 @@ data class EndpointConfiguration(
          *
          * @param name The human-readable display name for this endpoint.
          */
-        fun setName(name: String) = apply {
+        public fun setName(name: String): Builder = apply {
             config = config.copy(name = name)
         }
 
@@ -87,24 +87,33 @@ data class EndpointConfiguration(
          * @param percentage (0 -> 100 inclusive)
          */
         @Deprecated("Probabilities are no longer supported", ReplaceWith("setShouldFail(false)"))
-        fun setFailureProbability(percentage: Int) = apply {
+        public fun setFailureProbability(percentage: Int): Builder = apply {
             config = config.copy(shouldFail = percentage == 100)
         }
 
         /**
          * Controls whether calls to this endpoint should fail by default
          */
-        fun setShouldFail(shouldFail: Boolean) = apply {
+        public fun setShouldFail(shouldFail: Boolean): Builder = apply {
             config = config.copy(shouldFail = shouldFail)
         }
 
         /**
          * Used to simulate latency: The artificial mean delay Mockzilla with add to a network request.
-         * Used alongside [setMeanDelayMillis] to calculate the actual artificial delay on each invocation.
          *
          * @param delay delay in milliseconds
          */
-        fun setMeanDelayMillis(delay: Int) = apply {
+        @Deprecated("Delay is now constant with no variance", replaceWith = ReplaceWith("setDelayMillis"))
+        public fun setMeanDelayMillis(delay: Int): Builder = apply {
+            config = config.copy(delay = delay)
+        }
+
+        /**
+         * Used to simulate latency: The artificial delay Mockzilla with add to the network request.
+         *
+         * @param delay delay in milliseconds
+         */
+        public fun setDelayMillis(delay: Int): Builder = apply {
             config = config.copy(delay = delay)
         }
 
@@ -115,7 +124,7 @@ data class EndpointConfiguration(
          *
          * @param handler Lambda invoked with the incoming request that returns the mock response.
          */
-        fun setDefaultHandler(handler: suspend MockzillaHttpRequest.() -> MockzillaHttpResponse) = apply {
+        public fun setDefaultHandler(handler: suspend MockzillaHttpRequest.() -> MockzillaHttpResponse): Builder = apply {
             config = config.copy(defaultHandler = handler)
         }
 
@@ -125,7 +134,7 @@ data class EndpointConfiguration(
          *
          * @param handler Lambda invoked with the incoming request that returns the simulated error response.
          */
-        fun setErrorHandler(handler: suspend MockzillaHttpRequest.() -> MockzillaHttpResponse) = apply {
+        public fun setErrorHandler(handler: suspend MockzillaHttpRequest.() -> MockzillaHttpResponse): Builder = apply {
             config = config.copy(errorHandler = handler)
         }
 
@@ -135,9 +144,9 @@ data class EndpointConfiguration(
          * @param action Builder block for configuring dashboard presets.
          * @return This builder, for chaining.
          */
-        fun configureDashboardOverrides(
+        public fun configureDashboardOverrides(
             action: DashboardOptionsConfig.Builder.() -> DashboardOptionsConfig.Builder
-        ) = apply {
+        ): Builder = apply {
             config = config.copy(dashboardOptionsConfig = action(DashboardOptionsConfig.Builder()).build())
         }
 
@@ -145,7 +154,7 @@ data class EndpointConfiguration(
          * Sets the version this endpoint is currently set to. A change in the version code will
          * automatically clear any caches on the device associated with this endpoint.
          */
-        fun setVersionCode(code: Int) = apply {
+        public fun setVersionCode(code: Int): Builder = apply {
             config = config.copy(versionCode = code)
         }
 
@@ -160,7 +169,7 @@ data class EndpointConfiguration(
          * @param regex The regular expression to match against the full request URI.
          */
         @Suppress("unused")
-        fun setPattern(regex: String) = apply {
+        public fun setPattern(regex: String): Builder = apply {
             config = config.copy(endpointMatcher = {
                 regex.toRegex().matches(uri)
             })
@@ -171,7 +180,7 @@ data class EndpointConfiguration(
          *
          * @param matcher Used to map an incoming network request to the correct endpoint.
          */
-        fun setPatternMatcher(matcher: suspend MockzillaHttpRequest.() -> Boolean) = apply {
+        public fun setPatternMatcher(matcher: suspend MockzillaHttpRequest.() -> Boolean): Builder = apply {
             config = config.copy(endpointMatcher = matcher)
         }
 
@@ -180,7 +189,7 @@ data class EndpointConfiguration(
          *
          * @return [EndpointConfiguration]
          */
-        fun build() = config
+        public fun build(): EndpointConfiguration = config
     }
 }
 
@@ -194,13 +203,26 @@ data class EndpointConfiguration(
  * @property body The response body as a string.
  */
 @Serializable
-data class MockzillaHttpResponse(
+public data class MockzillaHttpResponse(
     @Serializable(with = HttpStatusCodeSerializer::class)
     val statusCode: HttpStatusCode = HttpStatusCode.OK,
     val headers: Map<String, String> = emptyMap(),
     val body: String = "",
 ) {
-    fun toPartial() = PartialMockzillaHttpResponse(statusCode, headers, body)
+    public fun toPartial(): PartialMockzillaHttpResponse = PartialMockzillaHttpResponse(statusCode, headers, body)
+
+    public companion object {
+        /**
+         * Creates a response with JSON content type and 200 success code for a given body
+         *
+         * @param body The response body as a string.
+         * @return
+         */
+        public fun successJson(body: String = ""): MockzillaHttpResponse = MockzillaHttpResponse(
+            body = body,
+            headers = mapOf(HttpHeaders.ContentType to "application/json")
+        )
+    }
 }
 
 /**
@@ -212,40 +234,40 @@ data class MockzillaHttpResponse(
  * @property body The response body override, or `null` to leave unchanged.
  */
 @Serializable
-data class PartialMockzillaHttpResponse(
+public data class PartialMockzillaHttpResponse(
     @Serializable(with = HttpStatusCodeSerializer::class)
     val statusCode: HttpStatusCode? = null,
     val headers: Map<String, String>? = null,
     val body: String? = null
 )
 
-interface MockzillaHttpRequest {
+public interface MockzillaHttpRequest {
     /**
      * The full uri of the network request
      */
-    val uri: String
+    public val uri: String
 
     /**
      * Network request's headers
      */
-    val headers: Map<String, String>
+    public val headers: Map<String, String>
 
     /**
      * Network request method
      */
-    val method: HttpMethod
+    public val method: HttpMethod
 
     /**
      * @return The request body as a ByteArray. Probably only useful for non-string request payload.
      * Most use cases probably should use [bodyAsString]
      * It's safe to call this method multiple times.
      */
-    suspend fun bodyAsBytes(): ByteArray
+    public suspend fun bodyAsBytes(): ByteArray
 
     /**
      * @return The request body as a string. It's safe to call this method multiple times.
      */
-    suspend fun bodyAsString(): String
+    public suspend fun bodyAsString(): String
 }
 
 /**
@@ -261,7 +283,7 @@ interface MockzillaHttpRequest {
 @Suppress("KDOC_NO_CONSTRUCTOR_PROPERTY_WITH_COMMENT")
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
-data class DashboardOptionsConfig(
+public data class DashboardOptionsConfig(
     @Deprecated("Error Presets will be removed in a future version")
     // No longer used, still included for backward compatibility
     val errorPresets: List<DashboardOverridePreset>,
@@ -273,9 +295,9 @@ data class DashboardOptionsConfig(
     /**
      * The list of preset responses available in the dashboard for this endpoint.
      */
-    val presets get() = successPresets
+    public val presets: List<DashboardOverridePreset> get() = successPresets
 
-    class Builder {
+    public class Builder {
         private val presets = mutableListOf<DashboardOverridePreset>()
 
         /**
@@ -288,12 +310,12 @@ data class DashboardOptionsConfig(
          * response status code when `null`.
          * @return This builder, for chaining.
          */
-        fun addPreset(
+        public fun addPreset(
             response: MockzillaHttpResponse,
             name: String? = null,
             description: String? = null,
             type: DashboardOverridePreset.Type? = null
-        ) = addPreset(response.toPartial(), name, description, type)
+        ): Builder = addPreset(response.toPartial(), name, description, type)
 
         /**
          * Adds a partial preset response option to the dashboard for this endpoint. Only fields
@@ -306,12 +328,12 @@ data class DashboardOptionsConfig(
          * response status code when `null`.
          * @return This builder, for chaining.
          */
-        fun addPreset(
+        public fun addPreset(
             response: PartialMockzillaHttpResponse,
             name: String? = null,
             description: String? = null,
             type: DashboardOverridePreset.Type? = null
-        ) = presets.add(
+        ): Builder = presets.add(
             DashboardOverridePreset(
                 name ?: "Preset ${presets.count() + 1}",
                 description,
@@ -323,22 +345,22 @@ data class DashboardOptionsConfig(
         @Deprecated(
             "Separate success/error presets are no longer supported",
             replaceWith = ReplaceWith("addPreset"))
-        fun addSuccessPreset(
+        public fun addSuccessPreset(
             response: MockzillaHttpResponse,
             name: String? = null,
             description: String? = null
-        ) = addPreset(response, name, description)
+        ): Builder = addPreset(response, name, description)
 
         @Deprecated(
             "Separate success/error presets are no longer supported",
             replaceWith = ReplaceWith("addPreset"))
-        fun addErrorPreset(
+        public fun addErrorPreset(
             response: MockzillaHttpResponse,
             name: String? = null,
             description: String? = null
-        ) = addPreset(response, name, description)
+        ): Builder = addPreset(response, name, description)
 
-        fun build() = DashboardOptionsConfig(errorPresets = emptyList(), presets)
+        public fun build(): DashboardOptionsConfig = DashboardOptionsConfig(errorPresets = emptyList(), presets)
     }
 }
 
@@ -356,7 +378,7 @@ data class DashboardOptionsConfig(
  * [EndpointConfiguration.Builder.configureDashboardOverrides].
  */
 @Serializable
-data class DashboardOverridePreset(
+public data class DashboardOverridePreset(
     val name: String,
     val description: String?,
     val type: Type?,
@@ -368,7 +390,7 @@ data class DashboardOverridePreset(
      * display presets with appropriate styling.
      */
     @Serializable
-    enum class Type {
+    public enum class Type {
         ClientError,
         Informational,
         Other,
@@ -377,8 +399,8 @@ data class DashboardOverridePreset(
         Success,
         ;
 
-        companion object {
-            fun fromString(str: String) = when (str) {
+        public companion object {
+            public fun fromString(str: String): Type? = when (str) {
                 "ClientError" -> ClientError
                 "Informational" -> Informational
                 "Other" -> Other

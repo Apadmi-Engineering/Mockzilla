@@ -1,19 +1,62 @@
 package com.apadmi.mockzilla.ui.ui.common.utils
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_1xx
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_2xx
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_3xx
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_4xx
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatusCode_5xx
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+import com.apadmi.mockzilla.ui.ui.common.theme.darkError
+import com.apadmi.mockzilla.ui.ui.common.theme.darkMethodPatch
+import com.apadmi.mockzilla.ui.ui.common.theme.darkOnSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.darkSuccess
+import com.apadmi.mockzilla.ui.ui.common.theme.darkWarning
+import com.apadmi.mockzilla.ui.ui.common.theme.methodDelete
+import com.apadmi.mockzilla.ui.ui.common.theme.methodGet
+import com.apadmi.mockzilla.ui.ui.common.theme.methodOther
+import com.apadmi.mockzilla.ui.ui.common.theme.methodPatch
+import com.apadmi.mockzilla.ui.ui.common.theme.methodPost
+import com.apadmi.mockzilla.ui.ui.common.theme.methodPut
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.success
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
+
 import io.ktor.http.HttpStatusCode
 
+@InternalMockzillaApi
 @Suppress("MAGIC_NUMBER")
-fun HttpStatusCode.color() = when (this.value) {
-    in 100..199 -> httpStatusCode_1xx
-    in 200..299 -> httpStatusCode_2xx
-    in 300..399 -> httpStatusCode_3xx
-    in 400..499 -> httpStatusCode_4xx
-    in 500..599 -> httpStatusCode_5xx
-    else -> Color.Black
+@Composable
+public fun HttpStatusCode.color(): Color = when (this.value) {
+    in 100..199 -> MaterialTheme.colorScheme.tertiary
+    in 200..299 -> MaterialTheme.colorScheme.success.primary
+    in 300..399 -> MaterialTheme.colorScheme.tertiary
+    in 400..499 -> MaterialTheme.colorScheme.warning.primary
+    in 500..599 -> MaterialTheme.colorScheme.error
+    else -> MaterialTheme.colorScheme.onSurfaceMuted
+}
+
+/**
+ * Non-composable variant for use in Canvas draw scopes. Uses dark-theme defaults.
+ *
+ * @return
+ */
+@InternalMockzillaApi
+@Suppress("MAGIC_NUMBER")
+public fun HttpStatusCode.colorStatic(): Color = when (this.value) {
+    in 100..199 -> darkMethodPatch
+    in 200..299 -> darkSuccess
+    in 300..399 -> darkMethodPatch
+    in 400..499 -> darkWarning
+    in 500..599 -> darkError
+    else -> darkOnSurfaceMuted
+}
+
+@InternalMockzillaApi
+@Suppress("MAGIC_NUMBER")
+@Composable
+public fun String.methodColor(): Color = when (this.uppercase()) {
+    "GET" -> MaterialTheme.colorScheme.methodGet
+    "POST" -> MaterialTheme.colorScheme.methodPost
+    "PUT" -> MaterialTheme.colorScheme.methodPut
+    "PATCH" -> MaterialTheme.colorScheme.methodPatch
+    "DELETE" -> MaterialTheme.colorScheme.methodDelete
+    else -> MaterialTheme.colorScheme.methodOther
 }

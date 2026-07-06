@@ -13,9 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) {
+public actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) {
     if (text.isBlank()) {
         content()
         return

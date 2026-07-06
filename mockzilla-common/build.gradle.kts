@@ -22,6 +22,8 @@ plugins {
 val artifactName = "mockzilla-common"
 
 kotlin {
+    explicitApi()
+
     // Managed automatically by release-please PRs
     version = project.injectedVersion() ?: "3.0.0" // x-release-please-version
     androidTarget {

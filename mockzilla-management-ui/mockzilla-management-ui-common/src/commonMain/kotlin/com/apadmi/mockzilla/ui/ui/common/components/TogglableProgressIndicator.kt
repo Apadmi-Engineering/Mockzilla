@@ -1,4 +1,5 @@
 @file:Suppress("MAGIC_NUMBER", "FLOAT_IN_ACCURATE_CALCULATIONS")
+@file:NoKDoc
 
 package com.apadmi.mockzilla.ui.ui.common.components
 
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.apadmi.mockzilla.lib.NoKDoc
 import kotlin.math.abs
 
 private const val linearAnimationDuration = 800
@@ -84,11 +86,9 @@ private fun DrawScope.drawLinearIndicator(
  * Based heavily on Comose LinearProgressIndicator
  *
  * @param isLoading Whether the indicator is active
- * @param modifier
  * @param color Pulse color
  * @param trackColor Color of the background
- * @param strokeCap
- * @param gapSize
+ * @param delayMs Milliseconds before animation starts
  */
 @Composable
 internal fun TogglableProgressIndicator(
@@ -97,17 +97,20 @@ internal fun TogglableProgressIndicator(
     color: Color = MaterialTheme.colorScheme.primary,
     trackColor: Color = MaterialTheme.colorScheme.surfaceVariant,
     strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+    delayMs: Int = 0,
     gapSize: Dp = 4.dp
 ) {
     // Material spec timing constants
     val firstLineHead = rememberPausableAnimation(shouldContinue = isLoading, keyframes {
         durationMillis = linearAnimationDuration
+        delayMillis = delayMs
         0f at firstLineHeadDelay using firstLineHeadEasing
         1f at firstLineHeadDuration + firstLineHeadDelay
     })
 
     val firstLineTail = rememberPausableAnimation(shouldContinue = isLoading, keyframes {
         durationMillis = linearAnimationDuration
+        delayMillis = delayMs
         0f at firstLineTailDelay using firstLineTailEasing
         1f at firstLineTailDuration + firstLineTailDelay
     })

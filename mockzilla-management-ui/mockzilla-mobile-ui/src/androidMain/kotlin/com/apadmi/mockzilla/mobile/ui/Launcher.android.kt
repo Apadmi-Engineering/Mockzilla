@@ -2,13 +2,14 @@ package com.apadmi.mockzilla.mobile.ui
 
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat.startActivity
+import androidx.core.app.ActivityOptionsCompat
+
 import com.apadmi.mockzilla.MockzillaManagementSdkActivity
 
-fun launchManagementUi(context: Context) = context.startActivity(
+public fun launchManagementUi(context: Context): Unit = context.startActivity(
     Intent(
         context,
-        MockzillaManagementSdkActivity::class.java
+        MockzillaManagementSdkActivity::class.java,
     ),
-    null
+    ActivityOptionsCompat.makeCustomAnimation(context, 0, 0).toBundle(),
 )

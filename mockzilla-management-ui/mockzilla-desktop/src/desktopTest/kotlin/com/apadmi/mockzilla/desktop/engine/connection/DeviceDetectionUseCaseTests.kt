@@ -1,5 +1,8 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.engine.connection
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.testutils.CoroutineTest
@@ -14,7 +17,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @Suppress("MAGIC_NUMBER", "TOO_LONG_FUNCTION")
-class DeviceDetectionUseCaseTests : CoroutineTest() {
+internal class DeviceDetectionUseCaseTests : CoroutineTest() {
     @RelaxedMockK
     lateinit var adbConnectorServiceMock: AdbConnectorService
 
@@ -32,12 +35,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     DeviceDiscoveryEvent.State.Found
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(IpAddress("a")),
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidDevice),
                     port = 8080,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -52,12 +56,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     DeviceDiscoveryEvent.State.Found
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(IpAddress("a")),
                     metaData = null,
                     port = 8080,
                     adbConnection = null,
+                    prettyName = "connection name",
                     state = DetectedDevice.State.Resolving
                 )
             ),
@@ -72,12 +77,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     DeviceDiscoveryEvent.State.Found
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(IpAddress("b")),
                     metaData = null,
                     port = 8_087_854,
                     adbConnection = null,
+                    prettyName = "connection name",
                     state = DetectedDevice.State.Resolving
                 )
             ),
@@ -92,12 +98,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     DeviceDiscoveryEvent.State.Resolved
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(IpAddress("b")),
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosDevice),
                     port = 8_087_854,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -113,7 +120,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                 ),
                 isLocalIpAddress = true,
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(
                         "b",
@@ -122,6 +129,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosSimulator),
                     port = 8_087_854,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -137,7 +145,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                 ),
                 isLocalIpAddress = false,
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf(
                         "b",
@@ -146,6 +154,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosSimulator),
                     port = 1_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.NotYourSimulator
                 )
             ),
@@ -165,7 +174,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     ipAddresses = listOf(IpAddress("some local machine ip address"))
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("some local machine ip address").map { IpAddress(it) },
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator),
@@ -175,6 +184,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                         true,
                         listOf(IpAddress("some local machine ip address"))
                     ),
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -194,12 +204,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
                     ipAddresses = listOf(IpAddress("some local machine ip address"))
                 ),
                 expectedResult = DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = listOf("some remote machine ip address").map { IpAddress(it) },
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator),
                     port = 13_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.NotYourSimulator
                 )
             )
@@ -250,12 +261,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         assertEquals(
             expected = listOf(
                 DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = emptyList(),
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosDevice),
                     port = 13_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.ReadyToConnect
                 )
             ),
@@ -264,12 +276,13 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         assertEquals(
             expected = listOf(
                 DetectedDevice(
-                    connectionName = "connection name",
+                    connectionId = "connection name",
                     hostAddress = "host",
                     hostAddresses = emptyList(),
                     metaData = MetaData.dummy().copy(runTarget = RunTarget.IosDevice),
                     port = 13_111_111,
                     adbConnection = null,
+                    prettyName = "Jannie Bates (erat)",
                     state = DetectedDevice.State.Removed
                 )
             ),
@@ -309,7 +322,11 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
     @Test
     fun `onChangedServiceEvent - ADB path - discovered emulator - creates ReadyToConnect device at loopback`() = runBlockingTest {
         val adbConnection = AdbConnection("emulator-5554", true, emptyList())
-        val metaData = MetaData.dummy().copy(runTarget = RunTarget.AndroidEmulator)
+        val metaData = MetaData.dummy().copy(
+            appName = "app-name",
+            deviceModel = "device-model",
+            runTarget = RunTarget.AndroidEmulator
+        )
         val sut = DeviceDetectionUseCaseImpl({ false }, adbConnectorServiceMock)
 
         sut.onChangedServiceEvent(DeviceDiscoveryEvent(
@@ -325,7 +342,8 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
 
         assertEquals(
             expected = listOf(DetectedDevice(
-                connectionName = "adb:emulator-5554:8080",
+                connectionId = "adb:emulator-5554:8080",
+                prettyName = "app-name (device-model)",
                 metaData = metaData,
                 hostAddress = "127.0.0.1",
                 hostAddresses = listOf(IpAddress("127.0.0.1")),
@@ -389,7 +407,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
 
         // ADB evicts the mDNS entry and takes over
         assertEquals(1, sut.devices.size)
-        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionName)
+        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionId)
         assertEquals("127.0.0.1", sut.devices.single().hostAddress)
     }
 
@@ -417,7 +435,8 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
 
         assertEquals(
             expected = listOf(DetectedDevice(
-                connectionName = "adb:emulator-5554:8080",
+                connectionId = "adb:emulator-5554:8080",
+                prettyName = "${metaData.appName} (${metaData.deviceModel})",
                 metaData = metaData,
                 hostAddress = "127.0.0.1",
                 hostAddresses = listOf(IpAddress("127.0.0.1")),
@@ -478,7 +497,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         // mDNS event discarded — ADB entry unchanged
         assertEquals(expected = afterAdb, actual = sut.devices)
         assertEquals(1, sut.devices.size)
-        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionName)
+        assertEquals("adb:emulator-5554:8080", sut.devices.single().connectionId)
     }
 
     @Test
@@ -537,14 +556,7 @@ class DeviceDetectionUseCaseTests : CoroutineTest() {
         )
     }
 
-    /**
-     * @property caseDescription
-     * @property info
-     * @property mockAdbConnection
-     * @property isLocalIpAddress
-     * @property expectedResult
-     */
-    data class ChangedServiceEventTestCase(
+    internal data class ChangedServiceEventTestCase(
         val caseDescription: String,
         val info: DeviceDiscoveryEvent,
         val mockAdbConnection: AdbConnection? = null,

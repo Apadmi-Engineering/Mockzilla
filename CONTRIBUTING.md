@@ -68,6 +68,8 @@ compilerOptions {
 
 **For `expect`/`actual` declarations:** The annotation must be present on both the `expect` declaration and **every** `actual` declaration across all platforms. Missing one platform will cause a compile error.
 
+**Exception — `mockzilla-management-ui-common`:** This module is shared UI logic consumed only by `mockzilla-desktop` and `mockzilla-mobile-ui` in this repo; it has no intended external API surface at all, so virtually every `public` declaration is annotated with `@InternalMockzillaApi` regardless of package. Declarations here are **not** required to live in a `*.internal.*` package to receive the annotation — the `*.internal.*` rule above is the general convention for modules that do have a real public surface, not a hard requirement everywhere.
+
 ## Spotless
 
 We use Spotless to reformat and organise all of our library code. It runs automatically on compilation so please ensure you've compiled your code before submitting a pull request.

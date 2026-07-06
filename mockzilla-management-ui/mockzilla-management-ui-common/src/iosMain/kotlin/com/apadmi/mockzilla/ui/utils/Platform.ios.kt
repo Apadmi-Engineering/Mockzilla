@@ -1,6 +1,6 @@
 package com.apadmi.mockzilla.ui.utils
 
-actual enum class Platform {
+internal actual enum class Platform {
     Android,
     Desktop,
     Ios,

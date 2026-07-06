@@ -1,14 +1,20 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.deriveLegacyPreset
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -30,7 +36,7 @@ internal class EndpointDetailsViewModel(
     private val eventBus: EventBus,
     scope: CoroutineScope? = null
 ) : ViewModel(scope) {
-    val state = MutableStateFlow<State>(State.Empty)
+    val state = MutableStateFlow<State>(State.Loading)
     private var delayDebounceJob: Job? = null
 
     init {
@@ -45,50 +51,83 @@ internal class EndpointDetailsViewModel(
         viewModelScope.launch { reloadData() }
     }
 
-    @Suppress("TOO_LONG_FUNCTION")
+    internal fun retry() = viewModelScope.launch { reloadData() }
+
     private suspend fun reloadData() {
-        val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
-            endpoint.firstOrNull { it.key == key }
+        val endpointResult = endpointsService.fetchAllEndpointConfigs(device).map { endpoints ->
+            endpoints.firstOrNull { it.key == key }
         }
 
-        state.value = endpoint.fold(
-            onSuccess = { config ->
-                config?.let {
-                    endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
-                        onSuccess = { presets ->
-                            val currentState = state.value
-                            val filter = (currentState as? State.Endpoint)?.presets?.filter
-                            State.Endpoint(
-                                config = config,
-                                fail = config.shouldFail,
-                                delayMillis = config.delayMs,
-                                isLoading = false,
-                                presets = State.Endpoint.Presets(
-                                    appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
-                                        // Remove all this once deprecated properties are removed
-                                        it.response == config.deriveLegacyPreset()?.response
-                                    } ?: config.deriveLegacyPreset(),
-                                    visiblePresets = presets.presets.filter(filter),
-                                    allPresets = presets.presets,
-                                    filter = filter ?: ""
-                                ),
-                            )
-                        },
-                        onFailure = { State.Empty }
+        key ?: run {
+            state.value = State.Empty
+            return
+        }
+
+        val config = endpointResult.getOrElse {
+            eventBus.send(
+                Event.GenericError(
+                    GenericErrorableOperation.FetchEndpointConfigs,
+                    it
+                )
+            )
+            state.value = State.FailedToLoad
+            return
+        } ?: run {
+            state.value = State.FailedToLoad
+            return
+        }
+
+        val currentState = state.value as? State.Endpoint
+        state.value = State.Endpoint(
+            config = config,
+            fail = config.shouldFail,
+            delayMillis = config.delayMs,
+            isLoading = false,
+            layoutMode = currentState?.layoutMode ?: RowDensity.Compact,
+            presets = currentState?.presets ?: State.Endpoint.Presets.Loading
+        )
+
+        loadPresets(config)
+    }
+
+    private suspend fun loadPresets(config: SerializableEndpointConfig) {
+        endpointsService.fetchDashboardOptionsConfig(device, config.key).fold(
+            onSuccess = { presets ->
+                val currentState = state.value as? State.Endpoint ?: return
+                val filter = (currentState.presets as? State.Endpoint.Presets.Populated)?.filter
+                state.value = currentState.copy(
+                    presets = State.Endpoint.Presets.Populated(
+                        appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
+                            it.response == config.deriveLegacyPreset()?.response
+                        } ?: config.deriveLegacyPreset(),
+                        visiblePresets = presets.presets.filter(filter),
+                        allPresets = listOfNotNull(
+                            config.appliedPresetOverride?.takeIf { it.isManagementUiDefinedCustomPreset }
+                        ) + presets.presets,
+                        filter = filter ?: ""
                     )
-                } ?: State.Empty
+                )
             },
             onFailure = {
-                eventBus.send(EventBus.Event.GenericError)
-                State.Empty
+                val currentState = state.value as? State.Endpoint ?: return
+                eventBus.send(
+                    Event.GenericError(
+                        GenericErrorableOperation.FetchDashboardOptionsConfig,
+                        it
+                    )
+                )
+                state.value = currentState.copy(presets = State.Endpoint.Presets.Error)
             }
         )
     }
 
-    private fun <T> handleResult(result: Result<T>) = result.onSuccess {
+    private fun <T> handleResult(
+        result: Result<T>,
+        operation: GenericErrorableOperation = GenericErrorableOperation.UpdateMockData
+    ) = result.onSuccess {
         key?.let { eventBus.send(EventBus.Event.EndpointDataChanged(listOf(it))) }
     }.onFailure {
-        eventBus.send(EventBus.Event.GenericError)
+        eventBus.send(EventBus.Event.GenericError(operation, it))
     }
 
     private fun onPropertyChanged(
@@ -97,6 +136,8 @@ internal class EndpointDetailsViewModel(
     ) {
         setStateLoading()
         state.value = when (val state = state.value) {
+            is State.FailedToLoad,
+            is State.Loading,
             is State.Empty -> state
             is State.Endpoint -> {
                 updateServer(state.config, device)
@@ -146,9 +187,10 @@ internal class EndpointDetailsViewModel(
     fun onPresetSelected(
         dashboardOverridePreset: DashboardOverridePreset
     ) = onPropertyChanged({
-        copy(
-            presets = presets.copy(dashboardOverridePreset),
-        )
+        val newPresets = (presets as? State.Endpoint.Presets.Populated)?.let {
+            it.copy(appliedPreset = dashboardOverridePreset)
+        } ?: presets
+        copy(presets = newPresets)
     }, { config, device ->
         viewModelScope.launch {
             handleResult(
@@ -158,18 +200,24 @@ internal class EndpointDetailsViewModel(
                     dashboardOverridePreset
                 ).onSuccess {
                     eventBus.send(EventBus.Event.PresetApplied)
-                }
+                },
+                operation = GenericErrorableOperation.ApplyPreset
             )
         }
     })
 
     fun onFilterPresetChanged(filter: String): Unit = onPropertyChanged({
-        copy(
-            presets = presets.copy(
+        val newPresets = (presets as? State.Endpoint.Presets.Populated)?.let {
+            it.copy(
                 filter = filter,
-                visiblePresets = presets.allPresets.filter(filter)
+                visiblePresets = it.allPresets.filter(filter)
             )
-        )
+        } ?: presets
+        copy(presets = newPresets)
+    }, { _, _ -> })
+
+    fun onRowDensityChanged(layoutMode: RowDensity) = onPropertyChanged({
+        copy(layoutMode = layoutMode)
     }, { _, _ -> })
 
     private fun setStateLoading() {
@@ -178,34 +226,28 @@ internal class EndpointDetailsViewModel(
     }
 
     sealed class State {
+        data object Loading : State()
         data object Empty : State()
+        data object FailedToLoad : State()
 
-        /**
-         * @property config
-         * @property fail
-         * @property delayMillis
-         * @property presets
-         * @property isLoading
-         */
         data class Endpoint(
             val config: SerializableEndpointConfig,
             val fail: Boolean?,
             val delayMillis: Int?,
             val isLoading: Boolean,
+            val layoutMode: RowDensity,
             val presets: Presets,
         ) : State() {
-            /**
-             * @property appliedPreset
-             * @property visiblePresets
-             * @property allPresets
-             * @property filter
-             */
-            data class Presets(
-                val appliedPreset: DashboardOverridePreset?,
-                val visiblePresets: List<DashboardOverridePreset>,
-                val allPresets: List<DashboardOverridePreset>,
-                val filter: String
-            )
+            sealed class Presets {
+                data object Loading : Presets()
+                data object Error : Presets()
+                data class Populated(
+                    val appliedPreset: DashboardOverridePreset?,
+                    val visiblePresets: List<DashboardOverridePreset>,
+                    val allPresets: List<DashboardOverridePreset>,
+                    val filter: String
+                ) : Presets()
+            }
         }
     }
 }

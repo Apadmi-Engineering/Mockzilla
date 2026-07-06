@@ -1,16 +1,19 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.ui.devicetabs
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.ui.engine.device.Device
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 
-class DeviceTabsViewModel(
+internal class DeviceTabsViewModel(
     private val activeDeviceMonitor: ActiveDeviceMonitor,
     private val activeDeviceSelector: ActiveDeviceSelector,
     scope: CoroutineScope? = null
@@ -42,22 +45,20 @@ class DeviceTabsViewModel(
 
     private fun reloadData(selectedDevice: Device?) {
         state.value = State(devices = activeDeviceMonitor.allDevices.map {
-            State.DeviceTabEntry(it.name, it.device == selectedDevice, it.isConnected, it.device)
+            State.DeviceTabEntry(
+                it.metaData.appName,
+                it.metaData.deviceModel,
+                it.device == selectedDevice,
+                it.isConnected,
+                it.device
+            )
         })
     }
 
-    /**
-     * @property devices
-     */
     data class State(val devices: List<DeviceTabEntry>) {
-        /**
-         * @property name
-         * @property isActive
-         * @property isConnected
-         * @property underlyingDevice
-         */
         data class DeviceTabEntry(
-            val name: String,
+            val appName: String,
+            val deviceName: String,
             val isActive: Boolean,
             val isConnected: Boolean,
             val underlyingDevice: Device

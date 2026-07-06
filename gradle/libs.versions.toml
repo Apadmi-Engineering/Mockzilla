@@ -55,9 +55,12 @@ turbine = "1.2.1" # https://github.com/cashapp/turbine
 junit = "1.3.0" # https://developer.android.com/jetpack/androidx/releases/test
 testParamInjector = "1.22" # https://github.com/google/TestParameterInjector
 
-# Conveyor
+# Publishing
 conveyor = "1.12" # https://github.com/hydraulic-software/conveyor
 vanniktech-publish = "0.36.0" # https://github.com/vanniktech/gradle-maven-publish-plugin
+
+# License attribution
+aboutlibraries = "15.0.3" # https://github.com/mikepenz/AboutLibraries/releases
 
 [libraries]
 
@@ -125,6 +128,9 @@ turbine = { module="app.cash.turbine:turbine", version.ref = "turbine" }
 lyricist-library = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
 lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", version.ref = "lyricist" }
 
+# License attribution
+aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
+
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -140,3 +146,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 buildKonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildKonfig" }
 conveyor = { id = "dev.hydraulic.conveyor", version.ref = "conveyor" }
 vanniktechPublish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-publish" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }

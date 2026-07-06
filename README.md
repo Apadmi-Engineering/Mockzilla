@@ -1,12 +1,16 @@
 # Mockzilla
-![Deployment](https://github.com/Apadmi-Engineering/Mockzilla/actions/workflows/action_deploy_binaries.yml/badge.svg)
 
+[![Deployment](https://github.com/Apadmi-Engineering/Mockzilla/actions/workflows/action_deploy_binaries.yml/badge.svg)](https://github.com/Apadmi-Engineering/Mockzilla/actions/workflows/action_deploy_binaries.yml)
+[![License](https://img.shields.io/github/license/Apadmi-Engineering/Mockzilla)](LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/com.apadmi/mockzilla)](https://central.sonatype.com/artifact/com.apadmi/mockzilla)
+[![Pub Version](https://img.shields.io/pub/v/mockzilla)](https://pub.dev/packages/mockzilla)
+[![Docs](https://img.shields.io/badge/docs-mockzilla.apadmi.dev-4ECED8)](https://mockzilla.apadmi.dev/)
 
 ## What is Mockzilla?
 
-A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your iOS, Android or [KMM](https://kotlinlang.org/docs/multiplatform-mobile-getting-started.html) application.
+A solution for running and configuring a local HTTP server to mimic REST API endpoints used by your Android, iOS, Flutter, or [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) application.
 
-The source code is written in Kotlin but is fully compatible with a Swift environment too!
+The source code is written in Kotlin but is fully compatible with Swift, Dart bindings are also provided!
 
 ## Advantages
 
@@ -14,14 +18,31 @@ The source code is written in Kotlin but is fully compatible with a Swift enviro
 
 ✅ HTTP client agnostic.
 
-✅ Works completely offline
+✅ Works completely offline.
 
 ✅ Entirely self-contained in your application's codebase.
 
+✅ Edit responses live from a [desktop app](https://mockzilla.apadmi.dev/desktop/overview/) or an [in-app overlay](https://mockzilla.apadmi.dev/mobile_ui/) — no rebuild required.
+
+✅ [Presets](https://mockzilla.apadmi.dev/presets/) for one-tap switching between success, error, and edge-case responses.
+
+## Control mocks live, while your app runs 🎛️
+
+Beyond defining mocks in code, Mockzilla ships two ways to change what's returned *while your app is running* — force an endpoint to fail, add artificial latency, or apply a preset, all without touching code or rebuilding:
+
+- **[Mockzilla Desktop](https://mockzilla.apadmi.dev/desktop/overview/)**: A companion app that connects to your device over Wifi.
+- **[Mockzilla Mobile UI](https://mockzilla.apadmi.dev/mobile_ui/)**: An overlay you embed directly in your app.
+
+![alt text](docs/docs/img/controls-ui.png "Desktop app and embedded UI")
 
 ## Quick Start 🚀
 
-Please see our quick start guide and full documentation [here](https://mockzilla.apadmi.dev/).
+Head to the [quick start guide](https://mockzilla.apadmi.dev/quick-start/) to get up and running, or jump straight to a specific topic:
+
+- [Configuring Endpoints](https://mockzilla.apadmi.dev/endpoints/)
+- [Mockzilla Desktop](https://mockzilla.apadmi.dev/desktop/overview/)
+- [Mockzilla Mobile UI](https://mockzilla.apadmi.dev/mobile_ui/)
+- [Presets](https://mockzilla.apadmi.dev/presets/)
 
 ## Why's it useful? 🙌
 
@@ -62,10 +83,14 @@ val myEndpoint = EndpointConfiguration.Builder("hello-world")
     }
 ```
 
-## Important Note 🛑 
+## Important Note 🛑
 
-Mockzilla is designed as a development and test tool **only**. 
+Mockzilla is designed as a development and test tool **only**.
 
-Mockzilla should **never be used in production**. Its traffic is unprotected and by nature of running a server on device, it can introduce security issues. 
+Mockzilla should **never be used in production**. Its traffic is unprotected and by nature of running a server on device, it can introduce security issues.
 
 **Do not ship it to production**.
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get set up.

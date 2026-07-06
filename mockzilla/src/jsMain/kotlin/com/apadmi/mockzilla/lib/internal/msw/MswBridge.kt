@@ -8,86 +8,86 @@ import kotlin.js.Promise
 @InternalMockzillaApi
 @JsModule("msw/browser")
 @JsNonModule
-external object MswBrowser {
-    fun setupWorker(vararg handlers: RestHandler): ServiceWorkerInstance
+public external object MswBrowser {
+    public fun setupWorker(vararg handlers: RestHandler): ServiceWorkerInstance
 }
 
 @InternalMockzillaApi
 @JsModule("msw")
 @JsNonModule
-external object Msw {
-    val http: Rest
+public external object Msw {
+    public val http: Rest
 }
 
 @InternalMockzillaApi
-external object Rest {
-    fun all(
+public external object Rest {
+    public fun all(
         path: String,
         resolver: (resolver: ResponseResolverInfo) -> Promise<Response>
     ): RestHandler
 
-    fun get(
+    public fun get(
         path: String,
         resolver: (resolver: ResponseResolverInfo) -> Promise<Response>
     ): RestHandler
 
-    fun post(
+    public fun post(
         path: String,
         resolver: (resolver: ResponseResolverInfo) -> Promise<Response>
     ): RestHandler
 
-    fun put(
+    public fun put(
         path: String,
         resolver: (resolver: ResponseResolverInfo) -> Promise<Response>
     ): RestHandler
 
-    fun patch(
+    public fun patch(
         path: String,
         resolver: (resolver: ResponseResolverInfo) -> Promise<Response>
     ): RestHandler
 
-    fun delete(
+    public fun delete(
         path: String,
         resolver: (resolver: ResponseResolverInfo) -> Promise<Response>
     ): RestHandler
 
-    fun options(
+    public fun options(
         path: String,
         resolver: (resolver: ResponseResolverInfo) -> Promise<Response>
     ): RestHandler
 }
 
 @InternalMockzillaApi
-external interface ResponseResolverInfo {
-    val request: Request
-    val requestId: String
+public external interface ResponseResolverInfo {
+    public val request: Request
+    public val requestId: String
 }
 
 @InternalMockzillaApi
-external interface DefaultContext {
-    fun status(status: Int): dynamic
-    fun json(body: Any): dynamic
-    fun text(body: String): dynamic
+public external interface DefaultContext {
+    public fun status(status: Int): dynamic
+    public fun json(body: Any): dynamic
+    public fun text(body: String): dynamic
 }
 
 @InternalMockzillaApi
-external interface StartServiceWorkerOptions {
-    var onUnhandledRequest: String
+public external interface StartServiceWorkerOptions {
+    public var onUnhandledRequest: String
 }
 
 @InternalMockzillaApi
-external interface ServiceWorkerInstance {
-    val context: ServiceWorkerContext
-    fun start(options: StartServiceWorkerOptions): Promise<Unit>
-    fun use(vararg handlers: RestHandler): Promise<Unit>
-    fun resetHandlers(): Promise<Unit>
-    fun stop(): Promise<Unit>
+public external interface ServiceWorkerInstance {
+    public val context: ServiceWorkerContext
+    public fun start(options: StartServiceWorkerOptions): Promise<Unit>
+    public fun use(vararg handlers: RestHandler): Promise<Unit>
+    public fun resetHandlers(): Promise<Unit>
+    public fun stop(): Promise<Unit>
 }
 
 @InternalMockzillaApi
-external interface ServiceWorkerContext {
-    val isMockingEnabled: Boolean
+public external interface ServiceWorkerContext {
+    public val isMockingEnabled: Boolean
 }
 
 @InternalMockzillaApi
-external interface RestHandler
+public external interface RestHandler

@@ -3,6 +3,7 @@
 package com.apadmi.mockzilla.lib
 
 import com.apadmi.mockzilla.BuildKonfig
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.stopServer
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
@@ -25,7 +26,7 @@ import kotlinx.coroutines.runBlocking
  * @param config The config with which to initialise mockzilla.
  * @return runtimeParams Configuration of the mockzilla runtime environment
  */
-fun startMockzilla(
+public fun startMockzilla(
     appName: String,
     appVersion: String,
     config: MockzillaConfig,
@@ -41,7 +42,8 @@ fun startMockzilla(
             runTarget = RunTarget.Jvm,
             mockzillaVersion = BuildKonfig.VERSION_NAME
         ),
-        FileIo(Files.createTempDirectory("").toFile())
+        FileIo(Files.createTempDirectory("").toFile()),
+        platformConfig = PlatformConfig(),
     ) {
         object : ZeroConfDiscoveryService {
             override suspend fun makeDiscoverable(metaData: MetaData, port: Int) {
@@ -59,6 +61,6 @@ fun startMockzilla(
  * Stops the running Mockzilla server.
  *
  */
-actual fun stopMockzilla() = runBlocking {
+public actual fun stopMockzilla(): Unit = runBlocking {
     stopServer()
 }

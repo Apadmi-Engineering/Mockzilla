@@ -1,11 +1,11 @@
-# Browserstack
+# BrowserStack
 
 ## iOS
-Mockzilla should work out of the box on iOS with Browserstack.
+Mockzilla should work out of the box on iOS with BrowserStack.
 
 ## Android
 
-Browserstack seems to proxy local traffic by default. In your client app you'll need to bypass any proxy.
+BrowserStack seems to proxy local traffic by default. In your client app you'll need to bypass any proxy.
 
 ### OkHttp Example
 

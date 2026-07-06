@@ -1,8 +1,10 @@
 package com.apadmi.mockzilla.ui.ui.widgets.monitorlogs
 
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
+import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
+import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceSelector
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.device.MonitorLogsUseCase
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsViewModel
@@ -14,6 +16,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Test
 
 import kotlin.test.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.yield
 
 internal class MonitorLogsViewModelTests : CoroutineTest() {
@@ -34,15 +39,18 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
     @RelaxedMockK
     lateinit var monitorLogsUseCase: MonitorLogsUseCase
 
+    @RelaxedMockK
+    lateinit var activeDeviceSelector: ActiveDeviceSelector
+
     private fun createSut() = MonitorLogsViewModel(
-        dummyActiveDevice, monitorLogsUseCase, testScope.backgroundScope
+        dummyActiveDevice, monitorLogsUseCase, activeDeviceSelector, testScope.backgroundScope
     )
 
     @Test
     fun `init - pulls latest data from monitor and updates state`() = runBlockingTest {
         /* Setup */
         coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }
-            .returns(Result.success(sequenceOf(dummyLogEvent)))
+            .returns(Result.success(MonitorLogsResponse(appPackage = "pkg", logs = listOf(dummyLogEvent))))
         val sut = createSut()
 
         /* Run Test */
@@ -50,13 +58,61 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
             /* Verify */
             assertEquals(
                 listOf(),
-                awaitItem().entries.toList()
+                awaitItem().entries
             )
             assertEquals(
                 listOf(dummyLogEvent),
-                awaitItem().entries.toList()
+                awaitItem().entries
             )
         }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `polling - after one failure - backs off to 1 second`() = runBlockingTest {
+        /* Setup */
+        var pollCount = 0
+        coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }.answers {
+            pollCount++
+            Result.failure(Exception())
+        }
+        createSut()
+        runCurrent()
+        assertEquals(1, pollCount)
+
+        /* Still within 1s backoff window */
+        advanceTimeBy(999)
+        assertEquals(1, pollCount)
+
+        /* Past 1s — second poll fires */
+        advanceTimeBy(2)
+        assertEquals(2, pollCount)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `polling - after two failures - backs off to 2 seconds`() = runBlockingTest {
+        /* Setup */
+        var pollCount = 0
+        coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }.answers {
+            pollCount++
+            Result.failure(Exception())
+        }
+        createSut()
+        runCurrent()
+        assertEquals(1, pollCount)
+
+        /* Past 1s — second poll fires, consecutiveFailures = 2 */
+        advanceTimeBy(1001)
+        assertEquals(2, pollCount)
+
+        /* Still within 2s backoff window */
+        advanceTimeBy(1999)
+        assertEquals(2, pollCount)
+
+        /* Past 2s — third poll fires */
+        advanceTimeBy(2)
+        assertEquals(3, pollCount)
     }
 
     @Test
@@ -64,7 +120,7 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
         /* Setup */
         var logs = arrayOf(dummyLogEvent)
         coEvery { monitorLogsUseCase.getMonitorLogs(dummyActiveDevice) }
-            .answers { Result.success(sequenceOf(*logs)) }
+            .answers { Result.success(MonitorLogsResponse(appPackage = "pkg", logs = logs.toList())) }
         coEvery { monitorLogsUseCase.clearMonitorLogs(dummyActiveDevice) }.answers {
             logs = arrayOf()
             Result.success(Unit)
@@ -79,11 +135,11 @@ internal class MonitorLogsViewModelTests : CoroutineTest() {
             /* Verify */
             assertEquals(
                 listOf(dummyLogEvent),
-                awaitItem().entries.toList()
+                awaitItem().entries
             )
             assertEquals(
                 listOf(),
-                awaitItem().entries.toList()
+                awaitItem().entries
             )
         }
     }

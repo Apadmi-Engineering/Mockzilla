@@ -12,13 +12,13 @@ import kotlinx.serialization.Serializable
  * @property port The port the server is bound to.
  */
 @Serializable
-data class MockzillaSharedProcessState(val ip: String, val port: Int)
+public data class MockzillaSharedProcessState(val ip: String, val port: Int)
 
 /**
  * Reads and writes [MockzillaSharedProcessState] to a file cache, allowing the Mockzilla server
  * and the management UI to exchange connection details when running on the same device.
  */
-class MockzillaSharedProcessStateHandler(private val fileIo: FileIo) {
+public class MockzillaSharedProcessStateHandler(private val fileIo: FileIo) {
     private val fileName = "mockzilla-shared-state.json"
     private var sharedState: MockzillaSharedProcessState? = null
 
@@ -29,7 +29,7 @@ class MockzillaSharedProcessStateHandler(private val fileIo: FileIo) {
      *
      * @return The shared process state, or `null` if unavailable.
      */
-    suspend fun getSharedProcessState() = sharedState ?: fileIo.readFromCache(fileName)?.let {
+    public suspend fun getSharedProcessState(): MockzillaSharedProcessState? = sharedState ?: fileIo.readFromCache(fileName)?.let {
         runCatching {
             JsonProvider.json.decodeFromString<MockzillaSharedProcessState>(it)
         }.getOrNull()
@@ -41,7 +41,7 @@ class MockzillaSharedProcessStateHandler(private val fileIo: FileIo) {
      *
      * @param state The server connection details to persist.
      */
-    suspend fun setSharedProcessState(state: MockzillaSharedProcessState) {
+    public suspend fun setSharedProcessState(state: MockzillaSharedProcessState) {
         sharedState = state
         fileIo.saveToCache(
             fileName,

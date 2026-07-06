@@ -23,6 +23,7 @@ plugins {
 val artifactName = "mockzilla-management-ui-common"
 
 kotlin {
+    explicitApi()
 
     version = project.injectedVersion() ?: "0.0.9" // x-release-please-version
 
@@ -68,6 +69,9 @@ kotlin {
 
             /* Coroutines */
             implementation(libs.kotlinx.coroutines.core)
+
+            /* Date / Time */
+            implementation(libs.kotlinx.datetime)
 
             /* JSON */
             implementation(libs.kotlinx.serialization.json)
