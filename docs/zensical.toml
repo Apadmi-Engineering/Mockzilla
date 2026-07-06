@@ -12,6 +12,7 @@ nav = [
   { Docs = [
     "quick-start.md",
     "endpoints.md",
+    "web.md",
     { Advanced = [
       "additional_config.md",
       "browser_stack.md",
@@ -29,7 +30,7 @@ nav = [
     { Documentation = "documentation.md" },
     { Flutter = "flutter_contributing.md" },
   ]},
-  { "Api Reference" = "./dokka/index.html" },
+  { "API Reference" = "./dokka/index.html" },
 ]
 
 [project.theme]

@@ -57,7 +57,7 @@ class MockzillaConfigValidatorTests {
             MockzillaConfig.Builder()
                 .addEndpoint(EndpointConfiguration
                     .Builder("id")
-                    .setMeanDelayMillis(-1)
+                    .setDelayMillis(-1)
                 )
                 .build(),
             "Delay mean must be in range 0 to ${Int.MAX_VALUE / 2 - 1}"
@@ -70,7 +70,7 @@ class MockzillaConfigValidatorTests {
             MockzillaConfig.Builder()
                 .addEndpoint(EndpointConfiguration
                     .Builder("id")
-                    .setMeanDelayMillis(Int.MAX_VALUE / 2 + 10)
+                    .setDelayMillis(Int.MAX_VALUE / 2 + 10)
                 )
                 .build(),
             "Delay mean must be in range 0 to ${Int.MAX_VALUE / 2 - 1}"

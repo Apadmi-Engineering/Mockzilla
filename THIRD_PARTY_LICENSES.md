@@ -6,7 +6,7 @@ Versions are intentionally omitted — this file covers all versions of each dep
 
 ---
 
-## 1. Kotlin / KMM Library
+## 1. Kotlin / KMP Library
 
 Dependencies bundled into the distributed Android AAR, iOS XCFramework, JVM jar, and JavaScript output.
 

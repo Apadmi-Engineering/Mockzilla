@@ -25,7 +25,7 @@ class MainViewModel(
 
         val cowResult = repository.getAnimal(urlSuffix = "cow", someRequestValue = someValue)
         val sheepResult = repository.getAnimal(
-            urlSuffix = "this-is-very/long/and/designed/to/cause/problems/in/logs/sheep",
+            urlSuffix = "sheep",
             someRequestValue = someValue
         )
         val pigResult = repository.getAnimal(urlSuffix = "pig", someRequestValue = someValue)
