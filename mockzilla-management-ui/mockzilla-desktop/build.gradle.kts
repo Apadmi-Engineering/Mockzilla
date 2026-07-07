@@ -217,7 +217,7 @@ aboutLibraries {
         configPath = file("licenses-config")
 
         // GitHub token to raise API request limit to allow fetching more licenses.
-        // Needed for fetching licenses at build time
+        // Needed for fetching licenses at build time.
         gitHubApiToken = githubToken()
 
         // Enable fetching of "remote" licenses.  Uses the API of supported source hosts

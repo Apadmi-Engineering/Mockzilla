@@ -33,7 +33,7 @@ val xcFrameworkName = "mockzillamobileui"
 kotlin {
     explicitApi()
 
-    // Managed automatically by release-please PRs
+    // Managed automatically by release-please PRs.
     version = project.injectedVersion() ?: "1.0.0" // x-release-please-version
 
     androidTarget()
