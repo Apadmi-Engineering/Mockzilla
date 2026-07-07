@@ -63,18 +63,18 @@ lane :download_mockzilla_js_assets do
         "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_web/pubspec.yaml",
          "mockzilla_js_version"
     )
-    download_and_unzip_release_asset(
-        "mockzilla-v#{version}",
-        "javascript_output.zip",
-         "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_web/lib/assets"
+    download_and_unzip_r2_object(
+        bucket: lane_context[:js_r2_bucket],
+        key: "mockzilla-v#{version}/javascript_output.zip",
+        unzip_dir: "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_web/lib/assets"
     )
 end
 
 lane :download_mockzilla_ui_mobile_js_assets do
     version = get_mobile_ui_version_name
-    download_and_unzip_release_asset(
-        "mockzilla-mobile-ui-v#{version}",
-        "javascript_output.zip",
-         "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_ui_mobile/lib/assets"
+    download_and_unzip_r2_object(
+        bucket: lane_context[:js_r2_bucket],
+        key: "mockzilla-mobile-ui-v#{version}/javascript_output.zip",
+        unzip_dir: "#{lane_context[:repo_root]}/FlutterMockzilla/mockzilla_ui_mobile/lib/assets"
     )
 end

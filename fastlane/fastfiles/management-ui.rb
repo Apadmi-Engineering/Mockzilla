@@ -101,6 +101,24 @@ lane :build_mobile_ui_js_artifacts do |options|
     )
 end
 
+desc "Build, zip, and upload mobile-ui JS artifacts to R2"
+lane :deploy_mobile_ui_js_artifacts_to_r2 do |options|
+    build_mobile_ui_js_artifacts(is_snapshot: options[:is_snapshot])
+
+    sh(%{
+        cd #{lane_context[:repo_root]}
+        mv mockzilla-management-ui/mockzilla-mobile-ui/build/kotlin-webpack/js/developmentExecutable javascript_output
+        zip -r javascript_output.zip javascript_output
+    })
+
+    version = get_mobile_ui_version_name(is_snapshot: options[:is_snapshot])
+    upload_file_to_r2(
+        bucket: lane_context[:js_r2_bucket],
+        key: "mockzilla-mobile-ui-v#{version}/javascript_output.zip",
+        file_path: "#{lane_context[:repo_root]}/javascript_output.zip"
+    )
+end
+
 def createMobileUiSnapshotProp(is_snapshot, version)
     {
         "is_snapshot" => is_snapshot,
