@@ -133,6 +133,9 @@ kotlin {
         jvmTest.dependencies {
             implementation(libs.ktor.client.cio)
         }
+        androidUnitTest.dependencies {
+            implementation(libs.ktor.client.okhttp)
+        }
         jsTest.dependencies {
             implementation(libs.ktor.client.js)
         }
