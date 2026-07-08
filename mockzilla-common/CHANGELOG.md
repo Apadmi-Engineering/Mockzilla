@@ -2,13 +2,12 @@
 
 ## [4.0.0-alpha1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v3.0.0...mockzilla-common-v4.0.0-alpha1) (2026-07-08)
 
+* Breaking changes across all kotlin modules. Types that should have been internal are now marked internal. Consumers who were only using the documented APIs should be unaffected.
 
 ### Features
 
 * enable gradle explicitApi ([#676](https://github.com/Apadmi-Engineering/Mockzilla/issues/676)) ([00bfa33](https://github.com/Apadmi-Engineering/Mockzilla/commit/00bfa33b309892741e59b9648b21e06e36447807))
-* optimise request/response body formatting ([#648](https://github.com/Apadmi-Engineering/Mockzilla/issues/648)) ([d8830a7](https://github.com/Apadmi-Engineering/Mockzilla/commit/d8830a7a8aa10a6955b39672eb8accf963b89db0))
-* re-think the approach to displaying logs ([#650](https://github.com/Apadmi-Engineering/Mockzilla/issues/650)) ([5bd0c26](https://github.com/Apadmi-Engineering/Mockzilla/commit/5bd0c26d067461babfd6796ef3db8fdae030cb2f))
-* update documentation with more desktop app instructions ([#677](https://github.com/Apadmi-Engineering/Mockzilla/issues/677)) ([48f77f9](https://github.com/Apadmi-Engineering/Mockzilla/commit/48f77f9e149196846c5734f55bd9ecc549143476))
+
 
 ## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v3.0.0-alpha2...mockzilla-common-v3.0.0) (2026-01-26)
 
