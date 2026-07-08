@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.0.0-alpha1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v3.0.0...mockzilla-common-v4.0.0-alpha1) (2026-07-08)
+
+* Breaking changes across all kotlin modules. Types that should have been internal are now marked internal. Consumers who were only using the documented APIs should be unaffected.
+
+### Features
+
+* enable gradle explicitApi ([#676](https://github.com/Apadmi-Engineering/Mockzilla/issues/676)) ([00bfa33](https://github.com/Apadmi-Engineering/Mockzilla/commit/00bfa33b309892741e59b9648b21e06e36447807))
+
+
 ## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v3.0.0-alpha2...mockzilla-common-v3.0.0) (2026-01-26)
 
 

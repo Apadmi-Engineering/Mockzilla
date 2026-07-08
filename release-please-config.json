@@ -6,18 +6,15 @@
   "packages": {
     "mockzilla": {
       "component": "mockzilla",
-      "extra-files": ["build.gradle.kts"],
-      "release-as": "4.0.0-alpha1"
+      "extra-files": ["build.gradle.kts"]
     },
     "mockzilla-common": {
       "component": "mockzilla-common",
-      "extra-files": ["build.gradle.kts"],
-      "release-as": "4.0.0-alpha1"
+      "extra-files": ["build.gradle.kts"]
     },
     "mockzilla-management": {
       "component": "mockzilla-management",
-      "extra-files": ["build.gradle.kts"],
-      "release-as": "4.0.0-alpha1"
+      "extra-files": ["build.gradle.kts"]
     },
     "FlutterMockzilla/mockzilla": {
       "component": "flutter_mockzilla",

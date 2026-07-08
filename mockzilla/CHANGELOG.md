@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.0.0-alpha1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v3.0.0...mockzilla-v4.0.0-alpha1) (2026-07-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* Breaking changes across all kotlin modules. Types that should have been internal are now marked internal. Consumers who were only using the documented APIs should be unaffected.
+
+### Features
+
+* **#557:** fix port conflict issue on Android ([#569](https://github.com/Apadmi-Engineering/Mockzilla/issues/569)) ([1936766](https://github.com/Apadmi-Engineering/Mockzilla/commit/1936766b1d78009964cb00d8383878831f7de6df))
+* address console log spam ([#653](https://github.com/Apadmi-Engineering/Mockzilla/issues/653)) ([541e38a](https://github.com/Apadmi-Engineering/Mockzilla/commit/541e38ae838c236600847711a1b6240e4de82e57))
+* enable gradle explicitApi ([#676](https://github.com/Apadmi-Engineering/Mockzilla/issues/676)) ([00bfa33](https://github.com/Apadmi-Engineering/Mockzilla/commit/00bfa33b309892741e59b9648b21e06e36447807))
+* improve the auto detection of devices on the network ([#603](https://github.com/Apadmi-Engineering/Mockzilla/issues/603)) ([55aad57](https://github.com/Apadmi-Engineering/Mockzilla/commit/55aad5707d05dd0674fb49f5b49302d790a26798))
+
+
 ## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v3.0.0-alpha2...mockzilla-v3.0.0) (2026-01-26)
 
 
