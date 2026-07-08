@@ -3,15 +3,9 @@
 ## [0.0.4](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v0.0.3...flutter_mockzilla_web-v0.0.4) (2026-07-08)
 
 
-### ⚠ BREAKING CHANGES
-
-* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518))
-
 ### Features
 
-* Feature/flutter support new mobile UI ([#532](https://github.com/Apadmi-Engineering/Mockzilla/issues/532)) ([70e0a52](https://github.com/Apadmi-Engineering/Mockzilla/commit/70e0a52276220b97db2d427ec93bc85994c50280))
-* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518)) ([4183f06](https://github.com/Apadmi-Engineering/Mockzilla/commit/4183f0626c5936e0ef213a006a46019e9d08d213))
-
+* Utility release to correspond with migrating android FlutterMockzilla to AGP 9 (#638) (9ef7445)
 
 ### Bug Fixes
 
