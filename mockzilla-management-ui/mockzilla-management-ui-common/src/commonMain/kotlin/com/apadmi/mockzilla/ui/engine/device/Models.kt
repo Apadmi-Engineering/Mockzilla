@@ -2,25 +2,21 @@
 
 package com.apadmi.mockzilla.ui.engine.device
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.management.MockzillaConnectionConfig
 
-data class Device(override val ip: String, override val port: String) : MockzillaConnectionConfig {
-    companion object
+@InternalMockzillaApi
+public data class Device(override val ip: String, override val port: String) : MockzillaConnectionConfig {
+    public companion object
 }
 
-/**
- * @property device
- * @property name
- * @property isConnected
- * @property connectedAppPackage
- * @property isCompatibleMockzillaVersion
- */
-data class StatefulDevice(
+@InternalMockzillaApi
+public data class StatefulDevice(
     val device: Device,
-    val name: String,
+    val metaData: MetaData,
     val isConnected: Boolean,
-    val connectedAppPackage: String,
     val isCompatibleMockzillaVersion: Boolean
 ) {
-    companion object
+    public companion object
 }

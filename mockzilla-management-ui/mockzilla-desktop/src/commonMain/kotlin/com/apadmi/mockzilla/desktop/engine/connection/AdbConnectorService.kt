@@ -1,7 +1,11 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.engine.connection
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
 import com.apadmi.mockzilla.ui.engine.connection.IpAddress
+
 import com.malinskiy.adam.AndroidDebugBridgeClient
 import com.malinskiy.adam.AndroidDebugBridgeClientFactory
 import com.malinskiy.adam.interactor.StartAdbInteractor
@@ -14,19 +18,17 @@ import com.malinskiy.adam.request.forwarding.PortForwardRequest
 import com.malinskiy.adam.request.forwarding.RemoteTcpPortSpec
 import com.malinskiy.adam.request.shell.v2.ShellCommandRequest
 
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import kotlin.coroutines.cancellation.CancellationException
 
-/**
- * @property connection
- * @property localPort
- */
-data class AdbPortForwardingResult(val connection: AdbConnection, val localPort: Int)
-interface AdbConnectorService {
+internal data class AdbPortForwardingResult(val connection: AdbConnection, val localPort: Int)
+internal interface AdbConnectorService {
     suspend fun listConnectedDevices(): Result<List<AdbConnection>>
     suspend fun setupPortForwardingIfNeeded(
         emulator: AdbConnection,
@@ -36,10 +38,16 @@ interface AdbConnectorService {
     suspend fun getListeningTcpPorts(serial: String): Result<List<Int>>
 }
 
-object AdbConnectorServiceImpl : AdbConnectorService {
+internal object AdbConnectorServiceImpl : AdbConnectorService {
     private val ipParsingRegex = "addr:\\s*([^\\/\\s]*)".toRegex()
-    private suspend fun prepareAdb(): AndroidDebugBridgeClient {
-        StartAdbInteractor().execute()
+    var isStarted = false
+    val startedMutex = Mutex()
+    private suspend fun createClient(): AndroidDebugBridgeClient = startedMutex.withLock {
+        if (!isStarted) {
+            StartAdbInteractor().execute()
+            isStarted = true
+        }
+
         return AndroidDebugBridgeClientFactory().build()
     }
 
@@ -50,7 +58,7 @@ object AdbConnectorServiceImpl : AdbConnectorService {
         try {
             withTimeout(timeout) {
                 runCatching {
-                    block(prepareAdb())
+                    createClient().use { block(it) }
                 }
             }
         } catch (e: CancellationException) {

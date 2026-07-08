@@ -1,18 +1,31 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,135 +36,364 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
+import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.theme.alternatingBackground
-import com.apadmi.mockzilla.ui.ui.common.utils.color
+import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.success
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.formatTimestamp
 
 import io.ktor.http.HttpStatusCode
 import org.koin.core.parameter.parametersOf
 
+@Suppress("MAGIC_NUMBER")
 @Composable
-fun MonitorLogsWidget(
+private fun HttpStatusCode.statusColor(isIntendedFailure: Boolean): Color {
+    val cs = MaterialTheme.colorScheme
+    return when {
+        value in 200..299 -> cs.success.primary
+        isIntendedFailure -> cs.warning.primary
+        value >= 400 -> cs.error
+        else -> cs.onSurfaceMuted
+    }
+}
+
+@InternalMockzillaApi
+@Composable
+public fun MonitorLogsWidget(
     device: Device,
+    modifier: Modifier = Modifier,
+    topHandle: @Composable () -> Unit = {},
+    isExpanded: Boolean = false,
+    expandedHeightDp: Float = 220f,
+    onExpandToggled: () -> Unit = {},
     onViewDetail: (LogEvent) -> Unit,
 ) {
-    val viewModel = getViewModel<MonitorLogsViewModel>(key = device.toString()) { parametersOf(device) }
+    val viewModel = getViewModel<MonitorLogsViewModel>(device = device) { parametersOf(device) }
     val state by viewModel.state.collectAsState()
 
     MonitorLogsWidgetContent(
         state = state,
+        modifier = modifier,
+        topHandle = topHandle,
+        isExpanded = isExpanded,
+        expandedHeightDp = expandedHeightDp,
+        onExpandToggled = onExpandToggled,
         onViewDetail = onViewDetail,
-        onClearAll = viewModel::clearLogs
+        onClearAll = viewModel::clearLogs,
     )
 }
 
+@Suppress("MAGIC_NUMBER")
 @Composable
-fun MonitorLogsWidgetContent(
+internal fun LogRow(
+    modifier: Modifier,
+    event: LogEvent,
+) {
+    val monoFont = LocalMonoFontFamily.current
+    val cs = MaterialTheme.colorScheme
+    val isSlowRequest = (event.delay ?: 0) > 1000
+    val isRealError = event.status.value >= 400 && !event.isIntendedFailure
+    val errorColor = cs.error
+    val errorBgColor = cs.errorContainer
+    val faintColor = cs.onSurfaceMuted
+    val slowColor = cs.warning.primary
+
+    Row(
+        modifier = modifier
+            .background(if (isRealError) errorBgColor else Color.Transparent)
+            .drawBehind {
+                if (isRealError) {
+                    drawRect(color = errorColor, size = Size(3.dp.toPx(), size.height))
+                }
+            }
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = formatTimestamp(event.timestamp),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontFamily = monoFont,
+                    fontWeight = FontWeight.Normal,
+                ),
+                color = faintColor,
+                modifier = Modifier.defaultMinSize(minWidth = 88.dp),
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = event.url,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontFamily = monoFont,
+                    fontWeight = FontWeight.Medium,
+                ),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+            )
+            if (event.isIntendedFailure || isRealError) {
+                Spacer(modifier = Modifier.width(8.dp))
+                if (event.isIntendedFailure) {
+                    StatusChip(label = "FORCED", tone = ChipTone.Err)
+                } else {
+                    StatusChip(label = "REAL", tone = ChipTone.Err)
+                }
+            }
+        }
+
+        Text(
+            text = event.status.value.toString(),
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = monoFont,
+                fontWeight = FontWeight.SemiBold,
+            ),
+            color = event.status.statusColor(event.isIntendedFailure),
+            textAlign = TextAlign.End,
+            modifier = Modifier.defaultMinSize(minWidth = 32.dp),
+        )
+
+        Text(
+            text = "${event.delay}ms",
+            style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+            color = when {
+                isRealError -> errorColor
+                isSlowRequest -> slowColor
+                else -> faintColor
+            },
+            textAlign = TextAlign.End,
+            modifier = Modifier.defaultMinSize(minWidth = 52.dp),
+        )
+    }
+}
+
+@Preview
+@Composable
+internal fun MonitorLogsWidgetPreview() = PreviewSurface {
+    MonitorLogsWidgetContent(
+        isExpanded = true,
+        state = MonitorLogsViewModel.State.DisplayLogs(
+            entries = listOf(
+                LogEvent(
+                    timestamp = 1_716_566_657_201,
+                    url = "https://www.example.com/repairs/list",
+                    requestBody = "",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = """{"items":[{"id":1,"status":"upcoming"}]}""",
+                    status = HttpStatusCode.OK,
+                    delay = 342,
+                    method = "GET",
+                    isIntendedFailure = false,
+                ),
+                LogEvent(
+                    timestamp = 1_716_566_659_014,
+                    url = "https://www.example.com/customer/get",
+                    requestBody = "",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = """{"id":42,"name":"John"}""",
+                    status = HttpStatusCode.OK,
+                    delay = 12,
+                    method = "GET",
+                    isIntendedFailure = false,
+                ),
+                LogEvent(
+                    timestamp = 1_716_566_661_889,
+                    url = "https://www.example.com/auth/token",
+                    requestBody = """{"user":"test"}""",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = """{"error":"forced failure"}""",
+                    status = HttpStatusCode.InternalServerError,
+                    delay = 1,
+                    method = "POST",
+                    isIntendedFailure = true,
+                ),
+                LogEvent(
+                    timestamp = 1_716_566_664_501,
+                    url = "https://www.example.com/repairs/expired",
+                    requestBody = "",
+                    requestHeaders = mapOf(),
+                    responseHeaders = mapOf(),
+                    responseBody = """{"error":"unauthorised"}""",
+                    status = HttpStatusCode.Unauthorized,
+                    delay = 1502,
+                    method = "GET",
+                    isIntendedFailure = false,
+                ),
+            ),
+        ),
+        onClearAll = {},
+        onViewDetail = { _ -> },
+    )
+}
+
+@Suppress("MAGIC_NUMBER")
+@Composable
+internal fun MonitorLogsWidgetContent(
     state: MonitorLogsViewModel.State.DisplayLogs,
+    modifier: Modifier = Modifier,
+    topHandle: @Composable () -> Unit = {},
+    isExpanded: Boolean = false,
+    expandedHeightDp: Float = 220f,
+    onExpandToggled: () -> Unit = {},
     onClearAll: () -> Unit,
     onViewDetail: (LogEvent) -> Unit,
+    onOpenPanel: () -> Unit = {},
     strings: Strings = LocalStrings.current,
-) = Row {
-    MonitorLogsList(
-        entries = state.entries,
-        onViewDetail = onViewDetail,
-        modifier = Modifier.weight(1F)
+) {
+    val monoFont = LocalMonoFontFamily.current
+    val cs = MaterialTheme.colorScheme
+    val streamingColor = cs.success.primary
+    val dimColor = cs.onSurfaceMuted
+    val entryList = state.entries
+    val titleStyle = MaterialTheme.typography.labelSmall.copy(
+        fontFamily = monoFont,
+        fontWeight = FontWeight.SemiBold,
     )
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        Surface(modifier = Modifier.padding(8.dp)) {
-            Button(
-                onClick = onClearAll,
-            ) {
-                Text(text = strings.widgets.logs.clearAll)
-            }
+    val logsTitle = strings.widgets.logs.title.uppercase()
+    val chevronRotation by animateFloatAsState(
+        targetValue = if (isExpanded) 90f else 0f,
+        animationSpec = tween(durationMillis = 150),
+        label = "chevronRotation",
+    )
+
+    Column(modifier = modifier.background(cs.background)) {
+        if (isExpanded) {
+            topHandle()
+        }
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onExpandToggled)
+                .padding(horizontal = 12.dp, vertical = 7.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowRight,
+                contentDescription = null,
+                tint = cs.onSurfaceFaint,
+                modifier = Modifier.size(14.dp).rotate(chevronRotation),
+            )
+            Text(
+                text = logsTitle,
+                style = titleStyle,
+                color = dimColor,
+            )
+            Canvas(modifier = Modifier.size(6.dp)) { drawCircle(color = streamingColor) }
+            Text(
+                text = strings.widgets.logs.streaming,
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+                color = streamingColor,
+            )
+            Text(
+                text = strings.widgets.logs.clickToInspect,
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+                color = cs.onSurfaceMuted,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier.clickable(onClick = onOpenPanel),
+                text = strings.widgets.logs.openInPanel,
+                style = MaterialTheme.typography.labelSmall.copy(fontFamily = monoFont),
+                color = dimColor,
+            )
+        }
+
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = expandVertically(animationSpec = tween(durationMillis = 150)),
+            exit = shrinkVertically(animationSpec = tween(durationMillis = 150)),
+        ) {
+            MonitorLogsList(
+                entryList = entryList,
+                onViewDetail = onViewDetail,
+                modifier = Modifier.height(expandedHeightDp.dp),
+            )
         }
     }
 }
 
-@Composable
-fun LogRow(modifier: Modifier, event: LogEvent) =
-    Row(
-        modifier = modifier
-            .padding(2.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Canvas(
-            modifier = Modifier.size(15.dp).padding(end = 4.dp),
-            onDraw = { drawCircle(color = event.status.color()) })
-        Text("${event.status.description} ${event.method}: ${event.url}")
-    }
-
-@Preview
-@Composable
-fun MonitorLogsWidgetPreview() = PreviewSurface {
-    MonitorLogsWidgetContent(
-        state = MonitorLogsViewModel.State.DisplayLogs(
-            entries = sequenceOf(
-                LogEvent(
-                    timestamp = 1000,
-                    url = "https://www.example.com/url",
-                    requestBody = "request body",
-                    requestHeaders = mapOf(),
-                    responseHeaders = mapOf(),
-                    responseBody = "response body",
-                    status = HttpStatusCode.OK,
-                    delay = 50,
-                    method = "GET",
-                    isIntendedFailure = false
-                )
-            ),
-        ),
-        onClearAll = {},
-        onViewDetail = { _ -> }
-    )
-}
-
+@Suppress("MAGIC_NUMBER")
 @Composable
 private fun MonitorLogsList(
-    entries: Sequence<LogEvent>,
+    entryList: List<LogEvent>,
     onViewDetail: (LogEvent) -> Unit,
     modifier: Modifier = Modifier,
+    strings: Strings = LocalStrings.current,
 ) {
-    val state = rememberLazyListState()
-    val entryList = entries.toList()
+    if (entryList.isEmpty()) {
+        val iconTint = MaterialTheme.colorScheme.onSurfaceFaint
+        EmptyState(
+            title = strings.widgets.logs.emptyTitle,
+            description = strings.widgets.logs.emptyDescription,
+            modifier = modifier,
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = null,
+                    tint = iconTint,
+                    modifier = Modifier.size(28.dp),
+                )
+            },
+        )
+        return
+    }
+
+    val listState = rememberLazyListState()
     var previousSize by remember { mutableStateOf(entryList.size) }
+
     LaunchedEffect(previousSize, entryList.size) {
         val previous = previousSize
         val current = entryList.size
         if (previous != current) {
-            // Because we know entries can only be appended or cleared, we can check if the new
-            // list is bigger than the previous list and infer that a new entry was added to the
-            // end of the sequence if so
             if (current > previous) {
-                // In such a case, if the user was scrolled down to the end of the logs we should
-                // autoscroll them to remain there
-                val previousLastItemIndex = state.layoutInfo.visibleItemsInfo.maxOf { it.index }
+                val previousLastItemIndex = listState.layoutInfo.visibleItemsInfo.maxOf { it.index }
                 if (previousLastItemIndex >= previous - 1) {
-                    state.scrollToItem(entryList.lastIndex)
+                    listState.scrollToItem(entryList.lastIndex)
                 }
             }
             previousSize = current
         }
     }
-    LazyColumn(modifier = modifier, state = state) {
-        entryList.forEachIndexed { index, logEvent ->
-            item {
-                LogRow(
+
+    LazyColumn(modifier = modifier, state = listState) {
+        entryList.forEach { logEvent ->
+            item(key = logEvent.id) {
+                Column(
                     modifier = Modifier
-                        .clickable(onClick = { onViewDetail(logEvent) }, role = Role.Button)
-                        .fillMaxWidth()
-                        .alternatingBackground(index),
-                    event = logEvent
-                )
+                        .fillMaxWidth(),
+                ) {
+                    LogRow(
+                        modifier = Modifier
+                            .clickable(onClick = { onViewDetail(logEvent) }, role = Role.Button)
+                            .fillMaxWidth(),
+                        event = logEvent,
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+                }
             }
         }
     }

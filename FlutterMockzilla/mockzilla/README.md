@@ -6,23 +6,19 @@ A Flutter plugin for running and configuring a local, mock HTTP server that allo
 
 |             | Android                 | iOS   |
 |-------------|-------------------------|-------|
-| **Support** | SDK 21+ (Target SDK 36) | 13.0+ |
+| **Support** | SDK 23+ (Target SDK 36) | 13.0+ |
 
-**Full documentation available [here!](https://mockzilla.apadmi.dev/)**
 
-## Why use Mockzilla?
+## Quick Start 🚀
 
-✅ Compile safe mock endpoint definitions.
+Head to the [quick start guide](https://mockzilla.apadmi.dev/quick-start/) to get up and running, or jump straight to a specific topic:
 
-✅ HTTP client agnostic.
+- [Configuring Endpoints](https://mockzilla.apadmi.dev/endpoints/)
+- [Mockzilla Desktop](https://mockzilla.apadmi.dev/desktop/overview/)
+- [Mockzilla Mobile UI](https://mockzilla.apadmi.dev/mobile_ui/)
+- [Presets](https://mockzilla.apadmi.dev/presets/)
 
-✅ Works completely offline.
-
-✅ Entirely self-contained in your application's codebase.
-
-## To hit the ground running
-
-> ⚠️ **Warning:** Mockzilla is a development tool only. Do not use it in production! Advice on how to do this using different Dart entrypoints can be found [here](https://mockzilla.apadmi.dev/quick-start/#__tabbed_5_2).
+### To hit the ground running
 
 **(1)** Create your Mockzilla server config and add mocked endpoints.
 
@@ -50,21 +46,51 @@ WidgetsFlutterBinding.ensureInitialized();
 await Mockzilla.startMockzilla(mockzillaConfig);
 ```
 
-## Mockzilla Desktop
+## Why's it useful? 🙌
 
-The Mockzilla Desktop application lets you inspect and configure the mocked endpoints at runtime. You can manipulate the responses and adjust simulated latency on a connected device.
+Development servers go down, endpoints can be late being delivered or not exist at all! Mockzilla aims to easily provide a way of simulating your server from within your mobile application's codebase.
 
-<img src="https://raw.githubusercontent.com/Apadmi-Engineering/Mockzilla/refs/heads/develop/docs/docs/desktop/img/desktop_demo.gif">
+## Advantages
 
-More information about Mockzilla Desktop can be found [here](https://mockzilla.apadmi.dev/desktop/overview/).
+✅ Compile safe mock endpoint definitions.
 
-> ℹ️ **Note:** Mockzilla Desktop replaces the web console from version 1.0.0 onwards. The web console is now deprecated and will eventually be retired.
+✅ HTTP client agnostic.
 
-## Mockzilla Mobile UI
+✅ Works completely offline.
 
-The embeddable mobile UI allows configuring the endpoints at runtime from within your application.
+✅ Entirely self-contained in your application's codebase.
 
-<img src="https://raw.githubusercontent.com/Apadmi-Engineering/Mockzilla/refs/heads/develop/docs/docs/img/embedded-ui-presets.gif">
+✅ Edit responses live from a [desktop app](https://mockzilla.apadmi.dev/desktop/overview/) or an [in-app overlay](https://mockzilla.apadmi.dev/mobile_ui/) — no rebuild required.
 
-More information can be found [here](https://mockzilla.apadmi.dev/mobile_ui/).
+✅ [Presets](https://mockzilla.apadmi.dev/presets/) for one-tap switching between success, error, and edge-case responses.
+
+## Control mocks live, while your app runs 🎛️
+
+Beyond defining mocks in code, Mockzilla ships two ways to change what's returned *while your app is running* — force an endpoint to fail, add artificial latency, or apply a preset, all without touching code or rebuilding:
+
+- **[Mockzilla Desktop](https://mockzilla.apadmi.dev/desktop/overview/)**: A companion app that connects to your device over Wifi.
+- **[Mockzilla Mobile UI](https://mockzilla.apadmi.dev/mobile_ui/)**: An overlay you embed directly in your app.
+
+![alt text](https://raw.githubusercontent.com/Apadmi-Engineering/Mockzilla/refs/heads/develop/docs/docs/img/controls-ui.png "Desktop app and embedded UI")
+
+## Why not use a hosted solution? ☁️
+
+Hosted mocking solutions can be powerful mocking tools in many cases. They have their downsides:
+
+1. They can go down, Mockzilla works offline!
+2. There's no compile-time checking
+3. They require active maintenance with no compile-time safety if APIs change.
+
+## Important Note 🛑
+
+Mockzilla is designed as a development and test tool **only**.
+
+Mockzilla should **never be used in production**. Its traffic is unprotected and by nature of running a server on device, it can introduce security issues. Advice on how to do this using different Dart entrypoints can be found [here](https://mockzilla.apadmi.dev/quick-start/#__tabbed_5_2).
+
+**Do not ship it to production**.
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get set up.
+
 

@@ -7,10 +7,14 @@ part 'packages_client.g.dart';
 
 @RestApi(baseUrl: "http://localhost:8080/local-mock/")
 abstract class PackagesClient {
-  factory PackagesClient(Dio dio,
-      {String baseUrl, ParseErrorLogger? errorLogger}) = _PackagesClient;
+  factory PackagesClient(
+    Dio dio, {
+    String baseUrl,
+    ParseErrorLogger? errorLogger,
+  }) = _PackagesClient;
 
   @POST("/packages")
   Future<FetchPackagesResponse> fetchPackages(
-      @Body() FetchPackagesRequest request);
+    @Body() FetchPackagesRequest request,
+  );
 }

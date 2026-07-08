@@ -1,7 +1,8 @@
 package com.apadmi.mockzilla.ui.di
 
-import com.apadmi.mockzilla.ui.di.utils.viewModel
-import com.apadmi.mockzilla.ui.ui.common.AppRootViewModel
+import com.apadmi.mockzilla.ui.engine.device.Device
+import com.apadmi.mockzilla.ui.internal.di.utils.viewModel
+import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
@@ -10,17 +11,18 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.metadata.MetaDataWidgetViewMode
 import com.apadmi.mockzilla.ui.ui.common.widgets.misccontrols.MiscControlsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.MonitorLogsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.MonitorLogDetailsViewModel
+
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal fun viewModelModule(): Module = module {
-    viewModel { MetaDataWidgetViewModel(get(), get()) }
-    viewModel { MonitorLogsViewModel(get(), get()) }
-    viewModel { MonitorLogDetailsViewModel() }
+    viewModel { MetaDataWidgetViewModel(get(), get(), get(), get()) }
+    viewModel { MonitorLogsViewModel(get(), get(), get()) }
+    viewModel { params -> MonitorLogDetailsViewModel(params.get(), params.getOrNull(), get()) }
     viewModel { params -> EndpointsViewModel(params.get(), get(), get()) }
     viewModel { params -> EndpointDetailsViewModel(params.getOrNull(), params.get(), get(), get(), get(), get()) }
     viewModel { params -> CreateEditPresetViewModel(params.get(), params.get(), params.get(), get(), get(), get()) }
-    viewModel { params -> MiscControlsViewModel(params.getOrNull(), get(), get()) }
+    viewModel { params -> MiscControlsViewModel(params.getOrNull(), get(), get(), get()) }
     viewModel { params -> GlobalControlsViewModel(params.get(), get(), get(), get(), get()) }
-    viewModel { AppRootViewModel(get(), get()) }
+    viewModel { params -> DeviceRootViewModel(params.get<Device>(), get(), get()) }
 }

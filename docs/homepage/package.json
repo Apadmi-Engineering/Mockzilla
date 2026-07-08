@@ -5,6 +5,7 @@
       "scripts": {
             "dev": "export VITE_VERSION_NAME=Debug; vite",
             "build": "tsc -b && vite build",
+            "build:fragment": "node generate-fragment.mjs",
             "lint": "eslint .",
             "preview": "vite preview"
       },

@@ -5,11 +5,12 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.desktop.ui.utils.horizontalResizeCursor
 import com.apadmi.mockzilla.desktop.ui.utils.verticalResizeCursor
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
@@ -19,11 +20,12 @@ internal fun HorizontalDraggableDivider(
     onDrag: (Float) -> Unit,
     onDragStopped: () -> Unit,
 ) {
+    val dividerColor = MaterialTheme.colorScheme.outline
     Box(
         modifier = Modifier
-            .background(color = Color.Black)
+            .background(color = dividerColor)
             .fillMaxHeight()
-            .width(3.dp)
+            .width(1.dp)
             .horizontalResizeCursor()
             .draggable(
                 state = rememberDraggableState { dragAmount ->
@@ -38,19 +40,22 @@ internal fun HorizontalDraggableDivider(
 @Composable
 internal fun VerticalDraggableDivider(
     onDrag: (Float) -> Unit,
+    onDragStarted: () -> Unit = {},
     onDragStopped: () -> Unit,
 ) {
+    val dividerColor = MaterialTheme.colorScheme.outline
     Box(
         modifier = Modifier
-            .background(color = Color.Black)
+            .background(color = dividerColor)
             .fillMaxWidth()
-            .height(3.dp)
+            .height(1.dp)
             .verticalResizeCursor()
             .draggable(
                 state = rememberDraggableState { dragAmount ->
                     onDrag(dragAmount)
                 },
                 orientation = Orientation.Vertical,
+                onDragStarted = { _ -> onDragStarted() },
                 onDragStopped = { onDragStopped() },
             )
     )

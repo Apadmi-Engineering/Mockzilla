@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.integration
 
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
@@ -54,7 +55,8 @@ class ClearStaleCachesIntegrationTests {
             override suspend fun stop() {
                 /* No-Op */
             }
-        }
+        },
+        platformConfig = PlatformConfig(),
     )
 
     @Test

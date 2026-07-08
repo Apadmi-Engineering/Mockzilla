@@ -37,7 +37,7 @@
 - name: FUNCTION_BOOLEAN_PREFIX
   enabled: true
   configuration:
-    allowedPrefixes: "getBoolean" # A list of functions that return boolean and are allowed to use. Input is in a form "foo, bar".
+    allowedPrefixes: "getBoolean, does" # A list of functions that return boolean and are allowed to use. Input is in a form "foo, bar".
 # Checks that function/method name is in lowerCamelCase
 - name: FUNCTION_NAME_INCORRECT_CASE
   enabled: true
@@ -88,9 +88,11 @@
 # Checks that accessible method parameters are documented in KDoc
 - name: KDOC_WITHOUT_PARAM_TAG
   enabled: true
+  ignoreAnnotated: [ NoKDoc ]
 # Checks that accessible method explicit return type is documented in KDoc
 - name: KDOC_WITHOUT_RETURN_TAG
   enabled: true
+  ignoreAnnotated: [ NoKDoc ]
 # Checks that accessible method throw keyword is documented in KDoc
 - name: KDOC_WITHOUT_THROWS_TAG
   enabled: false # Seems to be a bug with this since it reports false positives
@@ -271,7 +273,7 @@
     destructuringDeclaration: false
 # Inspection that checks if a long dot qualified expression is used in condition or as an argument
 - name: COMPLEX_EXPRESSION
-  enabled: true
+  enabled: false
 # Checks that there are not too many consecutive spaces in line
 - name: TOO_MANY_CONSECUTIVE_SPACES
   enabled: true
@@ -320,7 +322,7 @@
     # Ignore numbers from test
     ignoreTest: "true"
     # Ignore numbers
-    ignoreNumbers: "-1, 1, 1f, -1f, 0, 0.0, 0.4f, 0f, 0u, 1.0, 2, 2f, 100, 20"
+    ignoreNumbers: "-1, 1, 1f, -1f, 0, 0.0, 0L, 0.4f, 0f, 0u, 1.0, 2, 2f, 100, 20"
     # Is ignore override hashCode function
     ignoreHashCodeFunction: "true"
     # Is ignore property
@@ -397,6 +399,7 @@
 # This rule prohibits usage of `var`s as local variables - the only exception is accumulators and counters
 - name: SAY_NO_TO_VAR
   enabled: true
+  ignoreAnnotated: [ Composable ]
 # Inspection that checks if string template has redundant quotes
 - name: STRING_TEMPLATE_QUOTES
   enabled: true
@@ -453,15 +456,15 @@
 # Checks that property in constructor doesn't contain comment
 - name: KDOC_NO_CONSTRUCTOR_PROPERTY
   enabled: true
-  ignoreAnnotated: [ Immutable ]
+  ignoreAnnotated: [ Immutable, InternalMockzillaApi, NoKDoc ]
 # Checks that property in KDoc present in class
 - name: KDOC_EXTRA_PROPERTY
   enabled: true
-  ignoreAnnotated: [ Immutable ]
+  ignoreAnnotated: [ Immutable, InternalMockzillaApi, NoKDoc ]
 # Checks that KDoc in constructor has property tag but with comment inside constructor
 - name: KDOC_NO_CONSTRUCTOR_PROPERTY_WITH_COMMENT
   enabled: true
-  ignoreAnnotated: [ Immutable ]
+  ignoreAnnotated: [ Immutable, InternalMockzillaApi, NoKDoc ]
 # if a class has single constructor, it should be converted to a primary constructor
 - name: SINGLE_CONSTRUCTOR_SHOULD_BE_PRIMARY
   enabled: true

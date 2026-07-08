@@ -11,34 +11,64 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+import com.apadmi.mockzilla.ui.ui.common.theme.darkSurface
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+
+@InternalMockzillaApi
 @Composable
-fun SurfaceHeader(
+public fun SurfaceHeader(
     title: String,
     subtitle: String?,
-    actions: @Composable () -> Unit
-) = Row(
-    modifier = Modifier
-        .fillMaxWidth()
-        .background(color = MaterialTheme.colorScheme.surface)
-        .padding(vertical = 20.dp, horizontal = 16.dp),
-    horizontalArrangement = Arrangement.spacedBy(4.dp),
-    verticalAlignment = Alignment.CenterVertically
+    modifier: Modifier = Modifier,
+    actions: @Composable () -> Unit = {},
+    content: @Composable () -> Unit = {},
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+    val isDark = colorScheme.surface == darkSurface
     Column(
-        modifier = Modifier.weight(1f)
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = colorScheme.surfaceContainer)
+            .drawBehind {
+                if (isDark) {
+                    val strokeWidth = 1.dp.toPx()
+                    drawLine(
+                        color = colorScheme.outline,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = strokeWidth
+                    )
+                }
+            }
+            .padding(vertical = 12.dp, horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium
-        )
-        subtitle?.let {
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.titleSmall
-            )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = colorScheme.onSurface,
+                )
+                subtitle?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colorScheme.onSurfaceMuted,
+                    )
+                }
+            }
+            actions()
         }
+        content()
     }
-    actions()
 }

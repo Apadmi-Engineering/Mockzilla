@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.testutils
 
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
@@ -100,7 +101,8 @@ private suspend fun runFullIntegrationTest(
         metaData,
         fileIo,
         Logger(StaticConfig()),
-        zeroConfStub
+        zeroConfStub,
+        PlatformConfig(),
     )
     fileIo.deleteAllCaches()
     setup(di.localCacheService)

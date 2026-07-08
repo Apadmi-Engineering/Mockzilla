@@ -10,6 +10,19 @@ Presets are pre-defined responses configured in code that can be applied at runt
 ## Defining presets
 
 Presets are applied to individual endpoints, they can be successful responses, errors, or anything else!
+They're defined in code and show up in the UI as one-tap options - select one and it's applied immediately.
+
+You can also create a **custom preset** on the fly, without editing code, using the built-in editor:
+
+![alt text](img/custom_preset.png "Monitor Logs")
+
+### How preset overrides combine with your default handler
+
+This is worth understanding precisely, since it's not obvious from the UI: **a preset only overrides the specific fields you set on it.** Status code, headers, and body are each overridden independently - if you leave one unset (for example, you only override the status code), the response for that field still comes from whatever your endpoint's `setDefaultHandler` block returns for that request.
+
+The default handler is skipped entirely only once **all three** fields - status, headers, and body - are overridden. Applying a canned preset defined with a full `MockzillaHttpResponse` in code behaves the same way, since it sets all three fields; but a custom preset you build via the "None" body option, for instance, will still fall through to your default handler's body.
+
+
 
 === "Kotlin"
     ```kotlin
@@ -87,18 +100,12 @@ Presets are applied to individual endpoints, they can be successful responses, e
 
 The presets can be applied through the desktop app or the embedded UI.
 
-### Embedded UI
-
-Tapping an endpoint and scrolling down will show the full list of configured Presets.
-
-![alt text](img/embedded-ui-presets.gif "Embedded UI example")
-
 ## Preset Types
 
 <div style="display: flex; flex-wrap: wrap; align-items: top; gap: 20px;">
   <div style="flex: 1;">
     <h3>Default Behaviour</h3>
-    <p>By default the preset types are derived from the status code (defaulted to 200).</p>
+    <p>By default the preset types are derived from the status code.</p>
   </div>
   <div style="flex: 1;">
     <img src="../img/presets.png" alt="Presets" style="width: 80%; border-radius: 8px; min-width: 321px;">
@@ -107,7 +114,7 @@ Tapping an endpoint and scrolling down will show the full list of configured Pre
 
 ### Overriding 
 
-This can be helpful if you're simulating an API that doesn't utilise status codes e.g using 200 even for errors.
+This can be helpful if you're simulating an API that doesn't utilise status codes, e.g. using 200 even for errors.
 
 === "Kotlin"
     ```kotlin
@@ -173,5 +180,3 @@ This can be helpful if you're simulating an API that doesn't utilise status code
             ),
       ])
     ```
-
-![Presets with overrides](img/presets-with-overrides.png "Presets with overrides")

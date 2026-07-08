@@ -7,16 +7,22 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * @property port
- * @property endpoints
- * @property logLevel
- * @property isRelease
- * @property releaseModeConfig
- * @property localhostOnly
- * @property additionalLogWriters
- * @property isNetworkDiscoveryEnabled
+ * Top-level configuration for a Mockzilla server instance. All properties are set via
+ * [MockzillaConfig.Builder].
+ *
+ * @property port The port the server binds to. `0` causes the OS to assign an available port.
+ * @property endpoints The mock endpoints registered on this server.
+ * @property isRelease When `true`, activates release mode: rate limiting, token authentication,
+ * and localhost-only restrictions are applied. See [ReleaseModeConfig] for details.
+ * @property localhostOnly When `true`, the server only accepts connections from `127.0.0.1`,
+ * blocking the management desktop interface and other external tools.
+ * @property logLevel Verbosity of Mockzilla's internal logging.
+ * @property releaseModeConfig Rate limiting and authentication config applied in release mode.
+ * @property isNetworkDiscoveryEnabled When `true`, Mockzilla broadcasts itself via ZeroConf
+ * (Bonjour) so the management desktop can discover it. Always disabled in release mode.
+ * @property additionalLogWriters Extra log sinks in addition to standard output.
  */
-data class MockzillaConfig(
+public data class MockzillaConfig(
     val port: Int,
     val endpoints: List<EndpointConfiguration>,
     val isRelease: Boolean,
@@ -26,7 +32,10 @@ data class MockzillaConfig(
     val isNetworkDiscoveryEnabled: Boolean,
     val additionalLogWriters: List<MockzillaLogWriter>
 ) {
-    enum class LogLevel {
+    /**
+     * Defines the verbosity of Mockzilla's internal logging.
+     */
+    public enum class LogLevel {
         Assert,
         Debug,
         Error,
@@ -44,13 +53,13 @@ data class MockzillaConfig(
      * @property rateLimitRefillPeriod
      * @property tokenLifeSpan
      */
-    data class ReleaseModeConfig(
+    public data class ReleaseModeConfig(
         val rateLimit: Int = 60,
         val rateLimitRefillPeriod: Duration = 60.seconds,
         val tokenLifeSpan: Duration = 0.5.seconds
     )
 
-    class Builder {
+    public class Builder {
         private var logLevel: LogLevel = LogLevel.Info
         private var port = defaultPort
         private var endpoints: MutableList<EndpointConfiguration> = mutableListOf()
@@ -66,17 +75,17 @@ data class MockzillaConfig(
          *
          * @param level Defaults to `LogLevel.Info`
          */
-        fun setLogLevel(level: LogLevel) = apply {
+        public fun setLogLevel(level: LogLevel): Builder = apply {
             this.logLevel = level
         }
 
         /**
          * Sets the port which the server will bind to. Setting port to `0` will cause the server to
-         * choose it's port auto-magically.
+         * choose its port automatically.
          *
-         * @param port
+         * @param port Port number to bind to. Use `0` for automatic port assignment.
          */
-        fun setPort(port: Int): Builder = apply {
+        public fun setPort(port: Int): Builder = apply {
             this.port = port
         }
 
@@ -86,7 +95,7 @@ data class MockzillaConfig(
          * @param percentage Not supported
          */
         @Deprecated("Configuring failure on top level config is now not supported")
-        fun setFailureProbabilityPercentage(percentage: Int) = apply {
+        public fun setFailureProbabilityPercentage(percentage: Int): Builder = apply {
             // No op
         }
 
@@ -98,7 +107,7 @@ data class MockzillaConfig(
          * @param delay delay in milliseconds
          */
         @Deprecated("Delay is now constant with no variance", replaceWith = ReplaceWith("setDelayMillis"))
-        fun setMeanDelayMillis(delay: Int) = apply {
+        public fun setMeanDelayMillis(delay: Int): Builder = apply {
             this.delay = delay
         }
 
@@ -108,7 +117,7 @@ data class MockzillaConfig(
          *
          * @param delay delay in milliseconds
          */
-        fun setDelayMillis(delay: Int) = apply {
+        public fun setDelayMillis(delay: Int): Builder = apply {
             this.delay = delay
         }
 
@@ -122,16 +131,16 @@ data class MockzillaConfig(
          * @param delay delay in milliseconds
          */
         @Deprecated("No longer supported, now does nothing")
-        fun setDelayVarianceMillis(variance: Int) = apply {
+        public fun setDelayVarianceMillis(variance: Int): Builder = apply {
             // No-Op
         }
 
         /**
          * Enable or disable release mode. See [setReleaseModeConfig] for more details
          *
-         * @param isRelease
+         * @param isRelease `true` to enable release mode, `false` to disable.
          */
-        fun setIsReleaseModeEnabled(isRelease: Boolean) = apply {
+        public fun setIsReleaseModeEnabled(isRelease: Boolean): Builder = apply {
             this.isRelease = isRelease
         }
 
@@ -139,9 +148,9 @@ data class MockzillaConfig(
          * Setting this value to `true` means the mockzilla server will only accept calls from localhost.
          * Calls from other IPs will be blocked (including blocking the Mockzilla desktop interface)
          *
-         * @param localhostOnly
+         * @param localhostOnly `true` to restrict connections to localhost only.
          */
-        fun setLocalhostOnly(localhostOnly: Boolean) = apply {
+        public fun setLocalhostOnly(localhostOnly: Boolean): Builder = apply {
             this.localhostOnly = localhostOnly
         }
 
@@ -153,24 +162,24 @@ data class MockzillaConfig(
          * -  Enforces rudamentary token authentication on each request (see documentation).
          * - Only allows connections from 127.0.0.1 (i.e from apps running on the device).
          */
-        fun setReleaseModeConfig(releaseConfig: ReleaseModeConfig) = apply {
+        public fun setReleaseModeConfig(releaseConfig: ReleaseModeConfig): Builder = apply {
             this.releaseConfig = releaseConfig
         }
 
         /**
          * Register an new endpoint configuration
          *
-         * @param endpoint
+         * @param endpoint The endpoint builder to register.
          */
-        fun addEndpoint(endpoint: EndpointConfiguration.Builder) = addEndpoint(endpoint.build())
+        public fun addEndpoint(endpoint: EndpointConfiguration.Builder): Builder = addEndpoint(endpoint.build())
 
         /**
          * Register an new endpoint configuration
          *
-         * @param endpoint
-         * @return
+         * @param endpoint The endpoint configuration to register.
+         * @return This builder, for chaining.
          */
-        fun addEndpoint(endpoint: EndpointConfiguration) = apply {
+        public fun addEndpoint(endpoint: EndpointConfiguration): Builder = apply {
             endpoints.add(endpoint)
         }
 
@@ -179,10 +188,10 @@ data class MockzillaConfig(
          *
          * Mockzilla logs will then log to standard output and to any additional log writers
          *
-         * @param logWriter
-         * @return
+         * @param logWriter The log writer to register.
+         * @return This builder, for chaining.
          */
-        fun addLogWriter(logWriter: MockzillaLogWriter) = apply {
+        public fun addLogWriter(logWriter: MockzillaLogWriter): Builder = apply {
             additionalLogWriters += logWriter
         }
 
@@ -190,37 +199,42 @@ data class MockzillaConfig(
          * Setting this to false will stop Mockzilla from using Bonjour to broadcast itself on the network
          * Note: Broadcast is disabled in release mode regardless of this flag's value
          */
-        fun setIsNetworkDiscoveryEnabled(isEnabled: Boolean) = apply {
+        public fun setIsNetworkDiscoveryEnabled(isEnabled: Boolean): Builder = apply {
             this.isNetworkDiscoveryEnabled = isEnabled
         }
 
         /**
          * Completes the builder pattern, returning an immutable config.
          *
-         * @return
+         * @return The fully constructed [MockzillaConfig].
          */
-        fun build() = MockzillaConfig(port, endpoints.map {
+        public fun build(): MockzillaConfig = MockzillaConfig(port, endpoints.map {
             it.copy(
                 delay = it.delay ?: delay,
             )
         }, isRelease, localhostOnly, logLevel, releaseConfig, isNetworkDiscoveryEnabled, additionalLogWriters)
 
-        companion object {
-            const val defaultPort = 8080
+        public companion object {
+            public const val defaultPort: Int = 8080
         }
     }
 }
 
 /**
- * @property config
- * @property mockBaseUrl
- * @property apiBaseUrl
- * @property port
- * @property authHeaderProvider
- * @property mockzillaVersion
- * @property ip
+ * Runtime details of a started Mockzilla server, returned by `startMockzilla`. Use [mockBaseUrl]
+ * as the base URL in the app under test's HTTP client to route requests through the mock server.
+ *
+ * @property config The configuration the server was started with.
+ * @property ip The IP address the server is listening on.
+ * @property mockBaseUrl Base URL for mock endpoint requests. Configure the app under test's HTTP
+ * client to use this URL.
+ * @property apiBaseUrl Base URL for the Mockzilla control API.
+ * @property port The port the server is bound to.
+ * @property authHeaderProvider Provides authentication headers for making requests to this server
+ * instance.
+ * @property mockzillaVersion The version of the Mockzilla library.
  */
-data class MockzillaRuntimeParams(
+public data class MockzillaRuntimeParams(
     val config: MockzillaConfig,
     val ip: String,
     val mockBaseUrl: String,

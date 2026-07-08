@@ -31,4 +31,7 @@ private fun EndpointConfiguration.validate() {
     check(delay == null || (0..Constants.maxDelayMean).contains(delay)) {
         "$errorPrefix Delay mean must be in range 0 to ${Int.MAX_VALUE / 2 - 1}"
     }
+    check(dashboardOptionsConfig.presets.distinctBy { it.name }.size == dashboardOptionsConfig.presets.size) {
+        "$errorPrefix Endpoint presets must have unique names"
+    }
 }

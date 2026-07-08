@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.di
 
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.controller.LocalMockController
 import com.apadmi.mockzilla.lib.internal.controller.ManagementApiController
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
@@ -13,6 +14,7 @@ import com.apadmi.mockzilla.lib.service.AuthHeaderProvider
 import com.apadmi.mockzilla.lib.sharedstate.MockzillaSharedProcessStateHandler
 
 import co.touchlab.kermit.Logger
+
 import kotlin.time.ExperimentalTime
 
 /**
@@ -20,6 +22,7 @@ import kotlin.time.ExperimentalTime
  * @property config
  * @property metaData
  * @property zeroConfDiscoveryService
+ * @property platformConfig
  */
 @Suppress("USE_DATA_CLASS")
 internal class DependencyInjector(
@@ -28,9 +31,11 @@ internal class DependencyInjector(
     fileIo: FileIo,
     val zeroConfDiscoveryService: ZeroConfDiscoveryService,
     val logger: Logger,
+    val platformConfig: PlatformConfig,
 ) {
     /* Service */
-    private val monitor = MockServerMonitorImpl()
+    private val localBodyCacheService = LocalBodyCacheService(fileIo)
+    private val monitor = MockServerMonitorImpl(localBodyCacheService)
 
     @OptIn(ExperimentalTime::class)
     internal val tokensService = TokensServiceImpl(config.releaseModeConfig.tokenLifeSpan)

@@ -7,7 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 
-class KtorMockzillaHttpRequest internal constructor(
+internal class KtorMockzillaHttpRequest(
     private val call: ApplicationCall,
     override val method: HttpMethod
 ) : MockzillaHttpRequest {

@@ -5,11 +5,18 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.layout
 
 @Suppress("MAGIC_NUMBER")
-fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
+internal fun Modifier.rotateVertically(clockwise: Boolean = true): Modifier {
     val rotate = rotate(if (clockwise) 90f else -90f)
 
     val adjustBounds = layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints)
+        val placeable = measurable.measure(
+            constraints.copy(
+                minWidth = constraints.minHeight,
+                maxWidth = constraints.maxHeight,
+                minHeight = constraints.minWidth,
+                maxHeight = constraints.maxWidth
+            )
+        )
         layout(placeable.height, placeable.width) {
             placeable.place(
                 x = -(placeable.width / 2 - placeable.height / 2),

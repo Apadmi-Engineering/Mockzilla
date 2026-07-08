@@ -1,21 +1,14 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.engine.connection
 
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
 
 import kotlinx.coroutines.CoroutineScope
 
-/**
- * @property connectionName
- * @property hostAddress
- * @property hostAddresses
- * @property attributes
- * @property port
- * @property state
- * @property adbConnection
- * @property metaData
- */
-data class DeviceDiscoveryEvent(
+internal data class DeviceDiscoveryEvent(
     val connectionName: String,
     val hostAddress: String,
     val hostAddresses: List<String>,
@@ -34,7 +27,7 @@ data class DeviceDiscoveryEvent(
     companion object
 }
 
-expect class ZeroConfSdkWrapper(serviceType: String, scope: CoroutineScope) {
+internal expect class ZeroConfSdkWrapper(serviceType: String, scope: CoroutineScope) {
     fun setListener(listener: suspend (DeviceDiscoveryEvent) -> Unit)
-    fun stop()
+    suspend fun stop()
 }

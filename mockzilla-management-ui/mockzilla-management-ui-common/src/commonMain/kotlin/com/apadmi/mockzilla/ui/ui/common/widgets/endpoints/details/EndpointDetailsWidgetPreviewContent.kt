@@ -6,6 +6,9 @@ import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State.Endpoint.Presets
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 
 import io.ktor.http.HttpStatusCode
 
@@ -16,7 +19,7 @@ internal val mockPresets = listOf(
         type = null,
         response = PartialMockzillaHttpResponse(
             statusCode = HttpStatusCode.BadRequest,
-            body = "{ \"name\":\"mockzilla\" }"
+            body = "{ \"name\":\"mockzilla\" }",
         )
     ),
     DashboardOverridePreset(
@@ -32,7 +35,7 @@ internal val mockPresets = listOf(
 
 @Composable
 internal fun EndpointDetailsWidgetPreviewContent(
-    state: EndpointDetailsViewModel.State
+    state: State
 ) = EndpointDetailsWidgetContent(
     state = state,
     onDelayChange = {},
@@ -40,15 +43,16 @@ internal fun EndpointDetailsWidgetPreviewContent(
     onResetAll = {},
     onFailChange = {},
     onFilterPresetChanged = {},
+    onRowDensityChanged = {},
     onPresetMoreInfoClicked = {},
+    onRetry = {},
     onCreatePreset = {},
-    onEditPreset = {},
 )
 
 @Suppress("TOO_LONG_FUNCTION")
 internal fun endpointDetailsWidgetSuccessState(
     fail: Boolean = false
-) = EndpointDetailsViewModel.State.Endpoint(
+) = State.Endpoint(
     config = SerializableEndpointConfig.allNulls(
         key = EndpointConfiguration.Key("Key"),
         name = "Endpoint Name",
@@ -57,7 +61,8 @@ internal fun endpointDetailsWidgetSuccessState(
     fail = fail,
     delayMillis = null,
     isLoading = false,
-    presets = EndpointDetailsViewModel.State.Endpoint.Presets(
+    layoutMode = RowDensity.Compact,
+    presets = Presets.Populated(
         appliedPreset = null,
         visiblePresets = mockPresets,
         allPresets = mockPresets,

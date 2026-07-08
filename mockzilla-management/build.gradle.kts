@@ -22,8 +22,10 @@ repositories {
 val artifactName = "mockzilla-management"
 
 kotlin {
+    explicitApi()
+
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "3.0.0" // x-release-please-version
+    version = project.injectedVersion() ?: "4.0.0-alpha1" // x-release-please-version
 
     jvm {
         testRuns["test"].executionTask.configure {
@@ -99,6 +101,7 @@ kotlin {
     }
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+        freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
     }
 }
 

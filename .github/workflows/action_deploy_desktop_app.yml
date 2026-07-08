@@ -10,14 +10,21 @@ env:
   MAC_CERTIFICATE_PATH: "./osx_build_certificate.p12"
   MAC_SIGNING_KEY_PATH: "./osx_signing_key.p12"
   APPLE_NOTARIZATION_KEY_PATH: "./apple_notarization_key.p8"
+  IS_SNAPSHOT: ${{ github.ref_type == 'branch' }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_type }}
+  cancel-in-progress: ${{ github.ref_type == 'branch' }}
 
 jobs:
   deploy_desktop:
     environment: production
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
@@ -26,20 +33,39 @@ jobs:
           MAC_SIGNING_CERT: ${{ secrets.MAC_SIGNING_CERT }}
           MAC_SIGNING_KEY: ${{ secrets.MAC_SIGNING_KEY }}
           APPLE_NOTARIZATION_KEY: ${{ secrets.APPLE_NOTARIZATION_KEY }}
+          SITE_COPY_TO: ${{ env.IS_SNAPSHOT == 'true' && 's3:mockzilla-updates-snapshots/' || 's3:mockzilla-updates/' }}
+          SITE_BASE_URL: ${{ env.IS_SNAPSHOT == 'true' && 'https://snapshots.mockzilla.apadmi.dev/' || 'https://updates.mockzilla.apadmi.dev/' }}
         run: |
           echo -n "$MAC_SIGNING_CERT" | base64 --decode > $MAC_CERTIFICATE_PATH
           echo -n "$MAC_SIGNING_KEY" | base64 --decode > $MAC_SIGNING_KEY_PATH
           echo -n "$APPLE_NOTARIZATION_KEY" | base64 --decode > $APPLE_NOTARIZATION_KEY_PATH
+          
+          echo "" >> gradle.properties
+          echo "is_deploying_desktop=true" >> gradle.properties
+      - name: Handle snapshot properties
+        if: ${{ env.IS_SNAPSHOT == 'true' }}
+        run: |
+          set -x
+          
+          echo "" >> gradle.properties
+          echo "is_snapshot=true" >> gradle.properties
+          echo "run_number=${{ github.run_number }}" >> gradle.properties
+      - name: Generate licenses
+        run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:exportLibraryDefinitions -Pgithub_token=${{ env.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Jar
         run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:desktopJar
       - name: Run Conveyor
-        uses: hydraulic-software/conveyor/actions/build@v21.1
+        uses: hydraulic-software/conveyor/actions/build@fee92baf2a05a4539c3ef410eb04a82dca501797 # v21.1
         env:
           MAC_SIGNING_KEY_PASSWORD: ${{ secrets.MAC_SIGNING_KEY_PASSWORD }}
           APPLE_NOTARIZATION_KEY_ID: ${{ secrets.APPLE_NOTARIZATION_KEY_ID }}
           APPLE_NOTARIZATION_ISSUER_ID: ${{ secrets.APPLE_NOTARIZATION_ISSUER_ID }}
           CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
           CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          SITE_COPY_TO: ${{ env.IS_SNAPSHOT == 'true' && 's3:mockzilla-updates-snapshots/' || 's3:mockzilla-updates/' }}
+          SITE_BASE_URL: ${{ env.IS_SNAPSHOT == 'true' && 'https://snapshots.mockzilla.apadmi.dev/' || 'https://updates.mockzilla.apadmi.dev/' }}
         with:
           command: make copied-site
           extra_flags: -f ci.conveyor.conf

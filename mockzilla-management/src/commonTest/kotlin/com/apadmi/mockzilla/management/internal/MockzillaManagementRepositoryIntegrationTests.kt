@@ -105,7 +105,7 @@ class MockzillaManagementRepositoryIntegrationTests {
                 EndpointConfiguration.Builder("Id")
                     .setDefaultHandler { MockzillaHttpResponse(body = "this is a body") }
                     .setShouldFail(false)
-                    .setMeanDelayMillis(10)
+                    .setDelayMillis(10)
                     .build(),
 
             )
@@ -177,8 +177,11 @@ class MockzillaManagementRepositoryIntegrationTests {
                 expected = expectedLogs,
                 actual = actualLogs.copy(logs = actualLogs.logs.map {
                     it.copy(
+                        id = mockLog.id,
                         timestamp = 0,
-                        requestHeaders = emptyMap()
+                        requestHeaders = emptyMap(),
+                        requestSizeBytes = null,
+                        responseSizeBytes = null,
                     )
                 })
             )

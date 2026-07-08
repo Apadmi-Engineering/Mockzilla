@@ -1,11 +1,12 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.jmds
+
+import com.apadmi.mockzilla.lib.NoKDoc
 
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceTypeListener
 
-/**
- * @property onTypeAdded
- */
 internal class ServiceTypeAddedListener(
     val onTypeAdded: (event: ServiceEvent?) -> Unit
 ) : ServiceTypeListener {

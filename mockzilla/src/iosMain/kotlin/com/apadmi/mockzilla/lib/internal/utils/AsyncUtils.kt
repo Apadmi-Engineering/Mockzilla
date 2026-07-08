@@ -11,7 +11,7 @@ private typealias HandlerCallback = (request: MockzillaHttpRequest, (MockzillaHt
 private typealias MatcherCallback = (request: MockzillaHttpRequest, (Boolean) -> Unit) -> Unit
 
 @Suppress("unused")  // Used from Swift
-fun setDefaultHandlerCallback(
+public fun setDefaultHandlerCallback(
     builder: EndpointConfiguration.Builder,
     block: HandlerCallback
 ) {
@@ -25,7 +25,7 @@ fun setDefaultHandlerCallback(
 }
 
 @Suppress("unused")  // Used from Swift
-fun setErrorHandlerCallback(
+public fun setErrorHandlerCallback(
     builder: EndpointConfiguration.Builder,
     block: HandlerCallback
 ) {
@@ -39,7 +39,7 @@ fun setErrorHandlerCallback(
 }
 
 @Suppress("unused")  // Used from Swift
-fun setPatternMatcherCallback(
+public fun setPatternMatcherCallback(
     builder: EndpointConfiguration.Builder,
     block: MatcherCallback
 ) {

@@ -1,18 +1,1 @@
-{% extends "main.html" %} {% block header %} {{ super() }} {% endblock %} {% block styles %} {{ super() }}
-<style>
-	.md-main__inner {
-		display: none;
-	}
-	.md-main {
-		display: none;
-	}
-
-	iframe {
-		flex: 1;
-		margin: 0;
-		border: none;
-	}
-</style>
-{% endblock %} {% block footer %} {% endblock %} {% block tabs %} {% block content %}
-<iframe src="homepage/index.html"></iframe>
-{% endblock %} {% endblock %}
+{% include "homepage-content.html" %}

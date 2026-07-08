@@ -1,7 +1,13 @@
 import com.apadmi.mockzilla.AndroidConfig
 import com.apadmi.mockzilla.CompilerConfig
 import com.apadmi.mockzilla.JavaConfig
+import com.apadmi.mockzilla.githubToken
 import com.apadmi.mockzilla.injectedVersion
+import com.apadmi.mockzilla.isDevelopmentBuild
+import com.apadmi.mockzilla.isSnapshot
+import com.apadmi.mockzilla.runNumber
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import kotlin.math.sign
@@ -15,14 +21,27 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.conveyor)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.buildKonfig)
+    alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.dokka) apply true
 }
 
 val artifactName = "mockzilla-management-ui"
 
+// Managed automatically by release-please PRs
+val baseVersion = "2.0.0" // x-release-please-version
+
 kotlin {
-    // Managed automatically by release-please PRs
-    version = "2.0.0" // x-release-please-version
+    // In the desktop world there's no concept of a build number so we have to bump the actual version
+    // for each snapshot, so we replace the patch with the github run number just for snapshots
+    version = runNumber()?.takeIf { isSnapshot() }?.let {
+        // Max patch number is 65535, since we're unlikely to have this many builds per version
+        // we just let it loop
+        baseVersion
+            .split(".")
+            .dropLast(1)
+            .joinToString(".") + ".${it % 65535}"
+    } ?: baseVersion
 
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
@@ -119,6 +138,7 @@ kotlin {
     }
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+        freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
     }
 }
 
@@ -163,6 +183,20 @@ compose.desktop {
     }
 }
 
+buildkonfig {
+    packageName = "$group.mockzilla.desktop"
+    exposeObjectWithName = "MockzillaDesktopBuildConfig"
+
+    defaultConfigs {
+        buildConfigField(
+            STRING,
+            "version",
+            version.toString() + ("-SNAPSHOT".takeIf { isSnapshot() } ?: "")
+        )
+        buildConfigField(BOOLEAN, "isSnapshot", isSnapshot().toString())
+    }
+}
+
 dependencies {
     // Use the configurations created by the Conveyor plugin to tell Gradle/Conveyor where to find the artifacts for each platform.
     linuxAmd64(libs.desktop.jvm.linux.x64)
@@ -172,6 +206,31 @@ dependencies {
 
     /* Compose previews */
     debugImplementation(libs.ui.tooling.preview)
+}
+
+aboutLibraries {
+    export {
+        outputFile = file("src/commonMain/composeResources/files/aboutlibraries.json")
+    }
+
+    collect {
+        configPath = file("licenses-config")
+
+        // GitHub token to raise API request limit to allow fetching more licenses.
+        // Needed for fetching licenses at build time.
+        gitHubApiToken = githubToken()
+
+        // Enable fetching of "remote" licenses.  Uses the API of supported source hosts
+        // See https://github.com/mikepenz/AboutLibraries#special-repository-support
+        fetchRemoteLicense = true
+
+        // Enables fetching of "remote" funding information. Uses the API of supported source hosts
+        // See https://github.com/mikepenz/AboutLibraries#special-repository-support
+        fetchRemoteFunding = true
+
+        // Enable inclusion of `platform` dependencies in the library report
+        includePlatform = true
+    }
 }
 
 configurations.all {

@@ -1,10 +1,12 @@
+---
+description: Get started with Mockzilla in minutes. Add the dependency, configure your endpoints, and start a local mock HTTP server for your mobile app.
+---
+
 # Quick Start
-!!! important
-    Mockzilla does not support HTTPS, all traffic is cleartext HTTP.
 
 !!! warning
     Mockzilla is **not** a production tool. It is for development and testing only. It should **never** be deployed to 
-    production. Running a server on device may introduce un-foreseen security issues.
+    production. Running a server on device may introduce unforeseen security issues.
 
 ## Installation
 
@@ -21,7 +23,7 @@
     2. Add `https://github.com/Apadmi-Engineering/SwiftMockzilla.git`
 
     !!! note 
-        Note: This is not for KMP projects (for those, the gradle dependecy should be added to `shared` source set). 
+        This is not for KMP projects (for those, the gradle dependency should be added to `shared` source set). 
         This SPM dependency is for purely native iOS apps only.
 
 === "Flutter"
@@ -38,6 +40,9 @@
     ```
 
 ## Enable local plaintext traffic
+
+!!! important
+    Mockzilla does not support HTTPS, all traffic is cleartext HTTP.
 
 === "Android"
     Add both `localhost` and `127.0.0.1` to your [network_security_config.xml](https://developer.android.com/privacy-and-security/security-config).
@@ -67,7 +72,7 @@
     </dict>
     ```
 
-## Starting The Server
+## Starting the Server
 
 Mockzilla is entirely driven by a config object which is used to start the server.
 
@@ -161,6 +166,8 @@ Mockzilla listens for calls to `http://localhost:8080/local-mock` (this should b
 
 To configure the port see [here](/dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/#581853299%2FFunctions%2F1121797123).
 
+It's recommended to choose a different port for each of your apps to prevent clashes.
+
 ## Recommendation
 
 Since Mockzilla shouldn't be included in production binaries, we recommend creating a new product flavour specifically 
@@ -194,9 +201,13 @@ for the mock and only including this dependency for this variant.
     4. Optionally, feel free to move the Mockzilla config to an auxiliary file. Just make sure that the declarations 
     aren't used in your production app.
 
+!!! note
+    Looking for the Web/JS target? See the dedicated [Web guide](web.md) instead - its setup differs enough
+    (a required service worker file, no cleartext-traffic step) to warrant its own walkthrough.
+
 ## Tips
 
-Ensure your development machine and test device are on the same wifi network. You can replace `localhost` with your 
-device's IP addresss and try calling these endpoints from Postman (or a similar REST client.)
+Ensure your development machine and test device are on the same Wi-Fi network. You can replace `localhost` with your 
+device's IP address and try calling these endpoints from Postman (or a similar REST client.)
 
 ![alt text](img/postman-example.png "Postman example")
