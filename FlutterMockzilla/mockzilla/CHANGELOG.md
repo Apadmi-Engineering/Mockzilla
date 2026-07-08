@@ -1,5 +1,33 @@
 # Changelog
 
+## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v2.0.0...flutter_mockzilla-v2.1.0) (2026-07-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518))
+
+### Features
+
+* Add support for built-in Kotlin and migrate FlutterMockzilla to AGP 9 ([#638](https://github.com/Apadmi-Engineering/Mockzilla/issues/638)) ([9ef7445](https://github.com/Apadmi-Engineering/Mockzilla/commit/9ef74456a8e3dd94cc7a0540dccea0aab0e0ce75))
+* bump underlying kotlin library version to bump android target ([3a6fc2f](https://github.com/Apadmi-Engineering/Mockzilla/commit/3a6fc2fb682061159f87b652ad2dab759dc6fb41))
+* bump underlying kotlin library version to bump android target ([1d254d1](https://github.com/Apadmi-Engineering/Mockzilla/commit/1d254d12373196c7efed2046ce8a58112f0ef1ed))
+* Complete additional Flutter 3.41 migrations for SwiftPM ([#559](https://github.com/Apadmi-Engineering/Mockzilla/issues/559)) ([8458ca8](https://github.com/Apadmi-Engineering/Mockzilla/commit/8458ca8ea592fc5899895272851e161ff4af102e))
+* Feature/flutter support new mobile UI ([#532](https://github.com/Apadmi-Engineering/Mockzilla/issues/532)) ([70e0a52](https://github.com/Apadmi-Engineering/Mockzilla/commit/70e0a52276220b97db2d427ec93bc85994c50280))
+* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518)) ([4183f06](https://github.com/Apadmi-Engineering/Mockzilla/commit/4183f0626c5936e0ef213a006a46019e9d08d213))
+* Implement support for custom Flutter loggers ([#370](https://github.com/Apadmi-Engineering/Mockzilla/issues/370)) ([78e9112](https://github.com/Apadmi-Engineering/Mockzilla/commit/78e9112cc447188eb58750986324b3bec62c4b12))
+* move docs to cloud pages ([#465](https://github.com/Apadmi-Engineering/Mockzilla/issues/465)) ([d64dd4c](https://github.com/Apadmi-Engineering/Mockzilla/commit/d64dd4c522bbb5b09de79055e9ccf4c5f5b8c2c1))
+* setup flutter wrapper and deployments ([86fa014](https://github.com/Apadmi-Engineering/Mockzilla/commit/86fa0140f5b3de8c716f5c1cdd3e088b992a78ba))
+
+
+### Bug Fixes
+
+* fix flutter example ([#463](https://github.com/Apadmi-Engineering/Mockzilla/issues/463)) ([2c4fd3f](https://github.com/Apadmi-Engineering/Mockzilla/commit/2c4fd3fb4e2a450dccec1ad09464fdfea4364b97))
+* Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
+* remove unneeded server dependency from mobile ui ([a5e6c38](https://github.com/Apadmi-Engineering/Mockzilla/commit/a5e6c38ae3fc30df846c2963b053b272e242149f))
+* Update Flutter package inter-dependencies ([afe63a4](https://github.com/Apadmi-Engineering/Mockzilla/commit/afe63a49275f57e17df814addd0f922bb5aca22d))
+* various build issues ([b5d43b2](https://github.com/Apadmi-Engineering/Mockzilla/commit/b5d43b278030904d1da12704a405acb974a70e61))
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v1.1.1...flutter_mockzilla-v2.0.0) (2025-11-18)
 
 ### Features
