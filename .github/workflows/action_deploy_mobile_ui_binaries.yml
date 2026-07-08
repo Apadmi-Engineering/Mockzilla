@@ -1,7 +1,24 @@
 name: Deploy Mobile Ui KMP Binaries
 
-on: 
+on:
   workflow_dispatch:
+    inputs:
+      skip_swift:
+        description: 'Skip deploy-swift (already published to CocoaPods/SPM on a prior attempt)'
+        type: boolean
+        default: false
+      skip_kotlin:
+        description: 'Skip deploy-kotlin (already published to Maven Central on a prior attempt)'
+        type: boolean
+        default: false
+      skip_js:
+        description: 'Skip deploy-js (already uploaded to R2 on a prior attempt)'
+        type: boolean
+        default: false
+      skip_flutter:
+        description: 'Skip deploy-flutter (already published to pub.dev on a prior attempt)'
+        type: boolean
+        default: false
   push:
     tags:
       - mockzilla-mobile-ui-v**
@@ -16,7 +33,11 @@ jobs:
   deploy-flutter:
     needs: [ deploy-js ]
     runs-on: macos-26
-    if: ${{ github.ref_type != 'branch' }}
+    if: >-
+      always() &&
+      github.ref_type != 'branch' &&
+      (needs.deploy-js.result == 'success' || needs.deploy-js.result == 'skipped') &&
+      github.event.inputs.skip_flutter != 'true'
     permissions:
       id-token: write
     steps:
@@ -28,7 +49,8 @@ jobs:
           export GPG_TTY=$(tty)
           bundle exec fastlane download_mockzilla_ui_mobile_js_assets
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+          CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
       - uses: dart-lang/setup-dart@65eb853c7ba17dde3be364c3d2858773e7144260 # v1.7.2
       - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
@@ -40,10 +62,13 @@ jobs:
   release-please:
     needs: [deploy-flutter]
     runs-on: macos-26
+    if: >-
+      always() &&
+      (needs.deploy-flutter.result == 'success' || needs.deploy-flutter.result == 'skipped')
     steps:
       - uses: googleapis/release-please-action@5c625bfb5d1ff62eadeeb3772007f7f66fdcf071 # v4.4.1
+        if: ${{ !env.is_snapshot }}
         with:
-          if: ${{ !env.is_snapshot }}
           release-type: simple
           skip-github-pull-request: true
   pre-deploy-checks:
@@ -69,6 +94,7 @@ jobs:
     environment: production
     runs-on: macos-26
     needs: [pre-deploy-checks]
+    if: ${{ github.event.inputs.skip_swift != 'true' }}
     steps:
       - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
@@ -91,6 +117,7 @@ jobs:
     environment: production
     runs-on: macos-26
     needs: [pre-deploy-checks]
+    if: ${{ github.event.inputs.skip_kotlin != 'true' }}
     steps:
       - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
@@ -114,10 +141,14 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
   deploy-js:
-    name: Publish JS files to GitHub release
+    name: Publish JS files to R2
     runs-on: macos-26
     needs: [ deploy-kotlin, deploy-swift]
-    if: ${{ github.ref_type != 'branch' }}
+    if: >-
+      always() &&
+      (needs.deploy-kotlin.result == 'success' || needs.deploy-kotlin.result == 'skipped') &&
+      (needs.deploy-swift.result == 'success' || needs.deploy-swift.result == 'skipped') &&
+      github.event.inputs.skip_js != 'true'
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
@@ -126,15 +157,8 @@ jobs:
           java-version: '17'
       - name: Install dependencies
         run: bundle install
-      - name: Build JS packages
-        run: bundle exec fastlane build_mobile_ui_js_artifacts
-      - name: Zip up assets
-        run: |
-          mv mockzilla-management-ui/mockzilla-mobile-ui/build/kotlin-webpack/js/developmentExecutable javascript_output
-          zip -r javascript_output.zip javascript_output
-      - uses: svenstaro/upload-release-action@29e53e917877a24fad85510ded594ab3c9ca12de # v2.11.5
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: javascript_output.zip
-          tag: ${{ github.ref }}
-          overwrite: true
+      - name: Deploy JS artifacts to R2
+        run: bundle exec fastlane deploy_mobile_ui_js_artifacts_to_r2 is_snapshot:$is_snapshot
+        env:
+          CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+          CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
