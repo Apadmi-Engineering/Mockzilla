@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.3 (2025-01-30)
+
+* Update underlying Mockzilla dependency
+
 ## 0.0.2-dev.1 (2025-11-18)
 
 * Update underlying Mockzilla dependency
