@@ -19,7 +19,8 @@
     "FlutterMockzilla/mockzilla": {
       "component": "flutter_mockzilla",
       "release-type": "dart",
-      "always-update": true
+      "always-update": true,
+      "release-as": "2.1.0"
     },
     "FlutterMockzilla/mockzilla_platform_interface": {
       "component": "flutter_mockzilla_platform_interface",
