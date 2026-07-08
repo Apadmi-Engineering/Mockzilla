@@ -1,7 +1,7 @@
 name: mockzilla_web
 description: The Web implementation for the mockzilla plugin.
 # x-release-please-start-version
-version: 0.0.3
+version: 0.0.4
 # x-release-please-end
 homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla

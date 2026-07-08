@@ -7,7 +7,7 @@
   "FlutterMockzilla/mockzilla_android": "2.0.0",
   "FlutterMockzilla/mockzilla_ios": "2.0.0",
   "FlutterMockzilla/mockzilla_platform_interface": "2.0.0",
-  "FlutterMockzilla/mockzilla_web": "0.0.3",
+  "FlutterMockzilla/mockzilla_web": "0.0.4",
   "mockzilla-management-ui/mockzilla-mobile-ui": "1.0.0",
   "mockzilla-management-ui/mockzilla-desktop": "2.0.0"
 }

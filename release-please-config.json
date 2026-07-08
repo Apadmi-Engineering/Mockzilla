@@ -39,8 +39,7 @@
     "FlutterMockzilla/mockzilla_web": {
       "component": "flutter_mockzilla_web",
       "release-type": "dart",
-      "always-update": true,
-      "release-as": "0.0.4"
+      "always-update": true
     },
     "mockzilla-management-ui/mockzilla-desktop": {
       "component": "mockzilla-desktop",
