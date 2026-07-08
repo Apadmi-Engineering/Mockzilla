@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.0.0-alpha1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-v3.0.0...mockzilla-management-v4.0.0-alpha1) (2026-07-08)
+
+
+### Features
+
+* address console log spam ([#653](https://github.com/Apadmi-Engineering/Mockzilla/issues/653)) ([541e38a](https://github.com/Apadmi-Engineering/Mockzilla/commit/541e38ae838c236600847711a1b6240e4de82e57))
+* app icon in desktop app ([#598](https://github.com/Apadmi-Engineering/Mockzilla/issues/598)) ([663d7ea](https://github.com/Apadmi-Engineering/Mockzilla/commit/663d7ea9c0fc210b7eb5fcf71077b791bb4d7e5a))
+* enable gradle explicitApi ([#676](https://github.com/Apadmi-Engineering/Mockzilla/issues/676)) ([00bfa33](https://github.com/Apadmi-Engineering/Mockzilla/commit/00bfa33b309892741e59b9648b21e06e36447807))
+* improve handling of loading, error and empty states ([#659](https://github.com/Apadmi-Engineering/Mockzilla/issues/659)) ([415b6a2](https://github.com/Apadmi-Engineering/Mockzilla/commit/415b6a25de0e01f8cec23525124ce545cb9c9ad0))
+* improve the auto detection of devices on the network ([#603](https://github.com/Apadmi-Engineering/Mockzilla/issues/603)) ([55aad57](https://github.com/Apadmi-Engineering/Mockzilla/commit/55aad5707d05dd0674fb49f5b49302d790a26798))
+* re-think the approach to displaying logs ([#650](https://github.com/Apadmi-Engineering/Mockzilla/issues/650)) ([5bd0c26](https://github.com/Apadmi-Engineering/Mockzilla/commit/5bd0c26d067461babfd6796ef3db8fdae030cb2f))
+* sync develop ([#661](https://github.com/Apadmi-Engineering/Mockzilla/issues/661)) ([2551237](https://github.com/Apadmi-Engineering/Mockzilla/commit/255123787abd0344c5606a2284d174ae33734ecd))
+* update documentation with more desktop app instructions ([#677](https://github.com/Apadmi-Engineering/Mockzilla/issues/677)) ([48f77f9](https://github.com/Apadmi-Engineering/Mockzilla/commit/48f77f9e149196846c5734f55bd9ecc549143476))
+
 ## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-v3.0.0-alpha2...mockzilla-management-v3.0.0) (2026-01-26)
 
 
