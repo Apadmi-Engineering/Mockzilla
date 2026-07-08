@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_android-v2.0.0...flutter_mockzilla_android-v2.1.0) (2026-07-08)
+
+
+### Features
+
+* Add support for built-in Kotlin and migrate FlutterMockzilla to AGP 9 ([#638](https://github.com/Apadmi-Engineering/Mockzilla/issues/638)) ([9ef7445](https://github.com/Apadmi-Engineering/Mockzilla/commit/9ef74456a8e3dd94cc7a0540dccea0aab0e0ce75))
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_android-v1.1.1...flutter_mockzilla_android-v2.0.0) (2025-11-18)
 
 ### Features
