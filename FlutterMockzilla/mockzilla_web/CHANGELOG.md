@@ -5,7 +5,7 @@
 
 ### Features
 
-* various fixes ([#691](https://github.com/Apadmi-Engineering/Mockzilla/issues/691)) ([2d4f704](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d4f7044575e4291cd9a96b4b3f4fe994b8a3344))
+* fix stopMockzilla call descending into a recursive loop ([#691](https://github.com/Apadmi-Engineering/Mockzilla/issues/691)) ([2d4f704](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d4f7044575e4291cd9a96b4b3f4fe994b8a3344))
 
 ## [0.0.4](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v0.0.3...flutter_mockzilla_web-v0.0.4) (2026-07-08)
 
