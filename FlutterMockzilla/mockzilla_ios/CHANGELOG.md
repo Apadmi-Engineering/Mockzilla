@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.0-dev](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v2.1.0...flutter_mockzilla_ios-v3.0.0-dev) (2026-07-09)
+
+
+### Features
+
+* bump underlying kotlin version
+
 ## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v2.0.0...flutter_mockzilla_ios-v2.1.0) (2026-07-08)
 
 
