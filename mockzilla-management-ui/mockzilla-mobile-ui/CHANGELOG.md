@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.1.0-dev](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.0.0...mockzilla-mobile-ui-v1.1.0-dev) (2026-07-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* Breaking changes across all kotlin modules
+
+### Features
+
+* added metadata and animation ([#644](https://github.com/Apadmi-Engineering/Mockzilla/issues/644)) ([a127aa6](https://github.com/Apadmi-Engineering/Mockzilla/commit/a127aa6d985ed308badac358fd6273b0b70fa15d))
+* enable gradle explicitApi ([#676](https://github.com/Apadmi-Engineering/Mockzilla/issues/676)) ([00bfa33](https://github.com/Apadmi-Engineering/Mockzilla/commit/00bfa33b309892741e59b9648b21e06e36447807))
+* force breaking change ([d12174e](https://github.com/Apadmi-Engineering/Mockzilla/commit/d12174e34ad522b4cc9d4ca0b8a94fd094165a03))
+* make the Android Mockzilla UI appear in a modal like iOS ([#597](https://github.com/Apadmi-Engineering/Mockzilla/issues/597)) ([9df3b7d](https://github.com/Apadmi-Engineering/Mockzilla/commit/9df3b7daf8cfd3b557bdb6ec92ad922f6e3ef029))
+* minor desktop fixes and better handling of desktop snapshots ([#662](https://github.com/Apadmi-Engineering/Mockzilla/issues/662)) ([3f90bf4](https://github.com/Apadmi-Engineering/Mockzilla/commit/3f90bf4746e6942431c21448438cfe1934e10d01))
+* redo the whole widget scaffold ([#658](https://github.com/Apadmi-Engineering/Mockzilla/issues/658)) ([2de60bf](https://github.com/Apadmi-Engineering/Mockzilla/commit/2de60bf1ebe413677be86637a45dee56978ff0e1))
+* various improvements mostly to the mobile UI ([#667](https://github.com/Apadmi-Engineering/Mockzilla/issues/667)) ([217f9d4](https://github.com/Apadmi-Engineering/Mockzilla/commit/217f9d4d3d69175a9e65f3738c2c19ab173fd3f4))
+* various UI tweaks after first round of feedback ([#666](https://github.com/Apadmi-Engineering/Mockzilla/issues/666)) ([8eb924e](https://github.com/Apadmi-Engineering/Mockzilla/commit/8eb924e6a02476a861aa5423bcd2d403436b11ae))
+
+
+### Bug Fixes
+
+* fix mobile scroll crash and fix unimplemented text colours ([9cc6362](https://github.com/Apadmi-Engineering/Mockzilla/commit/9cc63624f750088a0e808cabec03d23c568c5637))
+* fix mobile ui not connecting ([661f711](https://github.com/Apadmi-Engineering/Mockzilla/commit/661f7118f9e1a600d0532e14ac2a463e77937821))
+
 ## [1.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v0.0.9...mockzilla-mobile-ui-v1.0.0) (2026-01-30)
 
 
