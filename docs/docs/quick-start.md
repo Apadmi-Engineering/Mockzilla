@@ -48,6 +48,7 @@ description: Get started with Mockzilla in minutes. Add the dependency, configur
     Add both `localhost` and `127.0.0.1` to your [network_security_config.xml](https://developer.android.com/privacy-and-security/security-config).
     (We recommend having a separate config for production which does not have these overrides)
     ```xml
+    # In res/xml/network_security_config.xml
     <?xml version="1.0" encoding="utf-8"?>
     <network-security-config>
         <base-config>
@@ -61,6 +62,11 @@ description: Get started with Mockzilla in minutes. Add the dependency, configur
             <domain includeSubdomains="true">127.0.0.1</domain>
         </domain-config>
     </network-security-config>
+
+    # In your AndroidManifest.xml file
+    <application
+        ...
+        android:networkSecurityConfig="@xml/network_security_config"
     ```
 === "iOS"
     Add the following to your info.plist.
@@ -86,8 +92,8 @@ Mockzilla is entirely driven by a config object which is used to start the serve
                 .Builder("Hello World")
                 .setDefaultHandler {
                     MockzillaHttpResponse(body = "Hello World")
-                })
-        .build()
+                }
+        ).build()
     ```
 === "Swift"
     ```swift
@@ -145,7 +151,7 @@ See [here](/endpoints/) for more information on configuring your endpoints. (Inc
         func application(_: UIApplication,
                          didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
         {
-            let config = MockillaConfig.Builder()...
+            let config = MockzillaConfig.Builder()...
             startMockzilla(config: config)
             
             return true
