@@ -141,6 +141,7 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
   deploy-js:
+    environment: production
     name: Publish JS files to R2
     runs-on: macos-26
     needs: [ deploy-kotlin, deploy-swift]
