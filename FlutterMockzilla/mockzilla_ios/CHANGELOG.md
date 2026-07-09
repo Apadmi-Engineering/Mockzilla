@@ -5,7 +5,7 @@
 
 ### Features
 
-* various fixes ([#691](https://github.com/Apadmi-Engineering/Mockzilla/issues/691)) ([2d4f704](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d4f7044575e4291cd9a96b4b3f4fe994b8a3344))
+* bump underlying kotlin version
 
 ## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v2.0.0...flutter_mockzilla_ios-v2.1.0) (2026-07-08)
 
