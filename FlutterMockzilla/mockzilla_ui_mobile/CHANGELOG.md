@@ -6,18 +6,11 @@
 ### ⚠ BREAKING CHANGES
 
 * bump min android sdk and update readme ([#685](https://github.com/Apadmi-Engineering/Mockzilla/issues/685))
-* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518))
 
 ### Features
 
 * Add support for built-in Kotlin and migrate FlutterMockzilla to AGP 9 ([#638](https://github.com/Apadmi-Engineering/Mockzilla/issues/638)) ([9ef7445](https://github.com/Apadmi-Engineering/Mockzilla/commit/9ef74456a8e3dd94cc7a0540dccea0aab0e0ce75))
-* bump min android sdk and update readme ([#685](https://github.com/Apadmi-Engineering/Mockzilla/issues/685)) ([63eb067](https://github.com/Apadmi-Engineering/Mockzilla/commit/63eb06725fa7e3a826e602a23f1dbe36b8f0b9c6))
 * Complete additional Flutter 3.41 migrations for SwiftPM ([#559](https://github.com/Apadmi-Engineering/Mockzilla/issues/559)) ([8458ca8](https://github.com/Apadmi-Engineering/Mockzilla/commit/8458ca8ea592fc5899895272851e161ff4af102e))
-* Feature/flutter support new mobile UI ([#532](https://github.com/Apadmi-Engineering/Mockzilla/issues/532)) ([70e0a52](https://github.com/Apadmi-Engineering/Mockzilla/commit/70e0a52276220b97db2d427ec93bc85994c50280))
-* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518)) ([4183f06](https://github.com/Apadmi-Engineering/Mockzilla/commit/4183f0626c5936e0ef213a006a46019e9d08d213))
-* move docs to cloud pages ([#465](https://github.com/Apadmi-Engineering/Mockzilla/issues/465)) ([d64dd4c](https://github.com/Apadmi-Engineering/Mockzilla/commit/d64dd4c522bbb5b09de79055e9ccf4c5f5b8c2c1))
-* setup flutter wrapper and deployments ([86fa014](https://github.com/Apadmi-Engineering/Mockzilla/commit/86fa0140f5b3de8c716f5c1cdd3e088b992a78ba))
-
 
 ### Bug Fixes
 
