@@ -21,9 +21,9 @@ dependencies:
   flutter:
     sdk: flutter
   mockzilla_platform_interface: ^2.0.0
-  mockzilla_android: ^2.0.0
-  mockzilla_ios: ^2.0.0
-  mockzilla_web: ^0.0.3
+  mockzilla_android: ^3.0.0-dev
+  mockzilla_ios: ^3.0.0-dev
+  mockzilla_web: ^0.0.4
 
 dev_dependencies:
   flutter_test:
