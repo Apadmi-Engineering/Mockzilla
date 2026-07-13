@@ -72,7 +72,8 @@ internal fun ActivePresetCard(
             Text(
                 modifier = Modifier.weight(1f),
                 text = strings.presets.activePresetTitle,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             CustomButton(
                 label = strings.presets.createCustomButton,

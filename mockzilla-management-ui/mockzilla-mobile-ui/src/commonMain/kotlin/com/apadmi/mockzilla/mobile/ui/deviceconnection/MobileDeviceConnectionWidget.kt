@@ -83,7 +83,10 @@ private fun MobileDeviceConnectionWidgetContent(
             )
         }
 
-        State.Connected -> Text(strings.widgets.deviceConnection.connected)
+        State.Connected -> Text(
+            text = strings.widgets.deviceConnection.connected,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
     }
 }
 

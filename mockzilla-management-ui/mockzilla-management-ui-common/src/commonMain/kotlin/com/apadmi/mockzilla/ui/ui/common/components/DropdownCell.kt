@@ -50,7 +50,10 @@ public fun <T> DropdownMenu(
             items.forEach { item ->
                 DropdownMenuItem(
                     text = {
-                        Text(text = stringForItem(item))
+                        Text(
+                            text = stringForItem(item),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
                     },
                     onClick = {
                         onSelected(item)

@@ -100,6 +100,7 @@ private fun LicensesDialogHeader(onDismiss: () -> Unit) {
         Text(
             text = LocalStrings.current.widgets.openSourceLicenses.title,
             style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         IconButton(onClick = onDismiss) {
             Icon(
@@ -129,6 +130,7 @@ private fun LibraryRow(library: LibraryForAttribution) {
                 Text(
                     text = library.name,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
 
                 library.licenses.forEach { license ->
