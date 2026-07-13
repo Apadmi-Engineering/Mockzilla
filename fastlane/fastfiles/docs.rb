@@ -20,4 +20,8 @@ lane :generate_docs do
 
     # Build docs
     sh("cd #{lane_context[:repo_root]}/docs; zensical build")
+
+    # Generate llms.txt / llms-full.txt for consumers using LLM coding assistants.
+    # Must run after `zensical build`, which owns the `site` output directory.
+    sh("cd #{lane_context[:repo_root]}/docs; python -c 'import main; main.generate_llms_files()'")
 end

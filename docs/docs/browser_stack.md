@@ -1,3 +1,7 @@
+---
+description: Run Mockzilla on BrowserStack devices - iOS works out of the box; Android requires bypassing BrowserStack's local-traffic proxy in your HTTP client.
+---
+
 # BrowserStack
 
 ## iOS
