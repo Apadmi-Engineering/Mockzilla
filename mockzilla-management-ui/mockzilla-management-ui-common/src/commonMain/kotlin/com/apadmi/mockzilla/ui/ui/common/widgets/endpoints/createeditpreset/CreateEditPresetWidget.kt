@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -434,7 +435,8 @@ internal fun CreateEditPresetWidgetContent(
             .fillMaxSize()
             .then(if (!isBodyExpanded) Modifier.verticalScroll(rememberScrollState()) else Modifier)
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .imePadding(),
         verticalArrangement = if (state is State.FailedToLoad) Arrangement.Center else Arrangement.Top
     ) {
         when (state) {
