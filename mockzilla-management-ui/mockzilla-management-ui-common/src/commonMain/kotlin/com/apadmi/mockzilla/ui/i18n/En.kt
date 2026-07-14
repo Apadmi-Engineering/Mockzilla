@@ -18,7 +18,9 @@ public val EnStrings: Strings = Strings(
         backDescription = "Back",
         debugDescription = "Debug",
         resetDescription = "Reset",
-        deleteDescription = "Delete"
+        deleteDescription = "Delete",
+        globalDescription = "Global Controls",
+        metaDescription = "Meta Data",
     ),
     menu = Strings.Menu(
         openSourceLicenses = "Open source licences",
@@ -294,6 +296,8 @@ public val EnStrings: Strings = Strings(
             responseSectionLabel = "Response",
             bodyLabel = "Body",
             jsonErrorTitle = "Invalid JSON:",
+            collapse = "Collapse",
+            expand = "Expand",
         ),
         openSourceLicenses = Strings.Widgets.OpenSourceLicenses(
             error = "Failed to load licences",

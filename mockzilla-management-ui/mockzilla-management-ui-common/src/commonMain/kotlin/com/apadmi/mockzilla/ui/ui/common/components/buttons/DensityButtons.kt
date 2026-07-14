@@ -39,12 +39,14 @@ internal fun RowDensityControls(
     onChanged: (RowDensity) -> Unit = {}
 ) = Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
     listOf(RowDensity.Compact, RowDensity.Comfy).forEach { density ->
-        RowDensityButton(
-            label = density.name.lowercase(),
-            icon = density.icon,
-            isSelected = selected == density,
-            onClick = { onChanged(density) },
-        )
+        ButtonTooltip(label = density.name) {
+            RowDensityButton(
+                label = density.name.lowercase(),
+                icon = density.icon,
+                isSelected = selected == density,
+                onClick = { onChanged(density) },
+            )
+        }
     }
 }
 

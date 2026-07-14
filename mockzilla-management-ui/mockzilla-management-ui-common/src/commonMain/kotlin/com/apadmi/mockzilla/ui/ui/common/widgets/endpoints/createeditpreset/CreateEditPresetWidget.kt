@@ -48,7 +48,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -87,6 +86,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.components.editor.FindableEditorTextField
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
@@ -146,14 +146,13 @@ private fun ColumnScope.HeadersSection(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(onClick = { onRemoveHeader(header) }) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp),
-                    )
-                }
+                CustomIconButton(
+                    onClick = { onRemoveHeader(header) },
+                    imageVector = Icons.Default.Close,
+                    iconTint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription = LocalStrings.current.common.closeDescription,
+                    iconSize = 16.dp,
+                )
             }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -203,24 +202,21 @@ private fun ColumnScope.HeadersSection(
             onValueChange = { localValue = it },
         )
         val canAdd = localKey.isNotEmpty() && localValue.isNotEmpty()
-        IconButton(
+        CustomIconButton(
             onClick = {
                 onAddHeader(localKey, localValue)
                 localKey = ""
                 localValue = ""
             },
-            enabled = canAdd,
+            imageVector = Icons.Default.Add,
+            iconTint = MaterialTheme.colorScheme.onSurface,
+            contentDescription = strings.addHeaderButton,
             modifier = Modifier
                 .iconButtonSize()
                 .pointerHoverIcon(if (canAdd) PointerIcon.Hand else blockedPointerIcon),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = strings.addHeaderButton,
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(14.dp),
-            )
-        }
+            enabled = canAdd,
+            iconSize = 14.dp,
+        )
     }
 
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -538,17 +534,14 @@ private fun BodySection(
             modifier = Modifier.alpha(if (isFormattable) 1f else 0f)
         )
 
-        IconButton(
+        CustomIconButton(
             onClick = onToggleExpand,
+            imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
+            iconTint = MaterialTheme.colorScheme.onSurface,
+            contentDescription = if (isExpanded) strings.collapse else strings.expand,
             modifier = Modifier.iconButtonSize(),
-        ) {
-            Icon(
-                imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
-                contentDescription = if (isExpanded) "Collapse" else "Expand",
-                modifier = Modifier.size(18.dp),
-                tint = MaterialTheme.colorScheme.onSurface,
-            )
-        }
+            iconSize = 18.dp,
+        )
     }
 
     FindableEditorTextField(

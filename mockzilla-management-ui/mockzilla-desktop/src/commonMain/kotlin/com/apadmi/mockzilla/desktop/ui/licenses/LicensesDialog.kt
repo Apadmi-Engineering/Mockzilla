@@ -18,7 +18,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,6 +38,7 @@ import com.apadmi.mockzilla.desktop.engine.licenses.LicenseDisplayModel
 import com.apadmi.mockzilla.desktop.ui.licenses.LicensesViewModel.*
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
@@ -102,13 +103,13 @@ private fun LicensesDialogHeader(onDismiss: () -> Unit) {
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
         )
-        IconButton(onClick = onDismiss) {
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = LocalStrings.current.common.closeDescription,
-                modifier = Modifier.size(18.dp),
-            )
-        }
+        CustomIconButton(
+            onClick = onDismiss,
+            imageVector = Icons.Filled.Close,
+            iconTint = LocalContentColor.current,
+            contentDescription = LocalStrings.current.common.closeDescription,
+            iconSize = 18.dp,
+        )
     }
 }
 

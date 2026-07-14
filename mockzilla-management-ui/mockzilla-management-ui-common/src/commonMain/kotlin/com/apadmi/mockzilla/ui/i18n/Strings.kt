@@ -84,6 +84,8 @@ public data class Strings(
         val debugDescription: String,
         val resetDescription: String,
         val deleteDescription: String,
+        val globalDescription: String,
+        val metaDescription: String,
     )
     @InternalMockzillaApi
     public data class Widgets(
@@ -369,6 +371,8 @@ public data class Strings(
             val responseSectionLabel: String,
             val bodyLabel: String,
             val jsonErrorTitle: String,
+            val collapse: String,
+            val expand: String,
         )
 
         @InternalMockzillaApi
