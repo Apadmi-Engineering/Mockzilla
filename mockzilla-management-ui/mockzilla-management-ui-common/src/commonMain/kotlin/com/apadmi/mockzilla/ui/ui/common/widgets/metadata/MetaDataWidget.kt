@@ -111,7 +111,10 @@ internal fun MetaDataWidgetContent(
                 strings
             )
 
-            MetaDataWidgetViewModel.State.Error -> Text(strings.widgets.metaData.error)
+            MetaDataWidgetViewModel.State.Error -> Text(
+                text = strings.widgets.metaData.error,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
             MetaDataWidgetViewModel.State.Loading -> CircularProgressIndicator()
         }
     }

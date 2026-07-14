@@ -429,6 +429,7 @@ private fun BodyContent(
             Text(
                 text = annotatedBody ?: AnnotatedString(body.bodyOrPreview),
                 style = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current),
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }

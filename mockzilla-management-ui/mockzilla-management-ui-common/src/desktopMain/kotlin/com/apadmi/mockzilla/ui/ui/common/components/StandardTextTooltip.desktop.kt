@@ -31,7 +31,8 @@ public actual fun StandardTextTooltip(text: String, content: @Composable () -> U
                 modifier = Modifier.padding(2.dp)
                     .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                     .padding(vertical = 2.dp, horizontal = 6.dp),
-                text = text
+                text = text,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         state = rememberBasicTooltipState(),

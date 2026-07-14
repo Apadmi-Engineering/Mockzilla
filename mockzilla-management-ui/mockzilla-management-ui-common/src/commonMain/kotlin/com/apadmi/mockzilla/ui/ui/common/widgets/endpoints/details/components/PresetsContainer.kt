@@ -93,12 +93,14 @@ internal fun PresetsContainer(
                     Text(
                         text = strings.noAvailablePresetsTitle,
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = strings.noAvailablePresetsBody,
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.size(4.dp))
                     CustomButton(
@@ -106,6 +108,7 @@ internal fun PresetsContainer(
                         onClick = onPresetMoreInfoClicked,
                         variant = ButtonVariant.Outline,
                     )
+                    Spacer(modifier = Modifier.size(4.dp))
                 }
             }
         }

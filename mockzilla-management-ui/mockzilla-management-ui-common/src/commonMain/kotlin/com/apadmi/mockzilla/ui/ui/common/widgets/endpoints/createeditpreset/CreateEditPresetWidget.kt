@@ -725,6 +725,7 @@ private fun StatusCodeDropdown(
                             Text(
                                 text = code.description,
                                 style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
                     },

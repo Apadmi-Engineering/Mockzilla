@@ -45,9 +45,9 @@ public fun DebugTypographyWidget(): Unit = Column(
 
     styles.forEach { (label, style) ->
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(label, style = style)
+            Text(label, style = style, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.weight(1f))
-            Text(style.fontSize.toString(), style = MaterialTheme.typography.bodySmall)
+            Text(style.fontSize.toString(), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }
