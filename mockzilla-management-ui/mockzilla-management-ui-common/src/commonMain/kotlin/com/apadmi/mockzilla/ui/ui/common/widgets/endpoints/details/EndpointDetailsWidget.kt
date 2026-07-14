@@ -93,7 +93,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.Pr
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 import com.apadmi.mockzilla.ui.utils.Platform
-import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
 
@@ -506,7 +505,6 @@ private fun ActivePresetBanner(
             iconTint = colorScheme.onSurfaceVariant,
             contentDescription = LocalStrings.current.common.closeDescription,
             iconSize = 16.dp,
-            modifier = Modifier.iconButtonSize(),
         )
     }
 }

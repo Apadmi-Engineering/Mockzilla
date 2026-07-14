@@ -59,7 +59,6 @@ import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
-import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 @Composable
 internal fun FindableEditorTextField(
@@ -251,7 +250,6 @@ private fun FindReplaceBar(
                     imageVector = Icons.Default.KeyboardArrowRight,
                     iconTint = colorScheme.onSurfaceVariant,
                     contentDescription = if (state.isReplaceMode) strings.collapseReplaceDescription else strings.expandReplaceDescription,
-                    modifier = Modifier.iconButtonSize(),
                     iconSize = 16.dp,
                     iconDecoration = { content -> content(Modifier.rotate(chevronRotation)) }
                 )
@@ -302,7 +300,6 @@ private fun FindReplaceBar(
                     imageVector = Icons.Default.KeyboardArrowUp,
                     iconTint = colorScheme.onSurfaceVariant,
                     contentDescription = strings.previousMatchDescription,
-                    modifier = Modifier.iconButtonSize(),
                     iconSize = 16.dp,
                 )
                 CustomIconButton(
@@ -311,7 +308,6 @@ private fun FindReplaceBar(
                     iconTint = colorScheme.onSurfaceVariant,
                     contentDescription = strings.nextMatchDescription,
                     iconSize = 16.dp,
-                    modifier = Modifier.iconButtonSize(),
                 )
                 Box(
                     modifier = Modifier
@@ -324,7 +320,6 @@ private fun FindReplaceBar(
                     imageVector = Icons.Default.Close,
                     iconTint = colorScheme.onSurfaceVariant,
                     contentDescription = strings.closeFindBarDescription,
-                    modifier = Modifier.iconButtonSize(),
                     iconSize = 14.dp,
                 )
             }

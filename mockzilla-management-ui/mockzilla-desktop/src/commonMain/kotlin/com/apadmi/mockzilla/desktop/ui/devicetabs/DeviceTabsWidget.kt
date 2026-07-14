@@ -69,7 +69,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
-import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import kotlin.Float
 
@@ -364,7 +363,6 @@ private fun DeviceTab(
                 imageVector = Icons.Filled.Close,
                 iconTint = colorScheme.onSurfaceFaint,
                 contentDescription = strings.widgets.deviceTabs.closeButtonDescription,
-                modifier = Modifier.iconButtonSize(),
                 iconSize = 12.dp,
             )
         }

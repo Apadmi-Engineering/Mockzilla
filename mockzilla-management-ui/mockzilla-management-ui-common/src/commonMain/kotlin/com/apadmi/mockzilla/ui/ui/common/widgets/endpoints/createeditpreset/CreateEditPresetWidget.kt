@@ -95,7 +95,6 @@ import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
-import com.apadmi.mockzilla.ui.utils.iconButtonSize
 import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
@@ -212,7 +211,6 @@ private fun ColumnScope.HeadersSection(
             iconTint = MaterialTheme.colorScheme.onSurface,
             contentDescription = strings.addHeaderButton,
             modifier = Modifier
-                .iconButtonSize()
                 .pointerHoverIcon(if (canAdd) PointerIcon.Hand else blockedPointerIcon),
             enabled = canAdd,
             iconSize = 14.dp,
@@ -539,7 +537,6 @@ private fun BodySection(
             imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
             iconTint = MaterialTheme.colorScheme.onSurface,
             contentDescription = if (isExpanded) strings.collapse else strings.expand,
-            modifier = Modifier.iconButtonSize(),
             iconSize = 18.dp,
         )
     }

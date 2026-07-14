@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import com.apadmi.mockzilla.lib.InternalMockzillaApi
+import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 @InternalMockzillaApi
 public typealias IconDecorationScope = @Composable (Modifier) -> Unit
@@ -29,7 +30,7 @@ public fun CustomIconButton(
 ) {
     IconButton(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.iconButtonSize(),
         enabled = enabled,
     ) {
         iconDecoration { iconModifier ->

@@ -72,8 +72,6 @@ import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import org.koin.core.parameter.parametersOf
 
-import kotlinx.serialization.json.JsonNull.content
-
 @Suppress("MAGIC_NUMBER")
 @Composable
 internal fun MobileAppRoot(
@@ -120,8 +118,7 @@ internal fun MobileAppRoot(
                     contentDescription = LocalStrings.current.common.metaDescription,
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(colorScheme.surface)
-                        .iconButtonSize(),
+                        .background(colorScheme.surface),
                     iconDecoration = { content ->
                         content(
                             Modifier
