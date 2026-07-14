@@ -72,7 +72,7 @@ compilerOptions {
 
 ## Spotless
 
-We use Spotless to reformat and organise all of our library code. It runs automatically on compilation so please ensure you've compiled your code before submitting a pull request.
+We use Spotless to reformat and organise all of our library code. It runs automatically on every commit so ensure you commit it's changes before creating your pull request.
 
 ## Create a pull request
 
