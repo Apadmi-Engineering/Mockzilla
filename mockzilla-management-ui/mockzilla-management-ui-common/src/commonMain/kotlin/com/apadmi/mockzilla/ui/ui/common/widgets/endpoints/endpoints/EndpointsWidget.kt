@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -175,7 +176,7 @@ private fun EndpointsList(
     } else {
         val listState = rememberLazyListState()
         Box {
-            LazyColumn(state = listState) {
+            LazyColumn(state = listState, modifier = Modifier.imePadding()) {
                 items(state.endpoints) { endpoint ->
                     EndpointRow(
                         endpoint = endpoint,
