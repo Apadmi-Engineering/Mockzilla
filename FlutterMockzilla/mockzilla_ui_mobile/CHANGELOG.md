@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-dev2](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v1.1.0-dev...flutter_mockzilla_ui_mobile-v1.1.0-dev2) (2026-07-15)
+
+
+### Feature
+
+* bump underlying common ui
+
 ## [1.1.0-dev](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v1.0.0...flutter_mockzilla_ui_mobile-v1.1.0-dev) (2026-07-09)
 
 

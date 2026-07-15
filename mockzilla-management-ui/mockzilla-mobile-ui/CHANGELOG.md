@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0-dev2](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.1.0-dev...mockzilla-mobile-ui-v1.1.0-dev2) (2026-07-15)
+
+
+### Features
+
+* add icon button component ([#701](https://github.com/Apadmi-Engineering/Mockzilla/issues/701)) ([14dd823](https://github.com/Apadmi-Engineering/Mockzilla/commit/14dd82334b6da5cf163989658d398fd9c9375112))
+
+
+### Bug Fixes
+
+* fix missing colours on text elements ([#698](https://github.com/Apadmi-Engineering/Mockzilla/issues/698)) ([772f9e7](https://github.com/Apadmi-Engineering/Mockzilla/commit/772f9e7897c1864b7984b64001d5a23a75abcf6e))
+
 ## [1.1.0-dev](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.0.0...mockzilla-mobile-ui-v1.1.0-dev) (2026-07-09)
 
 
