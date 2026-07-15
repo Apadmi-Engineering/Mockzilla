@@ -34,7 +34,7 @@ kotlin {
     explicitApi()
 
     // Managed automatically by release-please PRs.
-    version = project.injectedVersion() ?: "1.1.0-dev" // x-release-please-version
+    version = project.injectedVersion() ?: "1.1.0-dev2" // x-release-please-version
 
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
