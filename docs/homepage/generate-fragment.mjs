@@ -97,6 +97,11 @@ const fullDocument = `<!DOCTYPE html>
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${desc}">
 <meta property="og:url" content="${ogUrl}">
+<meta name="twitter:title" content="${title}">
+<meta name="twitter:description" content="${desc}">
+<link rel="icon" type="image/svg+xml" href="/img/icon.svg">
+<link rel="icon" href="/img/favicon.ico">
+<meta name="theme-color" content="#141414">
 <script>${themeInitScript}</script>
 <style>
 ${css}

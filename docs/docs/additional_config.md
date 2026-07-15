@@ -1,3 +1,6 @@
+---
+description: Configure logging verbosity and Release Mode (rate limiting, token auth, and localhost-only access) for sharing mock builds with non-developers.
+---
 
 # Additional Configuration
 

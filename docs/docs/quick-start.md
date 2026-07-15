@@ -119,7 +119,7 @@ Mockzilla is entirely driven by a config object which is used to start the serve
         ),
     );
     ```
-See [here](/endpoints/) for more information on configuring your endpoints. (Including compile-time safety!)
+See [here](endpoints.md) for more information on configuring your endpoints. (Including compile-time safety!)
 
 ### (2): Just start the server!
 
@@ -151,7 +151,7 @@ See [here](/endpoints/) for more information on configuring your endpoints. (Inc
         func application(_: UIApplication,
                          didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
         {
-            let config = MockzillaConfig.Builder()...
+            let config = MockzillaConfigBuilder()...
             startMockzilla(config: config)
             
             return true

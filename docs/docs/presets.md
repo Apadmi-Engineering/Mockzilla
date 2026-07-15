@@ -1,7 +1,11 @@
+---
+description: Define presets - canned responses configured in code and applied at runtime from the desktop app or embedded UI - and how partial preset overrides combine with your default handler.
+---
+
 # Presets
 
-Mockzilla responses can be changed and configured at runtime either using our [desktop app](../desktop/overview/) or
-our [embedded UI](../mobile_ui/) that can be included in your app.
+Mockzilla responses can be changed and configured at runtime either using our [desktop app](desktop/overview.md) or
+our [embedded UI](mobile_ui.md) that can be included in your app.
 
 ## What are presets?
 

@@ -24,7 +24,7 @@ calls made by your page. This has a couple of practical implications:
 
 ## Installation
 
-Installation should be through the Kotlin or Flutter mechanisms as described in the [Quick Start](/quick-start) guide.
+Installation should be through the Kotlin or Flutter mechanisms as described in the [Quick Start](quick-start.md) guide.
 
 ## Required: Add the mock service worker script
 

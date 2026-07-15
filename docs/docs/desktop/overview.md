@@ -92,7 +92,7 @@ Each entry shows the request URL, status code, and response time - colour-coded 
 Alongside the device/app info panel you'll find a few utility controls:
 
 - **Refresh all** - re-fetches the latest state from the connected device.
-- **Clear overrides** - resets all changes back to the configuration defined in code. (Same as "Reset all" in Global Controls).
+- **Clear overrides** - same as "Reset all" in Global Controls.
 - **Presentation mode** - scales the entire UI, handy when demoing on a projector or a shared screen.
 - **Dark mode** - forces dark theme regardless of your OS setting.
 

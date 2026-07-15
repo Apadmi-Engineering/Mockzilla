@@ -1,3 +1,7 @@
+---
+description: Try unstable development (snapshot) builds of Mockzilla - Maven snapshot repo for Kotlin, snapshot branches for Swift, and pub.dev pre-releases for Flutter.
+---
+
 # Snapshot builds
 
 !!! warning

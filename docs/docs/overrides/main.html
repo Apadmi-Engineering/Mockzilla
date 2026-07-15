@@ -1,2 +1,31 @@
 {% extends "base.html" %}
 
+{#
+  Inject social-share + discoverability metadata on every content page. Zensical's
+  base.html already emits <title>, description and canonical, but no Open Graph or
+  Twitter card — so links shared in Slack, LinkedIn, Discord, X, iMessage, etc. would
+  otherwise render as bare text with no preview. The homepage does not use this template
+  (it renders from generate-fragment.mjs), so its tags are set there instead.
+#}
+{% block extrahead %}
+  {% if page and page.title %}{% set og_title = page.title | striptags %}{% else %}{% set og_title = config.site_name %}{% endif %}
+  {% if page.meta and page.meta.description %}{% set og_desc = page.meta.description %}{% else %}{% set og_desc = config.site_description %}{% endif %}
+  {% set og_url = page.canonical_url if page.canonical_url else config.site_url %}
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="{{ config.site_name }}">
+  <meta property="og:title" content="{{ og_title }}">
+  <meta property="og:description" content="{{ og_desc }}">
+  <meta property="og:url" content="{{ og_url }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{ config.site_name }} — {{ config.site_description }}">
+
+  {# Twitter card tags need no account; they only control how a shared link renders on X. #}
+  <meta name="twitter:title" content="{{ og_title }}">
+  <meta name="twitter:description" content="{{ og_desc }}">
+
+  <link rel="icon" type="image/svg+xml" href="{{ 'img/icon.svg' | url }}">
+  <meta name="theme-color" content="#141414">
+{% endblock %}
+

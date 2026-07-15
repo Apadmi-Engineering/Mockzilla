@@ -15,7 +15,7 @@ description: Learn how to configure Mockzilla endpoints - define custom handlers
                 headers = mapOf("test-header" to "test-value"),
                 body = "{}"
             )
-        })
+        }
         .setPatternMatcher { uri.endsWith("greeting") }
         .build()
     ```
@@ -80,7 +80,7 @@ Example:
         MockzillaHttpResponse(
             body = Json.encodeToString(MyDtoResponseClass("my value"))
         )
-    })
+    }
     ```
 === "Flutter"
     It is recommended to use a JSON serialisation library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` methods for you.
@@ -214,7 +214,7 @@ Mockzilla supports artificially causing network requests to fail.
 **The default is for requests to succeed**.
 
 !!! note
-    Controlling artificial latency/errors in code is time consuming and inflexible. We recommend using the [Mockzilla Desktop](/desktop/overview) app or [Embedded Mobile Ui](/mobile_ui) to do this on the fly.
+    Controlling artificial latency in code is time consuming and inflexible. We recommend using the [Mockzilla Desktop](desktop/overview.md) app or [Embedded Mobile Ui](mobile_ui.md) to do this on the fly.
 
 ## Mock Request Lifecycle
 
