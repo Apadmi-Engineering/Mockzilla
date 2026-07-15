@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,6 +55,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 import com.apadmi.mockzilla.ui.ui.common.components.SectionTitle
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
@@ -272,14 +272,14 @@ private fun LogHeaderBar(
         }
     }
 
-    IconButton(onClick = onClose, Modifier.align(Alignment.TopEnd)) {
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(16.dp),
-        )
-    }
+    CustomIconButton(
+        onClick = onClose,
+        imageVector = Icons.Default.Close,
+        iconTint = MaterialTheme.colorScheme.onSurfaceVariant,
+        contentDescription = LocalStrings.current.common.closeDescription,
+        iconSize = 16.dp,
+        modifier = Modifier.align(Alignment.TopEnd),
+    )
 }
 
 @Suppress("MAGIC_NUMBER")
