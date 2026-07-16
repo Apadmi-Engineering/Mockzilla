@@ -94,6 +94,7 @@ import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
+import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
 import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
@@ -612,16 +613,19 @@ private fun PanelHeader(
                 color = MaterialTheme.colorScheme.onSurfaceMuted,
             )
         }
-        CustomButton(
-            label = strings.widgets.createEditPreset.cancel,
-            variant = ButtonVariant.Outline,
-            onClick = onCancel,
-        )
-        CustomButton(
-            label = strings.widgets.createEditPreset.apply,
-            variant = ButtonVariant.Soft,
-            onClick = onApply,
-        )
+
+        if (Platform.current == Platform.Desktop) {
+            CustomButton(
+                label = strings.widgets.createEditPreset.cancel,
+                variant = ButtonVariant.Outline,
+                onClick = onCancel,
+            )
+            CustomButton(
+                label = strings.widgets.createEditPreset.apply,
+                variant = ButtonVariant.Soft,
+                onClick = onApply,
+            )
+        }
         CustomButton(
             label = strings.widgets.createEditPreset.save,
             variant = ButtonVariant.Solid,
