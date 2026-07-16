@@ -117,7 +117,7 @@ internal class CreateEditPresetViewModel(
         }
     }
 
-    fun save() = viewModelScope.launch {
+    fun save(shouldNavigateOnCompletion: Boolean) = viewModelScope.launch {
         val currentState = state.value as? State.Editing ?: return@launch
         val appName = when (Platform.current) {
             Platform.Desktop -> "Mockzilla Desktop"
@@ -148,7 +148,7 @@ internal class CreateEditPresetViewModel(
                 committedBody = currentState.body,
                 committedStatusCode = currentState.statusCode,
                 committedHeaders = currentState.headers,
-                navigateUp = true
+                navigateUp = shouldNavigateOnCompletion
             )
         }.onFailure {
             eventBus.send(Event.GenericError(GenericErrorableOperation.ApplyPreset, it))
