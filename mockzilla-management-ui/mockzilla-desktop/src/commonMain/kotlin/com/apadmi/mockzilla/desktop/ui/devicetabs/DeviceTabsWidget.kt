@@ -205,6 +205,9 @@ internal fun DeviceTabsWidgetContent(
                     }
                     if (state.devices.isNotEmpty()) {
                         CustomIconButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 8.dp),
                             onClick = onAddNewDevice,
                             imageVector = Icons.Filled.Add,
                             iconTint = colorScheme.onSurfaceVariant,
