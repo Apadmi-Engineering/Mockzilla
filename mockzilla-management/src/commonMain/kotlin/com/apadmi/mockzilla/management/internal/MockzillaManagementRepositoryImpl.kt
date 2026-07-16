@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.management.internal
 
 import com.apadmi.mockzilla.lib.InternalMockzillaApi
+import com.apadmi.mockzilla.lib.internal.models.ApplyPresetRequestDto
 import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
@@ -20,6 +21,7 @@ import com.apadmi.mockzilla.management.internal.ktor.KtorRequestRunner
 import com.apadmi.mockzilla.management.internal.ktor.delete
 import com.apadmi.mockzilla.management.internal.ktor.get
 import com.apadmi.mockzilla.management.internal.ktor.patch
+import com.apadmi.mockzilla.management.internal.ktor.put
 
 import co.touchlab.kermit.Logger
 import io.ktor.client.call.body
@@ -51,6 +53,12 @@ public interface MockzillaManagementRepository {
         entries: List<SerializableEndpointPatchItemDto>,
         connection: MockzillaConnectionConfig
     ): Result<Unit>
+
+    public suspend fun applyPresetByName(
+        connection: MockzillaConnectionConfig,
+        key: EndpointConfiguration.Key,
+        presetName: String
+    ): Result<SerializableEndpointConfig>
 
     public suspend fun fetchMonitorLogsAndClearBuffer(connection: MockzillaConnectionConfig, hideFromLogs: Boolean): Result<MonitorLogsResponse>
     public suspend fun fetchMonitorLogsSince(
@@ -109,6 +117,20 @@ MockzillaManagement.AppIconService {
         entry: SerializableEndpointPatchItemDto,
         connection: MockzillaConnectionConfig,
     ) = updateMockDataEntries(listOf(entry), connection)
+
+    override suspend fun applyPresetByName(
+        connection: MockzillaConnectionConfig,
+        key: EndpointConfiguration.Key,
+        presetName: String
+    ) = runner<SerializableEndpointConfig> {
+        put(connection, "/api/mock-data") {
+            url {
+                appendPathSegments(key.raw)
+            }
+            contentType(ContentType.Application.Json)
+            setBody(ApplyPresetRequestDto(presetName))
+        }
+    }.alsoLogFailure("/api/mock-data/{key}")
 
     override suspend fun updateMockDataEntries(
         entries: List<SerializableEndpointPatchItemDto>,

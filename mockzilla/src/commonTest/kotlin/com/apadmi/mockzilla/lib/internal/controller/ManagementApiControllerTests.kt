@@ -3,6 +3,7 @@ package com.apadmi.mockzilla.lib.internal.controller
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
+import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -233,6 +234,70 @@ class ManagementApiControllerTests {
                     )
                 )
             ),
+            result
+        )
+    }
+
+    @Test
+    fun `applyPresetByName - unknown endpoint key - returns null`() = runTest {
+        /* Setup */
+        val sut = ManagementApiController(
+            dummyEndpoints,
+            FakeLocalCacheService(),
+            FakeMockServerMonitor()
+        )
+
+        /* Run Test */
+        val result = sut.applyPresetByName(EndpointConfiguration.Key("random key"), "p1")
+
+        /* Verify */
+        assertNull(result)
+    }
+
+    @Test
+    fun `applyPresetByName - unknown preset name - returns null`() = runTest {
+        /* Setup */
+        val fakeLocalCacheService = FakeLocalCacheService()
+        val sut = ManagementApiController(dummyEndpoints, fakeLocalCacheService, FakeMockServerMonitor())
+
+        /* Run Test */
+        val result = sut.applyPresetByName(EndpointConfiguration.Key("my-second-id"), "no such preset")
+
+        /* Verify */
+        assertNull(result)
+        assertNull(fakeLocalCacheService.patchLocalCachesArgument)
+    }
+
+    @Test
+    fun `applyPresetByName - calls through - patches cache with matched preset and returns updated entry`() = runTest {
+        /* Setup */
+        val expectedPreset = DashboardOverridePreset(
+            response = PartialMockzillaHttpResponse(
+                statusCode = HttpStatusCode.Created,
+                headers = mapOf("test-header" to "test-value"),
+                body = "my response body"
+            ), name = "p1",
+            description = "p2",
+            type = DashboardOverridePreset.Type.Informational
+        )
+        val endpoint = dummyEndpoints.first { it.key == EndpointConfiguration.Key("my-second-id") }
+        val fakeLocalCacheService = FakeLocalCacheService()
+        val sut = ManagementApiController(dummyEndpoints, fakeLocalCacheService, FakeMockServerMonitor())
+
+        /* Run Test */
+        val result = sut.applyPresetByName(endpoint.key, "p1")
+
+        /* Verify */
+        assertEquals(
+            mapOf(
+                endpoint to SerializableEndpointPatchItemDto.allUnset(endpoint.key).copy(
+                    appliedPresetOverride = SetOrDont.Set(expectedPreset)
+                )
+            ),
+            fakeLocalCacheService.patchLocalCachesArgument
+        )
+        assertEquals(
+            SerializableEndpointConfig.allNulls(endpoint.key, endpoint.name, endpoint.versionCode),
             result
         )
     }
