@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0-dev3](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v1.1.0-dev2...flutter_mockzilla_ui_mobile-v1.1.0-dev3) (2026-07-16)
+
+
+### Bug Fixes
+
+* fix iOS scrolling ([#707](https://github.com/Apadmi-Engineering/Mockzilla/issues/707)) ([77cf354](https://github.com/Apadmi-Engineering/Mockzilla/commit/77cf35445d8c1af8636d10524525f18a75074595))
+
 ## [1.1.0-dev2](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v1.1.0-dev...flutter_mockzilla_ui_mobile-v1.1.0-dev2) (2026-07-15)
 
 
