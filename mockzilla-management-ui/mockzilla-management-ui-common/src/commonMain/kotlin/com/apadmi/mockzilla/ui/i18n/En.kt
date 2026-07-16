@@ -285,7 +285,7 @@ public val EnStrings: Strings = Strings(
             headersTitle = "Headers",
             addHeaderTitle = "Add New Header",
             addHeaderButton = "Add Header",
-            save = "Save",
+            save = "Save & Close",
             addHeaderKeyPlaceholder = "Header name",
             addHeaderValuePlaceholder = "Value",
             unset = "Unset",
@@ -298,6 +298,7 @@ public val EnStrings: Strings = Strings(
             jsonErrorTitle = "Invalid JSON:",
             collapse = "Collapse",
             expand = "Expand",
+            apply = "Apply"
         ),
         openSourceLicenses = Strings.Widgets.OpenSourceLicenses(
             error = "Failed to load licences",

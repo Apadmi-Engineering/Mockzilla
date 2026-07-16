@@ -225,6 +225,7 @@ private fun ColumnScope.PopulatedState(
     state: State.Editing,
     endpointName: String?,
     onCancel: () -> Unit,
+    onApply: () -> Unit,
     onSave: () -> Unit,
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
@@ -241,7 +242,7 @@ private fun ColumnScope.PopulatedState(
         enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
         exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
-        PanelHeader(state, onCancel, onSave)
+        PanelHeader(state = state, onCancel = onCancel, onApply = onApply, onSave = onSave)
     }
 
     AnimatedVisibility(
@@ -389,7 +390,8 @@ public fun CreateEditPresetWidget(
             cleanupVm()
             onCancel()
         },
-        onSave = viewModel::save,
+        onSave = { viewModel.save(shouldNavigateOnCompletion = true) },
+        onApply = { viewModel.save(shouldNavigateOnCompletion = false) },
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
@@ -406,6 +408,7 @@ internal fun CreateEditPresetWidgetContent(
     endpointName: String? = null,
     onCancel: () -> Unit = {},
     onSave: () -> Unit,
+    onApply: () -> Unit,
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
@@ -451,6 +454,7 @@ internal fun CreateEditPresetWidgetContent(
                 endpointName = endpointName,
                 onCancel = onCancel,
                 onSave = onSave,
+                onApply = onApply,
                 onStatusCodeSelected = onStatusCodeSelected,
                 onNewResponseType = onNewResponseType,
                 onNewResponseBody = onNewResponseBody,
@@ -570,6 +574,7 @@ private fun BodySection(
 private fun PanelHeader(
     state: State.Editing,
     onCancel: () -> Unit,
+    onApply: () -> Unit,
     onSave: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column(
@@ -611,6 +616,11 @@ private fun PanelHeader(
             label = strings.widgets.createEditPreset.cancel,
             variant = ButtonVariant.Outline,
             onClick = onCancel,
+        )
+        CustomButton(
+            label = strings.widgets.createEditPreset.apply,
+            variant = ButtonVariant.Soft,
+            onClick = onApply,
         )
         CustomButton(
             label = strings.widgets.createEditPreset.save,
@@ -816,6 +826,7 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
         onNewResponseBody = {},
         onAddHeader = { _, _ -> },
         onRemoveHeader = {},
+        onApply = {},
         onRetry = {}
     )
 }

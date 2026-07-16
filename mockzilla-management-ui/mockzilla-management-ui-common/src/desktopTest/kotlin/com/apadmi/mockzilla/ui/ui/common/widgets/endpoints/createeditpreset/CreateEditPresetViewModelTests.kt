@@ -283,7 +283,7 @@ class CreateEditPresetViewModelTests : CoroutineTest() {
         assertTrue((sut.state.value as State.Editing).isDirty)
 
         /* Run Test */
-        sut.save()
+        sut.save(shouldNavigateOnCompletion = true)
         yield()
 
         /* Verify */
@@ -308,7 +308,7 @@ class CreateEditPresetViewModelTests : CoroutineTest() {
         val tokenBefore = (sut.state.value as State.Editing).syncToken
 
         /* Run Test */
-        sut.save()
+        sut.save(shouldNavigateOnCompletion = true)
         yield()
 
         /* Verify */
@@ -328,7 +328,7 @@ class CreateEditPresetViewModelTests : CoroutineTest() {
         yield()
 
         /* Run Test */
-        sut.save()
+        sut.save(shouldNavigateOnCompletion = true)
         yield()
 
         /* Verify */
@@ -354,7 +354,7 @@ class CreateEditPresetViewModelTests : CoroutineTest() {
         val sut = createSut()
         yield()
 
-        sut.save()
+        sut.save(shouldNavigateOnCompletion = true)
         yield()
 
         assertTrue((sut.state.value as State.Editing).navigateUp)

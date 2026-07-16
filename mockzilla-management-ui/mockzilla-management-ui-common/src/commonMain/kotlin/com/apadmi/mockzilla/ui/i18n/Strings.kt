@@ -365,6 +365,7 @@ public data class Strings(
             val unset: String,
             val save: String,
             val cancel: String,
+            val apply: String,
             val endpointSubtitle: (endpointName: String) -> String,
             val statusCodeRowLabel: String,
             val bodyTypeLabel: String,
