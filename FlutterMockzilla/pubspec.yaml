@@ -2,5 +2,49 @@ name: flutter_mockzilla
 
 environment:
   sdk: '>=3.6.0 <4.0.0'
+
+workspace:
+  - mockzilla
+  - mockzilla/example
+  - mockzilla_android
+  - mockzilla_android/example
+  - mockzilla_ios
+  - mockzilla_ios/example
+  - mockzilla_platform_interface
+  - mockzilla_ui_mobile
+  - mockzilla_web
+
 dev_dependencies:
   melos: ^8.2.2
+
+melos:
+  scripts:
+    buildExample:
+      description: "Build example apps"
+      run: >
+        melos exec -c 1 "cd example &&
+        flutter pub get &&
+        flutter build apk &&
+        flutter build ipa --no-codesign"
+      packageFilters:
+        scope: "mockzilla"
+    buildConfig:android:
+      description: "Builds config of Android example"
+      run: >
+        melos exec -c 1 "cd example && flutter build apk --config-only"
+      packageFilters:
+        scope: "mockzilla_android"
+    buildConfig:ios:
+      description: "Builds config of Ios example"
+      run: >
+        melos exec -c 1 "cd example && flutter build ios --config-only --no-codesign"
+      packageFilters:
+        scope: "mockzilla_ios"
+    test:all:
+      run: "melos run test:dart --no-select"
+    test:dart:
+      description: "Run Dart tests in a package"
+      run: melos exec -c 1 "flutter test"
+      packageFilters:
+        dirExists:
+          - test
