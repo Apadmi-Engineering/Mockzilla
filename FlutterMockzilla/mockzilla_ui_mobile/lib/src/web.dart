@@ -1,3 +1,5 @@
+import 'dart:js_interop_unsafe';
+
 import 'package:mockzilla_ui_mobile/mockzilla_ui_mobile.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart' as web;
@@ -28,8 +30,9 @@ class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
     }).toJS;
 
     script.onerror = ((web.Event error) {
-      completer.completeError(Exception(
-          'Failed to load mockzilla-mobile-ui.js: ${error.toString()}'));
+      completer.completeError(
+        Exception('Failed to load mockzilla-mobile-ui.js: ${error.toString()}'),
+      );
     }).toJS;
 
     final web.HTMLElement? head = document.head;
@@ -42,7 +45,8 @@ class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
       await completer.future;
     } else {
       completer.completeError(
-          Exception('Could not find the document head element.'));
+        Exception('Could not find the document head element.'),
+      );
       await completer.future;
     }
 
@@ -53,7 +57,7 @@ class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
   void launchManagementUi() async {
     await _ensureScriptLoaded();
 
-    dynamic root = web.window["mockzilla-mobile-ui"];
+    dynamic root = web.window.getProperty("mockzilla-mobile-ui".toJS);
     root.com.apadmi.mockzilla.launchManagementUi();
   }
 
