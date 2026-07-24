@@ -422,21 +422,21 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "2.1.0"
+    version: "3.0.0-dev"
   mockzilla_android:
     dependency: "direct overridden"
     description:
       path: "../../mockzilla_android"
       relative: true
     source: path
-    version: "2.1.0"
+    version: "3.0.0-dev"
   mockzilla_ios:
     dependency: "direct overridden"
     description:
       path: "../../mockzilla_ios"
       relative: true
     source: path
-    version: "2.1.0"
+    version: "3.0.0-dev"
   mockzilla_platform_interface:
     dependency: "direct overridden"
     description:
@@ -450,7 +450,7 @@ packages:
       path: "../../mockzilla_ui_mobile"
       relative: true
     source: path
-    version: "1.1.0-dev"
+    version: "1.1.0-dev3"
   mockzilla_web:
     dependency: "direct overridden"
     description:
