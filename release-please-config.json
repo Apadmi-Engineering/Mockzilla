@@ -4,8 +4,7 @@
   "packages": {
     "mockzilla": {
       "component": "mockzilla",
-      "extra-files": ["build.gradle.kts"],
-      "release-as": "4.0.0"
+      "extra-files": ["build.gradle.kts"]
     },
     "mockzilla-common": {
       "component": "mockzilla-common",
@@ -18,7 +17,8 @@
     "FlutterMockzilla/mockzilla": {
       "component": "flutter_mockzilla",
       "release-type": "dart",
-      "always-update": true
+      "always-update": true,
+      "release-as": "3.0.0"
     },
     "FlutterMockzilla/mockzilla_platform_interface": {
       "component": "flutter_mockzilla_platform_interface",
@@ -29,17 +29,20 @@
       "component": "flutter_mockzilla_android",
       "release-type": "dart",
       "always-update": true,
-      "extra-files": ["android/build.gradle"]
+      "extra-files": ["android/build.gradle"],
+      "release-as": "3.0.0"
     },
     "FlutterMockzilla/mockzilla_ios": {
       "component": "flutter_mockzilla_ios",
       "release-type": "dart",
-      "always-update": true
+      "always-update": true,
+      "release-as": "3.0.0"
     },
     "FlutterMockzilla/mockzilla_web": {
       "component": "flutter_mockzilla_web",
       "release-type": "dart",
-      "always-update": true
+      "always-update": true,
+      "release-as": "1.0.0"
     },
     "mockzilla-management-ui/mockzilla-desktop": {
       "component": "mockzilla-desktop",
@@ -69,8 +72,7 @@
         "mockzilla",
         "mockzilla-common",
         "mockzilla-management"
-      ],
-      "release-as": "4.0.0"
+      ]
     },
     {
       "type": "linked-versions",
