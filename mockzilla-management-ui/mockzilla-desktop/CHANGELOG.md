@@ -1,5 +1,46 @@
 # Changelog
 
+## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-desktop-v2.0.0...mockzilla-desktop-v3.0.0) (2026-07-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* Breaking changes across all kotlin modules
+
+### Features
+
+* add banner to explain lack of linux support ([#675](https://github.com/Apadmi-Engineering/Mockzilla/issues/675)) ([5c4d604](https://github.com/Apadmi-Engineering/Mockzilla/commit/5c4d604c44988970212e629313a139137396a3ed))
+* add icon button component ([#701](https://github.com/Apadmi-Engineering/Mockzilla/issues/701)) ([14dd823](https://github.com/Apadmi-Engineering/Mockzilla/commit/14dd82334b6da5cf163989658d398fd9c9375112))
+* add scrollbars to desktop app ([#642](https://github.com/Apadmi-Engineering/Mockzilla/issues/642)) ([de9fd91](https://github.com/Apadmi-Engineering/Mockzilla/commit/de9fd9194597d2b02f9d5ff0d24b536f51af5391))
+* add third party licenses ([#668](https://github.com/Apadmi-Engineering/Mockzilla/issues/668)) ([28fe670](https://github.com/Apadmi-Engineering/Mockzilla/commit/28fe6708a4d643d41a1c1405496f8ff22e63604c))
+* address create/edit dirty state ([#655](https://github.com/Apadmi-Engineering/Mockzilla/issues/655)) ([8d824ef](https://github.com/Apadmi-Engineering/Mockzilla/commit/8d824effa07c6c7425537da63ec4876da43921fc))
+* define a minimum window size for the desktop app ([#578](https://github.com/Apadmi-Engineering/Mockzilla/issues/578)) ([e7bfae6](https://github.com/Apadmi-Engineering/Mockzilla/commit/e7bfae67fe95868f3b57e9aa2ed91f81b2e4155a))
+* enable gradle explicitApi ([#676](https://github.com/Apadmi-Engineering/Mockzilla/issues/676)) ([00bfa33](https://github.com/Apadmi-Engineering/Mockzilla/commit/00bfa33b309892741e59b9648b21e06e36447807))
+* force breaking change ([d12174e](https://github.com/Apadmi-Engineering/Mockzilla/commit/d12174e34ad522b4cc9d4ca0b8a94fd094165a03))
+* improve endpoint details section ([#636](https://github.com/Apadmi-Engineering/Mockzilla/issues/636)) ([aa5fe0f](https://github.com/Apadmi-Engineering/Mockzilla/commit/aa5fe0f100f6f46506074e3cdb6f95874571d58b))
+* improve the auto detection of devices on the network ([#603](https://github.com/Apadmi-Engineering/Mockzilla/issues/603)) ([55aad57](https://github.com/Apadmi-Engineering/Mockzilla/commit/55aad5707d05dd0674fb49f5b49302d790a26798))
+* minor desktop fixes and better handling of desktop snapshots ([#662](https://github.com/Apadmi-Engineering/Mockzilla/issues/662)) ([3f90bf4](https://github.com/Apadmi-Engineering/Mockzilla/commit/3f90bf4746e6942431c21448438cfe1934e10d01))
+* **monitor-logs:** implement real-time monitor logs widget and log detail panel ([#585](https://github.com/Apadmi-Engineering/Mockzilla/issues/585)) ([2859954](https://github.com/Apadmi-Engineering/Mockzilla/commit/2859954a31a77966071bb2984289876022823be4))
+* re-think the approach to displaying logs ([#650](https://github.com/Apadmi-Engineering/Mockzilla/issues/650)) ([5bd0c26](https://github.com/Apadmi-Engineering/Mockzilla/commit/5bd0c26d067461babfd6796ef3db8fdae030cb2f))
+* redo the whole widget scaffold ([#658](https://github.com/Apadmi-Engineering/Mockzilla/issues/658)) ([2de60bf](https://github.com/Apadmi-Engineering/Mockzilla/commit/2de60bf1ebe413677be86637a45dee56978ff0e1))
+* refine colors ([#600](https://github.com/Apadmi-Engineering/Mockzilla/issues/600)) ([d63b378](https://github.com/Apadmi-Engineering/Mockzilla/commit/d63b378a4b59c3f86d5fccc5f61014d82e08ec22))
+* restyle tabs ([#623](https://github.com/Apadmi-Engineering/Mockzilla/issues/623)) ([d33720b](https://github.com/Apadmi-Engineering/Mockzilla/commit/d33720b2b1cc87d4d237355d007d8b67772df98a))
+* standardise buttons ([#669](https://github.com/Apadmi-Engineering/Mockzilla/issues/669)) ([f38e499](https://github.com/Apadmi-Engineering/Mockzilla/commit/f38e4997d1eb59798c3430346f1447d72b0fae42))
+* sync develop ([#661](https://github.com/Apadmi-Engineering/Mockzilla/issues/661)) ([2551237](https://github.com/Apadmi-Engineering/Mockzilla/commit/255123787abd0344c5606a2284d174ae33734ecd))
+* ui tweaks ([#604](https://github.com/Apadmi-Engineering/Mockzilla/issues/604)) ([635979f](https://github.com/Apadmi-Engineering/Mockzilla/commit/635979f6c4ae633332d2852829ff16bebd361814))
+* update documentation with more desktop app instructions ([#677](https://github.com/Apadmi-Engineering/Mockzilla/issues/677)) ([48f77f9](https://github.com/Apadmi-Engineering/Mockzilla/commit/48f77f9e149196846c5734f55bd9ecc549143476))
+* various UI tweaks after first round of feedback ([#666](https://github.com/Apadmi-Engineering/Mockzilla/issues/666)) ([8eb924e](https://github.com/Apadmi-Engineering/Mockzilla/commit/8eb924e6a02476a861aa5423bcd2d403436b11ae))
+
+
+### Bug Fixes
+
+* fix add device button alignment ([#705](https://github.com/Apadmi-Engineering/Mockzilla/issues/705)) ([094ce4a](https://github.com/Apadmi-Engineering/Mockzilla/commit/094ce4afeed5f96ff358160ee4a6255b6b3f21b0))
+* fix double click toolbar behaviour ([#649](https://github.com/Apadmi-Engineering/Mockzilla/issues/649)) ([b1ef565](https://github.com/Apadmi-Engineering/Mockzilla/commit/b1ef56541d5b4063921390e09cb7f302f585b108))
+* fix missing colours on text elements ([#698](https://github.com/Apadmi-Engineering/Mockzilla/issues/698)) ([772f9e7](https://github.com/Apadmi-Engineering/Mockzilla/commit/772f9e7897c1864b7984b64001d5a23a75abcf6e))
+* fix tests ([6f439fa](https://github.com/Apadmi-Engineering/Mockzilla/commit/6f439fa358c855f1938263183a88aa43bd5292b3))
+* fix the tab hover states not working correctly ([#632](https://github.com/Apadmi-Engineering/Mockzilla/issues/632)) ([4844b9f](https://github.com/Apadmi-Engineering/Mockzilla/commit/4844b9f7982ef698936a52e5fe5e112f07b52956))
+* improve window closing times ([#674](https://github.com/Apadmi-Engineering/Mockzilla/issues/674)) ([3f8ce63](https://github.com/Apadmi-Engineering/Mockzilla/commit/3f8ce63d1e2102e50bf3dc0b6630227619adc7f4))
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-desktop-v1.2.2...mockzilla-desktop-v2.0.0) (2025-12-06)
 
 ### Features
