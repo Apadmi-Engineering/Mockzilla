@@ -1,7 +1,7 @@
 name: mockzilla
 description: A solution for configuring and running a local HTTP server as part of a Flutter app.
 # x-release-please-start-version
-version: 3.0.0+-dev
+version: 3.0.0
 # x-release-please-end
 homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
