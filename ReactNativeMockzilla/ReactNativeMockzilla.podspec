@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.private_header_files = "ios/**/*.h"
 
   s.dependency 'SwiftMockzilla', '~> 3.0'
-  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.9', 'CLANG_ENABLE_MODULES' => 'YES' }
+  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.9', 'CLANG_ENABLE_MODULES' => 'YES', 'DEFINES_MODULE' => 'YES' }
 
   install_modules_dependencies(s)
 end

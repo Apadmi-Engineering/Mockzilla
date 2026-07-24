@@ -1,5 +1,5 @@
 #import "MockzillaModule.h"
-#import <ReactNativeMockzilla/ReactNativeMockzilla-Swift.h>
+#import "ReactNativeMockzilla-Swift.h"
 
 @interface MockzillaModule () <MockzillaEventSender>
 @property (nonatomic, strong) MockzillaSwiftBridge *swiftBridge;

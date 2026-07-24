@@ -1,5 +1,6 @@
 import Foundation
 import SwiftMockzilla
+import mockzilla
 
 @objc public protocol MockzillaEventSender: AnyObject {
     func emitRequestEvent(_ body: [String: Any])
@@ -55,7 +56,7 @@ import SwiftMockzilla
         let headers = response["headers"] as? [String: String] ?? [:]
         let body = response["body"] as? String ?? ""
         let httpResponse = MockzillaHttpResponse(
-            status: Ktor_httpHttpStatusCode(value: Int32(statusCode), description: ""),
+            status: Ktor_httpHttpStatusCode.init(value: Int32(statusCode), description: ""),
             headers: headers,
             body: body
         )
