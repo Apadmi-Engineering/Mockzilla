@@ -6,7 +6,6 @@
 ### ⚠ BREAKING CHANGES
 
 * bump min android sdk and update readme ([#685](https://github.com/Apadmi-Engineering/Mockzilla/issues/685))
-* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518))
 
 ### Features
 

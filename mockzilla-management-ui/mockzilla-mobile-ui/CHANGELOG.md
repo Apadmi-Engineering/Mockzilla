@@ -2,10 +2,15 @@
 
 ## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.1.0-dev3...mockzilla-mobile-ui-v1.1.0) (2026-07-24)
 
+### Features
 
-### Miscellaneous Chores
+* make the Android Mockzilla UI appear in a modal like iOS ([#597](https://github.com/Apadmi-Engineering/Mockzilla/issues/597)) ([9df3b7d](https://github.com/Apadmi-Engineering/Mockzilla/commit/9df3b7daf8cfd3b557bdb6ec92ad922f6e3ef029))
+* re-skin the UI to match new design system
 
-* **mockzilla-mobile-ui:** Synchronize Mockzilla mobile ui versions
+### Bug Fixes
+
+* fix mobile scroll crash and fix unimplemented text colours ([9cc6362](https://github.com/Apadmi-Engineering/Mockzilla/commit/9cc63624f750088a0e808cabec03d23c568c5637))
+* fix mobile ui not connecting ([661f711](https://github.com/Apadmi-Engineering/Mockzilla/commit/661f7118f9e1a600d0532e14ac2a463e77937821))
 
 ## [1.1.0-dev3](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.1.0-dev2...mockzilla-mobile-ui-v1.1.0-dev3) (2026-07-16)
 
