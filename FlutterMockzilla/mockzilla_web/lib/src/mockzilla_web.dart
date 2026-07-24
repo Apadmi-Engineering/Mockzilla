@@ -69,7 +69,7 @@ class MockzillaWeb extends MockzillaPlatform {
   @override
   Future<void> stopMockzilla() async {
     await _ensureScriptLoaded();
-    await stopMockzilla();
+    await stopMockzillaJs();
   }
 
   JsMockzillaConfig _toJsConfig(MockzillaConfig config) {

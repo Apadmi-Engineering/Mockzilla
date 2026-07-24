@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.ui.engine.connection.AdbConnection
 import com.apadmi.mockzilla.ui.engine.connection.DetectedDevice
 import com.apadmi.mockzilla.ui.engine.connection.IpAddress
+import com.apadmi.mockzilla.ui.utils.prettyName
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 
@@ -19,7 +20,7 @@ interface DeviceDetectionUseCase {
     suspend fun prepareForConnection(device: DetectedDevice): Result<IpAddress>
 }
 
-class DeviceDetectionUseCaseImpl(
+internal class DeviceDetectionUseCaseImpl(
     private val isLocalIpAddress: (String) -> Boolean,
     private val adbConnectorService: AdbConnectorService
 ) : DeviceDetectionUseCase {
@@ -54,62 +55,115 @@ class DeviceDetectionUseCaseImpl(
         }.map { IpAddress(it) }
     }
 
-    internal suspend fun onChangedServiceEvent(info: ServiceInfoWrapper) = mutex.withLock {
-        val metaData = runCatching { info.attributes.parseMetaData() }.getOrNull()
-        val existingDevice = deviceCache[info.connectionName]
+    internal suspend fun onChangedServiceEvent(event: DeviceDiscoveryEvent) = mutex.withLock {
+        val metaData = event.metaData ?: runCatching { event.attributes.parseMetaData() }.getOrNull()
+
+        event.adbConnection?.let {
+            handleAdbEvent(event, metaData)
+        } ?: handleZeroConfEvent(event, metaData)
+    }
+
+    private suspend fun handleAdbEvent(event: DeviceDiscoveryEvent, metaData: MetaData?) {
+        val cacheKey = event.connectionName
+
+        if (event.state == DeviceDiscoveryEvent.State.Removed) {
+            deviceCache[cacheKey]?.let {
+                deviceCache[cacheKey] = it.copy(state = DetectedDevice.State.Removed)
+                onChangeEvent.emit(Unit)
+            }
+            return
+        }
+
+        // ADB takes priority — evict any mDNS entry for the same (serial, port) so the ADB
+        // entry wins. ADB has already verified reachability via /api/meta; mDNS has not.
+        deviceCache.values
+            .firstOrNull {
+                it.adbConnection?.deviceSerial == event.adbConnection?.deviceSerial &&
+                        it.port == event.port &&
+                        it.connectionId != cacheKey
+            }
+            ?.let { deviceCache.remove(it.connectionId) }
+
+        val device = DetectedDevice(
+            connectionId = cacheKey,
+            prettyName = metaData?.prettyName() ?: cacheKey,
+            metaData = metaData,
+            hostAddress = "127.0.0.1",
+            hostAddresses = listOf(IpAddress("127.0.0.1")),
+            port = event.port,
+            adbConnection = event.adbConnection,
+            state = DetectedDevice.State.ReadyToConnect
+        )
+        if (deviceCache[cacheKey] != device) {
+            deviceCache[cacheKey] = device
+            onChangeEvent.emit(Unit)
+        }
+    }
+
+    private suspend fun handleZeroConfEvent(event: DeviceDiscoveryEvent, metaData: MetaData?) {
+        val existingDevice = deviceCache[event.connectionName]
         val adbConnection = if (metaData?.runTarget == RunTarget.AndroidEmulator) {
             existingDevice?.adbConnection
-                ?: findAdbConnection(info.hostAddresses.map { IpAddress(it) })
+                ?: findAdbConnection(event.hostAddresses.map { IpAddress(it) })
         } else {
             null
         }
 
-        val state = determineNewDeviceState(info, metaData, adbConnection)
+        val state = determineNewDeviceState(event, metaData, adbConnection)
 
-        val device = when {
-            existingDevice != null && state == DetectedDevice.State.Removed -> existingDevice.copy(
-                state = DetectedDevice.State.Removed
-            )
-            // For some reason sometimes the "Resolving" callback comes in after the "Ready to connect"
-            // callback so ignore this event
-            existingDevice != null && existingDevice.state in listOf(
-                DetectedDevice.State.ReadyToConnect,
-                DetectedDevice.State.NotYourSimulator
-            ) && state == DetectedDevice.State.Resolving -> existingDevice
-
-            // jmDNS sometimes seems to emit "Found" for removed devices, so ignore these
-            existingDevice?.state == DetectedDevice.State.Removed && info.state == ServiceInfoWrapper.State.Found -> existingDevice
-            else -> null
-        } ?: DetectedDevice(
-            info.connectionName,
-            metaData,
-            info.hostAddress,
-            info.hostAddresses.map { IpAddress(it) },
-            info.port,
-            adbConnection,
-            state
+        val device = existingDevice?.updateDevice(state, event) ?: DetectedDevice(
+            connectionId = event.connectionName,
+            prettyName = metaData?.prettyName() ?: event.connectionName,
+            metaData = metaData,
+            hostAddress = event.hostAddress,
+            hostAddresses = event.hostAddresses.map { IpAddress(it) },
+            port = event.port,
+            adbConnection = adbConnection,
+            state = state
         )
 
-        deviceCache[info.connectionName] = device
+        // ADB takes priority — if ADB already verified this port via /api/meta, keep the ADB
+        // entry and discard this mDNS event so the device doesn't appear twice.
+        val adbKey = "adb:${adbConnection?.deviceSerial}:${event.port}"
+        if (adbConnection != null && deviceCache.containsKey(adbKey)) {
+            return
+        }
+        deviceCache[event.connectionName] = device
         if (existingDevice != device) {
             onChangeEvent.emit(Unit)
         }
     }
 
+    fun DetectedDevice?.updateDevice(newState: DetectedDevice.State, event: DeviceDiscoveryEvent) = when {
+        this != null && newState == DetectedDevice.State.Removed -> copy(
+            state = DetectedDevice.State.Removed
+        )
+        // For some reason sometimes the "Resolving" callback comes in after the "Ready to connect"
+        // callback so ignore this event
+        this != null && this.state in listOf(
+            DetectedDevice.State.ReadyToConnect,
+            DetectedDevice.State.NotYourSimulator
+        ) && newState == DetectedDevice.State.Resolving -> this
+
+        // jmDNS sometimes seems to emit "Found" for removed devices, so ignore these
+        newState == DetectedDevice.State.Removed && event.state == DeviceDiscoveryEvent.State.Found -> this
+        else -> null
+    }
+
     private fun determineNewDeviceState(
-        info: ServiceInfoWrapper,
+        event: DeviceDiscoveryEvent,
         metaData: MetaData?,
         adbConnection: AdbConnection?
     ) = when {
-        info.state == ServiceInfoWrapper.State.Removed -> DetectedDevice.State.Removed
+        event.state == DeviceDiscoveryEvent.State.Removed -> DetectedDevice.State.Removed
         // If we have metadata it doesn't really matter if the underlying framework considers the
         // device resolved or not, we already have what we need
-        metaData != null || info.state == ServiceInfoWrapper.State.Resolved -> when (metaData?.runTarget) {
+        metaData != null || event.state == DeviceDiscoveryEvent.State.Resolved -> when (metaData?.runTarget) {
             RunTarget.AndroidEmulator -> adbConnection?.let {
                 DetectedDevice.State.ReadyToConnect
             } ?: DetectedDevice.State.NotYourSimulator
 
-            RunTarget.IosSimulator -> if (info.hostAddresses.any(isLocalIpAddress)) {
+            RunTarget.IosSimulator -> if (event.hostAddresses.any(isLocalIpAddress)) {
                 DetectedDevice.State.ReadyToConnect
             } else {
                 DetectedDevice.State.NotYourSimulator

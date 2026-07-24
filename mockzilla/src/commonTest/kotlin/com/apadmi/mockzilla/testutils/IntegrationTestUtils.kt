@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.testutils
 
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.utils.FileIo
@@ -24,6 +25,7 @@ import kotlinx.coroutines.yield
 
 private val zeroConfStub = object : ZeroConfDiscoveryService {
     override suspend fun makeDiscoverable(metaData: MetaData, port: Int) = Unit
+    override suspend fun stop() = Unit
 }
 
 internal typealias SetupBlock = suspend (cacheService: LocalCacheService) -> Unit
@@ -99,7 +101,8 @@ private suspend fun runFullIntegrationTest(
         metaData,
         fileIo,
         Logger(StaticConfig()),
-        zeroConfStub
+        zeroConfStub,
+        PlatformConfig(),
     )
     fileIo.deleteAllCaches()
     setup(di.localCacheService)

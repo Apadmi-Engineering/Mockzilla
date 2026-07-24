@@ -1,3 +1,7 @@
+---
+description: Learn how to configure Mockzilla endpoints - define custom handlers for your mock HTTP server.
+---
+
 # Configuring Endpoints
 
 ## Simple Example
@@ -11,7 +15,7 @@
                 headers = mapOf("test-header" to "test-value"),
                 body = "{}"
             )
-        })
+        }
         .setPatternMatcher { uri.endsWith("greeting") }
         .build()
     ```
@@ -61,11 +65,11 @@ Hello world
 * Closing connection 0
 ```
 
-(This assumes your app is running on a simulator and accessible on localhost, replace the `localhost` with your device IP if running on device.)
+(This assumes your app is running on a simulator and accessible on localhost; replace `localhost` with your device IP if running on device.)
 
 ## Compile-time Safety
 
-This relies on a simple concept: **Use the same set of model classes for deserialization and for your mocks!**
+This relies on a simple concept: **Use the same set of model classes for deserialisation and for your mocks!**
 
 Example:
 
@@ -76,10 +80,10 @@ Example:
         MockzillaHttpResponse(
             body = Json.encodeToString(MyDtoResponseClass("my value"))
         )
-    })
+    }
     ```
 === "Flutter"
-    It is recommended to use a JSON serialization library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` methods for you.
+    It is recommended to use a JSON serialisation library such as [freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable) that can generate `toJson()`/`fromJson()` methods for you.
     ```dart
     MockzillaHttpResponse(
       body: jsonEncode(
@@ -143,18 +147,18 @@ data class MockzillaHttpRequest(
 
 The following can be configured globally across all endpoints [here](/dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/#1935914297%2FFunctions%2F1121797123).
 
-Network requests generally don't complete instantly. Mockzilla mimics the latency of a network and can be configured 
-either across all endpoints on the top level config, or on individual endpoints as follows:
+Network requests generally don't complete instantly. Mockzilla can mimic the latency of a network and can be configured 
+either across all endpoints on the top-level config, or on individual endpoints as follows:
 
 === "Kotlin"
     ```kotlin
         EndpointConfiguration.Builder("Hello world")
-          .setMeanDelayMillis(100)
+          .setDelayMillis(100)
     ```
 === "Swift"
     ```swift
         EndpointConfigurationBuilder(id: "Hello world")
-          .setMeanDelayMillis(delay: 100)
+          .setDelayMillis(delay: 100)
     ```
 === "Flutter"
     ```dart
@@ -167,30 +171,31 @@ either across all endpoints on the top level config, or on individual endpoints 
         delay: const Duration(milliseconds: 500),
     )
     ```
-
-!!! note
-
-    | Default values |       |
-    |----------------|-------|
-    | Delay Mean     | 100ms |
-
-For each individual request invocation, an artificial delay is added.
+By default there is no artificial delay.
 
 ### (3) - Artificial Errors
-
-The following can be configured globally across all endpoints [here](/dokka/mockzilla-common/com.apadmi.mockzilla.lib.models/-mockzilla-config/-builder/#-1949710801%2FFunctions%2F1121797123).
 
 Mockzilla supports artificially causing network requests to fail.
 
 === "Kotlin"
     ```kotlin
     EndpointConfiguration.Builder("Hello world")
-    .setShouldFail(true)
+      // Optional error handler, called when endpoint is set to fail
+      // Defaults to an empty 400 response.
+      .setErrorHandler {
+         MockzillaHttpResponse(statusCode = HttpStatusCode.NotFound)
+      }
+      .setShouldFail(true)
     ```
 === "Swift"
     ```swift
     EndpointConfigurationBuilder(id: "Hello world")
-    .setShouldFail(shouldFail: true)
+      // Optional error handler, called when endpoint is set to fail
+      // Defaults to an empty 400 response.
+     .setSwiftErrorHandler { _ in
+        MockzillaHttpResponse(status: HttpStatusCode.NotFound)
+     }
+     .setShouldFail(shouldFail: true)
     ```
 === "Flutter"
     ```dart
@@ -199,9 +204,43 @@ Mockzilla supports artificially causing network requests to fail.
         endpointMatcher: (request) => request.uri.endsWith("/departures"),
         defaultHandler: (request) => MockzillaHttpResponse(
         body: jsonEncode(const FetchDeparturesResponse(departures: []))),
-        errorHandler: (request) => const MockzillaHttpResponse(statusCode: 418),
+        // Optional error handler, called when endpoint is set to fail
+        // Defaults to an empty 400 response.
+        errorHandler: (request) => const MockzillaHttpResponse(statusCode: 400),
         shouldFail: true,
     )
     ```
 
 **The default is for requests to succeed**.
+
+!!! note
+    Controlling artificial latency in code is time consuming and inflexible. We recommend using the [Mockzilla Desktop](desktop/overview.md) app or [Embedded Mobile Ui](mobile_ui.md) to do this on the fly.
+
+## Mock Request Lifecycle
+
+When calling the Mockzilla server from your app's code the following happens:
+
+```mermaid
+sequenceDiagram
+    participant A as Client App
+    participant S as Mockzilla Server
+    A->>S: Network request
+    S->>S: Lookup Endpoint based on pattern matchers (1)
+    S->>S: Delay as long as appropriate (2)
+    S->>S: Decide whether to simulate a failure (3)
+    alt Call should succeed
+        S->>S: Check for property overrides from desktop app / embedded UI (4)
+        alt All properties overridden
+            S->>A: Return response using overridden values only (defaultHandler skipped)
+        else Partial override
+            S->>S: Call `defaultHandler`
+            S->>A: Return response, overridden properties take priority over defaultHandler's
+        else No overrides
+            S->>A: Return response by calling block defined by `setDefaultHandler`
+        end
+    else Call should fail
+        S->>A: Return response by calling block defined by `setErrorHandler`
+    end
+```
+
+

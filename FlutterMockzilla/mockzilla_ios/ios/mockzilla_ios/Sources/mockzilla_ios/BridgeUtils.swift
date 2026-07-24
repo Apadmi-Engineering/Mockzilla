@@ -15,31 +15,31 @@ enum MockzillaError: Error {
 }
 
 extension BridgeDashboardOverridePresetType {
-    func toNative() -> Mockzilla_commonDashboardOverridePreset.Type_ {
+    func toNative() -> MockzillaDashboardOverridePresetType {
         return switch self {
-            case BridgeDashboardOverridePresetType.clientError: Mockzilla_commonDashboardOverridePreset.Type_.clienterror
-            case BridgeDashboardOverridePresetType.informational: Mockzilla_commonDashboardOverridePreset.Type_.informational
-            case BridgeDashboardOverridePresetType.other: Mockzilla_commonDashboardOverridePreset.Type_.other
-            case BridgeDashboardOverridePresetType.redirect: Mockzilla_commonDashboardOverridePreset.Type_.redirect
-            case BridgeDashboardOverridePresetType.serverError: Mockzilla_commonDashboardOverridePreset.Type_.servererror
-            case BridgeDashboardOverridePresetType.success: Mockzilla_commonDashboardOverridePreset.Type_.success
+            case BridgeDashboardOverridePresetType.clientError: MockzillaDashboardOverridePresetType.clienterror
+            case BridgeDashboardOverridePresetType.informational: MockzillaDashboardOverridePresetType.informational
+            case BridgeDashboardOverridePresetType.other: MockzillaDashboardOverridePresetType.other
+            case BridgeDashboardOverridePresetType.redirect: MockzillaDashboardOverridePresetType.redirect
+            case BridgeDashboardOverridePresetType.serverError: MockzillaDashboardOverridePresetType.servererror
+            case BridgeDashboardOverridePresetType.success: MockzillaDashboardOverridePresetType.success
         }
     }
 
     static func fromNative(
-        _ data: Mockzilla_commonDashboardOverridePreset.Type_?
+        _ data: MockzillaDashboardOverridePresetType?
     ) -> BridgeDashboardOverridePresetType? {
         if data == nil {
             return nil
         }
         
         return switch (data!) {
-        case Mockzilla_commonDashboardOverridePreset.Type_.clienterror: BridgeDashboardOverridePresetType.clientError
-        case Mockzilla_commonDashboardOverridePreset.Type_.informational: BridgeDashboardOverridePresetType.informational
-        case Mockzilla_commonDashboardOverridePreset.Type_.other: BridgeDashboardOverridePresetType.other
-        case Mockzilla_commonDashboardOverridePreset.Type_.redirect: BridgeDashboardOverridePresetType.redirect
-        case Mockzilla_commonDashboardOverridePreset.Type_.servererror: BridgeDashboardOverridePresetType.serverError
-        case Mockzilla_commonDashboardOverridePreset.Type_.success: BridgeDashboardOverridePresetType.success
+        case MockzillaDashboardOverridePresetType.clienterror: BridgeDashboardOverridePresetType.clientError
+        case MockzillaDashboardOverridePresetType.informational: BridgeDashboardOverridePresetType.informational
+        case MockzillaDashboardOverridePresetType.other: BridgeDashboardOverridePresetType.other
+        case MockzillaDashboardOverridePresetType.redirect: BridgeDashboardOverridePresetType.redirect
+        case MockzillaDashboardOverridePresetType.servererror: BridgeDashboardOverridePresetType.serverError
+        case MockzillaDashboardOverridePresetType.success: BridgeDashboardOverridePresetType.success
         default: nil
         }
     }

@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
@@ -28,8 +29,8 @@ import com.apadmi.mockzilla.ui.ui.common.components.NoPresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCard
 import com.apadmi.mockzilla.ui.ui.common.components.PresetCardVariant
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomOutlineButton
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.OutlineButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.State
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.endpointDetailsWidgetSuccessState
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.mockPresets
@@ -71,23 +72,24 @@ internal fun ActivePresetCard(
             Text(
                 modifier = Modifier.weight(1f),
                 text = strings.presets.activePresetTitle,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
-            CustomOutlineButton(
+            CustomButton(
                 label = strings.presets.createCustomButton,
                 leadingIcon = Icons.Outlined.AddCircle,
                 onClick = onCreateNewPreset,
-                variant = OutlineButtonVariant.Primary
+                variant = ButtonVariant.Soft
             )
         }
 
-        state.presets.appliedPreset?.let {
+        (state.presets as? State.Endpoint.Presets.Populated)?.appliedPreset?.let { preset ->
             PresetCard(
                 variant = PresetCardVariant.Selected,
-                preset = state.presets.appliedPreset,
+                preset = preset,
                 onClicked = onEditPreset,
             )
-        } ?: NoPresetCard()
+        } ?: NoPresetCard(isCentered = false)
     }
 
     if (state.config.shouldFail == true) {
@@ -123,9 +125,11 @@ private fun ActivePresetCardForcedFailureDarkPreview() = PreviewSurface(darkThem
 private fun ActivePresetCardPreviewContainer(
     fail: Boolean = false
 ) = PreviewSurface {
+    val successState = endpointDetailsWidgetSuccessState(fail = fail)
+    val populatedPresets = (successState.presets as State.Endpoint.Presets.Populated)
     ActivePresetCard(
-        state = endpointDetailsWidgetSuccessState(fail = fail).copy(
-            presets = endpointDetailsWidgetSuccessState().presets.copy(
+        state = successState.copy(
+            presets = populatedPresets.copy(
                 appliedPreset = mockPresets.first()
             )
         ),

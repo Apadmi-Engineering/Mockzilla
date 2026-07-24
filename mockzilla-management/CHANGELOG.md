@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-v4.0.0-alpha1...mockzilla-management-v4.0.0) (2026-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* Breaking changes across all kotlin modules. Types that should have been internal are now marked internal. Consumers who were only using the documented APIs should be unaffected.
+
+## [4.0.0-alpha1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-v3.0.0...mockzilla-management-v4.0.0-alpha1) (2026-07-08)
+
+* Breaking changes across all kotlin modules. Types that should have been internal are now marked internal. Consumers who were only using the documented APIs should be unaffected.
+
+### Features
+
+* improve handling of monitor logs ([#653](https://github.com/Apadmi-Engineering/Mockzilla/issues/653)) ([541e38a](https://github.com/Apadmi-Engineering/Mockzilla/commit/541e38ae838c236600847711a1b6240e4de82e57))
+
+
 ## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-management-v3.0.0-alpha2...mockzilla-management-v3.0.0) (2026-01-26)
 
 

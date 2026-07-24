@@ -20,9 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import com.apadmi.mockzilla.mobile.ui.deviceconnection.MobileDeviceConnectionViewModel.*
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 
 @Composable
@@ -60,6 +60,13 @@ private fun MobileDeviceConnectionWidgetContent(
                 style = MaterialTheme.typography.bodyLarge
             )
 
+            Text(
+                text = state.message,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
+            )
+
             Button(onClick = onRetryClick) {
                 Text(
                     text = strings.widgets.errorBanner.refreshButton,
@@ -76,7 +83,10 @@ private fun MobileDeviceConnectionWidgetContent(
             )
         }
 
-        State.Connected -> Text(strings.widgets.deviceConnection.connected)
+        State.Connected -> Text(
+            text = strings.widgets.deviceConnection.connected,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
     }
 }
 

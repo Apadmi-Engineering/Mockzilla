@@ -1,0 +1,78 @@
+[project]
+site_name = "Mockzilla"
+site_url = "https://mockzilla.apadmi.dev/"
+repo_url = "https://github.com/Apadmi-Engineering/Mockzilla"
+copyright = "Copyright &copy; 2026 Apadmi Ltd"
+site_description = "A compile-safe solution for running and configuring a local HTTP server for your mobile apps. Supports Android, iOS, Kotlin Multiplatform and Flutter."
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = ["https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"]
+
+nav = [
+  "index.md",
+  { Docs = [
+    "quick-start.md",
+    "endpoints.md",
+    "web.md",
+    { Advanced = [
+      "additional_config.md",
+      "browser_stack.md",
+      "snapshots.md",
+    ]},
+    { "Configuration at Runtime" = [
+      "desktop/overview.md",
+      "mobile_ui.md",
+      "presets.md",
+    ]},
+  ]},
+  { Contributing = [
+    "contributing.md",
+    { "Desktop App" = "desktop_contributing.md" },
+    { Documentation = "documentation.md" },
+    { Flutter = "flutter_contributing.md" },
+  ]},
+  { "API Reference" = "./dokka/index.html" },
+]
+
+[project.theme]
+logo = "img/icon.svg"
+favicon = "img/favicon.ico"
+custom_dir = "docs/overrides"
+features = [
+  "navigation.tabs",
+  "navigation.sections",
+  "navigation.top",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "material/brightness-7"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "material/brightness-4"
+toggle.name = "Switch to light mode"
+
+[project.markdown_extensions.pymdownx.arithmatex]
+generic = true
+
+[project.markdown_extensions.admonition]
+
+[project.markdown_extensions.pymdownx.details]
+
+[project.markdown_extensions.pymdownx.tabbed]
+alternate_style = true
+
+[project.markdown_extensions.pymdownx.superfences]
+custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
+]
+
+[project.markdown_extensions.zensical.extensions.macros]
+module_name = "main"

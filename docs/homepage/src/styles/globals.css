@@ -13,13 +13,13 @@
     --card-foreground: #262626;
     --popover: #ffffff;
     --popover-foreground: #262626;
-    --primary: #030213;
+    --primary: #005F67;
     --primary-foreground: #ffffff;
     --secondary: #f5f5f5;
     --secondary-foreground: #262626;
     --muted: #f5f5f5;
     --muted-foreground: #737373;
-    --accent: #4eced8;
+    --accent: #3ea6af;
     --accent-foreground: #262626;
     --success: #4ed887;
     --success-foreground: #0d0d0d;
@@ -258,3 +258,9 @@ html {
         outline-offset: 2px;
     }
 }
+
+/* Theme toggle icon visibility — controlled by .dark class on <html> */
+#icon-sun { display: none; }
+#icon-moon { display: block; }
+.dark #icon-sun { display: block; }
+.dark #icon-moon { display: none; }

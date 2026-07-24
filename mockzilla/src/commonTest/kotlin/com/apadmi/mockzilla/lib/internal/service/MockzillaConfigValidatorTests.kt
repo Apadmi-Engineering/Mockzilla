@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.lib.internal.service
 
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
+import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -27,6 +28,20 @@ class MockzillaConfigValidatorTests {
     }
 
     @Test
+    fun `duplicate preset name - throws`() {
+        runTest(
+            MockzillaConfig.Builder()
+                .addEndpoint(EndpointConfiguration.Builder("id").configureDashboardOverrides {
+                    addPreset(response = MockzillaHttpResponse(), name = "name")
+                    addPreset(response = MockzillaHttpResponse(), name = "name")
+                })
+                .addEndpoint(EndpointConfiguration.Builder("id2"))
+                .build(),
+            "Endpoint presets must have unique names"
+        )
+    }
+
+    @Test
     fun `blank keys - throws`() {
         runTest(
             MockzillaConfig.Builder()
@@ -42,7 +57,7 @@ class MockzillaConfigValidatorTests {
             MockzillaConfig.Builder()
                 .addEndpoint(EndpointConfiguration
                     .Builder("id")
-                    .setMeanDelayMillis(-1)
+                    .setDelayMillis(-1)
                 )
                 .build(),
             "Delay mean must be in range 0 to ${Int.MAX_VALUE / 2 - 1}"
@@ -55,7 +70,7 @@ class MockzillaConfigValidatorTests {
             MockzillaConfig.Builder()
                 .addEndpoint(EndpointConfiguration
                     .Builder("id")
-                    .setMeanDelayMillis(Int.MAX_VALUE / 2 + 10)
+                    .setDelayMillis(Int.MAX_VALUE / 2 + 10)
                 )
                 .build(),
             "Delay mean must be in range 0 to ${Int.MAX_VALUE / 2 - 1}"

@@ -23,6 +23,7 @@ plugins {
 val artifactName = "mockzilla-management-ui-common"
 
 kotlin {
+    explicitApi()
 
     version = project.injectedVersion() ?: "0.0.9" // x-release-please-version
 
@@ -32,7 +33,6 @@ kotlin {
 
     val xcf = XCFramework()
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach {
@@ -69,6 +69,9 @@ kotlin {
             /* Coroutines */
             implementation(libs.kotlinx.coroutines.core)
 
+            /* Date / Time */
+            implementation(libs.kotlinx.datetime)
+
             /* JSON */
             implementation(libs.kotlinx.serialization.json)
 
@@ -102,15 +105,13 @@ kotlin {
             implementation(libs.koin.compose)
 
             implementation(libs.androidx.compose.activity)
-            implementation(compose.preview)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.ui.tooling.preview)
         }
-        val androidUnitTest by getting {
-            dependencies {
-                implementation(libs.androidx.test.junit)
-                implementation(libs.testParamInjector)
-            }
+        androidUnitTest.dependencies {
+            implementation(libs.androidx.test.junit)
+            implementation(libs.testParamInjector)
         }
+
         val desktopMain by getting {
             dependencies {
                 /* Compose */
@@ -138,12 +139,8 @@ kotlin {
     }
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+        freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
     }
-}
-
-dependencies {
-    /* Compose Previews */
-    debugImplementation(compose.uiTooling)
 }
 
 android {

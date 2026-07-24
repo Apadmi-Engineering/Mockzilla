@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.0.0-dev](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v2.1.0...flutter_mockzilla_ios-v3.0.0-dev) (2026-07-09)
+
+
+### Features
+
+* bump underlying kotlin version
+
+## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v2.0.0...flutter_mockzilla_ios-v2.1.0) (2026-07-08)
+
+
+### Features
+
+* Complete additional Flutter 3.41 migrations for SwiftPM ([#559](https://github.com/Apadmi-Engineering/Mockzilla/issues/559)) ([8458ca8](https://github.com/Apadmi-Engineering/Mockzilla/commit/8458ca8ea592fc5899895272851e161ff4af102e))
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v1.1.1...flutter_mockzilla_ios-v2.0.0) (2025-11-18)
 
 ### Features

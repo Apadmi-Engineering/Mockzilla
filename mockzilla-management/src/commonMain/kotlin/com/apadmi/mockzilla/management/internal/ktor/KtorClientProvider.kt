@@ -3,7 +3,6 @@ package com.apadmi.mockzilla.management.internal.ktor
 import com.apadmi.mockzilla.lib.internal.utils.JsonProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -15,13 +14,14 @@ import io.ktor.serialization.kotlinx.json.json
 internal object CustomHeaders {
     const val HideFromLogs = "hide-from-logs"
 }
+
 internal object KtorClientProvider {
-    fun createKtorClient(engine: HttpClientEngine? = null, logger: Logger = Logger.SIMPLE) =
-        engine?.let {
-            HttpClient(engine) {
-                httpClientConfig(logger)
-            }
-        } ?: HttpClient { httpClientConfig(logger) }
+    fun createKtorClient(
+        disableProxy: Boolean,
+        logger: Logger = Logger.SIMPLE
+    ) = createPlatformKtorClient(disableProxy) {
+        httpClientConfig(logger)
+    }
 
     private fun HttpClientConfig<*>.httpClientConfig(logger: Logger) {
         install(ContentNegotiation) {
@@ -29,7 +29,16 @@ internal object KtorClientProvider {
         }
 
         install(Logging) {
-            this.logger = logger
+            this.logger = object : Logger {
+                override fun log(message: String) {
+                    // Combines the multiline log into one line to stop cluttering the output
+                    val tidied = message.lineSequence()
+                        .map { it.trim() }
+                        .filter { it.isNotEmpty() }
+                        .joinToString(" ⏐ ")
+                    co.touchlab.kermit.Logger.v(tag = "HTTP Client") { tidied }
+                }
+            }
             this.level = LogLevel.INFO
             filter { request ->
                 request.headers[CustomHeaders.HideFromLogs]?.toBoolean() != true
@@ -39,3 +48,8 @@ internal object KtorClientProvider {
         install(Resources)
     }
 }
+
+internal expect fun createPlatformKtorClient(
+    disableProxy: Boolean,
+    configure: HttpClientConfig<*>.() -> Unit
+): HttpClient

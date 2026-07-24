@@ -23,8 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 @Composable
-fun <T> DropdownMenu(
+public fun <T> DropdownMenu(
     selectedLabel: String,
     stringForItem: (T) -> String,
     onSelected: (T) -> Unit,
@@ -47,7 +50,10 @@ fun <T> DropdownMenu(
             items.forEach { item ->
                 DropdownMenuItem(
                     text = {
-                        Text(text = stringForItem(item))
+                        Text(
+                            text = stringForItem(item),
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
                     },
                     onClick = {
                         onSelected(item)

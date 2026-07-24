@@ -92,6 +92,24 @@ lane :build_js_artifacts do |options|
     )
 end
 
+desc "Build, zip, and upload core JS artifacts to R2"
+lane :deploy_js_artifacts_to_r2 do |options|
+    build_js_artifacts(is_snapshot: options[:is_snapshot])
+
+    sh(%{
+        cd #{lane_context[:repo_root]}
+        mv mockzilla/build/kotlin-webpack/js/developmentExecutable javascript_output
+        zip -r javascript_output.zip javascript_output
+    })
+
+    version = get_core_mockzilla_version_name(is_snapshot: options[:is_snapshot])
+    upload_file_to_r2(
+        bucket: lane_context[:js_r2_bucket],
+        key: "mockzilla-v#{version}/javascript_output.zip",
+        file_path: "#{lane_context[:repo_root]}/javascript_output.zip"
+    )
+end
+
 def createSnapshotProp(is_snapshot, version)
     {
         "is_snapshot" => is_snapshot,

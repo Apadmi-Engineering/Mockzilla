@@ -1,12 +1,20 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols
 
+import com.apadmi.mockzilla.lib.NoKDoc
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.ForceFailureBannerState
 import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +45,15 @@ internal class GlobalControlsViewModel(
     suspend fun reloadData() {
         state.value = endpointsService.fetchAllEndpointConfigs(device).fold(
             onSuccess = { endpoints ->
+                val endpointConfigs = endpoints.map {
+                    EndpointsViewModel.State.EndpointConfig(
+                        key = it.key,
+                        name = it.name,
+                        fail = it.shouldFail == true,
+                        overriddenProperties = it.getOverriddenProperties(),
+                        delayMs = it.delayMs,
+                    )
+                }
                 State.Idle(
                     initialLatencyMs = endpoints.firstOrNull()?.delayMs?.takeIf {
                         endpoints.all { it.delayMs == endpoints.firstOrNull()?.delayMs }
@@ -46,11 +63,13 @@ internal class GlobalControlsViewModel(
                         endpoints.none { it.shouldFail == true } -> ForceFailureBannerState.Normal
                         else -> ForceFailureBannerState.PartialFailure
                     },
+                    endpoints = endpointConfigs,
+                    activeOverridesCount = endpointConfigs.count { it.overriddenProperties.isNotEmpty() || it.fail },
                     isLoading = false
                 )
             },
             onFailure = {
-                eventBus.send(EventBus.Event.GenericError)
+                eventBus.send(EventBus.Event.GenericError(GenericErrorableOperation.UpdateGlobalOverrides, it))
                 State.Loading
             }
         )
@@ -80,10 +99,13 @@ internal class GlobalControlsViewModel(
     private suspend fun getAllKeys() = endpointsService.fetchAllEndpointConfigs(device)
         .map { endpoints -> endpoints.map { it.key } }
 
-    private fun Result<Unit>.handleResult(keys: List<EndpointConfiguration.Key>) = onSuccess {
+    private fun Result<Unit>.handleResult(
+        keys: List<EndpointConfiguration.Key>,
+        operation: GenericErrorableOperation = GenericErrorableOperation.UpdateGlobalOverrides
+    ) = onSuccess {
         eventBus.send(EventBus.Event.EndpointDataChanged(keys))
     }.onFailure {
-        eventBus.send(EventBus.Event.GenericError)
+        eventBus.send(EventBus.Event.GenericError(operation, it))
     }
 
     private fun setStateLoading() {
@@ -109,16 +131,21 @@ internal class GlobalControlsViewModel(
         }
     }
 
+    private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull(
+        EndpointProperties.Delay.takeIf { delayMs != null },
+        EndpointProperties.Body.takeIf { defaultBody != null || appliedPresetOverride?.response?.body != null },
+        EndpointProperties.Status.takeIf { defaultStatus != null || appliedPresetOverride?.response?.statusCode != null },
+        EndpointProperties.Headers.takeIf { defaultHeaders != null || appliedPresetOverride?.response?.headers != null }
+    )
+
     sealed class State {
         data object Loading : State()
-        /**
-         * @property initialLatencyMs
-         * @property apiFailureState
-         * @property isLoading
-         */
+
         data class Idle(
             val initialLatencyMs: Int?,
             val apiFailureState: ForceFailureBannerState,
+            val endpoints: List<EndpointsViewModel.State.EndpointConfig>,
+            val activeOverridesCount: Int,
             val isLoading: Boolean
         ) : State()
     }

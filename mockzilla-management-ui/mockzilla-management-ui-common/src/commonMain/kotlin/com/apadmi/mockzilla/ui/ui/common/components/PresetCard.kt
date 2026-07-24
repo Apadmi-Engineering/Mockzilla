@@ -2,23 +2,32 @@
 
 package com.apadmi.mockzilla.ui.ui.common.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.UnfoldLess
-import androidx.compose.material.icons.filled.UnfoldMore
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,34 +35,49 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.assets.EditCircle
 import com.apadmi.mockzilla.ui.ui.common.assets.EditUnderscore
-import com.apadmi.mockzilla.ui.ui.common.assets.ErrorCircle
-import com.apadmi.mockzilla.ui.ui.common.assets.InfoCircle
-import com.apadmi.mockzilla.ui.ui.common.assets.RedirectCircle
-import com.apadmi.mockzilla.ui.ui.common.assets.SuccessCircle
-import com.apadmi.mockzilla.ui.ui.common.theme.httpStatus_fallback
-import com.apadmi.mockzilla.ui.ui.common.utils.color
+import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.StateColors
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.success
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.ui.common.utils.formatting.BodyVisualTransformation
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.minifyJson
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.typeFormat
+import com.apadmi.mockzilla.ui.utils.Platform
+import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
 
@@ -65,161 +89,50 @@ internal enum class PresetCardVariant {
 }
 
 @Composable
-private fun DashboardOverridePreset.description(
-    strings: Strings.Widgets.EndpointDetails.Presets.TypeDescriptions = LocalStrings.current.widgets.endpointDetails.presets.typeDescriptions
-) =
-    when (type?.exampleStatusCode()?.value ?: response.statusCode?.value) {
-        in 100..199 -> strings.informational
-        in 200..299 -> strings.success
-        in 300..399 -> strings.redirect
-        in 400..499 -> strings.error
-        in 500..599 -> strings.error
-        else -> strings.other
-    }
-
-private fun DashboardOverridePreset.Type.exampleStatusCode() = when (this) {
-    DashboardOverridePreset.Type.ClientError -> HttpStatusCode.BadRequest
-    DashboardOverridePreset.Type.Informational -> HttpStatusCode.Continue
-    DashboardOverridePreset.Type.Other -> null
-    DashboardOverridePreset.Type.Redirect -> HttpStatusCode.PermanentRedirect
-    DashboardOverridePreset.Type.ServerError -> HttpStatusCode.InternalServerError
-    DashboardOverridePreset.Type.Success -> HttpStatusCode.OK
-}
-
-private fun DashboardOverridePreset.color() =
-    (type?.exampleStatusCode() ?: response.statusCode)?.color()
-        ?: httpStatus_fallback
-
-private fun DashboardOverridePreset.icon() = if (isManagementUiDefinedCustomPreset) {
-    Icons.EditCircle
-} else {
-    when ((type?.exampleStatusCode() ?: response.statusCode)?.value) {
-        in 100..199 -> Icons.InfoCircle
-        in 200..299 -> Icons.SuccessCircle
-        in 300..399 -> Icons.RedirectCircle
-        in 400..499 -> Icons.ErrorCircle
-        in 500..599 -> Icons.ErrorCircle
-        else -> Icons.EditCircle
-    }
-}
-
-@Composable
-internal fun PresetCard(
-    variant: PresetCardVariant,
-    preset: DashboardOverridePreset,
-    onClicked: (DashboardOverridePreset) -> Unit,
-    strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
-) = Column(
-    Modifier.fillMaxWidth()
-        .clip(shape = RoundedCornerShape(12.dp))
-        .clickable {
-            onClicked(preset)
-        }.border(
-            width = 1.dp,
-            color = when (variant) {
-                PresetCardVariant.Selected -> MaterialTheme.colorScheme.onBackground
-                PresetCardVariant.Selectable -> MaterialTheme.colorScheme.outline
-            },
-            shape = RoundedCornerShape(12.dp)
-        ).background(
-            color = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(12.dp)
-        )
-        .padding(12.dp),
-) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = preset.icon(),
-            contentDescription = null,
-            tint = preset.color()
-        )
-        Spacer(Modifier.size(8.dp))
-        Text(
-            modifier = Modifier.weight(1f),
-            text = preset.name, style = MaterialTheme.typography.labelLarge
-        )
-        Spacer(Modifier.size(8.dp))
-        Tag(
-            label = when (variant) {
-                PresetCardVariant.Selected -> strings.appliedLabel
-                PresetCardVariant.Selectable -> preset.response.statusCode?.value?.toString()
-                    ?: strings.statusCodeFallback
-            },
-            textColor = preset.color(),
-            borderColor = preset.color()
-        )
-    }
-    Spacer(Modifier.size(8.dp))
-    if (!preset.description.isNullOrBlank()) {
-        Text(
-            text = preset.description ?: "",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-    Spacer(Modifier.size(8.dp))
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Tag(
-            label = preset.description(),
-            textColor = preset.color(),
-            borderColor = preset.color(),
-            backgroundColor = preset.color().copy(alpha = 0.2f)
-        )
-        when (variant) {
-            PresetCardVariant.Selected -> Tag(
-                prefix = {
-                    Icon(
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        imageVector = Icons.EditUnderscore,
-                        contentDescription = null,
-                    )
-                },
-                label = strings.editLabel,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                borderColor = MaterialTheme.colorScheme.outline
-            )
-            PresetCardVariant.Selectable -> Tag(
-                label = strings.applyLabel,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                borderColor = MaterialTheme.colorScheme.outline,
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
-            )
+internal fun DashboardOverridePreset.statusColors(): StateColors {
+    val colorScheme = MaterialTheme.colorScheme
+    val effectiveType = type ?: response.statusCode?.let {
+        when (it.value) {
+            in 200..299 -> DashboardOverridePreset.Type.Success
+            in 400..499 -> DashboardOverridePreset.Type.ClientError
+            in 500..599 -> DashboardOverridePreset.Type.ServerError
+            in 300..399 -> DashboardOverridePreset.Type.Redirect
+            else -> DashboardOverridePreset.Type.Other
         }
     }
 
-    preset.response.body?.takeIf { it.isNotBlank() }
-        ?.let {
-            Spacer(Modifier.size(8.dp))
-            ExpandableResponseBody(preset.response.body ?: "")
-        }
+    return when (effectiveType) {
+        DashboardOverridePreset.Type.Success -> colorScheme.success
+        DashboardOverridePreset.Type.ServerError -> StateColors(colorScheme.error, colorScheme.errorContainer)
+        DashboardOverridePreset.Type.ClientError -> colorScheme.warning
+        DashboardOverridePreset.Type.Redirect -> colorScheme.warning
+        else -> StateColors(colorScheme.onSurfaceVariant, colorScheme.surfaceVariant)
+    }
 }
 
+@InternalMockzillaApi
 @Composable
-internal fun Tag(
+public fun Tag(
     modifier: Modifier = Modifier,
     prefix: @Composable () -> Unit = {},
     label: String,
     textColor: Color,
     borderColor: Color,
     backgroundColor: Color = Color.Transparent,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-) = Row(
+    shape: Shape = RoundedCornerShape(8.dp),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+): Unit = Row(
     modifier = modifier
         .border(
             width = 1.dp,
             color = borderColor,
-            shape = RoundedCornerShape(8.dp)
+            shape = shape
         )
         .background(
             color = backgroundColor.compositeOver(
                 background = MaterialTheme.colorScheme.surface
             ),
-            shape = RoundedCornerShape(8.dp)
+            shape = shape
         )
         .padding(contentPadding),
     verticalAlignment = Alignment.CenterVertically,
@@ -234,29 +147,192 @@ internal fun Tag(
 }
 
 @Composable
+@Suppress("LONG_NUMERICAL_VALUES_SEPARATED")
+internal fun PresetCard(
+    variant: PresetCardVariant,
+    preset: DashboardOverridePreset,
+    onClicked: (DashboardOverridePreset) -> Unit,
+    onEdit: () -> Unit = {},
+    rowDensity: RowDensity = RowDensity.Compact,
+    strings: Strings.Widgets.EndpointDetails.Presets = LocalStrings.current.widgets.endpointDetails.presets
+) {
+    val isDark = LocalForceDarkMode.current
+    val isCompact = rowDensity == RowDensity.Compact
+    val isSelected = variant == PresetCardVariant.Selected
+    val statusColors = preset.statusColors()
+    val colorScheme = MaterialTheme.colorScheme
+    val indicatorColor = if (isSelected) colorScheme.primary else statusColors.primary
+    val iconTint = if (isSelected) colorScheme.primary else colorScheme.onSurfaceVariant
+    val titleColor = if (isSelected) colorScheme.primary else colorScheme.onSurface
+
+    val hasExpandableContent = !preset.response.body.isNullOrBlank()
+    var expanded by rememberSaveable { mutableStateOf(true) }
+    val chevronRotation by animateFloatAsState(
+        targetValue = if (expanded) 0f else -90f,
+        animationSpec = tween(200),
+        label = "chevron",
+    )
+    val chevronTint = if (hasExpandableContent) iconTint else colorScheme.onSurfaceFaint
+
+    Column(
+        Modifier.fillMaxWidth()
+            .focusProperties { canFocus = false }
+            .background(if (isSelected) colorScheme.primary.copy(alpha = 0.08f) else Color.Transparent)
+            .drawIndicator(indicatorColor),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(enabled = hasExpandableContent) { expanded = !expanded }
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp).rotate(chevronRotation),
+                tint = chevronTint,
+            )
+            Spacer(Modifier.size(8.dp))
+
+            Text(
+                modifier = Modifier.weight(1f),
+                text = preset.name,
+                style = MaterialTheme.typography.bodyMedium,
+                color = titleColor,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+            )
+            Spacer(Modifier.size(8.dp))
+
+            Tag(
+                label = preset.response.statusCode?.value?.toString() ?: strings.statusCodeFallback,
+                textColor = statusColors.primary,
+                borderColor = statusColors.primary,
+                backgroundColor = if (isDark) Color.Transparent else statusColors.container,
+                shape = CircleShape,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+            )
+            Spacer(Modifier.size(8.dp))
+
+            when (variant) {
+                PresetCardVariant.Selected -> Row(
+                    modifier = Modifier
+                        .height(IntrinsicSize.Min)
+                        .padding(vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .minimumTouchTarget()
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(6.dp))
+                            .clickable { onEdit() }
+                    ) {
+                        Tag(
+                            modifier = Modifier.fillMaxHeight(),
+                            prefix = {
+                                Icon(
+                                    imageVector = Icons.EditUnderscore,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp),
+                                    tint = colorScheme.onSurface,
+                                )
+                            },
+                            label = strings.editLabel,
+                            textColor = colorScheme.onSurface,
+                            borderColor = colorScheme.outline,
+                            backgroundColor = colorScheme.surfaceContainer,
+                            shape = RoundedCornerShape(6.dp),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+
+                    Tag(
+                        modifier = Modifier.fillMaxHeight(),
+                        prefix = {
+                            Icon(
+                                modifier = Modifier.size(14.dp),
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = colorScheme.onPrimary,
+                            )
+                        },
+                        label = strings.appliedLabel,
+                        textColor = colorScheme.onPrimary,
+                        borderColor = Color.Transparent,
+                        backgroundColor = colorScheme.primary,
+                        shape = RoundedCornerShape(6.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                    )
+                }
+
+                PresetCardVariant.Selectable -> Tag(
+                    modifier = Modifier
+                        .minimumTouchTarget()
+                        .clip(RoundedCornerShape(6.dp))
+                        .clickable { onClicked(preset) },
+                    label = strings.applyLabel,
+                    textColor = colorScheme.onSurface,
+                    borderColor = colorScheme.outline,
+                    backgroundColor = colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(6.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+                )
+            }
+        }
+
+        if (!preset.response.body.isNullOrBlank()) {
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
+            ) {
+                Column(modifier = Modifier.padding(bottom = 12.dp)) {
+                    if (!preset.description.isNullOrBlank()) {
+                        Text(
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            text = preset.description ?: "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = colorScheme.onSurfaceMuted,
+                        )
+                    }
+                    Spacer(Modifier.size(4.dp))
+                    ExpandableResponseBody(preset.response, isCompact)
+                }
+            }
+        }
+    }
+}
+@Composable
 internal fun NoPresetCard(
+    isCentered: Boolean = true,
     strings: Strings = LocalStrings.current
 ) {
     val presetStrings = strings.widgets.endpointDetails.presets
     val strokeColor = MaterialTheme.colorScheme.onSurface.copy(alpha = strokeAlpha)
     Column(
-        Modifier.fillMaxWidth().drawBehind {
-            val stroke = Stroke(
-                width = 2f, pathEffect = PathEffect.dashPathEffect(
-                    floatArrayOf(intervalDp.dp.toPx(), intervalDp.dp.toPx()), 0f
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = 200.dp)
+            .drawBehind {
+                val stroke = Stroke(
+                    width = 2f, pathEffect = PathEffect.dashPathEffect(
+                        floatArrayOf(intervalDp.dp.toPx(), intervalDp.dp.toPx()), 0f
+                    )
                 )
-            )
-            drawRoundRect(
-                color = strokeColor, cornerRadius = CornerRadius(12.dp.toPx()), style = stroke
-            )
-        }.padding(20.dp),
+                drawRoundRect(
+                    color = strokeColor, cornerRadius = CornerRadius(12.dp.toPx()), style = stroke
+                )
+            }.padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = if (isCentered) Arrangement.Center else Arrangement.Top
     ) {
         Text(
             text = presetStrings.noPresetTitle,
             style = MaterialTheme.typography.titleSmall,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(Modifier.size(4.dp))
         Text(
@@ -269,45 +345,69 @@ internal fun NoPresetCard(
 }
 
 @Composable
-private fun ExpandableResponseBody(body: String) {
-    var isExpanded by remember { mutableStateOf(false) }
-    var canExpand by remember { mutableStateOf(false) }
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .clip(shape = RoundedCornerShape(8.dp))
-            .clickable(enabled = canExpand || isExpanded) {
-                isExpanded = !isExpanded
-            },
-    ) {
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = body,
-            maxLines = if (isExpanded) Int.MAX_VALUE else 4,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            onTextLayout = {
-                canExpand = it.hasVisualOverflow
-            }
+private fun ExpandableResponseBody(
+    response: PartialMockzillaHttpResponse,
+    isCompact: Boolean = false,
+) = Box(
+    modifier = Modifier
+        .padding(horizontal = 12.dp)
+        .fillMaxWidth()
+        .background(
+            color = MaterialTheme.colorScheme.background,
+            shape = RoundedCornerShape(8.dp)
         )
-        if (canExpand || isExpanded) {
-            Box(
-                Modifier.align(Alignment.BottomEnd).padding(4.dp).background(
-                    MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.4f),
-                    shape = CircleShape
-                )
-            ) {
-                Icon(
-                    imageVector = if (isExpanded) Icons.Default.UnfoldLess else Icons.Default.UnfoldMore,
-                    contentDescription = null
-                )
+        .border(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant,
+            shape = RoundedCornerShape(8.dp)
+        )
+        .clip(shape = RoundedCornerShape(8.dp))
+) {
+    val mode = response.typeFormat
+    val body = remember(mode, response.body, isCompact) {
+        when {
+            BodyVisualTransformation.isBodyTooLarge(response.body) -> response.body?.take(1000) + "…"
+            mode == EditorMode.Json -> if (isCompact) {
+                response.body?.minifyJson()
+            } else {
+                response.body?.prettyPrintJson()
             }
+
+            else -> response.body
         }
+    }
+    var hasOverflow by remember { mutableStateOf(false) }
+
+    Text(
+        modifier = Modifier.padding(8.dp),
+        text = (BodyVisualTransformation
+            .buildEditorOutputTransformation(mode)
+            ?.highlight(body ?: "")
+            ?: AnnotatedString(body ?: "")),
+        onTextLayout = { result ->
+            hasOverflow = result.didOverflowHeight
+        },
+        maxLines = if (isCompact) 4 else 16,
+        overflow = TextOverflow.Ellipsis,
+        style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+
+    // For non Android platform ellipsis doesn't work quite right for text truncated on a line break
+    // Similar bug here: https://youtrack.jetbrains.com/issue/CMP-4451
+    // For these platforms using a gradient to indicate overflow has occurred
+    if (hasOverflow && Platform.current != Platform.Android) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .height(12.dp)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.outlineVariant)
+                    )
+                )
+        )
     }
 }
 

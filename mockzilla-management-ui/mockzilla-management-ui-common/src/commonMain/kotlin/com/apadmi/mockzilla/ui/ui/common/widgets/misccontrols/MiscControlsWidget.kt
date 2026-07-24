@@ -4,40 +4,60 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material3.Button
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Switch
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.ui.common.components.CustomSlider
+import com.apadmi.mockzilla.ui.ui.common.components.CustomToggle
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.components.SectionHeader
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonContentAlignment
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetForceDarkMode
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalSetScaleFactor
 import com.apadmi.mockzilla.ui.ui.common.theme.ScaleFactor
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 
 import org.koin.core.parameter.parametersOf
 
 private data object PresentationModeScaleFactor {
     const val MIN = 0.8F
-    const val MAX = 1.4F
+    const val MAX = 1.6F
     const val DEFAULT = 1.2F
 
     // These variables are in-memory caches for the state that we
@@ -51,34 +71,84 @@ private data object PresentationModeScaleFactor {
     var scaleFactor = DEFAULT
 }
 
+@InternalMockzillaApi
 @Composable
-fun MiscControlsWidget(
+public fun MiscControlsWidget(
     device: Device?
 ) {
-    val viewModel = getViewModel<MiscControlsViewModel>(key = device?.toString()) { parametersOf(device) }
+    val viewModel = getViewModel<MiscControlsViewModel>(device = device) { parametersOf(device) }
+    val state by viewModel.state.collectAsState()
+
     MiscControlsWidgetContent(
+        state = state,
         onRefreshAll = viewModel::refreshAllData,
         onClearAllOverrides = viewModel::clearAllOverrides,
     )
 }
 
+@Preview
 @Composable
-fun MiscControlsWidgetContent(
+internal fun MiscControlsWidgetPreview() = PreviewSurface(darkTheme = true) {
+    MiscControlsWidgetContent(
+        state = MiscControlsViewModel.State("2.0.0"),
+        onRefreshAll = {},
+        onClearAllOverrides = {}
+    )
+}
+
+@Composable
+internal fun MiscControlsWidgetContent(
+    state: MiscControlsViewModel.State,
     onRefreshAll: () -> Unit,
     onClearAllOverrides: () -> Unit,
     strings: Strings = LocalStrings.current
-) = Column {
-    Button(onClick = onRefreshAll) {
-        Text(strings.widgets.miscControls.refreshAll)
-    }
-    Button(onClick = onClearAllOverrides) {
-        Text(strings.widgets.miscControls.clearOverrides)
-    }
+) = Column(
+    modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 8.dp)
+) {
+    SectionHeader(title = strings.widgets.miscControls.actionsSection)
+
+    Spacer(modifier = Modifier.height(4.dp))
+
+    CustomButton(
+        modifier = Modifier.fillMaxWidth(),
+        label = strings.widgets.miscControls.refreshAll,
+        leadingIcon = Icons.Filled.Refresh,
+        variant = ButtonVariant.Soft,
+        size = ButtonSize.Lg,
+        contentAlignment = ButtonContentAlignment.Start,
+        onClick = onRefreshAll
+    )
+
+    Spacer(modifier = Modifier.height(2.dp))
+
+    CustomButton(
+        modifier = Modifier.fillMaxWidth(),
+        label = strings.widgets.miscControls.clearOverrides,
+        leadingIcon = Icons.Filled.Restore,
+        variant = ButtonVariant.Soft,
+        size = ButtonSize.Lg,
+        contentAlignment = ButtonContentAlignment.Start,
+        onClick = onClearAllOverrides
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
     var presentationMode by rememberSaveable { mutableStateOf(PresentationModeScaleFactor.enabled) }
     var presentationModeScaleFactor by rememberSaveable {
         mutableFloatStateOf(PresentationModeScaleFactor.scaleFactor)
     }
     val setScaleFactor = LocalSetScaleFactor.current
+
+    val commitScaleFactor = remember {
+        { scaleFactor: Float ->
+            setScaleFactor(scaleFactor)
+            PresentationModeScaleFactor.scaleFactor = scaleFactor
+            presentationModeScaleFactor = scaleFactor
+        }
+    }
+
     PresentationModeSettings(
         presentationMode = presentationMode,
         onPresentationModeChange = { presentationModeEnabled ->
@@ -91,23 +161,59 @@ fun MiscControlsWidgetContent(
             }
         },
         presentationModeScaleFactor = presentationModeScaleFactor,
-        onPresentationModeScaleFactorChange = { scaleFactor ->
-            setScaleFactor(scaleFactor)
-            presentationModeScaleFactor = scaleFactor
-            PresentationModeScaleFactor.scaleFactor = scaleFactor
-        },
+        onPresentationModeScaleFactorChange = commitScaleFactor,
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    DarkModeSettings()
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = state.uiVersion,
+        color = MaterialTheme.colorScheme.onSurfaceFaint,
+        style = MaterialTheme.typography.bodySmall,
+        textAlign = TextAlign.Center
     )
 }
 
-@Preview
 @Composable
-fun MiscControlsWidgetPreview() = PreviewSurface {
-    MiscControlsWidgetContent(
-        onRefreshAll = {},
-        onClearAllOverrides = {}
-    )
+private fun DarkModeSettings(
+    strings: Strings = LocalStrings.current
+) {
+    val setForceDarkMode = LocalSetForceDarkMode.current
+
+    SectionHeader(title = strings.widgets.miscControls.darkMode)
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .toggleable(
+                value = LocalForceDarkMode.current,
+                onValueChange = { checked -> setForceDarkMode(checked) },
+                role = Role.Switch,
+            )
+            .padding(horizontal = 4.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            modifier = Modifier.weight(1f),
+            text = strings.widgets.miscControls.darkMode,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        CustomToggle(
+            checked = LocalForceDarkMode.current,
+            onCheckedChange = {
+                setForceDarkMode(it)
+            },
+        )
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PresentationModeSettings(
     presentationMode: Boolean,
@@ -116,40 +222,75 @@ private fun PresentationModeSettings(
     onPresentationModeScaleFactorChange: (Float) -> Unit,
     strings: Strings = LocalStrings.current
 ) = Column {
+    SectionHeader(title = strings.widgets.miscControls.presentationMode)
+
     Row(
-        modifier = Modifier
+        modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp)
             .toggleable(
                 value = presentationMode,
-                onValueChange = { checked ->
-                    onPresentationModeChange(checked)
-                },
+                onValueChange = { checked -> onPresentationModeChange(checked) },
                 role = Role.Switch,
             )
-            .padding(8.dp),
+            .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
+            modifier = Modifier.weight(1f),
             text = strings.widgets.miscControls.presentationMode,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
         )
-        Spacer(modifier = Modifier.width(4.dp))
-        Switch(
+        Spacer(modifier = Modifier.width(8.dp))
+        CustomToggle(
             checked = presentationMode,
-            onCheckedChange = null,
+            onCheckedChange = onPresentationModeChange,
         )
     }
+
     AnimatedVisibility(visible = presentationMode) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(end = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Slider(
-                value = presentationModeScaleFactor,
-                onValueChange = { onPresentationModeScaleFactorChange(it) },
-                steps = 5,
+            // Local cache to show the value changing, this is only locked in once the "finished"
+            // callback is received
+            var localScaleFactor by remember(presentationModeScaleFactor) {
+                mutableStateOf(presentationModeScaleFactor)
+            }
+            CustomSlider(
+                modifier = Modifier.weight(1f),
+                value = localScaleFactor,
+                onValueChange = { localScaleFactor = it },
+                onValueChangeFinished = { onPresentationModeScaleFactorChange(localScaleFactor) },
                 valueRange = PresentationModeScaleFactor.MIN..PresentationModeScaleFactor.MAX,
             )
-            Text(text = strings.widgets.miscControls.fontScaleLabel(presentationModeScaleFactor))
+            Spacer(modifier = Modifier.width(8.dp))
+            FixedWidthPercentageLabel(localScaleFactor)
         }
     }
-    Spacer(modifier = Modifier.height(4.dp))
+}
+
+@Composable
+private fun FixedWidthPercentageLabel(
+    value: Float,
+    strings: Strings = LocalStrings.current
+) {
+    val density = LocalDensity.current
+    val textMeasurer = rememberTextMeasurer()
+    val textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = LocalMonoFontFamily.current)
+
+    val fixedWidth = remember(textStyle, density) {
+        val widthPx = textMeasurer.measure(
+            text = strings.widgets.miscControls.fontScaleLabel(1f),
+            style = textStyle
+        ).size.width
+        with(density) { widthPx.toDp() }
+    }
+
+    Text(
+        text = strings.widgets.miscControls.fontScaleLabel(value),
+        style = textStyle,
+        color = MaterialTheme.colorScheme.onSurfaceMuted,
+        modifier = Modifier.width(fixedWidth)
+    )
 }

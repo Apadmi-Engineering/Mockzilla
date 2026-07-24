@@ -17,18 +17,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
 
+@InternalMockzillaApi
 @Composable
-fun UnsupportedDeviceMockzillaVersionWidget() {
+public fun UnsupportedDeviceMockzillaVersionWidget() {
     UnsupportedDeviceMockzillaVersionContent()
 }
 
 @Composable
-fun UnsupportedDeviceMockzillaVersionContent(
+internal fun UnsupportedDeviceMockzillaVersionContent(
     strings: Strings = LocalStrings.current
 ) = Column(
     Modifier.fillMaxSize(),
@@ -43,18 +45,21 @@ fun UnsupportedDeviceMockzillaVersionContent(
     Text(
         text = strings.widgets.unsupportedMockzilla.heading,
         style = MaterialTheme.typography.headlineLarge,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onBackground,
     )
     Text(
         text = strings.widgets.unsupportedMockzilla.subtitle,
         textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.headlineSmall
+        style = MaterialTheme.typography.headlineSmall,
+        color = MaterialTheme.colorScheme.onBackground,
     )
     Spacer(Modifier.height(4.dp))
     Text(
         text = strings.widgets.unsupportedMockzilla.footer,
         style = MaterialTheme.typography.labelSmall,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.onBackground,
     )
 }
 

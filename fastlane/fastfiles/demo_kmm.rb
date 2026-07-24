@@ -6,7 +6,7 @@ platform :ios do
             project: "./samples/demo-kmm/iosApp/iosApp.xcodeproj",
             skip_package_ipa: true,
             skip_archive: true,
-            destination: "generic/platform=iOS Simulator"
+            skip_codesigning: true
         )
     end
 end

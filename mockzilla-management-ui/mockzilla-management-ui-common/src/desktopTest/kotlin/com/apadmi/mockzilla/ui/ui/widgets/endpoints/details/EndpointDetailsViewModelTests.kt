@@ -12,6 +12,7 @@ import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.EndpointDetailsViewModel.*
+import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
@@ -87,14 +88,15 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
         yield()
 
         /* Verify */
-        assertEquals(State.Empty, initialState)
+        assertEquals(State.Loading, initialState)
         assertEquals(
             State.Endpoint(
                 config = config,
                 fail = false,
                 delayMillis = 50,
                 isLoading = false,
-                presets = State.Endpoint.Presets(
+                layoutMode = RowDensity.Compact,
+                presets = State.Endpoint.Presets.Populated(
                     appliedPreset = DashboardOverridePreset(
                         name = "Derived preset",
                         description = null,
@@ -185,7 +187,8 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 fail = null,
                 delayMillis = null,
                 isLoading = false,
-                presets = State.Endpoint.Presets(
+                layoutMode = RowDensity.Compact,
+                presets = State.Endpoint.Presets.Populated(
                     appliedPreset = null,
                     visiblePresets = presets.presets,
                     allPresets = presets.presets,
@@ -201,7 +204,8 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
                 fail = true,
                 delayMillis = 100,
                 isLoading = true,
-                presets = State.Endpoint.Presets(
+                layoutMode = RowDensity.Compact,
+                presets = State.Endpoint.Presets.Populated(
                     appliedPreset = DashboardOverridePreset(
                         name = "Preset name",
                         description = null,

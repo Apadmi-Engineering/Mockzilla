@@ -13,9 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
+
+@InternalMockzillaApi
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) {
+public actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) {
     if (text.isBlank()) {
         content()
         return
@@ -28,7 +31,8 @@ actual fun StandardTextTooltip(text: String, content: @Composable () -> Unit) {
                 modifier = Modifier.padding(2.dp)
                     .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                     .padding(vertical = 2.dp, horizontal = 6.dp),
-                text = text
+                text = text,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         state = rememberBasicTooltipState(),

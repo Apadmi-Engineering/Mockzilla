@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.lib.internal
 
 import com.apadmi.mockzilla.BuildKonfig
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
+import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryService
 import com.apadmi.mockzilla.lib.internal.plugin.SimpleAuthPlugin
 import com.apadmi.mockzilla.lib.internal.service.AuthenticationConstants
 import com.apadmi.mockzilla.lib.internal.service.TokensService
@@ -29,6 +30,7 @@ import kotlinx.coroutines.*
 
 private var server: ApplicationEngine? = null
 private var job: Job? = null
+private var discoveryService: ZeroConfDiscoveryService? = null
 
 internal suspend fun RoutingContext.safeResponse(
     logger: Logger,
@@ -122,6 +124,8 @@ internal actual suspend fun startServer(
 }
 
 internal actual suspend fun stopServer() {
+    discoveryService?.stop()
+    discoveryService = null
     job?.cancel()
     server?.stop()
 }
@@ -133,6 +137,7 @@ private fun startNetworkDiscoveryBroadcastIfNeeded(
 ) = CoroutineScope(job).launch(Dispatchers.multiPlatformIo) {
     if (!di.config.isRelease && di.config.isNetworkDiscoveryEnabled) {
         di.logger.i { "Starting network discovery" }
+        discoveryService = di.zeroConfDiscoveryService
         di.zeroConfDiscoveryService.makeDiscoverable(di.metaData, port)
     } else {
         di.logger.i { "Skipping network discovery" }

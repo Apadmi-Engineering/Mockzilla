@@ -19,8 +19,6 @@ assignees: ''
 
 **Related components:** (if any)
 
-**JIRA issues:** (list of SL- numbers)
-
 ## Summary
 
 One paragraph explanation of the feature.

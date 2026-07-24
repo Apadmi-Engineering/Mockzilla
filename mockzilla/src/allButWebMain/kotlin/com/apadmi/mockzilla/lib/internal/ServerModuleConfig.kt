@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchRequestDto
 import com.apadmi.mockzilla.lib.internal.utils.allowCors
+import com.apadmi.mockzilla.lib.internal.utils.fetchAppIconBytes
 import com.apadmi.mockzilla.lib.internal.utils.respondMockzilla
 import com.apadmi.mockzilla.lib.internal.utils.toMockzillaRequest
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
@@ -100,6 +101,47 @@ internal fun Application.configureEndpoints(
                         di.metaData.appPackage, di.managementApiController.consumeLogEntries()
                     )
                 )
+            }
+        }
+        get("/api/monitor-logs/poll") {
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                val since = call.request.queryParameters["since"]?.toLongOrNull()
+                val clientSessionStart = call.request.queryParameters["clientSessionStart"]?.toLongOrNull()
+                clientSessionStart?.let { di.managementApiController.onClientSessionStart(it) }
+                call.respond(
+                    MonitorLogsResponse(di.metaData.appPackage, di.managementApiController.getLogsSince(since))
+                )
+            }
+        }
+        get("/api/monitor-logs/{logId}/full-body") {
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                val logId = call.parameters["logId"] ?: run {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@safeResponse
+                }
+                val detail = di.managementApiController.getFullBodyLogDetail(logId)
+                detail?.let {
+                    call.respond(detail)
+                } ?: call.respond(HttpStatusCode.NotFound)
+            }
+        }
+        delete("/api/monitor-logs") {
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                di.managementApiController.clearAllLogEntries()
+                call.respond(HttpStatusCode.NoContent)
+            }
+        }
+        get("/api/app-icon") {
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                val iconBytes = fetchAppIconBytes(di.platformConfig)
+                iconBytes?.let {
+                    call.response.header(HttpHeaders.CacheControl, "max-age=3600, immutable")
+                    call.respondBytes(iconBytes, ContentType.Image.PNG)
+                } ?: call.respond(HttpStatusCode.NotFound)
             }
         }
     }

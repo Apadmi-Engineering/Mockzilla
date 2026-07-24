@@ -1,37 +1,144 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.desktop.ui.devicetabs
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.EditOff
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.PaintingStyle
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.*
+import androidx.compose.ui.unit.sp
 
+import com.apadmi.mockzilla.desktop.MockzillaDesktopBuildConfig
+import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.State
 import com.apadmi.mockzilla.desktop.ui.utils.desktopTertiaryPointerClick
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
+import com.apadmi.mockzilla.desktop.ui.utils.isOsx
+import com.apadmi.mockzilla.lib.NoKDoc
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformHorizontalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
-import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTab
-import com.apadmi.mockzilla.ui.ui.common.scaffold.HorizontalTabList
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
+import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.success
 
-import kotlin.collections.plus
+import kotlin.Float
+
+private const val horizontalOsxButtonPaddingDp = 70
+
+private data class TabShapeConfig(
+    val shoulderWidth: Dp = 12.dp,
+    val shoulderDepth: Dp = 19.dp,
+    val tail: Dp = 27.dp,
+    val curl: Float = 0.15f,
+)
+
+private enum class FadeDirection {
+    Left, Right
+}
+
+private fun DrawScope.drawTab(
+    config: TabShapeConfig,
+    background: Color = Color.Unspecified,
+    borderColor: Color = Color.Unspecified,
+    strokeWidth: Dp = 1.dp,
+) {
+    val width = size.width
+    val height = size.height
+    val sw = config.shoulderWidth.toPx()
+    val sd = config.shoulderDepth.toPx()
+    val tail = config.tail.toPx()
+
+    val path = Path().apply {
+        moveTo(-tail, height)
+        // Bottom left curve
+        cubicTo(0f, height, 0f, height, 0f, height - sd)
+        lineTo(0f, sw)
+
+        // Top left curve
+        cubicTo(0f, 0f, 0f, 0f, sw, 0f)
+        lineTo(width - sw, 0f)
+
+        // Top right curve
+        cubicTo(width, 0f, width, 0f, width, sw)
+
+        // Bottom right curve
+        lineTo(width, height - sd)
+        cubicTo(width, height, width, height, width + tail, height)
+    }
+
+    if (borderColor != Color.Unspecified) {
+        val paint = Paint().apply {
+            this.color = borderColor
+            this.style = PaintingStyle.Stroke
+            this.strokeWidth = strokeWidth.toPx()
+            this.strokeCap = StrokeCap.Round
+            this.isAntiAlias = true
+        }
+        drawIntoCanvas {
+            it.drawPath(
+                path = path,
+                paint = paint
+            )
+        }
+    }
+
+    if (background != Color.Unspecified) {
+        drawPath(path.also { it.close() }, color = background)
+    }
+}
 
 @Composable
 fun DeviceTabsWidget(
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     val viewModel = getViewModel<DeviceTabsViewModel>()
     val state by viewModel.state.collectAsState()
@@ -46,95 +153,277 @@ fun DeviceTabsWidget(
 }
 
 @Composable
-fun DeviceTabsWidgetContent(
+internal fun DeviceTabsWidgetContent(
     state: State,
     modifier: Modifier = Modifier,
     strings: Strings = LocalStrings.current,
     onSelect: (State.DeviceTabEntry) -> Unit,
     onAddNewDevice: () -> Unit,
     onCloseTab: (State.DeviceTabEntry) -> Unit,
-) {
-    val selectedDevice = state.devices.indexOfFirst { it.isActive }
-    val selectedTab = if (selectedDevice == -1) {
-        state.devices.lastIndex + 1
-    } else {
-        selectedDevice
-    }
+) = Column {
+    val colorScheme = MaterialTheme.colorScheme
+    val scrollState = rememberScrollState()
 
-    Surface(modifier = modifier) {
-        HorizontalTabList(
-            tabs = state.devices.map { device ->
-                HorizontalTab(
-                    title = device.name,
-                    leadingIcon = if (device.isActive) {
-                        if (device.isConnected) {
-                            Icons.Filled.Edit
-                        } else {
-                            Icons.Filled.EditOff
-                        }
-                    } else {
-                        Icons.Filled.Pause
-                    },
-                    subtitle = if (device.isConnected) {
-                        strings.widgets.deviceTabs.connected
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+        modifier = modifier
+            .background(colorScheme.background)
+    ) {
+        if (state.devices.isNotEmpty()) {
+            HorizontalDivider(
+                color = colorScheme.outline,
+                thickness = 1.dp
+            )
+        }
+
+        Column {
+            Box(
+                modifier =
+                    Modifier
+                        .padding(
+                            start = if (isOsx()) horizontalOsxButtonPaddingDp.dp else 0.dp,
+                        )
+                        .height(IntrinsicSize.Min)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                        .horizontalScroll(scrollState),
+                    verticalAlignment = Alignment.Bottom,
+                ) {
+                    Box(Modifier.width(8.dp))  // Accounts for left curve of active tab background
+
+                    state.devices.forEach { device ->
+                        DeviceTab(
+                            device = device,
+                            strings = strings,
+                            onSelect = { onSelect(device) },
+                            onClose = { onCloseTab(device) },
+                            shape = TabShapeConfig()
+                        )
+                    }
+                    if (state.devices.isNotEmpty()) {
+                        CustomIconButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 8.dp),
+                            onClick = onAddNewDevice,
+                            imageVector = Icons.Filled.Add,
+                            iconTint = colorScheme.onSurfaceVariant,
+                            contentDescription = strings.widgets.deviceTabs.addDevice,
+                            iconSize = 18.dp,
+                        )
+                    }
+                }
+
+                FadeEdge(
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    width = 36.dp,
+                    color = colorScheme.background,
+                    direction = FadeDirection.Left,
+                    visible = scrollState.value > 0,
+                )
+                FadeEdge(
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    width = 52.dp,
+                    color = colorScheme.background,
+                    direction = FadeDirection.Right,
+                    visible = scrollState.value < scrollState.maxValue,
+                )
+                if (MockzillaDesktopBuildConfig.isSnapshot) {
+                    Text(
+                        text = LocalStrings.current.widgets.deviceTabs.betaBanner,
+                        modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceMuted
+                    )
+                }
+            }
+
+            if (scrollState.maxValue != 0) {
+                PlatformHorizontalScrollbar(
+                    scrollState = scrollState,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FadeEdge(
+    modifier: Modifier = Modifier,
+    width: Dp,
+    color: Color,
+    direction: FadeDirection,
+    visible: Boolean,
+) = AnimatedVisibility(
+    visible = visible,
+    modifier = modifier,
+    enter = fadeIn(),
+    exit = fadeOut(),
+) {
+    Spacer(
+        modifier = Modifier
+            .width(width)
+            .fillMaxHeight()
+            .padding(bottom = 1.dp)  // Avoid the border
+            .background(
+                brush = Brush.horizontalGradient(
+                    colors = when (direction) {
+                        FadeDirection.Left -> listOf(color, Color.Transparent)
+                        FadeDirection.Right -> listOf(Color.Transparent, color)
+                    }
+                )
+            )
+    )
+}
+
+@Suppress("MAGIC_NUMBER")
+@Composable
+private fun DeviceTab(
+    device: State.DeviceTabEntry,
+    strings: Strings,
+    onSelect: () -> Unit,
+    onClose: () -> Unit,
+    shape: TabShapeConfig,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val dotColor =
+        if (device.isConnected) colorScheme.success.primary else colorScheme.onSurfaceFaint
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+
+    Box(
+        modifier = Modifier
+            .then(
+                if (device.isActive) {
+                    Modifier.drawBehind {
+                        drawTab(
+                            config = shape,
+                            background = colorScheme.surface,
+                            borderColor = colorScheme.outline,
+                        )
+                    }
+                } else if (isHovered) {
+                    Modifier.background(
+                        color = colorScheme.onSurface.copy(alpha = 0.08f),
+                        shape = RoundedCornerShape(8.dp),
+                    )
+                } else {
+                    Modifier
+                }
+            )
+            // indication = null: built-in ripple ignores the tab's custom drawn shape and clips
+            // to the element bounds, so we manage hover manually above instead.
+            .clickable(interactionSource = interactionSource, indication = null, onClick = onSelect)
+            .desktopTertiaryPointerClick(onClick = onClose)
+            // Slightly odd padding values needed here since the border curve throws things off
+            .padding(start = 12.dp, end = 10.dp, top = 8.dp, bottom = 10.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(10.dp)
+                    .clip(CircleShape)
+                    .background(dotColor.copy(alpha = 0.2f)),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(6.dp)
+                        .clip(CircleShape)
+                        .background(dotColor)
+                )
+            }
+
+            Column(verticalArrangement = Arrangement.Center) {
+                Text(
+                    text = device.appName,
+                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 11.sp),
+                    color = if (device.isActive) colorScheme.onSurface else colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = if (device.isConnected) {
+                        device.deviceName
                     } else {
                         strings.widgets.deviceTabs.disconnected
                     },
-                    trailing = {
-                        IconButton(content = {
-                            Icon(
-                                Icons.Filled.Close,
-                                strings.widgets.deviceTabs.closeButtonDescription
-                            )
-                        }, modifier = Modifier.size(24.dp), onClick = { onCloseTab(device) })
-                    },
-                    modifier = Modifier.Companion.desktopTertiaryPointerClick(
-                        onClick = { onCloseTab(device) }
-                    )
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Normal,
+                        fontFamily = LocalMonoFontFamily.current
+                    ),
+                    color = colorScheme.onSurfaceVariant,
                 )
-            } + HorizontalTab(
-                title = strings.widgets.deviceTabs.addDevice,
-                leadingIcon = Icons.Filled.Add,
-                // always ensure tabs have a subtitle to keep tab heights the same
-                subtitle = strings.widgets.deviceTabs.devices(state.devices.size),
-            ),
-            selected = selectedTab,
-            onSelect = {
-                if (it == selectedTab) {
-                    return@HorizontalTabList
-                }
-                if (it > state.devices.lastIndex) {
-                    onAddNewDevice()
-                } else {
-                    onSelect(state.devices[it])
-                }
-            },
-        )
+            }
+
+            CustomIconButton(
+                onClick = onClose,
+                imageVector = Icons.Filled.Close,
+                iconTint = colorScheme.onSurfaceFaint,
+                contentDescription = strings.widgets.deviceTabs.closeButtonDescription,
+                iconSize = 12.dp,
+            )
+        }
     }
 }
 
 @Preview
 @Composable
-private fun DeviceTabsWidgetPreview() = PreviewSurface {
+private fun DeviceTabsWidgetPreviewLight() = PreviewSurface {
     DeviceTabsWidgetContent(
         state = State(
             devices = listOf(
                 State.DeviceTabEntry(
-                    name = "Device 1",
+                    appName = "Runner",
+                    deviceName = "iPhone",
                     isActive = true,
                     isConnected = true,
-                    underlyingDevice = Device(ip = "", port = "")
+                    underlyingDevice = Device(ip = "", port = ""),
                 ),
                 State.DeviceTabEntry(
-                    name = "Device 2",
+                    appName = "Runner",
+                    deviceName = "Pixel 8 Pro",
                     isActive = false,
                     isConnected = false,
-                    underlyingDevice = Device(ip = "", port = "")
-                )
-            )
+                    underlyingDevice = Device(ip = "", port = ""),
+                ),
+            ),
         ),
         onSelect = {},
         onAddNewDevice = {},
-        onCloseTab = {}
+        onCloseTab = {},
+    )
+}
+
+@Preview
+@Composable
+private fun DeviceTabsWidgetPreviewDark() = PreviewSurface(darkTheme = true) {
+    DeviceTabsWidgetContent(
+        state = State(
+            devices = listOf(
+                State.DeviceTabEntry(
+                    appName = "Runner",
+                    deviceName = "iPhone",
+                    isActive = true,
+                    isConnected = true,
+                    underlyingDevice = Device(ip = "", port = ""),
+                ),
+                State.DeviceTabEntry(
+                    appName = "Runner",
+                    deviceName = "iPhone",
+                    isActive = false,
+                    isConnected = false,
+                    underlyingDevice = Device(ip = "", port = ""),
+                ),
+            ),
+        ),
+        onSelect = {},
+        onAddNewDevice = {},
+        onCloseTab = {},
     )
 }

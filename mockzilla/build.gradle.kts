@@ -24,12 +24,14 @@ plugins {
 val artifactName = "mockzilla"
 
 kotlin {
+    explicitApi()
+
     androidTarget {
         publishLibraryVariants()
     }
 
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "3.0.0" // x-release-please-version
+    version = project.injectedVersion() ?: "4.0.0" // x-release-please-version
 
     val xcf = XCFramework()
     listOf(
@@ -43,7 +45,7 @@ kotlin {
         }
     }
 
-    // Enables KDocs comments export to Objective-C headers.
+    // Enables KDocs comments export to Objective-C headers
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations["main"].compileTaskProvider.configure {
             compilerOptions.freeCompilerArgs.add("-Xexport-kdoc")
@@ -137,6 +139,7 @@ kotlin {
     }
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
+        freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
     }
 
     js {
@@ -196,7 +199,7 @@ mavenPublishing {
         logger.info("Signing key found  - signing")
         signAllPublications()
     } else {
-        logger.info("No signing key found  - skipping signining")
+        logger.info("No signing key found  - skipping signining.")
     }
 
     coordinates(group.toString(), artifactName, version.toString())

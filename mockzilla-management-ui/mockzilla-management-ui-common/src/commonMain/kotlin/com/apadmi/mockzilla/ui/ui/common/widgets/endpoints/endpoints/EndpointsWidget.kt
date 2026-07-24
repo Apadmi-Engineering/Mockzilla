@@ -1,223 +1,344 @@
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration.*
-import com.apadmi.mockzilla.ui.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.i18n.Strings
-import com.apadmi.mockzilla.ui.ui.common.assets.LightningBolt
+import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
+import com.apadmi.mockzilla.ui.ui.common.components.ChipTone
+import com.apadmi.mockzilla.ui.ui.common.components.EmptyState
+import com.apadmi.mockzilla.ui.ui.common.components.FilterTextField
+import com.apadmi.mockzilla.ui.ui.common.components.PlatformVerticalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.components.StatusChip
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
+import com.apadmi.mockzilla.ui.ui.common.components.drawIndicator
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
+import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
+import com.apadmi.mockzilla.ui.ui.common.theme.warning
+import com.apadmi.mockzilla.ui.utils.Platform
 
 import org.koin.core.parameter.parametersOf
 
+private const val minContentWidthDp = 300
+private const val HOVER_ALPHA = 0.08f
+private const val UNSELECTED_BORDER_ALPHA = 0.2f
+private const val LEFT_BORDER_WIDTH_DP = 3
+private const val CONTENT_START_PADDING_DP = 13
+private const val COMPACT_VERTICAL_PADDING_DP = 10
+private const val COMFY_VERTICAL_PADDING_DP = 14
+private const val DELAY_TENTHS_DIVISOR = 100
+private const val DELAY_TENTHS_MODULO = 10
+
+private fun EndpointProperties.chipTone(): ChipTone = when (this) {
+    EndpointProperties.Delay -> ChipTone.Warn
+    else -> ChipTone.Teal
+}
+
+private fun RowDensity.verticalPadding(): Dp = when (this) {
+    RowDensity.Compact -> COMPACT_VERTICAL_PADDING_DP.dp
+    RowDensity.Comfy -> COMFY_VERTICAL_PADDING_DP.dp
+}
+
+@InternalMockzillaApi
 @Composable
-fun EndpointsWidget(
+public fun EndpointsWidget(
     device: Device,
-    onEndpointClicked: (Key) -> Unit,
+    onEndpointClicked: (Key?) -> Unit,
     onGlobalControlsClicked: () -> Unit
 ) {
-    val viewModel = getViewModel<EndpointsViewModel>(key = device.toString()) {
+    val viewModel = getViewModel<EndpointsViewModel>(device = device) {
         parametersOf(device)
     }
     val state by viewModel.state.collectAsState()
+    var selectedKey by remember { mutableStateOf<Key?>(null) }
 
     EndpointsWidgetContent(
         state = state,
+        selectedKey = selectedKey,
         onFilterUpdate = viewModel::onFilterChanged,
-        onEndpointClicked = onEndpointClicked,
+        onRowDensityChanged = viewModel::onRowDensityChanged,
+        onEndpointClicked = { key ->
+            if (selectedKey == key) {
+                selectedKey = null
+                onEndpointClicked(null)
+            } else {
+                selectedKey = key
+                onEndpointClicked(key)
+            }
+        },
         onGlobalControlsClicked = onGlobalControlsClicked
     )
 }
 
-@Suppress("MAGIC_NUMBER")
+private fun formatDelaySeconds(delayMs: Int): String {
+    val tenths = delayMs / DELAY_TENTHS_DIVISOR
+    return "${tenths / DELAY_TENTHS_MODULO}.${tenths % DELAY_TENTHS_MODULO} s"
+}
+
 @Composable
 private fun EndpointsList(
     state: EndpointsViewModel.State.EndpointsList,
+    selectedKey: Key?,
     onEndpointClicked: (Key) -> Unit,
     onFilterUpdate: (String) -> Unit,
-    strings: Strings = LocalStrings.current
-) = Column(
-    modifier = Modifier.verticalScroll(rememberScrollState())
-) {
-    FilterTextField(
-        value = state.filter,
-        onFilterUpdate = onFilterUpdate
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    Text(
-        text = strings.widgets.endpoints.numberOfEndpointsShown(
-            state.endpoints.size,
-            state.allEndpoints.size
-        ),
-        color = MaterialTheme.colorScheme.onBackground,
-        style = MaterialTheme.typography.labelSmall
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    state.endpoints.forEach { endpoint ->
-        EndpointCard(
-            endpoint = endpoint,
-            onEndpointClicked = onEndpointClicked
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-    }
-}
-
-@Suppress("MAGIC_NUMBER")
-@Composable
-private fun EndpointCard(
-    endpoint: EndpointsViewModel.State.EndpointConfig,
-    onEndpointClicked: (Key) -> Unit,
-    strings: Strings = LocalStrings.current
-) = Column(
-    modifier = Modifier.fillMaxWidth()
-) {
-    val topSectionShape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)
-    val bottomSectionShape = RoundedCornerShape(0.dp, 0.dp, 10.dp, 10.dp)
-    val failureBorderColor = MaterialTheme.colorScheme.error
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .clickable { onEndpointClicked(endpoint.key) }
-            .background(
-                color = if (endpoint.fail) {
-                    MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f)
-                } else {
-                    MaterialTheme.colorScheme.surface
-                },
-                shape = if (endpoint.overriddenProperties.isEmpty()) {
-                    RoundedCornerShape(10.dp)
-                } else {
-                    topSectionShape
-                }
+    onRowDensityChanged: (RowDensity) -> Unit,
+    onGlobalControlsClicked: () -> Unit,
+    modifier: Modifier = Modifier,
+) = Column(modifier = modifier) {
+    Column(modifier = Modifier.padding(12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FilterTextField(
+                modifier = Modifier.weight(1f),
+                value = state.filter,
+                onFilterUpdate = onFilterUpdate,
+                placeholder = LocalStrings.current.widgets.endpoints.filterPlaceholder
             )
-            .border(
-                width = if (endpoint.fail) (1.5).dp else (0.5).dp,
-                color = if (endpoint.fail) failureBorderColor else Color.Black.copy(alpha = 0.1f),
-                shape = if (endpoint.overriddenProperties.isEmpty() || endpoint.fail) {
-                    RoundedCornerShape(10.dp)
-                } else {
-                    topSectionShape
-                }
-            )
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = endpoint.name,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (endpoint.fail) {
-                Icon(
-                    modifier = Modifier
-                        .background(
-                            color = Color.Red,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                        .padding(horizontal = 12.dp, vertical = 2.dp),
-                    imageVector = Icons.LightningBolt,
-                    contentDescription = null,
-                    tint = Color.White
+            if (Platform.current != Platform.Desktop) {
+                Spacer(Modifier.width(4.dp))
+                RowDensityControls(
+                    selected = state.rowDensity,
+                    onChanged = onRowDensityChanged
                 )
             }
+        }
+        EndpointsHeader(
+            displayedCount = state.endpoints.size,
+            totalCount = state.allEndpoints.size,
+            selectedRowDensity = state.rowDensity,
+            onRowDensityChanged = onRowDensityChanged,
+        )
 
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
+        if (Platform.current == Platform.Desktop) {
+            GlobalControlsButton(
+                isOpen = false,
+                onClick = onGlobalControlsClicked
             )
         }
     }
-
-    if (endpoint.overriddenProperties.isNotEmpty() && !endpoint.fail) {
-        FlowRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.colorScheme.secondaryContainer,  // TODO: Wire up correct colours
-                    shape = bottomSectionShape
-                )
-                .border(
-                    width = (0.5).dp,
-                    color = Color.Black.copy(alpha = 0.1f),
-                    shape = bottomSectionShape
-                )
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            itemVerticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = strings.widgets.endpoints.overrides(
-                    endpoint.overriddenProperties.size
-                ),
-                style = MaterialTheme.typography.labelMedium
-            )
-            endpoint.overriddenProperties.forEach { property ->
-                Text(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.surfaceContainer,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(horizontal = 8.dp, vertical = 2.dp),
-                    text = property.displayName,
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
-                )
+    HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+    if (state.endpoints.isEmpty()) {
+        val strings = LocalStrings.current
+        EmptyState(
+            title = strings.widgets.endpoints.emptyTitle,
+            description = strings.widgets.endpoints.emptyDescription,
+            modifier = Modifier.fillMaxSize()
+        )
+    } else {
+        val listState = rememberLazyListState()
+        Box {
+            LazyColumn(state = listState, modifier = Modifier.imePadding()) {
+                items(state.endpoints) { endpoint ->
+                    EndpointRow(
+                        endpoint = endpoint,
+                        rowDensity = state.rowDensity,
+                        isSelected = endpoint.key == selectedKey,
+                        onEndpointClicked = onEndpointClicked,
+                    )
+                }
             }
+            PlatformVerticalScrollbar(
+                scrollState = listState,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+            )
+        }
+    }
+}
+
+@Composable
+private fun GlobalControlsButton(
+    isOpen: Boolean,
+    strings: Strings = LocalStrings.current,
+    onClick: () -> Unit
+) {
+    CustomButton(
+        variant = if (isOpen) ButtonVariant.Solid else ButtonVariant.Outline,
+        leadingIcon = Icons.Filled.Tune,
+        label = strings.widgets.globalControls.title,
+        onClick = onClick,
+    )
+}
+
+@Composable
+private fun EndpointsHeader(
+    displayedCount: Int,
+    totalCount: Int,
+    selectedRowDensity: RowDensity,
+    onRowDensityChanged: (RowDensity) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.Top,
+    ) {
+        Text(
+            text = "$displayedCount/$totalCount",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        if (Platform.current == Platform.Desktop) {
+            RowDensityControls(
+                selected = selectedRowDensity,
+                onChanged = onRowDensityChanged
+            )
+        }
+    }
+}
+
+@Composable
+private fun EndpointRow(
+    endpoint: EndpointsViewModel.State.EndpointConfig,
+    rowDensity: RowDensity,
+    isSelected: Boolean,
+    onEndpointClicked: (Key) -> Unit,
+    strings: Strings = LocalStrings.current,
+) {
+    val cs = MaterialTheme.colorScheme
+    val interactionSource = remember { MutableInteractionSource() }
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val leftBorderColor = when {
+        isSelected && Platform.current == Platform.Desktop -> cs.primary
+        endpoint.fail -> cs.error
+        endpoint.overriddenProperties.any { it != EndpointProperties.Delay } -> cs.primary
+        endpoint.overriddenProperties.isNotEmpty() -> cs.warning.primary
+        else -> Color.Transparent
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .hoverable(interactionSource = interactionSource)
+            .background(
+                if (isSelected || isHovered) {
+                    cs.onSurface.copy(alpha = HOVER_ALPHA)
+                } else {
+                    Color.Transparent
+                }
+            )
+            .drawIndicator(leftBorderColor)
+            .clickable { onEndpointClicked(endpoint.key) }
+            .padding(
+                start = CONTENT_START_PADDING_DP.dp,
+                end = 12.dp,
+                top = rowDensity.verticalPadding(),
+                bottom = rowDensity.verticalPadding(),
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            EndpointRowMainContent(endpoint = endpoint)
+            if (rowDensity != RowDensity.Compact) {
+                Spacer(Modifier.height(4.dp))
+                EndpointRowChips(endpoint = endpoint)
+            }
+        }
+        if (endpoint.fail && Platform.current == Platform.Desktop) {
+            StatusChip(label = strings.widgets.endpoints.forced, tone = ChipTone.Err)
+        }
+        endpoint.delayMs?.let { delay ->
+            Text(
+                text = formatDelaySeconds(delay),
+                style = MaterialTheme.typography.labelSmall,
+                color = cs.warning.primary,
+            )
+        }
+        Icon(
+            imageVector = Icons.Default.ChevronRight,
+            contentDescription = null,
+            tint = cs.onSurfaceFaint,
+        )
+    }
+    HorizontalDivider(color = cs.onSurface.copy(alpha = 0.12f))
+}
+
+@Composable
+private fun EndpointRowMainContent(endpoint: EndpointsViewModel.State.EndpointConfig) {
+    Text(
+        text = endpoint.name,
+        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+        color = MaterialTheme.colorScheme.onSurface,
+    )
+}
+
+@Composable
+private fun EndpointRowChips(
+    endpoint: EndpointsViewModel.State.EndpointConfig,
+    strings: Strings = LocalStrings.current,
+) {
+    if (!endpoint.fail && endpoint.overriddenProperties.isEmpty()) {
+        Text(
+            text = strings.widgets.endpoints.noOverrides,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceMuted,
+        )
+        return
+    }
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        if (endpoint.fail) {
+            StatusChip(label = strings.widgets.endpoints.forced, tone = ChipTone.Err)
+        }
+        endpoint.overriddenProperties.forEach { property ->
+            StatusChip(
+                label = property.displayName.uppercase(),
+                tone = property.chipTone(),
+            )
         }
     }
 }
@@ -225,119 +346,92 @@ private fun EndpointCard(
 @Composable
 private fun EndpointsWidgetContent(
     state: EndpointsViewModel.State,
+    selectedKey: Key?,
     onFilterUpdate: (String) -> Unit,
+    onRowDensityChanged: (RowDensity) -> Unit,
     onEndpointClicked: (Key) -> Unit,
     onGlobalControlsClicked: () -> Unit,
     strings: Strings = LocalStrings.current
-) = Box(
-    modifier = Modifier
-        .fillMaxSize()
-        .background(color = MaterialTheme.colorScheme.background)
-        .padding(horizontal = 12.dp, vertical = 15.dp)
-        .navigationBarsPadding()
 ) {
-    when (state) {
-        EndpointsViewModel.State.Loading -> CircularProgressIndicator()
-        is EndpointsViewModel.State.EndpointsList -> {
-            EndpointsList(
-                state = state,
-                onEndpointClicked = onEndpointClicked,
-                onFilterUpdate = onFilterUpdate
-            )
+    val scrollState = rememberScrollState()
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.surface)
+    ) {
+        val contentWidth = maxOf(maxWidth, minContentWidthDp.dp)
+        Box(
+            modifier = Modifier
+                .horizontalScroll(scrollState)
+                .width(contentWidth)
+                .fillMaxHeight()
+        ) {
+            when (state) {
+                EndpointsViewModel.State.Loading -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
 
-            FloatingActionButton(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .align(Alignment.BottomEnd)
-                    .zIndex(1f),
-                onClick = onGlobalControlsClicked,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = strings.widgets.globalControls.title
+                is EndpointsViewModel.State.EndpointsList -> EndpointsList(
+                    state = state,
+                    selectedKey = selectedKey,
+                    onFilterUpdate = onFilterUpdate,
+                    onRowDensityChanged = onRowDensityChanged,
+                    onEndpointClicked = onEndpointClicked,
+                    onGlobalControlsClicked = onGlobalControlsClicked,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
     }
 }
 
-@Composable
-private fun FilterTextField(
-    value: String,
-    onFilterUpdate: (String) -> Unit,
-    strings: Strings = LocalStrings.current
-) = TextField(
-    modifier = Modifier.fillMaxWidth(),
-    value = value,
-    onValueChange = onFilterUpdate,
-    textStyle = MaterialTheme.typography.titleMedium,
-    placeholder = { Text(strings.widgets.endpoints.filterPlaceholder) },
-    leadingIcon = {
-        Icon(imageVector = Icons.Default.Search, contentDescription = null)
-    },
-    singleLine = true,
-    shape = RoundedCornerShape(8.dp),
-    colors = TextFieldDefaults.colors().copy(
-        focusedContainerColor = MaterialTheme.colorScheme.surface,
-        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-        disabledContainerColor = MaterialTheme.colorScheme.surface,
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent
-    )
-)
-
 @Preview
 @Composable
-private fun EndpointsWidgetPreview() = PreviewSurface {
+private fun EndpointsWidgetPreview() = PreviewSurface(darkTheme = true) {
     EndpointsWidgetContent(
+        selectedKey = null,
         state = EndpointsViewModel.State.EndpointsList(
             allEndpoints = listOf(
                 EndpointsViewModel.State.EndpointConfig(
                     key = Key("1"),
-                    name = "FooBar",
+                    name = "Repairs",
                     fail = false,
                     overriddenProperties = listOf(
-                        EndpointProperties.Delay,
-                        EndpointProperties.Body
-                    )
+                        EndpointProperties.Body,
+                        EndpointProperties.Status
+                    ),
+                    delayMs = null,
                 ),
                 EndpointsViewModel.State.EndpointConfig(
                     key = Key("2"),
-                    name = "Foo",
-                    fail = true,
-                    overriddenProperties = emptyList()
+                    name = "Cancel Repair",
+                    fail = false,
+                    overriddenProperties = listOf(EndpointProperties.Delay),
+                    delayMs = 4900,
                 ),
                 EndpointsViewModel.State.EndpointConfig(
                     key = Key("3"),
-                    name = "FooBuzz",
+                    name = "Reschedule Repair",
                     fail = false,
-                    overriddenProperties = listOf(
-                        EndpointProperties.Status,
-                        EndpointProperties.Status,
-                        EndpointProperties.Delay,
-                        EndpointProperties.Body,
-                        EndpointProperties.Headers
-                    )
+                    overriddenProperties = emptyList(),
+                    delayMs = null,
                 ),
                 EndpointsViewModel.State.EndpointConfig(
                     key = Key("4"),
-                    name = "Foobar",
-                    fail = false,
-                    overriddenProperties = emptyList()
-                ),
-                EndpointsViewModel.State.EndpointConfig(
-                    key = Key("5"),
-                    name = "Foobuzz",
+                    name = "Auth — Token",
                     fail = true,
-                    overriddenProperties = listOf(
-                        EndpointProperties.Delay,
-                        EndpointProperties.Body
-                    )
-                )
+                    overriddenProperties = emptyList(),
+                    delayMs = null,
+                ),
             ),
-            filter = "Foo",
+            filter = "",
+            rowDensity = RowDensity.Comfy,
         ),
         onFilterUpdate = {},
+        onRowDensityChanged = {},
         onEndpointClicked = {},
         onGlobalControlsClicked = {}
     )

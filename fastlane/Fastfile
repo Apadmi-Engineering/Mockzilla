@@ -8,6 +8,7 @@ Dir["./utils/*"].each {|file| import file }
 
 before_all do |lane, options|
     lane_context[:repo_root] = sh("git rev-parse --show-toplevel").strip
+    lane_context[:js_r2_bucket] = "mockzilla-js-artifacts"
 end
 
 lane :combined_pull_request do    

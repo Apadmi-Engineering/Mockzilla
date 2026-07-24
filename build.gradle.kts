@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.buildKonfig) apply false
     alias(libs.plugins.vanniktechPublish) apply false
+    alias(libs.plugins.aboutlibraries) apply false
 }
 
 buildscript {

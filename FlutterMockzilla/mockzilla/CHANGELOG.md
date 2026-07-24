@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.0.0-dev](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v2.1.0...flutter_mockzilla-v3.0.0-dev) (2026-07-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* bump min android sdk and update readme ([#685](https://github.com/Apadmi-Engineering/Mockzilla/issues/685))
+
+### Features
+
+* bump min android sdk and update readme ([#685](https://github.com/Apadmi-Engineering/Mockzilla/issues/685)) ([63eb067](https://github.com/Apadmi-Engineering/Mockzilla/commit/63eb06725fa7e3a826e602a23f1dbe36b8f0b9c6))
+* various fixes ([#691](https://github.com/Apadmi-Engineering/Mockzilla/issues/691)) ([2d4f704](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d4f7044575e4291cd9a96b4b3f4fe994b8a3344))
+
+## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v2.0.0...flutter_mockzilla-v2.1.0) (2026-07-08)
+
+
+### Features
+
+* Add support for built-in Kotlin and migrate FlutterMockzilla to AGP 9 ([#638](https://github.com/Apadmi-Engineering/Mockzilla/issues/638)) ([9ef7445](https://github.com/Apadmi-Engineering/Mockzilla/commit/9ef74456a8e3dd94cc7a0540dccea0aab0e0ce75))
+* bump underlying kotlin library version to bump android target ([3a6fc2f](https://github.com/Apadmi-Engineering/Mockzilla/commit/3a6fc2fb682061159f87b652ad2dab759dc6fb41))
+* Complete additional Flutter 3.41 migrations for SwiftPM ([#559](https://github.com/Apadmi-Engineering/Mockzilla/issues/559)) ([8458ca8](https://github.com/Apadmi-Engineering/Mockzilla/commit/8458ca8ea592fc5899895272851e161ff4af102e))
+
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v1.1.1...flutter_mockzilla-v2.0.0) (2025-11-18)
 
 ### Features

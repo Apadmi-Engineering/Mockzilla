@@ -22,4 +22,5 @@ The iOS implementation for the mockzilla plugin.
   s.swift_version = '5.0'
 
   s.dependency 'SwiftMockzilla', '3.0.0-alpha2'
+  
 end

@@ -1,5 +1,6 @@
 package com.apadmi.mockzilla.lib.internal.utils
 
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import com.apadmi.mockzilla.lib.models.MockzillaHttpRequest
 
 import io.ktor.http.HttpMethod
@@ -11,7 +12,8 @@ import kotlinx.coroutines.await
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class JsMockzillaRequest(private val jsRequest: JsRequest) : MockzillaHttpRequest {
+@InternalMockzillaApi
+public class JsMockzillaRequest(private val jsRequest: JsRequest) : MockzillaHttpRequest {
     private val lock = Mutex()
     private var bodyCache: String? = null
     override val uri: String = Url(jsRequest.url).encodedPath
@@ -27,7 +29,7 @@ class JsMockzillaRequest(private val jsRequest: JsRequest) : MockzillaHttpReques
     override val method: HttpMethod =
         HttpMethod.DefaultMethods.first { method -> method.value.lowercase() == jsRequest.method.lowercase() }
 
-    val underlyingRequest: JsRequest get() = jsRequest
+    public val underlyingRequest: JsRequest get() = jsRequest
 
     override suspend fun bodyAsBytes(): ByteArray = bodyAsString().toByteArray()
 

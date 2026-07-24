@@ -1,12 +1,11 @@
 {
-  "group-pull-request-title-pattern": "chore${scope}: release Kmp libs libraries",
   "release-type": "simple",
   "separate-pull-requests": true,
-  "last-release-sha": "8e8e18b4a58ec80e1f0bdcc1dc13a9f106dd2042",
   "packages": {
     "mockzilla": {
       "component": "mockzilla",
-      "extra-files": ["build.gradle.kts"]
+      "extra-files": ["build.gradle.kts"],
+      "release-as": "4.0.0"
     },
     "mockzilla-common": {
       "component": "mockzilla-common",
@@ -29,7 +28,8 @@
     "FlutterMockzilla/mockzilla_android": {
       "component": "flutter_mockzilla_android",
       "release-type": "dart",
-      "always-update": true
+      "always-update": true,
+      "extra-files": ["android/build.gradle"]
     },
     "FlutterMockzilla/mockzilla_ios": {
       "component": "flutter_mockzilla_ios",
@@ -49,6 +49,7 @@
       "component": "flutter_mockzilla_ui_mobile",
       "release-type": "dart",
       "always-update": true,
+      "release-as": "1.1.0",
       "extra-files": [
         "android/build.gradle",
         "ios/mockzilla_ui_mobile.podspec"
@@ -71,7 +72,8 @@
         "mockzilla",
         "mockzilla-common",
         "mockzilla-management"
-      ]
+      ],
+      "release-as": "4.0.0"
     },
     {
       "type": "linked-versions",

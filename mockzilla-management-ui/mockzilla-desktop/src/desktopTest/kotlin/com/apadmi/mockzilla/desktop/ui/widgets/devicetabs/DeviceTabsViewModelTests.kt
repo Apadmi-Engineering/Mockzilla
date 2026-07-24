@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.desktop.ui.widgets.devicetabs
 
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel.State
+import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.testutils.CoroutineTest
 import com.apadmi.mockzilla.testutils.dummymodels.dummy
 import com.apadmi.mockzilla.ui.engine.device.ActiveDeviceMonitor
@@ -84,18 +85,16 @@ class DeviceTabsViewModelTests : CoroutineTest() {
         every { activeDeviceMonitorMock.allDevices }.returns(
             listOf(
                 StatefulDevice(
-                    dummyActiveDevice,
-                    "Device Name 1",
+                    device = dummyActiveDevice,
+                    metaData = MetaData.dummy().copy(appName = "App Name 1"),
                     isConnected = false,
-                    connectedAppPackage = "package",
-                    true
+                    isCompatibleMockzillaVersion = true
                 ),
                 StatefulDevice(
-                    Device.dummy(),
-                    "Device Name 2",
+                    device = Device.dummy(),
+                    metaData = MetaData.dummy().copy(appName = "App Name 2"),
                     isConnected = true,
-                    connectedAppPackage = "package",
-                    true
+                    isCompatibleMockzillaVersion = true
                 ),
             )
         )
@@ -107,13 +106,15 @@ class DeviceTabsViewModelTests : CoroutineTest() {
                 State(
                     listOf(
                         State.DeviceTabEntry(
-                            "Device Name 1",
+                            appName = "App Name 1",
+                            deviceName = MetaData.dummy().deviceModel,
                             isActive = false,
                             isConnected = false,
                             dummyActiveDevice
                         ),
                         State.DeviceTabEntry(
-                            "Device Name 2",
+                            appName = "App Name 2",
+                            deviceName = MetaData.dummy().deviceModel,
                             isActive = false,
                             isConnected = true,
                             Device.dummy()

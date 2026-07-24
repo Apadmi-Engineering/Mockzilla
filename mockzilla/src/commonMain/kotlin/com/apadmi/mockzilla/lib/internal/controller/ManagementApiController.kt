@@ -39,4 +39,8 @@ internal class ManagementApiController(
     suspend fun clearAllCaches() = localCacheService.clearAllCaches()
     suspend fun clearCache(key: List<EndpointConfiguration.Key>) = localCacheService.clearCache(key)
     suspend fun consumeLogEntries() = monitor.consumeCurrentLogs()
+    suspend fun getLogsSince(since: Long?) = monitor.getLogsSince(since)
+    suspend fun getFullBodyLogDetail(logId: String) = monitor.getFullBodyLogDetail(logId)
+    suspend fun onClientSessionStart(sessionStart: Long) = monitor.onClientSessionStart(sessionStart)
+    suspend fun clearAllLogEntries() = monitor.clearAllLogs()
 }

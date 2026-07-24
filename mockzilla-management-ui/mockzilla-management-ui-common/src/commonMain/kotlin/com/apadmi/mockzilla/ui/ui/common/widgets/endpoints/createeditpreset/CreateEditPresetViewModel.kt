@@ -1,8 +1,11 @@
+@file:NoKDoc
+
 package com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset
 
 import androidx.compose.runtime.mutableStateOf
-import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 
+import com.apadmi.mockzilla.lib.NoKDoc
+import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
@@ -10,8 +13,10 @@ import com.apadmi.mockzilla.management.MockzillaManagement
 import com.apadmi.mockzilla.ui.engine.device.Device
 import com.apadmi.mockzilla.ui.engine.events.EventBus
 import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
+import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
+import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
+import com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details.prettyPrintJson
 import com.apadmi.mockzilla.ui.utils.Platform
-import com.apadmi.mockzilla.ui.viewmodel.ViewModel
 
 import io.ktor.http.HttpStatusCode
 
@@ -23,7 +28,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-class CreateEditPresetViewModel(
+internal class CreateEditPresetViewModel(
     private val key: EndpointConfiguration.Key,
     private val device: Device,
     private val variant: State.Editing.Variant,
@@ -36,6 +41,7 @@ class CreateEditPresetViewModel(
     // see https://medium.com/androiddevelopers/effective-state-management-for-textfield-in-compose-d6e5b070fbe5
     // for reasons
     val state = mutableStateOf<State>(State.Loading)
+    private var syncCounter = 0L
 
     init {
         viewModelScope.launch {
@@ -50,35 +56,53 @@ class CreateEditPresetViewModel(
             .launchIn(viewModelScope)
     }
 
+    fun retry() = viewModelScope.launch {
+        loadIncumbentValues(key)
+    }
+
     private suspend fun loadIncumbentValues(key: EndpointConfiguration.Key) {
         val endpoint = endpointsService.fetchAllEndpointConfigs(device).map { endpoint ->
             endpoint.firstOrNull { it.key == key }
         }
 
+        val token = ++syncCounter
         state.value = endpoint.mapCatching { config ->
-            val current = config?.appliedPresetOverride ?: config?.deriveLegacyPreset()
-            val isEditing = variant == State.Editing.Variant.Edit
-            State.Editing(
-                isSaving = false,
-                statusCode = current?.response?.statusCode.takeIf { isEditing },
-                body = current?.response?.body.takeIf { isEditing },
-                // Always starts as false because we assume plaintext if parsing
-                // the body as JSON fails
-                hasBodyError = false,
-                headers = current?.response?.headers
-                    ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
-                    .takeIf { isEditing } ?: emptyList(),
-                responseType = inferResponseTypeFromBody(
-                    current?.response?.body.takeIf { isEditing }
-                ),
-                variant = variant
-            )
+            config.toState(token, key)
         }.fold(
             onSuccess = { it },
             onFailure = {
-                eventBus.send(Event.GenericError)
-                State.Loading
+                eventBus.send(
+                    Event.GenericError(GenericErrorableOperation.FetchEndpointConfigs, it)
+                )
+                State.FailedToLoad
             }
+        )
+    }
+
+    private fun SerializableEndpointConfig?.toState(
+        token: Long,
+        key: EndpointConfiguration.Key
+    ): State.Editing {
+        val current = this?.appliedPresetOverride ?: this?.deriveLegacyPreset()
+        val isEditing = variant == State.Editing.Variant.Edit
+        val body = current?.response?.body.takeIf { isEditing }
+        val statusCode = current?.response?.statusCode.takeIf { isEditing }
+        val headers = current?.response?.headers
+            ?.map { State.Editing.RequestHeader(key = it.key, value = it.value) }
+            .takeIf { isEditing } ?: emptyList()
+        return State.Editing(
+            isSaving = false,
+            syncToken = token,
+            statusCode = statusCode,
+            body = body,
+            bodyParseError = null,
+            headers = headers,
+            responseType = inferResponseTypeFromBody(body),
+            variant = variant,
+            endpointName = this?.name ?: key.raw,
+            committedBody = body,
+            committedStatusCode = statusCode,
+            committedHeaders = headers,
         )
     }
 
@@ -93,7 +117,7 @@ class CreateEditPresetViewModel(
         }
     }
 
-    fun save() = viewModelScope.launch {
+    fun save(shouldNavigateOnCompletion: Boolean) = viewModelScope.launch {
         val currentState = state.value as? State.Editing ?: return@launch
         val appName = when (Platform.current) {
             Platform.Desktop -> "Mockzilla Desktop"
@@ -117,20 +141,23 @@ class CreateEditPresetViewModel(
             )
         ).onSuccess {
             eventBus.send(Event.EndpointDataChanged(listOf(key)))
-            state.value = currentState.copy(isSaving = false)
+            // Update committed values to match what was just saved — clears dirty state
+            // without incrementing syncToken (text fields already show the right content)
+            state.value = currentState.copy(
+                isSaving = false,
+                committedBody = currentState.body,
+                committedStatusCode = currentState.statusCode,
+                committedHeaders = currentState.headers,
+                navigateUp = shouldNavigateOnCompletion
+            )
         }.onFailure {
-            eventBus.send(Event.GenericError)
+            eventBus.send(Event.GenericError(GenericErrorableOperation.ApplyPreset, it))
         }
     }
 
     fun onNewStatusCode(newStatusCode: HttpStatusCode) {
         val currentState = state.value as? State.Editing ?: return
         state.value = currentState.copy(statusCode = newStatusCode)
-    }
-
-    fun clearStatusCode() {
-        val currentState = state.value as? State.Editing ?: return
-        state.value = currentState.copy(statusCode = null)
     }
 
     fun onNewResponseType(newResponseType: State.Editing.ResponseType) {
@@ -140,63 +167,39 @@ class CreateEditPresetViewModel(
 
     fun onNewResponseBody(newBody: String) {
         val currentState = state.value as? State.Editing ?: return
-        val hasBodyError = try {
+        state.value = try {
             Json.parseToJsonElement(newBody)
-            false
-        } catch (_: Exception) {
-            true
+            currentState.copy(
+                body = newBody,
+                bodyParseError = null,
+            )
+        } catch (e: Exception) {
+            currentState.copy(
+                body = newBody,
+                bodyParseError = e.message?.substringBefore("\nJSON input:")?.trim(),
+            )
         }
-        state.value = currentState.copy(body = newBody, hasBodyError = hasBodyError)
     }
 
     fun onFormatResponseBody() {
         val currentState = state.value as? State.Editing ?: return
         val bodyResponse = currentState.body ?: return
 
-        val prettyJson = Json { prettyPrint = true }
-        val formatted = prettyJson.encodeToString(Json.parseToJsonElement(bodyResponse))
+        val formatted = when (currentState.responseType) {
+            State.Editing.ResponseType.Json -> bodyResponse.prettyPrintJson()
+            State.Editing.ResponseType.Html,
+            State.Editing.ResponseType.PlainText,
+            State.Editing.ResponseType.None -> return
+        }
 
-        state.value = currentState.copy(body = formatted)
+        // Increment syncToken so the text field picks up the formatted body
+        state.value = currentState.copy(body = formatted, syncToken = ++syncCounter)
     }
 
-    fun clearResponseBody() {
-        val currentState = state.value as? State.Editing ?: return
-        state.value = currentState.copy(body = null)
-    }
-
-    fun onUpdateNewHeader(key: String? = null, value: String? = null) {
-        val currentState = state.value as? State.Editing ?: return
-        state.value = currentState.copy(
-            newHeader = currentState.newHeader.copy(
-                key = key ?: currentState.newHeader.key,
-                value = value ?: currentState.newHeader.value
-            )
-        )
-    }
-
-    fun onUpdateHeader(
-        header: State.Editing.RequestHeader,
-        key: String? = null,
-        value: String? = null
-    ) {
-        val currentState = state.value as? State.Editing ?: return
-        val updatedHeader = currentState.headers.firstOrNull { it == header } ?: return
-
-        state.value = currentState.copy(
-            headers = currentState.headers.filter { it != header }.plus(
-                State.Editing.RequestHeader(
-                    key = key ?: updatedHeader.key,
-                    value = value ?: updatedHeader.value
-                )
-            )
-        )
-    }
-
-    fun onAddHeader() {
+    fun onAddHeader(key: String, value: String) {
         val currentState = state.value as? State.Editing ?: return
         state.value = currentState.copy(
-            headers = currentState.headers.plus(currentState.newHeader),
-            newHeader = State.Editing.RequestHeader()
+            headers = currentState.headers.plus(State.Editing.RequestHeader(key = key, value = value))
         )
     }
 
@@ -207,36 +210,50 @@ class CreateEditPresetViewModel(
         )
     }
 
-    fun clearHeaders() {
+    fun consumeNavigateUp() {
         val currentState = state.value as? State.Editing ?: return
-        state.value = currentState.copy(headers = emptyList())
+        state.value = currentState.copy(navigateUp = false)
     }
 
     sealed class State {
+        data object FailedToLoad : State()
         data object Loading : State()
 
         /**
-         * @property isSaving
-         * @property statusCode
-         * @property body
-         * @property headers
-         * @property newHeader The header currently being edited by the user in the UI
-         * @property responseType
-         * @property hasBodyError
-         * @property variant
+         * @property syncToken Incremented on server reload or format-apply; drives LaunchedEffect in the UI.
+         * Committed values alone would suffice for server reload, but format changes [body] without
+         * touching [committedBody], so syncToken is the only signal available to push the reformatted
+         * content into the text field.
+         * @property endpointName The display name of the endpoint shown in the list
+         * @property committedBody Last body value synced from the server
+         * @property committedStatusCode Last status code synced from the server
+         * @property committedHeaders Last headers synced from the server
          */
         data class Editing(
             val isSaving: Boolean,
+            val syncToken: Long,
             val statusCode: HttpStatusCode?,
             val body: String? = null,
-            val hasBodyError: Boolean = false,
+            val bodyParseError: String? = null,
             val headers: List<RequestHeader> = emptyList(),
-            val newHeader: RequestHeader = RequestHeader(),
             val responseType: ResponseType,
             val variant: Variant,
+            val endpointName: String = "",
+            val committedBody: String? = null,
+            val committedStatusCode: HttpStatusCode? = null,
+            val committedHeaders: List<RequestHeader> = emptyList(),
+            val navigateUp: Boolean = false
         ) : State() {
+            val isDirty: Boolean
+                get() = body != committedBody ||
+                        statusCode != committedStatusCode ||
+                        headers != committedHeaders
+
+            @Suppress("EnumEntryOrder")
             enum class ResponseType {
+                Html,
                 Json,
+                None,
                 PlainText,
                 ;
             }
@@ -247,10 +264,6 @@ class CreateEditPresetViewModel(
                 ;
             }
 
-            /**
-             * @property key
-             * @property value
-             */
             data class RequestHeader(
                 val key: String = "",
                 val value: String = ""

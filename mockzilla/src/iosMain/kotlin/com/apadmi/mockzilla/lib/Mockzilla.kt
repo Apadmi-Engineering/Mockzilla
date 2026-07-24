@@ -1,5 +1,8 @@
+// This file intentionally breaks the convention and isn't named `Mockzilla.ios.kt` since
+// We want the Swift interop to expose MockzillaKt as it's type
 package com.apadmi.mockzilla.lib
 
+import com.apadmi.mockzilla.lib.internal.PlatformConfig
 import com.apadmi.mockzilla.lib.internal.discovery.ZeroConfDiscoveryServiceImpl
 import com.apadmi.mockzilla.lib.internal.discovery.validateInfoPlist
 import com.apadmi.mockzilla.lib.internal.persistance.KeychainSettings
@@ -12,13 +15,13 @@ import com.apadmi.mockzilla.lib.models.PortConflictException
 import kotlinx.coroutines.runBlocking
 
 /**
- * Internal method to start the Mockzilla server. Consumer apps should prefer using the top-level
- * `startMockzilla()` function to avoid breaking changes.
+ * Starts the Mockzilla server.
  *
  * @param config The config with which to initialise mockzilla.
+ * @throws PortConflictException if the port specified in [config] is already in use.
  */
 @Throws(PortConflictException::class)
-fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlocking {
+public fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlocking {
     config.validateInfoPlist()
 
     startMockzilla(
@@ -30,15 +33,15 @@ fun startMockzilla(config: MockzillaConfig): MockzillaRuntimeParams = runBlockin
                 logger,
                 KeychainSettings("mockzilla_keychain_settings")
             )
-        }
+        },
+        platformConfig = PlatformConfig(),
     )
 }
 
 /**
- * Stops the Mockzilla server,
+ * Stops the running Mockzilla server.
  *
- * @return
  */
-fun stopMockzilla() = runBlocking {
+public actual fun stopMockzilla(): Unit = runBlocking {
     stopServer()
 }
