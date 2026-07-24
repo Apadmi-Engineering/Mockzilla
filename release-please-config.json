@@ -55,7 +55,8 @@
       "release-as": "1.1.0",
       "extra-files": [
         "android/build.gradle",
-        "ios/mockzilla_ui_mobile.podspec"
+        "ios/mockzilla_ui_mobile.podspec",
+        "ios/mockzilla_ui_mobile.Package.swift"
       ]
     },
     "mockzilla-management-ui/mockzilla-mobile-ui": {
