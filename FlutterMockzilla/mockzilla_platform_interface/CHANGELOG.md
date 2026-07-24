@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v2.0.0...flutter_mockzilla_platform_interface-v2.0.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* Remove `dart:io` import from `mockzilla_platform_interface` ([#719](https://github.com/Apadmi-Engineering/Mockzilla/issues/719)) ([f8cf2df](https://github.com/Apadmi-Engineering/Mockzilla/commit/f8cf2df93a0caa07c82ad0529cdb2184a1c7c7a8))
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v1.1.1...flutter_mockzilla_platform_interface-v2.0.0) (2026-01-26)
 
 
