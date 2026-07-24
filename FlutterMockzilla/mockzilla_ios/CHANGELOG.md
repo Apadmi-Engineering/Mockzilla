@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v3.0.0-dev...flutter_mockzilla_ios-v3.0.0) (2026-07-24)
+
+
+### Features
+
+* bump flutter kmp dependencies ([#718](https://github.com/Apadmi-Engineering/Mockzilla/issues/718)) ([17dae6b](https://github.com/Apadmi-Engineering/Mockzilla/commit/17dae6b752aac14cf895a3d510744d9e020371b7))
+
 ## [3.0.0-dev](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v2.1.0...flutter_mockzilla_ios-v3.0.0-dev) (2026-07-09)
 
 
