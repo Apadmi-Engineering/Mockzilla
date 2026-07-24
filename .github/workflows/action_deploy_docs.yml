@@ -31,10 +31,18 @@ jobs:
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
-      - run: pip install -r docs/requirements.txt
-      - run: gem install bundler
-      - run: bundle install
-      - run: bundle exec fastlane generate_docs
+      - uses: ruby/setup-ruby@12fd324f1d0b43274fdc8130f6980590a667c455 # v1.312.0
+        with:
+          ruby-version: 3.4
+      - name: Setup fastlane
+        run: |
+          gem install bundler
+          bundle install
+      - name: Generate Docs
+        run: |
+          pip install --upgrade setuptools
+          pip install -r docs/requirements.txt
+          bundle exec fastlane generate_docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
