@@ -1,5 +1,3 @@
-import 'dart:js_interop_unsafe';
-
 import 'package:mockzilla_ui_mobile/mockzilla_ui_mobile.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart' as web;
@@ -57,7 +55,7 @@ class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
   void launchManagementUi() async {
     await _ensureScriptLoaded();
 
-    dynamic root = web.window.getProperty("mockzilla-mobile-ui".toJS);
+    dynamic root = web.window["mockzilla-mobile-ui"];
     root.com.apadmi.mockzilla.launchManagementUi();
   }
 
