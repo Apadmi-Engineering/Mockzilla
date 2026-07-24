@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.1.0-dev3...mockzilla-mobile-ui-v1.1.0) (2026-07-24)
+
+
+### Miscellaneous Chores
+
+* **mockzilla-mobile-ui:** Synchronize Mockzilla mobile ui versions
+
 ## [1.1.0-dev3](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.1.0-dev2...mockzilla-mobile-ui-v1.1.0-dev3) (2026-07-16)
 
 
