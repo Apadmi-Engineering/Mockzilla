@@ -231,7 +231,7 @@ public data class MockzillaHttpResponse(
  *
  * @property statusCode The HTTP status code override, or `null` to leave unchanged.
  * @property headers HTTP response headers override, or `null` to leave unchanged.
- * @property body The response body override, or `null` to leave unchanged.
+ * @property body The response body override, or `null` to leave unchanged. 
  */
 @Serializable
 public data class PartialMockzillaHttpResponse(
