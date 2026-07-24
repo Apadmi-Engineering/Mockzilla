@@ -25,7 +25,7 @@ kotlin {
     explicitApi()
 
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "4.0.0-alpha1" // x-release-please-version
+    version = project.injectedVersion() ?: "4.0.0" // x-release-please-version
 
     jvm {
         testRuns["test"].executionTask.configure {

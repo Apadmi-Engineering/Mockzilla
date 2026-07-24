@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v4.0.0-alpha1...mockzilla-v4.0.0) (2026-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* Breaking changes across all kotlin modules. Types that should have been internal are now marked internal. Consumers who were only using the documented APIs should be unaffected.
+
+### Features
+
+* **#557:** fix port conflict issue on Android ([#569](https://github.com/Apadmi-Engineering/Mockzilla/issues/569)) ([1936766](https://github.com/Apadmi-Engineering/Mockzilla/commit/1936766b1d78009964cb00d8383878831f7de6df))
+* address console log spam ([#653](https://github.com/Apadmi-Engineering/Mockzilla/issues/653)) ([541e38a](https://github.com/Apadmi-Engineering/Mockzilla/commit/541e38ae838c236600847711a1b6240e4de82e57))
+* enable gradle explicitApi ([#676](https://github.com/Apadmi-Engineering/Mockzilla/issues/676)) ([00bfa33](https://github.com/Apadmi-Engineering/Mockzilla/commit/00bfa33b309892741e59b9648b21e06e36447807))
+* improve the auto detection of devices on the network ([#603](https://github.com/Apadmi-Engineering/Mockzilla/issues/603)) ([55aad57](https://github.com/Apadmi-Engineering/Mockzilla/commit/55aad5707d05dd0674fb49f5b49302d790a26798))
+
+
 ## [4.0.0-alpha1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v3.0.0...mockzilla-v4.0.0-alpha1) (2026-07-08)
 
 
@@ -152,4 +167,3 @@
 * Fix proguard rules to prevent users needing to add rules to app level files ([b00887d](https://github.com/Apadmi-Engineering/Mockzilla/commit/b00887dd5c9f859b2ded23936742ec173348b3a8))
 * Fix runtime crash which happens only on proguarded non-debuggable builds ([60af941](https://github.com/Apadmi-Engineering/Mockzilla/commit/60af94106c42338eafa4e5c2505b6131d1ce2226))
 * mimick a fix release to test release pipeline ([b97e8fb](https://github.com/Apadmi-Engineering/Mockzilla/commit/b97e8fb0ecdb259c6e0a503f8f61930f7d129a4b))
- 
