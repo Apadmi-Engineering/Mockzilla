@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v0.0.4...flutter_mockzilla_web-v1.0.0) (2026-07-24)
+
+
+### Features
+
+* bump flutter kmp dependencies ([#718](https://github.com/Apadmi-Engineering/Mockzilla/issues/718)) ([17dae6b](https://github.com/Apadmi-Engineering/Mockzilla/commit/17dae6b752aac14cf895a3d510744d9e020371b7))
+
 ## [0.0.4](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v0.0.4...flutter_mockzilla_web-v0.0.4) (2026-07-09)
 
 
