@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib.internal
 
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
+import com.apadmi.mockzilla.lib.internal.models.ApplyPresetRequestDto
 import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
@@ -144,6 +145,29 @@ internal fun configureEndpoints(
             MockzillaHttpResponse(
                 statusCode = HttpStatusCode.Created,
                 headers = CorsUtils.allowAllHeaders + jsonHeader
+            )
+        }
+    },
+    Msw.http.put("$baseUrl/api/mock-data/*") { info ->
+        di.logger.v { "Handling PUT mock-data: ${info.request.url}" }
+        info.request.safeResponse(di.logger, scope) { request ->
+            val keyRegex = ".*/mock-data/(.*)".toRegex()
+            val key = keyRegex.matchEntire(info.request.url)?.groupValues?.last()
+                ?.decodeURLPart()
+                ?: throw IllegalStateException("Missing key in url ${info.request.url}")
+            val presetName = JsonProvider.json.decodeFromString<ApplyPresetRequestDto>(
+                request.text().await()
+            ).presetName
+
+            val result = di.managementApiController.applyPresetByName(EndpointConfiguration.Key(key), presetName)
+            result?.let {
+                MockzillaHttpResponse(
+                    body = JsonProvider.json.encodeToString(it),
+                    headers = CorsUtils.allowAllHeaders + jsonHeader
+                )
+            } ?: MockzillaHttpResponse(
+                statusCode = HttpStatusCode.NotFound,
+                headers = CorsUtils.allowAllHeaders
             )
         }
     },

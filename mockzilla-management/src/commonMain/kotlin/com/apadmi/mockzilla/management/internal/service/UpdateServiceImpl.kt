@@ -50,4 +50,10 @@ internal class UpdateServiceImpl(
             appliedPresetOverride = SetOrDont.Set(dashboardOverridePreset),
         ), connection
     )
+
+    override suspend fun applyPresetByName(
+        connection: MockzillaConnectionConfig,
+        key: EndpointConfiguration.Key,
+        presetName: String
+    ) = repo.applyPresetByName(connection, key, presetName).map { Unit }
 }
