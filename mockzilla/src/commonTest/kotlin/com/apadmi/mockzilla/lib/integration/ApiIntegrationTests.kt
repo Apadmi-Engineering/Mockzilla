@@ -249,6 +249,106 @@ class ApiIntegrationTests {
         }
 
     @Test
+    fun `PUT mock-data by key - applies preset by name - updates cache as expected`() =
+        runIntegrationTest(
+            MockzillaConfig.Builder()
+                .setPort(0)  // Port determined at runtime
+                .addEndpoint(EndpointConfiguration.Builder("id")
+                    .configureDashboardOverrides {
+                        addPreset(
+                            MockzillaHttpResponse(
+                                HttpStatusCode.Created,
+                                emptyMap(),
+                                "preset body"
+                            ),
+                            name = "Preset name",
+                            description = "Preset description",
+                            type = DashboardOverridePreset.Type.Informational
+                        )
+                    }
+                    .build())
+                .build()
+        ) { params, cacheService ->
+            /* Run Test */
+            val response = HttpClient().put(
+                "${params.apiBaseUrl}/mock-data/id"
+            ) {
+                contentType(ContentType.Application.Json)
+                setBody(Json.encodeToString(ApplyPresetRequestDto("Preset name")))
+            }
+
+            /* Verify */
+            val expectedPreset = DashboardOverridePreset(
+                name = "Preset name",
+                description = "Preset description",
+                type = DashboardOverridePreset.Type.Informational,
+                response = PartialMockzillaHttpResponse(
+                    HttpStatusCode.Created,
+                    emptyMap(),
+                    "preset body"
+                )
+            )
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(
+                SerializableEndpointConfig.allNulls("id", "id", Int.MIN_VALUE).copy(
+                    appliedPresetOverride = expectedPreset
+                ),
+                JsonProvider.json.decodeFromString<SerializableEndpointConfig>(response.bodyAsText())
+            )
+            assertEquals(
+                SerializableEndpointConfig.allNulls("id", "id", Int.MIN_VALUE).copy(
+                    appliedPresetOverride = expectedPreset
+                ),
+                cacheService.getLocalCache(EndpointConfiguration.Key("id"))
+            )
+        }
+
+    @Test
+    fun `PUT mock-data by key - unknown preset name - returns 404`() =
+        runIntegrationTest(
+            MockzillaConfig.Builder()
+                .setPort(0)  // Port determined at runtime
+                .addEndpoint(EndpointConfiguration.Builder("id")
+                    .configureDashboardOverrides {
+                        addPreset(MockzillaHttpResponse(HttpStatusCode.Created, emptyMap(), "preset body"))
+                    }
+                    .build())
+                .build()
+        ) { params, cacheService ->
+            /* Run Test */
+            val response = HttpClient().put(
+                "${params.apiBaseUrl}/mock-data/id"
+            ) {
+                contentType(ContentType.Application.Json)
+                setBody(Json.encodeToString(ApplyPresetRequestDto("no such preset")))
+            }
+
+            /* Verify */
+            assertEquals(HttpStatusCode.NotFound, response.status)
+            assertNull(cacheService.getLocalCache(EndpointConfiguration.Key("id")))
+        }
+
+    @Test
+    fun `PUT mock-data by key - unknown endpoint key - returns 404`() =
+        runIntegrationTest(
+            MockzillaConfig.Builder()
+                .setPort(0)  // Port determined at runtime
+                .addEndpoint(EndpointConfiguration.Builder("id"))
+                .build()
+        ) { params, _ ->
+            /* Run Test */
+            val response = HttpClient().put(
+                "${params.apiBaseUrl}/mock-data/does-not-exist"
+            ) {
+                contentType(ContentType.Application.Json)
+                setBody(Json.encodeToString(ApplyPresetRequestDto("whatever")))
+            }
+
+            /* Verify */
+            assertEquals(HttpStatusCode.NotFound, response.status)
+        }
+
+    @Test
     fun `GET monitor-logs - returns as expected`() = runIntegrationTest(
         MockzillaConfig.Builder()
             .setPort(0)  // Port determined at runtime

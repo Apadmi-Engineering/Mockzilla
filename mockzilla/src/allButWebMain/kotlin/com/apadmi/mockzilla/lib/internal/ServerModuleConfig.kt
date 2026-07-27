@@ -1,6 +1,7 @@
 package com.apadmi.mockzilla.lib.internal
 
 import com.apadmi.mockzilla.lib.internal.di.DependencyInjector
+import com.apadmi.mockzilla.lib.internal.models.ApplyPresetRequestDto
 import com.apadmi.mockzilla.lib.internal.models.ClearCachesRequestDto
 import com.apadmi.mockzilla.lib.internal.models.MockDataResponseDto
 import com.apadmi.mockzilla.lib.internal.models.MonitorLogsResponse
@@ -69,12 +70,21 @@ internal fun Application.configureEndpoints(
             }
         }
         patch("/api/mock-data") {
-            di.logger.v { "Handling POST mock-data: ${call.request.uri}" }
+            di.logger.v { "Handling PATCH mock-data: ${call.request.uri}" }
             safeResponse(di.logger) { call ->
                 call.allowCors()
                 val patches = call.receive<SerializableEndpointConfigPatchRequestDto>().entries
                 di.managementApiController.patchEntries(patches)
                 call.respond(HttpStatusCode.Created)
+            }
+        }
+        put("/api/mock-data/{key}") {
+            di.logger.v { "Handling PUT mock-data: ${call.request.uri}" }
+            safeResponse(di.logger) { call ->
+                call.allowCors()
+                val presetName = call.receive<ApplyPresetRequestDto>().presetName
+                val result = di.managementApiController.applyPresetByName(call.extractKey(), presetName)
+                result?.let { call.respond(it) } ?: call.respond(HttpStatusCode.NotFound)
             }
         }
         delete("/api/mock-data/all") {

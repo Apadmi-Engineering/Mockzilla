@@ -223,6 +223,63 @@ class MockzillaManagementRepositoryIntegrationTests {
         }
 
     @Test
+    fun `applyPresetByName - matching preset - returns updated config`() =
+        runIntegrationTest(
+            dummyAppName,
+            dummyAppVersion,
+            createSut = { it },
+            config = MockzillaConfig.Builder()
+                .setPort(0)  // Port determined at runtime
+                .addEndpoint(
+                    EndpointConfiguration.Builder("my key")
+                        .configureDashboardOverrides {
+                            addPreset(PartialMockzillaHttpResponse(body = "preset"), "name", "desc")
+                        }.build()
+                )
+                .build()
+        ) { sut, connection, _ ->
+            /* Run Test */
+            val result = sut.applyPresetByName(connection, EndpointConfiguration.Key("my key"), "name")
+
+            /* Verify */
+            assertEquals(
+                SerializableEndpointConfig.allNulls("my key", "my key", Int.MIN_VALUE).copy(
+                    appliedPresetOverride = DashboardOverridePreset(
+                        "name",
+                        "desc",
+                        response = PartialMockzillaHttpResponse(body = "preset"),
+                        type = null
+                    )
+                ),
+                result.getOrThrow()
+            )
+        }
+
+    @Test
+    fun `applyPresetByName - unknown preset name - returns failure`() =
+        runIntegrationTest(
+            dummyAppName,
+            dummyAppVersion,
+            createSut = { it },
+            config = MockzillaConfig.Builder()
+                .setPort(0)  // Port determined at runtime
+                .addEndpoint(
+                    EndpointConfiguration.Builder("my key")
+                        .configureDashboardOverrides {
+                            addPreset(PartialMockzillaHttpResponse(body = "preset"), "name", "desc")
+                        }.build()
+                )
+                .build()
+        ) { sut, connection, _ ->
+            /* Run Test */
+            val result =
+                sut.applyPresetByName(connection, EndpointConfiguration.Key("my key"), "no such preset")
+
+            /* Verify */
+            assertTrue(result.isFailure)
+        }
+
+    @Test
     fun `clearCaches and clearAllCaches - behave correctly`() =
         runIntegrationTest(
             dummyAppName,
