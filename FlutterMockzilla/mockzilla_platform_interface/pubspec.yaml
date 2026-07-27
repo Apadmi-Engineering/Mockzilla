@@ -30,7 +30,7 @@ dependencies:
 
 dev_dependencies:
   # Models
-  freezed: ^3.0.0
+  freezed: ^3.2.6-dev.1
   build_runner: ^2.4.6
 
   # Testing
