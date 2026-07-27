@@ -28,8 +28,9 @@ class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
     }).toJS;
 
     script.onerror = ((web.Event error) {
-      completer.completeError(Exception(
-          'Failed to load mockzilla-mobile-ui.js: ${error.toString()}'));
+      completer.completeError(
+        Exception('Failed to load mockzilla-mobile-ui.js: ${error.toString()}'),
+      );
     }).toJS;
 
     final web.HTMLElement? head = document.head;
@@ -42,7 +43,8 @@ class MockzillaMobileUiWeb extends MockzillaUiMobilePlatform {
       await completer.future;
     } else {
       completer.completeError(
-          Exception('Could not find the document head element.'));
+        Exception('Could not find the document head element.'),
+      );
       await completer.future;
     }
 
