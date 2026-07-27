@@ -56,7 +56,7 @@ junit = "1.3.0" # https://developer.android.com/jetpack/androidx/releases/test
 testParamInjector = "1.22" # https://github.com/google/TestParameterInjector
 
 # Publishing
-conveyor = "1.12" # https://github.com/hydraulic-software/conveyor
+conveyor = "2.0" # https://github.com/hydraulic-software/conveyor
 vanniktech-publish = "0.36.0" # https://github.com/vanniktech/gradle-maven-publish-plugin
 
 # License attribution
