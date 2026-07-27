@@ -40,12 +40,10 @@ updates:
     schedule:
       interval: 'weekly'
     groups:
-      ruby-patches:
+      ruby-updates:
         applies-to: version-updates
         patterns:
           - "*"
-        update-types:
-          - "patch"
   - package-ecosystem: 'pub'
     directory: '/FlutterMockzilla'
     schedule:
