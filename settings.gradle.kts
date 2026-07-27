@@ -6,6 +6,9 @@ pluginManagement {
         maven("https://central.sonatype.com/repository/maven-snapshots/")
     }
 }
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0"
+}
 
 dependencyResolutionManagement {
     repositories {
