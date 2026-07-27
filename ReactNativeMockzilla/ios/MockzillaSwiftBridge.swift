@@ -99,6 +99,27 @@ import mockzilla
                         ?? MockzillaHttpResponse()
                 }
 
+            if let presets = epDict["presets"] as? [[String: Any]], !presets.isEmpty {
+                _ = b.configureDashboardOverrides { presetBuilder in
+                    for presetDict in presets {
+                        guard let statusCode = presetDict["statusCode"] as? Int else { continue }
+                        let headers = presetDict["headers"] as? [String: String] ?? [:]
+                        let body = presetDict["body"] as? String ?? ""
+                        presetBuilder.addPreset(
+                            response: MockzillaHttpResponse(
+                                status: Ktor_httpHttpStatusCode.init(value: Int32(statusCode), description: ""),
+                                headers: headers,
+                                body: body
+                            ),
+                            name: presetDict["name"] as? String,
+                            description: presetDict["description"] as? String,
+                            type: nil
+                        )
+                    }
+                    return presetBuilder
+                }
+            }
+
             builder.addEndpoint(endpoint_: b)
         }
         return builder.build()

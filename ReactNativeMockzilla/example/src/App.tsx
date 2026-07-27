@@ -25,10 +25,50 @@ export default function App() {
           dashboardOptionsConfig: {
             presets: [
               {
+                name: 'Other person',
+                response: {
+                  statusCode: 200,
+                  body: JSON.stringify({ id: 2, name: 'Other person' }),
+                },
+              },
+              {
                 name: 'Not Found',
                 response: {
                   statusCode: 404,
                   body: JSON.stringify({ error: 'Not Found' }),
+                },
+              },
+              {
+                name: 'Unauthorized',
+                description: 'Simulates an expired/invalid auth token',
+                response: {
+                  statusCode: 401,
+                  body: JSON.stringify({ error: 'Unauthorized' }),
+                },
+              },
+              {
+                name: 'Rate Limited',
+                description: 'Too many requests, with a Retry-After header',
+                response: {
+                  statusCode: 429,
+                  headers: { 'Retry-After': '30' },
+                  body: JSON.stringify({ error: 'Too Many Requests' }),
+                },
+              },
+              {
+                name: 'Malformed JSON',
+                description: 'Success status but an invalid JSON body',
+                response: {
+                  statusCode: 200,
+                  body: '{ id: 1, name: "Test User"',
+                },
+              },
+              {
+                name: 'Empty Response',
+                description: '204 with no body',
+                response: {
+                  statusCode: 204,
+                  body: '',
                 },
               },
             ],
