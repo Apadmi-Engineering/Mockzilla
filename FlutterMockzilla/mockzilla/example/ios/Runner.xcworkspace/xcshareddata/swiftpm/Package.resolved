@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Apadmi-Engineering/SwiftMockzilla.git",
       "state" : {
-        "revision" : "56a928d919f9bfe43d6bd33f279ebdfda78462c1",
-        "version" : "4.0.0-alpha1"
+        "revision" : "7cd0ead416048f2f8f6799171f69e2e4cd7ab721",
+        "version" : "4.0.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi.git",
       "state" : {
-        "revision" : "2c40647db605fdb5f960a756c9fd568bbe3b338e",
-        "version" : "0.0.9"
+        "revision" : "605fc93539ccb29a73bbd70db16ad9afcd31d2d5",
+        "version" : "1.1.0"
       }
     }
   ],
