@@ -62,7 +62,17 @@ class EndpointDetailsViewModelTests : CoroutineTest() {
             versionCode = dummyVersion,
             shouldFail = false,
             delayMs = 50,
-            appliedPresetOverride = null
+            appliedPresetOverride = DashboardOverridePreset(
+                name = "Derived preset",
+                description = null,
+                type = null,
+                response = PartialMockzillaHttpResponse(
+                    statusCode = HttpStatusCode.OK,
+                    headers = emptyMap(),
+                    body = "{}"
+                ),
+                isManagementUiDefinedCustomPreset = false
+            )
         )
         val presets = DashboardOptionsConfig.Builder().build()
 
