@@ -8,9 +8,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,8 +26,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
@@ -61,6 +58,7 @@ import com.apadmi.mockzilla.ui.ui.common.DeviceRootViewModel
 import com.apadmi.mockzilla.ui.ui.common.assets.Globe
 import com.apadmi.mockzilla.ui.ui.common.assets.MockzillaLogo
 import com.apadmi.mockzilla.ui.ui.common.components.AnimatedErrorBanner
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 import com.apadmi.mockzilla.ui.ui.common.widgets.debug.DebugWidget
 import com.apadmi.mockzilla.ui.ui.common.widgets.deviceconnection.UnsupportedDeviceMockzillaVersionWidget
@@ -100,90 +98,78 @@ internal fun MobileAppRoot(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AnimatedVisibility(showBackButton) {
-                IconButton(
+                CustomIconButton(
+                    onClick = navController::navigateUp,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    iconTint = colorScheme.onSurface,
+                    contentDescription = strings.common.backDescription,
                     modifier = Modifier
                         .minimumTouchTarget()
                         .clip(RoundedCornerShape(8.dp))
                         .background(colorScheme.surfaceVariant),
-                    onClick = navController::navigateUp
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        tint = colorScheme.onSurface,
-                        contentDescription = strings.common.backDescription,
-                    )
-                }
+                )
             }
 
             AnimatedVisibility(!showBackButton) {
-                Box(
+                CustomIconButton(
+                    onClick = { navController.navigate(Destination.MetaData) },
+                    imageVector = Icons.MockzillaLogo,
+                    iconTint = Color.Unspecified,
+                    contentDescription = LocalStrings.current.common.metaDescription,
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(colorScheme.surface)
-                        .clickable {
-                            navController.navigate(Destination.MetaData)
-                        }
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .iconButtonSize()
-                            .padding(vertical = 1.dp, horizontal = 4.dp),
-                        imageVector = Icons.MockzillaLogo,
-                        contentDescription = null
-                    )
-                }
+                        .background(colorScheme.surface),
+                    iconDecoration = { content ->
+                        content(
+                            Modifier
+                                .iconButtonSize()
+                                .padding(vertical = 1.dp, horizontal = 4.dp)
+                        )
+                    }
+                )
             }
 
             Spacer(Modifier.weight(1f))
 
             if (MockzillaBuildConfig.isDevelopmentBuild) {
-                IconButton(
+                CustomIconButton(
                     onClick = { navController.navigate(Destination.Debug) },
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Article,
-                        tint = colorScheme.onSurfaceVariant,
-                        contentDescription = strings.common.debugDescription,
-                    )
-                }
-            }
-
-            IconButton(
-                enabled = !isOnGlobalControls,
-                onClick = {
-                    navController.navigate(Destination.GlobalControls)
-                }, modifier = Modifier
-                    .minimumTouchTarget()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(colorScheme.surfaceVariant)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Globe,
-                    tint = colorScheme.onSurfaceVariant.copy(
-                        alpha = if (isOnGlobalControls) {
-                            0.5f
-                        } else {
-                            1f
-                        }
-                    ),
-                    contentDescription = strings.common.closeDescription,
+                    imageVector = Icons.AutoMirrored.Filled.Article,
+                    iconTint = colorScheme.onSurfaceVariant,
+                    contentDescription = strings.common.debugDescription,
                 )
             }
+
+            CustomIconButton(
+                onClick = { navController.navigate(Destination.GlobalControls) },
+                imageVector = Icons.Filled.Globe,
+                iconTint = colorScheme.onSurfaceVariant.copy(
+                    alpha = if (isOnGlobalControls) {
+                        0.5f
+                    } else {
+                        1f
+                    }
+                ),
+                contentDescription = strings.common.globalDescription,
+                modifier = Modifier
+                    .minimumTouchTarget()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(colorScheme.surfaceVariant),
+                enabled = !isOnGlobalControls,
+            )
 
             Spacer(Modifier.width(4.dp))
 
-            IconButton(
-                onClick = onClose, modifier = Modifier
+            CustomIconButton(
+                onClick = onClose,
+                imageVector = Icons.Filled.Close,
+                iconTint = colorScheme.onSurfaceVariant,
+                contentDescription = strings.common.closeDescription,
+                modifier = Modifier
                     .minimumTouchTarget()
                     .clip(RoundedCornerShape(8.dp))
-                    .background(colorScheme.surfaceVariant)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    tint = colorScheme.onSurfaceVariant,
-                    contentDescription = strings.common.closeDescription,
-                )
-            }
+                    .background(colorScheme.surfaceVariant),
+            )
         }
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v0.0.4...flutter_mockzilla_web-v1.0.0) (2026-07-24)
+
+
+### Features
+
+* bump flutter kmp dependencies ([#718](https://github.com/Apadmi-Engineering/Mockzilla/issues/718)) ([17dae6b](https://github.com/Apadmi-Engineering/Mockzilla/commit/17dae6b752aac14cf895a3d510744d9e020371b7))
+
+## [0.0.4](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v0.0.4...flutter_mockzilla_web-v0.0.4) (2026-07-09)
+
+
+### Features
+
+* fix stopMockzilla call descending into a recursive loop ([#691](https://github.com/Apadmi-Engineering/Mockzilla/issues/691)) ([2d4f704](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d4f7044575e4291cd9a96b4b3f4fe994b8a3344))
+
 ## [0.0.4](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v0.0.3...flutter_mockzilla_web-v0.0.4) (2026-07-08)
 
 

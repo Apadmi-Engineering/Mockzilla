@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -47,7 +48,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -86,6 +86,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
 import com.apadmi.mockzilla.ui.ui.common.components.editor.FindableEditorTextField
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
@@ -93,8 +94,8 @@ import com.apadmi.mockzilla.ui.ui.common.theme.jsonKey
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.CreateEditPresetViewModel.*
+import com.apadmi.mockzilla.ui.utils.Platform
 import com.apadmi.mockzilla.ui.utils.blockedPointerIcon
-import com.apadmi.mockzilla.ui.utils.iconButtonSize
 import com.apadmi.mockzilla.ui.utils.minimumTouchTarget
 
 import io.ktor.http.HttpStatusCode
@@ -145,14 +146,13 @@ private fun ColumnScope.HeadersSection(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(onClick = { onRemoveHeader(header) }) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp),
-                    )
-                }
+                CustomIconButton(
+                    onClick = { onRemoveHeader(header) },
+                    imageVector = Icons.Default.Close,
+                    iconTint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription = LocalStrings.current.common.closeDescription,
+                    iconSize = 16.dp,
+                )
             }
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -202,24 +202,20 @@ private fun ColumnScope.HeadersSection(
             onValueChange = { localValue = it },
         )
         val canAdd = localKey.isNotEmpty() && localValue.isNotEmpty()
-        IconButton(
+        CustomIconButton(
             onClick = {
                 onAddHeader(localKey, localValue)
                 localKey = ""
                 localValue = ""
             },
-            enabled = canAdd,
+            imageVector = Icons.Default.Add,
+            iconTint = MaterialTheme.colorScheme.onSurface,
+            contentDescription = strings.addHeaderButton,
             modifier = Modifier
-                .iconButtonSize()
                 .pointerHoverIcon(if (canAdd) PointerIcon.Hand else blockedPointerIcon),
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = strings.addHeaderButton,
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(14.dp),
-            )
-        }
+            enabled = canAdd,
+            iconSize = 14.dp,
+        )
     }
 
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -230,6 +226,7 @@ private fun ColumnScope.PopulatedState(
     state: State.Editing,
     endpointName: String?,
     onCancel: () -> Unit,
+    onApply: () -> Unit,
     onSave: () -> Unit,
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
@@ -246,7 +243,7 @@ private fun ColumnScope.PopulatedState(
         enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
         exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
-        PanelHeader(state, onCancel, onSave)
+        PanelHeader(state = state, onCancel = onCancel, onApply = onApply, onSave = onSave)
     }
 
     AnimatedVisibility(
@@ -394,7 +391,8 @@ public fun CreateEditPresetWidget(
             cleanupVm()
             onCancel()
         },
-        onSave = viewModel::save,
+        onSave = { viewModel.save(shouldNavigateOnCompletion = true) },
+        onApply = { viewModel.save(shouldNavigateOnCompletion = false) },
         onStatusCodeSelected = viewModel::onNewStatusCode,
         onNewResponseType = viewModel::onNewResponseType,
         onNewResponseBody = viewModel::onNewResponseBody,
@@ -411,6 +409,7 @@ internal fun CreateEditPresetWidgetContent(
     endpointName: String? = null,
     onCancel: () -> Unit = {},
     onSave: () -> Unit,
+    onApply: () -> Unit,
     onStatusCodeSelected: (HttpStatusCode) -> Unit,
     onNewResponseType: (State.Editing.ResponseType) -> Unit,
     onNewResponseBody: (String) -> Unit,
@@ -434,7 +433,8 @@ internal fun CreateEditPresetWidgetContent(
             .fillMaxSize()
             .then(if (!isBodyExpanded) Modifier.verticalScroll(rememberScrollState()) else Modifier)
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .imePadding(),
         verticalArrangement = if (state is State.FailedToLoad) Arrangement.Center else Arrangement.Top
     ) {
         when (state) {
@@ -455,6 +455,7 @@ internal fun CreateEditPresetWidgetContent(
                 endpointName = endpointName,
                 onCancel = onCancel,
                 onSave = onSave,
+                onApply = onApply,
                 onStatusCodeSelected = onStatusCodeSelected,
                 onNewResponseType = onNewResponseType,
                 onNewResponseBody = onNewResponseBody,
@@ -536,17 +537,13 @@ private fun BodySection(
             modifier = Modifier.alpha(if (isFormattable) 1f else 0f)
         )
 
-        IconButton(
+        CustomIconButton(
             onClick = onToggleExpand,
-            modifier = Modifier.iconButtonSize(),
-        ) {
-            Icon(
-                imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
-                contentDescription = if (isExpanded) "Collapse" else "Expand",
-                modifier = Modifier.size(18.dp),
-                tint = MaterialTheme.colorScheme.onSurface,
-            )
-        }
+            imageVector = if (isExpanded) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
+            iconTint = MaterialTheme.colorScheme.onSurface,
+            contentDescription = if (isExpanded) strings.collapse else strings.expand,
+            iconSize = 18.dp,
+        )
     }
 
     FindableEditorTextField(
@@ -578,6 +575,7 @@ private fun BodySection(
 private fun PanelHeader(
     state: State.Editing,
     onCancel: () -> Unit,
+    onApply: () -> Unit,
     onSave: () -> Unit,
     strings: Strings = LocalStrings.current,
 ) = Column(
@@ -615,11 +613,19 @@ private fun PanelHeader(
                 color = MaterialTheme.colorScheme.onSurfaceMuted,
             )
         }
-        CustomButton(
-            label = strings.widgets.createEditPreset.cancel,
-            variant = ButtonVariant.Outline,
-            onClick = onCancel,
-        )
+
+        if (Platform.current == Platform.Desktop) {
+            CustomButton(
+                label = strings.widgets.createEditPreset.cancel,
+                variant = ButtonVariant.Outline,
+                onClick = onCancel,
+            )
+            CustomButton(
+                label = strings.widgets.createEditPreset.apply,
+                variant = ButtonVariant.Soft,
+                onClick = onApply,
+            )
+        }
         CustomButton(
             label = strings.widgets.createEditPreset.save,
             variant = ButtonVariant.Solid,
@@ -725,6 +731,7 @@ private fun StatusCodeDropdown(
                             Text(
                                 text = code.description,
                                 style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
                     },
@@ -823,6 +830,7 @@ private fun CreateEditPresetWidgetPreview() = PreviewSurface {
         onNewResponseBody = {},
         onAddHeader = { _, _ -> },
         onRemoveHeader = {},
+        onApply = {},
         onRetry = {}
     )
 }

@@ -160,6 +160,24 @@ public interface MockzillaManagement {
             key: EndpointConfiguration.Key,
             dashboardOverridePreset: DashboardOverridePreset
         ): Result<Unit>
+
+        /**
+         * Applies a code-defined dashboard preset to the endpoint identified by [key] on the
+         * device at [connection] by looking it up by [presetName], overriding the endpoint's
+         * response until the override is cleared.
+         *
+         * @param connection The device to target.
+         * @param key The key of the endpoint to update.
+         * @param presetName The name of the preset to apply, as configured via
+         * [EndpointConfiguration.Builder.configureDashboardOverrides].
+         * @return [Result.success] on success, [Result.failure] if the request could not be
+         * completed or no endpoint/preset matches [key]/[presetName].
+         */
+        public suspend fun applyPresetByName(
+            connection: MockzillaConnectionConfig,
+            key: EndpointConfiguration.Key,
+            presetName: String
+        ): Result<Unit>
     }
 
     /**

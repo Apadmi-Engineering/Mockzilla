@@ -25,7 +25,7 @@ const features = [
   {
     icon: ServerOff,
     title: "No third party hosting",
-    description: "Since everything's on device there's risk of your mocks going down"
+    description: "Since everything's on device there's no risk of your mocks going down"
   },
   {
     icon: WifiOff,

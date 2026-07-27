@@ -27,8 +27,6 @@ import androidx.compose.material.icons.filled.FindReplace
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -60,7 +58,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
-import com.apadmi.mockzilla.ui.utils.iconButtonSize
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 
 @Composable
 internal fun FindableEditorTextField(
@@ -247,19 +245,14 @@ private fun FindReplaceBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                IconButton(
+                CustomIconButton(
                     onClick = onToggleReplaceMode,
-                    modifier = Modifier.iconButtonSize(),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowRight,
-                        contentDescription = if (state.isReplaceMode) strings.collapseReplaceDescription else strings.expandReplaceDescription,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .rotate(chevronRotation),
-                        tint = colorScheme.onSurfaceVariant,
-                    )
-                }
+                    imageVector = Icons.Default.KeyboardArrowRight,
+                    iconTint = colorScheme.onSurfaceVariant,
+                    contentDescription = if (state.isReplaceMode) strings.collapseReplaceDescription else strings.expandReplaceDescription,
+                    iconSize = 16.dp,
+                    iconDecoration = { content -> content(Modifier.rotate(chevronRotation)) }
+                )
 
                 CustomTextField(
                     value = state.searchTerm,
@@ -302,36 +295,33 @@ private fun FindReplaceBar(
                         },
                 )
 
-                IconButton(onClick = onPrev, modifier = Modifier.iconButtonSize()) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowUp,
-                        contentDescription = strings.previousMatchDescription,
-                        modifier = Modifier.size(16.dp),
-                        tint = colorScheme.onSurfaceVariant,
-                    )
-                }
-                IconButton(onClick = onNext, modifier = Modifier.iconButtonSize()) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = strings.nextMatchDescription,
-                        modifier = Modifier.size(16.dp),
-                        tint = colorScheme.onSurfaceVariant,
-                    )
-                }
+                CustomIconButton(
+                    onClick = onPrev,
+                    imageVector = Icons.Default.KeyboardArrowUp,
+                    iconTint = colorScheme.onSurfaceVariant,
+                    contentDescription = strings.previousMatchDescription,
+                    iconSize = 16.dp,
+                )
+                CustomIconButton(
+                    onClick = onNext,
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    iconTint = colorScheme.onSurfaceVariant,
+                    contentDescription = strings.nextMatchDescription,
+                    iconSize = 16.dp,
+                )
                 Box(
                     modifier = Modifier
                         .height(16.dp)
                         .width(1.dp)
                         .background(colorScheme.outlineVariant),
                 )
-                IconButton(onClick = onClose, modifier = Modifier.iconButtonSize()) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = strings.closeFindBarDescription,
-                        modifier = Modifier.size(14.dp),
-                        tint = colorScheme.onSurfaceVariant,
-                    )
-                }
+                CustomIconButton(
+                    onClick = onClose,
+                    imageVector = Icons.Default.Close,
+                    iconTint = colorScheme.onSurfaceVariant,
+                    contentDescription = strings.closeFindBarDescription,
+                    iconSize = 14.dp,
+                )
             }
 
             AnimatedVisibility(visible = state.isReplaceMode) {

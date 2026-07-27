@@ -331,7 +331,8 @@ internal fun NoPresetCard(
         Text(
             text = presetStrings.noPresetTitle,
             style = MaterialTheme.typography.titleSmall,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(Modifier.size(4.dp))
         Text(

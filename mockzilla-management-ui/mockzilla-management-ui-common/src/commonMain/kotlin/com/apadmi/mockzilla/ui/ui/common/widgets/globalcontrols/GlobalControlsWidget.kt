@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,8 +22,6 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,13 +49,13 @@ import com.apadmi.mockzilla.ui.ui.common.components.ResponseLatencyCard
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.warning
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointsViewModel
 import com.apadmi.mockzilla.ui.ui.common.widgets.globalcontrols.GlobalControlsViewModel.State
 import com.apadmi.mockzilla.ui.utils.Platform
-import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
 
@@ -129,7 +128,8 @@ internal fun GlobalControlsWidgetIdleContent(
     Column(
         modifier = Modifier.fillMaxSize()
             .background(color = colorScheme.surface)
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .imePadding(),
     ) {
         // Header
         FlowRow(
@@ -170,17 +170,13 @@ internal fun GlobalControlsWidgetIdleContent(
             )
 
             if (Platform.current == Platform.Desktop) {
-                IconButton(
-                    modifier = Modifier.iconButtonSize(),
-                    onClick = onClose
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = strings.common.closeDescription,
-                        tint = colorScheme.onSurfaceFaint,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
+                CustomIconButton(
+                    onClick = onClose,
+                    imageVector = Icons.Default.Close,
+                    iconTint = colorScheme.onSurfaceFaint,
+                    contentDescription = strings.common.closeDescription,
+                    iconSize = 16.dp,
+                )
             }
         }
 

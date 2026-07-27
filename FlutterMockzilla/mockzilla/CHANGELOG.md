@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v3.0.0-dev...flutter_mockzilla-v3.0.0) (2026-07-24)
+
+
+### Features
+
+* bump flutter kmp dependencies ([#718](https://github.com/Apadmi-Engineering/Mockzilla/issues/718)) ([17dae6b](https://github.com/Apadmi-Engineering/Mockzilla/commit/17dae6b752aac14cf895a3d510744d9e020371b7))
+
+
+### Bug Fixes
+
+* specify flutter package versions correctly ([af3a9c5](https://github.com/Apadmi-Engineering/Mockzilla/commit/af3a9c53f494ee12470d4d26ac36ff9f9da9d5fe))
+
+## [3.0.0-dev](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v2.1.0...flutter_mockzilla-v3.0.0-dev) (2026-07-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* bump min android sdk and update readme ([#685](https://github.com/Apadmi-Engineering/Mockzilla/issues/685))
+
+### Features
+
+* bump min android sdk and update readme ([#685](https://github.com/Apadmi-Engineering/Mockzilla/issues/685)) ([63eb067](https://github.com/Apadmi-Engineering/Mockzilla/commit/63eb06725fa7e3a826e602a23f1dbe36b8f0b9c6))
+* various fixes ([#691](https://github.com/Apadmi-Engineering/Mockzilla/issues/691)) ([2d4f704](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d4f7044575e4291cd9a96b4b3f4fe994b8a3344))
+
 ## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla-v2.0.0...flutter_mockzilla-v2.1.0) (2026-07-08)
 
 

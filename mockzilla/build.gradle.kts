@@ -31,7 +31,7 @@ kotlin {
     }
 
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "4.0.0-alpha1" // x-release-please-version
+    version = project.injectedVersion() ?: "4.0.0" // x-release-please-version
 
     val xcf = XCFramework()
     listOf(
@@ -45,7 +45,7 @@ kotlin {
         }
     }
 
-    // Enables KDocs comments export to Objective-C headers.
+    // Enables KDocs comments export to Objective-C headers
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations["main"].compileTaskProvider.configure {
             compilerOptions.freeCompilerArgs.add("-Xexport-kdoc")

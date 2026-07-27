@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -55,7 +54,7 @@ abstract class MockzillaHttpResponse
 
   const factory MockzillaHttpResponse({
     /// The HTTP status to use for the response, defaults to 200 - OK.
-    @Default(HttpStatus.ok) int statusCode,
+    @Default(200) int statusCode,
 
     /// The response headers, defaults a single `Content-Type` header with a
     /// value of `application/json`.

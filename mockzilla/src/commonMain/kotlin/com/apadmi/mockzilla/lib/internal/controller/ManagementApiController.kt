@@ -2,6 +2,7 @@ package com.apadmi.mockzilla.lib.internal.controller
 
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
+import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.service.LocalCacheService
 import com.apadmi.mockzilla.lib.internal.service.MockServerMonitor
 import com.apadmi.mockzilla.lib.models.DashboardOptionsConfig
@@ -28,6 +29,30 @@ internal class ManagementApiController(
     suspend fun getAllMockDataEntries() = endpoints.map { config ->
         localCacheService.getLocalCache(config.key)?.copy(name = config.name)
             ?: SerializableEndpointConfig.allNulls(config.key, config.name, config.versionCode)
+    }
+
+    /**
+     * Applies a code-defined dashboard preset to an endpoint by looking it up by name.
+     *
+     * @param key The key of the endpoint to update.
+     * @param presetName The name of the preset to apply.
+     * @return The updated [SerializableEndpointConfig], or `null` if no endpoint exists for [key]
+     * or no preset with that name is configured for that endpoint.
+     */
+    suspend fun applyPresetByName(key: EndpointConfiguration.Key, presetName: String): SerializableEndpointConfig? {
+        val endpoint = endpoints.firstOrNull { it.key == key } ?: return null
+        val preset = endpoint.dashboardOptionsConfig.presets.firstOrNull { it.name == presetName } ?: return null
+
+        patchEntries(
+            listOf(
+                SerializableEndpointPatchItemDto.allUnset(key).copy(
+                    appliedPresetOverride = SetOrDont.Set(preset)
+                )
+            )
+        )
+
+        return localCacheService.getLocalCache(key)?.copy(name = endpoint.name)
+            ?: SerializableEndpointConfig.allNulls(key, endpoint.name, endpoint.versionCode)
     }
 
     fun getDashboardConfig(key: EndpointConfiguration.Key): DashboardOptionsConfig {

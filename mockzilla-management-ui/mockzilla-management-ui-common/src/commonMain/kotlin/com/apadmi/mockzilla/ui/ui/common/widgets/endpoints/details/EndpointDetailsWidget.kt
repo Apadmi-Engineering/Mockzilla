@@ -33,7 +33,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -82,6 +81,7 @@ import com.apadmi.mockzilla.ui.ui.common.components.TogglableProgressIndicator
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonSize
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.ButtonVariant
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.RowDensityControls
 import com.apadmi.mockzilla.ui.ui.common.components.statusColors
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalForceDarkMode
@@ -93,7 +93,6 @@ import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.details.components.Pr
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.EndpointProperties
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 import com.apadmi.mockzilla.ui.utils.Platform
-import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import org.koin.core.parameter.parametersOf
 
@@ -500,14 +499,13 @@ private fun ActivePresetBanner(
                 color = colorScheme.onSurfaceVariant,
             )
         }
-        IconButton(onClick = onClear, modifier = Modifier.iconButtonSize()) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = colorScheme.onSurfaceVariant
-            )
-        }
+        CustomIconButton(
+            onClick = onClear,
+            imageVector = Icons.Default.Close,
+            iconTint = colorScheme.onSurfaceVariant,
+            contentDescription = LocalStrings.current.common.closeDescription,
+            iconSize = 16.dp,
+        )
     }
 }
 

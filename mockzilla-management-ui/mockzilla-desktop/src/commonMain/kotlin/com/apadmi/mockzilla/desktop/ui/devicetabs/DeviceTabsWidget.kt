@@ -29,8 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,11 +64,11 @@ import com.apadmi.mockzilla.ui.i18n.Strings
 import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.PlatformHorizontalScrollbar
 import com.apadmi.mockzilla.ui.ui.common.components.PreviewSurface
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceFaint
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
-import com.apadmi.mockzilla.ui.utils.iconButtonSize
 
 import kotlin.Float
 
@@ -206,14 +204,16 @@ internal fun DeviceTabsWidgetContent(
                         )
                     }
                     if (state.devices.isNotEmpty()) {
-                        IconButton(onClick = onAddNewDevice) {
-                            Icon(
-                                modifier = Modifier.size(18.dp),
-                                imageVector = Icons.Filled.Add,
-                                tint = colorScheme.onSurfaceVariant,
-                                contentDescription = strings.widgets.deviceTabs.addDevice,
-                            )
-                        }
+                        CustomIconButton(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 8.dp),
+                            onClick = onAddNewDevice,
+                            imageVector = Icons.Filled.Add,
+                            iconTint = colorScheme.onSurfaceVariant,
+                            contentDescription = strings.widgets.deviceTabs.addDevice,
+                            iconSize = 18.dp,
+                        )
                     }
                 }
 
@@ -361,17 +361,13 @@ private fun DeviceTab(
                 )
             }
 
-            IconButton(
+            CustomIconButton(
                 onClick = onClose,
-                modifier = Modifier.iconButtonSize(),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = strings.widgets.deviceTabs.closeButtonDescription,
-                    tint = colorScheme.onSurfaceFaint,
-                    modifier = Modifier.size(12.dp),
-                )
-            }
+                imageVector = Icons.Filled.Close,
+                iconTint = colorScheme.onSurfaceFaint,
+                contentDescription = strings.widgets.deviceTabs.closeButtonDescription,
+                iconSize = 12.dp,
+            )
         }
     }
 }

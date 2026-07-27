@@ -10,6 +10,7 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.patch
+import io.ktor.client.request.put
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
@@ -76,6 +77,15 @@ internal suspend inline fun HttpClient.patch(
     path: String,
     block: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse = patch {
+    url(connection.url(path))
+    block()
+}
+
+internal suspend inline fun HttpClient.put(
+    connection: MockzillaConnectionConfig,
+    path: String,
+    block: HttpRequestBuilder.() -> Unit = {}
+): HttpResponse = put {
     url(connection.url(path))
     block()
 }

@@ -24,7 +24,7 @@ lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
 ktor = "3.5.0" # https://github.com/ktorio/ktor
 
 # Compose
-compose = "1.10.3" # https://github.com/JetBrains/compose-multiplatform
+compose = "1.11.1" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
 koin = "4.2.1" # https://github.com/InsertKoinIO/koin

@@ -1,3 +1,7 @@
+---
+description: Embed the Mockzilla control UI in your app to override responses and adjust the mock server at runtime - install instructions and launchManagementUi usage per platform.
+---
+
 # Mockzilla Mobile UI (alpha)
 
 !!! warning
@@ -38,7 +42,7 @@ Mockzilla provides an embedded UI for your App to control the server at runtime.
 
 ## Setup
 
-If you've not configured the Mockzilla server yet, then do that first [here](../quick-start/)!
+If you've not configured the Mockzilla server yet, then do that first [here](quick-start.md)!
 
 ### Launch the Embedded UI
 

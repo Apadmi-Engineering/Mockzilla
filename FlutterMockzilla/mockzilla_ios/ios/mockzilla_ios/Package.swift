@@ -13,7 +13,7 @@ let package = Package(
         .package(name: "FlutterFramework", path: "../FlutterFramework"),
         .package(
             url: "https://github.com/Apadmi-Engineering/SwiftMockzilla.git",
-            .upToNextMajor(from: "3.0.0")
+            .upToNextMajor(from: "4.0.0")
         )
     ],
     targets: [
