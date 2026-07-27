@@ -1,5 +1,8 @@
 import type { TurboModule } from 'react-native';
-import type { Int32 } from 'react-native/Libraries/Types/CodegenTypes';
+import type {
+  Int32,
+  UnsafeObject,
+} from 'react-native/Libraries/Types/CodegenTypes';
 import { TurboModuleRegistry } from 'react-native';
 
 export type NativeDashboardPreset = {
@@ -40,10 +43,19 @@ export type NativeHttpResponse = {
 };
 
 export interface Spec extends TurboModule {
-  startMockzilla(config: NativeMockzillaConfig): Promise<NativeMockzillaRuntimeParams>;
+  // `config` and `response` are passed as `UnsafeObject` (not the named struct
+  // types above) on purpose. A named object parameter makes iOS codegen emit a
+  // strongly-typed C++ struct passed by reference (e.g.
+  // `JS::NativeMockzillaModule::NativeMockzillaConfig &`), which conflicts with
+  // the `NSDictionary *` signatures in the native module and crashes at runtime.
+  // `UnsafeObject` keeps the native boundary dictionary-based on every platform
+  // (iOS `NSDictionary *`, Android `ReadableMap`, Swift `[String: Any]`). The
+  // shapes are still described by NativeMockzillaConfig / NativeHttpResponse and
+  // enforced by the public Mockzilla API.
+  startMockzilla(config: UnsafeObject): Promise<NativeMockzillaRuntimeParams>;
   stopMockzilla(): Promise<void>;
   respondToMatcher(requestId: string, matches: boolean): void;
-  respondToHandler(requestId: string, response: NativeHttpResponse): void;
+  respondToHandler(requestId: string, response: UnsafeObject): void;
   addListener(eventName: string): void;
   removeListeners(count: number): void;
 }
