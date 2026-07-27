@@ -25,7 +25,7 @@ public actual fun StandardTextTooltip(text: String, content: @Composable () -> U
     }
 
     BasicTooltipBox(
-        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
         tooltip = {
             Text(
                 modifier = Modifier.padding(2.dp)

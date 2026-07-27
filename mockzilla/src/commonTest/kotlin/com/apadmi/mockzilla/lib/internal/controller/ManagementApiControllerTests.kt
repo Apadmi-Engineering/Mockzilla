@@ -84,7 +84,11 @@ class ManagementApiControllerTests {
     fun `getAllMockDataEntries - replaces cached data - calls through`() = runTest {
         /* Setup */
         val dummyCacheEntry = SerializableEndpointConfig.allNulls("my-id", "id", 0).copy(
-            defaultBody = "my cached value"
+            appliedPresetOverride = DashboardOverridePreset(
+                "", response = PartialMockzillaHttpResponse(body = "my cahced value"),
+                description = "",
+                type = null,
+            ),
         )
 
         val fakeLocalCacheService = FakeLocalCacheService(
@@ -200,8 +204,7 @@ class ManagementApiControllerTests {
         /* Verify */
         assertEquals(
             DashboardOptionsConfig(
-                errorPresets = listOf(),
-                successPresets = listOf(
+                presets = listOf(
                     DashboardOverridePreset(
                         response = PartialMockzillaHttpResponse(
                             statusCode = HttpStatusCode.Created,

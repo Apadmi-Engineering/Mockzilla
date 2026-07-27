@@ -6,8 +6,10 @@ package com.apadmi.mockzilla.ui.ui.common.widgets.monitorlogs.details
 import com.apadmi.mockzilla.lib.internal.models.LogEvent
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
 import com.apadmi.mockzilla.ui.ui.common.components.editor.EditorMode
+
 import io.ktor.http.HttpHeaders
-import kotlinx.datetime.Instant
+
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.DateTimeComponents

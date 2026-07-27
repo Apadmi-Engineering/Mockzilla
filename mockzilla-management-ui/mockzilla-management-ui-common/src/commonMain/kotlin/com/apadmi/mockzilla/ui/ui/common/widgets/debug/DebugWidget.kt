@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -39,10 +42,14 @@ public fun DebugWidget() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        ScrollableTabRow(
-            selectedTabIndex = selectedTabIndex.value,
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        SecondaryScrollableTabRow(
+            selectedTabIndex.value,
+            Modifier.fillMaxWidth(),
+            rememberScrollState(),
+            TabRowDefaults.primaryContainerColor,
+            TabRowDefaults.primaryContentColor,
+            TabRowDefaults.ScrollableTabRowEdgeStartPadding,
+            @Composable { HorizontalDivider() }) {
             Tabs.entries.forEachIndexed { index, currentTab ->
                 Tab(
                     selected = selectedTabIndex.value == index,

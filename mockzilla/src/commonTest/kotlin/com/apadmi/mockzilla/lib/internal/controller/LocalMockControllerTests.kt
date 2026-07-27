@@ -72,12 +72,6 @@ class LocalMockControllerTests {
             versionCode = 0,
             shouldFail = true,
             delayMs = 0,
-            defaultHeaders = emptyMap(),
-            defaultBody = "",
-            defaultStatus = HttpStatusCode.OK,
-            errorBody = "",
-            errorHeaders = emptyMap(),
-            errorStatus = HttpStatusCode.InternalServerError,
             appliedPresetOverride = null
         )
 

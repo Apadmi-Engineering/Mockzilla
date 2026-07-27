@@ -87,14 +87,7 @@ internal class LocalCacheServiceImpl(
             versionCode = endpoint.versionCode,
             shouldFail = patch.shouldFail.valueOrDefault(currentCache.shouldFail),
             delayMs = patch.delayMs.valueOrDefault(currentCache.delayMs),
-            appliedPresetOverride = patch.appliedPresetOverride.valueOrDefault(currentCache.appliedPresetOverride),
-            defaultHeaders = patch.defaultHeaders.valueOrDefault(currentCache.defaultHeaders),
-            defaultBody = patch.defaultBody.valueOrDefault(currentCache.defaultBody),
-            defaultStatus = patch.defaultStatus.valueOrDefault(currentCache.defaultStatus),
-            errorBody = patch.errorBody.valueOrDefault(currentCache.errorBody),
-            errorHeaders = patch.errorHeaders.valueOrDefault(currentCache.errorHeaders),
-            errorStatus = patch.errorStatus.valueOrDefault(currentCache.errorStatus)
-
+            appliedPresetOverride = patch.appliedPresetOverride.valueOrDefault(currentCache.appliedPresetOverride)
         )
         fileIo.saveToCache(patch.fileName, JsonProvider.json.encodeToString<SerializableEndpointConfig>(newCache))
     }

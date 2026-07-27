@@ -28,16 +28,16 @@ val endpointWithPresets = EndpointConfiguration.Builder(
         MockzillaHttpResponse(headers = mapOf("Content-Type" to "application/json"), body = "{}")
     }
     .configureDashboardOverrides {
-        addSuccessPreset(
+        addPreset(
             MockzillaHttpResponse(
                 HttpStatusCode.Created,
                 headers = emptyMap(),
                 body = ""
             )
         )
-        addSuccessPreset(MockzillaHttpResponse(body = """{ "hello": "world" }"""))
+        addPreset(MockzillaHttpResponse(body = """{ "hello": "world" }"""))
 
-        addErrorPreset(MockzillaHttpResponse(HttpStatusCode.ServiceUnavailable, body = "Go away"))
+        addPreset(MockzillaHttpResponse(HttpStatusCode.ServiceUnavailable, body = "Go away"))
     }
     .build()
 

@@ -90,28 +90,6 @@ public data class MockzillaConfig(
         }
 
         /**
-         * No-Op
-         *
-         * @param percentage Not supported
-         */
-        @Deprecated("Configuring failure on top level config is now not supported")
-        public fun setFailureProbabilityPercentage(percentage: Int): Builder = apply {
-            // No op
-        }
-
-        /**
-         * Used to simulate latency: The artificial mean delay Mockzilla with add to a network request.
-         *
-         * Value set on individual endpoints takes priority over this value
-         *
-         * @param delay delay in milliseconds
-         */
-        @Deprecated("Delay is now constant with no variance", replaceWith = ReplaceWith("setDelayMillis"))
-        public fun setMeanDelayMillis(delay: Int): Builder = apply {
-            this.delay = delay
-        }
-
-        /**
          * Used to simulate latency: The artificial delay Mockzilla with add to a network request.
          * Value set on individual endpoints takes priority over this value
          *
@@ -119,20 +97,6 @@ public data class MockzillaConfig(
          */
         public fun setDelayMillis(delay: Int): Builder = apply {
             this.delay = delay
-        }
-
-        /**
-         * Used to simulate latency:  The artificial variance in the delay Mockzillaadds to a network
-         * request. Used alongside [setMeanDelayMillis] to calculate the actual artificial delay on each
-         * invocation. Set this value to 0 to remove any randomness from the delay.
-         *
-         * Value set on individual endpoints takes priority over this value
-         *
-         * @param delay delay in milliseconds
-         */
-        @Deprecated("No longer supported, now does nothing")
-        public fun setDelayVarianceMillis(variance: Int): Builder = apply {
-            // No-Op
         }
 
         /**

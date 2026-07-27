@@ -106,8 +106,7 @@ public data class JsDashboardOptionsConfig(
     val presets: JsArray<JsDashboardOverridePreset>,
 ) {
     internal fun fromJs() = DashboardOptionsConfig(
-        errorPresets = emptyList(),
-        successPresets = presets.toList().map { js -> js.fromJs(js) }
+        presets = presets.toList().map { js -> js.fromJs(js) }
     )
 
     override fun equals(other: Any?): Boolean {

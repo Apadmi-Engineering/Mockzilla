@@ -268,9 +268,9 @@ private fun ColumnScope.PopulatedState(
 
 private fun SerializableEndpointConfig.getOverriddenProperties() = listOfNotNull(
     EndpointProperties.Delay.takeIf { delayMs != null },
-    EndpointProperties.Body.takeIf { defaultBody != null || appliedPresetOverride?.response?.body != null },
-    EndpointProperties.Status.takeIf { defaultStatus != null || appliedPresetOverride?.response?.statusCode != null },
-    EndpointProperties.Headers.takeIf { defaultHeaders != null || appliedPresetOverride?.response?.headers != null }
+    EndpointProperties.Body.takeIf { appliedPresetOverride?.response?.body != null },
+    EndpointProperties.Status.takeIf { appliedPresetOverride?.response?.statusCode != null },
+    EndpointProperties.Headers.takeIf { appliedPresetOverride?.response?.headers != null }
 )
 
 @InternalMockzillaApi

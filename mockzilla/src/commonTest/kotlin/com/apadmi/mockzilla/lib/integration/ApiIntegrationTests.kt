@@ -9,6 +9,7 @@ import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
 import com.apadmi.mockzilla.lib.models.MockzillaHttpResponse
 import com.apadmi.mockzilla.lib.models.PartialMockzillaHttpResponse
+import com.apadmi.mockzilla.testutils.dummy
 import com.apadmi.mockzilla.testutils.runIntegrationTest
 
 import io.ktor.client.*
@@ -107,7 +108,7 @@ class ApiIntegrationTests {
         )
         assertEquals(
             DashboardOptionsConfig(
-                successPresets = listOf(
+                presets = listOf(
                     DashboardOverridePreset(
                         response = PartialMockzillaHttpResponse(
                             HttpStatusCode.Created,
@@ -118,7 +119,6 @@ class ApiIntegrationTests {
                         type = DashboardOverridePreset.Type.Informational
                     )
                 ),
-                errorPresets = emptyList()
             ),
             JsonProvider.json.decodeFromString<DashboardOptionsConfig>(response.bodyAsText())
         )
@@ -218,9 +218,13 @@ class ApiIntegrationTests {
                     Json.encodeToString(
                         SerializableEndpointConfigPatchRequestDto(
                             SerializableEndpointPatchItemDto.allUnset("id").copy(
-                                defaultBody = SetOrDont.Set("hello"),
-                                defaultStatus = SetOrDont.Set(HttpStatusCode.NoContent),
-                                defaultHeaders = SetOrDont.Set(mapOf("Content-Type" to "application/json"))
+                                appliedPresetOverride = SetOrDont.Set(
+                                    DashboardOverridePreset.dummy(
+                                        body = "hello",
+                                        statusCode = HttpStatusCode.NoContent,
+                                        headers = mapOf("Content-Type" to "application/json")
+                                    )
+                                ),
                             )
                         )
                     )
@@ -234,9 +238,11 @@ class ApiIntegrationTests {
             )
             assertEquals(
                 SerializableEndpointConfig.allNulls("id", "id", Int.MIN_VALUE).copy(
-                    defaultBody = "hello",
-                    defaultStatus = HttpStatusCode.NoContent,
-                    defaultHeaders = mapOf("Content-Type" to "application/json")
+                    appliedPresetOverride = DashboardOverridePreset.dummy(
+                        body = "hello",
+                        statusCode = HttpStatusCode.NoContent,
+                        headers = mapOf("Content-Type" to "application/json")
+                    )
                 ),
                 cacheService.getLocalCache(EndpointConfiguration.Key("id"))
             )
