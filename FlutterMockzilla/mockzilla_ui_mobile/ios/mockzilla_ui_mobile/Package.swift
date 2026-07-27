@@ -13,8 +13,10 @@ let package = Package(
         .package(name: "FlutterFramework", path: "../FlutterFramework"),
         .package(
             url: "https://github.com/Apadmi-Engineering/SwiftMockzillaMobileUi.git",
-            .upToNextMajor(from: "0.0.1")
-        )
+            // x-release-please-start-version
+                .upToNextMajor(from: "1.1.0")
+            // # x-release-please-end
+)
     ],
     targets: [
         .target(

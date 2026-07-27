@@ -620,7 +620,7 @@ extension MockzillaHttpResponsePatterns on MockzillaHttpResponse {
 
 class _MockzillaHttpResponse extends MockzillaHttpResponse {
   const _MockzillaHttpResponse(
-      {this.statusCode = HttpStatus.ok,
+      {this.statusCode = 200,
       final Map<String, String> headers = const {
         "Content-Type": "application/json"
       },

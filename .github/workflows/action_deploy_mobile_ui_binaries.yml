@@ -85,7 +85,7 @@ jobs:
           java-version: '17'
       - name: Install dependencies
         run: bundle install
-      - name: Deploy package to Maven Central
+      - name: Run pre-deploy checks
         run: |
           export GPG_TTY=$(tty)
           bundle exec fastlane management_ui_pre_deploy_checks

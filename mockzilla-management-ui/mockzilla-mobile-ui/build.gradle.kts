@@ -34,7 +34,7 @@ kotlin {
     explicitApi()
 
     // Managed automatically by release-please PRs.
-    version = project.injectedVersion() ?: "1.1.0-dev3" // x-release-please-version
+    version = project.injectedVersion() ?: "1.1.0" // x-release-please-version
 
     androidTarget()
     jvmToolchain(JavaConfig.toolchain)
@@ -52,6 +52,12 @@ kotlin {
         extraSpecAttributes["vendored_frameworks"] = "'${xcFrameworkName}.xcframework'"
         extraSpecAttributes["source_files"] = "'Sources/SwiftMockzillaMobileUi/SwiftMockzillaMobileUi.swift'"
         extraSpecAttributes["swift_version"] = "'5.9.2'"
+
+        // The vendored xcframework only ships arm64 slices (device + simulator),
+        // so exclude x86_64 on the simulator to avoid "no matching slice" /
+        // "unable to resolve module 'mockzillamobileui'" build failures.
+        extraSpecAttributes["pod_target_xcconfig"]  = "{ 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }"
+        extraSpecAttributes["user_target_xcconfig"] = "{ 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }"
 
         ios.deploymentTarget = "13.0"
     }

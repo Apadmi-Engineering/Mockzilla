@@ -2,7 +2,7 @@ package com.apadmi.mockzilla.lib
 
 /**
  * API marked with this annotation is internal to Mockzilla and is not intended to be used outside
- * the library. It could be modified or removed without any notice. Please do not use it!
+ * the library. It could be modified or removed without any notice. Please do not use it.
  *
  * Library modules opt in at the module level via `freeCompilerArgs` in their `build.gradle.kts`.
  * See `CONTRIBUTING.md` for guidance on when and how to apply this annotation.
