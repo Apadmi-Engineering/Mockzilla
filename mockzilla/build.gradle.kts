@@ -136,7 +136,7 @@ kotlin {
             implementation(libs.ktor.client.cio)
         }
         androidUnitTest.dependencies {
-            implementation(libs.ktor.client.okhttp)
+            implementation(libs.ktor.client.cio)
         }
         jsTest.dependencies {
             implementation(libs.ktor.client.js)
