@@ -21,17 +21,17 @@ dependencies:
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
   retrofit: ^4.0.3
-  dio: ^5.4.0
+  dio: ^5.11.0
   logger: ^2.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: ^2.4.7
+  build_runner: ^2.15.1
   freezed: ^3.0.6
   json_serializable: ^6.7.1
-  retrofit_generator: ^9.1.9
+  retrofit_generator: ^10.2.0
 
 flutter:
   uses-material-design: true
