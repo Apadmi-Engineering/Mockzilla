@@ -27,7 +27,7 @@ ktor = "3.5.1" # https://github.com/ktorio/ktor
 compose = "1.11.1" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
-koin = "4.2.1" # https://github.com/InsertKoinIO/koin
+koin = "4.2.2" # https://github.com/InsertKoinIO/koin
 
 # KotlinX
 kotlinx-coroutines = "1.11.0" # https://github.com/Kotlin/kotlinx.coroutines
@@ -39,7 +39,7 @@ lifecycle = "2.10.0" # https://developer.android.com/jetpack/androidx/releases/l
 compose-activity = "1.13.0" # https://developer.android.com/jetpack/androidx/releases/activity
 material3 = "1.9.0"
 materialIconsExtended = "1.7.3"
-mockk = "1.14.9"
+mockk = "1.14.11"
 navigationCompose = "2.9.2"
 playServicesAdsIdentifier = "18.3.0"
 
@@ -60,7 +60,7 @@ conveyor = "2.0" # https://github.com/hydraulic-software/conveyor
 vanniktech-publish = "0.36.0" # https://github.com/vanniktech/gradle-maven-publish-plugin
 
 # License attribution
-aboutlibraries = "15.0.3" # https://github.com/mikepenz/AboutLibraries/releases
+aboutlibraries = "15.0.4" # https://github.com/mikepenz/AboutLibraries/releases
 
 [libraries]
 
