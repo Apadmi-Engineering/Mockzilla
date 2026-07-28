@@ -12,7 +12,7 @@
       "dependencies": {
             "class-variance-authority": "^0.7.1",
             "clsx": "^2.1.1",
-            "lucide-react": "^0.544.0",
+            "lucide-react": "^1.27.0",
             "react": "^19.2.8",
             "react-dom": "^19.2.8",
             "react-syntax-highlighter": "^16.1.1",
