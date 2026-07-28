@@ -10,21 +10,27 @@ updates:
     schedule:
       interval: "weekly"
     groups:
+      # Kotlin, KSP and kotlinx artifacts use separate version keys but must
+      # move together, so keep them in one coordinated group (all update types).
       kotlin:
         applies-to: version-updates
         patterns:
           - "*kotlin*"
           - "com.google.devtools.ksp"
           - "*kotlinx*"
+      # Compose Multiplatform + activity-compose share a release cadence.
       compose:
         applies-to: version-updates
         patterns:
           - "compose*"
-      patches:
+      # Everything else: collapse all non-breaking (minor + patch) updates into
+      # a single PR. Majors fall through to their own individual PRs.
+      non-breaking:
         applies-to: version-updates
         patterns:
           - "*"
         update-types:
+          - "minor"
           - "patch"
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -45,6 +51,50 @@ updates:
         patterns:
           - "*"
   - package-ecosystem: 'pub'
-    directory: '/FlutterMockzilla'
+    directories:
+      - '/FlutterMockzilla'
+      - '/FlutterMockzilla/**'
     schedule:
       interval: 'weekly'
+    groups:
+      non-breaking:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+  # Documentation tooling (zensical) built with pip.
+  - package-ecosystem: 'pip'
+    directory: '/docs'
+    schedule:
+      interval: 'weekly'
+    groups:
+      non-breaking:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+  # Documentation homepage (React + Vite) built with npm.
+  - package-ecosystem: 'npm'
+    directory: '/docs/homepage'
+    schedule:
+      interval: 'weekly'
+    groups:
+      # React core packages must move together (react, react-dom, @types/react*).
+      react:
+        applies-to: version-updates
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      non-breaking:
+        applies-to: version-updates
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
