@@ -3,10 +3,10 @@
 # Kotlin
 adam = "0.5.10" # https://github.com/Malinskiy/adam
 jmdns = "3.6.3" # https://github.com/jmdns/jmdns
-kotlin = "2.3.21" # https://github.com/JetBrains/kotlin
+kotlin = "2.4.10" # https://github.com/JetBrains/kotlin
 agp = "8.13.2" # https://developer.android.com/build/releases/gradle-plugin
 kotlinxBrowser = "0.5.0" # https://github.com/Kotlin/kotlinx-browser
-ksp = "2.2.20-2.0.4" # https://github.com/google/ksp
+ksp = "2.3.10" # https://github.com/google/ksp
 
 # Logging
 kermit = "2.1.0" # https://github.com/touchlab/Kermit
@@ -50,7 +50,7 @@ semver = "3.1.0" # https://github.com/z4kn4fein/kotlin-semver
 spotless = "8.0.0" # https://github.com/diffplug/spotless
 
 # Testing
-kover = "0.9.8" # https://github.com/Kotlin/kotlinx-kover
+kover = "0.9.9" # https://github.com/Kotlin/kotlinx-kover
 turbine = "1.2.1" # https://github.com/cashapp/turbine
 junit = "1.3.0" # https://developer.android.com/jetpack/androidx/releases/test
 testParamInjector = "1.22" # https://github.com/google/TestParameterInjector
