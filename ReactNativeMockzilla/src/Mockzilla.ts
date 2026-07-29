@@ -108,7 +108,6 @@ export class Mockzilla {
     this._sub?.remove();
     this._sub = null;
     this._endpointMap.clear();
-    this.isStarted = false;
     try {
       await NativeMockzillaModule.stopMockzilla();
       log.info('stopMockzilla: server stopped');
