@@ -1,4 +1,3 @@
-import { NativeEventEmitter } from 'react-native';
 import NativeMockzillaModule from './specs/NativeMockzillaModule';
 import type {
   MockzillaConfig,
@@ -34,9 +33,9 @@ interface RequestEvent {
 
 export class Mockzilla {
   private static _endpointMap = new Map<string, EndpointConfig>();
-  private static _emitter: NativeEventEmitter | null = null;
-  private static _sub: ReturnType<NativeEventEmitter['addListener']> | null =
-    null;
+  private static _sub: ReturnType<
+    typeof NativeMockzillaModule.onMockzillaRequest
+  > | null = null;
 
   static async startMockzilla(
     config: MockzillaConfig
@@ -54,8 +53,7 @@ export class Mockzilla {
       this._endpointMap.set(ep.key, ep);
     }
 
-    this._emitter = new NativeEventEmitter(NativeMockzillaModule);
-    this._sub = this._emitter.addListener('MockzillaRequest', (event) => {
+    this._sub = NativeMockzillaModule.onMockzillaRequest((event) => {
       this._dispatch(event as RequestEvent).catch((err) => {
         // _dispatch already catches handler/matcher errors internally, so
         // reaching here means something in the dispatch plumbing itself
@@ -109,8 +107,8 @@ export class Mockzilla {
     log.debug('stopMockzilla: tearing down listener and stopping server');
     this._sub?.remove();
     this._sub = null;
-    this._emitter = null;
     this._endpointMap.clear();
+    this.isStarted = false;
     try {
       await NativeMockzillaModule.stopMockzilla();
       log.info('stopMockzilla: server stopped');

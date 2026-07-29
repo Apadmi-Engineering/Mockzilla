@@ -10,7 +10,6 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableNativeMap
-import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -133,9 +132,6 @@ class MockzillaModule(reactContext: ReactApplicationContext) :
         }
     }
 
-    override fun addListener(eventName: String) {}
-    override fun removeListeners(count: Double) {}
-
     private suspend fun callJsMatcher(key: String, req: RequestBridge): Boolean {
         val id = UUID.randomUUID().toString()
         val deferred = CompletableDeferred<Boolean>().also { pendingMatchers[id] = it }
@@ -212,18 +208,25 @@ class MockzillaModule(reactContext: ReactApplicationContext) :
 
     private fun emitRequest(id: String, key: String, type: RequestEventType, req: RequestBridge) {
         try {
-            reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java)
-                .emit("MockzillaRequest", WritableNativeMap().apply {
-                    putString("requestId", id)
-                    putString("key", key)
-                    putString("type", type.value)
-                    putMap("request", WritableNativeMap().apply {
-                        putString("uri", req.uri)
-                        putString("method", req.method)
-                        putString("body", req.body)
-                        putMap("headers", req.headers.toWritableMap())
-                    })
+            // IMPORTANT: this goes through the TurboModule's generated event emitter
+            // (backed by the module's own EventEmitterCallback), NOT the legacy
+            // global RCTDeviceEventEmitter/NativeEventEmitter bridge. The legacy
+            // path relies on a bridge/interop compatibility shim that isn't
+            // guaranteed to exist on every RN build, and silently drops events
+            // with no exception on either side when it isn't available - which
+            // is what caused matchers to hang indefinitely in production apps.
+            Log.d(TAG, "emitRequest: emitting ${type.value} request (key=$key, id=$id)")
+            emitOnMockzillaRequest(WritableNativeMap().apply {
+                putString("requestId", id)
+                putString("key", key)
+                putString("type", type.value)
+                putMap("request", WritableNativeMap().apply {
+                    putString("uri", req.uri)
+                    putString("method", req.method)
+                    putString("body", req.body)
+                    putMap("headers", req.headers.toWritableMap())
                 })
+            })
         } catch (e: Exception) {
             // If the emit itself fails, the JS side will never respond, so complete
             // the pending deferred defensively to avoid hanging the request thread.

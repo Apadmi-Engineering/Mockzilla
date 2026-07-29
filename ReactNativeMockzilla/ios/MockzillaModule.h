@@ -1,6 +1,5 @@
-#import <React/RCTEventEmitter.h>
 #import <MockzillaModuleSpec/MockzillaModuleSpec.h>
 
-@interface MockzillaModule : RCTEventEmitter <NativeMockzillaModuleSpec>
+@interface MockzillaModule : NSObject <NativeMockzillaModuleSpec>
 
 @end

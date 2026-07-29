@@ -18,10 +18,16 @@ RCT_EXPORT_MODULE()
 
 + (BOOL)requiresMainQueueSetup { return NO; }
 
-- (NSArray<NSString *> *)supportedEvents { return @[@"MockzillaRequest"]; }
-
 - (void)emitRequestEvent:(NSDictionary *)body {
-    [self sendEventWithName:@"MockzillaRequest" body:body];
+    // Emitted via Codegen's TurboModule EventEmitter support (generated
+    // emitOnMockzillaRequest:, backed by the module's own EventEmitterCallback)
+    // rather than RCTEventEmitter's sendEventWithName:body:. The legacy
+    // RCTEventEmitter/RCTDeviceEventEmitter path depends on a bridge/interop
+    // compatibility shim that isn't guaranteed to be present in every RN
+    // build, and silently drops events with no error when it isn't -
+    // which previously caused matchers/handlers to hang indefinitely waiting
+    // for a JS response that never arrived.
+    [self emitOnMockzillaRequest:body];
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:

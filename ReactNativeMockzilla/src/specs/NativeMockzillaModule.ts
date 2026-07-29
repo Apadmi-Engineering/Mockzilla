@@ -52,8 +52,15 @@ export interface Spec extends TurboModule {
   stopMockzilla(): Promise<void>;
   respondToMatcher(requestId: string, matches: boolean): void;
   respondToHandler(requestId: string, response: CodegenTypes.UnsafeObject): void;
-  addListener(eventName: string): void;
-  removeListeners(count: number): void;
+
+  // Native -> JS events are emitted through Codegen's TurboModule EventEmitter
+  // support (goes through the module's own EventEmitterCallback), NOT through
+  // the legacy global RCTDeviceEventEmitter/NativeEventEmitter bridge. That
+  // legacy path relies on a bridge/interop compatibility shim that isn't
+  // guaranteed to be present on every RN build (e.g. some Bridgeless/New
+  // Architecture configurations), which previously caused emitted requests to
+  // be silently dropped with no error on either side.
+  readonly onMockzillaRequest: CodegenTypes.EventEmitter<CodegenTypes.UnsafeObject>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('MockzillaModule');
