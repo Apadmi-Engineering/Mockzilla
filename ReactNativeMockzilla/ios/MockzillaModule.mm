@@ -27,7 +27,7 @@ RCT_EXPORT_MODULE()
     // build, and silently drops events with no error when it isn't -
     // which previously caused matchers/handlers to hang indefinitely waiting
     // for a JS response that never arrived.
-    [self emitOnMockzillaRequest:body];
+   [self emitOnMockzillaRequest:body];
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:

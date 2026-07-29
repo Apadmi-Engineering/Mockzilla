@@ -1,5 +1,5 @@
 #import <MockzillaModuleSpec/MockzillaModuleSpec.h>
 
-@interface MockzillaModule : NSObject <NativeMockzillaModuleSpec>
+@interface MockzillaModule : NativeMockzillaModuleSpecBase <NativeMockzillaModuleSpec>
 
 @end
