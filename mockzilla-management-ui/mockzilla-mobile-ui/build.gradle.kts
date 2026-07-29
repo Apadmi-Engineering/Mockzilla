@@ -9,6 +9,8 @@ import com.apadmi.mockzilla.isSigningEnabled
 import com.apadmi.mockzilla.isSnapshot
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
@@ -180,6 +182,10 @@ android {
 
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
+
+    // Docs are hosted on the website; an empty javadoc jar satisfies Maven Central's
+    // validation without shipping the full Dokka render in every artifact
+    configure(KotlinMultiplatform(javadocJar = JavadocJar.Empty(), sourcesJar = true))
 
     if (isSigningEnabled()) {
         signAllPublications()

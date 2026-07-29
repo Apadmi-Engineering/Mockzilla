@@ -6,6 +6,8 @@ import com.apadmi.mockzilla.injectedVersion
 import com.apadmi.mockzilla.isDevelopmentBuild
 import com.apadmi.mockzilla.isSigningEnabled
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 
@@ -112,6 +114,10 @@ buildkonfig {
 
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
+
+    // Docs are hosted on the website; an empty javadoc jar satisfies Maven Central's
+    // validation without shipping the full Dokka render in every artifact
+    configure(KotlinMultiplatform(javadocJar = JavadocJar.Empty(), sourcesJar = true))
 
     if (isSigningEnabled()) {
         signAllPublications()
