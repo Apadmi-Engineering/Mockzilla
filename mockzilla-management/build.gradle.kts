@@ -6,6 +6,8 @@ import com.apadmi.mockzilla.isSigningEnabled
 import com.apadmi.mockzilla.karmaDirName
 import com.apadmi.mockzilla.prepareKarmaFile
 import com.apadmi.mockzilla.serviceWorkerFileName
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 
@@ -117,6 +119,10 @@ tasks.getByPath(":mockzilla-management:jsTestProcessResources").dependsOn(copySe
 
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
+
+    // Docs are hosted on the website; an empty javadoc jar satisfies Maven Central's
+    // validation without shipping the full Dokka render in every artifact
+    configure(KotlinMultiplatform(javadocJar = JavadocJar.Empty(), sourcesJar = true))
 
     if (isSigningEnabled()) {
         signAllPublications()
