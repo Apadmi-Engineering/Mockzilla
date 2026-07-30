@@ -12,13 +12,13 @@ ksp = "2.3.10" # https://github.com/google/ksp
 kermit = "2.1.0" # https://github.com/touchlab/Kermit
 
 # Config
-buildKonfig = "0.20.0" # https://github.com/yshrsmz/BuildKonfig
+buildKonfig = "0.22.0" # https://github.com/yshrsmz/BuildKonfig
 
 # Documentation
 dokka = "2.2.0" # https://github.com/Kotlin/dokka
 
 # Localization
-lyricist = "1.7.0" # https://github.com/adrielcafe/lyricist
+lyricist = "1.9.0" # https://github.com/adrielcafe/lyricist
 
 # Networking
 ktor = "3.5.1" # https://github.com/ktorio/ktor
@@ -35,7 +35,7 @@ kotlinx-datetime = "0.8.0" # https://github.com/Kotlin/kotlinx-datetime
 kotlinx-serialization = "1.11.0" # https://github.com/Kotlin/kotlinx.serialization
 
 # AndroidX
-lifecycle = "2.10.0" # https://developer.android.com/jetpack/androidx/releases/lifecycle
+lifecycle = "2.11.0" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 compose-activity = "1.13.0" # https://developer.android.com/jetpack/androidx/releases/activity
 material3 = "1.9.0"
 materialIconsExtended = "1.7.3"
@@ -47,7 +47,7 @@ playServicesAdsIdentifier = "18.3.0"
 semver = "3.1.0" # https://github.com/z4kn4fein/kotlin-semver
 
 # Code Formatting
-spotless = "8.0.0" # https://github.com/diffplug/spotless
+spotless = "8.9.0" # https://github.com/diffplug/spotless
 
 # Testing
 kover = "0.9.9" # https://github.com/Kotlin/kotlinx-kover
@@ -57,7 +57,7 @@ testParamInjector = "1.22" # https://github.com/google/TestParameterInjector
 
 # Publishing
 conveyor = "2.0" # https://github.com/hydraulic-software/conveyor
-vanniktech-publish = "0.36.0" # https://github.com/vanniktech/gradle-maven-publish-plugin
+vanniktech-publish = "0.37.0" # https://github.com/vanniktech/gradle-maven-publish-plugin
 
 # License attribution
 aboutlibraries = "15.0.4" # https://github.com/mikepenz/AboutLibraries/releases
