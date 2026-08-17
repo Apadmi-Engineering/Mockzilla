@@ -72,7 +72,7 @@ internal actual class ZeroConfSdkWrapper actual constructor(
         val liveAddresses = try {
             NetworkInterface.getNetworkInterfaces().findMdnsAddresses().toSet()
         } catch (e: IOException) {
-            Logger.e(tag, e) { "Failed to enumerate network interfaces" }
+            Logger.e(throwable = e, tag = tag) { "Failed to enumerate network interfaces" }
             return
         }
 
@@ -83,7 +83,7 @@ internal actual class ZeroConfSdkWrapper actual constructor(
                     jmDns.removeServiceListener(serviceType, this)
                     jmDns.close()
                 }
-                Logger.d(tag) { "Removed stale listener for $addr" }
+                Logger.d(tag = tag) { "Removed stale listener for $addr" }
             }
         }
 
@@ -93,9 +93,9 @@ internal actual class ZeroConfSdkWrapper actual constructor(
                 val jmDns = JmDNS.create(addr, addr.hostAddress)
                 jmDns.addServiceListener(serviceType, this)
                 jmDnsInstances[addr] = jmDns
-                Logger.i(tag) { "Listening on ${addr.hostAddress}" }
+                Logger.i(tag = tag) { "Listening on ${addr.hostAddress}" }
             } catch (e: IOException) {
-                Logger.e(tag, e) { "Failed to create JmDNS for $addr" }
+                Logger.e(throwable = e, tag = tag) { "Failed to create JmDNS for $addr" }
             }
         }
     }

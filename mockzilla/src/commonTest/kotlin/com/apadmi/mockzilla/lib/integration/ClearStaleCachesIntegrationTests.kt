@@ -6,6 +6,7 @@ import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfigPatchR
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
 import com.apadmi.mockzilla.lib.models.MetaData
 import com.apadmi.mockzilla.lib.models.MockzillaConfig
@@ -13,6 +14,7 @@ import com.apadmi.mockzilla.lib.models.RunTarget
 import com.apadmi.mockzilla.lib.prepareMockzilla
 import com.apadmi.mockzilla.lib.startMockzilla
 import com.apadmi.mockzilla.lib.stopMockzilla
+import com.apadmi.mockzilla.testutils.dummy
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
@@ -79,10 +81,10 @@ class ClearStaleCachesIntegrationTests {
                     SerializableEndpointConfigPatchRequestDto(
                         listOf(
                             SerializableEndpointPatchItemDto.allUnset("will not be stale").copy(
-                                defaultBody = SetOrDont.Set("hello")
+                                appliedPresetOverride = SetOrDont.Set(DashboardOverridePreset.dummy(body = "hello"))
                             ),
                             SerializableEndpointPatchItemDto.allUnset("will be stale").copy(
-                                defaultBody = SetOrDont.Set("bye")
+                                appliedPresetOverride = SetOrDont.Set(DashboardOverridePreset.dummy(body = "bye"))
                             )
                         )
                     )

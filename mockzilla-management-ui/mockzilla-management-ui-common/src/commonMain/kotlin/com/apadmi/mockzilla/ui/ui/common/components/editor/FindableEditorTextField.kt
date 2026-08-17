@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.FindReplace
@@ -247,7 +248,7 @@ private fun FindReplaceBar(
             ) {
                 CustomIconButton(
                     onClick = onToggleReplaceMode,
-                    imageVector = Icons.Default.KeyboardArrowRight,
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     iconTint = colorScheme.onSurfaceVariant,
                     contentDescription = if (state.isReplaceMode) strings.collapseReplaceDescription else strings.expandReplaceDescription,
                     iconSize = 16.dp,

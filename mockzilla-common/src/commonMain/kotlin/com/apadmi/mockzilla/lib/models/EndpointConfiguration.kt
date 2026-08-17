@@ -5,9 +5,9 @@ import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
 import io.ktor.http.*
 
 import kotlin.jvm.JvmInline
-import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonNames
 
 /**
  * Configures a single mock endpoint within a Mockzilla server. Defines how incoming requests are
@@ -81,31 +81,10 @@ public data class EndpointConfiguration(
         }
 
         /**
-         * Probability of Mockzilla returning a simulated http error for this endpoint. 100 being a
-         * guaranteed error .
-         *
-         * @param percentage (0 -> 100 inclusive)
-         */
-        @Deprecated("Probabilities are no longer supported", ReplaceWith("setShouldFail(false)"))
-        public fun setFailureProbability(percentage: Int): Builder = apply {
-            config = config.copy(shouldFail = percentage == 100)
-        }
-
-        /**
          * Controls whether calls to this endpoint should fail by default
          */
         public fun setShouldFail(shouldFail: Boolean): Builder = apply {
             config = config.copy(shouldFail = shouldFail)
-        }
-
-        /**
-         * Used to simulate latency: The artificial mean delay Mockzilla with add to a network request.
-         *
-         * @param delay delay in milliseconds
-         */
-        @Deprecated("Delay is now constant with no variance", replaceWith = ReplaceWith("setDelayMillis"))
-        public fun setMeanDelayMillis(delay: Int): Builder = apply {
-            config = config.copy(delay = delay)
         }
 
         /**
@@ -277,26 +256,19 @@ public interface MockzillaHttpRequest {
  *
  * Construct via [Builder] and attach to an endpoint using
  * [EndpointConfiguration.Builder.configureDashboardOverrides].
- * @property errorPresets
- * @property successPresets
+ * @property errorPresetsDeprecated Do not use, this is for legacy parsing only
+ * @property presets
  */
 @Suppress("KDOC_NO_CONSTRUCTOR_PROPERTY_WITH_COMMENT")
-@OptIn(ExperimentalSerializationApi::class)
 @Serializable
 public data class DashboardOptionsConfig(
-    @Deprecated("Error Presets will be removed in a future version")
-    // No longer used, still included for backward compatibility
-    val errorPresets: List<DashboardOverridePreset>,
-    // This will be renamed to just "presets" in a future release. This gets management api ready to consume that change
-    @Deprecated("Deprecated", replaceWith = ReplaceWith("presets"))
-    @JsonNames("presets")
-    val successPresets: List<DashboardOverridePreset>
+    @EncodeDefault
+    @SerialName("errorPresets")
+    // TODO: This will be removed once there's a version of the desktop app that can handle
+    // the `errorPresets` property being missing
+    val errorPresetsDeprecated: List<DashboardOverridePreset> = emptyList(),
+    val presets: List<DashboardOverridePreset>
 ) {
-    /**
-     * The list of preset responses available in the dashboard for this endpoint.
-     */
-    public val presets: List<DashboardOverridePreset> get() = successPresets
-
     public class Builder {
         private val presets = mutableListOf<DashboardOverridePreset>()
 
@@ -342,25 +314,7 @@ public data class DashboardOptionsConfig(
             )
         ).let { this }
 
-        @Deprecated(
-            "Separate success/error presets are no longer supported",
-            replaceWith = ReplaceWith("addPreset"))
-        public fun addSuccessPreset(
-            response: MockzillaHttpResponse,
-            name: String? = null,
-            description: String? = null
-        ): Builder = addPreset(response, name, description)
-
-        @Deprecated(
-            "Separate success/error presets are no longer supported",
-            replaceWith = ReplaceWith("addPreset"))
-        public fun addErrorPreset(
-            response: MockzillaHttpResponse,
-            name: String? = null,
-            description: String? = null
-        ): Builder = addPreset(response, name, description)
-
-        public fun build(): DashboardOptionsConfig = DashboardOptionsConfig(errorPresets = emptyList(), presets)
+        public fun build(): DashboardOptionsConfig = DashboardOptionsConfig(emptyList(), presets = presets)
     }
 }
 

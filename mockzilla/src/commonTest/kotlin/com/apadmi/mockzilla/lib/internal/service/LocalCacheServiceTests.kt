@@ -4,7 +4,9 @@ import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointConfig
 import com.apadmi.mockzilla.lib.internal.models.SerializableEndpointPatchItemDto
 import com.apadmi.mockzilla.lib.internal.models.SetOrDont
 import com.apadmi.mockzilla.lib.internal.utils.createFileIoforTesting
+import com.apadmi.mockzilla.lib.models.DashboardOverridePreset
 import com.apadmi.mockzilla.lib.models.EndpointConfiguration
+import com.apadmi.mockzilla.testutils.dummy
 
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.StaticConfig
@@ -37,8 +39,9 @@ class LocalCacheServiceTests {
     @Test
     fun `patchLocalCaches and getLocalCache - returns value`() = runTest {
         /* Setup */
+        val dummyPreset = DashboardOverridePreset.dummy(headers = mapOf("my" to "header"))
         val entryDummy = SerializableEndpointPatchItemDto.allUnset("id1").copy(
-            defaultHeaders = SetOrDont.Set(mapOf("my" to "header"))
+            appliedPresetOverride = SetOrDont.Set(dummyPreset),
         )
         val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
@@ -49,7 +52,7 @@ class LocalCacheServiceTests {
         /* Verify */
         assertEquals(
             SerializableEndpointConfig.allNulls("id1", "", Int.MIN_VALUE).copy(
-                defaultHeaders = mapOf("my" to "header")
+                appliedPresetOverride = dummyPreset
             ), result
         )
 
@@ -80,19 +83,20 @@ class LocalCacheServiceTests {
             /* Setup */
             val initialCacheValue = SerializableEndpointPatchItemDto.allUnset("id1").copy(
                 shouldFail = SetOrDont.Set(true),
-                errorStatus = SetOrDont.Set(HttpStatusCode.BadGateway)
+                appliedPresetOverride = SetOrDont.Set(DashboardOverridePreset.dummy(HttpStatusCode.BadGateway))
             )
             val cacheUpdate = SerializableEndpointPatchItemDto.allUnset("id1").copy(
                 shouldFail = SetOrDont.Set(false),
-                defaultStatus = SetOrDont.Set(HttpStatusCode.Created)
+                delayMs = SetOrDont.Set(100),
+                appliedPresetOverride = SetOrDont.Set(
+                    DashboardOverridePreset.dummy(HttpStatusCode.BadGateway, body = "hello")
+                )
             )
             val sut = LocalCacheServiceImpl(createFileIoforTesting(), Logger(StaticConfig()))
 
             /* Run Test */
             sut.patchLocalCaches(
-                mapOf(
-                    EndpointConfiguration.Builder("").build() to initialCacheValue
-                )
+                mapOf(EndpointConfiguration.Builder("").build() to initialCacheValue)
             )
             sut.patchLocalCaches(
                 mapOf(
@@ -105,8 +109,8 @@ class LocalCacheServiceTests {
             assertEquals(
                 SerializableEndpointConfig.allNulls("id1", "", 10).copy(
                     shouldFail = false,
-                    errorStatus = HttpStatusCode.BadGateway,
-                    defaultStatus = HttpStatusCode.Created
+                    delayMs = 100,
+                    appliedPresetOverride = DashboardOverridePreset.dummy(HttpStatusCode.BadGateway, body = "hello")
                 ), result
             )
 

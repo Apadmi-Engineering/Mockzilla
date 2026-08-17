@@ -5,7 +5,7 @@ import io.github.z4kn4fein.semver.Version
 
 internal object Config {
     val minSupportedMockzillaVersion get() = when (Platform.current) {
-        Platform.Desktop -> Version.parse("1.99.99")
+        Platform.Desktop -> Version.parse("2.99.99")
         Platform.Android,
         Platform.Ios -> Version.parse("3.99.99")
         Platform.Js -> Version.parse("3.99.99")

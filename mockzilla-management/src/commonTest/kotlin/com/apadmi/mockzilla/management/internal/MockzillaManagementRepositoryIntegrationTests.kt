@@ -210,7 +210,7 @@ class MockzillaManagementRepositoryIntegrationTests {
             /* Verify */
             assertEquals(
                 DashboardOptionsConfig(
-                    successPresets = listOf(
+                    presets = listOf(
                         DashboardOverridePreset(
                             "name",
                             "desc",
@@ -218,7 +218,6 @@ class MockzillaManagementRepositoryIntegrationTests {
                             type = null
                         )
                     ),
-                    errorPresets = emptyList()
                 ), result.getOrThrow()
             )
         }

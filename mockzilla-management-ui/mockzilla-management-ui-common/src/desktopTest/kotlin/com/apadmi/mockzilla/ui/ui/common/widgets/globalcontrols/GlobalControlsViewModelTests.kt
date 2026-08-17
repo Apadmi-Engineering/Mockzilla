@@ -53,9 +53,9 @@ class GlobalControlsViewModelTests : CoroutineTest() {
             fail = config.shouldFail == true,
             overriddenProperties = listOfNotNull(
                 EndpointProperties.Delay.takeIf { _ -> config.delayMs != null },
-                EndpointProperties.Body.takeIf { _ -> config.defaultBody != null || config.appliedPresetOverride?.response?.body != null },
-                EndpointProperties.Status.takeIf { _ -> config.defaultStatus != null || config.appliedPresetOverride?.response?.statusCode != null },
-                EndpointProperties.Headers.takeIf { _ -> config.defaultHeaders != null || config.appliedPresetOverride?.response?.headers != null }
+                EndpointProperties.Body.takeIf { _ -> config.appliedPresetOverride?.response?.body != null },
+                EndpointProperties.Status.takeIf { _ -> config.appliedPresetOverride?.response?.statusCode != null },
+                EndpointProperties.Headers.takeIf { _ -> config.appliedPresetOverride?.response?.headers != null }
             ),
             delayMs = config.delayMs,
         )

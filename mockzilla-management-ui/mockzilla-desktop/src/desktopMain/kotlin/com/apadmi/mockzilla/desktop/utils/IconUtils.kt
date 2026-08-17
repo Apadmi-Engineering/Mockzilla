@@ -3,7 +3,7 @@ package com.apadmi.mockzilla.desktop.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.res.loadImageBitmap
+import org.jetbrains.compose.resources.decodeToImageBitmap
 import java.nio.file.Paths
 import kotlin.io.path.exists
 import kotlin.io.path.inputStream
@@ -17,5 +17,5 @@ fun rememberAppIcon() = remember {
         ?.takeIf { it.exists() }
         ?.inputStream()
         ?.buffered()
-        ?.use { BitmapPainter(loadImageBitmap(it)) }
+        ?.use { BitmapPainter(it.readAllBytes().decodeToImageBitmap()) }
 }

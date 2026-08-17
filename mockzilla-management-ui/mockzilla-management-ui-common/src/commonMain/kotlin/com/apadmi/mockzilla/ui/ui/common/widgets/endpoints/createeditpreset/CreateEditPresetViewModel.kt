@@ -83,7 +83,7 @@ internal class CreateEditPresetViewModel(
         token: Long,
         key: EndpointConfiguration.Key
     ): State.Editing {
-        val current = this?.appliedPresetOverride ?: this?.deriveLegacyPreset()
+        val current = this?.appliedPresetOverride
         val isEditing = variant == State.Editing.Variant.Edit
         val body = current?.response?.body.takeIf { isEditing }
         val statusCode = current?.response?.statusCode.takeIf { isEditing }
@@ -135,7 +135,7 @@ internal class CreateEditPresetViewModel(
                 response = PartialMockzillaHttpResponse(
                     body = currentState.body,
                     statusCode = currentState.statusCode,
-                    headers = currentState.headers?.associate { it.key to it.value }
+                    headers = currentState.headers.associate { it.key to it.value }
                 ),
                 isManagementUiDefinedCustomPreset = true
             )
@@ -270,38 +270,4 @@ internal class CreateEditPresetViewModel(
             )
         }
     }
-}
-
-// Used for backward compatibility so that old versions of the Mockzilla SDK used with new desktop app
-// where they're not sending the `appliedPresetOverride` field.
-internal fun SerializableEndpointConfig.deriveLegacyPreset(): DashboardOverridePreset? {
-    val response = PartialMockzillaHttpResponse(
-        statusCode = defaultStatus,
-        headers = defaultHeaders,
-        body = defaultBody
-    ).takeIf {
-        listOf(defaultStatus, defaultHeaders, defaultBody).any {
-            it != null
-        }
-    } ?: PartialMockzillaHttpResponse(
-        statusCode = errorStatus,
-        headers = errorHeaders,
-        body = errorBody
-    ).takeIf {
-        listOf(errorStatus, errorHeaders, errorBody).any {
-            it != null
-        }
-    }
-
-    response?.let {
-        return DashboardOverridePreset(
-            name = "Derived preset",
-            description = null,
-            type = null,
-            response = response,
-            isManagementUiDefinedCustomPreset = false
-        )
-    }
-
-    return null
 }

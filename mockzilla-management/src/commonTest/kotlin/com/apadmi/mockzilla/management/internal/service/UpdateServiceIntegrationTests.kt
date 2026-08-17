@@ -97,9 +97,6 @@ class UpdateServiceIntegrationTests {
             assertEquals(Result.success(Unit), result)
             assertEquals(
                 preUpdate.copy(
-                    defaultStatus = HttpStatusCode.Conflict,
-                    defaultHeaders = mapOf("key" to "value"),
-                    defaultBody = "body",
                     appliedPresetOverride = DashboardOverridePreset(
                         name = "name",
                         description = "description",

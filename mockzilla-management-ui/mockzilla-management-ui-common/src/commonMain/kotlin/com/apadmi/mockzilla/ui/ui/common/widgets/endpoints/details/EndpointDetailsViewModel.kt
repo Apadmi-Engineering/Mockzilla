@@ -13,7 +13,6 @@ import com.apadmi.mockzilla.ui.engine.events.EventBus.Event
 import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 import com.apadmi.mockzilla.ui.internal.viewmodel.ViewModel
 import com.apadmi.mockzilla.ui.ui.common.utils.withDebounce
-import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.createeditpreset.deriveLegacyPreset
 import com.apadmi.mockzilla.ui.ui.common.widgets.endpoints.endpoints.RowDensity
 
 import kotlinx.coroutines.CoroutineScope
@@ -97,9 +96,7 @@ internal class EndpointDetailsViewModel(
                 val filter = (currentState.presets as? State.Endpoint.Presets.Populated)?.filter
                 state.value = currentState.copy(
                     presets = State.Endpoint.Presets.Populated(
-                        appliedPreset = config.appliedPresetOverride ?: presets.presets.firstOrNull {
-                            it.response == config.deriveLegacyPreset()?.response
-                        } ?: config.deriveLegacyPreset(),
+                        appliedPreset = config.appliedPresetOverride,
                         visiblePresets = presets.presets.filter(filter),
                         allPresets = listOfNotNull(
                             config.appliedPresetOverride?.takeIf { it.isManagementUiDefinedCustomPreset }

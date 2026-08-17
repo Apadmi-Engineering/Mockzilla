@@ -68,6 +68,8 @@ internal class MonitorLogsUseCaseImpl(
     }
 
     private suspend fun getMonitorLogsLegacyPath(device: Device): Result<MonitorLogsResponse> =
+        // Intentionally using deprecated function while people update their mockzilla sdks
+        @Suppress("DEPRECATION")
         managementLogsService.fetchMonitorLogsAndClearBuffer(device, hideFromLogs = true).map { response ->
             val cacheKey = CacheKey(device, response.appPackage)
             val existingLogs = cache.getOrElse(cacheKey) { emptyList() }

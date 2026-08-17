@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.HorizontalDivider
@@ -112,7 +113,7 @@ internal fun LogRow(
 ) {
     val monoFont = LocalMonoFontFamily.current
     val cs = MaterialTheme.colorScheme
-    val isSlowRequest = (event.delay ?: 0) > 1000
+    val isSlowRequest = event.delay > 1000
     val isRealError = event.status.value >= 400 && !event.isIntendedFailure
     val errorColor = cs.error
     val errorBgColor = cs.errorContainer
@@ -292,7 +293,7 @@ internal fun MonitorLogsWidgetContent(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
         ) {
             Icon(
-                imageVector = Icons.Default.KeyboardArrowRight,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = cs.onSurfaceFaint,
                 modifier = Modifier.size(14.dp).rotate(chevronRotation),
