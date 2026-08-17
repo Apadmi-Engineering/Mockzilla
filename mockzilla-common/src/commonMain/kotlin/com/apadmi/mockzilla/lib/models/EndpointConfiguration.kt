@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package com.apadmi.mockzilla.lib.models
 
 import com.apadmi.mockzilla.lib.internal.utils.HttpStatusCodeSerializer
@@ -6,8 +8,10 @@ import io.ktor.http.*
 
 import kotlin.jvm.JvmInline
 import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 
 /**
  * Configures a single mock endpoint within a Mockzilla server. Defines how incoming requests are
@@ -267,6 +271,7 @@ public data class DashboardOptionsConfig(
     // TODO: This will be removed once there's a version of the desktop app that can handle
     // the `errorPresets` property being missing
     val errorPresetsDeprecated: List<DashboardOverridePreset> = emptyList(),
+    @JsonNames("presets", "successPresets")
     val presets: List<DashboardOverridePreset>
 ) {
     public class Builder {
