@@ -1,27 +1,10 @@
 import 'dart:async';
 
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:collection/collection.dart';
 
-part 'models.freezed.dart';
+enum HttpMethod { get, head, post, put, delete, options, patch }
 
-enum HttpMethod {
-  get,
-  head,
-  post,
-  put,
-  delete,
-  options,
-  patch;
-}
-
-enum LogLevel {
-  debug,
-  error,
-  info,
-  verbose,
-  warn,
-  assertion;
-}
+enum LogLevel { debug, error, info, verbose, warn, assertion }
 
 enum DashboardOverridePresetType {
   clientError,
@@ -34,19 +17,43 @@ enum DashboardOverridePresetType {
 
 /// A representation of a request to the Mockzilla server; this is passed to
 /// an endpoint handler in order to generate an appropriate response.
-@freezed
-abstract class MockzillaHttpRequest with _$MockzillaHttpRequest {
-  const factory MockzillaHttpRequest({
-    required String uri,
-    @Default({}) Map<String, String> headers,
-    @Default("") String body,
-    required HttpMethod method,
-  }) = _MockzillaHttpRequest;
+class MockzillaHttpRequest({
+  required final String uri,
+  required final HttpMethod method,
+  final Map<String, String> headers = const <String, String>{},
+  final String body = "",
+}) {
+  @override
+  int get hashCode => Object.hashAll([uri, headers, method, body]);
+
+  @override
+  bool operator ==(covariant MockzillaHttpRequest other) =>
+      uri == other.uri &&
+      DeepCollectionEquality().equals(headers, other.headers) &&
+      method == other.method &&
+      body == other.body;
+
+  MockzillaHttpRequest copyWith({
+    String? uri,
+    HttpMethod? method,
+    Map<String, String>? headers,
+    String? body,
+  }) => MockzillaHttpRequest(
+    uri: uri ?? this.uri,
+    method: method ?? this.method,
+    headers: headers ?? this.headers,
+    body: body ?? this.body,
+  );
+
+  @override
+  String toString() =>
+      "MockzillaHttpRequest("
+      "uri=$uri, $method=$method, headers=$headers, body=$body"
+      ")";
 }
 
 /// Created and returned by an endpoint handler in response to an incoming
 /// HTTP request.
-@freezed
 abstract class MockzillaHttpResponse
     with _$MockzillaHttpResponse
     implements CommonPartialMockzillaHttpResponse {
@@ -54,12 +61,14 @@ abstract class MockzillaHttpResponse
 
   const factory MockzillaHttpResponse({
     /// The HTTP status to use for the response, defaults to 200 - OK.
-    @Default(200) int statusCode,
+    // @Default(200)
+    int statusCode,
 
     /// The response headers, defaults a single `Content-Type` header with a
     /// value of `application/json`.
-    @Default({"Content-Type": "application/json"}) Map<String, String> headers,
-    @Default("") String body,
+    // @Default({"Content-Type": "application/json"})
+    Map<String, String> headers,
+    // @Default("") String body,
   }) = _MockzillaHttpResponse;
 
   @override
@@ -75,11 +84,12 @@ abstract class MockzillaHttpResponse
 /// Used to define partial overrides of standard responses in Dashboard overrides
 abstract class CommonPartialMockzillaHttpResponse {
   int? nullableStatusCode();
+
   Map<String, String>? nullableHeaders();
+
   String? nullableBody();
 }
 
-@freezed
 abstract class PartialMockzillaHttpResponse
     with _$PartialMockzillaHttpResponse
     implements CommonPartialMockzillaHttpResponse {
@@ -103,28 +113,29 @@ abstract class PartialMockzillaHttpResponse
 
 /// Definition for a preset response that can be selected in the desktop
 /// management app.
-@freezed
 abstract class DashboardOverridePreset with _$DashboardOverridePreset {
-  const factory DashboardOverridePreset(
-      {required String name,
-      required String? description,
-      required CommonPartialMockzillaHttpResponse response,
-      DashboardOverridePresetType? type}) = _DashboardOverridePreset;
+  const factory DashboardOverridePreset({
+    required String name,
+    required String? description,
+    required CommonPartialMockzillaHttpResponse response,
+    DashboardOverridePresetType? type,
+  }) = _DashboardOverridePreset;
 }
 
 /// A collection of preset responses from an endpoint that can be selected in
 /// the desktop management app.
-@freezed
 abstract class DashboardOptionsConfig with _$DashboardOptionsConfig {
   const factory DashboardOptionsConfig({
     @Deprecated(
-        "Success/Error presets are now just one flat list, so use `presets` property")
-    @Default([])
+      "Success/Error presets are now just one flat list, so use `presets` property",
+    )
+    // @Default([])
     List<DashboardOverridePreset> successPresets,
     @Deprecated("Error Presets will be removed in a future version")
-    @Default([])
+    // @Default([])
     List<DashboardOverridePreset> errorPresets,
-    @Default([]) List<DashboardOverridePreset> presets,
+    // @Default([])
+    List<DashboardOverridePreset> presets,
   }) = _DashboardOptionsConfig;
 }
 
@@ -133,7 +144,6 @@ abstract class DashboardOptionsConfig with _$DashboardOptionsConfig {
 ///
 /// Please see [https://mockzilla.apadmi.dev/endpoints/]()
 /// for more information.
-@freezed
 abstract class EndpointConfig with _$EndpointConfig {
   const EndpointConfig._();
 
@@ -145,39 +155,44 @@ abstract class EndpointConfig with _$EndpointConfig {
 
     /// Whether the Mockzilla server should return an artificial error for a
     /// request to this endpoint. Defaults to [false].
-    @Default(false) bool shouldFail,
+    // @Default(false)
+    bool shouldFail,
 
     /// The artificial delay that Mockzilla should apply to responses
     /// to simulate latency. Defaults to 100ms.
-    @Default(Duration(milliseconds: 100)) Duration delay,
+    // @Default(Duration(milliseconds: 100))
+    Duration delay,
 
     /// Incrementing this will indicate a breaking change has been
     /// made to this endpoint and will invalidate any cached data on the host
     /// device without intervention by the user. Defaults to 1.
-    @Default(1) int versionCode,
+    // @Default(1)
+    int versionCode,
 
     /// Used to determine whether a particular `request` should be evaluated by
     /// this endpoint.
     required FutureOr<bool> Function(MockzillaHttpRequest request)
-        endpointMatcher,
+    endpointMatcher,
 
     /// Optional, configures the preset responses for the endpoint in the
     /// Mockzilla dashboard.
-    @Default(DashboardOptionsConfig())
+    // @Default(DashboardOptionsConfig())
     DashboardOptionsConfig dashboardOptionsConfig,
 
     /// This function is called when a network request is made to this endpoint,
     /// note that if an error is being returned due to [shouldFail] then
     /// `errorHandler` is used instead.
     required FutureOr<MockzillaHttpResponse> Function(
-            MockzillaHttpRequest request)
-        defaultHandler,
+      MockzillaHttpRequest request,
+    )
+    defaultHandler,
 
     /// This function is called when, in response to a network request, the
     /// server returns an error due to [shouldFail].
     required FutureOr<MockzillaHttpResponse> Function(
-            MockzillaHttpRequest request)
-        errorHandler,
+      MockzillaHttpRequest request,
+    )
+    errorHandler,
   }) = _EndpointConfig;
 
   String get key => customKey ?? name;
@@ -187,32 +202,36 @@ abstract class MockzillaLogger {
   void log(LogLevel level, String message, String tag, Exception? exception);
 }
 
-@freezed
 abstract class MockzillaConfig with _$MockzillaConfig {
   const factory MockzillaConfig({
     /// The port that the Mockzilla should be available through.
-    @Default(8080) int port,
+    // @Default(8080)
+    int port,
 
     /// The list of available mocked endpoints.
-    @Default([]) List<EndpointConfig> endpoints,
+    // @Default([])
+    List<EndpointConfig> endpoints,
 
     /// Whether Mockzilla server should only be available on the host device.
-    @Default(false) bool localHostOnly,
+    // @Default(false)
+    bool localHostOnly,
 
     /// The level of logging that should be used by Mockzilla.
-    @Default(LogLevel.info) LogLevel logLevel,
+    // @Default(LogLevel.info)
+    LogLevel logLevel,
 
     /// Whether devices running Mockzilla are discoverable on the local network
     /// through the desktop management app.
-    @Default(true) bool isNetworkDiscoveryEnabled,
+    // @Default(true)
+    bool isNetworkDiscoveryEnabled,
 
     /// Custom logger implementations for surfacing Mockzilla logs outside of
     /// the Flutter console.
-    @Default([]) List<MockzillaLogger> loggers,
+    // @Default([])
+    List<MockzillaLogger> loggers,
   }) = _MockzillaConfig;
 }
 
-@freezed
 abstract class MockzillaRuntimeParams with _$MockzillaRuntimeParams {
   const factory MockzillaRuntimeParams({
     required MockzillaConfig config,
