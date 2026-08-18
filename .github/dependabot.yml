@@ -77,20 +77,12 @@ updates:
         update-types:
           - "minor"
           - "patch"
-  # Documentation homepage (React + Vite) built with npm.
+  # Documentation homepage (Tailwind CSS) built with npm.
   - package-ecosystem: 'npm'
     directory: '/docs/homepage'
     schedule:
       interval: 'monthly'
     groups:
-      # React core packages must move together (react, react-dom, @types/react*).
-      react:
-        applies-to: version-updates
-        patterns:
-          - "react"
-          - "react-dom"
-          - "@types/react"
-          - "@types/react-dom"
       non-breaking:
         applies-to: version-updates
         patterns:

@@ -107,39 +107,17 @@ Dependencies bundled into the compiled `docs/homepage` website.
 
 | Package | License |
 |---|---|
-| [React](https://react.dev) | [MIT](https://opensource.org/licenses/MIT) |
-| [React DOM](https://react.dev) | [MIT](https://opensource.org/licenses/MIT) |
-| [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter) | [MIT](https://opensource.org/licenses/MIT) |
-| [class-variance-authority](https://cva.style/docs) | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
-| [clsx](https://github.com/lukeed/clsx) | [MIT](https://opensource.org/licenses/MIT) |
-| [lucide-react](https://lucide.dev) | [ISC](https://opensource.org/licenses/ISC) |
-| [tailwind-merge](https://github.com/dcastil/tailwind-merge) | [MIT](https://opensource.org/licenses/MIT) |
 | [Tailwind CSS](https://tailwindcss.com) | [MIT](https://opensource.org/licenses/MIT) |
-| [shadcn/ui](https://ui.shadcn.com) | [MIT](https://opensource.org/licenses/MIT) |
 
 ---
 
 ## 7. Web Dev Tooling
 
-Build, type-checking, and linting tools for the homepage. Not distributed to end users.
+Build tooling for the homepage. Not distributed to end users.
 
 | Package | License |
 |---|---|
-| [Vite](https://vitejs.dev) | [MIT](https://opensource.org/licenses/MIT) |
-| [TypeScript](https://www.typescriptlang.org) | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
-| [typescript-eslint](https://typescript-eslint.io) | [MIT](https://opensource.org/licenses/MIT) |
-| [ESLint](https://eslint.org) | [MIT](https://opensource.org/licenses/MIT) |
-| [eslint-plugin-react-hooks](https://www.npmjs.com/package/eslint-plugin-react-hooks) | [MIT](https://opensource.org/licenses/MIT) |
-| [eslint-plugin-react-refresh](https://github.com/ArnaudBarre/eslint-plugin-react-refresh) | [MIT](https://opensource.org/licenses/MIT) |
-| [@eslint/js](https://eslint.org) | [MIT](https://opensource.org/licenses/MIT) |
-| [globals](https://github.com/sindresorhus/globals) | [MIT](https://opensource.org/licenses/MIT) |
-| [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react) | [MIT](https://opensource.org/licenses/MIT) |
-| [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) | [MIT](https://opensource.org/licenses/MIT) |
-| [@tailwindcss/vite](https://tailwindcss.com) | [MIT](https://opensource.org/licenses/MIT) |
-| [babel-plugin-react-compiler](https://react.dev/learn/react-compiler) | [MIT](https://opensource.org/licenses/MIT) |
-| [@types/react](https://github.com/DefinitelyTyped/DefinitelyTyped) | [MIT](https://opensource.org/licenses/MIT) |
-| [@types/react-dom](https://github.com/DefinitelyTyped/DefinitelyTyped) | [MIT](https://opensource.org/licenses/MIT) |
-| [@types/react-syntax-highlighter](https://github.com/DefinitelyTyped/DefinitelyTyped) | [MIT](https://opensource.org/licenses/MIT) |
+| [@tailwindcss/cli](https://tailwindcss.com) | [MIT](https://opensource.org/licenses/MIT) |
 
 ---
 
