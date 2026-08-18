@@ -1,3 +1,5 @@
+@file:OptIn(InternalMockzillaApi::class)
+
 package com.apadmi.mockzilla
 
 import android.os.Bundle
@@ -9,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.apadmi.mockzilla.desktop.mock.simulateUseOfDevelopmentServer
 import com.apadmi.mockzilla.desktop.mock.startDevelopmentMockzillaServer
 import com.apadmi.mockzilla.desktop.ui.DesktopApp
+import com.apadmi.mockzilla.lib.InternalMockzillaApi
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {

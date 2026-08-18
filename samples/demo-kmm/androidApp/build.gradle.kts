@@ -4,7 +4,6 @@ import com.apadmi.mockzilla.AndroidConfig
 plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.app)
 }
 
@@ -42,10 +41,6 @@ android {
         sourceCompatibility = JavaConfig.version
         targetCompatibility = JavaConfig.version
     }
-}
-
-kotlin {
-    jvmToolchain(JavaConfig.toolchain)
 }
 
 dependencies {

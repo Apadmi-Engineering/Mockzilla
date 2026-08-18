@@ -9,10 +9,11 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
@@ -28,8 +29,20 @@ kotlin {
 
     // Managed automatically by release-please PRs
     version = project.injectedVersion() ?: "4.0.0" // x-release-please-version
-    androidTarget {
-        publishLibraryVariants()
+    android {
+        namespace = "$group.mockzilla.common"
+        compileSdk = AndroidConfig.targetSdk
+        minSdk = AndroidConfig.minSdk
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+        withHostTest {}
+        optimization {
+            consumerKeepRules.apply {
+                publish = true
+                file("mockzilla-proguard-rules.pro")
+            }
+        }
     }
 
     val xcf = XCFramework()
@@ -84,22 +97,6 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
         freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
-    }
-}
-
-android {
-    namespace = "$group.mockzilla.common"
-    compileSdk = AndroidConfig.targetSdk
-    defaultConfig {
-        minSdk = AndroidConfig.minSdk
-        testOptions.targetSdk = AndroidConfig.targetSdk
-
-        consumerProguardFiles("mockzilla-proguard-rules.pro")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaConfig.version
-        targetCompatibility = JavaConfig.version
     }
 }
 

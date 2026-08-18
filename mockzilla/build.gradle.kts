@@ -11,9 +11,10 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
@@ -28,8 +29,20 @@ val artifactName = "mockzilla"
 kotlin {
     explicitApi()
 
-    androidTarget {
-        publishLibraryVariants()
+    android {
+        namespace = group.toString()
+        compileSdk = AndroidConfig.targetSdk
+        minSdk = AndroidConfig.minSdk
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+        withHostTest {}
+        optimization {
+            consumerKeepRules.apply {
+                publish = true
+                file("mockzilla-proguard-rules.pro")
+            }
+        }
     }
 
     // Managed automatically by release-please PRs
@@ -137,8 +150,10 @@ kotlin {
         jvmTest.dependencies {
             implementation(libs.ktor.client.cio)
         }
-        androidUnitTest.dependencies {
-            implementation(libs.ktor.client.cio)
+        val androidHostTest by getting {
+            dependencies {
+                implementation(libs.ktor.client.cio)
+            }
         }
         jsTest.dependencies {
             implementation(libs.ktor.client.js)
@@ -172,22 +187,6 @@ val copyServiceWorker = tasks.register<Copy>("copyServiceWorker") {
 }
 
 tasks.getByPath(":mockzilla:jsTestProcessResources").dependsOn(copyServiceWorker)
-
-android {
-    namespace = group.toString()
-    compileSdk = AndroidConfig.targetSdk
-    defaultConfig {
-        minSdk = AndroidConfig.minSdk
-        testOptions.targetSdk = AndroidConfig.targetSdk
-
-        consumerProguardFiles("mockzilla-proguard-rules.pro")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaConfig.version
-        targetCompatibility = JavaConfig.version
-    }
-}
 
 buildkonfig {
     packageName = "$group.$artifactName"
