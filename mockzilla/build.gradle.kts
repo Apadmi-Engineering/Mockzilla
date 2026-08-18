@@ -182,8 +182,6 @@ android {
 
         consumerProguardFiles("mockzilla-proguard-rules.pro")
     }
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-
 
     compileOptions {
         sourceCompatibility = JavaConfig.version
