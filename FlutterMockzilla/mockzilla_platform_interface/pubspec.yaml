@@ -14,8 +14,8 @@ topics:
   - mockzilla
 
 environment:
-  sdk: '>=3.6.0 <4.0.0'
-  flutter: '>=3.27.0'
+  sdk: '>=3.13.0 <4.0.0'
+  flutter: '>=3.44.0'
 resolution: workspace
 
 dependencies:
@@ -24,15 +24,9 @@ dependencies:
 
   # Interface
   plugin_platform_interface: ^2.1.8
-
-  # Models
-  freezed_annotation: ^3.0.0
+  collection: ^1.19.1
 
 dev_dependencies:
-  # Models
-  freezed: ^3.0.0
-  build_runner: ^2.15.1
-
   # Testing
   flutter_test:
     sdk: flutter
