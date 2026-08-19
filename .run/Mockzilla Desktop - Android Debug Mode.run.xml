@@ -1,6 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Mockizlla Desktop - Android Debug Mode" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
-    <module name="lib.mockzilla-management-ui.mockzilla-desktop" />
+  <configuration default="false" name="Mockzilla Desktop - Android Debug Mode" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
     <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
     <option name="DEPLOY" value="true" />
     <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />

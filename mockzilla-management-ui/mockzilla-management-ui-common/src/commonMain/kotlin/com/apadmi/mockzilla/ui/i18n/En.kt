@@ -27,7 +27,9 @@ public val EnStrings: Strings = Strings(
         about = "About",
         github = "GitHub",
         documentation = "Documentation",
-        apadmi = "About Us"
+        apadmi = "About Us",
+        tools = "Tools",
+        codeGen = "Code Generator",
     ),
     widgets = Strings.Widgets(
         deviceConnection = Strings.Widgets.DeviceConnection(
@@ -304,6 +306,9 @@ public val EnStrings: Strings = Strings(
             error = "Failed to load licences",
             title = "Open source licences",
             devBuildsMessage = "Licenses not generated for debug builds"
+        ),
+        codeGen = Strings.Widgets.CodeGen(
+            title = "Mockzilla Config Code Generator",
         )
     ),
     components = Strings.Components(

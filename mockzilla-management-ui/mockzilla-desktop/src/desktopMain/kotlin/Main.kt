@@ -26,6 +26,7 @@ import com.apadmi.mockzilla.ui.internal.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 
 import co.touchlab.kermit.Logger
+import com.apadmi.mockzilla.desktop.ui.tools.CodeGenDialog
 import org.jetbrains.skiko.OS
 import org.jetbrains.skiko.hostOs
 
@@ -54,6 +55,7 @@ private fun FrameWindowScope.MockzillaWindowContent(
     uriHandler: UriHandler = LocalUriHandler.current
 ) {
     var showLicenses by remember { mutableStateOf(false) }
+    var showCodeGen by remember { mutableStateOf(false) }
 
     MenuBar {
         Menu(strings.menu.about) {
@@ -64,11 +66,20 @@ private fun FrameWindowScope.MockzillaWindowContent(
             Separator()
             Item(strings.menu.openSourceLicenses) { showLicenses = true }
         }
+        Menu(strings.menu.tools) {
+            Item(strings.menu.codeGen) { showCodeGen = true }
+        }
     }
 
     if (showLicenses) {
         AppTheme {
             LicensesDialog(onDismiss = { showLicenses = false })
+        }
+    }
+
+    if (showCodeGen) {
+        AppTheme {
+            CodeGenDialog(onDismiss = { showCodeGen = false })
         }
     }
 

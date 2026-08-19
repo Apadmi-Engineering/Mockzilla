@@ -40,7 +40,12 @@ public data class Strings(
         val about: String,
         val github: String,
         val documentation: String,
-        val apadmi: String
+        val apadmi: String,
+
+        val tools: String,
+
+        val codeGen: String
+
     )
 
     @InternalMockzillaApi
@@ -103,8 +108,13 @@ public data class Strings(
         val errorBanner: ErrorBanner,
         val linuxUnsupportedBanner: LinuxUnsupportedBanner,
         val latency: Latency,
-        val openSourceLicenses: OpenSourceLicenses
+        val openSourceLicenses: OpenSourceLicenses,
+        val codeGen: CodeGen
     ) {
+        @InternalMockzillaApi
+        public data class CodeGen(
+            val title: String,
+        )
         @InternalMockzillaApi
         public data class OpenSourceLicenses(
             val error: String,

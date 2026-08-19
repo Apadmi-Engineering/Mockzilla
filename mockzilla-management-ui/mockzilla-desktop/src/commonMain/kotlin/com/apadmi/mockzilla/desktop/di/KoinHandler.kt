@@ -14,6 +14,7 @@ import com.apadmi.mockzilla.desktop.engine.licenses.LicensesUseCaseImpl
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel
 import com.apadmi.mockzilla.desktop.ui.licenses.LicensesViewModel
+import com.apadmi.mockzilla.desktop.ui.tools.CodeGenViewModel
 import com.apadmi.mockzilla.lib.config.ZeroConfConfig
 import com.apadmi.mockzilla.ui.internal.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.internal.di.utils.viewModel
@@ -54,5 +55,6 @@ fun startDesktopMockzillaKoin() {
         viewModel { DeviceConnectionViewModel(get(), get(), get()) }
         viewModel { DeviceTabsViewModel(get(), get()) }
         viewModel { LicensesViewModel(get()) }
+        viewModel { CodeGenViewModel() }
     }))
 }
