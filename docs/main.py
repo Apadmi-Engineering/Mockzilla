@@ -194,12 +194,11 @@ def _write_robots_txt(output_dir):
     Path(output_dir, "robots.txt").write_text(content)
 
 
-# Non-page files that sit inside the docs tree get copied verbatim into the build output:
-# `homepage/` (a symlinked Vite build fragment) and `overrides/` (the theme's custom_dir
-# templates, which include a full standalone copy of the homepage). Both are orphaned — not
-# in the nav or sitemap and linked from nowhere
+# `overrides/` (the theme's custom_dir templates, which include a full standalone copy of the
+# homepage) sits inside the docs tree and gets copied verbatim into the build output even
+# though it's not a real nav page — not in the nav or sitemap and linked from nowhere.
 # Hopefully we can get rid of this after https://github.com/zensical/backlog/issues/65 is finished
-_orphan_output_dirs = ("homepage", "overrides")
+_orphan_output_dirs = ("overrides",)
 
 
 def _prune_orphan_output(output_dir):

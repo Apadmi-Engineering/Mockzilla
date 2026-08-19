@@ -77,6 +77,14 @@ Publish to maven remote
 
 Generate JavaScript artifacts
 
+### deploy_js_artifacts_to_r2
+
+```sh
+[bundle exec] fastlane deploy_js_artifacts_to_r2
+```
+
+Build, zip, and upload core JS artifacts to R2
+
 ### get_core_mockzilla_version_name
 
 ```sh
@@ -116,6 +124,14 @@ Publish to maven remote
 ```
 
 Generate JavaScript artifacts
+
+### deploy_mobile_ui_js_artifacts_to_r2
+
+```sh
+[bundle exec] fastlane deploy_mobile_ui_js_artifacts_to_r2
+```
+
+Build, zip, and upload mobile-ui JS artifacts to R2
 
 ### management_ui_pre_deploy_checks
 
