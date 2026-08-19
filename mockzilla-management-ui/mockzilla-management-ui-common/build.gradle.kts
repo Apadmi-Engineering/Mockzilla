@@ -156,17 +156,6 @@ kotlin {
     }
 }
 
-configurations.all {
-    // AGP 9's stricter configuration usage model rejects attributes() on
-    // Declarable-only configurations (e.g. androidInstrumentedTestApi).
-    if (isCanBeResolved || isCanBeConsumed) {
-        attributes {
-            // Temporary fix for https://github.com/JetBrains/compose-jb/issues/1404#issuecomment-1146894731
-            attribute(Attribute.of("ui", String::class.java), "awt")
-        }
-    }
-}
-
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
 
