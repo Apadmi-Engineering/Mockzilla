@@ -77,6 +77,7 @@ kotlin {
             api(project(":mockzilla-management-ui:mockzilla-management-ui-common"))
             implementation(project(":mockzilla-common"))
             implementation(project(":mockzilla-management"))
+            implementation(project(":mockzilla-codegen"))
 
             /* ADB */
             implementation(libs.adam)

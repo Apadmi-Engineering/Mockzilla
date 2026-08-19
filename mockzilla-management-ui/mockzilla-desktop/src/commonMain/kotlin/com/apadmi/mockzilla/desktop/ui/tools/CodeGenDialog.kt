@@ -45,7 +45,8 @@ internal fun CodeGenDialog(onDismiss: () -> Unit) {
         CodeGenDialogContent(
             modifier = Modifier.padding(16.dp),
             onDismiss = onDismiss,
-            state = state
+            state = state,
+            onGenerate = { input, output -> viewModel.generateConfig(input, output) }
         )
     }
 }
@@ -53,6 +54,7 @@ internal fun CodeGenDialog(onDismiss: () -> Unit) {
 @Composable
 private fun CodeGenDialogContent(
     onDismiss: () -> Unit,
+    onGenerate: (String, String) -> Unit,
     modifier: Modifier = Modifier,
     state: State
 ) = Surface(
@@ -96,8 +98,7 @@ private fun CodeGenDialogContent(
         CustomButton(
             modifier = Modifier.height(48.dp).width(144.dp),
             label = "Generate",
-            // todo: generate
-            onClick = {},
+            onClick = { onGenerate(input, output) },
         )
     }
 }

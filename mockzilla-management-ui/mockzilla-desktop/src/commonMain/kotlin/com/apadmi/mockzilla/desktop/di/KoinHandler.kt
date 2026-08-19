@@ -11,6 +11,8 @@ import com.apadmi.mockzilla.desktop.engine.connection.ZeroConfSdkWrapper
 import com.apadmi.mockzilla.desktop.engine.connection.isLocalIpAddress
 import com.apadmi.mockzilla.desktop.engine.licenses.LicensesUseCase
 import com.apadmi.mockzilla.desktop.engine.licenses.LicensesUseCaseImpl
+import com.apadmi.mockzilla.desktop.engine.tools.CodeGenUseCase
+import com.apadmi.mockzilla.desktop.engine.tools.CodeGenUseCaseImpl
 import com.apadmi.mockzilla.desktop.ui.deviceconnection.DeviceConnectionViewModel
 import com.apadmi.mockzilla.desktop.ui.devicetabs.DeviceTabsViewModel
 import com.apadmi.mockzilla.desktop.ui.licenses.LicensesViewModel
@@ -52,9 +54,10 @@ fun startDesktopMockzillaKoin() {
         single<LicensesUseCase> {
             LicensesUseCaseImpl { Res.readBytes("files/aboutlibraries.json").decodeToString() }
         }
+        single<CodeGenUseCase> { CodeGenUseCaseImpl() }
         viewModel { DeviceConnectionViewModel(get(), get(), get()) }
         viewModel { DeviceTabsViewModel(get(), get()) }
         viewModel { LicensesViewModel(get()) }
-        viewModel { CodeGenViewModel() }
+        viewModel { CodeGenViewModel(get()) }
     }))
 }
