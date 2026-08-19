@@ -141,7 +141,7 @@ lane :management_ui_pre_deploy_checks do |options|
     gradle(
         tasks: [
             ":mockzilla-management-ui:mockzilla-management-ui-common:desktopTest",
-            ":mockzilla-management-ui:mockzilla-mobile-ui:testDebugUnitTest"
+            ":mockzilla-management-ui:mockzilla-mobile-ui:testAndroidHostTest"
         ],
         properties: createMobileUiSnapshotProp(options[:is_snapshot], get_mobile_ui_version_name(options))
     )
@@ -150,11 +150,11 @@ end
 lane :management_ui_pull_request do
     gradle(
         tasks: [
-            ":mockzilla-management-ui:mockzilla-desktop:assembleDebug",
+            ":mockzilla-management-ui:mockzilla-desktop-android:assembleDebug",
             ":mockzilla-management-ui:mockzilla-desktop:desktopTest",
             ":mockzilla-management-ui:mockzilla-management-ui-common:desktopTest",
             ":mockzilla-management-ui:mockzilla-management-ui-common:jsBrowserTest",
-            ":mockzilla-management-ui:mockzilla-mobile-ui:testDebugUnitTest",
+            ":mockzilla-management-ui:mockzilla-mobile-ui:testAndroidHostTest",
             ":mockzilla-management-ui:mockzilla-mobile-ui:jsBrowserTest"
         ]
     )

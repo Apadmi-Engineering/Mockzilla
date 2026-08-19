@@ -12,7 +12,7 @@ Mockzilla is a compile-safe mock HTTP server for mobile apps. It runs an embedde
 
 ```bash
 # Run all tests for core library
-./gradlew :mockzilla:testDebugUnitTest :mockzilla-common:testDebugUnitTest
+./gradlew :mockzilla:testAndroidHostTest :mockzilla-common:testAndroidHostTest
 
 # iOS tests
 ./gradlew :mockzilla:iosX64Test :mockzilla-common:iosX64Test

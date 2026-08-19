@@ -29,8 +29,8 @@ platform :android do
     lane :lib_mockzilla_pull_request do
         gradle(
             tasks: [
-                ":mockzilla-common:testDebugUnitTest",
-                ":mockzilla:testDebugUnitTest"
+                ":mockzilla-common:testAndroidHostTest",
+                ":mockzilla:testAndroidHostTest"
             ]
         )
     end

@@ -9,10 +9,11 @@ import com.apadmi.mockzilla.isSigningEnabled
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.spotless)
@@ -29,7 +30,15 @@ kotlin {
 
     version = project.injectedVersion() ?: "0.0.9" // x-release-please-version
 
-    androidTarget()
+    android {
+        namespace = "$group.mockzilla.mobile.ui.common"
+        compileSdk = AndroidConfig.targetSdk
+        minSdk = AndroidConfig.minSdk
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+        withHostTest {}
+    }
     jvmToolchain(JavaConfig.toolchain)
     jvm("desktop")
 
@@ -109,9 +118,11 @@ kotlin {
             implementation(libs.androidx.compose.activity)
             implementation(libs.ui.tooling.preview)
         }
-        androidUnitTest.dependencies {
-            implementation(libs.androidx.test.junit)
-            implementation(libs.testParamInjector)
+        val androidHostTest by getting {
+            dependencies {
+                implementation(libs.androidx.test.junit)
+                implementation(libs.testParamInjector)
+            }
         }
 
         val desktopMain by getting {
@@ -142,31 +153,6 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
         freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
-    }
-}
-
-android {
-    namespace = "$group.mockzilla.mobile.ui.common"
-    compileSdk = AndroidConfig.targetSdk
-    defaultConfig {
-        minSdk = AndroidConfig.minSdk
-        testOptions.targetSdk = AndroidConfig.targetSdk
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaConfig.version
-        targetCompatibility = JavaConfig.version
-    }
-
-    buildFeatures {
-        buildConfig = true
-    }
-}
-
-configurations.all {
-    attributes {
-        // Temporary fix for https://github.com/JetBrains/compose-jb/issues/1404#issuecomment-1146894731
-        attribute(Attribute.of("ui", String::class.java), "awt")
     }
 }
 

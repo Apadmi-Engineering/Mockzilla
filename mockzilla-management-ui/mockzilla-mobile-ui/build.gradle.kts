@@ -12,10 +12,11 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.spotless)
@@ -38,7 +39,24 @@ kotlin {
     // Managed automatically by release-please PRs.
     version = project.injectedVersion() ?: "1.1.0" // x-release-please-version
 
-    androidTarget()
+    android {
+        namespace = "$group.mockzilla.mobile.ui"
+        compileSdk = AndroidConfig.targetSdk
+        minSdk = AndroidConfig.minSdk
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+        androidResources {
+            enable = true
+        }
+        withHostTest {}
+        optimization {
+            consumerKeepRules.apply {
+                publish = true
+                file("proguard-rules.pro")
+            }
+        }
+    }
     jvmToolchain(JavaConfig.toolchain)
 
     cocoapods {
@@ -137,7 +155,7 @@ kotlin {
         jsMain.dependencies {
             implementation(compose.html.core)
         }
-        val androidUnitTest by getting {
+        val androidHostTest by getting {
             dependencies {
                 implementation(libs.androidx.test.junit)
                 implementation(libs.testParamInjector)
@@ -161,22 +179,6 @@ buildkonfig {
             version.toString()
         )
         buildConfigField(BOOLEAN, "isSnapshot", isSnapshot().toString())
-    }
-}
-
-android {
-    namespace = "$group.mockzilla.mobile.ui"
-    compileSdk = AndroidConfig.targetSdk
-    defaultConfig {
-        minSdk = AndroidConfig.minSdk
-        testOptions.targetSdk = AndroidConfig.targetSdk
-
-        consumerProguardFiles("proguard-rules.pro")
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaConfig.version
-        targetCompatibility = JavaConfig.version
     }
 }
 
