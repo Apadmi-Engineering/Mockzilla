@@ -6,7 +6,7 @@ lane :generate_docs do
     sh("
         cd #{lane_context[:repo_root]}/docs/homepage;
         npm i;
-        export VITE_VERSION_NAME=#{get_core_mockzilla_version_name};
+        export MOCKZILLA_VERSION_NAME=#{get_core_mockzilla_version_name};
         npm run build:fragment;
     ");
 

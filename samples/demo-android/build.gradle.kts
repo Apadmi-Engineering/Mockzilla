@@ -4,7 +4,6 @@ import com.apadmi.mockzilla.JavaConfig
 plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.app)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -45,10 +44,6 @@ android {
             excludes.add("/META-INF/*")
         }
     }
-}
-
-kotlin {
-    jvmToolchain(JavaConfig.toolchain)
 }
 
 dependencies {

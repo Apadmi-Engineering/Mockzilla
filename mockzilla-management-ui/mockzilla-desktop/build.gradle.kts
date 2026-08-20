@@ -10,11 +10,12 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import kotlin.math.sign
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.app)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.spotless)
@@ -43,7 +44,15 @@ kotlin {
             .joinToString(".") + ".${it % 65535}"
     } ?: baseVersion
 
-    androidTarget()
+    android {
+        namespace = "$group.mockzilla.desktop"
+        compileSdk = AndroidConfig.targetSdk
+        minSdk = 26
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+        withHostTest {}
+    }
     jvmToolchain(JavaConfig.toolchain)
     jvm("desktop")
 
@@ -109,7 +118,7 @@ kotlin {
             implementation(project(":mockzilla"))
             implementation(libs.ktor.client.core)
         }
-        val androidUnitTest by getting {
+        val androidHostTest by getting {
             dependencies {
                 implementation(libs.androidx.test.junit)
                 implementation(libs.testParamInjector)
@@ -140,36 +149,6 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll(CompilerConfig.freeCompilerArgs)
         freeCompilerArgs.add("-opt-in=com.apadmi.mockzilla.lib.InternalMockzillaApi")
-    }
-}
-
-android {
-    compileSdk = AndroidConfig.targetSdk
-    namespace = group.toString()
-    defaultConfig {
-        applicationId = group.toString()
-        minSdk = 26
-        targetSdk = AndroidConfig.targetSdk
-        versionCode = 1
-    }
-    buildFeatures {
-        compose = true
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaConfig.version
-        targetCompatibility = JavaConfig.version
-    }
-
-    buildTypes {
-        getByName("debug") {
-            isMinifyEnabled = false
-        }
-    }
-    android {
-        packaging {
-            resources.excludes.add("META-INF/*")
-        }
     }
 }
 
@@ -204,9 +183,6 @@ dependencies {
     macAmd64(libs.desktop.jvm.macos.x64)
     macAarch64(libs.desktop.jvm.macos.arm64)
     windowsAmd64(libs.desktop.jvm.windows.x64)
-
-    /* Compose previews */
-    debugImplementation(libs.ui.tooling.preview)
 }
 
 aboutLibraries {
@@ -231,12 +207,5 @@ aboutLibraries {
 
         // Enable inclusion of `platform` dependencies in the library report
         includePlatform = true
-    }
-}
-
-configurations.all {
-    attributes {
-        // Temporary fix for https://github.com/JetBrains/compose-jb/issues/1404#issuecomment-1146894731
-        attribute(Attribute.of("ui", String::class.java), "awt")
     }
 }

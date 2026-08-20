@@ -1,10 +1,9 @@
 
 plugins {
-    alias(libs.plugins.android.library) apply false
     alias(libs.plugins.android.app) apply false
+    alias(libs.plugins.android.kotlin.multiplatform.library) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.spotless) apply true
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.dokka) apply true
@@ -65,6 +64,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
             "build/**",
             "mockzilla-management-ui/build/**",
             "mockzilla-management-ui/*/build/**",
+            "samples/demo-kmm/shared/build/**",
             "*/build/**",
             "fastlane/**",
             "fastlane-build/**",
@@ -79,7 +79,10 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 }
 
 project.afterEvaluate {
-    tasks.getByPath(":mockzilla-common:preBuild").apply {
+    // com.android.kotlin.multiplatform.library doesn't register a preBuild task like
+    // com.android.library did, so hook into `assemble`, which every project type here
+    // (Android app/library, KMP, plain JVM) registers via the base lifecycle plugin.
+    tasks.getByPath(":mockzilla-common:assemble").apply {
         dependsOn(
             tasks.register<Copy>("installGitHooks") {
                 group = "git hooks"

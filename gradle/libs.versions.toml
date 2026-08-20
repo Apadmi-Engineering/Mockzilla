@@ -4,7 +4,7 @@
 adam = "0.5.10" # https://github.com/Malinskiy/adam
 jmdns = "3.6.3" # https://github.com/jmdns/jmdns
 kotlin = "2.4.10" # https://github.com/JetBrains/kotlin
-agp = "8.13.2" # https://developer.android.com/build/releases/gradle-plugin
+agp = "9.3.1" # https://developer.android.com/build/releases/gradle-plugin
 kotlinxBrowser = "0.5.0" # https://github.com/Kotlin/kotlinx-browser
 ksp = "2.3.11" # https://github.com/google/ksp
 
@@ -136,10 +136,9 @@ aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref
 [plugins]
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-android-library = { id = "com.android.library", version.ref = "agp" }
 android-app = { id = "com.android.application", version.ref = "agp" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
