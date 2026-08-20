@@ -32,11 +32,8 @@ internal class CodeGenViewModel(
                 )
             }
         } else {
-            val inputInvalidMsg = if (!inputValid) "Input type must be .yaml/.yml/.json" else null
-            val outputInvalidMsg = if (!outputValid) "Output type must be .dart " else null
-
             state.value = State.InputError(
-                arrayOf(inputInvalidMsg, outputInvalidMsg).filterNotNull().joinToString(" - ")
+                !inputValid, !outputValid
             )
         }
     }
@@ -53,19 +50,18 @@ internal class CodeGenViewModel(
         return validOutputType.any { outputPath.endsWith(it) }
     }
 
-
-    sealed class State() {
+    sealed class State {
         data object Inputting : State()
         data object Loading : State()
         data object Success : State()
         data class GeneratorError(val err: Throwable) : State()
-        data class InputError(val errorMessage: String) : State()
+        data class InputError(val inputInvalid: Boolean, val outputInvalid: Boolean) : State()
 
         val isError: Boolean
             get() {
                 return this is GeneratorError || this is InputError
             }
     }
-
 }
+
 

@@ -71,10 +71,11 @@ private fun CodeGenDialogContent(
 ) {
     var input by remember { mutableStateOf("") }
     var output by remember { mutableStateOf("") }
+
     val infoMessage = when (state) {
-        is State.GeneratorError -> "File failed to generate: ${state.err.message}"
-        is State.InputError -> state.errorMessage
-        State.Success -> "File generated successfully!"
+        is State.GeneratorError -> LocalStrings.current.widgets.codeGen.generatorError(state.err)
+        is State.InputError -> state.errorMessage()
+        State.Success -> LocalStrings.current.widgets.codeGen.success
         State.Inputting, State.Loading -> ""
     }
 
@@ -87,31 +88,31 @@ private fun CodeGenDialogContent(
         CodeGenDialogHeader(onDismiss = onDismiss)
         HorizontalDivider()
         Text(
-            "This tool allows you to input a swagger file (either yaml or json) to autogenerate Mockzilla Config. ",
+            LocalStrings.current.widgets.codeGen.description,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         // TODO: update this to a file picker?
         CodeGenInputField(
-            "INPUT FILE NAME",
-            "Enter the full path to yaml/json swagger file.",
+            LocalStrings.current.widgets.codeGen.inputTitle,
+            LocalStrings.current.widgets.codeGen.inputDesc,
             input,
             {
                 onTextUpdated()
                 input = it.trim()
             },
-            "/Users/example_path/example.yaml"
+            LocalStrings.current.widgets.codeGen.inputPlaceholder
         )
         // TODO: expand to more file types
         CodeGenInputField(
-            "OUTPUT FILE NAME",
-            "Full path to where the new generated file should be written. Accepted file types: .dart",
+            LocalStrings.current.widgets.codeGen.outputTitle,
+            LocalStrings.current.widgets.codeGen.outputDesc,
             output,
             {
                 onTextUpdated()
                 output = it.trim()
             },
-            "/Users/generated_path/mockzilla_config.g.dart"
+            LocalStrings.current.widgets.codeGen.outputPlaceholder
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -126,12 +127,11 @@ private fun CodeGenDialogContent(
             Column(modifier = Modifier.height(48.dp)) {
                 when (state) {
                     State.Inputting, is State.InputError, is State.GeneratorError, State.Success ->
-                        // todo: let user generate when success or generator error?
                         CustomButton(
-                            label = "Generate",
+                            label = LocalStrings.current.widgets.codeGen.button,
                             onClick = { onGenerate(input, output) },
                             modifier = Modifier.fillMaxHeight().width(144.dp),
-                            enabled = state == State.Inputting
+                            enabled = state !is State.InputError
                         )
 
                     State.Loading -> CircularProgressIndicator()
@@ -207,4 +207,11 @@ private fun CodeGenDialogHeader(onDismiss: () -> Unit) {
             iconSize = 18.dp,
         )
     }
+}
+
+@Composable
+private fun State.InputError.errorMessage() : String {
+    val inputInvalidMsg = if (inputInvalid) LocalStrings.current.widgets.codeGen.inputInvalid else null
+    val outputInvalidMsg = if (outputInvalid) LocalStrings.current.widgets.codeGen.outputInvalid else null
+    return arrayOf(inputInvalidMsg, outputInvalidMsg).filterNotNull().joinToString(". ")
 }

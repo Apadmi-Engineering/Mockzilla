@@ -13,7 +13,8 @@ import io.ktor.http.HttpStatusCode
 
 @InternalMockzillaApi
 @Suppress("VARIABLE_NAME_INCORRECT_FORMAT")
-public val LocalStrings: ProvidableCompositionLocal<Strings> = staticCompositionLocalOf { EnStrings }
+public val LocalStrings: ProvidableCompositionLocal<Strings> =
+    staticCompositionLocalOf { EnStrings }
 
 private val strings = mapOf(
     "en" to EnStrings
@@ -34,6 +35,7 @@ public data class Strings(
         val github: String,
         val apadmi: String
     )
+
     @InternalMockzillaApi
     public data class Menu(
         val openSourceLicenses: String,
@@ -82,6 +84,7 @@ public data class Strings(
             val replaceAllButton: String,
         )
     }
+
     @InternalMockzillaApi
     public data class Common(
         val closeDescription: String,
@@ -92,6 +95,7 @@ public data class Strings(
         val globalDescription: String,
         val metaDescription: String,
     )
+
     @InternalMockzillaApi
     public data class Widgets(
         val deviceConnection: DeviceConnection,
@@ -114,13 +118,27 @@ public data class Strings(
         @InternalMockzillaApi
         public data class CodeGen(
             val title: String,
+            val description: String,
+            val inputInvalid: String,
+            val outputInvalid: String,
+            val generatorError: (Throwable) -> String,
+            val success: String,
+            val inputTitle: String,
+            val inputDesc: String,
+            val inputPlaceholder: String,
+            val outputTitle: String,
+            val outputDesc: String,
+            val outputPlaceholder: String,
+            val button: String
         )
+
         @InternalMockzillaApi
         public data class OpenSourceLicenses(
             val error: String,
             val title: String,
             val devBuildsMessage: String
         )
+
         @InternalMockzillaApi
         public data class ErrorBanner(
             val connectionLost: String,
