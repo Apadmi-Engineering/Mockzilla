@@ -226,15 +226,8 @@ class const DashboardOptionsConfig({
       const DeepCollectionEquality().equals(errorPresets, other.errorPresets) &&
       const DeepCollectionEquality().equals(presets, other.presets);
 
-  DashboardOptionsConfig copyWith({
-    List<DashboardOverridePreset>? successPresets,
-    List<DashboardOverridePreset>? errorPresets,
-    List<DashboardOverridePreset>? presets,
-  }) => DashboardOptionsConfig(
-    successPresets: successPresets ?? this.successPresets,
-    errorPresets: errorPresets ?? this.errorPresets,
-    presets: presets ?? this.presets,
-  );
+  CopyDashboardOptionsConfig get copyWith =>
+      CopyDashboardOptionsConfig(this, (copy) => copy);
 
   @override
   String toString() =>
@@ -242,6 +235,23 @@ class const DashboardOptionsConfig({
       "successPresets=$successPresets, errorPresets=$errorPresets, "
       "presets=$presets"
       ")";
+}
+
+class CopyDashboardOptionsConfig<T>(
+  final DashboardOptionsConfig self,
+  final T Function(DashboardOptionsConfig) then,
+) {
+  T call({
+    List<DashboardOverridePreset>? successPresets,
+    List<DashboardOverridePreset>? errorPresets,
+    List<DashboardOverridePreset>? presets,
+  }) => then(
+    DashboardOptionsConfig(
+      successPresets: successPresets ?? self.successPresets,
+      errorPresets: errorPresets ?? self.errorPresets,
+      presets: presets ?? self.presets,
+    ),
+  );
 }
 
 /// Configuration for an endpoint including how requests should be handled
@@ -320,7 +330,21 @@ class const EndpointConfig({
       defaultHandler == other.defaultHandler &&
       errorHandler == other.errorHandler;
 
-  EndpointConfig copyWith({
+  CopyEndpointConfig get copyWith => CopyEndpointConfig(this);
+
+  @override
+  String toString() =>
+      "EndpointConfig("
+      "name=$name, customKey=$customKey, shouldFail=$shouldFail, "
+      "delay=$delay, versionCode=$versionCode, "
+      "endpointMatcher=$endpointMatcher, "
+      "dashboardOptionsConfig=$dashboardOptionsConfig, "
+      "defaultHandler=$defaultHandler, errorHandler=$errorHandler"
+      ")";
+}
+
+class CopyEndpointConfig(final EndpointConfig self) {
+  EndpointConfig call({
     String? name,
     String? customKey,
     bool? shouldFail,
@@ -333,27 +357,22 @@ class const EndpointConfig({
     FutureOr<MockzillaHttpResponse> Function(MockzillaHttpRequest request)?
     errorHandler,
   }) => EndpointConfig(
-    name: name ?? this.name,
-    customKey: customKey ?? this.customKey,
-    shouldFail: shouldFail ?? this.shouldFail,
-    delay: delay ?? this.delay,
-    versionCode: versionCode ?? this.versionCode,
-    endpointMatcher: endpointMatcher ?? this.endpointMatcher,
+    name: name ?? self.name,
+    customKey: customKey ?? self.customKey,
+    shouldFail: shouldFail ?? self.shouldFail,
+    delay: delay ?? self.delay,
+    versionCode: versionCode ?? self.versionCode,
+    endpointMatcher: endpointMatcher ?? self.endpointMatcher,
     dashboardOptionsConfig:
-        dashboardOptionsConfig ?? this.dashboardOptionsConfig,
-    defaultHandler: defaultHandler ?? this.defaultHandler,
-    errorHandler: errorHandler ?? this.errorHandler,
+        dashboardOptionsConfig ?? self.dashboardOptionsConfig,
+    defaultHandler: defaultHandler ?? self.defaultHandler,
+    errorHandler: errorHandler ?? self.errorHandler,
   );
 
-  @override
-  String toString() =>
-      "EndpointConfig("
-      "name=$name, customKey=$customKey, shouldFail=$shouldFail, "
-      "delay=$delay, versionCode=$versionCode, "
-      "endpointMatcher=$endpointMatcher, "
-      "dashboardOptionsConfig=$dashboardOptionsConfig, "
-      "defaultHandler=$defaultHandler, errorHandler=$errorHandler"
-      ")";
+  CopyDashboardOptionsConfig get dashboardOptionsConfig => CopyDashboardOptionsConfig(
+    self.dashboardOptionsConfig,
+    (copiedDashboardOptionsConfig) => self.copyWith(dashboardOptionsConfig: copiedDashboardOptionsConfig),
+  );
 }
 
 abstract class MockzillaLogger {
@@ -400,22 +419,8 @@ class const MockzillaConfig({
       isNetworkDiscoveryEnabled == other.isNetworkDiscoveryEnabled &&
       const DeepCollectionEquality().equals(loggers, other.loggers);
 
-  MockzillaConfig copyWith({
-    int? port,
-    List<EndpointConfig>? endpoints,
-    bool? localHostOnly,
-    LogLevel? logLevel,
-    bool? isNetworkDiscoveryEnabled,
-    List<MockzillaLogger>? loggers,
-  }) => MockzillaConfig(
-    port: port ?? this.port,
-    endpoints: endpoints ?? this.endpoints,
-    localHostOnly: localHostOnly ?? this.localHostOnly,
-    logLevel: logLevel ?? this.logLevel,
-    isNetworkDiscoveryEnabled:
-        isNetworkDiscoveryEnabled ?? this.isNetworkDiscoveryEnabled,
-    loggers: loggers ?? this.loggers,
-  );
+  CopyMockzillaConfig get copyWith =>
+      CopyMockzillaConfig._(this, (self) => self);
 
   @override
   String toString() =>
@@ -425,6 +430,30 @@ class const MockzillaConfig({
       "isNetworkDiscoveryEnabled=$isNetworkDiscoveryEnabled, "
       "loggers=$loggers"
       ")";
+}
+
+class CopyMockzillaConfig<T>._(
+  final MockzillaConfig self,
+  final T Function(MockzillaConfig) then,
+) {
+  T call({
+    int? port,
+    List<EndpointConfig>? endpoints,
+    bool? localHostOnly,
+    LogLevel? logLevel,
+    bool? isNetworkDiscoveryEnabled,
+    List<MockzillaLogger>? loggers,
+  }) => then(
+    MockzillaConfig(
+      port: port ?? self.port,
+      endpoints: endpoints ?? self.endpoints,
+      localHostOnly: localHostOnly ?? self.localHostOnly,
+      logLevel: logLevel ?? self.logLevel,
+      isNetworkDiscoveryEnabled:
+          isNetworkDiscoveryEnabled ?? self.isNetworkDiscoveryEnabled,
+      loggers: loggers ?? self.loggers,
+    ),
+  );
 }
 
 class const MockzillaRuntimeParams({
@@ -443,17 +472,7 @@ class const MockzillaRuntimeParams({
       apiBaseUrl == other.apiBaseUrl &&
       port == other.port;
 
-  MockzillaRuntimeParams copyWith({
-    MockzillaConfig? config,
-    String? mockBaseUrl,
-    String? apiBaseUrl,
-    int? port,
-  }) => MockzillaRuntimeParams(
-    config: config ?? this.config,
-    mockBaseUrl: mockBaseUrl ?? this.mockBaseUrl,
-    apiBaseUrl: apiBaseUrl ?? this.apiBaseUrl,
-    port: port ?? this.port,
-  );
+  CopyMockzillaRuntimeParams get copyWith => CopyMockzillaRuntimeParams._(this);
 
   @override
   String toString() =>
@@ -461,6 +480,25 @@ class const MockzillaRuntimeParams({
       "config=$config, mockBaseUrl=$mockBaseUrl, apiBaseUrl=$apiBaseUrl, "
       "port=$port"
       ")";
+}
+
+class CopyMockzillaRuntimeParams._(final MockzillaRuntimeParams self) {
+  MockzillaRuntimeParams call({
+    MockzillaConfig? config,
+    String? mockBaseUrl,
+    String? apiBaseUrl,
+    int? port,
+  }) => MockzillaRuntimeParams(
+    config: config ?? self.config,
+    mockBaseUrl: mockBaseUrl ?? self.mockBaseUrl,
+    apiBaseUrl: apiBaseUrl ?? self.apiBaseUrl,
+    port: port ?? self.port,
+  );
+
+  CopyMockzillaConfig get config => CopyMockzillaConfig._(
+    self.config,
+    (copiedConfig) => self.copyWith(config: copiedConfig),
+  );
 }
 
 /// Thrown when attempting to start Mockzilla on a port currently occupied by

@@ -87,6 +87,32 @@ void main() {
       expect(actual, expected);
     });
 
+    test("copyWith - config extension - returns expected values", () {
+      final receiver = MockzillaRuntimeParams(
+        config: MockzillaConfig(),
+        mockBaseUrl: "http://localhost:8080/local-mock",
+        apiBaseUrl: "http://localhost:8080/api",
+        port: 8080,
+      );
+      final actual = receiver.copyWith.config(
+        port: 9090,
+        logLevel: LogLevel.assertion,
+        isNetworkDiscoveryEnabled: false,
+      );
+      final expected = MockzillaRuntimeParams(
+        config: MockzillaConfig(
+          port: 9090,
+          logLevel: LogLevel.assertion,
+          isNetworkDiscoveryEnabled: false,
+        ),
+        mockBaseUrl: "http://localhost:8080/local-mock",
+        apiBaseUrl: "http://localhost:8080/api",
+        port: 8080,
+      );
+
+      expect(actual, expected);
+    });
+
     test("toString - returns expected", () {
       final receiver = MockzillaRuntimeParams(
         config: MockzillaConfig(),

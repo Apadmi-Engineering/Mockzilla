@@ -105,6 +105,44 @@ void main() {
       expect(actual, expected);
     });
 
+    test(
+      "copyWith - dashboard options config access - returns expected values",
+      () {
+        final receiver = EndpointConfig(
+          name: "Some endpoint",
+          endpointMatcher: _matcher,
+          defaultHandler: _defaultHandler,
+          errorHandler: _errorHandler,
+        );
+        final actual = receiver.copyWith.dashboardOptionsConfig(
+          presets: [
+            DashboardOverridePreset(
+              name: "Preset",
+              description: "My preset",
+              response: MockzillaHttpResponse(),
+            ),
+          ],
+        );
+        final expected = EndpointConfig(
+          name: "Some endpoint",
+          endpointMatcher: _matcher,
+          defaultHandler: _defaultHandler,
+          errorHandler: _errorHandler,
+          dashboardOptionsConfig: DashboardOptionsConfig(
+            presets: [
+              DashboardOverridePreset(
+                name: "Preset",
+                description: "My preset",
+                response: MockzillaHttpResponse(),
+              ),
+            ],
+          ),
+        );
+
+        expect(actual, expected);
+      },
+    );
+
     test("toString - returns expected", () {
       final receiver = EndpointConfig(
         name: "Some endpoint",
