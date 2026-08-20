@@ -74,13 +74,6 @@ fun generateFromSchema(schema: Schema<*>?): Any? {
         is ComposedSchema -> {
             if (!schema.allOf.isNullOrEmpty() || !schema.properties.isNullOrEmpty()) {
                 val merged = mutableMapOf<String, Any?>()
-                // The cast below is unchecked (JVM erasure can't verify a Map's key
-                // type at runtime) but sound in practice: every Map this function
-                // ever returns is built with String keys (see MapSchema/ObjectSchema/
-                // genericFallback above, and this same merged map). When a member
-                // is a non-object schema (a primitive/array allOf member, or a
-                // oneOf/anyOf branch that isn't Map-shaped), the safe cast (`as?`)
-                // yields null and `putAll` is simply skipped — never a crash.
                 @Suppress("UNCHECKED_CAST")
                 schema.allOf?.forEach { sub -> (generateFromSchema(sub) as? Map<String, Any?>)?.let { merged.putAll(it) } }
                 @Suppress("UNCHECKED_CAST")
@@ -99,7 +92,6 @@ fun generateFromSchema(schema: Schema<*>?): Any? {
     }
 }
 
-// todo check this
 private fun genericFallback(schema: Schema<*>): Any? {
     val valueSchema = schema.additionalProperties as? Schema<*>
     return when {
@@ -109,7 +101,6 @@ private fun genericFallback(schema: Schema<*>): Any? {
             schema.properties.forEach { (name, propertySchema) -> result[name] = generateFromSchema(propertySchema) }
             result
         }
-
         else -> schema.example
     }
 }

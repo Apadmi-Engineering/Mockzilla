@@ -35,7 +35,6 @@ internal fun endpointFragment(e: EndpointSpec): String = """
       ),
     ),"""
 
-//TODO: can we get descriptions? Also needed in other generators
 internal fun presetFragment(r: ExampleResponse): String = """
           DashboardOverridePreset(
             name: '${r.name.escapeForDartLiteral()}',

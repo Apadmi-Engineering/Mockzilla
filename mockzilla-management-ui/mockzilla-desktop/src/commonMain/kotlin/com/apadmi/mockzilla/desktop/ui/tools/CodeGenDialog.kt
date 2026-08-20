@@ -79,7 +79,6 @@ private fun CodeGenDialogContent(
         State.Inputting, State.Loading -> ""
     }
 
-    // TODO: move strings
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -92,7 +91,6 @@ private fun CodeGenDialogContent(
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
-        // TODO: update this to a file picker?
         CodeGenInputField(
             LocalStrings.current.widgets.codeGen.inputTitle,
             LocalStrings.current.widgets.codeGen.inputDesc,
@@ -103,7 +101,6 @@ private fun CodeGenDialogContent(
             },
             LocalStrings.current.widgets.codeGen.inputPlaceholder
         )
-        // TODO: expand to more file types
         CodeGenInputField(
             LocalStrings.current.widgets.codeGen.outputTitle,
             LocalStrings.current.widgets.codeGen.outputDesc,

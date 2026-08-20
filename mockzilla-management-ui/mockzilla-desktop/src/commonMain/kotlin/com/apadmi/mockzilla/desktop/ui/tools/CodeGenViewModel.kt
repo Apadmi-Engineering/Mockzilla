@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-// TODO: does it work with yml?
 internal class CodeGenViewModel(
     private val codeGenUseCase: CodeGenUseCase,
     scope: CoroutineScope? = null
