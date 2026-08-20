@@ -38,6 +38,9 @@ class MockzillaHttpRequest({
       method == other.method &&
       body == other.body;
 
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated.
+  @pragma("vm:prefer-inline")
   MockzillaHttpRequest copyWith({
     String? uri,
     HttpMethod? method,
@@ -92,6 +95,9 @@ class const MockzillaHttpResponse({
       const DeepCollectionEquality().equals(headers, other.headers) &&
       body == other.body;
 
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated.
+  @pragma("vm:prefer-inline")
   MockzillaHttpResponse copyWith({
     int? statusCode,
     Map<String, String>? headers,
@@ -145,6 +151,9 @@ class const PartialMockzillaHttpResponse({
       const DeepCollectionEquality().equals(headers, other.headers) &&
       body == other.body;
 
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated.
+  @pragma("vm:prefer-inline")
   PartialMockzillaHttpResponse copyWith({
     int? statusCode,
     Map<String, String>? headers,
@@ -180,6 +189,9 @@ class const DashboardOverridePreset({
       response == other.response &&
       type == other.type;
 
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated.
+  @pragma("vm:prefer-inline")
   DashboardOverridePreset copyWith({
     String? name,
     String? description,
@@ -226,6 +238,9 @@ class const DashboardOptionsConfig({
       const DeepCollectionEquality().equals(errorPresets, other.errorPresets) &&
       const DeepCollectionEquality().equals(presets, other.presets);
 
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated. Invoke the returned object directly to update
+  /// `successPresets`, `errorPresets`, and `presets`.
   CopyDashboardOptionsConfig get copyWith =>
       CopyDashboardOptionsConfig(this, (copy) => copy);
 
@@ -237,10 +252,13 @@ class const DashboardOptionsConfig({
       ")";
 }
 
+/// {@nodoc}
 class CopyDashboardOptionsConfig<T>(
   final DashboardOptionsConfig self,
   final T Function(DashboardOptionsConfig) then,
 ) {
+  /// Returns a **new instance** of `DashboardOptionsConfig` with non-null
+  /// parameters updated.
   T call({
     List<DashboardOverridePreset>? successPresets,
     List<DashboardOverridePreset>? errorPresets,
@@ -330,6 +348,11 @@ class const EndpointConfig({
       defaultHandler == other.defaultHandler &&
       errorHandler == other.errorHandler;
 
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated. Either invoke the returned object directly to update top-level
+  /// fields on this `EndpointConfig` or use the `dashboardOptionsConfig` to
+  /// deeply copy fields in the `DashboardOptionsConfig`.
+  @pragma("vm:prefer-inline")
   CopyEndpointConfig get copyWith => CopyEndpointConfig(this);
 
   @override
@@ -343,7 +366,10 @@ class const EndpointConfig({
       ")";
 }
 
+/// {@nodoc}
 class CopyEndpointConfig(final EndpointConfig self) {
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated.
   EndpointConfig call({
     String? name,
     String? customKey,
@@ -369,10 +395,14 @@ class CopyEndpointConfig(final EndpointConfig self) {
     errorHandler: errorHandler ?? self.errorHandler,
   );
 
-  CopyDashboardOptionsConfig get dashboardOptionsConfig => CopyDashboardOptionsConfig(
-    self.dashboardOptionsConfig,
-    (copiedDashboardOptionsConfig) => self.copyWith(dashboardOptionsConfig: copiedDashboardOptionsConfig),
-  );
+  /// Returns a **new instance** of `EndpointConfig` with an updated
+  /// `DashboardOptionsConfig` with the non-null parameters updated.
+  CopyDashboardOptionsConfig get dashboardOptionsConfig =>
+      CopyDashboardOptionsConfig(
+        self.dashboardOptionsConfig,
+        (copiedDashboardOptionsConfig) =>
+            self.copyWith(dashboardOptionsConfig: copiedDashboardOptionsConfig),
+      );
 }
 
 abstract class MockzillaLogger {
@@ -419,6 +449,11 @@ class const MockzillaConfig({
       isNetworkDiscoveryEnabled == other.isNetworkDiscoveryEnabled &&
       const DeepCollectionEquality().equals(loggers, other.loggers);
 
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated. Invoke the returns object directly to update the `port`,
+  /// `endpoints`, `localHostOnly`, `logLevel`, `isNetworkDiscoveryEnabled`, or
+  /// `loggers` fields.
+  @pragma("vm:prefer-inline")
   CopyMockzillaConfig get copyWith =>
       CopyMockzillaConfig._(this, (self) => self);
 
@@ -432,10 +467,13 @@ class const MockzillaConfig({
       ")";
 }
 
+/// {@nodoc}
 class CopyMockzillaConfig<T>._(
   final MockzillaConfig self,
   final T Function(MockzillaConfig) then,
 ) {
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated.
   T call({
     int? port,
     List<EndpointConfig>? endpoints,
@@ -472,6 +510,11 @@ class const MockzillaRuntimeParams({
       apiBaseUrl == other.apiBaseUrl &&
       port == other.port;
 
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated. Either invoke the returned object directly to update the
+  /// top-level fields of `MockzillaRuntimeParams`, or use the `config`
+  /// accessor to obtain a new instance of this object with a new instance of
+  /// `MockzillaConfig` with updated fields.
   CopyMockzillaRuntimeParams get copyWith => CopyMockzillaRuntimeParams._(this);
 
   @override
@@ -482,7 +525,10 @@ class const MockzillaRuntimeParams({
       ")";
 }
 
+/// {@nodoc}
 class CopyMockzillaRuntimeParams._(final MockzillaRuntimeParams self) {
+  /// Returns a **new instance** of this object with non-null parameters
+  /// updated.
   MockzillaRuntimeParams call({
     MockzillaConfig? config,
     String? mockBaseUrl,
@@ -495,6 +541,8 @@ class CopyMockzillaRuntimeParams._(final MockzillaRuntimeParams self) {
     port: port ?? self.port,
   );
 
+  /// Returns a **new instance** of `MockzillaRuntimeParams` with non-null
+  /// fields of `MockzillaConfig` updated.
   CopyMockzillaConfig get config => CopyMockzillaConfig._(
     self.config,
     (copiedConfig) => self.copyWith(config: copiedConfig),
