@@ -66,7 +66,7 @@ class const MockzillaHttpResponse({
   /// The HTTP status to use for the response, defaults to 200 - OK.
   final int statusCode = 200,
 
-  /// The response headers, defaults a single `Content-Type` header with a
+  /// The response headers, defaults to a single `Content-Type` header with a
   /// value of `application/json`.
   final Map<String, String> headers = const <String, String>{
     "Content-Type": "application/json",
@@ -275,8 +275,9 @@ class CopyDashboardOptionsConfig<T>(
 /// Configuration for an endpoint including how requests should be handled
 /// and desktop app presets.
 ///
-/// Please see [https://mockzilla.apadmi.dev/endpoints/]()
-/// for more information.
+/// Please see
+/// [Mockzilla endpoint docs](https://mockzilla.apadmi.dev/endpoints/) for more
+/// information.
 class const EndpointConfig({
   required final String name,
 
@@ -350,8 +351,8 @@ class const EndpointConfig({
 
   /// Returns a **new instance** of this object with non-null parameters
   /// updated. Either invoke the returned object directly to update top-level
-  /// fields on this `EndpointConfig` or use the `dashboardOptionsConfig` to
-  /// deeply copy fields in the `DashboardOptionsConfig`.
+  /// fields on this `EndpointConfig` or use the `dashboardOptionsConfig`
+  /// accessor to deeply copy fields in the `DashboardOptionsConfig`.
   @pragma("vm:prefer-inline")
   CopyEndpointConfig get copyWith => CopyEndpointConfig(this);
 
@@ -450,7 +451,7 @@ class const MockzillaConfig({
       const DeepCollectionEquality().equals(loggers, other.loggers);
 
   /// Returns a **new instance** of this object with non-null parameters
-  /// updated. Invoke the returns object directly to update the `port`,
+  /// updated. Invoke the returned object directly to update the `port`,
   /// `endpoints`, `localHostOnly`, `logLevel`, `isNetworkDiscoveryEnabled`, or
   /// `loggers` fields.
   @pragma("vm:prefer-inline")
