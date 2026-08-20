@@ -57,3 +57,10 @@ lane :lib_mockzilla_management_pull_request do
         ]
     )
 end
+
+desc "Run tests for codegen module"
+lane :lib_mockzilla_codegen_pull_request do
+    gradle(
+        tasks: [":mockzilla-codegen:jvmTest"]
+    )
+end

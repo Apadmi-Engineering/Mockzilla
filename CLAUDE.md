@@ -23,6 +23,9 @@ Mockzilla is a compile-safe mock HTTP server for mobile apps. It runs an embedde
 # Management library (JVM)
 ./gradlew :mockzilla-management:jvmTest
 
+# Codegen (JVM)
+./gradlew :mockzilla-codegen:jvmTest
+
 # Management UI tests
 ./gradlew :mockzilla-management-ui:mockzilla-desktop:desktopTest :mockzilla-management-ui:mockzilla-management-ui-common:desktopTest
 

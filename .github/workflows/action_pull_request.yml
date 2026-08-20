@@ -29,6 +29,7 @@ jobs:
       mockzilla-server: ${{ steps.filter.outputs.mockzilla-server }}
       mockzilla-management: ${{ steps.filter.outputs.mockzilla-management }}
       mockzilla-management-ui: ${{ steps.filter.outputs.mockzilla-management-ui }}
+      mockzilla-codegen: ${{ steps.filter.outputs.mockzilla-codegen }}
       swift-mockzilla: ${{ steps.filter.outputs.swift-mockzilla }}
       sample-ios: ${{ steps.filter.outputs.sample-ios }}
       sample-android: ${{ steps.filter.outputs.sample-android }}
@@ -70,8 +71,12 @@ jobs:
             mockzilla-management: &mockzilla-management
               - *mockzilla-server
               - mockzilla-management/**
+            mockzilla-codegen: &mockzilla-codegen
+              - *common-kotlin
+              - mockzilla-codegen/**
             mockzilla-management-ui:
               - *mockzilla-management
+              - *mockzilla-codegen
               - fastlane/fastfiles/management-ui.rb
               - mockzilla-management-ui/**
             swift-mockzilla:
@@ -166,6 +171,17 @@ jobs:
         run: bundle install
       - name: Build Management Library
         run: bundle exec fastlane lib_mockzilla_management_pull_request
+
+  mockzilla-codegen:
+    needs: filter
+    if: needs.filter.outputs.mockzilla-codegen == 'true'
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup fastlane
+        run: bundle install
+      - name: Run Codegen Tests
+        run: bundle exec fastlane lib_mockzilla_codegen_pull_request
 
   mockzilla-management-ui:
     needs: filter
