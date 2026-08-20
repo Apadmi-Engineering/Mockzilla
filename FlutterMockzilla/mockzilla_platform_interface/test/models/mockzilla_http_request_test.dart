@@ -62,7 +62,7 @@ void main() {
         uri: "http://localhost:8080/local-mock/another-endpoint",
         method: HttpMethod.patch,
         body: "Baa",
-        headers: {"Content-Type": "text/plain}"},
+        headers: {"Content-Type": "text/plain"},
       );
       expect(actual, expected);
     });
@@ -78,7 +78,7 @@ void main() {
           'MockzillaHttpRequest('
           'uri=http://localhost:8080/local-mock/some-endpoint, '
           'method=HttpMethod.delete, '
-          'headers={Content-type: application/json, '
+          'headers={Content-Type: application/json}, '
           'body={"key": "value"}'
           ')';
       expect(receiver.toString(), expected);
