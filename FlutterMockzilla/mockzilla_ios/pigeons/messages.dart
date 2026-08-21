@@ -9,24 +9,9 @@ import 'package:pigeon/pigeon.dart';
   ),
 )
 @TaskQueue(type: TaskQueueType.serialBackgroundThread)
-enum BridgeHttpMethod {
-  get,
-  head,
-  post,
-  put,
-  delete,
-  options,
-  patch;
-}
+enum BridgeHttpMethod { get, head, post, put, delete, options, patch }
 
-enum BridgeLogLevel {
-  debug,
-  error,
-  info,
-  verbose,
-  warn,
-  assertion;
-}
+enum BridgeLogLevel { debug, error, info, verbose, warn, assertion }
 
 enum BridgeDashboardOverridePresetType {
   clientError,
@@ -81,19 +66,18 @@ class BridgeDashboardOverridePreset {
   final BridgePartialMockzillaHttpResponse response;
   final BridgeDashboardOverridePresetType? type;
 
-  const BridgeDashboardOverridePreset(
-      {required this.name,
-      this.description,
-      required this.response,
-      required this.type});
+  const BridgeDashboardOverridePreset({
+    required this.name,
+    this.description,
+    required this.response,
+    required this.type,
+  });
 }
 
 class BridgeDashboardOptionsConfig {
   final List<BridgeDashboardOverridePreset> presets;
 
-  const BridgeDashboardOptionsConfig({
-    required this.presets,
-  });
+  const BridgeDashboardOptionsConfig({required this.presets});
 }
 
 class BridgeEndpointConfig {
@@ -158,11 +142,15 @@ abstract class MockzillaFlutterApi {
 
   @async
   BridgeMockzillaHttpResponse defaultHandler(
-      BridgeMockzillaHttpRequest request, String key);
+    BridgeMockzillaHttpRequest request,
+    String key,
+  );
 
   @async
   BridgeMockzillaHttpResponse errorHandler(
-      BridgeMockzillaHttpRequest request, String key);
+    BridgeMockzillaHttpRequest request,
+    String key,
+  );
 
   void log(
     BridgeLogLevel logLevel,

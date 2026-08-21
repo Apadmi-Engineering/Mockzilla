@@ -75,9 +75,8 @@ class CallbackProvider extends MockzillaFlutterApi {
     BridgeMockzillaHttpRequest request,
     String key,
   ) async {
-    final response = await _determineEndpoint(
-      key,
-    ).defaultHandler(request.toDart());
+    final response = await _determineEndpoint(key)
+        .defaultHandler(request.toDart());
     return response.toBridge();
   }
 
@@ -88,9 +87,8 @@ class CallbackProvider extends MockzillaFlutterApi {
     BridgeMockzillaHttpRequest request,
     String key,
   ) async {
-    final response = await _determineEndpoint(
-      key,
-    ).errorHandler(request.toDart());
+    final response = await _determineEndpoint(key)
+        .errorHandler(request.toDart());
     return response.toBridge();
   }
 

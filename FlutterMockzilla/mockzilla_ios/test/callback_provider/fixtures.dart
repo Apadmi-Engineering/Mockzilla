@@ -7,7 +7,7 @@ final _bridgeRequestFixture = BridgeMockzillaHttpRequest(
   method: BridgeHttpMethod.get,
 );
 
-const _requestFixture = MockzillaHttpRequest(
+final _requestFixture = MockzillaHttpRequest(
   uri: "http://localhost:8080/local-mock/endpoint",
   method: HttpMethod.get,
 );
