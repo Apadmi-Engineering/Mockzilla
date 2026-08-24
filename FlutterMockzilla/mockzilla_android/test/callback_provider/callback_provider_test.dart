@@ -71,9 +71,8 @@ void main() {
     test("defaultHandler - with known endpoint - returns response", () async {
       // Setup
       when(mockEndpoint.key).thenReturn("key");
-      when(
-        mockEndpoint.defaultHandler,
-      ).thenReturn((_) async => _responseFixture);
+      when(mockEndpoint.defaultHandler)
+          .thenReturn((_) async => _responseFixture);
 
       // Run test
       final result = await sut.defaultHandler(_bridgeRequestFixture, "key");
@@ -87,9 +86,8 @@ void main() {
     test("defaultHandler - with unknown endpoint - throws", () async {
       // Setup
       when(mockEndpoint.key).thenReturn("key");
-      when(
-        mockEndpoint.defaultHandler,
-      ).thenReturn((_) async => _responseFixture);
+      when(mockEndpoint.defaultHandler)
+          .thenReturn((_) async => _responseFixture);
 
       // Run test & verify
       expect(
@@ -139,20 +137,17 @@ void main() {
       },
     );
 
-    test(
-      "flutterEndpointMatcher - with known, non-matching endpoint - returns false",
-      () async {
-        // Setup
-        when(mockEndpoint.key).thenReturn("key");
-        when(mockEndpoint.endpointMatcher).thenReturn((_) async => false);
+    test("flutterEndpointMatcher - with known, non-matching endpoint - returns false", () async {
+      // Setup
+      when(mockEndpoint.key).thenReturn("key");
+      when(mockEndpoint.endpointMatcher).thenReturn((_) async => false);
 
-        // Run test
-        final result = await sut.flutterEndpointMatcher(_requestFixture, "key");
+      // Run test
+      final result = await sut.flutterEndpointMatcher(_requestFixture, "key");
 
-        // Verify
-        expect(result, false);
-      },
-    );
+      // Verify
+      expect(result, false);
+    });
 
     test("flutterEndpointMatcher - with unknown endpoint - throws", () {
       // Setup
@@ -171,9 +166,8 @@ void main() {
       () async {
         // Setup
         when(mockEndpoint.key).thenReturn("key");
-        when(
-          mockEndpoint.defaultHandler,
-        ).thenReturn((_) async => _responseFixture);
+        when(mockEndpoint.defaultHandler)
+            .thenReturn((_) async => _responseFixture);
 
         // Run test
         final result = await sut.flutterDefaultHandler(_requestFixture, "key");
@@ -186,9 +180,8 @@ void main() {
     test("flutterDefaultHandler - with unknown endpoint - throws", () async {
       // Setup
       when(mockEndpoint.key).thenReturn("key");
-      when(
-        mockEndpoint.defaultHandler,
-      ).thenReturn((_) async => _responseFixture);
+      when(mockEndpoint.defaultHandler)
+          .thenReturn((_) async => _responseFixture);
 
       // Run test & verify
       expect(
@@ -202,9 +195,8 @@ void main() {
       () async {
         // Setup
         when(mockEndpoint.key).thenReturn("key");
-        when(
-          mockEndpoint.errorHandler,
-        ).thenReturn((_) async => _responseFixture);
+        when(mockEndpoint.errorHandler)
+            .thenReturn((_) async => _responseFixture);
 
         // Run test
         final result = await sut.flutterErrorHandler(_requestFixture, "key");
@@ -217,9 +209,8 @@ void main() {
     test("flutterErrorHandler - with unknown endpoint - throws", () {
       // Setup
       when(mockEndpoint.key).thenReturn("key");
-      when(
-        mockEndpoint.defaultHandler,
-      ).thenReturn((_) async => _responseFixture);
+      when(mockEndpoint.defaultHandler)
+          .thenReturn((_) async => _responseFixture);
 
       // Run test & verify
       expect(
