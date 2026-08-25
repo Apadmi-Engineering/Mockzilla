@@ -79,7 +79,7 @@ kotlin {
         extraSpecAttributes["pod_target_xcconfig"]  = "{ 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }"
         extraSpecAttributes["user_target_xcconfig"] = "{ 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }"
 
-        ios.deploymentTarget = "13.0"
+        ios.deploymentTarget = "15.0"
     }
 
     val xcf = XCFramework()
