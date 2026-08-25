@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "mockzilla_ios",
-    platforms:[.iOS(.v13)],
+    platforms:[.iOS(.v15)],
     products: [
         .library(name: "mockzilla-ios", targets: ["mockzilla_ios"])
     ],
