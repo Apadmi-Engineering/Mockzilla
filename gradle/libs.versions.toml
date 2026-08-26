@@ -4,7 +4,7 @@
 adam = "0.5.10" # https://github.com/Malinskiy/adam
 jmdns = "3.6.3" # https://github.com/jmdns/jmdns
 kotlin = "2.4.10" # https://github.com/JetBrains/kotlin
-agp = "9.3.1" # https://developer.android.com/build/releases/gradle-plugin
+agp = "9.3.2" # https://developer.android.com/build/releases/gradle-plugin
 kotlinxBrowser = "0.5.0" # https://github.com/Kotlin/kotlinx-browser
 ksp = "2.3.11" # https://github.com/google/ksp
 
@@ -47,7 +47,7 @@ playServicesAdsIdentifier = "18.3.0"
 semver = "3.1.0" # https://github.com/z4kn4fein/kotlin-semver
 
 # Code Formatting
-spotless = "8.9.0" # https://github.com/diffplug/spotless
+spotless = "8.10.0" # https://github.com/diffplug/spotless
 
 # Testing
 kover = "0.9.9" # https://github.com/Kotlin/kotlinx-kover
@@ -60,7 +60,7 @@ conveyor = "2.0" # https://github.com/hydraulic-software/conveyor
 vanniktech-publish = "0.37.0" # https://github.com/vanniktech/gradle-maven-publish-plugin
 
 # License attribution
-aboutlibraries = "15.0.4" # https://github.com/mikepenz/AboutLibraries/releases
+aboutlibraries = "15.1.1" # https://github.com/mikepenz/AboutLibraries/releases
 
 [libraries]
 
