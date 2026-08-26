@@ -89,7 +89,7 @@ kotlin {
         extraSpecAttributes["source_files"] = "'Sources/SwiftMockzilla/SwiftMockzilla.swift'"
         extraSpecAttributes["swift_version"] = "'5.9.2'"
 
-        ios.deploymentTarget = "13.0"
+        ios.deploymentTarget = "15.0"
     }
 
     applyDefaultHierarchyTemplate()
