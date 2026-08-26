@@ -84,6 +84,7 @@ Mockzilla is entirely driven by a config object which is used to start the serve
         .addEndpoint(
             EndpointConfiguration
                 .Builder("Hello World")
+                .setPatternMatcher { uri.endsWith("/greeting") }
                 .setDefaultHandler {
                     MockzillaHttpResponse(body = "Hello World")
                 }
@@ -93,6 +94,9 @@ Mockzilla is entirely driven by a config object which is used to start the serve
     ```swift
     let config = MockzillaConfigBuilder()
         .addEndpoint(endpoint: EndpointConfigurationBuilder(id: "Hello world")
+            .setSwiftPatternMatcher {
+                $0.uri.hasSuffix("/greeting")
+            }
             .setDefaultHandler { _ in
                 MockzillaHttpResponse(body: "Hello world")
             }.build()
@@ -103,7 +107,7 @@ Mockzilla is entirely driven by a config object which is used to start the serve
     final mockzillaConfig = MockzillaConfig().addEndpoint(
         () => EndpointConfig(
             name: "Hello world",
-            endpointMatcher: (request) => request.uri.endsWith("/hello-world"),
+            endpointMatcher: (request) => request.uri.endsWith("/greeting"),
             defaultHandler: (request) => const MockzillaHttpResponse(
                 body: "Hello world",
             ),
