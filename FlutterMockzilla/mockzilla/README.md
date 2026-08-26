@@ -2,7 +2,7 @@ A Flutter plugin for running and configuring a local, mock HTTP server that allo
 
 |             | Android                 | iOS   |
 |-------------|-------------------------|-------|
-| **Support** | SDK 23+ (Target SDK 36) | 13.0+ |
+| **Support** | SDK 24+ (Target SDK 36) | 15.0+ |
 
 
 ## Quick Start 🚀
