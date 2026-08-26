@@ -1,7 +1,7 @@
 name: mockzilla_android
 description: The Android implementation for the mockzilla plugin.
 # x-release-please-start-version
-version: 3.0.0
+version: 4.0.0
 # x-release-please-end
 homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.15.0
-  mockzilla_platform_interface: ^2.0.0
+  mockzilla_platform_interface: ^3.0.0
 
 dev_dependencies:
   flutter_test:
