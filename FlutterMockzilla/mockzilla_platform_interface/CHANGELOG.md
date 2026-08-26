@@ -5,10 +5,6 @@
 
 ### ⚠ BREAKING CHANGES
 
-* Remove freezed from platform interface package, this introduces name changes for undocumented classes.
-
-### Features
-
 * Remove freezed from platform interface package, this introduces name changes for undocumented classes. ([badf252](https://github.com/Apadmi-Engineering/Mockzilla/commit/badf2528d5009304544ab8b2843276d205276a1a))
 
 ## [2.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_platform_interface-v2.0.0...flutter_mockzilla_platform_interface-v2.0.1) (2026-07-24)
