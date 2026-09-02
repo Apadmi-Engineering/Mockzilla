@@ -1,6 +1,6 @@
 A common platform interface for the mockzilla plugin.
 
-This interface is used by for platform-specific implementations of the mockzilla plugin, as well as said plugin itself to ensure that they are supporting the same interface.
+This interface is used by platform-specific implementations of the mockzilla plugin, as well as said plugin itself to ensure that they are supporting the same interface.
 
 ## Usage
 

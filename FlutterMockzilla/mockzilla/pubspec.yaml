@@ -21,10 +21,10 @@ resolution: workspace
 dependencies:
   flutter:
     sdk: flutter
-  mockzilla_platform_interface: ^2.0.1
-  mockzilla_android: ^3.0.0
-  mockzilla_ios: ^3.0.0
-  mockzilla_web: ^1.0.0
+  mockzilla_platform_interface: ^3.0.0
+  mockzilla_android: ^4.0.0
+  mockzilla_ios: ^4.0.0
+  mockzilla_web: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v2.0.0...flutter_mockzilla_web-v2.0.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* Bump Flutter release workflow SDK version ([#807](https://github.com/Apadmi-Engineering/Mockzilla/issues/807)) ([98f5dd4](https://github.com/Apadmi-Engineering/Mockzilla/commit/98f5dd466c24c9a746147973ea12e374e1edf997))
+
+## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v1.0.0...flutter_mockzilla_web-v2.0.0) (2026-09-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove freezed from platform interface package, this introduces name changes for undocumented classes.
+
+### Features
+
+* Remove freezed from platform interface package, this introduces name changes for undocumented classes. ([badf252](https://github.com/Apadmi-Engineering/Mockzilla/commit/badf2528d5009304544ab8b2843276d205276a1a))
+
 ## [1.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_web-v0.0.4...flutter_mockzilla_web-v1.0.0) (2026-07-24)
 
 

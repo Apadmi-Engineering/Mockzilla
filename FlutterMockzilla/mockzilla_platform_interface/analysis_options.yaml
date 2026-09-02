@@ -1,3 +1,15 @@
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
+  errors:
+    doc_directive_unknown: false
+
 include: package:flutter_lints/flutter.yaml
 
 # Additional information about this file can be found at

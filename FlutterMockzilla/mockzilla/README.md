@@ -1,12 +1,8 @@
-<p align="center">
-    <img src="https://raw.githubusercontent.com/Apadmi-Engineering/Mockzilla/develop/icon.svg" height=200>
-</p>
-
 A Flutter plugin for running and configuring a local, mock HTTP server that allows your mobile app to simulate calls to a REST API.
 
 |             | Android                 | iOS   |
 |-------------|-------------------------|-------|
-| **Support** | SDK 23+ (Target SDK 36) | 13.0+ |
+| **Support** | SDK 24+ (Target SDK 36) | 15.0+ |
 
 
 ## Quick Start 🚀

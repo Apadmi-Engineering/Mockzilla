@@ -1,7 +1,7 @@
 name: mockzilla_ios
 description: The iOS implementation for the mockzilla plugin.
 # x-release-please-start-version
-version: 3.0.0
+version: 4.0.0
 # x-release-please-end
 homepage: https://mockzilla.apadmi.dev/
 repository: https://github.com/Apadmi-Engineering/Mockzilla
@@ -14,23 +14,23 @@ topics:
   - mockzilla
 
 environment:
-  sdk: '>=3.6.0 <4.0.0'
-  flutter: '>=3.41.0'
+  sdk: '>=3.12.0 <4.0.0'
+  flutter: '>=3.47.0'
 resolution: workspace
 
 dependencies:
   flutter:
     sdk: flutter
   meta: ^1.15.0
-  mockzilla_platform_interface: ^2.0.0
+  mockzilla_platform_interface: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pigeon: ^26.1.0
+  pigeon: ^28.0.0
   flutter_lints: ^6.0.0
-  build_runner: ^2.15.1
-  mockito: ^5.4.4
+  build_runner: ^2.16.0
+  mockito: ^5.8.1
 
 flutter:
   plugin:

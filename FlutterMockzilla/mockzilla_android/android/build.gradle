@@ -2,18 +2,18 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group 'com.apadmi.mockzilla'
 // x-release-please-start-version
-version = "3.0.0"
+version = "4.0.0"
 // x-release-please-end
 
 buildscript {
-    ext.kotlin_version = '2.3.20'
+    ext.kotlin_version = '2.4.10'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:9.2.1'
+        classpath 'com.android.tools.build:gradle:9.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -32,7 +32,7 @@ android {
         namespace 'com.apadmi.mockzilla'
     }
 
-    compileSdkVersion 36
+    compileSdkVersion flutter.compileSdkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
@@ -45,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion flutter.minSdkVersion
         multiDexEnabled true
     }
 

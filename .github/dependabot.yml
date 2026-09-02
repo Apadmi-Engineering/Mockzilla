@@ -51,9 +51,7 @@ updates:
         patterns:
           - "*"
   - package-ecosystem: 'pub'
-    directories:
-      - '/FlutterMockzilla'
-      - '/FlutterMockzilla/**'
+    directory: '/FlutterMockzilla'
     schedule:
       interval: 'monthly'
     groups:
