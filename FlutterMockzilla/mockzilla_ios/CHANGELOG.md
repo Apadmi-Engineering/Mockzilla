@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v3.0.0...flutter_mockzilla_ios-v4.0.0) (2026-09-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove freezed from platform interface package, this introduces name changes for undocumented classes.
+
+### Features
+
+* Bump minimum platform SDKs for Flutter plugins ([#794](https://github.com/Apadmi-Engineering/Mockzilla/issues/794)) ([887e4a2](https://github.com/Apadmi-Engineering/Mockzilla/commit/887e4a257576fe0aa0721a7109f924dc10c6ddf2))
+* Remove freezed from platform interface package, this introduces name changes for undocumented classes. ([badf252](https://github.com/Apadmi-Engineering/Mockzilla/commit/badf2528d5009304544ab8b2843276d205276a1a))
+
 ## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ios-v3.0.0-dev...flutter_mockzilla_ios-v3.0.0) (2026-07-24)
 
 
