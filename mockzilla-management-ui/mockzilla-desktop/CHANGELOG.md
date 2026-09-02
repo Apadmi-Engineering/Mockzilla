@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-desktop-v3.0.0...mockzilla-desktop-v4.0.0) (2026-09-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* finally remove legacy preset mechanisms ([#726](https://github.com/Apadmi-Engineering/Mockzilla/issues/726))
+
+### Features
+
+* finally remove legacy preset mechanisms ([#726](https://github.com/Apadmi-Engineering/Mockzilla/issues/726)) ([6f7a476](https://github.com/Apadmi-Engineering/Mockzilla/commit/6f7a476037f3984a217b2bb2453331138d442adb))
+
 ## [3.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-desktop-v2.0.0...mockzilla-desktop-v3.0.0) (2026-07-16)
 
 
