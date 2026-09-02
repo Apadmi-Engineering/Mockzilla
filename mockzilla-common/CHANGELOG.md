@@ -1,5 +1,23 @@
 # Changelog
 
+## [5.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v4.0.0...mockzilla-common-v5.0.0) (2026-09-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* finally remove legacy preset mechanisms ([#726](https://github.com/Apadmi-Engineering/Mockzilla/issues/726))
+
+### Features
+
+* add the ability to the api to update the preset by name ([#704](https://github.com/Apadmi-Engineering/Mockzilla/issues/704)) ([d9e31de](https://github.com/Apadmi-Engineering/Mockzilla/commit/d9e31de99d478246bb0b638cb4113a5fe5d2c421))
+* finally remove legacy preset mechanisms ([#726](https://github.com/Apadmi-Engineering/Mockzilla/issues/726)) ([6f7a476](https://github.com/Apadmi-Engineering/Mockzilla/commit/6f7a476037f3984a217b2bb2453331138d442adb))
+
+
+### Bug Fixes
+
+* ensure parsing of presets in desktop app is backwards compatible ([#774](https://github.com/Apadmi-Engineering/Mockzilla/issues/774)) ([36de0be](https://github.com/Apadmi-Engineering/Mockzilla/commit/36de0be3b42330e920aa55de874a3651f50598db))
+* publish empty javadoc jars instead of full Dokka HTML ([f6417f6](https://github.com/Apadmi-Engineering/Mockzilla/commit/f6417f62d3285f1ffe65f1cca195d63b947b8aec))
+
 ## [4.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-common-v4.0.0-alpha1...mockzilla-common-v4.0.0) (2026-07-24)
 
 
