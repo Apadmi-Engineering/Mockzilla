@@ -37,7 +37,7 @@ kotlin {
     explicitApi()
 
     // Managed automatically by release-please PRs.
-    version = project.injectedVersion() ?: "1.1.0" // x-release-please-version
+    version = project.injectedVersion() ?: "2.0.0" // x-release-please-version
 
     android {
         namespace = "$group.mockzilla.mobile.ui"
