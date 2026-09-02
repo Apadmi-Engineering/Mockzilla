@@ -1,5 +1,23 @@
 # Changelog
 
+## [5.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v4.0.0...mockzilla-v5.0.0) (2026-09-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* finally remove legacy preset mechanisms ([#726](https://github.com/Apadmi-Engineering/Mockzilla/issues/726))
+
+### Features
+
+* add the ability to the api to update the preset by name ([#704](https://github.com/Apadmi-Engineering/Mockzilla/issues/704)) ([d9e31de](https://github.com/Apadmi-Engineering/Mockzilla/commit/d9e31de99d478246bb0b638cb4113a5fe5d2c421))
+* finally remove legacy preset mechanisms ([#726](https://github.com/Apadmi-Engineering/Mockzilla/issues/726)) ([6f7a476](https://github.com/Apadmi-Engineering/Mockzilla/commit/6f7a476037f3984a217b2bb2453331138d442adb))
+* update ktor 3.5.0 ([#739](https://github.com/Apadmi-Engineering/Mockzilla/issues/739)) ([9825d30](https://github.com/Apadmi-Engineering/Mockzilla/commit/9825d30365e78663a174d1c7f2204a4ecc4a49de))
+
+
+### Bug Fixes
+
+* publish empty javadoc jars instead of full Dokka HTML ([f6417f6](https://github.com/Apadmi-Engineering/Mockzilla/commit/f6417f62d3285f1ffe65f1cca195d63b947b8aec))
+
 ## [4.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v4.0.0-alpha1...mockzilla-v4.0.0) (2026-07-24)
 
 
