@@ -30,7 +30,7 @@ plugins {
 val artifactName = "mockzilla-management-ui"
 
 // Managed automatically by release-please PRs
-val baseVersion = "3.0.0" // x-release-please-version
+val baseVersion = "4.0.0" // x-release-please-version
 
 kotlin {
     // In the desktop world there's no concept of a build number so we have to bump the actual version
