@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v1.1.0...flutter_mockzilla_ui_mobile-v1.1.1) (2026-09-23)
+
+
+### Bug Fixes
+
+* stop killing global koin context ([#812](https://github.com/Apadmi-Engineering/Mockzilla/issues/812)) ([1f49af9](https://github.com/Apadmi-Engineering/Mockzilla/commit/1f49af91eaeaa985e40817c62fde9a1f5b6af521))
+
+
 ## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/flutter_mockzilla_ui_mobile-v1.1.0-dev3...flutter_mockzilla_ui_mobile-v1.1.0) (2026-07-24)
 
 
