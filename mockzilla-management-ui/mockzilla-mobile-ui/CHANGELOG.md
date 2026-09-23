@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.1.0...mockzilla-mobile-ui-v2.0.0) (2026-09-23)
+
+
+### Bug Fixes
+
+* fix iOS build for mobile ui ([dade18b](https://github.com/Apadmi-Engineering/Mockzilla/commit/dade18b4fb65b664c33a17958dd9951a693844ff))
+* publish empty javadoc jars instead of full Dokka HTML ([f6417f6](https://github.com/Apadmi-Engineering/Mockzilla/commit/f6417f62d3285f1ffe65f1cca195d63b947b8aec))
+* stop killing global koin context ([#812](https://github.com/Apadmi-Engineering/Mockzilla/issues/812)) ([1f49af9](https://github.com/Apadmi-Engineering/Mockzilla/commit/1f49af91eaeaa985e40817c62fde9a1f5b6af521))
+
 ## [1.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.1.0-dev3...mockzilla-mobile-ui-v1.1.0) (2026-07-24)
 
 ### Features
