@@ -24,7 +24,7 @@ lyricist = "1.9.0" # https://github.com/adrielcafe/lyricist
 ktor = "3.5.2" # https://github.com/ktorio/ktor
 
 # Compose
-compose = "1.11.1" # https://github.com/JetBrains/compose-multiplatform
+compose = "1.12.0" # https://github.com/JetBrains/compose-multiplatform
 
 # DI
 koin = "4.2.2" # https://github.com/InsertKoinIO/koin
@@ -47,7 +47,7 @@ playServicesAdsIdentifier = "18.3.0"
 semver = "3.1.0" # https://github.com/z4kn4fein/kotlin-semver
 
 # Code Formatting
-spotless = "8.10.0" # https://github.com/diffplug/spotless
+spotless = "8.10.1" # https://github.com/diffplug/spotless
 
 # Testing
 kover = "0.9.9" # https://github.com/Kotlin/kotlinx-kover
@@ -60,7 +60,7 @@ conveyor = "2.0" # https://github.com/hydraulic-software/conveyor
 vanniktech-publish = "0.37.0" # https://github.com/vanniktech/gradle-maven-publish-plugin
 
 # License attribution
-aboutlibraries = "15.1.1" # https://github.com/mikepenz/AboutLibraries/releases
+aboutlibraries = "15.2.0" # https://github.com/mikepenz/AboutLibraries/releases
 
 [libraries]
 
