@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "com.example.mockzilla_mobile_ui"
-version = "1.1.0" // x-release-please-version
+version = "2.0.0" // x-release-please-version
 
 buildscript {
     ext.kotlin_version = "2.4.10"
