@@ -46,7 +46,7 @@ kotlin {
     }
 
     // Managed automatically by release-please PRs
-    version = project.injectedVersion() ?: "4.0.0" // x-release-please-version
+    version = project.injectedVersion() ?: "5.0.0" // x-release-please-version
 
     val xcf = XCFramework()
     listOf(
