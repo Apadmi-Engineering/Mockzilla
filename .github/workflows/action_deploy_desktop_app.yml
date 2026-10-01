@@ -24,7 +24,7 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
@@ -57,7 +57,7 @@ jobs:
       - name: Build Jar
         run: ./gradlew :mockzilla-management-ui:mockzilla-desktop:desktopJar
       - name: Run Conveyor
-        uses: hydraulic-software/conveyor/actions/build@5011cc412f9c3a67d8f72f9ea5db5f34c4a68e36 # v22.1
+        uses: hydraulic-software/conveyor/actions/build@7370ce828ff1cbc38b95426ffb2fd613492016d5 # v22.3
         env:
           MAC_SIGNING_KEY_PASSWORD: ${{ secrets.MAC_SIGNING_KEY_PASSWORD }}
           APPLE_NOTARIZATION_KEY_ID: ${{ secrets.APPLE_NOTARIZATION_KEY_ID }}
