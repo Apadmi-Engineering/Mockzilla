@@ -15,7 +15,7 @@ workspace:
   - mockzilla_web
 
 dev_dependencies:
-  melos: ^8.2.2
+  melos: ^8.9.0
 
 melos:
   scripts:
