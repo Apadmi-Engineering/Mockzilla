@@ -55,6 +55,7 @@ internal class ZeroConfDiscoveryServiceImpl(
         }
 
         try {
+            logger.i("Registering ZeroConf service '${serviceInfo.serviceName}' (${ZeroConfConfig.serviceType}) on port $port")
             nsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener)
             registered = true
         } catch (e: SecurityException) {
