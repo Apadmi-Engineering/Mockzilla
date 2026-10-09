@@ -78,10 +78,13 @@ private suspend fun HttpClient.get(
     }
 
 // This is confusing because it gets a bit meta, but on Android we actually start an instance of the
-// Mockzilla server within the Mockzilla UI so that we don't have to have it running separately for development
+// Mockzilla server within the Mockzilla UI so that we don't have to have it running separately for development.
+// Network discovery is disabled: the UI talks to this server over localhost, and advertising on the network
+// would need the ACCESS_LOCAL_NETWORK permission on Android 17 (API 37)+.
 fun startDevelopmentMockzillaServer(context: Context) = startMockzilla(
     MockzillaConfig.Builder()
         .setPort(5614)
+        .setIsNetworkDiscoveryEnabled(false)
         .addEndpoint(endpointWithPresets)
         .addEndpoint(endpointThatCyclesThroughResponseCodes)
         .build(),

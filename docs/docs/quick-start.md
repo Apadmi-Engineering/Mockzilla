@@ -72,6 +72,11 @@ description: Get started with Mockzilla in minutes. Add the dependency, configur
     </dict>
     ```
 
+!!! note "Android 17 and above"
+    If your app targets Android 17 (API 37) or higher, add the local network permission so the 
+    [desktop app](desktop/overview.md#android-17-local-network-permission) can discover your device. It's a single line 
+    in your manifest, Mockzilla asks for it for you. Mockzilla still works without it, just without discovery.
+
 ## Starting the Server
 
 Mockzilla is entirely driven by a config object which is used to start the server.
