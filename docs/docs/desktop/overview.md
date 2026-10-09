@@ -28,6 +28,43 @@ On iOS add the following to your Info.plist.
 
 This allows your device to be automatically detected on the network.
 
+## Android 17 local network permission
+
+Android 17 (API 37) blocks local network access by default for apps that **target API 37 or higher**. Mockzilla needs
+this access to advertise your device to the desktop app, and for the desktop app to connect to it.
+
+To allow it, add the permission to your `AndroidManifest.xml`. Since Mockzilla is for development only, we recommend 
+adding it to your debug (or mock flavour) manifest, e.g. `src/debug/AndroidManifest.xml`, so it never reaches your 
+production app.
+
+```xml
+<uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
+```
+
+That's all you need to do. The first time your app starts, Mockzilla shows the "Nearby devices" permission prompt 
+itself and starts advertising your device as soon as it's granted. It doesn't wait for your answer to start the server, 
+so your app isn't held up.
+
+If you deny the permission, or the line above is missing, your app keeps working and a warning is logged, but the 
+desktop app won't be able to discover your device or connect to it. You can grant the permission later in your device's 
+settings (Apps > your app > Permissions > Nearby devices), or with `adb`:
+
+```shell
+adb shell pm grant <your.application.id> android.permission.ACCESS_LOCAL_NETWORK
+```
+
+!!! warning
+    If your app targets API 36 or lower, **don't** add the permission. Android grants local network access 
+    automatically, and declaring the permission removes that and means it has to be granted by the user.
+
+!!! note
+    Android emulators are not affected. The desktop app connects to them using `adb` port forwarding, which reaches your 
+    app over localhost rather than the network, so they work with or without the permission. Test on a physical device 
+    to check your setup.
+
+If you don't use the desktop app, you can disable network discovery and Mockzilla won't ask for the permission. 
+See [Network discovery](../additional_config.md#network-discovery).
+
 ## Connecting a device
 
 Your device should be automatically discovered by Mockzilla (you may need to restart the app on your device). Android emulators are also detected automatically, with no extra setup required.
@@ -36,6 +73,7 @@ Your device should be automatically discovered by Mockzilla (you may need to res
 
 !!! note
     If network discovery does not find your device you can manually type in the IP address of your device. (Don't forget the port!)
+    On Android 17 (API 37) and above this also needs the [local network permission](#android-17-local-network-permission).
 
 ### Multiple devices
 

@@ -34,6 +34,40 @@ By default, Mockzilla outputs minimal logging. If more is needed to help with de
     );
     ```
 
+## Network discovery
+
+By default Mockzilla advertises itself on your local network (using Bonjour/ZeroConf) so the 
+[desktop app](desktop/overview.md) can find your device automatically. It also listens on all network interfaces, so 
+other devices on your network can call it directly by IP address.
+
+You can change either behaviour:
+
+=== "Kotlin"
+    ```kotlin
+    val config = MockzillaConfig.Builder()
+        // Stop advertising on the network. The desktop app can no longer auto-discover your device.
+        .setIsNetworkDiscoveryEnabled(false)
+
+        // Only accept calls from this device. This also blocks the desktop app entirely.
+        .setLocalhostOnly(true)
+    ```
+=== "Flutter"
+    ```dart
+    final config = MockzillaConfig(
+      // Stop advertising on the network. The desktop app can no longer auto-discover your device.
+      isNetworkDiscoveryEnabled: false,
+
+      // Only accept calls from this device. This also blocks the desktop app entirely.
+      localHostOnly: true,
+    );
+    ```
+
+Discovery is always disabled in [release mode](#release-mode).
+
+!!! note
+    On Android, advertising on the network needs the [local network permission](desktop/overview.md#android-17-local-network-permission)
+    when your app targets Android 17 (API 37) or higher. Mockzilla asks for it for you, unless you disable discovery.
+
 ## Release Mode
 
 !!! note
