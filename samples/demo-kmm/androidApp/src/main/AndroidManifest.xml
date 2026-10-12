@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- On Android 17 (API 37)+ Mockzilla asks for this itself so the desktop app can discover the device over the local network -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
 
     <application
         android:name="com.apadmi.mockzilla.mock.android.RootApplication"
