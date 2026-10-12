@@ -136,7 +136,6 @@ internal class LocalNetworkPermission(
     private fun isGranted() =
         context.checkSelfPermission(localNetworkPermissionName) == PackageManager.PERMISSION_GRANTED
 
-    @Suppress("DEPRECATION")
     private fun isDeclared() = runCatching {
         context.packageManager
             .getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)

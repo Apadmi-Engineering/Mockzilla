@@ -55,7 +55,7 @@ adb shell pm grant <your.application.id> android.permission.ACCESS_LOCAL_NETWORK
 
 !!! warning
     If your app targets API 36 or lower, **don't** add the permission. Android grants local network access 
-    automatically, and declaring the permission removes that and means it has to be granted by the user.
+    automatically. See [here](https://developer.android.com/privacy-and-security/local-network-permission) for further details.
 
 !!! note
     Android emulators are not affected. The desktop app connects to them using `adb` port forwarding, which reaches your 
