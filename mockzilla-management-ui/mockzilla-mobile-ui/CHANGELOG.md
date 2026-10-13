@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v2.0.0...mockzilla-mobile-ui-v2.1.0) (2026-10-13)
+
+
+### Features
+
+* update core management version ([151042a](https://github.com/Apadmi-Engineering/Mockzilla/commit/151042adb2573ff08c57a29021dcb1aacf2d56d6))
+
 ## [2.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-mobile-ui-v1.1.0...mockzilla-mobile-ui-v2.0.0) (2026-09-23)
 
 
