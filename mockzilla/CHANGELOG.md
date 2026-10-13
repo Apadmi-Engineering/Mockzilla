@@ -1,5 +1,61 @@
 # Changelog
 
+## [6.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v5.0.0...mockzilla-v6.0.0) (2026-10-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* finally remove legacy preset mechanisms ([#726](https://github.com/Apadmi-Engineering/Mockzilla/issues/726))
+* Breaking changes across all kotlin modules
+* Update embedded UI with complete re-skin ([#524](https://github.com/Apadmi-Engineering/Mockzilla/issues/524))
+* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518))
+* support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509))
+* remove the obsolete web apis and perform general tidy up of warnings ([#466](https://github.com/Apadmi-Engineering/Mockzilla/issues/466))
+* Migrates `webApiDefaultResponse` and `webApiErrorResponse` to `DashboardOptionsConfig` to allow for multiple preset successful/error responses (aligns with #61).
+
+### Features
+
+* **#557:** fix port conflict issue on Android ([#569](https://github.com/Apadmi-Engineering/Mockzilla/issues/569)) ([1936766](https://github.com/Apadmi-Engineering/Mockzilla/commit/1936766b1d78009964cb00d8383878831f7de6df))
+* add the ability to the api to update the preset by name ([#704](https://github.com/Apadmi-Engineering/Mockzilla/issues/704)) ([d9e31de](https://github.com/Apadmi-Engineering/Mockzilla/commit/d9e31de99d478246bb0b638cb4113a5fe5d2c421))
+* address console log spam ([#653](https://github.com/Apadmi-Engineering/Mockzilla/issues/653)) ([541e38a](https://github.com/Apadmi-Engineering/Mockzilla/commit/541e38ae838c236600847711a1b6240e4de82e57))
+* android 17 local network permission ([#820](https://github.com/Apadmi-Engineering/Mockzilla/issues/820)) ([59b6227](https://github.com/Apadmi-Engineering/Mockzilla/commit/59b6227cd362b53238cbcc6db3614bf389453c82))
+* app icon in desktop app ([#598](https://github.com/Apadmi-Engineering/Mockzilla/issues/598)) ([663d7ea](https://github.com/Apadmi-Engineering/Mockzilla/commit/663d7ea9c0fc210b7eb5fcf71077b791bb4d7e5a))
+* Collated Flutter v1 updates ([#300](https://github.com/Apadmi-Engineering/Mockzilla/issues/300)) ([ff272ae](https://github.com/Apadmi-Engineering/Mockzilla/commit/ff272ae419acd8de42baf29a5cb97cde0023f75a))
+* enable gradle explicitApi ([#676](https://github.com/Apadmi-Engineering/Mockzilla/issues/676)) ([00bfa33](https://github.com/Apadmi-Engineering/Mockzilla/commit/00bfa33b309892741e59b9648b21e06e36447807))
+* expose mockzilla apis to JS ([#513](https://github.com/Apadmi-Engineering/Mockzilla/issues/513)) ([5ae0315](https://github.com/Apadmi-Engineering/Mockzilla/commit/5ae03152447b0703c521e6e95c71161b002e9e1d))
+* Feature/flutter support new mobile UI ([#532](https://github.com/Apadmi-Engineering/Mockzilla/issues/532)) ([70e0a52](https://github.com/Apadmi-Engineering/Mockzilla/commit/70e0a52276220b97db2d427ec93bc85994c50280))
+* Feature/flutter web ([#518](https://github.com/Apadmi-Engineering/Mockzilla/issues/518)) ([4183f06](https://github.com/Apadmi-Engineering/Mockzilla/commit/4183f0626c5936e0ef213a006a46019e9d08d213))
+* finally remove legacy preset mechanisms ([#726](https://github.com/Apadmi-Engineering/Mockzilla/issues/726)) ([6f7a476](https://github.com/Apadmi-Engineering/Mockzilla/commit/6f7a476037f3984a217b2bb2453331138d442adb))
+* first pass reworking the desktop UI to work on mobile ([149ef73](https://github.com/Apadmi-Engineering/Mockzilla/commit/149ef73cc1e78fa3598fecf89ddab685e652ec9e))
+* first pass reworking the desktop UI to work on mobile ([6c599c2](https://github.com/Apadmi-Engineering/Mockzilla/commit/6c599c28a3f990619ca9df9af4db92a0b4f9c9b0))
+* force breaking change ([d12174e](https://github.com/Apadmi-Engineering/Mockzilla/commit/d12174e34ad522b4cc9d4ca0b8a94fd094165a03))
+* Implement ability to close device tabs ([#367](https://github.com/Apadmi-Engineering/Mockzilla/issues/367)) ([30068db](https://github.com/Apadmi-Engineering/Mockzilla/commit/30068db464484fab89e3ae762290912e3515cdb4))
+* improve handling of loading, error and empty states ([#659](https://github.com/Apadmi-Engineering/Mockzilla/issues/659)) ([415b6a2](https://github.com/Apadmi-Engineering/Mockzilla/commit/415b6a25de0e01f8cec23525124ce545cb9c9ad0))
+* improve the auto detection of devices on the network ([#603](https://github.com/Apadmi-Engineering/Mockzilla/issues/603)) ([55aad57](https://github.com/Apadmi-Engineering/Mockzilla/commit/55aad5707d05dd0674fb49f5b49302d790a26798))
+* move docs to cloud pages ([#465](https://github.com/Apadmi-Engineering/Mockzilla/issues/465)) ([d64dd4c](https://github.com/Apadmi-Engineering/Mockzilla/commit/d64dd4c522bbb5b09de79055e9ccf4c5f5b8c2c1))
+* re-think the approach to displaying logs ([#650](https://github.com/Apadmi-Engineering/Mockzilla/issues/650)) ([5bd0c26](https://github.com/Apadmi-Engineering/Mockzilla/commit/5bd0c26d067461babfd6796ef3db8fdae030cb2f))
+* remove the obsolete web apis and perform general tidy up of warnings ([#466](https://github.com/Apadmi-Engineering/Mockzilla/issues/466)) ([362cd45](https://github.com/Apadmi-Engineering/Mockzilla/commit/362cd450f45999c2b3e9f30b28b5a35ae6bf719c))
+* setup flutter wrapper and deployments ([86fa014](https://github.com/Apadmi-Engineering/Mockzilla/commit/86fa0140f5b3de8c716f5c1cdd3e088b992a78ba))
+* support mockzilla on web ([#509](https://github.com/Apadmi-Engineering/Mockzilla/issues/509)) ([2d6a9bb](https://github.com/Apadmi-Engineering/Mockzilla/commit/2d6a9bbec08baa6c377e0a7ac57166086dabfd22))
+* update documentation with more desktop app instructions ([#677](https://github.com/Apadmi-Engineering/Mockzilla/issues/677)) ([48f77f9](https://github.com/Apadmi-Engineering/Mockzilla/commit/48f77f9e149196846c5734f55bd9ecc549143476))
+* Update embedded UI with complete re-skin ([#524](https://github.com/Apadmi-Engineering/Mockzilla/issues/524)) ([46bebc8](https://github.com/Apadmi-Engineering/Mockzilla/commit/46bebc80bb5646207266ac0062dfede9b38ccbb9))
+* update ktor 3.5.0 ([#739](https://github.com/Apadmi-Engineering/Mockzilla/issues/739)) ([9825d30](https://github.com/Apadmi-Engineering/Mockzilla/commit/9825d30365e78663a174d1c7f2204a4ecc4a49de))
+
+
+### Bug Fixes
+
+* attempt again to fix signing ([8eac55d](https://github.com/Apadmi-Engineering/Mockzilla/commit/8eac55d601892b64d8c1d986585987b8b01742a9))
+* bump version ([f27a5d1](https://github.com/Apadmi-Engineering/Mockzilla/commit/f27a5d1abde14b313a2bf62361d3ccd50b724d44))
+* Handle checked exceptions in `SwiftMockzilla` ([#291](https://github.com/Apadmi-Engineering/Mockzilla/issues/291)) ([5f69e80](https://github.com/Apadmi-Engineering/Mockzilla/commit/5f69e80b5459a8836e133e47a0101c894ae1d86c))
+* **kmm:** Better handling of port conflicts ([42e0ee1](https://github.com/Apadmi-Engineering/Mockzilla/commit/42e0ee1dc2dd302136266eb1f4d1d30e52130e40))
+* make use of port re-binding ([1f5ac15](https://github.com/Apadmi-Engineering/Mockzilla/commit/1f5ac15eb3c071e95857917d3e49cb732e186307))
+* make use of port re-binding ([a6ba694](https://github.com/Apadmi-Engineering/Mockzilla/commit/a6ba6941c5a8488db86369a921cab95b2e685b85))
+* Migrate off compatibility release for kotlinx datetime and use stdlib kotlin.time.Instant instead ([e021d8f](https://github.com/Apadmi-Engineering/Mockzilla/commit/e021d8f42d88d27101cf445306468beb21f8512e))
+* publish empty javadoc jars instead of full Dokka HTML ([f6417f6](https://github.com/Apadmi-Engineering/Mockzilla/commit/f6417f62d3285f1ffe65f1cca195d63b947b8aec))
+* Remove 'kmm' from `mockzilla` + `mockzilla_common` changelog ([#273](https://github.com/Apadmi-Engineering/Mockzilla/issues/273)) ([261ef7c](https://github.com/Apadmi-Engineering/Mockzilla/commit/261ef7c140d892990b72533cde0094d52e7e53e5))
+* Update Kermit and remove named argument for tag to sidestep conflicting overloads ([93ce7f6](https://github.com/Apadmi-Engineering/Mockzilla/commit/93ce7f66ee0f34f40404218a7a8a5ef6cd49d257))
+* Update Kermit to v2.0.5 ([a8d6133](https://github.com/Apadmi-Engineering/Mockzilla/commit/a8d61334b07053f9bcd42d48c5aaddde80da62c3))
+
 ## [5.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v4.0.0...mockzilla-v5.0.0) (2026-09-23)
 
 
