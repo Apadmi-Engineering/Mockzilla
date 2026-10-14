@@ -17,6 +17,7 @@ import com.apadmi.mockzilla.desktop.di.startDesktopMockzillaKoin
 import com.apadmi.mockzilla.desktop.engine.connection.ZeroConfSdkWrapper
 import com.apadmi.mockzilla.desktop.ui.DesktopApp
 import com.apadmi.mockzilla.desktop.ui.licenses.LicensesDialog
+import com.apadmi.mockzilla.desktop.ui.tools.CodeGenDialog
 import com.apadmi.mockzilla.desktop.utils.DesktopLogWriter
 import com.apadmi.mockzilla.desktop.utils.handleOsxZoomBehaviour
 import com.apadmi.mockzilla.desktop.utils.rememberAppIcon
@@ -26,7 +27,6 @@ import com.apadmi.mockzilla.ui.internal.di.utils.MockzillaUiKoinContext
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 
 import co.touchlab.kermit.Logger
-import com.apadmi.mockzilla.desktop.ui.tools.CodeGenDialog
 import org.jetbrains.skiko.OS
 import org.jetbrains.skiko.hostOs
 

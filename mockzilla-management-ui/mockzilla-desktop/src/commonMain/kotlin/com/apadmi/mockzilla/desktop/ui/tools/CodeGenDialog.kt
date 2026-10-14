@@ -30,15 +30,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+
+import com.apadmi.mockzilla.desktop.ui.tools.CodeGenViewModel.*
 import com.apadmi.mockzilla.ui.i18n.LocalStrings
 import com.apadmi.mockzilla.ui.internal.di.utils.getViewModel
 import com.apadmi.mockzilla.ui.ui.common.components.CustomTextField
-import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
-import com.apadmi.mockzilla.desktop.ui.tools.CodeGenViewModel.*
 import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomButton
+import com.apadmi.mockzilla.ui.ui.common.components.buttons.CustomIconButton
 import com.apadmi.mockzilla.ui.ui.common.theme.LocalMonoFontFamily
 import com.apadmi.mockzilla.ui.ui.common.theme.onSurfaceMuted
 import com.apadmi.mockzilla.ui.ui.common.theme.success
+
+@Composable
+private fun State.InputError.errorMessage(): String {
+    val inputInvalidMsg = if (inputInvalid) LocalStrings.current.widgets.codeGen.inputInvalid else null
+    val outputInvalidMsg = if (outputInvalid) LocalStrings.current.widgets.codeGen.outputInvalid else null
+    return arrayOf(inputInvalidMsg, outputInvalidMsg).filterNotNull().joinToString(". ")
+}
 
 @Composable
 internal fun CodeGenDialog(onDismiss: () -> Unit) {
@@ -204,11 +212,4 @@ private fun CodeGenDialogHeader(onDismiss: () -> Unit) {
             iconSize = 18.dp,
         )
     }
-}
-
-@Composable
-private fun State.InputError.errorMessage() : String {
-    val inputInvalidMsg = if (inputInvalid) LocalStrings.current.widgets.codeGen.inputInvalid else null
-    val outputInvalidMsg = if (outputInvalid) LocalStrings.current.widgets.codeGen.outputInvalid else null
-    return arrayOf(inputInvalidMsg, outputInvalidMsg).filterNotNull().joinToString(". ")
 }

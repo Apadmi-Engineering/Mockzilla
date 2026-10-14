@@ -8,7 +8,7 @@ internal interface CodeGenUseCase {
     suspend fun generateConfig(inputPath: String, outputPath: String): Result<Unit>
 }
 
-internal class CodeGenUseCaseImpl : CodeGenUseCase {
+internal object CodeGenUseCaseImpl : CodeGenUseCase {
     override suspend fun generateConfig(inputPath: String, outputPath: String) =
         withContext(Dispatchers.IO) {
             runCatching { generateMockzillaConfig(inputPath, outputPath) }

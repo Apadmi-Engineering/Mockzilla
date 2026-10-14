@@ -8,6 +8,7 @@ data class EndpointSpec(
     val successResponse: ExampleResponse,
     val errorResponse: ExampleResponse,
     val otherResponses: Array<ExampleResponse>,
+    val tags: List<String>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -20,6 +21,7 @@ data class EndpointSpec(
         if (successResponse != other.successResponse) return false
         if (errorResponse != other.errorResponse) return false
         if (!otherResponses.contentEquals(other.otherResponses)) return false
+        if (tags != other.tags) return false
 
         return true
     }
@@ -30,6 +32,7 @@ data class EndpointSpec(
         result = 31 * result + successResponse.hashCode()
         result = 31 * result + errorResponse.hashCode()
         result = 31 * result + otherResponses.contentHashCode()
+        result = 31 * result + tags.hashCode()
         return result
     }
 }

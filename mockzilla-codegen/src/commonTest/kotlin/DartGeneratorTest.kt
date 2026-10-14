@@ -7,6 +7,7 @@ import com.apadmi.mockzilla.codegen.file_builders.dart.generateDartSource
 import com.apadmi.mockzilla.codegen.file_builders.dart.presetFragment
 import com.apadmi.mockzilla.codegen.file_builders.dart.responseExpression
 import io.swagger.models.HttpMethod
+import org.junit.jupiter.api.Assertions.assertFalse
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -17,7 +18,8 @@ private fun endpoint(
     success: ExampleResponse = ExampleResponse(200, "ok", "{\"id\":1}"),
     error: ExampleResponse = ExampleResponse(400, "error", ""),
     others: Array<ExampleResponse> = arrayOf(),
-) = EndpointSpec(path, method, success, error, others)
+    tags: List<String> = emptyList(),
+) = EndpointSpec(path, method, success, error, others, tags)
 
 class CodeGeneratorTest {
     @Test
@@ -39,7 +41,7 @@ class CodeGeneratorTest {
     fun `escapeForDartLiteral escapes backslash before other characters, not after`() {
         assertEquals("\\\\\\'", "\\'".escapeForDartLiteral())
     }
-    
+
     @Test
     fun `escapeJsonForDartLiteral escapes quote and dollar`() {
         assertEquals("{\\'a\\':1,\\\$b:2}", "{'a':1,\$b:2}".escapeJsonForDartLiteral())
@@ -49,7 +51,7 @@ class CodeGeneratorTest {
     fun `escapeJsonForDartLiteral escaped leaves backslashes and newlines alone`() {
         assertEquals("a\\nb\\\\c", "a\\nb\\\\c".escapeJsonForDartLiteral())
     }
-    
+
     @Test
     fun `endpointFragment includes the escaped name, method, and matcher`() {
         val source = endpointFragment(endpoint(path = "/widgets", method = HttpMethod.POST))
@@ -123,13 +125,14 @@ class CodeGeneratorTest {
 
     @Test
     fun `generateSource produces one EndpointConfig per input endpoint`() {
-        val source = generateDartSource(arrayOf(endpoint(path = "/a"), endpoint(path = "/b")))
+        val source =
+            generateDartSource(emptyList(), arrayOf(endpoint(path = "/a"), endpoint(path = "/b")))
         assertEquals(2, Regex("EndpointConfig\\(").findAll(source).count())
     }
 
     @Test
     fun `generateSource includes the generated-code header and import`() {
-        val source = generateDartSource(arrayOf())
+        val source = generateDartSource(emptyList(), arrayOf())
 
         assertTrue(source.contains("// GENERATED CODE"))
         assertTrue(source.contains("import 'package:mockzilla/mockzilla.dart';"))
@@ -138,14 +141,92 @@ class CodeGeneratorTest {
 
     @Test
     fun `generateSource with no otherResponses produces an empty presets list`() {
-        val source = generateDartSource(arrayOf(endpoint(others = arrayOf())))
+        val source = generateDartSource(emptyList(), arrayOf(endpoint(others = arrayOf())))
         assertTrue(source.contains("presets: []"))
     }
 
     @Test
     fun `generateSource with an empty endpoint list still produces a valid-looking empty config`() {
-        val source = generateDartSource(arrayOf())
+        val source = generateDartSource(emptyList(), arrayOf())
         assertTrue(source.contains("endpoints: ["))
         assertTrue(source.contains("]);"))
+    }
+
+    @Test
+    fun `generateSource with no tags puts every endpoint in otherEndpoints`() {
+        val source =
+            generateDartSource(emptyList(), arrayOf(endpoint(path = "/a"), endpoint(path = "/b")))
+
+        assertTrue(source.contains("final otherEndpoints = ["))
+        assertEquals(2, Regex("EndpointConfig\\(").findAll(source).count())
+        assertTrue(source.contains("...otherEndpoints"))
+    }
+
+    @Test
+    fun `generateSource creates one final list per tag`() {
+        val source = generateDartSource(
+            listOf("OTP", "Session"),
+            arrayOf(
+                endpoint(path = "/auth/otp/send", tags = listOf("OTP")),
+                endpoint(path = "/auth/otp/verify", tags = listOf("OTP")),
+                endpoint(path = "/auth/logout", tags = listOf("Session")),
+            ),
+        )
+
+        assertTrue(source.contains("final otpEndpoints = ["))
+        assertTrue(source.contains("final sessionEndpoints = ["))
+        assertFalse(source.contains("final otherEndpoints = ["))
+    }
+
+    @Test
+    fun `generateSource assigns each endpoint to only its own tag group`() {
+        val source = generateDartSource(
+            listOf("OTP", "Session"),
+            arrayOf(
+                endpoint(path = "/auth/otp/send", tags = listOf("OTP")),
+                endpoint(path = "/auth/logout", tags = listOf("Session")),
+            ),
+        )
+
+        val otpBlock = source.substringAfter("final otpEndpoints = [").substringBefore("];")
+        val sessionBlock = source.substringAfter("final sessionEndpoints = [").substringBefore("];")
+
+        assertTrue(otpBlock.contains("/auth/otp/send"))
+        assertFalse(otpBlock.contains("/auth/logout"))
+        assertTrue(sessionBlock.contains("/auth/logout"))
+        assertFalse(sessionBlock.contains("/auth/otp/send"))
+    }
+
+    @Test
+    fun `generateSource groups untagged endpoints into otherEndpoints alongside tagged groups`() {
+        val source = generateDartSource(
+            listOf("OTP"),
+            arrayOf(
+                endpoint(path = "/auth/otp/send", tags = listOf("OTP")),
+                endpoint(path = "/auth/logout", tags = emptyList()),
+            ),
+        )
+
+        assertTrue(source.contains("final otpEndpoints = ["))
+        assertTrue(source.contains("final otherEndpoints = ["))
+        val otherBlock = source.substringAfter("final otherEndpoints = [").substringBefore("];")
+        assertTrue(otherBlock.contains("/auth/logout"))
+    }
+
+    @Test
+    fun `generateSource spreads every group into the final endpoints list`() {
+        val source = generateDartSource(
+            listOf("OTP", "Session"),
+            arrayOf(
+                endpoint(path = "/auth/otp/send", tags = listOf("OTP")),
+                endpoint(path = "/auth/logout", tags = listOf("Session")),
+                endpoint(path = "/unrelated", tags = emptyList()),
+            ),
+        )
+
+        val endpointsListBlock = source.substringAfter("final mockzillaConfig = MockzillaConfig(")
+        assertTrue(endpointsListBlock.contains("...otpEndpoints"))
+        assertTrue(endpointsListBlock.contains("...sessionEndpoints"))
+        assertTrue(endpointsListBlock.contains("...otherEndpoints"))
     }
 }

@@ -13,7 +13,7 @@ fun exampleResponses(statusKey: String, response: ApiResponse): Array<ExampleRes
         ExampleResponse(
             statusCode,
             description.toTitleCase(),
-            ""
+            "",
         )
     )
 

@@ -7,7 +7,6 @@ import com.apadmi.mockzilla.ui.engine.events.GenericErrorableOperation
 
 import cafe.adriel.lyricist.LyricistStrings
 import io.ktor.http.HttpStatusCode
-import kotlin.String
 
 import kotlin.math.roundToInt
 
@@ -313,14 +312,17 @@ public val EnStrings: Strings = Strings(
             description = "This tool allows you to input a swagger file (either yaml or json) to autogenerate Mockzilla Config.",
             inputInvalid = "Input type must be .yaml/.yml/.json",
             outputInvalid = "Output type must be .dart",
-            generatorError = { throwable -> "File failed to generate: ${throwable.message}" },
+            generatorError = { throwable ->
+                println(throwable)
+                return@CodeGen "File failed to generate: ${throwable.message}"
+            },
             success = "File generated successfully!",
             inputTitle = "INPUT FILE NAME",
             inputDesc = "Enter the full path to yaml/json swagger file.",
             inputPlaceholder = "/Users/example_path/example.yaml",
             outputTitle = "OUTPUT FILE NAME",
-            outputDesc = "Full path to where the new generated file should be written. Accepted file types: .dart",
-            outputPlaceholder = "/Users/generated_path/mockzilla_config.g.dart",
+            outputDesc = "Full path to where the new generated file should be written. Accepted file types: .dart, .kt",
+            outputPlaceholder = "/Users/generated_path/mockzilla_config.dart",
             button = "Generate"
         )
     ),

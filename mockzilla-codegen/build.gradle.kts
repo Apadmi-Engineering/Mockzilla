@@ -18,6 +18,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.swagger.parser)
+            implementation(libs.ktfmt)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))

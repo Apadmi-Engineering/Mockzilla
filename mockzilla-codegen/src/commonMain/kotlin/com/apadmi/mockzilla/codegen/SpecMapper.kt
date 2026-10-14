@@ -62,7 +62,8 @@ fun mapOperation(
             400,
             "Error"
         ),
-        examples.withUniqueNames()
+        examples.withUniqueNames(),
+        tags = operation.tags ?: emptyList()
     )
 }
 
