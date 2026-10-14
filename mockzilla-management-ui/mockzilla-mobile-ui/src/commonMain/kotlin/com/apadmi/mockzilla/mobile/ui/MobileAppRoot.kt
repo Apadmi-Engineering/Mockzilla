@@ -139,7 +139,7 @@ internal fun MobileAppRoot(
                     contentDescription = strings.common.debugDescription,
                 )
             }
-
+ 
             CustomIconButton(
                 onClick = { navController.navigate(Destination.GlobalControls) },
                 imageVector = Icons.Filled.Globe,

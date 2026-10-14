@@ -41,7 +41,6 @@ import com.apadmi.mockzilla.mobile.ui.MobileAppRoot
 import com.apadmi.mockzilla.mobile.ui.utils.startMockzillaMobileUiKoin
 import com.apadmi.mockzilla.ui.ui.common.theme.AppTheme
 
-import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
 import kotlin.math.roundToInt
@@ -66,11 +65,6 @@ public class MockzillaManagementSdkActivity : ComponentActivity() {
                 BottomSheetWrapper(onDismiss = ::dismissWithNoTransition)
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopKoin()
     }
 
     private fun dismissWithNoTransition() {

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- On Android 17 (API 37)+ Mockzilla asks for this itself so the desktop app can discover the device over the local network -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK"/>
     <application
         android:name="com.apadmi.mockzilla.demo.ui.RootApplication"
         android:allowBackup="true"

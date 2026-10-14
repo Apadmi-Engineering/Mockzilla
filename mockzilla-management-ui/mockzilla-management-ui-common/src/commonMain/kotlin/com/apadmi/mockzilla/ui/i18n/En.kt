@@ -312,10 +312,7 @@ public val EnStrings: Strings = Strings(
             description = "This tool allows you to input a swagger file (either yaml or json) to autogenerate Mockzilla Config.",
             inputInvalid = "Input type must be .yaml/.yml/.json",
             outputInvalid = "Output type must be .dart",
-            generatorError = { throwable ->
-                println(throwable)
-                return@CodeGen "File failed to generate: ${throwable.message}"
-            },
+            generatorError = { throwable -> "File failed to generate: ${throwable.message}" },
             success = "File generated successfully!",
             inputTitle = "INPUT FILE NAME",
             inputDesc = "Enter the full path to yaml/json swagger file.",
