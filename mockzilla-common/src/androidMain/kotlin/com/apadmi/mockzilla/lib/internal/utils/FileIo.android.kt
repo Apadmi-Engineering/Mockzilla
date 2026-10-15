@@ -10,10 +10,10 @@ import java.io.IOException
 import java.nio.file.Files
 
 @InternalMockzillaApi
-public actual class FileIo(private val cacheDir: File) {
+public actual class FileIo(private val baseDir: File) {
     private val cacheDirectory
         get() = File(
-            cacheDir,
+            baseDir,
             "com.apadmi.mockzilla.lib"
         ).also { it.mkdirs() }
 
@@ -42,7 +42,7 @@ public actual class FileIo(private val cacheDir: File) {
             }
         }
 
-    public actual suspend fun deleteAllCaches(): Unit = cacheDir.deleteRecursively().let {
+    public actual suspend fun deleteAllCaches(): Unit = cacheDirectory.deleteRecursively().let {
         if (!it) {
             throw IOException("Failed to delete caches")
         }
