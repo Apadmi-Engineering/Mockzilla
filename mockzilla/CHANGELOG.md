@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v5.0.0...mockzilla-v5.0.1) (2026-10-15)
+
+
+### Bug Fixes
+
+* clearing caches wiped all files on android (including data store). ([#827](https://github.com/Apadmi-Engineering/Mockzilla/issues/827)) ([fe71114](https://github.com/Apadmi-Engineering/Mockzilla/commit/fe71114034c4ccf48c2a00f4686de5acb334d73d))
+
 ## [5.0.0](https://github.com/Apadmi-Engineering/Mockzilla/compare/mockzilla-v4.0.0...mockzilla-v5.0.0) (2026-09-23)
 
 
