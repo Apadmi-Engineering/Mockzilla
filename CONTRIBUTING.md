@@ -82,5 +82,5 @@ Creating a pull request will check everything compiles and runs all your tests. 
 
 This section is specifically for Apadmi maintainers creating releases.
 
-1. Releases are all managed automatically. To release a new version, merge the open release pull request as described here: [https://github.com/google-github-actions/release-please-action](https://github.com/google-github-actions/release-please-action).
+1. Releases are all managed automatically. To release a new version, merge the open release pull request as described here: [https://github.com/googleapis/release-please-action](https://github.com/googleapis/release-please-action).
 2. Deploy the release to Maven Central from [https://s01.oss.sonatype.org/#stagingRepositories](https://s01.oss.sonatype.org/#stagingRepositories).

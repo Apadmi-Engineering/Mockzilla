@@ -10,10 +10,15 @@ jobs:
     outputs:
       should_run: ${{ steps.should_run.outputs.should_run }}
     steps:
+      # Release PRs only change versions and changelogs, so skip CI for them. The same-repo check stops a
+      # fork from skipping CI by naming its branch like a release PR.
       - id: should_run
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
         run: |
-          if [[ ${{ github.head_ref }} == *"release-please--branches"* ]]; then
-             echo "should_run=false" >> $GITHUB_OUTPUT  
+          if [[ "$HEAD_REF" == release-please--branches* && "$HEAD_REPO" == "$GITHUB_REPOSITORY" ]]; then
+             echo "should_run=false" >> $GITHUB_OUTPUT
           else
              echo "should_run=true" >> $GITHUB_OUTPUT
           fi
@@ -55,6 +60,7 @@ jobs:
               - build.gradle.kts
               - mockzilla-common/**
               - gradle/**
+              - kotlin-js-store/**
             flutter:
               - *common-fastlane
               - FlutterMockzilla/**
