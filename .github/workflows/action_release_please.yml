@@ -6,7 +6,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  actions: write
 
 name: Release-Please
 
@@ -14,7 +13,16 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
+      # An App token, unlike the default GITHUB_TOKEN, makes GitHub start workflows from the release PR and
+      # the tag, which the tag-triggered deploy workflows rely on.
+      - name: Generate token
+        id: generate-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.RELEASE_PLEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLEASE_PRIVATE_KEY }}
+
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release
         with:
-          token: ${{ secrets.PAT_BS }}
+          token: ${{ steps.generate-token.outputs.token }}

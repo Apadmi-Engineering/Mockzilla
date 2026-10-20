@@ -1,0 +1,42 @@
+name: Renovate
+
+# Self-hosted Renovate. The rules are in renovate.json and the self-hosted settings in
+# renovate.yaml
+on:
+  schedule:
+    - cron: '0 2 1 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: renovate
+  cancel-in-progress: false
+
+# Only the checkout uses the job's own token; Renovate works through the App token.
+permissions:
+  contents: read
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get token
+        id: get_token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ secrets.RENOVATE_GITHUB_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_GITHUB_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: 'Mockzilla'
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Renovate
+        uses: renovatebot/github-action@a63d9a7bc606f7336fd20b47f2f32259a35e6213 # v46.3.9
+        with:
+          configurationFile: renovate.yaml
+          token: ${{ steps.get_token.outputs.token }}
+        env:
+          # Commit through the GitHub API as the App, so GitHub marks the commits as verified.
+          RENOVATE_PLATFORM_COMMIT: 'true'

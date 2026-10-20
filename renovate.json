@@ -1,0 +1,90 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["helpers:pinGitHubActionDigestsToSemver"],
+  "enabledManagers": [
+    "gradle",
+    "gradle-wrapper",
+    "github-actions",
+    "bundler",
+    "pub",
+    "pip_requirements",
+    "npm"
+  ],
+  "semanticCommits": "enabled",
+  "constraints": {
+    "java": "17"
+  },
+  "packageRules": [
+    {
+      "description": "The CI JDK is chosen together with AGP and Kotlin, so Renovate leaves it alone.",
+      "matchDatasources": ["java-version"],
+      "enabled": false
+    },
+    {
+      "description": "One monthly PR for all non-breaking Gradle updates; majors always get their own PR.",
+      "matchManagers": ["gradle"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Gradle non-breaking updates"
+    },
+    {
+      "description": "One monthly PR for every GitHub Actions update, including majors.",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "One monthly PR for every Ruby gem update, including majors.",
+      "matchManagers": ["bundler"],
+      "groupName": "Ruby"
+    },
+    {
+      "description": "One monthly PR for non-breaking Flutter package updates; majors always get their own PR.",
+      "matchManagers": ["pub"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Flutter non-breaking updates"
+    },
+    {
+      "description": "One monthly PR for non-breaking docs tooling updates (zensical and the Tailwind homepage); majors always get their own PR.",
+      "matchManagers": ["pip_requirements", "npm"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Docs tooling non-breaking updates"
+    },
+    {
+      "description": "Compose Multiplatform and activity-compose share a release cadence. Keep this before the Kotlin rule so the Compose compiler plugin, which shares the kotlin version, lands in Kotlin.",
+      "matchManagers": ["gradle"],
+      "matchPackageNames": ["/^org\\.jetbrains\\.compose/", "androidx.activity:activity-compose"],
+      "groupName": "Compose"
+    },
+    {
+      "description": "Kotlin, KSP and kotlinx artifacts use separate version keys but must move together, so keep them in one group for all update types.",
+      "matchManagers": ["gradle"],
+      "matchPackageNames": ["/^org\\.jetbrains\\.kotlin/", "/^com\\.google\\.devtools\\.ksp/"],
+      "groupName": "Kotlin"
+    },
+    {
+      "description": "The Flutter plugin Gradle files follow the Flutter template and reference release-please-owned com.apadmi artifact versions, so Renovate leaves them alone.",
+      "matchManagers": ["gradle"],
+      "matchFileNames": ["FlutterMockzilla/**"],
+      "enabled": false
+    },
+    {
+      "description": "The workspace packages in FlutterMockzilla are versioned by release-please, so Renovate must not bump them.",
+      "matchManagers": ["pub"],
+      "matchPackageNames": ["/^mockzilla/"],
+      "enabled": false
+    },
+    {
+      "description": "Kotlin/JS pins its npm dependencies in kotlin-js-store, and any Gradle update can move them. Regenerate the lockfile in the same commit, so that Renovate PRs don't go stale on it. The command must match allowedCommands in renovate.yaml. The JDK matches the one CI uses.",
+      "matchManagers": ["gradle"],
+      "postUpgradeTasks": {
+        "commands": [
+          "./gradlew --no-daemon kotlinUpgradeYarnLock"
+        ],
+        "installTools": {
+          "java": {}
+        },
+        "fileFilters": ["kotlin-js-store/**"],
+        "executionMode": "branch"
+      }
+    }
+  ]
+}

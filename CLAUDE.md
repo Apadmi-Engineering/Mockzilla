@@ -112,12 +112,18 @@ Kotlin formatting is enforced by **Spotless + Diktat**. Run `./gradlew spotlessA
 
 Releases are managed by **Release-Please** (`.release-please-manifest.json`). Version bumps happen via PR labels/commit messages; don't manually edit version numbers in `pubspec.yaml` or `build.gradle.kts` files that contain `x-release-please-version` markers.
 
+The release-please workflow authenticates as a GitHub App (`RELEASE_PLEASE_APP_ID` / `RELEASE_PLEASE_PRIVATE_KEY` secrets) rather than the default `GITHUB_TOKEN`, so that the release PR and the release tag start workflows (the deploy workflows are triggered by the tag). Keep it that way.
+
 Publishing targets:
 - Kotlin modules → **Maven Central** (via `mavenPublishing` Gradle plugin)
 - iOS UI → **CocoaPods** (`pod trunk push`)
 - Flutter packages → **pub.dev** (`flutter pub publish`)
 
 Fastlane lanes in `fastlane/` orchestrate all publishing steps; see `fastlane/fastfiles/` for per-platform lanes.
+
+## Dependency Updates
+
+Dependencies are updated by self-hosted **Renovate** (`.github/workflows/action_renovate.yml`, monthly or on manual dispatch), authenticating as a GitHub App (`RENOVATE_GITHUB_APP_ID` / `RENOVATE_GITHUB_PRIVATE_KEY` secrets). The update rules live in `renovate.json` and the self-hosted settings in `renovate.yaml`. Renovate reads `renovate.json` from `develop`. Gradle updates regenerate `kotlin-js-store/yarn.lock` in the same branch via `./gradlew kotlinUpgradeYarnLock`; that command is allow-listed in `renovate.yaml` and must stay in sync with the `postUpgradeTasks` rule in `renovate.json`. To check config changes, run `renovate-config-validator --strict` (from the `renovate` npm package) on `renovate.json` and on `renovate.yaml`.
 
 ## CI
 

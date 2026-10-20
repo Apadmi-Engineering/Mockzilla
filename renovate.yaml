@@ -1,0 +1,11 @@
+platform: 'github'
+onboarding: true
+# Renovate refuses to run a postUpgradeTasks command unless it matches one of these. This is the one in
+# renovate.json that regenerates the Kotlin/JS yarn lockfile.
+allowedCommands:
+  - '^\./gradlew --no-daemon kotlinUpgradeYarnLock$'
+onboardingConfig:
+  extends:
+    - config:recommended
+repositories:
+  - Apadmi-Engineering/Mockzilla
